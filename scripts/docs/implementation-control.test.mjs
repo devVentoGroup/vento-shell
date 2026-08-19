@@ -8,6 +8,7 @@ import {
   deriveImplementationControl,
   ensurePendingImplementationRecord,
   pendingInstanceRecord,
+  renderCurrentWorkDirective,
 } from './implementation-control.mjs';
 
 const baseControl = {
@@ -173,6 +174,17 @@ test('la autorización explícita conserva operador humano y pausa solo por evid
   assert.equal(result.executionOperatorPolicy.pauseOnlyWhenNextStepDependsOnEvidence, true);
   assert.equal(result.executionOperatorPolicy.evidenceReplyPrefix, 'RESULTADO DEL PASO ');
   assert.deepEqual(result.physical.authorized.map(({ instanceId }) => instanceId), ['SHELL-CI-001::GLOBAL']);
+});
+
+test('la directiva conserva IMPLEMENTED hasta completar evidencia remota', () => {
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [scope('AUTHORIZED')] },
+    workTopology: topology(),
+  });
+  const source = renderCurrentWorkDirective(result);
+  assert.match(source, /evidencia remota/u);
+  assert.match(source, /commit\/push de materialización/u);
+  assert.match(source, /antes de VERIFIED/u);
 });
 
 test('rechaza habilitar escrituras automáticas del asistente por inferencia', () => {

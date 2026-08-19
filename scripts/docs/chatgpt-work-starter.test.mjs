@@ -17,9 +17,19 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, /Operador que realiza los cambios: USUARIO HUMANO/u);
   assert.match(result.source, /Interacción: TRANSACCIÓN CONTINUA \+ UNA SOLA BATERÍA FINAL/u);
   assert.match(result.source, /Watcher durante implementación física: APAGADO/u);
+  assert.match(result.source, /commit\/push final de cierre/u);
   assert.match(result.source, /Preflight físico: UNA VEZ/u);
   assert.match(result.source, /Preflight PASS: CONTINUAR LOCALMENTE SIN VOLVER AL CHAT/u);
-  assert.match(result.source, /Batería final PASS: CONTINUAR LOCALMENTE HASTA VERIFIED SIN VOLVER AL CHAT/u);
+  assert.match(result.source, /Batería física final: SOLO validation_commands AUTORIZADAS/u);
+  assert.match(result.source, /Batería final PASS: CONTINUAR EN LA MISMA TRANSACCIÓN; EVIDENCIA REMOTA, SI APLICA, ANTES DE VERIFIED/u);
+  assert.match(result.source, /=== RESULTADO PARA CHATGPT ===/u);
+  assert.match(result.source, /SOLO EL BLOQUE FINAL/u);
+  assert.match(result.source, /Copia manual de salidas extensas: PROHIBIDA/u);
+  assert.match(result.source, /Terminal interactiva: SIEMPRE DEBE QUEDAR ABIERTA/u);
+  assert.match(result.source, /COMANDO exit: PROHIBIDO EN BLOQUES MANUALES/u);
+  assert.match(result.source, /Salida operativa de terminal: ASCII SEGURO/u);
+  assert.match(result.source, /Cierre documental: npm run docs:plan:build UNA SOLA VEZ después de VERIFIED/u);
+  assert.match(result.source, /Reactivación del watcher: SOLO DESPUÉS DEL CIERRE LIMPIO Y SINCRONIZADO/u);
   assert.match(result.source, /Gates intermedios rutinarios: PROHIBIDOS/u);
   assert.match(result.source, /Raíz local exacta del repositorio: .+vento-shell/u);
   assert.match(result.source, /HISTORIAL FÍSICO ACUMULATIVO/u);
@@ -27,14 +37,16 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, /CONTENIDO LOCAL EXACTO DEL REGISTRO ACTIVO/u);
   assert.match(result.source, /Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS/u);
   assert.match(result.source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
-  assert.match(result.source, /Regeneración ligera de control: npm run docs:implementation:status/u);
-  assert.match(result.source, /Regeneración ligera del Iniciador: npm run docs:chatgpt:starter/u);
+  assert.match(result.source, /Batería física: exclusivamente validation_commands de la instancia/u);
+  assert.match(result.source, /Cierre documental único: npm run docs:plan:build después de VERIFIED/u);
+  assert.doesNotMatch(result.source, /Regeneración ligera de control:/u);
+  assert.doesNotMatch(result.source, /Regeneración ligera del Iniciador:/u);
   assert.match(result.source, /Contrato propietario SHA-256: [a-f0-9]{64}/u);
   assert.doesNotMatch(result.source, /\{\{CURRENT_WORK\}\}/u);
   assert.equal(result.outputPath.endsWith('INICIADOR_VENTO_ACTUAL.txt'), true);
 });
 
-test('ejecutar implementación entrega una transacción continua hasta VERIFIED', () => {
+test('ejecutar implementación entrega una transacción continua hasta el cierre final', () => {
   const source = actionResponseContract({
     primaryAction: {
       type: 'EJECUTAR_IMPLEMENTACION',
@@ -54,7 +66,12 @@ test('ejecutar implementación entrega una transacción continua hasta VERIFIED'
   assert.match(source, /contenido completo sin elipsis/u);
   assert.match(source, /a IMPLEMENTED/u);
   assert.match(source, /una sola batería final/u);
-  assert.match(source, /mismo bloque continúa hasta VERIFIED/u);
+  assert.match(source, /exclusivamente las validation_commands autorizadas/u);
+  assert.match(source, /commit\/push de materialización/u);
+  assert.match(source, /tramo remoto/u);
+  assert.match(source, /solo con PASS remoto/u);
+  assert.match(source, /docs:plan:build una sola vez/u);
+  assert.match(source, /worktree limpio y remoto sincronizado/u);
   assert.match(source, /No vuelvas a ejecutar la batería después de PASS completo/u);
 });
 
@@ -118,7 +135,9 @@ test('la autorización conserva ledger y entrega también el lote físico condic
   assert.match(source, /En la misma respuesta/u);
   assert.match(source, /todos los archivos y cambios físicos deterministas/u);
   assert.match(source, /No obligues a regenerar el Iniciador/u);
-  assert.match(source, /un único commit\/sync del lote completo/u);
+  assert.match(source, /commit\/push mínimo de materialización/u);
+  assert.match(source, /docs:plan:build una sola vez/u);
+  assert.match(source, /commit\/push final/u);
   assert.doesNotMatch(source, /comprobar el cambio a INICIAR_IMPLEMENTACION/u);
 });
 
@@ -137,11 +156,15 @@ test('las acciones conservan guía humana y prohíben micro-gates', () => {
     assert.match(source, /El operador es el usuario humano/u);
     assert.match(source, /No escribas archivos/u);
     assert.match(source, /No pauses por rutina/u);
+    assert.match(source, /=== RESULTADO PARA CHATGPT ===/u);
+    assert.match(source, /No pidas al usuario buscar, recortar ni copiar manualmente/u);
+    assert.match(source, /No incluyas `exit` como comando/u);
+    assert.match(source, /terminal abierta/u);
     assert.match(source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
   }
 });
 
-test('la plantilla global conserva modo humano, watcher apagado y validación final única', () => {
+test('la plantilla global conserva modo humano, watcher hasta cierre y validación final única', () => {
   const template = fs.readFileSync(
     'docs/plan-canonico/modular/chatgpt-work-starter-template.txt',
     'utf8',
@@ -151,26 +174,46 @@ test('la plantilla global conserva modo humano, watcher apagado y validación fi
   assert.match(template, /ChatGPT entrega seguidos todos los pasos/u);
   assert.match(template, /no se pausa entre pasos por rutina ni para pedir `HECHO`/u);
   assert.match(template, /RESULTADO DEL PASO N/u);
+  assert.match(template, /REGLA DE SALIDA COMPACTA DE BATERÍAS Y COMPROBACIONES/u);
+  assert.match(template, /=== RESULTADO PARA CHATGPT ===/u);
+  assert.match(template, /por defecto debe devolver únicamente el bloque final/u);
+  assert.match(template, /nunca sustituye ni altera el código de salida real/u);
+  assert.match(template, /REGLA DE SEGURIDAD DE TERMINAL INTERACTIVA/u);
+  assert.match(template, /está prohibido incluir `exit` como comando/u);
+  assert.match(template, /dejar la terminal abierta/u);
+  assert.match(template, /uso interno de `process\.exit/u);
+  assert.match(template, /REGLA DE SALIDA ASCII SEGURA EN TERMINAL/u);
+  assert.match(template, /\[PLAN CANONICO\]/u);
+  assert.match(template, /sin tildes, emojis, flechas Unicode/u);
   assert.match(template, /un archivo por instancia/u);
   assert.match(template, /watcher crea automáticamente su archivo exacto/u);
   assert.match(template, /usuario nunca crea manualmente el archivo/u);
   assert.match(template, /nunca se reemplaza un arreglo global `instances`/u);
   assert.match(template, /FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA/u);
   assert.match(template, /watcher debe permanecer apagado/u);
-  assert.match(template, /una sola batería final/u);
-  assert.match(template, /npm run docs:implementation:status/u);
-  assert.match(template, /npm run docs:chatgpt:starter/u);
+  assert.match(template, /commit\/push final de cierre/u);
+  assert.match(template, /una sola transacción final fail-fast/u);
+  assert.match(template, /exclusivamente las `validation_commands`/u);
+  assert.match(template, /commit\/push mínimo de materialización/u);
+  assert.match(template, /evidencia remota/u);
+  assert.match(template, /`npm run docs:plan:build` una sola vez/u);
+  assert.doesNotMatch(template, /después de `VERIFIED`, deriva el control y regenera el Iniciador mediante `npm run docs:implementation:status`/u);
+  assert.match(template, /al arrancar debe comprobar estado y fuentes en modo de solo lectura/u);
   assert.match(template, /Push Protection/u);
   assert.match(template, /AUTORIZO EJECUCION ASISTIDA DEL PASO 3/u);
   assert.match(template, /“haz la acción principal” no autorizan escrituras automáticas/u);
 });
 
-test('el build, check y watcher mantienen conectado el iniciador', () => {
+test('el build mantiene conectado el iniciador y el watcher no lo regenera directamente', () => {
   const build = fs.readFileSync('scripts/docs/build-plan-canonico.mjs', 'utf8');
   const watcher = fs.readFileSync('scripts/docs/watch-plan-canonico.mjs', 'utf8');
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   assert.match(build, /writeChatgptWorkStarter/u);
-  assert.match(watcher, /writeChatgptWorkStarter/u);
+  assert.doesNotMatch(watcher, /writeChatgptWorkStarter/u);
+  assert.doesNotMatch(watcher, /writeImplementationControlArtifacts/u);
+  assert.doesNotMatch(watcher, /writeCurrentTaskDevelopmentArtifacts/u);
+  assert.doesNotMatch(watcher, /rebuild\("verificación inicial"\)/u);
+  assert.match(watcher, /verifyInitialState/u);
   assert.match(watcher, /endsWith\("\.txt"\)/u);
   assert.match(packageJson.scripts['docs:plan:check'], /chatgpt-work-starter\.mjs --check/u);
   assert.equal(packageJson.scripts['docs:chatgpt:starter'], 'node scripts/docs/chatgpt-work-starter.mjs');

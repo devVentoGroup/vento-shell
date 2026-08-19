@@ -105,7 +105,6 @@ export const REQUIRED_PLAN_RECORD_FIELDS = Object.freeze([
 
 const RESULT_STATE_SET = new Set(RESULT_STATES);
 const REPOSITORY_SET = new Set(CANONICAL_REPOSITORIES);
-const WEB_CONSUMER_SET = new Set(CANONICAL_WEB_CONSUMERS);
 const PACKAGE_SET = new Set(CI003_PACKAGES);
 const COMMIT_PATTERN = /^[0-9a-f]{40}$/u;
 const SHA256_PATTERN = /^sha256:[0-9a-f]{64}$/u;
@@ -386,7 +385,7 @@ function validateCompatibilityRefs(unit, errors) {
       'COMPATIBILITY_EVIDENCE_IDENTITY_INVALID',
       errors,
     );
-    if (unit.repository === 'devVentoGroup/vento-anima') {
+    if (unit.repository === 'vento-group-sas/vento-anima') {
       if (ref?.relation_source !== 'OWNER_EXTENSION') errors.push('ANIMA_COMPATIBILITY_NOT_OWNER_EXTENSION');
       if (ref?.consumer_repository !== 'vento-anima') errors.push('ANIMA_COMPATIBILITY_CONSUMER_MISMATCH');
       if (ref?.target_class !== 'NATIVE_REACT_NATIVE_EXPO') errors.push('ANIMA_TARGET_CLASS_INVALID');
@@ -408,7 +407,7 @@ function validateCompatibilityRefs(unit, errors) {
 
 function validateConsumerUpdateRef(unit, errors) {
   if (!packageSetChanged(unit.package_set_before, unit.package_set_target)) return;
-  if (unit.repository === 'devVentoGroup/vento-anima') return;
+  if (unit.repository === 'vento-group-sas/vento-anima') return;
   const ref = unit.consumer_update_ref;
   if (!isPlainObject(ref)) {
     errors.push('CONSUMER_UPDATE_REF_MISSING');
@@ -472,7 +471,7 @@ function validateDatabaseStateRef(unit, errors) {
   validateShaIdentity(ref.before_identity, 'DATABASE_BEFORE_IDENTITY_INVALID', errors);
   validateShaIdentity(ref.target_identity, 'DATABASE_TARGET_IDENTITY_INVALID', errors);
   if (ref.affected !== true) return;
-  if (ref.owner_repository !== 'devVentoGroup/vento-shell') errors.push('DATABASE_OWNER_REPOSITORY_INVALID');
+  if (ref.owner_repository !== 'vento-group-sas/vento-shell') errors.push('DATABASE_OWNER_REPOSITORY_INVALID');
   if (!/^AUTH-DB-\d{3}$/u.test(String(ref.owner_task ?? ''))) errors.push('DATABASE_OWNER_TASK_INVALID');
   if (ref.result !== 'PASS') errors.push('DATABASE_DEPENDENCY_NOT_PASS');
   if (ref.old_and_new_code_coexist !== true) errors.push('DATABASE_VERSION_SKEW_NOT_SUPPORTED');
@@ -901,7 +900,7 @@ function validateAnimaCompatibility(input, errors) {
     errors.push('ANIMA_COMPATIBILITY_REF_MISSING');
     return;
   }
-  if (ref.repository !== 'devVentoGroup/vento-anima') errors.push('ANIMA_COMPATIBILITY_REPOSITORY_INVALID');
+  if (ref.repository !== 'vento-group-sas/vento-anima') errors.push('ANIMA_COMPATIBILITY_REPOSITORY_INVALID');
   if (ref.target_class !== 'NATIVE_REACT_NATIVE_EXPO') errors.push('ANIMA_COMPATIBILITY_TARGET_CLASS_INVALID');
   if (ref.result !== 'PASS') errors.push('ANIMA_COMPATIBILITY_NOT_PASS');
   if (ref.instant_update_required === true) errors.push('ANIMA_COMPATIBILITY_REQUIRES_INSTANT_UPDATE');

@@ -48,13 +48,13 @@ function commit(key) {
 
 function baselineGate(repository) {
   return {
-    'devVentoGroup/vento-nexo': 'SHELL-CI-007::GLOBAL',
-    'devVentoGroup/vento-fogo': 'SHELL-CI-008::GLOBAL',
-    'devVentoGroup/vento-origo': 'SHELL-CI-009::GLOBAL',
-    'devVentoGroup/vento-pulso': 'SHELL-CI-010::GLOBAL',
-    'devVentoGroup/vento-viso': 'SHELL-CI-011::GLOBAL',
-    'devVentoGroup/vento-numera': 'SHELL-CI-012::GLOBAL',
-    'devVentoGroup/vento-anima': 'SHELL-CI-013::GLOBAL',
+    'vento-group-sas/vento-nexo': 'SHELL-CI-007::GLOBAL',
+    'vento-group-sas/vento-fogo': 'SHELL-CI-008::GLOBAL',
+    'vento-group-sas/vento-origo': 'SHELL-CI-009::GLOBAL',
+    'vento-group-sas/vento-pulso': 'SHELL-CI-010::GLOBAL',
+    'vento-group-sas/vento-viso': 'SHELL-CI-011::GLOBAL',
+    'vento-group-sas/vento-numera': 'SHELL-CI-012::GLOBAL',
+    'vento-group-sas/vento-anima': 'SHELL-CI-013::GLOBAL',
   }[repository] ?? null;
 }
 
@@ -77,7 +77,7 @@ function baselineRef(repository, targetCommit, environment) {
 }
 
 function baseCodePlan({
-  repository = 'devVentoGroup/vento-nexo',
+  repository = 'vento-group-sas/vento-nexo',
   environment = 'SYNTHETIC_CI014',
 } = {}) {
   const fromCommit = commit('a');
@@ -166,7 +166,7 @@ function baseCodePlan({
     supabase_impact: {
       mutation_required: false,
       ci014_executes_mutation: false,
-      owner_repository: 'devVentoGroup/vento-shell',
+      owner_repository: 'vento-group-sas/vento-shell',
       owner_task: 'AUTH-DB-029',
       approved_plan_identity: null,
     },
@@ -274,7 +274,7 @@ function baseDatabasePlan() {
   input.supabase_impact = {
     mutation_required: true,
     ci014_executes_mutation: false,
-    owner_repository: 'devVentoGroup/vento-shell',
+    owner_repository: 'vento-group-sas/vento-shell',
     owner_task: 'AUTH-DB-029',
     approved_plan_identity: sha('six'),
   };
@@ -305,7 +305,7 @@ function baseVerification(prepared) {
     cache_verified: true,
     database_owner_evidence: prepared.record.supabase_impact?.mutation_required
       ? {
-        owner_repository: 'devVentoGroup/vento-shell',
+        owner_repository: 'vento-group-sas/vento-shell',
         owner_task: 'AUTH-DB-029',
         result: 'PASS',
         evidence_identity: sha('zero'),
@@ -378,7 +378,7 @@ const POSITIVE_CASES = [
     run() {
       const first = prepareRollbackPlan(baseCodePlan());
       const second = prepareRollbackPlan(baseCodePlan({
-        repository: 'devVentoGroup/vento-fogo',
+        repository: 'vento-group-sas/vento-fogo',
       }));
       const incident = buildIncidentRollbackPlan([first, second]);
       assert.equal(incident.result, 'PASS');
@@ -397,7 +397,7 @@ const POSITIVE_CASES = [
     name: 'P08 cambio Supabase no propietario queda bloqueado antes de ejecutar',
     run() {
       const input = baseDatabasePlan();
-      input.supabase_impact.owner_repository = 'devVentoGroup/vento-nexo';
+      input.supabase_impact.owner_repository = 'vento-group-sas/vento-nexo';
       assertBlocked(input, 'SUPABASE_OWNER_REPOSITORY_INVALID');
     },
   },
@@ -473,7 +473,7 @@ const NEGATIVE_CASES = [
     name: 'N01 repositorio desconocido',
     run() {
       const input = baseCodePlan();
-      input.repository = 'devVentoGroup/vento-desconocido';
+      input.repository = 'vento-group-sas/vento-desconocido';
       assertBlocked(input, 'REPOSITORY_NOT_CANONICAL');
     },
   },
@@ -626,7 +626,7 @@ const NEGATIVE_CASES = [
     name: 'N19 rollback Supabase desde consumidor',
     run() {
       const input = baseDatabasePlan();
-      input.supabase_impact.owner_repository = 'devVentoGroup/vento-nexo';
+      input.supabase_impact.owner_repository = 'vento-group-sas/vento-nexo';
       assertBlocked(input, 'SUPABASE_OWNER_REPOSITORY_INVALID');
     },
   },
@@ -720,7 +720,7 @@ const REGRESSION_CASES = [
       const result = prepareRollbackPlan({
         schema_version: 1,
         execution_mode: 'SYNTHETIC',
-        repository: 'devVentoGroup/vento-nexo',
+        repository: 'vento-group-sas/vento-nexo',
         environment: 'SYNTHETIC_CI014',
         rollback_from_commit: commit('a'),
         rollback_to_commit: commit('b'),
@@ -774,7 +774,7 @@ const REGRESSION_CASES = [
     name: 'R07 baseline de otro consumidor no satisface unidad',
     run() {
       const input = baseCodePlan();
-      input.consumer_baseline_ref.consumer_repository = 'devVentoGroup/vento-fogo';
+      input.consumer_baseline_ref.consumer_repository = 'vento-group-sas/vento-fogo';
       assertBlocked(input, 'CONSUMER_BASELINE_REPOSITORY_MISMATCH');
     },
   },
@@ -880,7 +880,7 @@ const REGRESSION_CASES = [
     run() {
       const first = prepareRollbackPlan(baseCodePlan());
       const second = prepareRollbackPlan(baseCodePlan({
-        repository: 'devVentoGroup/vento-fogo',
+        repository: 'vento-group-sas/vento-fogo',
       }));
       const incident = buildIncidentRollbackPlan(
         [first, second],

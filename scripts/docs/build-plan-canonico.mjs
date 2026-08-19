@@ -1,7 +1,44 @@
+function terminalSafeText(value) {
+  const replacements = new Map([
+    ['\u279c', '->'],
+    ['\u2192', '->'],
+    ['\u2705', 'PASS'],
+    ['\u274c', 'FAIL'],
+    ['\u23f3', 'WAIT'],
+    ['\u21bb', 'RETRY'],
+    ['\u25b6', '>'],
+    ['\u2014', '-'],
+    ['\u2013', '-'],
+    ['\u201c', '"'],
+    ['\u201d', '"'],
+    ['\u2018', "'"],
+    ['\u2019', "'"],
+  ]);
+  let source = String(value ?? '');
+  for (const [symbol, replacement] of replacements) {
+    source = source.replaceAll(symbol, replacement);
+  }
+  return source
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .replace(/[^\x09\x0A\x0D\x20-\x7E]/gu, '?');
+}
+
+function installTerminalSafeConsole() {
+  for (const level of ['log', 'warn', 'error']) {
+    const original = console[level].bind(console);
+    console[level] = (...args) => original(
+      ...args.map((value) => typeof value === 'string' ? terminalSafeText(value) : value),
+    );
+  }
+}
+
+installTerminalSafeConsole();
+
 try {
   await import('./safe-build-plan-canonico.mjs');
 } catch (error) {
-  console.error('[PLAN CANÓNICO] Validación bloqueada:');
+  console.error('[PLAN CAN\u00d3NICO] Validaci\u00f3n bloqueada:');
   console.error(error instanceof Error ? error.message : String(error));
   process.exit(1);
 }
@@ -21,25 +58,25 @@ try {
   const { control: implementationControl } = writeImplementationControlArtifacts({ root });
   writeChatgptWorkStarter({ root });
   writePlanWatchStatus(path.join(root, '.delivery', 'plan-status.md'), {
-    state: 'COMPILACIÓN COMPLETADA',
+    state: 'COMPILACI\u00d3N COMPLETADA',
     pid: null,
     startedAt: completedAt,
     updatedAt: completedAt,
     result: 'OK',
     reason: 'docs:plan:build',
-    message: 'Fuentes canónicas compiladas y contexto pendiente sincronizado.',
+    message: 'Fuentes can\u00f3nicas compiladas y contexto pendiente sincronizado.',
     preflight: derivePreflight({ root }),
     implementationControl,
   });
   writeCurrentTaskDevelopmentArtifacts({ root, buildSucceeded: true });
   prepareImplementationReadinessArtifacts({ root, write: true });
   console.log(
-    `[PLAN CANÓNICO] ➜ ACCIÓN PRINCIPAL: ${implementationControl.primaryAction.type} `
+    `[PLAN CAN\u00d3NICO] \u279c ACCI\u00d3N PRINCIPAL: ${implementationControl.primaryAction.type} `
     + `${implementationControl.primaryAction.target}`,
   );
-  console.log('[PLAN CANÓNICO]   Iniciador ChatGPT: INICIADOR_VENTO_ACTUAL.txt');
+  console.log('[PLAN CAN\u00d3NICO]   Iniciador ChatGPT: INICIADOR_VENTO_ACTUAL.txt');
 } catch (error) {
   console.warn(
-    `[PLAN CANÓNICO] No se pudieron actualizar todos los artefactos locales: ${error instanceof Error ? error.message : String(error)}`,
+    `[PLAN CAN\u00d3NICO] No se pudieron actualizar todos los artefactos locales: ${error instanceof Error ? error.message : String(error)}`,
   );
 }

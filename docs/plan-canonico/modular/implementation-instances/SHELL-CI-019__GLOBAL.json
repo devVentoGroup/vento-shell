@@ -1,0 +1,125 @@
+{
+  "instance_id": "SHELL-CI-019::GLOBAL",
+  "task_id": "SHELL-CI-019",
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell",
+    "vento-group-sas/vento-nexo",
+    "vento-group-sas/vento-fogo",
+    "vento-group-sas/vento-origo",
+    "vento-group-sas/vento-pulso",
+    "vento-group-sas/vento-viso",
+    "vento-group-sas/vento-numera",
+    "vento-group-sas/vento-anima"
+  ],
+  "authorized_changes": [
+    "Crear scripts/quality/test-evidence-publisher.mjs en vento-shell como único motor propietario CI019 para construir, validar y verificar bundles de repositorio y expedientes de paquete.",
+    "Crear scripts/quality/test-evidence-publisher.test.mjs en vento-shell para autocertificación contractual de CI019.",
+    "Modificar .github/workflows/vento-required-gate.yml en los ocho repositorios gobernados para materializar, publicar con actions/upload-artifact@v4 y verificar el bundle CI019 dentro de la misma ejecución, preservando la identidad VENTO Required Gate.",
+    "Actualizar únicamente la línea VENTO-TREQ-ZERO-REASON de los ocho pull requests ya abiertos del carril shell-ci-018-global para reflejar conjuntamente SHELL-CI-018 y SHELL-CI-019, manteniendo VENTO-TREQ-AFFECTED: NONE.",
+    "Mantener el motor CI018, npm test, el verificador CI017, branch protection, TREQ, 04A, Supabase, despliegue, rollback, tags, releases y merges fuera de cambios semánticos o mutaciones no enumeradas.",
+    "Usar la rama existente shell-ci-018-global como referencia de integración del motor propietario durante esta materialización y registrar publisher_identity dentro de cada bundle."
+  ],
+  "validation_commands": [
+    "node --test scripts/quality/test-evidence-publisher.test.mjs",
+    "node scripts/quality/test-evidence-publisher.mjs self-certify --json",
+    "node --test scripts/quality/required-gate.test.mjs",
+    "node scripts/quality/required-gate.mjs audit-workspaces --json",
+    "npm test --silent",
+    "npm run lint -- --max-warnings 0 scripts/quality/test-evidence-publisher.mjs scripts/quality/test-evidence-publisher.test.mjs",
+    "git diff --check",
+    "npm run docs:commit-scope:check -- --staged",
+    "npm run docs:commit-scope:check -- --range 326efd82a99fb685f4f0b8539d71dc6a1809457c..HEAD",
+    "node scripts/quality/test-evidence-publisher.mjs verify-github --head shell-ci-018-global --json"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-18T22:30:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la materialización de SHELL-CI-019::GLOBAL en los ocho repositorios enumerados, limitada al motor propietario de evidencia, su autocertificación, la integración de publicación fail-closed dentro de VENTO Required Gate y la actualización de la justificación TREQ cero de los ocho PR existentes; niego cualquier ampliación inferida sobre TREQ, 04A, Supabase, merge, deploy, rollback, tags, releases, npm test, CI017, branch protection o implementación de SHELL-CI-020.",
+    "source_contract_sha256": "0ef71aefeb49a1a6c5c8133f3428ba8d778e4a28011da4baa733a9e6e20457ab"
+  },
+  "evidence": [
+    {
+      "kind": "LOCAL_MATERIALIZATION",
+      "result": "PASS",
+      "repository_count": 8,
+      "publisher": "scripts/quality/test-evidence-publisher.mjs",
+      "workflow": ".github/workflows/vento-required-gate.yml"
+    },
+    {
+      "kind": "REMOTE_PUBLICATION",
+      "result": "PASS",
+      "head": "shell-ci-018-global",
+      "repository_count": 8,
+      "passed_repository_count": 8,
+      "repositories": [
+        {
+          "repository": "vento-group-sas/vento-shell",
+          "head_sha": "89e715bb5006ee01a55ceda2a2ed1996153c62a8",
+          "run_id": 32216063585,
+          "artifact_name": "vento-test-evidence__vento-group-sas-vento-shell__repository__89e715bb5006ee01a55ceda2a2ed1996153c62a8__merge__32216063585__1",
+          "bundle_identity": "sha256:f638249fd2952e14074ee829b60a17798a644cb8d02c101149779a639ea49c73",
+          "result": "PASS"
+        },
+        {
+          "repository": "vento-group-sas/vento-nexo",
+          "head_sha": "483a792955ae03e8e403428a3163ed37dc84a784",
+          "run_id": 32216068747,
+          "artifact_name": "vento-test-evidence__vento-group-sas-vento-nexo__repository__483a792955ae03e8e403428a3163ed37dc84a784__merge__32216068747__1",
+          "bundle_identity": "sha256:32616adf704f8c4a96d17f7a54a8ea39a05eb67837669af0b1cc6de00261485a",
+          "result": "PASS"
+        },
+        {
+          "repository": "vento-group-sas/vento-fogo",
+          "head_sha": "0b68be9023eebafa010fbc2bdbe32a4ee7e8401d",
+          "run_id": 32216074990,
+          "artifact_name": "vento-test-evidence__vento-group-sas-vento-fogo__repository__0b68be9023eebafa010fbc2bdbe32a4ee7e8401d__merge__32216074990__1",
+          "bundle_identity": "sha256:579301ea4a0ae1cb61b303638f091f7fdca6446e9f3260948bad30439ed83fce",
+          "result": "PASS"
+        },
+        {
+          "repository": "vento-group-sas/vento-origo",
+          "head_sha": "50317ea8381ef1c6c997e5a89d6b4cea24bb4197",
+          "run_id": 32216077736,
+          "artifact_name": "vento-test-evidence__vento-group-sas-vento-origo__repository__50317ea8381ef1c6c997e5a89d6b4cea24bb4197__merge__32216077736__1",
+          "bundle_identity": "sha256:15fe9e6d79ae1508dff71ea2bb8f47b2462ca971c5d60ce723a6b7fd069965db",
+          "result": "PASS"
+        },
+        {
+          "repository": "vento-group-sas/vento-pulso",
+          "head_sha": "2d9800aac3c8e832edcaecc395b7ff0b8a9931e1",
+          "run_id": 32216082730,
+          "artifact_name": "vento-test-evidence__vento-group-sas-vento-pulso__repository__2d9800aac3c8e832edcaecc395b7ff0b8a9931e1__merge__32216082730__1",
+          "bundle_identity": "sha256:0ae3da67b0f868a3ea92607b26c26a0c8d990b2f8c80bb783c7b7403688d7e40",
+          "result": "PASS"
+        },
+        {
+          "repository": "vento-group-sas/vento-viso",
+          "head_sha": "28c98e10db53eb52a0468d27b5d96e420c104a45",
+          "run_id": 32216086873,
+          "artifact_name": "vento-test-evidence__vento-group-sas-vento-viso__repository__28c98e10db53eb52a0468d27b5d96e420c104a45__merge__32216086873__1",
+          "bundle_identity": "sha256:d58b2ebaf0d22532320a4d2ab6dae6f26b3b8ca44225e06f65002403a2c37f91",
+          "result": "PASS"
+        },
+        {
+          "repository": "vento-group-sas/vento-numera",
+          "head_sha": "b649c1f76c85947a9fc3491147560095de855709",
+          "run_id": 32216091378,
+          "artifact_name": "vento-test-evidence__vento-group-sas-vento-numera__repository__b649c1f76c85947a9fc3491147560095de855709__merge__32216091378__1",
+          "bundle_identity": "sha256:7d6cbc73b240cab78a354eede7c96a896a2ea1d9c8fcc663259c9a9b673ef67e",
+          "result": "PASS"
+        },
+        {
+          "repository": "vento-group-sas/vento-anima",
+          "head_sha": "e1698c49c15983cd8d7d32108b3c9a6c5f5e9886",
+          "run_id": 32216095922,
+          "artifact_name": "vento-test-evidence__vento-group-sas-vento-anima__repository__e1698c49c15983cd8d7d32108b3c9a6c5f5e9886__merge__32216095922__1",
+          "bundle_identity": "sha256:145215b5b8e611e16f9a96e03c81708ad315fbbfcb5343107f7472e7d6dd7964",
+          "result": "PASS"
+        }
+      ]
+    }
+  ]
+}

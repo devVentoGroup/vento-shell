@@ -202,7 +202,7 @@ export function validateTaskSemanticContract({
     add('OWNER_FILE_MISMATCH', `Archivo propietario no coincide con ${ownerRelativePath}.`);
   }
   const repositoryOwner = metadata.get('Repositorio propietario');
-  if (repositoryOwner?.startsWith('devVentoGroup/')) {
+  if (repositoryOwner?.startsWith('vento-group-sas/')) {
     const repositoryName = repositoryOwner.split('/').at(-1);
     const repositoryPath = path.join(path.dirname(root), repositoryName);
     if (!fs.existsSync(repositoryPath)) add('OWNER_REPOSITORY_MISSING', `no existe el repositorio propietario ${repositoryOwner}.`);

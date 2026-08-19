@@ -4,7 +4,7 @@ OBJETIVO
 
 Trabaja exclusivamente sobre el estado actual y verificable de VENTO OS. La meta es desarrollar, corregir, implementar, validar o revisar cada tarea con precisión documental y técnica, sin depender de memoria del chat, sin inventar información y sin adelantar continuidad.
 
-Toda migración, configuración o modificación de Supabase perteneciente a VENTO debe crearse, versionarse, documentarse y ejecutarse desde `devVentoGroup/vento-shell`.
+Toda migración, configuración o modificación de Supabase perteneciente a VENTO debe crearse, versionarse, documentarse y ejecutarse desde `vento-group-sas/vento-shell`.
 
 JERARQUÍA DE AUTORIDAD
 
@@ -146,22 +146,55 @@ Para cada implementación física:
 10. el progreso se informa como `N/M` sin declarar completado lo que no fue demostrado;
 11. las respuestas intermedias son compactas para no repetir el contrato completo ni consumir mensajes innecesarios.
 
+REGLA DE SALIDA COMPACTA DE BATERÍAS Y COMPROBACIONES
+
+Cuando ChatGPT entregue una batería, conjunto de validaciones o comando cuya evidencia deba regresar al chat:
+
+1. el mismo comando, script o lote ejecutable debe imprimir al final un bloque delimitado por `=== RESULTADO PARA CHATGPT ===` y `=== FIN RESULTADO PARA CHATGPT ===`;
+2. ese bloque final debe contener únicamente la evidencia específica necesaria para decidir el siguiente paso: estado global PASS/FAIL, comprobación o comando que falló cuando aplique, códigos de salida relevantes y los identificadores, hashes, rutas, valores o métricas concretas solicitadas;
+3. no pidas al usuario buscar, recortar ni copiar manualmente tramos extensos de la salida anterior; por defecto debe devolver únicamente el bloque final `RESULTADO PARA CHATGPT`;
+4. el comando debe generar ese bloque tanto en PASS como, siempre que sea técnicamente posible, en FAIL, sin ocultar el diagnóstico mínimo necesario;
+5. el resumen final nunca sustituye ni altera el código de salida real: un fallo conserva estado no cero y no puede presentarse como PASS;
+6. si un fallo impide producir el bloque final o el resumen resulta insuficiente para diagnosticarlo, solo entonces pide la salida adicional estrictamente necesaria.
+
+REGLA DE SEGURIDAD DE TERMINAL INTERACTIVA
+
+Todo bloque de comandos que ChatGPT entregue para que el usuario lo pegue o ejecute manualmente en PowerShell, CMD, Bash u otra terminal interactiva debe conservar abierta la sesión del usuario.
+
+1. está prohibido incluir `exit` como comando de control de la terminal, tanto al final del bloque como dentro de ramas de PASS, FAIL, error o limpieza;
+2. tampoco uses equivalentes cuyo efecto sea cerrar la terminal o matar su proceso actual, como `logout`, `Stop-Process -Id $PID`, `taskkill` contra la consola actual o construcciones equivalentes;
+3. un fallo debe detener únicamente la secuencia lógica del lote, imprimir `=== RESULTADO PARA CHATGPT ===` con `ESTADO: FAIL` y dejar la terminal abierta para que el usuario pueda inspeccionar y continuar;
+4. cuando sea necesario conservar el resultado de una comprobación, usa variables, banderas, condiciones o el bloque final de evidencia; no fuerces el cierre de la sesión para comunicar éxito o fallo;
+5. esta prohibición aplica a comandos manuales entregados al usuario. No convierte en inválido el uso interno de `process.exit(...)` u otros mecanismos de código de salida dentro del código fuente de herramientas del repositorio cuando formen parte de su implementación normal.
+
+REGLA DE SALIDA ASCII SEGURA EN TERMINAL
+
+Toda salida operativa que un comando, script, watcher, preflight o batería muestre directamente en una terminal debe ser legible de forma estable incluso cuando la consola no interprete UTF-8 correctamente.
+
+1. los mensajes operativos fijos de consola deben usar ASCII seguro: sin tildes, emojis, flechas Unicode, checks gráficos ni símbolos decorativos;
+2. usa etiquetas como `[PLAN CANONICO]`, `->`, `PASS`, `FAIL`, `WAIT`, `RETRY`, `OK` y equivalentes ASCII;
+3. no dependas de caracteres Unicode para comunicar estado, acción, error, ruta, hash, métrica o evidencia que el usuario deba copiar;
+4. los archivos Markdown, JSON, código fuente, documentación y UI continúan usando UTF-8 completo; esta regla se limita a la salida operativa de terminal;
+5. cuando un valor dinámico contenga Unicode, la representación de consola debe transliterarlo o degradarlo a una forma ASCII segura sin modificar el valor canónico almacenado;
+6. toda nueva herramienta del flujo VENTO que imprima resultados destinados al operador debe respetar esta regla por defecto.
+
 FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA
 
 Para una instancia física autorizada, la eficiencia operativa es vinculante:
 
 1. mientras el carril sea documental, el watcher puede permanecer activo para sincronizar artefactos derivados y crear el registro `PENDING_AUTHORIZATION` cuando corresponda;
 2. antes de guardar la transición `AUTHORIZED → IN_PROGRESS`, detén el watcher con `Ctrl+C` si está activo;
-3. desde ese momento el watcher debe permanecer apagado hasta después de dejar la instancia `VERIFIED`;
+3. desde ese momento el watcher debe permanecer apagado hasta después del commit/push final de cierre y de confirmar worktree limpio y remoto sincronizado;
 4. cambia estados únicamente en el archivo propio de la instancia; no ejecutes un build global solo para reflejar `AUTHORIZED`, `IN_PROGRESS`, `IMPLEMENTED` o `VERIFIED`;
 5. ejecuta el preflight canónico una sola vez después de entrar a `IN_PROGRESS` y antes de modificar código; repítelo únicamente si el checkout cambia materialmente o una discrepancia concreta lo exige;
 6. después del preflight materializa todos los cambios deterministas de la implementación sin gates intermedios de `git status`, Source Control, capturas, hashes sueltos, diff, build, lint o tests;
-7. cuando todos los cambios físicos estén completos, registra `IMPLEMENTED` con la identidad disponible y ejecuta una sola batería final fail-fast que contenga las validaciones autorizadas;
-8. si la batería falla, corrige únicamente la causa dentro del alcance y vuelve a ejecutar la misma batería final; no la fragmentes en micro-gates;
-9. si la batería pasa completa, consolida `evidence`, cambia la instancia a `VERIFIED` y no repitas validaciones por rutina;
-10. después de `VERIFIED`, deriva el control y regenera el Iniciador mediante `npm run docs:implementation:status` y `npm run docs:chatgpt:starter`;
-11. `npm run docs:plan:build` se ejecuta una sola vez cuando forme parte de la batería final autorizada o cuando una tarea documental requiera realmente recompilar el plan; no se usa como refresco de estado;
-12. si GitHub Push Protection bloquea un push, clasifica primero el hallazgo: un fixture sintético verificado puede exceptuarse como prueba o falso positivo, pero un secreto real debe retirarse y rotarse y nunca puede recibir bypass.
+7. cuando todos los cambios físicos estén completos, registra `IMPLEMENTED` con la identidad disponible y ejecuta una sola transacción final fail-fast formada exclusivamente por las `validation_commands` autorizadas de la instancia, en su orden contractual; no agregues automáticamente `docs:plan:build`, `docs:plan:check`, `docs:plan:test`, `docs:treq:check` ni `docs:treq:test`; si toda la evidencia exigida es local, la transacción puede llegar directamente a `VERIFIED` tras PASS; si alguna validación exige evidencia remota sobre código publicado, completa primero el tramo local, realiza el commit/push mínimo de materialización mientras la instancia permanece `IMPLEMENTED` y ejecuta después el tramo remoto contra ese SHA;
+8. si la batería falla en el tramo local o remoto, conserva `IMPLEMENTED`, corrige únicamente la causa dentro del alcance y vuelve a ejecutar la misma batería final completa; si la corrección cambia el SHA publicado, realiza un nuevo commit/push de materialización antes del tramo remoto; no la fragmentes en micro-gates;
+9. cambia la instancia a `VERIFIED` únicamente cuando hayan pasado todos los tramos exigidos por el contrato, incluida la evidencia remota cuando aplique; entonces consolida `evidence` y no repitas validaciones por rutina;
+10. después de `VERIFIED`, ejecuta `npm run docs:plan:build` una sola vez como sincronización documental de cierre; ese build actualiza control, Iniciador, cabecera, continuidad, registros derivados, artefactos de tarea y readiness que le correspondan, por lo que no ejecutes además `docs:implementation:status` ni `docs:chatgpt:starter`;
+11. después del build de cierre, stagea únicamente los derivados versionados legítimos, valida el commit de cierre, realiza el commit/push final y confirma que el worktree quedó limpio y el remoto sincronizado;
+12. solo después de ese cierre limpio y sincronizado vuelve a encender el watcher; al arrancar debe comprobar estado y fuentes en modo de solo lectura, publicar estado runtime y no ejecutar build ni modificar archivos versionados hasta detectar un cambio documental real;
+13. si GitHub Push Protection bloquea un push, clasifica primero el hallazgo: un fixture sintético verificado puede exceptuarse como prueba o falso positivo, pero un secreto real debe retirarse y rotarse y nunca puede recibir bypass.
 
 La única excepción es una frase explícita para un paso ya numerado, por ejemplo:
 
@@ -188,7 +221,7 @@ El preflight debe resolver como mínimo:
 - contrato de entrega;
 - estado del worktree;
 - divergencia respecto del upstream disponible;
-- validadores proporcionales.
+- validadores proporcionales para trabajo documental o, en carril físico, exclusivamente las `validation_commands` autorizadas de la instancia.
 
 Un warning de preflight debe clasificarse antes de continuar. No lo ignores por conveniencia.
 
@@ -487,7 +520,7 @@ Cuando aplique topología:
 
 `npm run docs:work-topology:check`
 
-Para implementación, agrega typecheck, lint, unitarias, integración, build, migraciones, seguridad y validaciones remotas/operativas realmente aplicables. Todas las validaciones independientes autorizadas se agrupan en una sola batería final fail-fast después de materializar los cambios físicos; no se convierten en gates intermedios separados. Si la batería falla, se corrige la causa y se vuelve a ejecutar la misma batería; un PASS completo no se repite antes de `VERIFIED`.
+Para implementación física, la batería final no se deriva de esta lista global: ejecuta exclusivamente las `validation_commands` autorizadas en la instancia, en una sola transacción fail-fast después de materializar los cambios. Typecheck, lint, unitarias, integración, build, migraciones, seguridad o validaciones remotas/operativas solo se ejecutan si pertenecen a esas `validation_commands`. Si la batería falla, se corrige la causa y se vuelve a ejecutar la misma batería; un PASS completo no se repite antes de `VERIFIED`. Después de `VERIFIED`, `npm run docs:plan:build` se ejecuta una sola vez como cierre documental, no como parte automática de la batería física.
 
 Distingue siempre:
 

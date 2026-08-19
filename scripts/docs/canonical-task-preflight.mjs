@@ -19,6 +19,41 @@ import { formatTaskFileSource, parseTaskBlocks } from './format-canonical-task.m
 import { readPendingTaskTitleAuthority } from './pending-task-title-authority.mjs';
 import { validateContract } from './validate-task-delivery.mjs';
 
+export function terminalSafeText(value) {
+  const replacements = new Map([
+    ['\u279c', '->'],
+    ['\u2192', '->'],
+    ['\u2705', 'PASS'],
+    ['\u274c', 'FAIL'],
+    ['\u23f3', 'WAIT'],
+    ['\u21bb', 'RETRY'],
+    ['\u25b6', '>'],
+    ['\u2014', '-'],
+    ['\u2013', '-'],
+    ['\u201c', '"'],
+    ['\u201d', '"'],
+    ['\u2018', "'"],
+    ['\u2019', "'"],
+  ]);
+  let source = String(value ?? '');
+  for (const [symbol, replacement] of replacements) {
+    source = source.replaceAll(symbol, replacement);
+  }
+  return source
+    .normalize('NFKD')
+    .replace(/\p{M}/gu, '')
+    .replace(/[^\x09\x0A\x0D\x20-\x7E]/gu, '?');
+}
+
+function installTerminalSafeConsole() {
+  for (const level of ['log', 'warn', 'error']) {
+    const original = console[level].bind(console);
+    console[level] = (...args) => original(
+      ...args.map((value) => typeof value === 'string' ? terminalSafeText(value) : value),
+    );
+  }
+}
+
 function fail(message) {
   throw new Error(message);
 }
@@ -33,14 +68,8 @@ function git(root, args) {
   return result.status === 0 ? result.stdout.trimEnd() : null;
 }
 
-
-const PHYSICAL_DERIVED_WORKTREE_PATHS = Object.freeze([
-  'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md',
-  'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
-]);
-
 function expectedPhysicalDirtyPathSet(physicalRecordPath) {
-  return new Set([physicalRecordPath, ...PHYSICAL_DERIVED_WORKTREE_PATHS].filter(Boolean));
+  return new Set([physicalRecordPath].filter(Boolean));
 }
 
 function normalizeGitPath(value) {
@@ -88,6 +117,15 @@ export function validatorsForPath(relativePath) {
     validators.add('npm run docs:int-ext:check');
   }
   return [...validators];
+}
+
+export function validatorsForPreflight({ relativePath, requestedInstance = null } = {}) {
+  if (requestedInstance) {
+    return Array.isArray(requestedInstance.validation_commands)
+      ? [...requestedInstance.validation_commands]
+      : [];
+  }
+  return validatorsForPath(relativePath);
 }
 
 export function classifyPreflightFindings({
@@ -257,6 +295,10 @@ export function derivePreflight({
   const expectedChangedPaths = requestedInstance
     ? changedPaths.filter((entry) => expectedDirtyPaths.has(entry))
     : [];
+  const validators = validatorsForPreflight({
+    relativePath: task.relativePath,
+    requestedInstance,
+  });
 
   return {
     task: {
@@ -301,7 +343,8 @@ export function derivePreflight({
       valid: contractErrors.length === 0,
       errors: contractErrors,
     },
-    validators: validatorsForPath(task.relativePath),
+    validator_source: requestedInstance ? 'INSTANCE_VALIDATION_COMMANDS' : 'DOCUMENTARY_PATH_POLICY',
+    validators,
     blockers,
     advisories,
     warnings: [...blockers, ...advisories],
@@ -338,7 +381,7 @@ function printUsage() {
   npm run docs:task:preflight -- --task-id <ID> [--json] [--strict]
   npm run docs:task:preflight -- --instance-id <INSTANCE-ID> --json --strict
 
-En modo físico, --strict falla solo ante bloqueos reales. Un carril documental adelantado y el cambio exclusivo del registro IN_PROGRESS se clasifican como avisos y no detienen el lote. El comando es de solo lectura: no hace fetch, no formatea y no cambia continuidad.`);
+En modo físico, --strict falla solo ante bloqueos reales. Un carril documental adelantado y el cambio exclusivo del registro IN_PROGRESS se clasifican como avisos y no detienen el lote. La lista validators contiene exclusivamente validation_commands de la instancia; no agrega builds ni validadores documentales por rutina. El comando es de solo lectura: no hace fetch, no formatea y no cambia continuidad.`);
 }
 
 export function main(argv = process.argv.slice(2)) {
@@ -360,6 +403,7 @@ export function main(argv = process.argv.slice(2)) {
     console.log(`GIT: ${result.repository.branch}; upstream ${result.repository.upstream ?? 'SIN_UPSTREAM'}; `
       + `behind ${result.repository.behind ?? 'N/A'}; ahead ${result.repository.ahead ?? 'N/A'}; `
       + `${result.repository.clean ? 'LIMPIO' : result.repository.expected_dirty ? 'CAMBIO FÍSICO ESPERADO' : 'CON CAMBIOS'}`);
+    console.log(`ORIGEN DE VALIDADORES: ${result.validator_source}`);
     console.log('VALIDADORES:');
     for (const validator of result.validators) console.log(`- ${validator}`);
     if (result.blockers.length > 0) {
@@ -380,6 +424,7 @@ const isCli = process.argv[1]
   && path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url));
 
 if (isCli) {
+  installTerminalSafeConsole();
   try {
     main();
   } catch (error) {

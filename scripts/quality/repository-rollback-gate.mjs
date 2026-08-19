@@ -21,14 +21,14 @@ export const IMPLEMENTATION_RELATIVE_PATH = `scripts/quality/${IMPLEMENTATION_FI
 export const RUNTIME_EVIDENCE_RELATIVE_ROOT = '.delivery/repository-rollback';
 
 export const CANONICAL_REPOSITORIES = Object.freeze([
-  'devVentoGroup/vento-shell',
-  'devVentoGroup/vento-nexo',
-  'devVentoGroup/vento-fogo',
-  'devVentoGroup/vento-origo',
-  'devVentoGroup/vento-pulso',
-  'devVentoGroup/vento-viso',
-  'devVentoGroup/vento-numera',
-  'devVentoGroup/vento-anima',
+  'vento-group-sas/vento-shell',
+  'vento-group-sas/vento-nexo',
+  'vento-group-sas/vento-fogo',
+  'vento-group-sas/vento-origo',
+  'vento-group-sas/vento-pulso',
+  'vento-group-sas/vento-viso',
+  'vento-group-sas/vento-numera',
+  'vento-group-sas/vento-anima',
 ]);
 
 export const ROLLBACK_CLASSES = Object.freeze([
@@ -144,20 +144,20 @@ export const REQUIRED_ROLLBACK_RECORD_FIELDS = Object.freeze([
 ]);
 
 export const CONSUMER_BASELINE_GATES = Object.freeze({
-  'devVentoGroup/vento-nexo': 'SHELL-CI-007::GLOBAL',
-  'devVentoGroup/vento-fogo': 'SHELL-CI-008::GLOBAL',
-  'devVentoGroup/vento-origo': 'SHELL-CI-009::GLOBAL',
-  'devVentoGroup/vento-pulso': 'SHELL-CI-010::GLOBAL',
-  'devVentoGroup/vento-viso': 'SHELL-CI-011::GLOBAL',
-  'devVentoGroup/vento-numera': 'SHELL-CI-012::GLOBAL',
-  'devVentoGroup/vento-anima': 'SHELL-CI-013::GLOBAL',
+  'vento-group-sas/vento-nexo': 'SHELL-CI-007::GLOBAL',
+  'vento-group-sas/vento-fogo': 'SHELL-CI-008::GLOBAL',
+  'vento-group-sas/vento-origo': 'SHELL-CI-009::GLOBAL',
+  'vento-group-sas/vento-pulso': 'SHELL-CI-010::GLOBAL',
+  'vento-group-sas/vento-viso': 'SHELL-CI-011::GLOBAL',
+  'vento-group-sas/vento-numera': 'SHELL-CI-012::GLOBAL',
+  'vento-group-sas/vento-anima': 'SHELL-CI-013::GLOBAL',
 });
 
 const CI006_WEB_REPOSITORIES = new Set(
-  CI006_WEB_CONSUMERS.map((name) => `devVentoGroup/${name}`),
+  CI006_WEB_CONSUMERS.map((name) => `vento-group-sas/${name}`),
 );
 for (const repository of CANONICAL_REPOSITORIES.filter(
-  (entry) => entry !== 'devVentoGroup/vento-anima',
+  (entry) => entry !== 'vento-group-sas/vento-anima',
 )) {
   if (!CI006_WEB_REPOSITORIES.has(repository)) {
     throw new Error(`CI006_CONSUMER_UNIVERSE_DRIFT:${repository}`);
@@ -241,12 +241,8 @@ function implementationIdentity() {
 function normalizeRepositoryRef(value) {
   if (!nonEmptyString(value)) return null;
   const trimmed = value.trim();
-  if (trimmed.startsWith('devVentoGroup/')) return trimmed;
-  return `devVentoGroup/${trimmed}`;
-}
-
-function repositoryShortName(repository) {
-  return String(repository ?? '').split('/').at(-1) ?? '';
+  if (trimmed.startsWith('vento-group-sas/')) return trimmed;
+  return `vento-group-sas/${trimmed}`;
 }
 
 function sensitiveFindings(value, pointer = '$', findings = []) {
@@ -513,7 +509,7 @@ function validateConsumerUpdateRef(input, packageSetBefore, packageSetTarget, er
     errors.push('CONSUMER_UPDATE_REF_MISSING');
     return;
   }
-  if (input.repository === 'devVentoGroup/vento-anima') {
+  if (input.repository === 'vento-group-sas/vento-anima') {
     if (!nonEmptyString(ref.owner_contract)) {
       errors.push('ANIMA_CONSUMER_UPDATE_OWNER_CONTRACT_MISSING');
     }
@@ -551,7 +547,7 @@ function validateDatabaseAndSupabase(input, errors) {
   }
   if (database.rollback_required === true) {
     if (supabase.mutation_required !== true) errors.push('SUPABASE_OWNER_PLAN_REQUIRED');
-    if (supabase.owner_repository !== 'devVentoGroup/vento-shell') {
+    if (supabase.owner_repository !== 'vento-group-sas/vento-shell') {
       errors.push('SUPABASE_OWNER_REPOSITORY_INVALID');
     }
     if (supabase.owner_task !== 'AUTH-DB-029') errors.push('SUPABASE_OWNER_TASK_INVALID');
@@ -1035,7 +1031,7 @@ function databaseOwnerEvidenceValid(prepared, observation, errors) {
     errors.push('DATABASE_OWNER_EVIDENCE_MISSING');
     return;
   }
-  if (evidence.owner_repository !== 'devVentoGroup/vento-shell') {
+  if (evidence.owner_repository !== 'vento-group-sas/vento-shell') {
     errors.push('DATABASE_OWNER_EVIDENCE_REPOSITORY_INVALID');
   }
   if (evidence.owner_task !== 'AUTH-DB-029') errors.push('DATABASE_OWNER_EVIDENCE_TASK_INVALID');

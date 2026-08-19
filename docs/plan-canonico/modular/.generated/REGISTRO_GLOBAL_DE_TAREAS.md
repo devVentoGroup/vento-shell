@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **977** |
+| Aprobadas | **983** |
 | En propuesta | **0** |
-| No iniciadas | **617** |
+| No iniciadas | **611** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **61.29% (977/1594)** |
+| Porcentaje de completamiento | **61.67% (983/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-CI-018` — Bloquear merge o despliegue cuando fallen pruebas obligatorias | ✅ APROBADA |
-| Tarea actual | `SHELL-CI-019` — Publicar evidencia de pruebas por paquete y repositorio | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CI-020` — Implementar y desplegar cada paquete aprobado por E5 | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-CI-024` — Certificar cierre del paquete y transferencia a soporte | ✅ APROBADA |
+| Tarea actual | `AUTH-SRV-001` — Inventariar Server Actions de todos los repositorios | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-SRV-002` — Inventariar API routes | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1302,12 +1302,12 @@
 | ✅ APROBADA | `SHELL-CI-016` | Estandarizar un comando de pruebas automatizadas por repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
 | ✅ APROBADA | `SHELL-CI-017` | Crear verificador automático del Registro Canónico de Requisitos de Prueba | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
 | ✅ APROBADA | `SHELL-CI-018` | Bloquear merge o despliegue cuando fallen pruebas obligatorias | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
-| ⬜ NO INICIADA | `SHELL-CI-019` | Publicar evidencia de pruebas por paquete y repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
-| ⬜ NO INICIADA | `SHELL-CI-020` | Implementar y desplegar cada paquete aprobado por E5 | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `SHELL-CI-021` | Ejecutar y resolver el checklist de readiness aprobado | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `SHELL-CI-022` | Ejecutar cutover y piloto conforme al plan aprobado | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `SHELL-CI-023` | Ejecutar hypercare, conciliación y estabilización | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
-| ⬜ NO INICIADA | `SHELL-CI-024` | Certificar cierre del paquete y transferencia a soporte | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `SHELL-CI-019` | Publicar evidencia de pruebas por paquete y repositorio | `bloques/T_CALIDAD_Y_DESPLIEGUE/03_AUTOMATIZACION_EVIDENCIA_Y_GATES.md` |
+| ✅ APROBADA | `SHELL-CI-020` | Implementar y desplegar cada paquete aprobado por E5 | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `SHELL-CI-021` | Ejecutar y resolver el checklist de readiness aprobado | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `SHELL-CI-022` | Ejecutar cutover y piloto conforme al plan aprobado | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `SHELL-CI-023` | Ejecutar hypercare, conciliación y estabilización | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
+| ✅ APROBADA | `SHELL-CI-024` | Certificar cierre del paquete y transferencia a soporte | `bloques/T_CALIDAD_Y_DESPLIEGUE/04_DESPLIEGUE_PILOTO_Y_ESTABILIZACION.md` |
 | ⬜ NO INICIADA | `AUTH-QA-001` | Propietario sin check-in entra a administración | `bloques/U_PRUEBAS_INTEGRALES/01_PRUEBAS_INTEGRALES_DE_AUTORIZACION.md` |
 | ⬜ NO INICIADA | `AUTH-QA-002` | Gerente general sin check-in entra a administración | `bloques/U_PRUEBAS_INTEGRALES/01_PRUEBAS_INTEGRALES_DE_AUTORIZACION.md` |
 | ⬜ NO INICIADA | `AUTH-QA-003` | Gerente de sede solo opera sus sedes | `bloques/U_PRUEBAS_INTEGRALES/01_PRUEBAS_INTEGRALES_DE_AUTORIZACION.md` |
