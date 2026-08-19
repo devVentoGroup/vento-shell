@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1000** |
+| Aprobadas | **1001** |
 | En propuesta | **0** |
-| No iniciadas | **594** |
+| No iniciadas | **593** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **62.74% (1000/1594)** |
+| Porcentaje de completamiento | **62.80% (1001/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-SRV-017` — Crear helpers server compartidos | ✅ APROBADA |
-| Tarea actual | `AUTH-SRV-018` — Revisar acciones administrativas sin turno | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-SRV-018` — Revisar acciones administrativas sin turno | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -885,7 +885,7 @@
 | ✅ APROBADA | `AUTH-SRV-015` | Registrar rol simulado en auditoría | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
 | ✅ APROBADA | `AUTH-SRV-016` | Normalizar errores de autorización | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
 | ✅ APROBADA | `AUTH-SRV-017` | Crear helpers server compartidos | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `AUTH-SRV-018` | Revisar acciones administrativas sin turno | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
+| ✅ APROBADA | `AUTH-SRV-018` | Revisar acciones administrativas sin turno | `bloques/J_ACCIONES_DE_SERVIDOR/03_AUDITORIA_ERRORES_Y_HELPERS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-001` | Separar configuración administrativa de operación | `bloques/K_NEXO/00_INTRO.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-002` | Corregir bypass administrativo de remisiones | `bloques/K_NEXO/00_INTRO.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-003` | Corregir inventory.remissions.all_sites | `bloques/K_NEXO/00_INTRO.md` |
