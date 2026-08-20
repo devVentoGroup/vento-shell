@@ -7,7 +7,7 @@ import {
   buildChatgptWorkStarter,
 } from './chatgpt-work-starter.mjs';
 
-test('genera un único iniciador desde la acción operativa vigente', () => {
+test('genera un unico iniciador desde la accion operativa vigente', () => {
   const result = buildChatgptWorkStarter();
   assert.match(result.source, /^VENTO OS — INICIADOR CANÓNICO DE TRABAJO/u);
   assert.match(result.source, /ACCIÓN PRINCIPAL OBLIGATORIA/u);
@@ -17,19 +17,20 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, /Operador que realiza los cambios: USUARIO HUMANO/u);
   assert.match(result.source, /Interacción: TRANSACCIÓN CONTINUA \+ UNA SOLA BATERÍA FINAL/u);
   assert.match(result.source, /Watcher durante implementación física: APAGADO/u);
-  assert.match(result.source, /commit\/push final de cierre/u);
+  assert.match(result.source, /Apertura física: docs:implementation:start/u);
+  assert.match(result.source, /Carril documental durante implementación física: ADVISORY_ONLY/u);
   assert.match(result.source, /Preflight físico: UNA VEZ/u);
-  assert.match(result.source, /Preflight PASS: CONTINUAR LOCALMENTE SIN VOLVER AL CHAT/u);
+  assert.match(result.source, /Reconciliación de apertura: docs:plan:build UNA VEZ \+ docs:plan:check/u);
   assert.match(result.source, /Batería física final: SOLO validation_commands AUTORIZADAS/u);
   assert.match(result.source, /Batería final PASS: CONTINUAR EN LA MISMA TRANSACCIÓN; EVIDENCIA REMOTA, SI APLICA, ANTES DE VERIFIED/u);
+  assert.match(result.source, /Cierre físico: docs:implementation:finish/u);
   assert.match(result.source, /=== RESULTADO PARA CHATGPT ===/u);
   assert.match(result.source, /SOLO EL BLOQUE FINAL/u);
   assert.match(result.source, /Copia manual de salidas extensas: PROHIBIDA/u);
   assert.match(result.source, /Terminal interactiva: SIEMPRE DEBE QUEDAR ABIERTA/u);
   assert.match(result.source, /COMANDO exit: PROHIBIDO EN BLOQUES MANUALES/u);
   assert.match(result.source, /Salida operativa de terminal: ASCII SEGURO/u);
-  assert.match(result.source, /Cierre documental: npm run docs:plan:build UNA SOLA VEZ después de VERIFIED/u);
-  assert.match(result.source, /Reactivación del watcher: SOLO DESPUÉS DEL CIERRE LIMPIO Y SINCRONIZADO/u);
+  assert.match(result.source, /Reactivación del watcher: SOLO DESPUÉS DE READY_TO_RESTART_WATCHER: SI/u);
   assert.match(result.source, /Gates intermedios rutinarios: PROHIBIDOS/u);
   assert.match(result.source, /Raíz local exacta del repositorio: .+vento-shell/u);
   assert.match(result.source, /HISTORIAL FÍSICO ACUMULATIVO/u);
@@ -38,7 +39,8 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.match(result.source, /Escrituras del asistente en archivos o repositorios: NO AUTORIZADAS/u);
   assert.match(result.source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
   assert.match(result.source, /Batería física: exclusivamente validation_commands de la instancia/u);
-  assert.match(result.source, /Cierre documental único: npm run docs:plan:build después de VERIFIED/u);
+  assert.match(result.source, /Apertura física: docs:implementation:start incluye preflight y docs:plan:build \+ docs:plan:check de IN_PROGRESS/u);
+  assert.match(result.source, /Cierre físico: docs:implementation:finish incluye docs:plan:build final/u);
   assert.doesNotMatch(result.source, /Regeneración ligera de control:/u);
   assert.doesNotMatch(result.source, /Regeneración ligera del Iniciador:/u);
   assert.match(result.source, /Contrato propietario SHA-256: [a-f0-9]{64}/u);
@@ -46,7 +48,7 @@ test('genera un único iniciador desde la acción operativa vigente', () => {
   assert.equal(result.outputPath.endsWith('INICIADOR_VENTO_ACTUAL.txt'), true);
 });
 
-test('ejecutar implementación entrega una transacción continua hasta el cierre final', () => {
+test('ejecutar implementacion usa lifecycle de apertura y cierre sin pasos documentales manuales', () => {
   const source = actionResponseContract({
     primaryAction: {
       type: 'EJECUTAR_IMPLEMENTACION',
@@ -59,23 +61,26 @@ test('ejecutar implementación entrega una transacción continua hasta el cierre
   }, 'b'.repeat(64));
 
   assert.match(source, /TRANSACCIÓN COMPLETA DE IMPLEMENTACIÓN/u);
-  assert.match(source, /AUTHORIZED a IN_PROGRESS/u);
-  assert.match(source, /--instance-id SHELL-CI-001::GLOBAL --json --strict/u);
-  assert.match(source, /Si es 0, continúa sin volver al chat/u);
+  assert.match(source, /docs:implementation:start -- --instance-id SHELL-CI-001::GLOBAL/u);
+  assert.match(source, /AUTHORIZED -> IN_PROGRESS/u);
+  assert.match(source, /preflight y reconciliación documental de apertura/u);
+  assert.match(source, /docs:plan:build una vez seguido de docs:plan:check/u);
+  assert.match(source, /READY_TO_IMPLEMENT: SI/u);
   assert.match(source, /todos los cambios físicos deterministas/u);
   assert.match(source, /contenido completo sin elipsis/u);
   assert.match(source, /a IMPLEMENTED/u);
   assert.match(source, /una sola batería final/u);
   assert.match(source, /exclusivamente las validation_commands autorizadas/u);
-  assert.match(source, /commit\/push de materialización/u);
+  assert.match(source, /commit\/push mínimo de materialización/u);
   assert.match(source, /tramo remoto/u);
   assert.match(source, /solo con PASS remoto/u);
-  assert.match(source, /docs:plan:build una sola vez/u);
-  assert.match(source, /worktree limpio y remoto sincronizado/u);
+  assert.match(source, /docs:implementation:finish -- --instance-id SHELL-CI-001::GLOBAL/u);
   assert.match(source, /No vuelvas a ejecutar la batería después de PASS completo/u);
+  assert.doesNotMatch(source, /cambiando únicamente .* de AUTHORIZED a IN_PROGRESS/u);
+  assert.doesNotMatch(source, /ejecutando inmediatamente el preflight estricto/u);
 });
 
-test('IN_PROGRESS con preflight vigente no obliga a repetirlo', () => {
+test('IN_PROGRESS con apertura vigente no obliga a repetir lifecycle', () => {
   const source = actionResponseContract({
     primaryAction: {
       type: 'EJECUTAR_IMPLEMENTACION',
@@ -87,12 +92,12 @@ test('IN_PROGRESS con preflight vigente no obliga a repetirlo', () => {
     },
   }, 'c'.repeat(64));
 
-  assert.match(source, /Si la evidencia vigente confirma que el preflight estricto/u);
-  assert.match(source, /no lo repitas/u);
+  assert.match(source, /Si existe evidencia vigente de READY_TO_IMPLEMENT: SI/u);
+  assert.match(source, /sin repetir preflight ni build/u);
   assert.match(source, /una sola batería final/u);
 });
 
-test('IMPLEMENTED salta preflight y entra directamente a batería final', () => {
+test('IMPLEMENTED salta apertura y entra directamente a bateria final', () => {
   const source = actionResponseContract({
     primaryAction: {
       type: 'EJECUTAR_IMPLEMENTACION',
@@ -109,7 +114,7 @@ test('IMPLEMENTED salta preflight y entra directamente a batería final', () => 
   assert.match(source, /batería final completa/u);
 });
 
-test('la autorización conserva ledger y entrega también el lote físico condicionado', () => {
+test('la autorizacion conserva ledger y delega apertura al lifecycle', () => {
   const source = actionResponseContract({
     primaryAction: {
       type: 'AUTORIZAR_IMPLEMENTACION',
@@ -135,13 +140,15 @@ test('la autorización conserva ledger y entrega también el lote físico condic
   assert.match(source, /En la misma respuesta/u);
   assert.match(source, /todos los archivos y cambios físicos deterministas/u);
   assert.match(source, /No obligues a regenerar el Iniciador/u);
+  assert.match(source, /docs:implementation:start -- --instance-id SHELL-CI-002::GLOBAL/u);
+  assert.match(source, /START_DOCS_PLAN_BUILD: PASS_ONCE/u);
+  assert.match(source, /docs:implementation:finish -- --instance-id SHELL-CI-002::GLOBAL/u);
   assert.match(source, /commit\/push mínimo de materialización/u);
-  assert.match(source, /docs:plan:build una sola vez/u);
-  assert.match(source, /commit\/push final/u);
-  assert.doesNotMatch(source, /comprobar el cambio a INICIAR_IMPLEMENTACION/u);
+  assert.doesNotMatch(source, /cambiar únicamente ese registro a IN_PROGRESS/u);
+  assert.doesNotMatch(source, /ejecutar el preflight estricto de SHELL-CI-002::GLOBAL/u);
 });
 
-test('las acciones conservan guía humana y prohíben micro-gates', () => {
+test('las acciones conservan guia humana y prohiben micro-gates', () => {
   for (const type of [
     'EJECUTAR_IMPLEMENTACION',
     'RESOLVER_BLOQUEO',
@@ -164,7 +171,7 @@ test('las acciones conservan guía humana y prohíben micro-gates', () => {
   }
 });
 
-test('la plantilla global conserva modo humano, watcher hasta cierre y validación final única', () => {
+test('la plantilla global desacopla el carril fisico de la continuidad documental', () => {
   const template = fs.readFileSync(
     'docs/plan-canonico/modular/chatgpt-work-starter-template.txt',
     'utf8',
@@ -197,6 +204,10 @@ test('la plantilla global conserva modo humano, watcher hasta cierre y validaci�
   assert.match(template, /commit\/push mínimo de materialización/u);
   assert.match(template, /evidencia remota/u);
   assert.match(template, /`npm run docs:plan:build` una sola vez/u);
+  assert.match(template, /no se reformatea ni se reabre una tarea histórica/u);
+  assert.match(template, /START_DOCS_PLAN_BUILD: PASS_ONCE/u);
+  assert.match(template, /START_DOCS_PLAN_CHECK: PASS/u);
+  assert.match(template, /DOCUMENTARY_LANE_FOR_PHYSICAL: ADVISORY_ONLY/u);
   assert.doesNotMatch(template, /después de `VERIFIED`, deriva el control y regenera el Iniciador mediante `npm run docs:implementation:status`/u);
   assert.match(template, /al arrancar debe comprobar estado y fuentes en modo de solo lectura/u);
   assert.match(template, /Push Protection/u);

@@ -250,6 +250,30 @@ function writeInstanceStatus(root, instanceId, status) {
   return next;
 }
 
+export function isDocumentaryOnlyPhysicalBlocker(entry) {
+  const value = String(entry ?? '').trim();
+  return value === 'active-sequence.json requiere regeneración.'
+    || value.startsWith('formato de tarea: ');
+}
+
+export function physicalLaneBlockers(report, instanceId, {
+  allowAuthorizedStatus = false,
+} = {}) {
+  const blockers = Array.isArray(report?.blockers) ? report.blockers : [];
+  const expectedPrefix = `${instanceId} debe estar IN_PROGRESS para ejecutar el preflight fisico;`;
+  return blockers.filter((entry) => {
+    if (isDocumentaryOnlyPhysicalBlocker(entry)) return false;
+    if (
+      allowAuthorizedStatus
+      && entry.startsWith(expectedPrefix)
+      && entry.endsWith('estado actual: AUTHORIZED.')
+    ) {
+      return false;
+    }
+    return true;
+  });
+}
+
 function physicalPreflight(root, instanceId) {
   const result = npm([
     'run', '--silent', 'docs:task:preflight', '--',
@@ -262,26 +286,25 @@ function physicalPreflight(root, instanceId) {
     ? parseJsonOutput(result.stdout, 'docs:task:preflight')
     : null;
 
-  if (result.status !== 0) {
-    const detail = report?.blockers?.join(' | ') || result.stderr || result.stdout || 'Preflight fisico fallo.';
-    fail(detail, result.status);
+  if (!report) {
+    fail(result.stderr || result.stdout || 'Preflight fisico fallo.', result.status || 1);
   }
-  if (!report?.instance || report.instance.id !== instanceId || report.instance.status !== 'IN_PROGRESS') {
+  if (!report.instance || report.instance.id !== instanceId || report.instance.status !== 'IN_PROGRESS') {
     fail(`Preflight no confirmo ${instanceId} en IN_PROGRESS.`);
   }
-  if (Array.isArray(report.blockers) && report.blockers.length > 0) {
-    fail(`Preflight bloqueado: ${report.blockers.join(' | ')}.`);
+
+  const blockers = physicalLaneBlockers(report, instanceId);
+  if (blockers.length > 0) {
+    fail(`Preflight fisico bloqueado: ${blockers.join(' | ')}.`, result.status || 1);
+  }
+  if (result.status !== 0 && blockers.length === 0) {
+    return report;
   }
   return report;
 }
 
 export function readinessBlockers(report, instanceId) {
-  const blockers = Array.isArray(report?.blockers) ? report.blockers : [];
-  const expectedPrefix = `${instanceId} debe estar IN_PROGRESS para ejecutar el preflight fisico;`;
-  return blockers.filter((entry) => !(
-    entry.startsWith(expectedPrefix)
-    && entry.endsWith('estado actual: AUTHORIZED.')
-  ));
+  return physicalLaneBlockers(report, instanceId, { allowAuthorizedStatus: true });
 }
 
 function physicalReadiness(root, instanceId) {
@@ -372,16 +395,18 @@ export function startImplementation({ instanceId, root = ensureRepositoryRoot() 
 
   ensureGhReady(root);
   git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
-  syncLocalDerivedArtifacts({ root, quiet: true });
   assertStartWorktree(worktreePaths(root), recordPath);
 
   const readiness = physicalReadiness(root, id);
   const branchMode = ensureBranchReadyForStart(root, branch);
-  syncLocalDerivedArtifacts({ root, quiet: true });
   assertStartWorktree(worktreePaths(root), recordPath);
 
   writeInstanceStatus(root, id, 'IN_PROGRESS');
   const report = physicalPreflight(root, id);
+
+  npm(['run', '--silent', 'docs:plan:build'], { cwd: root });
+  npm(['run', '--silent', 'docs:plan:check'], { cwd: root });
+  git(['diff', '--check'], { cwd: root });
 
   printResult({
     ESTADO: 'PASS',
@@ -391,9 +416,11 @@ export function startImplementation({ instanceId, root = ensureRepositoryRoot() 
     BRANCH: branch,
     BRANCH_MODE: branchMode,
     PRE_BRANCH_READINESS: readinessBlockers(readiness, id).length === 0 ? 'PASS' : 'FAIL',
-    LOCAL_DERIVED_SYNC: 'PASS_BEFORE_AND_AFTER_BRANCH',
     INSTANCE_STATUS: 'IN_PROGRESS',
     PREFLIGHT: 'PASS',
+    START_DOCS_PLAN_BUILD: 'PASS_ONCE',
+    START_DOCS_PLAN_CHECK: 'PASS',
+    DOCUMENTARY_LANE_FOR_PHYSICAL: 'ADVISORY_ONLY',
     VALIDATION_COMMANDS: Array.isArray(instance.validation_commands) ? instance.validation_commands.length : 0,
     REMOTE_BRANCH: 'PUBLISHED',
     SYNC_REMOTE: '0/0',
@@ -715,8 +742,8 @@ function usage() {
   console.log('  npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL');
   console.log('  npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL');
   console.log('');
-  console.log('START exige registro AUTHORIZED, ejecuta readiness fisica de solo lectura antes de mutar Git, crea o recupera implementation/<task-id>/<instance-key>, cambia a IN_PROGRESS y ejecuta el preflight fisico estricto una sola vez.');
-  console.log('FINISH exige VERIFIED, ejecuta docs:plan:build una sola vez, valida plan, TREQ y lint localmente antes del commit, publica, espera CI, mergea, sincroniza main y limpia la rama.');
+  console.log('START exige registro AUTHORIZED, trata continuidad/formato documentales historicos como advisory, crea o recupera implementation/<task-id>/<instance-key>, cambia a IN_PROGRESS, ejecuta el preflight fisico estricto una sola vez y reconcilia derivados con docs:plan:build + docs:plan:check antes de permitir codigo.');
+  console.log('FINISH exige VERIFIED, ejecuta docs:plan:build una sola vez para el estado final, valida plan, TREQ y lint localmente antes del commit, publica, espera CI, mergea, sincroniza main y limpia la rama.');
 }
 
 function main() {
