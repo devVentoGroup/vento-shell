@@ -10,6 +10,14 @@ Esta sección organiza **dominio de marketing y creacion** dentro de **W AURA**.
 **Límites funcionales:** comienza con “Definir arquitectura de marcas, identidad, tono, mensajes, claims, restricciones y vigencia” y concluye con “Definir radar de oportunidades y recomendaciones comerciales explicables”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:AURA-DOM -->
+### Reconciliación topológica de AURA-DOM-001 a AURA-DOM-010
+
+Estas tareas definen el dominio objetivo de marketing y creación. No generan implementación física autónoma y continúan condicionadas por la decisión de continuidad de AURA.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] AURA-DOM-001 — Definir arquitectura de marcas, identidad, tono, mensajes, claims, restricciones y vigencia
 
 ### [ ] AURA-DOM-002 — Definir objetivos, audiencias, briefs, calendario, presupuestos, dependencias y ciclo de campaña

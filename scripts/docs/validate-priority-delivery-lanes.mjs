@@ -52,11 +52,6 @@ const EXPECTED_REQUIRED_GROUPS = new Map([
 
 const EXPECTED_EXECUTION_PREREQUISITES = new Map([
   ['CI_FOUNDATION', range('SHELL-CI', 1, 19)],
-]);
-
-const EXPECTED_IMPLEMENTATION_GROUPS = new Map([
-  ['H_SHARED_CONTRACTS', range('SHELL-CON', 1, 24)],
-  ['H_AUTH_CONTEXT_BASE', ['SHELL-AUTH-001', 'SHELL-CTX-001']],
   ['R0_DATABASE_SAFETY', [
     'AUTH-DB-015',
     ...range('AUTH-DB', 27, 29),
@@ -73,6 +68,11 @@ const EXPECTED_IMPLEMENTATION_GROUPS = new Map([
     'AUTH-DB-032',
     ...range('AUTH-DB', 12, 14),
   ]],
+]);
+
+const EXPECTED_IMPLEMENTATION_GROUPS = new Map([
+  ['H_SHARED_CONTRACTS', range('SHELL-CON', 1, 24)],
+  ['H_AUTH_CONTEXT_BASE', ['SHELL-AUTH-001', 'SHELL-CTX-001']],
   ['H_AUTH_CONTEXT_CONVERGENCE', [
     ...range('SHELL-CTX', 2, 6),
     ...range('SHELL-AUTH', 2, 4),
@@ -106,8 +106,6 @@ const EXPECTED_IMPLEMENTATION_GROUPS = new Map([
 const EXPECTED_IMPLEMENTATION_ORDER = [
   'H_SHARED_CONTRACTS',
   'H_AUTH_CONTEXT_BASE',
-  'R0_DATABASE_SAFETY',
-  'R1_AUTH_PHYSICAL_CORE',
   'H_AUTH_CONTEXT_CONVERGENCE',
   'H_SHARED_REMAINING',
   'CONDITIONAL_IMPLEMENTATION_ARTIFACTS',
@@ -626,7 +624,8 @@ export function validatePriorityDeliveryLaneData({
       'desde la etapa 1 hasta la 44',
       'NEXO_INVENTORY_CLASSIFICATION',
       'CONDITIONAL_IMPLEMENTATION_SCOPE',
-      'Ninguna tarea de implementación, migración o cambio físico comienza antes',
+      'Los habilitadores PRE_E5_FOUNDATION aplicables pueden materializarse antes de E5 con autorización física explícita y evidencia propia.',
+      'Ninguna migración o cambio físico POST_E5_PACKAGE perteneciente al paquete comienza antes',
       'CI_FOUNDATION',
       'R2_NEXO_DATABASE_PACKAGE',
       'E5_READINESS_PLAN',

@@ -15,6 +15,21 @@ Esta sección organiza **integraciones analiticas y semanticas** dentro de **AB 
 - `DATA-INT-004`: Definir integración controlada con BI, hojas de cálculo, modelos analíticos e inteligencia artificial
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:DATA-INT -->
+### Reconciliación topológica de DATA-INT-001 a DATA-INT-004
+
+Estas tareas son contratos y diseños canónicos de contratos analíticos, capa semántica, crosswalks e integraciones externas. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas
 
 **Estado:** APROBADA
@@ -4172,4 +4187,3 @@ TAREA ACTUAL APROBADA
 
 SIGUIENTE TAREA RESERVADA
 `CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad`
-

@@ -10,6 +10,21 @@ Esta sección organiza **experiencia analitica y de decisión** dentro de **AB A
 **Límites funcionales:** comienza con “Diseñar inicio ejecutivo simple y accionable por rol” y concluye con “Validar comprensión, tiempos y decisiones con usuarios reales”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:DATA-UX -->
+### Reconciliación topológica de DATA-UX-001 a DATA-UX-008
+
+Estas tareas son contratos y diseños canónicos de experiencia analítica, métricas, tableros, calidad, investigación, metas y reportes. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol
 
 **Estado:** APROBADA
@@ -7476,4 +7491,3 @@ TAREA ACTUAL APROBADA
 
 SIGUIENTE TAREA RESERVADA
 `DATA-INT-001 — Definir contratos de eventos y lectura con todas las aplicaciones y fuentes externas`
-

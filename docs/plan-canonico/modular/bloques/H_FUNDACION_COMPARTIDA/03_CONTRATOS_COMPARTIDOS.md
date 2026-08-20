@@ -10,6 +10,24 @@ Esta sección organiza **contratos compartidos** dentro de **H FUNDACION COMPART
 **Límites funcionales:** comienza con “Crear @vento/contracts” y concluye con “Crear contrato de propiedad funcional”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B001-200:SHELL-CON-001-016 -->
+### Reconciliación topológica de SHELL-CON-001 a SHELL-CON-016
+
+Esta regla se incorpora al contrato de cada marcador `SHELL-CON-001..016`.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad física | `GLOBAL_ENABLE_ONCE` |
+| gate temporal | `PRE_E5_FOUNDATION` |
+| identidad | `<task_id>::GLOBAL` |
+| autorización | explícita por instancia; nunca inferida desde el marcador documental |
+
+Estas tareas pueden materializar los contratos estáticos compartidos una sola vez antes de E5 cuando se satisfagan sus dependencias técnicas y exista autorización física explícita.
+
+Esta reconciliación prevalece exclusivamente sobre cualquier cláusula histórica de `SHELL-CON-001..016` que obligue a esperar `E5-GATE-008::<package_id>` o `SHELL-CI-020::<package_id>` para la **materialización inicial de la fundación estática compartida**.
+
+No adelanta publicación en registry, migración o adopción de consumidores, despliegues verticales, cambios Supabase, red, secretos ni lógica runtime. Esos trabajos conservan sus propietarios y gates específicos.
+
 ### ✅ SHELL-CON-001 — Crear @vento/contracts
 
 **Estado:** APROBADA
@@ -11680,4 +11698,3 @@ SHELL-CON-016 — Crear contrato de propiedad funcional
 ##### SIGUIENTE TAREA RESERVADA
 
 SHELL-CON-017 — Crear contrato de principal técnico de integración
-

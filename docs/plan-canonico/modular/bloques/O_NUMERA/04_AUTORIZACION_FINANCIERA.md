@@ -10,6 +10,17 @@ Esta sección organiza **autorización financiera** dentro de **O NUMERA**. Agru
 **Límites funcionales:** comienza con “Vincular módulos y acciones con permisos y contratos aprobados” y concluye con “Definir permisos para crear, compartir, aprobar y publicar escenarios, precios y presupuestos”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:NUMERA-AUTH-001-015 -->
+### Reconciliación topológica de NUMERA-AUTH-001 a NUMERA-AUTH-015
+
+La familia separa definición contractual de permisos y materialización física de controles financieros.
+
+| Tareas | Modalidad | Gate |
+| --- | --- | --- |
+| `NUMERA-AUTH-001..007` | `DEFINE_ONCE` | `NO_PHYSICAL_INSTANCE` |
+| `NUMERA-AUTH-008..013` | `PER_IMPLEMENTATION_UNIT` | `POST_E5_PACKAGE` |
+| `NUMERA-AUTH-014..015` | `DEFINE_ONCE` | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] NUMERA-AUTH-001 — Vincular módulos y acciones con permisos y contratos aprobados
 ### [ ] NUMERA-AUTH-002 — Clasificar información financiera sensible
 ### [ ] NUMERA-AUTH-003 — Definir permisos de lectura

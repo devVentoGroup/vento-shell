@@ -133,7 +133,7 @@ export function resolveTaskWorkTopology({ root = process.cwd() } = {}) {
   )));
   const errors = [];
 
-  if (policy.schema_version !== 1) errors.push('schema_version debe ser 1.');
+  if (policy.schema_version !== 2) errors.push('schema_version debe ser 2.');
   if (policy.canonical_marker_semantics !== 'DEFINE_CONTRACT_ONCE') {
     errors.push('canonical_marker_semantics debe ser DEFINE_CONTRACT_ONCE.');
   }
@@ -141,6 +141,17 @@ export function resolveTaskWorkTopology({ root = process.cwd() } = {}) {
     errors.push('coverage_policy debe cubrir todas las tareas exactamente una vez.');
   }
   const modes = new Set(Object.keys(policy.mode_definitions ?? {}));
+  const executionGateDefinitions = policy.execution_gate_definitions ?? {};
+  const executionGates = new Set(Object.keys(executionGateDefinitions));
+  if (!executionGates.has('NO_PHYSICAL_INSTANCE')) {
+    errors.push('execution_gate_definitions debe incluir NO_PHYSICAL_INSTANCE.');
+  }
+  if (!executionGates.has('UNREVIEWED')) {
+    errors.push('execution_gate_definitions debe incluir UNREVIEWED.');
+  }
+  if (!executionGates.has(policy.execution_gate_default)) {
+    errors.push(`execution_gate_default usa el gate desconocido ${policy.execution_gate_default ?? 'VACÍO'}.`);
+  }
   const routeStageIds = route.stages.map(({ sequence_id }) => sequence_id);
   const defaults = new Map((policy.stage_defaults ?? []).map((item) => [item.sequence_id, item.mode]));
   const duplicateDefaults = (policy.stage_defaults ?? [])
@@ -169,6 +180,23 @@ export function resolveTaskWorkTopology({ root = process.cwd() } = {}) {
     }
   }
 
+  const executionGateOverridesByTask = new Map();
+  for (const override of policy.execution_gate_overrides ?? []) {
+    if (!executionGates.has(override.execution_gate)) {
+      errors.push(`execution_gate override usa el gate desconocido ${override.execution_gate ?? 'VACÍO'}.`);
+    }
+    const selected = expandSelectors(tasks, override.selectors ?? []);
+    if (selected.length === 0) {
+      errors.push(`execution_gate override ${override.execution_gate ?? 'VACÍO'} no selecciona tareas.`);
+    }
+    for (const id of selected) {
+      if (executionGateOverridesByTask.has(id)) {
+        errors.push(`${id} recibe más de un override de execution_gate.`);
+      }
+      executionGateOverridesByTask.set(id, override);
+    }
+  }
+
   const topology = new Map();
   for (const task of ordered) {
     const stageId = stageByTask.get(task.id);
@@ -176,6 +204,23 @@ export function resolveTaskWorkTopology({ root = process.cwd() } = {}) {
     const mode = override?.mode ?? defaults.get(stageId);
     const definition = policy.mode_definitions?.[mode];
     if (!definition) continue;
+
+    const gateOverride = executionGateOverridesByTask.get(task.id);
+    const executionGate = mode === 'DEFINE_ONCE'
+      ? 'NO_PHYSICAL_INSTANCE'
+      : gateOverride?.execution_gate ?? policy.execution_gate_default;
+    const executionGateDefinition = executionGateDefinitions[executionGate];
+
+    if (!executionGateDefinition) {
+      errors.push(`${task.id} usa el execution_gate desconocido ${executionGate ?? 'VACÍO'}.`);
+      continue;
+    }
+
+    if (mode === 'DEFINE_ONCE' && gateOverride
+      && gateOverride.execution_gate !== 'NO_PHYSICAL_INSTANCE') {
+      errors.push(`${task.id} es DEFINE_ONCE y no puede recibir ${gateOverride.execution_gate}.`);
+    }
+
     topology.set(task.id, {
       taskId: task.id,
       sequenceId: stageId,
@@ -185,9 +230,80 @@ export function resolveTaskWorkTopology({ root = process.cwd() } = {}) {
       executionDependencies: override?.execution_dependencies ?? definition.execution_dependencies,
       executionRule: override?.execution_rule ?? definition.execution_rule,
       instancePattern: override?.instance_pattern ?? definition.instance_pattern,
+      executionGate,
+      executionGateLabel: executionGateDefinition.label,
+      executionGateRule: executionGateDefinition.rule,
     });
   }
   if (topology.size !== ordered.length) errors.push(`topología incompleta: ${topology.size} de ${ordered.length} tareas.`);
+
+  const implementationAuditTasks = ordered.filter((task) => {
+    const sequenceId = topology.get(task.id)?.sequenceId ?? '';
+    return sequenceId === 'PHASE-02-E5-IMPLEMENTATION-PLANNING'
+      || /^PHASE-(?:03|04|05|06|07|08|09|10|11|12|13)-/u.test(sequenceId);
+  });
+
+  const progress = policy.reconciliation_progress ?? {};
+  if (implementationAuditTasks.length !== progress.implementation_task_total) {
+    errors.push(
+      `reconciliation_progress espera ${progress.implementation_task_total ?? 'VACÍO'} tareas y el inventario contiene ${implementationAuditTasks.length}.`,
+    );
+  }
+
+  const reviewedPositions = new Set();
+  for (const range of progress.reviewed_ranges ?? []) {
+    const from = Number(range.from_position);
+    const to = Number(range.to_position);
+    if (!Number.isInteger(from) || !Number.isInteger(to) || from < 1 || to < from
+      || to > implementationAuditTasks.length) {
+      errors.push(`reviewed_ranges contiene un rango inválido: ${JSON.stringify(range)}.`);
+      continue;
+    }
+    for (let positionIndex = from; positionIndex <= to; positionIndex += 1) {
+      if (reviewedPositions.has(positionIndex)) {
+        errors.push(`reviewed_ranges duplica la posición ${positionIndex}.`);
+      }
+      reviewedPositions.add(positionIndex);
+    }
+  }
+
+  if (reviewedPositions.size !== progress.reviewed_count) {
+    errors.push(
+      `reviewed_count=${progress.reviewed_count ?? 'VACÍO'} pero reviewed_ranges cubre ${reviewedPositions.size} posiciones.`,
+    );
+  }
+
+  if (implementationAuditTasks.length - reviewedPositions.size !== progress.unreviewed_count) {
+    errors.push(
+      `unreviewed_count=${progress.unreviewed_count ?? 'VACÍO'} no coincide con ${implementationAuditTasks.length - reviewedPositions.size}.`,
+    );
+  }
+
+  for (let index = 0; index < implementationAuditTasks.length; index += 1) {
+    const task = implementationAuditTasks[index];
+    const auditPosition = index + 1;
+    const gate = topology.get(task.id)?.executionGate;
+    const shouldBeReviewed = reviewedPositions.has(auditPosition);
+
+    if (shouldBeReviewed && gate === 'UNREVIEWED') {
+      errors.push(`posición ${auditPosition} / ${task.id} está declarada revisada pero conserva UNREVIEWED.`);
+    }
+
+    if (!shouldBeReviewed && gate !== 'UNREVIEWED') {
+      errors.push(`posición ${auditPosition} / ${task.id} todavía no está revisada pero usa ${gate}.`);
+    }
+  }
+
+  const expectedNext = reviewedPositions.size + 1;
+  if (progress.next_position !== expectedNext) {
+    errors.push(
+      `next_position debe ser ${expectedNext} y es ${progress.next_position ?? 'VACÍO'}.`,
+    );
+  }
+
+  if (progress.status !== 'PARTIAL_REVIEW_IN_PROGRESS') {
+    errors.push('reconciliation_progress.status debe ser PARTIAL_REVIEW_IN_PROGRESS durante esta fase.');
+  }
 
   const position = new Map(ordered.map((task, index) => [task.id, index]));
   const knownIds = new Set(position.keys());
@@ -213,7 +329,25 @@ export function resolveTaskWorkTopology({ root = process.cwd() } = {}) {
   if (errors.length > 0) throw new Error(`task-work-topology.json o su grafo son inválidos:\n- ${errors.join('\n- ')}`);
   const counts = {};
   for (const item of topology.values()) counts[item.mode] = (counts[item.mode] ?? 0) + 1;
-  return { policy, route, inventory, ordered, topology, dependencies, counts, currentId };
+
+  const executionGateCounts = {};
+  for (const task of implementationAuditTasks) {
+    const gate = topology.get(task.id).executionGate;
+    executionGateCounts[gate] = (executionGateCounts[gate] ?? 0) + 1;
+  }
+
+  return {
+    policy,
+    route,
+    inventory,
+    ordered,
+    topology,
+    dependencies,
+    counts,
+    executionGateCounts,
+    implementationAuditTasks,
+    currentId,
+  };
 }
 
 function main() {

@@ -15,6 +15,14 @@ Esta sección organiza **autorización de marketing y canales** dentro de **W AU
 - `AURA-AUTH-004`: Proteger credenciales, tokens, proveedores de IA, prompts, archivos y datos enviados a terceros
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:AURA-AUTH -->
+### Reconciliación topológica de AURA-AUTH-001 a AURA-AUTH-004
+
+Las cuatro tareas protegen físicamente marcas, campañas, datos, promociones, credenciales y proveedores. Solo pueden materializarse después de E5 y después de la decisión de continuidad exigida por AURA.
+
+| modalidad | `PER_IMPLEMENTATION_UNIT` |
+| gate temporal | `POST_E5_PACKAGE` |
+
 ### [ ] AURA-AUTH-001 — Proteger marcas, campañas, activos, audiencias, canales y resultados por empresa, marca y función
 
 ### [ ] AURA-AUTH-002 — Separar creación, revisión, aprobación, programación, publicación, retiro y respuesta pública

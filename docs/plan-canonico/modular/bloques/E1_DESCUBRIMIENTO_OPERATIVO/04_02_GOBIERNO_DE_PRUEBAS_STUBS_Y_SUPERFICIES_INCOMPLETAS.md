@@ -3533,6 +3533,14 @@ interfaz completa, parcial, degradada o ficticia
 TREQ y tarea responsable
 ```
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:WEB-FRM-011 -->
+### Reconciliación topológica de WEB-FRM-011
+
+La tarea exige resolver físicamente la superficie existente: implementar la suscripción de newsletter o retirar la interfaz incompleta.
+
+| modalidad | `PER_IMPLEMENTATION_UNIT` |
+| gate temporal | `POST_E5_PACKAGE` |
+
 ### [ ] WEB-FRM-011 — Implementar suscripción de newsletter o retirar la interfaz
 
 - **Estado:** NO INICIADA

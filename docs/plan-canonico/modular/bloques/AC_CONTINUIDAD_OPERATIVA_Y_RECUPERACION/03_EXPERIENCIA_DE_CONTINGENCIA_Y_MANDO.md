@@ -10,6 +10,21 @@ Esta sección organiza **experiencia de contingencia y mando** dentro de **AC CO
 **Límites funcionales:** comienza con “Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones” y concluye con “Diseñar ejercicios, revisión posterior, acciones y comprobación de readiness”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:CONT-UX -->
+### Reconciliación topológica de CONT-UX-001 a CONT-UX-007
+
+Estas tareas son contratos y diseños canónicos de experiencia de contingencia, mando, runbooks, reincorporación, comunicaciones y ejercicios. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ CONT-UX-001 — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones
 
 **Estado:** APROBADA
@@ -9253,4 +9268,3 @@ TAREA ACTUAL APROBADA
 
 SIGUIENTE TAREA RESERVADA
 `CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones`
-

@@ -10,6 +10,21 @@ Esta sección organiza **identidad aplicación y territorio** dentro de **S MENS
 **Límites funcionales:** comienza con “Sin sesión” y concluye con “Sin área activa”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B201-400:AUTH-ERR-001-008 -->
+#### Reconciliación topológica de AUTH-ERR-001 a AUTH-ERR-008
+
+Estas tareas definen contratos canónicos de mensajes, causas, territorio y comportamiento de bloqueo. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación de estos contratos pertenece a las tareas físicas consumidoras de autorización, contratos compartidos, server actions, UI, base de datos y pruebas.
+
+Los requisitos TREQ asociados permanecen vigentes como criterios que esas implementaciones deben satisfacer; no crean una instancia `AUTH-ERR-*::<implementation_unit_id>`.
+
 ### ✅ AUTH-ERR-001 — Sin sesión
 
 **Estado:** APROBADA
@@ -9611,4 +9626,3 @@ AUTH-ERR-008 — Sin área activa
 ##### SIGUIENTE TAREA RESERVADA
 
 AUTH-ERR-009 — Sin turno publicado
-

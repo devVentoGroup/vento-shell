@@ -15,6 +15,21 @@ Esta sección organiza **autorización de datos y metricas** dentro de **AB ANAL
 - `DATA-AUTH-004`: Auditar consultas, descargas, suscripciones, alertas, modelos y recomendaciones
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:DATA-AUTH -->
+### Reconciliación topológica de DATA-AUTH-001 a DATA-AUTH-004
+
+Estas tareas son contratos y diseños canónicos de autorización, sensibilidad, segregación y auditoría de datos y métricas. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ DATA-AUTH-001 — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad
 
 **Estado:** APROBADA
@@ -2516,4 +2531,3 @@ TAREA ACTUAL APROBADA
 
 SIGUIENTE TAREA RESERVADA
 `DATA-UX-001 — Diseñar inicio ejecutivo simple y accionable por rol`
-

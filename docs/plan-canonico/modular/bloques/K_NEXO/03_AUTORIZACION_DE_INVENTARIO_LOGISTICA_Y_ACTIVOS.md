@@ -10,6 +10,16 @@ Esta sección organiza **autorización de inventario logistica y activos** dentr
 **Límites funcionales:** comienza con “Auditar permisos actuales de LPN, activos y contenedores” y concluye con “Separar reporte, solicitud, aprobación, ejecución, verificación, liberación, cierre y reapertura”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:NEXO-AUTH-021-032 -->
+### Reconciliación topológica de NEXO-AUTH-021 a NEXO-AUTH-032
+
+`NEXO-AUTH-021` es auditoría del estado actual y no crea implementación propia. `NEXO-AUTH-022..032` protegen o materializan segregación, restricciones y pruebas del subdominio.
+
+| Tareas | Modalidad | Gate |
+| --- | --- | --- |
+| `NEXO-AUTH-021` | `DEFINE_ONCE` | `NO_PHYSICAL_INSTANCE` |
+| `NEXO-AUTH-022..032` | `PER_IMPLEMENTATION_UNIT` | `POST_E5_PACKAGE` |
+
 ### [ ] NEXO-AUTH-021 — Auditar permisos actuales de LPN, activos y contenedores
 ### [ ] NEXO-AUTH-022 — Proteger creación, actualización, cierre, anulación y reetiquetado de LPN
 ### [ ] NEXO-AUTH-023 — Proteger empaque, desempaque, división, unión y transferencia

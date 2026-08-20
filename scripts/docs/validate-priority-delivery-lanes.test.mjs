@@ -77,7 +77,7 @@ const taskIds = new Set([
 ]);
 const documents = {
   order:
-    '<!-- PRIORITY-DELIVERY-LANES:START --> NEXO-REMISSIONS-001 canonical_sequence_unchanged = true ¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO? execution-route.json Registro histórico inactivo de NEXO-REMISSIONS-001 desde la etapa 1 hasta la 44 NEXO_INVENTORY_CLASSIFICATION CONDITIONAL_IMPLEMENTATION_SCOPE Ninguna tarea de implementación, migración o cambio físico comienza antes CI_FOUNDATION R2_NEXO_DATABASE_PACKAGE E5_READINESS_PLAN U_AUTHORIZATION_CERTIFICATION SHELL-CI-024::NEXO-REMISSIONS-001',
+    '<!-- PRIORITY-DELIVERY-LANES:START --> NEXO-REMISSIONS-001 canonical_sequence_unchanged = true ¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO? execution-route.json Registro histórico inactivo de NEXO-REMISSIONS-001 desde la etapa 1 hasta la 44 NEXO_INVENTORY_CLASSIFICATION CONDITIONAL_IMPLEMENTATION_SCOPE Los habilitadores PRE_E5_FOUNDATION aplicables pueden materializarse antes de E5 con autorización física explícita y evidencia propia. Ninguna migración o cambio físico POST_E5_PACKAGE perteneciente al paquete comienza antes CI_FOUNDATION R2_NEXO_DATABASE_PACKAGE E5_READINESS_PLAN U_AUTHORIZATION_CERTIFICATION SHELL-CI-024::NEXO-REMISSIONS-001',
   protocol:
     '<!-- PRIORITY-PACKAGE-PROTOCOL:START --> global_task_partial_approval_forbidden E5-GATE-008::<package_id> NORMAL_CANONICAL_FLOW execution-route.json ordered_execution_stages deberá completar todo BLOQUE H',
   principles:
@@ -323,4 +323,59 @@ test('exige que active-sequence proyecte el carril seleccionado explícitamente'
     executionRouteSource: prioritySelector,
     activeSequenceSource: '{"route_id": "NEXO-REMISSIONS-001"}',
   }));
+});
+
+test('R0 y R1 son prerrequisitos físicos anteriores a E5', () => {
+  const lane = canonicalLane;
+
+  const prerequisiteIds = new Set(
+    lane.execution_prerequisite_artifacts.map(
+      ({ artifact_group_id: id }) => id,
+    ),
+  );
+
+  const implementationIds = new Set(
+    lane.implementation_artifacts.map(
+      ({ artifact_group_id: id }) => id,
+    ),
+  );
+
+  for (const groupId of [
+    'R0_DATABASE_SAFETY',
+    'R1_AUTH_PHYSICAL_CORE',
+  ]) {
+    assert.equal(
+      prerequisiteIds.has(groupId),
+      true,
+      `${groupId} debe ser execution prerequisite`,
+    );
+
+    assert.equal(
+      implementationIds.has(groupId),
+      false,
+      `${groupId} no debe permanecer en implementation_artifacts`,
+    );
+
+    assert.equal(
+      lane.implementation_execution_order.includes(groupId),
+      false,
+      `${groupId} no debe permanecer en implementation_execution_order`,
+    );
+  }
+
+  const ciIndex = lane.execution_prerequisite_artifacts.findIndex(
+    ({ artifact_group_id: id }) => id === 'CI_FOUNDATION',
+  );
+
+  const r0Index = lane.execution_prerequisite_artifacts.findIndex(
+    ({ artifact_group_id: id }) => id === 'R0_DATABASE_SAFETY',
+  );
+
+  const r1Index = lane.execution_prerequisite_artifacts.findIndex(
+    ({ artifact_group_id: id }) => id === 'R1_AUTH_PHYSICAL_CORE',
+  );
+
+  assert.ok(ciIndex >= 0);
+  assert.ok(ciIndex < r0Index);
+  assert.ok(r0Index < r1Index);
 });

@@ -34,10 +34,10 @@
 | Siguiente tarea | **AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
 | Progreso del bloque | **BLOQUE R: 0 de 51 aprobadas; AUTH-DB-015 pendiente** |
-| Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — AUTH-DB-015** |
-| Carril documental | **ACTIVO — AUTH-DB-015** |
-| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-001::GLOBAL** |
+| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — AUTH-DB-015** |
+| Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-001::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE R: 0 DE 51 APROBADAS — ACTUAL AUTH-DB-015** |
-| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Implementación física | **SHELL-CON-001::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 

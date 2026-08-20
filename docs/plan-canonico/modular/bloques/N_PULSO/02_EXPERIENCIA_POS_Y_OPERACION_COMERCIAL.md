@@ -10,6 +10,14 @@ Esta sección organiza **experiencia pos y operacion comercial** dentro de **N P
 **Límites funcionales:** comienza con “Inventariar procesos de venta, caja y salón” y concluye con “Diseñar la arquitectura funcional y técnica del POS integral objetivo sin heredar como contrato el prototipo histórico”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:PULSO-UX -->
+### Reconciliación topológica de PULSO-UX-001 a PULSO-UX-021
+
+Estas tareas inventarían, diseñan, auditan y validan la experiencia POS objetivo. Son definición canónica; la implementación se ejecuta posteriormente por package_id.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] PULSO-UX-001 — Inventariar procesos de venta, caja y salón
 ### [ ] PULSO-UX-002 — Diseñar inicio para cajero
 ### [ ] PULSO-UX-003 — Diseñar inicio para servicio de salón

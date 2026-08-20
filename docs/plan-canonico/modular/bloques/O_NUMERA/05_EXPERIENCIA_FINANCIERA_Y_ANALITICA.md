@@ -10,6 +10,18 @@ Esta sección organiza **experiencia financiera y analitica** dentro de **O NUME
 **Límites funcionales:** comienza con “Inventariar procesos financieros y analíticos” y concluye con “Diseñar visor económico dinámico de una sola pantalla, simple, comparativo y con divulgación progresiva”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:NUMERA-UX -->
+### Reconciliación topológica de NUMERA-UX-001 a NUMERA-UX-028
+
+El mini-bloque inventaría, diseña, concilia, prototipa y aprueba la experiencia financiera objetivo antes de completar su implementación física.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
+La materialización posterior corresponde a las unidades de implementación y paquetes que consuman este diseño.
+
 ### [ ] NUMERA-UX-001 — Inventariar procesos financieros y analíticos
 ### [ ] NUMERA-UX-002 — Separar lectura ejecutiva y operación contable
 ### [ ] NUMERA-UX-003 — Diseñar inicio para propietario

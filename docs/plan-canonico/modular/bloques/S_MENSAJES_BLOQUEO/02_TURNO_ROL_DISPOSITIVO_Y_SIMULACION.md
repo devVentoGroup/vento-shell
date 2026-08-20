@@ -10,6 +10,19 @@ Esta sección organiza **turno rol dispositivo y simulación** dentro de **S MEN
 **Límites funcionales:** comienza con “Sin turno publicado” y concluye con “Acción no permitida en simulación”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B201-400:AUTH-ERR-009-016 -->
+#### Reconciliación topológica de AUTH-ERR-009 a AUTH-ERR-016
+
+Estas tareas definen contratos canónicos de error para turno, rol, dispositivo y simulación.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+Su aplicación física ocurre en los componentes, server actions, contextos, dispositivos, simuladores y pruebas propietarios. La tarea AUTH-ERR define qué debe ocurrir; no duplica la implementación mediante una instancia física propia.
+
 ### ✅ AUTH-ERR-009 — Sin turno publicado
 
 **Estado:** APROBADA
@@ -9938,4 +9951,3 @@ AUTH-ERR-016 no:
 **SIGUIENTE TAREA RESERVADA**
 
 `AUTH-ERR-017 — Configuración administrativa inconsistente`
-

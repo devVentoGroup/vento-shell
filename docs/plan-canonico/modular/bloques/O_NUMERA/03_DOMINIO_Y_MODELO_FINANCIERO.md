@@ -10,6 +10,14 @@ Esta sección organiza **dominio y modelo financiero** dentro de **O NUMERA**. A
 **Límites funcionales:** comienza con “Definir alcance ejecutivo, analítico y contable de NUMERA” y concluye con “Definir motor de escenarios, versiones de precios, costos, supuestos y publicación”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:NUMERA-DOM -->
+### Reconciliación topológica de NUMERA-DOM-001 a NUMERA-DOM-018
+
+Las tareas de dominio NUMERA definen alcance, hechos, costos, rentabilidad, cierres, conciliación, fronteras, cartera y arquitectura financiera objetivo. Son contratos de dominio consumidos por E5 y no unidades físicas independientes.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] NUMERA-DOM-001 — Definir alcance ejecutivo, analítico y contable de NUMERA
 ### [ ] NUMERA-DOM-002 — Definir hechos económicos recibidos desde ventas
 ### [ ] NUMERA-DOM-003 — Definir hechos económicos recibidos desde compras y recepción

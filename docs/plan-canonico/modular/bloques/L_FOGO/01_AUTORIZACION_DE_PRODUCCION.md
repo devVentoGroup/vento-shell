@@ -10,6 +10,16 @@ Esta sección organiza **autorización de produccion** dentro de **L FOGO**. Agr
 **Límites funcionales:** comienza con “Inventariar vistas y acciones productivas” y concluye con “Ejecutar pruebas integrales”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:FOGO-AUTH -->
+### Reconciliación topológica de FOGO-AUTH-001 a FOGO-AUTH-016
+
+La familia separa inventario/definición de permisos de la protección física posterior.
+
+| Tareas | Modalidad | Gate |
+| --- | --- | --- |
+| `FOGO-AUTH-001`, `FOGO-AUTH-002`, `FOGO-AUTH-008` | `DEFINE_ONCE` | `NO_PHYSICAL_INSTANCE` |
+| `FOGO-AUTH-003..007`, `FOGO-AUTH-009..016` | `PER_IMPLEMENTATION_UNIT` | `POST_E5_PACKAGE` |
+
 ### [ ] FOGO-AUTH-001 — Inventariar vistas y acciones productivas
 ### [ ] FOGO-AUTH-002 — Definir permisos por área productiva
 ### [ ] FOGO-AUTH-003 — Filtrar cola por sede y área

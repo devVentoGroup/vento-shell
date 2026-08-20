@@ -10,6 +10,14 @@ Esta sección organiza **experiencia del cliente** dentro de **V PASS**. Agrupa 
 **Límites funcionales:** comienza con “Inventariar pantallas actuales de cliente” y concluye con “Ejecutar pruebas con clientes reales”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:PASS-UX -->
+### Reconciliación topológica de PASS-UX-001 a PASS-UX-013
+
+El mini-bloque define la experiencia objetivo del cliente, navegación, estados y pruebas de diseño. No constituye por sí mismo una implementación física independiente.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] PASS-UX-001 — Inventariar pantallas actuales de cliente
 ### [ ] PASS-UX-002 — Diseñar inicio de puntos y beneficios
 ### [ ] PASS-UX-003 — Diseñar QR personal

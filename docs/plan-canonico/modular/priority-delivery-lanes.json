@@ -112,12 +112,16 @@
         },
         {
           "artifact_group_id": "H_SHARED_AUDIT",
-          "task_family_refs": ["SHELL-AUD"],
+          "task_family_refs": [
+            "SHELL-AUD"
+          ],
           "required_scope": "auditoría completa de componentes compartidos y clasificación de propiedad"
         },
         {
           "artifact_group_id": "H_SHARED_DISTRIBUTION",
-          "task_family_refs": ["SHELL-PKG"],
+          "task_family_refs": [
+            "SHELL-PKG"
+          ],
           "required_scope": "mecanismo de distribución, versionado, compatibilidad, deprecación, actualización y rollback definidos antes de crear paquetes compartidos"
         },
         {
@@ -404,21 +408,6 @@
             }
           ],
           "required_scope": "capacidad de probar, versionar, actualizar, revertir y publicar evidencia certificada antes de E5-GATE-008 y reutilizable por SHELL-CI-020"
-        }
-      ],
-      "implementation_artifacts": [
-        {
-          "artifact_group_id": "H_SHARED_CONTRACTS",
-          "task_family_refs": ["SHELL-CON"],
-          "required_scope": "paquetes de contratos compartidos e integraciones implementados y versionados"
-        },
-        {
-          "artifact_group_id": "H_AUTH_CONTEXT_BASE",
-          "task_refs": [
-            "SHELL-AUTH-001",
-            "SHELL-CTX-001"
-          ],
-          "required_scope": "núcleo único de autorización y contexto disponible antes del backend autoritativo"
         },
         {
           "artifact_group_id": "R0_DATABASE_SAFETY",
@@ -433,7 +422,7 @@
             "AUTH-DB-004",
             "AUTH-DB-005"
           ],
-          "required_scope": "migraciones gobernadas, harness, drift, respaldo, rollback y contención inicial de exposición ejecutados bajo el paquete aprobado"
+          "required_scope": "migraciones gobernadas, harness, baseline y drift, respaldo, restauración, rollback y contención inicial de exposición disponibles y certificados antes de E5-GATE-008"
         },
         {
           "artifact_group_id": "R1_AUTH_PHYSICAL_CORE",
@@ -450,7 +439,24 @@
             "AUTH-DB-013",
             "AUTH-DB-014"
           ],
-          "required_scope": "esquemas, Data API, identidad, contexto, frescura, autorización y auditoría canónicos implementados"
+          "required_scope": "fundación física canónica de autorización, contexto, identidad y auditoría disponible y certificada antes de los paquetes que dependan de ella"
+        }
+      ],
+      "implementation_artifacts": [
+        {
+          "artifact_group_id": "H_SHARED_CONTRACTS",
+          "task_family_refs": [
+            "SHELL-CON"
+          ],
+          "required_scope": "paquetes de contratos compartidos e integraciones implementados y versionados"
+        },
+        {
+          "artifact_group_id": "H_AUTH_CONTEXT_BASE",
+          "task_refs": [
+            "SHELL-AUTH-001",
+            "SHELL-CTX-001"
+          ],
+          "required_scope": "núcleo único de autorización y contexto disponible antes del backend autoritativo"
         },
         {
           "artifact_group_id": "H_AUTH_CONTEXT_CONVERGENCE",
@@ -568,8 +574,6 @@
       "implementation_execution_order": [
         "H_SHARED_CONTRACTS",
         "H_AUTH_CONTEXT_BASE",
-        "R0_DATABASE_SAFETY",
-        "R1_AUTH_PHYSICAL_CORE",
         "H_AUTH_CONTEXT_CONVERGENCE",
         "H_SHARED_REMAINING",
         "CONDITIONAL_IMPLEMENTATION_ARTIFACTS",
@@ -785,44 +789,44 @@
         },
         {
           "order": 22,
+          "stage_id": "R0_DATABASE_SAFETY",
+          "task_source": "execution_prerequisite_artifacts.R0_DATABASE_SAFETY",
+          "rule": "Completar y certificar el habilitador antes de ejecutar E5-GATE-001 a E5-GATE-008."
+        },
+        {
+          "order": 23,
+          "stage_id": "R1_AUTH_PHYSICAL_CORE",
+          "task_source": "execution_prerequisite_artifacts.R1_AUTH_PHYSICAL_CORE",
+          "rule": "Completar y certificar el habilitador antes de ejecutar E5-GATE-001 a E5-GATE-008."
+        },
+        {
+          "order": 24,
           "stage_id": "E5_ENTRY_GATES",
           "task_source": "post_package_artifacts.E5_ENTRY_GATES",
           "rule": "Confirmar con infraestructura disponible que el paquete, las pruebas, el rollout, el rollback, el piloto y la evidencia son ejecutables."
         },
         {
-          "order": 23,
+          "order": 25,
           "stage_id": "PACKAGE_GATE",
           "task_source": "package_gate",
           "rule": "Aprobar E5-GATE-008::NEXO-REMISSIONS-001 sin cerrar E5 completo."
         },
         {
-          "order": 24,
+          "order": 26,
           "stage_id": "IMPLEMENTATION_START",
           "task_source": "execution_cycle.SHELL-CI-020",
           "rule": "Iniciar la implementación y el despliegue únicamente del paquete aprobado."
         },
         {
-          "order": 25,
+          "order": 27,
           "stage_id": "H_SHARED_CONTRACTS",
           "task_source": "implementation_artifacts.H_SHARED_CONTRACTS",
-          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
-        },
-        {
-          "order": 26,
-          "stage_id": "H_AUTH_CONTEXT_BASE",
-          "task_source": "implementation_artifacts.H_AUTH_CONTEXT_BASE",
-          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
-        },
-        {
-          "order": 27,
-          "stage_id": "R0_DATABASE_SAFETY",
-          "task_source": "implementation_artifacts.R0_DATABASE_SAFETY",
-          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+          "rule": "Verificar y consumir la fundación PRE_E5_FOUNDATION ya certificada; esta etapa no vuelve a materializar SHELL-CON dentro de SHELL-CI-020."
         },
         {
           "order": 28,
-          "stage_id": "R1_AUTH_PHYSICAL_CORE",
-          "task_source": "implementation_artifacts.R1_AUTH_PHYSICAL_CORE",
+          "stage_id": "H_AUTH_CONTEXT_BASE",
+          "task_source": "implementation_artifacts.H_AUTH_CONTEXT_BASE",
           "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
         },
         {
@@ -835,7 +839,7 @@
           "order": 30,
           "stage_id": "H_SHARED_REMAINING",
           "task_source": "implementation_artifacts.H_SHARED_REMAINING",
-          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+          "rule": "Consumir los habilitadores PRE_E5_FOUNDATION ya certificados y ejecutar dentro de SHELL-CI-020 únicamente las instancias POST_E5_PACKAGE aplicables del grupo."
         },
         {
           "order": 31,
@@ -962,9 +966,10 @@
         "La secuencia documental canónica continúa sin saltos ni aprobaciones inferidas.",
         "Un artefacto incremental no aprueba parcialmente la tarea canónica que lo originó.",
         "E5-GATE-008 se ejecuta como instancia trazable para un package_id exacto.",
-        "Ninguna tarea de implementación, migración, backfill, despliegue o cambio físico se ejecuta antes de E5-GATE-008.",
+        "Los habilitadores PRE_E5_FOUNDATION aplicables pueden materializarse antes de E5-GATE-008 con autorización física explícita, dependencias satisfechas y evidencia propia.",
+        "Ninguna migración o backfill perteneciente al package_id, despliegue vertical, adopción de consumidor ni otra instancia POST_E5_PACKAGE se ejecuta antes de E5-GATE-008::<package_id>.",
         "SHELL-CI-001 a SHELL-CI-019 se completan antes de E5-GATE-008 para que las pruebas, releases, compatibilidad, rollback, gates y evidencia del paquete sean ejecutables.",
-        "SHELL-CI-020 gobierna todos los grupos de implementación y cambios físicos del mismo package_id.",
+        "SHELL-CI-020 gobierna el trabajo POST_E5_PACKAGE del mismo package_id y no rematerializa habilitadores PRE_E5_FOUNDATION ya certificados.",
         "SHELL-CI-020 a SHELL-CI-024 conservan package_id, commit, versión, ambiente y evidencia independientes.",
         "Toda migración o cambio físico de Supabase se crea y ejecuta desde vento-shell.",
         "La auditoría, arquitectura y transición de normalización de E3 se completan antes de DATA-NORM-DB.",

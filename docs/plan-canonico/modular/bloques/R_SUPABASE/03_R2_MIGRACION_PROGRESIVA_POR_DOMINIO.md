@@ -1,5 +1,21 @@
 ### R2 — Migración progresiva por dominio
 
+<!-- EXECUTION-GATE-RECONCILIATION:B201-400:R2 -->
+#### Reconciliación topológica de R2
+
+R2 implementa migración progresiva por dominio y conserva identidad de paquete.
+
+| Propiedad | Valor |
+| --- | --- |
+| tareas | las trece tareas de este archivo |
+| modalidad | `TEMPLATE_PER_PACKAGE` |
+| gate temporal | `POST_E5_PACKAGE` |
+| identidad | `<task_id>::<package_id>` |
+
+Cada package_id ejecuta únicamente el subconjunto R2 incluido en su alcance aprobado. Las instancias R2 requieren R0/R1 aplicables disponibles, `E5-GATE-008::<package_id>` aprobado y gobierno de `SHELL-CI-020::<package_id>`.
+
+`AUTH-DB-026` mantiene su responsabilidad incremental sobre generación y publicación de tipos después del paquete DB aplicable; no se convierte en un habilitador global único.
+
 ### [ ] AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal
 ### [ ] AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
 ### [ ] AUTH-DB-007 — Validar sede dentro de RPC sensibles

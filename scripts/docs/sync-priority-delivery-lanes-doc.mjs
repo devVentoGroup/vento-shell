@@ -136,10 +136,15 @@ function deriveOrderedExecutionStages(lane) {
     if (!implementationById.has(groupId)) {
       throw new Error(`implementation_execution_order referencia un grupo inexistente: ${groupId}.`);
     }
+    const implementationRule = groupId === 'H_SHARED_CONTRACTS'
+      ? 'Verificar y consumir la fundación PRE_E5_FOUNDATION ya certificada; esta etapa no vuelve a materializar SHELL-CON dentro de SHELL-CI-020.'
+      : groupId === 'H_SHARED_REMAINING'
+        ? 'Consumir los habilitadores PRE_E5_FOUNDATION ya certificados y ejecutar dentro de SHELL-CI-020 únicamente las instancias POST_E5_PACKAGE aplicables del grupo.'
+        : 'Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes.';
     add(
       groupId,
       `implementation_artifacts.${groupId}`,
-      'Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes.',
+      implementationRule,
     );
   }
 
@@ -302,7 +307,8 @@ export function renderPriorityLaneOrderSection(data, routeSelector = {}) {
     ]),
     'Las etapas son secuenciales y no se avanza mientras la anterior carezca',
     'de resultado y evidencia. Las tareas de diseño terminan antes de E5.',
-    'Ninguna tarea de implementación, migración o cambio físico comienza antes',
+    'Los habilitadores PRE_E5_FOUNDATION aplicables pueden materializarse antes de E5 con autorización física explícita y evidencia propia.',
+    'Ninguna migración o cambio físico POST_E5_PACKAGE perteneciente al paquete comienza antes',
     laneIsActive
       ? 'de `E5-GATE-008::NEXO-REMISSIONS-001`.'
       : 'de `E5-GATE-008::<package_id>` para el paquete propietario que llegue a aprobarse.',

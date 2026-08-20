@@ -10,6 +10,14 @@ Esta sección organiza **experiencia de produccion** dentro de **L FOGO**. Agrup
 **Límites funcionales:** comienza con “Inventariar procesos reales de producción” y concluye con “Validar el prototipo por área productiva”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:FOGO-UX -->
+### Reconciliación topológica de FOGO-UX-001 a FOGO-UX-015
+
+Estas tareas inventarían, diseñan y validan la experiencia productiva objetivo. Son contratos UX consumidos por E5; la implementación física pertenece al package_id y a los propietarios técnicos correspondientes.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] FOGO-UX-001 — Inventariar procesos reales de producción
 ### [ ] FOGO-UX-002 — Separar cocina, panadería y repostería
 ### [ ] FOGO-UX-003 — Diseñar inicio por área productiva

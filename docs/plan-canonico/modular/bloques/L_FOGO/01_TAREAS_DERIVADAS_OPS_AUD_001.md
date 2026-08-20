@@ -4,6 +4,14 @@ Estas tareas concretan necesidades productivas detectadas en E1. Sus salidas se
 integran con las tareas FOGO existentes; no las sustituyen ni autorizan
 implementación anticipada.
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:OPS-PRODUCTION-DESIGN -->
+### Reconciliación topológica de OPS-REC-001, OPS-PRD-001 y OPS-TRZ-001
+
+Las tres tareas derivadas definen contratos o diseño operativo y entregan entradas a FOGO, NEXO, NUMERA y E5. No autorizan ni representan implementación física anticipada.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] OPS-REC-001 — Definir el contrato canónico de recetas y acceso contextual
 
 **Dependencias:** cierre de E2 y línea base de capacidades productivas.  

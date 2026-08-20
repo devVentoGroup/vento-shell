@@ -10,6 +10,22 @@ Esta sección organiza **componentes web compartidos** dentro de **H FUNDACION C
 **Límites funcionales:** comienza con “Crear @vento/ui-web” y concluye con “Compartir patrón de traspaso entre aplicaciones”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B001-200:SHELL-UI-001-020 -->
+### Reconciliación topológica de SHELL-UI-001 a SHELL-UI-020
+
+Esta regla se incorpora al contrato de cada marcador `SHELL-UI-001..020`.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad física | `GLOBAL_ENABLE_ONCE` |
+| gate temporal | `PRE_E5_FOUNDATION` |
+| identidad | `<task_id>::GLOBAL` |
+| autorización | explícita por instancia |
+
+La fundación visual compartida `@vento/ui-web` puede materializarse una sola vez antes de E5, siempre que conserve las fronteras aprobadas de contratos, autorización, accesibilidad, renderer y lógica empresarial.
+
+Esta reconciliación no autoriza migrar consumidores, retirar componentes legacy, desplegar una aplicación, cambiar rutas empresariales ni adoptar automáticamente una versión compartida. La adopción física por consumidores permanece en `SHELL-MIG-*`, packages propietarios y sus gates post-E5.
+
 ### ✅ SHELL-UI-001 — Crear @vento/ui-web
 
 **Estado:** APROBADA

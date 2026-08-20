@@ -4,6 +4,17 @@
 **Cobertura canónica:** `VISO-UX-001` a `VISO-UX-020` — 20 tareas.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:VISO-UX -->
+### Reconciliación topológica de VISO-UX-001 a VISO-UX-020
+
+Este bloque constituye un delta funcional ejecutable de VISO: reorganiza navegación, crea secciones, aplica alcance territorial, muestra conflictos y permisos, enlaza propietarios y ejecuta pruebas con administradores reales.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `PER_IMPLEMENTATION_UNIT` |
+| gate temporal | `POST_E5_PACKAGE` |
+| identidad física | `<task_id>::<implementation_unit_id>` |
+
 ### [ ] VISO-UX-001 — Reorganizar navegación por dominios administrativos
 ### [ ] VISO-UX-002 — Crear sección Personal
 ### [ ] VISO-UX-003 — Crear sección Programación

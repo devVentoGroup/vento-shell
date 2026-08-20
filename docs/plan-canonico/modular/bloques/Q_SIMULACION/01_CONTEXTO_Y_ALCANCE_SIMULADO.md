@@ -17,6 +17,21 @@ Esta sección organiza **contexto y alcance simulado** dentro de **Q SIMULACIÓN
 - `AUTH-SIM-006`: No mezclar permisos reales y simulados
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:AUTH-SIM-001-006 -->
+### Reconciliación topológica de AUTH-SIM-001 a AUTH-SIM-006
+
+Estas seis tareas constituyen el contrato canónico de simulación y no una implementación física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+Los registros, matrices y contratos materializados por `AUTH-SIM-001..006` son artefactos documentales de diseño. La implementación de visibilidad, auditoría, restricciones, navegación, Server Actions y pruebas reales comienza en `AUTH-SIM-007..014` y en los consumidores propietarios correspondientes.
+
+Esta reconciliación no modifica los permisos, matrices ni decisiones aprobadas por el mini-bloque.
+
 ### ✅ AUTH-SIM-001 — Definir quién puede simular
 
 **Estado:** APROBADA
@@ -5689,4 +5704,3 @@ Se incorporan `TREQ-AUTH-119` a `TREQ-AUTH-128` en el Registro Canónico de Requ
 
 **SIGUIENTE TAREA RESERVADA**
 `AUTH-ERR-001 — Sin sesión`
-

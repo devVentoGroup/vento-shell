@@ -4,6 +4,14 @@
 **Cobertura canónica:** `AUTH-QA-001` a `AUTH-QA-030` — 30 tareas.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:AUTH-QA -->
+### Reconciliación topológica de AUTH-QA-001 a AUTH-QA-030
+
+Cada paquete ejecuta el subconjunto integral aplicable y, después de todos los paquetes, se conserva una certificación global sin duplicar implementaciones.
+
+| modalidad | `PER_PACKAGE_AND_GLOBAL_FINAL` |
+| gate temporal | `POST_E5_PACKAGE` |
+
 ### [ ] AUTH-QA-001 — Propietario sin check-in entra a administración
 ### [ ] AUTH-QA-002 — Gerente general sin check-in entra a administración
 ### [ ] AUTH-QA-003 — Gerente de sede solo opera sus sedes

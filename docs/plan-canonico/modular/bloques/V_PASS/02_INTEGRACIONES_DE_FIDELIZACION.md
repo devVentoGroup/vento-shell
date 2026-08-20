@@ -16,6 +16,14 @@ Esta sección organiza **integraciones de fidelizacion** dentro de **V PASS**. A
 - `PASS-INT-005`: Evitar mezclar identidad cliente y trabajador
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:PASS-INT -->
+### Reconciliación topológica de PASS-INT-001 a PASS-INT-005
+
+Estas tareas definen contratos y fronteras de integración de fidelización. La implementación posterior pertenece a los consumidores y paquetes propietarios.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] PASS-INT-001 — Definir integración PULSO → PASS para acumulación
 ### [ ] PASS-INT-002 — Definir integración PULSO → PASS para redención
 ### [ ] PASS-INT-003 — Definir administración laboral de productos de fidelización

@@ -1,5 +1,20 @@
 ### INFRAESTRUCTURA DE INTEGRACIONES EXTERNAS
 
+<!-- EXECUTION-GATE-RECONCILIATION:B201-400:INT-DB -->
+#### Reconciliación topológica de INT-DB-001 a INT-DB-008
+
+La infraestructura física de una integración externa pertenece al package_id que la activa.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `TEMPLATE_PER_PACKAGE` |
+| gate temporal | `POST_E5_PACKAGE` |
+| identidad | `<task_id>::<package_id>` |
+
+Cada integración deberá haber sido incluida expresamente en DELIV-PKG y haber superado su puerta E5 antes de materializar tablas, colas, credenciales, políticas, funciones, jobs, sincronizaciones o efectos remotos asociados.
+
+La existencia de patrones comunes no crea una ejecución global implícita ni autoriza configurar una integración que no pertenezca al paquete aprobado.
+
 ### [ ] INT-DB-001 — Crear registro de sistemas e integraciones externas
 ### [ ] INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas
 ### [ ] INT-DB-003 — Crear staging inmutable de payloads externos

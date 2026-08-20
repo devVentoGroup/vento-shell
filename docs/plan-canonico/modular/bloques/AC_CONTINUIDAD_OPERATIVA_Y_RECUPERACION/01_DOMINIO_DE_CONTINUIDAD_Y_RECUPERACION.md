@@ -10,6 +10,21 @@ Esta sección organiza **dominio de continuidad y recuperacion** dentro de **AC 
 **Límites funcionales:** comienza con “Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad” y concluye con “Definir revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:CONT-DOM -->
+### Reconciliación topológica de CONT-DOM-001 a CONT-DOM-015
+
+Estas tareas son contratos y diseños canónicos de política, BIA, dependencias, objetivos, contingencia, respaldos, recuperación y ejercicios. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ CONT-DOM-001 — Definir política, alcance, gobierno, roles y ciclo de mantenimiento de continuidad
 
 **Estado:** APROBADA
@@ -12271,4 +12286,3 @@ TAREA ACTUAL APROBADA
 SIGUIENTE TAREA RESERVADA
 
 `CONT-AUTH-001 — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación`
-

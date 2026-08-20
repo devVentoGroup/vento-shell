@@ -10,6 +10,14 @@ Esta sección organiza **experiencia de compras** dentro de **M ORIGO**. Agrupa 
 **Límites funcionales:** comienza con “Inventariar el proceso completo de abastecimiento” y concluye con “Validar el prototipo con compras y recepción”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:ORIGO-UX -->
+### Reconciliación topológica de ORIGO-UX-001 a ORIGO-UX-016
+
+La familia define y valida la experiencia de abastecimiento. No genera una implementación física propia; sus decisiones se materializan en paquetes posteriores.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] ORIGO-UX-001 — Inventariar el proceso completo de abastecimiento
 ### [ ] ORIGO-UX-002 — Separar solicitud, compra, aprobación y recepción
 ### [ ] ORIGO-UX-003 — Diseñar inicio para solicitante

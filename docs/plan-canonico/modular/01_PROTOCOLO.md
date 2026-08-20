@@ -21,8 +21,7 @@
    - el usuario solicite expresamente continuar;
    - se compruebe que no existe una etapa contractual intermedia.
 
-3. No implementar código, migraciones ni cambios en Supabase,
-   salvo que la tarea lo ordene expresamente.
+3. No iniciar una ejecución física por inferencia desde la tarea documental actual. El marcador documental y la instancia física son capas distintas: la tarea actual gobierna continuidad de documentación; la cardinalidad física se obtiene de `mode`; y el momento permitido se obtiene de `execution_gate` en `task-work-topology.json`. Toda ejecución física conserva autorización explícita por instancia. `UNREVIEWED` nunca autoriza ni relaja trabajo. Los cambios remotos, migraciones, Supabase, despliegues, secretos y datos conservan además sus gates técnicos propietarios.
 
 4. Formato obligatorio de entrega, revisión y aprobación documental
 
@@ -941,48 +940,45 @@ defectos y contratos comprobados al desarrollo normal.
 <!-- PRIORITY-PACKAGE-PROTOCOL:END -->
 
 <!-- TASK-WORK-TOPOLOGY:START -->
-## Topología canónica de trabajo, dependencias y repetición
+## Topología canónica de trabajo, cardinalidad y gate temporal
 
-La autoridad estructurada es `task-work-topology.json`. El orden de desarrollo
-del marcador global y el orden de ejecución física son dos capas relacionadas,
-pero no intercambiables.
+La autoridad estructurada es `task-work-topology.json`.
+
+La topología separa obligatoriamente dos dimensiones:
+
+```text
+mode
+→ CUÁNTAS INSTANCIAS PUEDEN EXISTIR
+
+execution_gate
+→ CUÁNDO PUEDE EJECUTARSE UNA INSTANCIA
+```
+
+Una dimensión nunca podrá inferirse de la otra.
 
 Reglas obligatorias:
 
-1. el marcador global `<task_id>` define y aprueba su contrato canónico una
-   sola vez; una instancia física no reabre ni vuelve a desarrollar ese
-   contenido;
-2. `Dependencias para desarrollar` solo puede referenciar tareas anteriores en
-   `continuity-route.json`; cuando la tarea sea actual, todas deberán estar
-   aprobadas;
-3. `Dependencias para ejecutar cada instancia` puede referenciar gates,
-   habilitadores o pasos posteriores y no se interpretará como prerrequisito
-   para definir ahora el contrato;
-4. el campo histórico `Dependencias` mantiene semántica de dependencia para
-   desarrollar y, por tanto, tampoco puede apuntar hacia el futuro;
-5. `DEFINE_ONCE` no se repite por paquete;
-6. `GLOBAL_ENABLE_ONCE` se materializa una sola vez y todos los paquetes
-   reutilizan el habilitador certificado;
-7. `TEMPLATE_PER_PACKAGE` define una plantilla global y registra después una
-   instancia `<task_id>::<package_id>` por paquete;
-8. `PER_IMPLEMENTATION_UNIT` registra como máximo una materialización
-   `<task_id>::<implementation_unit_id>`; varios `package_id` podrán consumirla
-   con lineage explícito sin duplicar código, migraciones ni pruebas propias de
-   la unidad;
-9. `PER_PACKAGE_AND_GLOBAL_FINAL` ejecuta el subconjunto de cada paquete y una
-   certificación agregada `<task_id>::GLOBAL-FINAL` después de cerrar todos los
-   paquetes aplicables;
-10. `GLOBAL_FINAL` se ejecuta una sola vez al final y consume evidencia
-    acumulada sin repetir las implementaciones que la produjeron;
-11. cada defecto posterior añade una regresión al contrato o a la instancia
-    propietaria; no obliga a rehacer tareas cerradas que no cambiaron;
-12. el compilador rechazará tareas sin clasificación, overrides superpuestos,
-    dependencias de desarrollo futuras, dependencias actuales no aprobadas y
-    cualquier deriva entre la topología, la ruta y la guía derivada.
+1. el marcador global `<task_id>` define y aprueba su contrato canónico una sola vez;
+2. `Dependencias para desarrollar` solo puede referenciar trabajo documental anterior;
+3. `Dependencias para ejecutar cada instancia` puede contener habilitadores, gates y evidencia posteriores sin bloquear el desarrollo del marcador;
+4. `DEFINE_ONCE` no crea una instancia física propia;
+5. `GLOBAL_ENABLE_ONCE` admite como máximo `<task_id>::GLOBAL`;
+6. `TEMPLATE_PER_PACKAGE` admite `<task_id>::<package_id>`;
+7. `PER_IMPLEMENTATION_UNIT` admite como máximo una materialización por `implementation_unit_id` y varios paquetes pueden consumir la misma unidad mediante lineage;
+8. `PER_PACKAGE_AND_GLOBAL_FINAL` conserva ejecución por paquete y certificación agregada;
+9. `GLOBAL_FINAL` conserva una única certificación final;
+10. `PRE_E5_PLANNING` identifica trabajo de planificación por paquete que debe ocurrir antes de `E5-GATE-008::<package_id>`; la puerta E5 es su resultado, no su prerrequisito;
+11. `PRE_E5_FOUNDATION` identifica una fundación transversal que puede materializarse antes de E5 cuando su contrato esté aprobado, sus dependencias técnicas estén satisfechas y la instancia tenga autorización física explícita;
+12. `POST_E5_PACKAGE` exige que el paquete propietario aplicable haya superado `E5-GATE-008::<package_id>`;
+13. `NO_PHYSICAL_INSTANCE` prohíbe crear una ejecución física propia para ese marcador;
+14. `UNREVIEWED` significa que la tarea todavía no fue clasificada durante la reconciliación integral; nunca concede autorización nueva ni sustituye su contrato histórico;
+15. aprobar un marcador, asignar un `mode` o asignar un `execution_gate` nunca autoriza automáticamente una instancia física;
+16. durante `PARTIAL_REVIEW_IN_PROGRESS`, únicamente las posiciones declaradas en `reviewed_ranges` podrán recibir un gate distinto de `UNREVIEWED`;
+17. la continuidad documental no avanza por materializar una fundación física y una ejecución física no convierte automáticamente la tarea documental siguiente en actual;
+18. las referencias históricas a E5 dentro de una tarea revisada deberán reconciliarse en su fuente propietaria; no se anulan mediante una excepción global silenciosa;
+19. el compilador deberá rechazar modos desconocidos, gates desconocidos, overrides superpuestos, rangos parciales incoherentes, tareas revisadas todavía `UNREVIEWED` y tareas no revisadas que reciban anticipadamente un gate temporal.
 
-La guía pendiente deberá mostrar para cada tarea: trabajo canónico actual,
-modalidad, identidad de instancia, dependencias para desarrollar, dependencias
-para ejecutar, regla de repetición, pruebas y cierres global/de instancia.
+La reconciliación integral usa el audit de 974 tareas de implementación. Las posiciones 1–974 están revisadas y no queda ninguna tarea de implementación con gate `UNREVIEWED`.
 <!-- TASK-WORK-TOPOLOGY:END -->
 
 ## Regla canónica de granularidad documental

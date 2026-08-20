@@ -15,6 +15,21 @@ Esta sección organiza **autorización y acceso privilegiado** dentro de **Z TEC
 - `TI-AUTH-004`: Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:TI-AUTH -->
+### Reconciliación topológica de TI-AUTH-001 a TI-AUTH-004
+
+Estas tareas son contratos y diseños canónicos de segregación, acceso privilegiado y protección de configuración y evidencia tecnológica. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos
 
 **Estado:** APROBADA  
@@ -2352,4 +2367,3 @@ TI-AUTH-004 — Proteger diagnósticos, logs, exportaciones, capturas, secretos 
 SIGUIENTE TAREA RESERVADA
 TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA
 ```
-
