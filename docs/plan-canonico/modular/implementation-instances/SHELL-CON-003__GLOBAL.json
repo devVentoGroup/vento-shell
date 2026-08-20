@@ -1,10 +1,39 @@
 {
   "instance_id": "SHELL-CON-003::GLOBAL",
   "task_id": "SHELL-CON-003",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar packages/contracts/authorization/catalog/versions/1.0.0/permissions.json con exactamente las 140 identidades canonicas activas de SHELL-CON-003, conservando solo permission_key, app_code y lifecycle_status como porcion de identidad propietaria de esta instancia; no incorporar aliases, permisos legacy, retirados ni metadata contractual reservada a otras tareas.",
+    "Materializar packages/contracts/authorization/schemas/permission.schema.json como schema cerrado de la porcion de identidad de permiso de SHELL-CON-003, sin anticipar la forma completa de PermissionDefinition, modalidades, scopes, carriles, resource contracts ni otros campos gobernados por tareas posteriores.",
+    "Modificar packages/contracts/authorization/scripts/generate-authorization-types.mjs para conservar la generacion vigente de aplicaciones y derivar adicionalmente PermissionKey, PermissionLifecycleStatus, PermissionIdentityDefinition, PermissionByKey, PERMISSION_KEYS, PERMISSION_IDENTITIES, PERMISSION_BY_KEY e isPermissionKey desde permissions.json, actualizando deterministamente generated/versions/1.0.0/catalog.types.ts, catalog.values.ts e index.ts sin crear exports publicos del package.",
+    "Modificar packages/contracts/authorization/scripts/validate-authorization-catalog.mjs para validar la porcion materializada de aplicaciones y permisos: 140 claves activas unicas, distribucion canonica por las diez aplicaciones, forma permitida, pertenencia al AppCode declarado, digest exacto del keyset, ausencia de solapamiento con los 22 legacy bloqueados y 14 retirados, schemas, artefactos generados y fronteras de alcance de SHELL-CON-003.",
+    "Actualizar packages/contracts/authorization/README.md para registrar la porcion de permisos materializada por SHELL-CON-003::GLOBAL y mantener expresamente diferidos aliases.json, legacy-permissions.json, retired-permissions.json, metadata completa de permisos, roles, scopes, resource contracts, catalog/current.json, manifest publicado, checksums globales, changelog de publicacion, consumidores, Supabase, releases, registry y exports publicos.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-003__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar registros VERIFIED anteriores ni docs/plan-canonico/modular/implementation-control.json."
+  ],
+  "validation_commands": [
+    "node packages/contracts/authorization/scripts/generate-authorization-types.mjs --check",
+    "node packages/contracts/authorization/scripts/validate-authorization-catalog.mjs",
+    "git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-20T14:17:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-003::GLOBAL en vento-group-sas/vento-shell para materializar las 140 identidades canonicas activas de permiso, su schema cerrado de identidad, la generacion determinista de PermissionKey y valores de identidad, la validacion local del conjunto activo y la documentacion interna del subpath authorization. No autorizo aliases, legacy-permissions.json, retired-permissions.json, metadata completa de permisos, roles base u operativos, scopes, resource contracts, catalog/current.json, manifest publicado, checksums globales, changelog de publicacion, parsers de compatibilidad, consumidores, Supabase, lint o gates adicionales de consumidores, exports publicos, cambio de version del package, registry, tags, releases, publicacion npm, despliegues, secretos ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "4463bc95110fec94f99749b51a8f1f5c2a3cf6d4cf61e7d13277c3f74c3a9a89"
+  },
+  "evidence": [
+    "MATERIALIZATION permissions.json with 140 canonical active permission identities, permission identity schema, deterministic PermissionKey generation and catalog validation created",
+    "VALIDATION generate-authorization-types --check PASS",
+    "VALIDATION authorization catalog PASS; applications=10; permissions=140; unique_permission_keys=140",
+    "VALIDATION permission keyset SHA256 8bfa524537c8378907d07487cfd445ada99448e1804a2ac8b3681bc41877afda",
+    "VALIDATION legacy active overlap=0; retired active overlap=0",
+    "VALIDATION generated authorization contracts FRESH",
+    "VALIDATION git diff --check PASS",
+    "RESULT SHELL-CON-003::GLOBAL VERIFIED"
+  ]
 }
