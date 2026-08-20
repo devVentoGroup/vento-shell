@@ -1,109 +1,941 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "policy_id": "CANONICAL-TASK-WORK-TOPOLOGY-001",
   "canonical_marker_semantics": "DEFINE_CONTRACT_ONCE",
   "instance_separator": "::",
   "coverage_policy": "ALL_CONTINUITY_TASKS_EXACTLY_ONCE",
   "mode_definitions": {
     "DEFINE_ONCE": {
-      "label": "Definición global única",
-      "canonical_work": "Se desarrolla y aprueba una sola vez como contrato canónico.",
-      "execution_dependencies": "No crea una instancia posterior; sus consumidores reutilizan el contrato aprobado.",
-      "execution_rule": "No se repite por paquete; los consumidores posteriores reutilizan la decisión aprobada.",
-      "instance_pattern": null
+      "label": "Definir una sola vez sin instancia física propia",
+      "canonical_work": "El marcador canónico se desarrolla y aprueba una sola vez como contrato reutilizable.",
+      "execution_dependencies": "No crea una instancia física propia.",
+      "execution_rule": "Los consumidores reutilizan el contrato aprobado sin repetir esta tarea como ejecución.",
+      "instance_pattern": "<task_id>"
     },
     "GLOBAL_ENABLE_ONCE": {
-      "label": "Habilitador global único",
-      "canonical_work": "Se define una vez y se materializa una sola vez antes de habilitar paquetes.",
-      "execution_dependencies": "Después de aprobar su contrato global y antes de cualquier E5-GATE-008::<package_id>.",
-      "execution_rule": "Todos los paquetes reutilizan el mismo habilitador certificado; no lo vuelven a implementar.",
+      "label": "Una instancia física global reutilizable",
+      "canonical_work": "El marcador canónico define una sola vez el contrato de una fundación compartida.",
+      "execution_dependencies": "Las dependencias temporales se resuelven exclusivamente mediante execution_gate.",
+      "execution_rule": "Existe como máximo una instancia física global reutilizable por todos los paquetes aplicables.",
       "instance_pattern": "<task_id>::GLOBAL"
     },
     "TEMPLATE_PER_PACKAGE": {
-      "label": "Plantilla global con ejecución por paquete",
-      "canonical_work": "Ahora se define una sola plantilla, sus entradas, pruebas, gates y evidencia.",
-      "execution_dependencies": "Después de SHELL-CI-001..019, DELIV-PKG del paquete y E5-GATE-008::<package_id>.",
-      "execution_rule": "Más adelante se ejecuta una instancia independiente por package_id; la instancia no reabre ni aprueba el marcador global.",
+      "label": "Una instancia por package_id",
+      "canonical_work": "El marcador canónico define una sola vez la plantilla o contrato repetible por paquete.",
+      "execution_dependencies": "Las dependencias temporales se resuelven exclusivamente mediante execution_gate.",
+      "execution_rule": "Cada package_id aplicable registra su propia instancia sin reabrir el marcador global.",
       "instance_pattern": "<task_id>::<package_id>"
     },
     "PER_IMPLEMENTATION_UNIT": {
-      "label": "Contrato global con materialización por unidad",
-      "canonical_work": "Ahora se define el contrato una sola vez y se asigna su futura materialización.",
-      "execution_dependencies": "Después de que DELIV-PKG-025 asigne implementation_unit_id y el package_id propietario supere E5-GATE-008.",
-      "execution_rule": "Se implementa una sola vez por implementation_unit_id; varios paquetes pueden consumir la misma unidad con lineage sin repetir código.",
+      "label": "Una instancia por implementation_unit_id",
+      "canonical_work": "El marcador canónico define una sola vez el contrato de una unidad física reutilizable.",
+      "execution_dependencies": "Las dependencias temporales se resuelven exclusivamente mediante execution_gate.",
+      "execution_rule": "Cada implementation_unit_id se materializa como máximo una vez y puede ser consumido por varios package_id mediante lineage.",
       "instance_pattern": "<task_id>::<implementation_unit_id>"
     },
     "PER_PACKAGE_AND_GLOBAL_FINAL": {
-      "label": "Validación por paquete y certificación global final",
-      "canonical_work": "Ahora se define una sola matriz de prueba y sus oráculos.",
-      "execution_dependencies": "El subconjunto se ejecuta después de implementar cada paquete; la certificación global espera todos los cierres aplicables.",
-      "execution_rule": "Cada paquete ejecuta su subconjunto y, después de todos los paquetes aplicables, se ejecuta una certificación global sin rehacer las definiciones.",
+      "label": "Instancia por paquete y certificación global final",
+      "canonical_work": "El marcador canónico define una sola vez el contrato de certificación.",
+      "execution_dependencies": "Las dependencias temporales se resuelven exclusivamente mediante execution_gate.",
+      "execution_rule": "Se registra una ejecución por package_id y una certificación GLOBAL-FINAL agregada cuando corresponda.",
       "instance_pattern": "<task_id>::<package_id> + <task_id>::GLOBAL-FINAL"
     },
     "GLOBAL_FINAL": {
-      "label": "Cierre global posterior",
-      "canonical_work": "Ahora se define el gate global y la evidencia acumulada que exigirá.",
-      "execution_dependencies": "Después de todos los paquetes, certificaciones y conciliaciones aplicables.",
-      "execution_rule": "Se ejecuta una sola vez al final, consumiendo cierres de paquetes sin repetir sus implementaciones.",
+      "label": "Una certificación global final",
+      "canonical_work": "El marcador canónico define una sola vez el cierre transversal.",
+      "execution_dependencies": "Las dependencias temporales se resuelven exclusivamente mediante execution_gate.",
+      "execution_rule": "Se materializa una sola instancia GLOBAL-FINAL cuando sus prerrequisitos estén cerrados.",
       "instance_pattern": "<task_id>::GLOBAL-FINAL"
     }
   },
   "stage_defaults": [
-    { "sequence_id": "PHASE-01-CANONICAL-DEFINITION", "mode": "DEFINE_ONCE" },
-    { "sequence_id": "PHASE-02-E1-DISCOVERY", "mode": "DEFINE_ONCE" },
-    { "sequence_id": "PHASE-02-E1-EXTERNAL-GOVERNANCE-CONDITIONAL", "mode": "DEFINE_ONCE" },
-    { "sequence_id": "PHASE-02-E2-PROCESSES-AND-UX", "mode": "DEFINE_ONCE" },
-    { "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS", "mode": "DEFINE_ONCE" },
-    { "sequence_id": "PHASE-02-E3-SUPABASE-DESIGN", "mode": "DEFINE_ONCE" },
-    { "sequence_id": "PHASE-02-E4-TRANSVERSE-SERVICES", "mode": "DEFINE_ONCE" },
-    { "sequence_id": "PHASE-02-VISO-SCHEDULE-DELTA", "mode": "DEFINE_ONCE" },
-    { "sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING", "mode": "TEMPLATE_PER_PACKAGE" },
-    { "sequence_id": "PHASE-03-H-SHARED-FOUNDATION", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-03-T-CI-FOUNDATION", "mode": "GLOBAL_ENABLE_ONCE" },
-    { "sequence_id": "PHASE-03-J-SERVER-ACTIONS", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-03-S-BLOCKING-EXPERIENCE", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-F-ANIMA", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-G-VISO-CORE", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-H2-SHELL-APPLICATION", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-I-UI-IMPLEMENTATION", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-PQ-DEVICE-AND-SIMULATION", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-Z-TECHNOLOGY", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-AA-INFORMATION-GOVERNANCE", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-AB-DATA-AND-ANALYTICS", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-04-AC-CONTINUITY", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-05-NEXO", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-06-FOGO-ORIGO", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-07-PULSO", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-08-NUMERA", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-09-VISO-COMPLETE", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-10-PASS", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-12-AURA", "mode": "PER_IMPLEMENTATION_UNIT" },
-    { "sequence_id": "PHASE-13-U-INTEGRAL-CERTIFICATION", "mode": "PER_PACKAGE_AND_GLOBAL_FINAL" },
-    { "sequence_id": "PHASE-13-R3-LEGACY-RETIREMENT", "mode": "GLOBAL_FINAL" }
+    {
+      "sequence_id": "PHASE-01-CANONICAL-DEFINITION",
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-02-E1-DISCOVERY",
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-02-E1-EXTERNAL-GOVERNANCE-CONDITIONAL",
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-02-E2-PROCESSES-AND-UX",
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS",
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-02-E3-SUPABASE-DESIGN",
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-02-E4-TRANSVERSE-SERVICES",
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-02-VISO-SCHEDULE-DELTA",
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING",
+      "mode": "TEMPLATE_PER_PACKAGE"
+    },
+    {
+      "sequence_id": "PHASE-03-H-SHARED-FOUNDATION",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-03-T-CI-FOUNDATION",
+      "mode": "GLOBAL_ENABLE_ONCE"
+    },
+    {
+      "sequence_id": "PHASE-03-J-SERVER-ACTIONS",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-03-S-BLOCKING-EXPERIENCE",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-F-ANIMA",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-G-VISO-CORE",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-H2-SHELL-APPLICATION",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-I-UI-IMPLEMENTATION",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-PQ-DEVICE-AND-SIMULATION",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-Z-TECHNOLOGY",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-AA-INFORMATION-GOVERNANCE",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-AB-DATA-AND-ANALYTICS",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-04-AC-CONTINUITY",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-05-NEXO",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-06-FOGO-ORIGO",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-07-PULSO",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-08-NUMERA",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-09-VISO-COMPLETE",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-10-PASS",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-12-AURA",
+      "mode": "PER_IMPLEMENTATION_UNIT"
+    },
+    {
+      "sequence_id": "PHASE-13-U-INTEGRAL-CERTIFICATION",
+      "mode": "PER_PACKAGE_AND_GLOBAL_FINAL"
+    },
+    {
+      "sequence_id": "PHASE-13-R3-LEGACY-RETIREMENT",
+      "mode": "GLOBAL_FINAL"
+    }
   ],
   "overrides": [
     {
       "selectors": [
-        { "prefix": "SHELL-AUD" },
-        { "prefix": "SHELL-PKG" },
-        { "prefix": "SHELL-MIG", "from": 1, "to": 2 },
-        { "prefix": "AUTH-UI", "from": 30, "to": 39 }
+        {
+          "prefix": "SHELL-AUD"
+        },
+        {
+          "prefix": "SHELL-PKG"
+        },
+        {
+          "prefix": "SHELL-MIG",
+          "from": 1,
+          "to": 2
+        },
+        {
+          "prefix": "AUTH-UI",
+          "from": 30,
+          "to": 39
+        }
       ],
       "mode": "DEFINE_ONCE"
     },
     {
       "selectors": [
-        { "prefix": "SHELL-MIG", "from": 3, "to": 8 }
+        {
+          "prefix": "SHELL-MIG",
+          "from": 3,
+          "to": 8
+        }
       ],
       "mode": "TEMPLATE_PER_PACKAGE",
       "execution_rule": "La definición global no se reabre. Cada lote conserva una instancia task_id::package_id y reconcilia consumidores, commit, pruebas y rollback propios dentro del ciclo SHELL-CI-020..024::<package_id>."
     },
     {
       "selectors": [
-        { "prefix": "SHELL-CI", "from": 20, "to": 24 }
+        {
+          "prefix": "SHELL-CI",
+          "from": 20,
+          "to": 24
+        }
       ],
       "mode": "TEMPLATE_PER_PACKAGE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "SHELL-CON"
+        }
+      ],
+      "mode": "GLOBAL_ENABLE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "SHELL-NORM"
+        }
+      ],
+      "mode": "GLOBAL_ENABLE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "task_ids": [
+            "SHELL-DB-001",
+            "SHELL-DB-004",
+            "SHELL-DB-005"
+          ]
+        }
+      ],
+      "mode": "GLOBAL_ENABLE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "task_ids": [
+            "SHELL-DB-002"
+          ]
+        }
+      ],
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "task_ids": [
+            "SHELL-DB-003"
+          ]
+        }
+      ],
+      "mode": "TEMPLATE_PER_PACKAGE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "SHELL-UI"
+        }
+      ],
+      "mode": "GLOBAL_ENABLE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "task_ids": [
+            "AUTH-DB-015",
+            "AUTH-DB-027",
+            "AUTH-DB-028",
+            "AUTH-DB-029",
+            "AUTH-DB-001",
+            "AUTH-DB-002",
+            "AUTH-DB-003",
+            "AUTH-DB-004",
+            "AUTH-DB-005",
+            "AUTH-DB-016",
+            "AUTH-DB-018",
+            "AUTH-DB-017",
+            "AUTH-DB-019",
+            "AUTH-DB-033",
+            "AUTH-DB-035",
+            "AUTH-DB-034",
+            "AUTH-DB-032",
+            "AUTH-DB-012",
+            "AUTH-DB-013",
+            "AUTH-DB-014"
+          ]
+        }
+      ],
+      "mode": "GLOBAL_ENABLE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "task_ids": [
+            "AUTH-DB-020",
+            "AUTH-DB-006",
+            "AUTH-DB-007",
+            "AUTH-DB-008",
+            "AUTH-DB-009",
+            "AUTH-DB-010",
+            "AUTH-DB-021",
+            "AUTH-DB-011",
+            "AUTH-DB-022",
+            "AUTH-DB-023",
+            "AUTH-DB-024",
+            "AUTH-DB-025",
+            "AUTH-DB-026"
+          ]
+        }
+      ],
+      "mode": "TEMPLATE_PER_PACKAGE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "DATA-NORM-DB",
+          "from": 1,
+          "to": 10
+        }
+      ],
+      "mode": "TEMPLATE_PER_PACKAGE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "INT-DB",
+          "from": 1,
+          "to": 8
+        }
+      ],
+      "mode": "TEMPLATE_PER_PACKAGE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "AUTH-ERR",
+          "from": 1,
+          "to": 20
+        }
+      ],
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "AUTH-DEV",
+          "from": 1,
+          "to": 6
+        }
+      ],
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "AUTH-SIM",
+          "from": 1,
+          "to": 6
+        },
+        {
+          "prefix": "TI-DOM",
+          "from": 1,
+          "to": 13
+        },
+        {
+          "prefix": "TI-AUTH",
+          "from": 1,
+          "to": 4
+        },
+        {
+          "prefix": "TI-UX",
+          "from": 1,
+          "to": 6
+        },
+        {
+          "prefix": "TI-INT",
+          "from": 1,
+          "to": 3
+        },
+        {
+          "prefix": "INFO-DOM",
+          "from": 1,
+          "to": 13
+        },
+        {
+          "prefix": "INFO-AUTH",
+          "from": 1,
+          "to": 4
+        },
+        {
+          "prefix": "INFO-UX",
+          "from": 1,
+          "to": 6
+        },
+        {
+          "prefix": "INFO-INT",
+          "from": 1,
+          "to": 3
+        },
+        {
+          "prefix": "DATA-DOM",
+          "from": 1,
+          "to": 17
+        },
+        {
+          "prefix": "DATA-AUTH",
+          "from": 1,
+          "to": 4
+        },
+        {
+          "prefix": "DATA-UX",
+          "from": 1,
+          "to": 8
+        },
+        {
+          "prefix": "DATA-INT",
+          "from": 1,
+          "to": 4
+        },
+        {
+          "prefix": "CONT-DOM",
+          "from": 1,
+          "to": 15
+        },
+        {
+          "prefix": "CONT-AUTH",
+          "from": 1,
+          "to": 4
+        },
+        {
+          "prefix": "CONT-UX",
+          "from": 1,
+          "to": 7
+        },
+        {
+          "prefix": "CONT-INT",
+          "from": 1,
+          "to": 4
+        },
+        {
+          "prefix": "NEXO-DOM",
+          "from": 1,
+          "to": 38
+        }
+      ],
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "ANIMA-UX",
+          "from": 1,
+          "to": 17
+        },
+        {
+          "task_ids": [
+            "VISO-CORE-001",
+            "VISO-CORE-002",
+            "VISO-CORE-006"
+          ]
+        },
+        {
+          "task_ids": [
+            "NEXO-AUTH-021"
+          ]
+        },
+        {
+          "prefix": "NEXO-UX",
+          "from": 1,
+          "to": 48
+        },
+        {
+          "prefix": "AUTH-UI",
+          "from": 52,
+          "to": 60
+        },
+        {
+          "task_ids": [
+            "OPS-REC-001",
+            "OPS-PRD-001",
+            "OPS-TRZ-001"
+          ]
+        },
+        {
+          "task_ids": [
+            "FOGO-AUTH-001",
+            "FOGO-AUTH-002",
+            "FOGO-AUTH-008"
+          ]
+        },
+        {
+          "prefix": "FOGO-UX",
+          "from": 1,
+          "to": 15
+        },
+        {
+          "prefix": "ORIGO-AUTH",
+          "from": 1,
+          "to": 8
+        },
+        {
+          "prefix": "ORIGO-UX",
+          "from": 1,
+          "to": 16
+        },
+        {
+          "task_ids": [
+            "OPS-POS-001"
+          ]
+        },
+        {
+          "prefix": "PULSO-AUTH",
+          "from": 1,
+          "to": 8
+        },
+        {
+          "prefix": "PULSO-UX",
+          "from": 1,
+          "to": 21
+        },
+        {
+          "prefix": "NUMERA-AUD",
+          "from": 1,
+          "to": 12
+        },
+        {
+          "task_ids": [
+            "OPS-CST-001"
+          ]
+        },
+        {
+          "prefix": "NUMERA-DOM",
+          "from": 1,
+          "to": 18
+        },
+        {
+          "prefix": "NUMERA-AUTH",
+          "from": 1,
+          "to": 7
+        }
+      ],
+      "mode": "DEFINE_ONCE"
+    },
+    {
+      "selectors": [
+        {
+          "prefix": "NUMERA-AUTH",
+          "from": 14,
+          "to": 15
+        },
+        {
+          "prefix": "NUMERA-UX",
+          "from": 1,
+          "to": 28
+        },
+        {
+          "prefix": "PASS-UX",
+          "from": 1,
+          "to": 13
+        },
+        {
+          "prefix": "PASS-INT",
+          "from": 1,
+          "to": 5
+        },
+        {
+          "prefix": "AURA-AUD",
+          "from": 1,
+          "to": 12
+        },
+        {
+          "prefix": "AURA-DOM",
+          "from": 1,
+          "to": 10
+        },
+        {
+          "prefix": "AURA-UX",
+          "from": 1,
+          "to": 8
+        },
+        {
+          "prefix": "AURA-INT",
+          "from": 1,
+          "to": 2
+        }
+      ],
+      "mode": "DEFINE_ONCE"
     }
-  ]
+  ],
+  "execution_gate_definitions": {
+    "NO_PHYSICAL_INSTANCE": {
+      "label": "Sin instancia física propia",
+      "rule": "La tarea se agota en su contrato canónico y no genera una ejecución física identificable."
+    },
+    "PRE_E5_PLANNING": {
+      "label": "Planificación por paquete anterior a la puerta E5",
+      "rule": "La instancia construye o cierra el expediente del package_id antes de E5-GATE-008; E5-GATE-008 es resultado de este carril y nunca su prerrequisito."
+    },
+    "PRE_E5_FOUNDATION": {
+      "label": "Fundación transversal materializable antes de E5",
+      "rule": "La instancia puede materializarse antes de E5 después de aprobar su contrato, satisfacer sus dependencias técnicas y recibir autorización física explícita. No constituye implementación vertical de un package_id."
+    },
+    "POST_E5_PACKAGE": {
+      "label": "Ejecución física posterior a E5 del paquete propietario",
+      "rule": "La instancia requiere el package_id propietario aplicable y E5-GATE-008::<package_id> = PASS antes de ejecutar cambios físicos."
+    },
+    "UNREVIEWED": {
+      "label": "Gate temporal todavía no revisado",
+      "rule": "La reconciliación integral todavía no ha clasificado esta tarea. Este valor nunca relaja ni sustituye su contrato histórico y no concede autorización temporal nueva."
+    }
+  },
+  "execution_gate_default": "UNREVIEWED",
+  "execution_gate_overrides": [
+    {
+      "execution_gate": "PRE_E5_PLANNING",
+      "selectors": [
+        {
+          "prefix": "DELIV-PKG"
+        },
+        {
+          "prefix": "READY-GATE"
+        },
+        {
+          "prefix": "CUTOVER-OPS"
+        },
+        {
+          "prefix": "HYPERCARE-OPS"
+        },
+        {
+          "prefix": "E5-GATE"
+        }
+      ]
+    },
+    {
+      "execution_gate": "PRE_E5_FOUNDATION",
+      "selectors": [
+        {
+          "prefix": "SHELL-CON"
+        },
+        {
+          "prefix": "SHELL-NORM"
+        },
+        {
+          "task_ids": [
+            "SHELL-DB-001",
+            "SHELL-DB-004",
+            "SHELL-DB-005"
+          ]
+        },
+        {
+          "prefix": "SHELL-UI"
+        },
+        {
+          "prefix": "SHELL-CI",
+          "from": 1,
+          "to": 19
+        }
+      ]
+    },
+    {
+      "execution_gate": "POST_E5_PACKAGE",
+      "selectors": [
+        {
+          "task_ids": [
+            "SHELL-DB-003"
+          ]
+        },
+        {
+          "prefix": "SHELL-MIG",
+          "from": 3,
+          "to": 8
+        },
+        {
+          "prefix": "SHELL-NATIVE",
+          "from": 1,
+          "to": 3
+        },
+        {
+          "prefix": "SHELL-AUTH",
+          "from": 1,
+          "to": 5
+        },
+        {
+          "prefix": "SHELL-CTX",
+          "from": 1,
+          "to": 6
+        },
+        {
+          "prefix": "SHELL-CI",
+          "from": 20,
+          "to": 23
+        }
+      ]
+    },
+    {
+      "execution_gate": "PRE_E5_FOUNDATION",
+      "selectors": [
+        {
+          "task_ids": [
+            "AUTH-DB-015",
+            "AUTH-DB-027",
+            "AUTH-DB-028",
+            "AUTH-DB-029",
+            "AUTH-DB-001",
+            "AUTH-DB-002",
+            "AUTH-DB-003",
+            "AUTH-DB-004",
+            "AUTH-DB-005",
+            "AUTH-DB-016",
+            "AUTH-DB-018",
+            "AUTH-DB-017",
+            "AUTH-DB-019",
+            "AUTH-DB-033",
+            "AUTH-DB-035",
+            "AUTH-DB-034",
+            "AUTH-DB-032",
+            "AUTH-DB-012",
+            "AUTH-DB-013",
+            "AUTH-DB-014"
+          ]
+        }
+      ]
+    },
+    {
+      "execution_gate": "POST_E5_PACKAGE",
+      "selectors": [
+        {
+          "task_ids": [
+            "SHELL-CI-024"
+          ]
+        },
+        {
+          "prefix": "AUTH-SRV",
+          "from": 1,
+          "to": 18
+        },
+        {
+          "task_ids": [
+            "AUTH-DB-020",
+            "AUTH-DB-006",
+            "AUTH-DB-007",
+            "AUTH-DB-008",
+            "AUTH-DB-009",
+            "AUTH-DB-010",
+            "AUTH-DB-021",
+            "AUTH-DB-011",
+            "AUTH-DB-022",
+            "AUTH-DB-023",
+            "AUTH-DB-024",
+            "AUTH-DB-025",
+            "AUTH-DB-026"
+          ]
+        },
+        {
+          "prefix": "DATA-NORM-DB",
+          "from": 1,
+          "to": 10
+        },
+        {
+          "prefix": "INT-DB",
+          "from": 1,
+          "to": 8
+        },
+        {
+          "prefix": "ANIMA-AUTH",
+          "from": 1,
+          "to": 20
+        },
+        {
+          "prefix": "VISO-AUTH",
+          "from": 1,
+          "to": 20
+        },
+        {
+          "prefix": "VISO-CORE",
+          "from": 3,
+          "to": 5
+        },
+        {
+          "prefix": "SHELL-APP",
+          "from": 1,
+          "to": 21
+        },
+        {
+          "prefix": "AUTH-UI",
+          "from": 40,
+          "to": 51
+        },
+        {
+          "prefix": "AUTH-DEV",
+          "from": 7,
+          "to": 14
+        }
+      ]
+    },
+    {
+      "execution_gate": "POST_E5_PACKAGE",
+      "selectors": [
+        {
+          "prefix": "AUTH-DEV",
+          "from": 15,
+          "to": 16
+        },
+        {
+          "prefix": "AUTH-SIM",
+          "from": 7,
+          "to": 14
+        }
+      ]
+    },
+    {
+      "execution_gate": "POST_E5_PACKAGE",
+      "selectors": [
+        {
+          "prefix": "NEXO-AUTH",
+          "from": 1,
+          "to": 20
+        },
+        {
+          "prefix": "NEXO-AUTH",
+          "from": 22,
+          "to": 31
+        }
+      ]
+    },
+    {
+      "execution_gate": "POST_E5_PACKAGE",
+      "selectors": [
+        {
+          "task_ids": [
+            "NEXO-AUTH-032"
+          ]
+        },
+        {
+          "prefix": "FOGO-AUTH",
+          "from": 3,
+          "to": 7
+        },
+        {
+          "prefix": "FOGO-AUTH",
+          "from": 9,
+          "to": 16
+        },
+        {
+          "prefix": "ORIGO-AUTH",
+          "from": 9,
+          "to": 15
+        },
+        {
+          "prefix": "PULSO-AUTH",
+          "from": 9,
+          "to": 16
+        },
+        {
+          "task_ids": [
+            "NUMERA-AUTH-008"
+          ]
+        }
+      ]
+    },
+    {
+      "execution_gate": "POST_E5_PACKAGE",
+      "selectors": [
+        {
+          "prefix": "NUMERA-AUTH",
+          "from": 9,
+          "to": 13
+        },
+        {
+          "prefix": "VISO-UX",
+          "from": 1,
+          "to": 20
+        },
+        {
+          "prefix": "PASS-QA",
+          "from": 1,
+          "to": 2
+        },
+        {
+          "task_ids": [
+            "WEB-FRM-011"
+          ]
+        },
+        {
+          "prefix": "AURA-AUTH",
+          "from": 1,
+          "to": 4
+        },
+        {
+          "prefix": "AUTH-QA",
+          "from": 1,
+          "to": 30
+        },
+        {
+          "prefix": "UX-QA",
+          "from": 1,
+          "to": 30
+        },
+        {
+          "prefix": "AUTH-DB",
+          "from": 30,
+          "to": 31
+        }
+      ]
+    }
+  ],
+  "reconciliation_progress": {
+    "reconciliation_id": "IMPLEMENTATION-TOPOLOGY-RECONCILIATION-20260819",
+    "source_audit_sha256": "27d00bfb84e1bbe323d6ae0addc9895fccf3ad704ba5fcf37f3e28e6e24b219f",
+    "implementation_task_total": 974,
+    "reviewed_ranges": [
+      {
+        "from_position": 1,
+        "to_position": 974
+      }
+    ],
+    "reviewed_count": 974,
+    "unreviewed_count": 0,
+    "next_position": 975,
+    "status": "PARTIAL_REVIEW_IN_PROGRESS",
+    "rule": "Las tareas fuera de reviewed_ranges permanecen UNREVIEWED y no reciben ninguna relajación temporal hasta ser analizadas en un bloque posterior."
+  }
 }
