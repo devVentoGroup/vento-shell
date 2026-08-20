@@ -14,12 +14,12 @@
 
 En Vento OS existen **cuatro tipos de trabajo** y no deben mezclarse.
 
-| Tipo de trabajo                       | Rama                 | Comando principal                                          |
-| ------------------------------------- | -------------------- | ---------------------------------------------------------- |
-| Tarea canónica documental             | `task/...`           | `docs:task:start` / `docs:task:finish`                     |
-| Implementación física autorizada      | `implementation/...` | `docs:implementation:start` / `docs:implementation:finish` |
-| Cambio transversal de infraestructura | `infra/...`          | `docs:infra:publish`                                       |
-| Documentación operativa no canónica   | `ops/...`            | `docs:ops:publish`                                         |
+| Tipo de trabajo | Rama | Comando principal |
+| --- | --- | --- |
+| Tarea canónica documental | `task/...` | `docs:task:start` / `docs:task:finish` |
+| Implementación física autorizada | `implementation/...` | `docs:implementation:start` / `docs:implementation:finish` |
+| Cambio transversal de infraestructura | `infra/...` | `docs:infra:publish` |
+| Documentación operativa no canónica | `ops/...` | `docs:ops:publish` |
 
 ### Mapa mental
 
@@ -133,6 +133,8 @@ npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
 
 Este comando se usa **solo después de que el registro de instancia esté `AUTHORIZED`**.
 
+Una instancia física puede ejecutarse mucho después de que su tarea documental haya sido aprobada. Por eso el carril físico no obliga a que esa tarea histórica sea la tarea documental actual ni exige reformatearla para poder implementar. La continuidad documental adelantada, el formato histórico del marcador propietario y `active-sequence.json` pendiente de regeneración se tratan como **avisos documentales**, no como bloqueos físicos.
+
 Debe encargarse de:
 
 ```text
@@ -141,12 +143,19 @@ validar instancia AUTHORIZED
 -> comprobar que el único cambio local sea el registro de la instancia
 -> verificar main 0/0
 -> ejecutar readiness físico de solo lectura antes de crear la rama
--> comprobar formato, active-sequence, contrato, upstream y worktree
+-> clasificar continuidad/formato/active-sequence documentales como advisory
+-> bloquear únicamente hallazgos físicos reales
 -> PRE_BRANCH_READINESS: PASS
 -> crear o recuperar implementation/shell-con-001/global
 -> publicar upstream
 -> cambiar la instancia a IN_PROGRESS
 -> ejecutar una sola vez el preflight físico estricto
+-> PREFLIGHT: PASS
+-> ejecutar docs:plan:build una vez para reconciliar IN_PROGRESS y derivados
+-> ejecutar docs:plan:check
+-> git diff --check
+-> START_DOCS_PLAN_BUILD: PASS_ONCE
+-> START_DOCS_PLAN_CHECK: PASS
 -> READY_TO_IMPLEMENT: SI
 ```
 
@@ -159,6 +168,9 @@ INSTANCE_ID: SHELL-CON-001::GLOBAL
 PRE_BRANCH_READINESS: PASS
 INSTANCE_STATUS: IN_PROGRESS
 PREFLIGHT: PASS
+START_DOCS_PLAN_BUILD: PASS_ONCE
+START_DOCS_PLAN_CHECK: PASS
+DOCUMENTARY_LANE_FOR_PHYSICAL: ADVISORY_ONLY
 READY_TO_IMPLEMENT: SI
 ```
 
@@ -166,7 +178,11 @@ READY_TO_IMPLEMENT: SI
 
 No crees manualmente la rama física con `git switch -c` durante el flujo normal.
 
-No cambies manualmente `AUTHORIZED` a `IN_PROGRESS` antes de llamar el comando: `docs:implementation:start` realiza esa transición.
+No cambies manualmente `AUTHORIZED` a `IN_PROGRESS`: `docs:implementation:start` realiza esa transición.
+
+No ejecutes manualmente `docs:plan:build` después de reemplazar el registro `PENDING_AUTHORIZATION -> AUTHORIZED`: el propio `docs:implementation:start` lo ejecuta en la rama física, después de `IN_PROGRESS`, y deja cabecera y derivados coherentes antes de autorizar código.
+
+No reformatees ni reabras una tarea documental histórica solo para poder ejecutar su instancia física.
 
 ---
 
@@ -409,17 +425,30 @@ Ejemplo:
 npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
 ```
 
-El comando primero ejecuta readiness de solo lectura mientras la instancia sigue `AUTHORIZED`. Solo puede crear o recuperar la rama cuando termine con:
+El comando primero ejecuta readiness de solo lectura mientras la instancia sigue `AUTHORIZED`. La tarea documental actual puede ser otra: continuidad adelantada, formato histórico y `active-sequence.json` pendiente son avisos documentales en este carril. Solo puede crear o recuperar la rama cuando los bloqueos físicos reales estén en cero y termine con:
 
 ```text
 PRE_BRANCH_READINESS: PASS
 ```
 
-Después cambia la instancia a `IN_PROGRESS`, ejecuta el preflight físico estricto y solo continúa cuando diga:
+Después cambia la instancia a `IN_PROGRESS`, ejecuta el preflight físico estricto una sola vez y reconcilia automáticamente el estado documental derivado:
 
 ```text
+PREFLIGHT: PASS
+-> docs:plan:build una vez
+-> docs:plan:check
+-> git diff --check
+```
+
+Solo continúa cuando diga:
+
+```text
+START_DOCS_PLAN_BUILD: PASS_ONCE
+START_DOCS_PLAN_CHECK: PASS
 READY_TO_IMPLEMENT: SI
 ```
+
+No ejecutes ese `docs:plan:build` manualmente antes del start.
 
 ## Paso D — Materializas exclusivamente el alcance autorizado
 
@@ -621,20 +650,27 @@ npm run docs:task:preflight -- --task-id AUTH-SRV-004 --json
 
 ## Readiness y preflight físico
 
-`docs:implementation:start` ejecuta dos comprobaciones automáticas:
+`docs:implementation:start` ejecuta automáticamente el gate completo de apertura:
 
 ```text
 1. readiness de solo lectura con la instancia todavía AUTHORIZED y antes de crear la rama
-2. preflight físico estricto después de cambiar a IN_PROGRESS
+2. clasificación advisory de continuidad/formato/active-sequence documentales históricos
+3. preflight físico estricto después de cambiar a IN_PROGRESS
+4. docs:plan:build una vez para reconciliar el nuevo estado físico
+5. docs:plan:check y git diff --check antes de permitir código
 ```
 
-No las ejecutes manualmente por rutina. El inicio solo es válido cuando termina con:
+No ejecutes ninguna de esas partes manualmente por rutina. El inicio solo es válido cuando termina con:
 
 ```text
 PRE_BRANCH_READINESS: PASS
 PREFLIGHT: PASS
+START_DOCS_PLAN_BUILD: PASS_ONCE
+START_DOCS_PLAN_CHECK: PASS
 READY_TO_IMPLEMENT: SI
 ```
+
+El formato de una tarea histórica no se corrige como requisito previo de implementación física. Si su contenido canónico fue aprobado y la instancia está correctamente autorizada, ese formato pertenece al carril documental.
 
 ---
 
@@ -935,23 +971,23 @@ npm run docs:ops:publish -- --help
 
 # 14. Tabla de decisión rápida
 
-| Situación                                        | Qué hacer                                                          |
-| ------------------------------------------------ | ------------------------------------------------------------------ |
-| Voy a comenzar una tarea documental actual       | `docs:task:start`                                                  |
-| La tarea documental quedó APROBADA               | `docs:task:finish`                                                 |
-| Una instancia física ya quedó AUTHORIZED         | `docs:implementation:start`                                        |
-| La instancia física ya quedó VERIFIED            | `docs:implementation:finish`                                       |
-| Cambié tooling/CI/scripts entre tareas           | `docs:infra:publish`                                               |
-| Cambié una guía Markdown directamente en `docs/` | `docs:ops:publish`                                                 |
-| Tengo scopes incompatibles al mismo tiempo       | separar con stash selectivo y publicar cada scope con su lifecycle |
-| No sé qué archivos están modificados             | `git status --short`                                               |
-| Quiero ver exactamente qué cambié                | `git diff`                                                         |
-| Quiero verificar plan                            | `docs:plan:check`                                                  |
-| Quiero correr tests documentales                 | `docs:plan:test`                                                   |
-| Quiero revisar TREQ                              | `docs:treq:check` + `docs:treq:test`                               |
-| Quiero comprobar PR                              | `gh pr view`                                                       |
-| Quiero comprobar checks                          | `gh pr checks`                                                     |
-| Quiero saber si main está 0/0                    | `git rev-list --left-right --count HEAD...origin/main`             |
+| Situación | Qué hacer |
+| --- | --- |
+| Voy a comenzar una tarea documental actual | `docs:task:start` |
+| La tarea documental quedó APROBADA | `docs:task:finish` |
+| Una instancia física ya quedó AUTHORIZED | `docs:implementation:start` |
+| La instancia física ya quedó VERIFIED | `docs:implementation:finish` |
+| Cambié tooling/CI/scripts entre tareas | `docs:infra:publish` |
+| Cambié una guía Markdown directamente en `docs/` | `docs:ops:publish` |
+| Tengo scopes incompatibles al mismo tiempo | separar con stash selectivo y publicar cada scope con su lifecycle |
+| No sé qué archivos están modificados | `git status --short` |
+| Quiero ver exactamente qué cambié | `git diff` |
+| Quiero verificar plan | `docs:plan:check` |
+| Quiero correr tests documentales | `docs:plan:test` |
+| Quiero revisar TREQ | `docs:treq:check` + `docs:treq:test` |
+| Quiero comprobar PR | `gh pr view` |
+| Quiero comprobar checks | `gh pr checks` |
+| Quiero saber si main está 0/0 | `git rev-list --left-right --count HEAD...origin/main` |
 
 ---
 
@@ -1088,10 +1124,13 @@ Después del PASS:
 ```text
 PRE_BRANCH_READINESS: PASS
 PREFLIGHT: PASS
+START_DOCS_PLAN_BUILD: PASS_ONCE
+START_DOCS_PLAN_CHECK: PASS
+DOCUMENTARY_LANE_FOR_PHYSICAL: ADVISORY_ONLY
 READY_TO_IMPLEMENT: SI
 ```
 
-materializas únicamente los cambios autorizados.
+materializas únicamente los cambios autorizados. No haces una corrección documental intermedia de la tarea histórica.
 
 Cuando los cambios estén listos:
 
@@ -1174,12 +1213,14 @@ npm run docs:ops:publish -- --change-id guia-operativa-comandos
 8. **Una instancia física requiere autorización explícita antes de abrirse.**
 9. **Antes de cualquier rama física, todos los repositorios afectados deben estar en `main`, limpios y `0/0`.**
 10. **`docs:implementation:start` debe completar readiness antes de crear o recuperar la rama.**
-11. **No se avanza de tarea hasta que el cierre correspondiente lo autorice.**
-12. **GitHub, no el chat, es la fuente compartida entre computadores.**
-13. **Un FAIL se diagnostica; no se reinicia todo automáticamente.**
-14. **No se stagean archivos desconocidos.**
-15. **Los checks deben corresponder al mismo SHA que se mergea.**
-16. **PASS significa cierre comprobado, no simplemente comando ejecutado.**
+11. **Una tarea documental histórica no se reformatea ni se reabre como condición para ejecutar una instancia física ya aprobada y autorizada.**
+12. **El cambio `AUTHORIZED -> IN_PROGRESS` se reconcilia con un `docs:plan:build` automático dentro de `docs:implementation:start`, nunca manualmente en `main`.**
+13. **No se avanza de tarea hasta que el cierre correspondiente lo autorice.**
+14. **GitHub, no el chat, es la fuente compartida entre computadores.**
+15. **Un FAIL se diagnostica; no se reinicia todo automáticamente.**
+16. **No se stagean archivos desconocidos.**
+17. **Los checks deben corresponder al mismo SHA que se mergea.**
+18. **PASS significa cierre comprobado, no simplemente comando ejecutado.**
 
 ---
 
