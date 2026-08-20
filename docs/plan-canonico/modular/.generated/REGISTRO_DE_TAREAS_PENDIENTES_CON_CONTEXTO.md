@@ -9,8 +9,8 @@
 ## Qué toca hacer ahora
 
 - **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CON-005::GLOBAL` — Centralizar roles operativos
-- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CON-005::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
+- **Objetivo exacto:** `SHELL-CON-006::GLOBAL` — Centralizar scopes
+- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CON-006::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `AUTH-DB-015`
 - **Implementación física autorizada:** **NINGUNA**
 
