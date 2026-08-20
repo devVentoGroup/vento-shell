@@ -17,6 +17,21 @@ Esta sección organiza **experiencia documental y privacidad** dentro de **AA GO
 - `INFO-UX-006`: Diseñar explorador de auditoría e investigación con divulgación progresiva
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:INFO-UX -->
+### Reconciliación topológica de INFO-UX-001 a INFO-UX-006
+
+Estas tareas son contratos y diseños canónicos de experiencia documental, privacidad, firma, retención e investigación. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ INFO-UX-001 — Diseñar tablero simple de gobierno, obligaciones, alertas, solicitudes y brechas
 
 **Estado:** APROBADA
@@ -5388,4 +5403,3 @@ NO HIDDEN-RESOURCE INFERENCE
 **SIGUIENTE TAREA RESERVADA**
 
 `INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo`
-

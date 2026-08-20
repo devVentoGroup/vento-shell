@@ -10,6 +10,14 @@ Esta sección organiza **experiencia creativa y comercial** dentro de **W AURA**
 **Límites funcionales:** comienza con “Diseñar inicio diario simple con prioridades, calendario, pendientes y oportunidades” y concluye con “Diseñar tablero de resultados, atribución y copiloto de recomendaciones”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:AURA-UX -->
+### Reconciliación topológica de AURA-UX-001 a AURA-UX-008
+
+La familia diseña la experiencia creativa y comercial objetivo. No constituye implementación física y conserva el bloqueo de continuidad de AURA.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] AURA-UX-001 — Diseñar inicio diario simple con prioridades, calendario, pendientes y oportunidades
 
 ### [ ] AURA-UX-002 — Diseñar sistema de marca, brief guiado y calendario visual

@@ -17,6 +17,21 @@ Esta sección organiza **identidad alcance y limites del dispositivo** dentro de
 - `AUTH-DEV-006`: Asignar permisos máximos del dispositivo
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B201-400:AUTH-DEV-001-006 -->
+#### Reconciliación topológica de AUTH-DEV-001 a AUTH-DEV-006
+
+Las seis primeras tareas del bloque de dispositivos fijan identidad, alcance, límites y contrato canónico. No crean una instancia física separada.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física comienza en las tareas posteriores del bloque, junto con los propietarios de contexto, autorización, auditoría y base de datos que correspondan.
+
+Esta separación evita ejecutar dos veces el mismo comportamiento: primero se define el contrato de dispositivo y luego la unidad de implementación aplicable lo materializa.
+
 ### ✅ AUTH-DEV-001 — Inventariar dispositivos compartidos
 
 **Estado:** APROBADA
@@ -4415,4 +4430,3 @@ Se incorporan `TREQ-AUTH-059` a `TREQ-AUTH-068` en el Registro Canónico de Requ
 
 **SIGUIENTE TAREA RESERVADA**
 `AUTH-SIM-001 — Definir quién puede simular`
-

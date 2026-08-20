@@ -1,5 +1,13 @@
 ### TAREA FINANCIERA DERIVADA DE OPS-AUD-001
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:OPS-CST-001 -->
+### Reconciliación topológica de OPS-CST-001
+
+La tarea define el caso empresarial de centros de costo y transferencias internas. No crea catálogo paralelo ni implementación física propia.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] OPS-CST-001 — Definir el caso de centro de costo y transferencias internas de Producción y Distribución
 
 **Dependencias:** `OPS-GOV-001`, auditoría productiva y `NUMERA-AUD-008` a `NUMERA-AUD-009`.  

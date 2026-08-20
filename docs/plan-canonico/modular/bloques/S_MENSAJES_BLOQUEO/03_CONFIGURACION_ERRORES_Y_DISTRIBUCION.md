@@ -15,6 +15,19 @@ Esta sección organiza **configuracion errores y distribucion** dentro de **S ME
 - `AUTH-ERR-020`: Compartir mensajes desde vento-shell
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B201-400:AUTH-ERR-017-020 -->
+#### Reconciliación topológica de AUTH-ERR-017 a AUTH-ERR-020
+
+Estas tareas cierran el contrato de configuración, catálogo y distribución de errores.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La distribución física del contrato corresponde a packages, componentes y consumidores propietarios. AUTH-ERR no genera una segunda materialización paralela a `SHELL-CON`, `SHELL-AUTH`, `AUTH-SRV`, `AUTH-DB`, `SHELL-UI` o las aplicaciones consumidoras.
+
 ### ✅ AUTH-ERR-017 — Configuración administrativa inconsistente
 
 **Estado:** APROBADA
@@ -5264,4 +5277,3 @@ en la reconciliación física.
 **SIGUIENTE TAREA RESERVADA**
 
 `NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores`
-

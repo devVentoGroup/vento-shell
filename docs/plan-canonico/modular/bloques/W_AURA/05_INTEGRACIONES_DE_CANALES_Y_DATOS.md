@@ -13,6 +13,14 @@ Esta sección organiza **integraciones de canales y datos** dentro de **W AURA**
 - `AURA-INT-002`: Definir contratos de lectura y eventos con NEXO, PULSO, PASS, NUMERA, VISO y FOGO
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:AURA-INT -->
+### Reconciliación topológica de AURA-INT-001 a AURA-INT-002
+
+Estas tareas definen contratos de adaptadores, webhooks, credenciales, reconciliación, lectura y eventos. Los adaptadores físicos posteriores pertenecen a sus unidades y paquetes de implementación.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] AURA-INT-001 — Definir adaptadores de canales, webhooks, límites, credenciales y reconciliación externa
 
 ### [ ] AURA-INT-002 — Definir contratos de lectura y eventos con NEXO, PULSO, PASS, NUMERA, VISO y FOGO

@@ -45,6 +45,14 @@ y se ejecutarán únicamente después de la puerta aplicable del paquete.
 ### [ ] AUTH-UI-049 — Estandarizar estados de carga
 ### [ ] AUTH-UI-050 — Estandarizar estados vacíos
 ### [ ] AUTH-UI-051 — Estandarizar errores recuperables
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:AUTH-UI-052-060 -->
+### Reconciliación topológica de AUTH-UI-052 a AUTH-UI-060
+
+Estas tareas diseñan, prototipan, prueban y aprueban el contrato de experiencia antes de implementación. Se agotan como definición canónica y no generan una unidad física independiente.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] AUTH-UI-052 — Diseñar página inicial según actor
 
 **Estado:** NO INICIADA; evidencia parcial NEXO conservada

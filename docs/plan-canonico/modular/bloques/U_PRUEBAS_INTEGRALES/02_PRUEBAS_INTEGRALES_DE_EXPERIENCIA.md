@@ -4,6 +4,14 @@
 **Cobertura canónica:** `UX-QA-001` a `UX-QA-030` — 30 tareas.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:UX-QA -->
+### Reconciliación topológica de UX-QA-001 a UX-QA-030
+
+Cada paquete ejecuta su subconjunto de experiencia aplicable y el cierre integral ejecuta la certificación global final.
+
+| modalidad | `PER_PACKAGE_AND_GLOBAL_FINAL` |
+| gate temporal | `POST_E5_PACKAGE` |
+
 ### [ ] UX-QA-001 — El trabajador identifica su siguiente tarea
 ### [ ] UX-QA-002 — La acción principal se encuentra sin capacitación
 ### [ ] UX-QA-003 — El trabajador comprende el estado del proceso

@@ -1,5 +1,13 @@
 ### AUDITORÍA FUNCIONAL Y TÉCNICA DE NUMERA
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:NUMERA-AUD -->
+### Reconciliación topológica de NUMERA-AUD-001 a NUMERA-AUD-012
+
+El mini-bloque es auditoría funcional y técnica: inventaría, detecta, ejecuta verificaciones existentes y produce una matriz. No crea una unidad física de producto.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] NUMERA-AUD-001 — Inventariar rutas, pantallas, componentes y formularios actuales
 ### [ ] NUMERA-AUD-002 — Inventariar Server Actions, API, RPC, consultas y jobs utilizados
 ### [ ] NUMERA-AUD-003 — Inventariar tablas, vistas, eventos y sistemas fuente

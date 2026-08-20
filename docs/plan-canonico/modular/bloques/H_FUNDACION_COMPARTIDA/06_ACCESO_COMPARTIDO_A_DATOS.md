@@ -16,6 +16,25 @@ Esta sección organiza **acceso compartido a datos** dentro de **H FUNDACION COM
 - `SHELL-DB-005`: Separar cliente server, browser y native
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B001-200:SHELL-DB-001-005 -->
+### Reconciliación topológica de SHELL-DB-001 a SHELL-DB-005
+
+La familia `SHELL-DB` es deliberadamente mixta y no puede clasificarse como una sola unidad temporal.
+
+| Tarea | Modalidad | Gate temporal | Instancia física |
+| --- | --- | --- | --- |
+| `SHELL-DB-001` | `GLOBAL_ENABLE_ONCE` | `PRE_E5_FOUNDATION` | `SHELL-DB-001::GLOBAL` |
+| `SHELL-DB-002` | `DEFINE_ONCE` | `NO_PHYSICAL_INSTANCE` | ninguna; `AUTH-DB-026` materializa generación/publicación incremental |
+| `SHELL-DB-003` | `TEMPLATE_PER_PACKAGE` | `POST_E5_PACKAGE` | `SHELL-DB-003::<package_id>` cuando un paquete DB aprobado modifique RPC |
+| `SHELL-DB-004` | `GLOBAL_ENABLE_ONCE` | `PRE_E5_FOUNDATION` | `SHELL-DB-004::GLOBAL` |
+| `SHELL-DB-005` | `GLOBAL_ENABLE_ONCE` | `PRE_E5_FOUNDATION` | `SHELL-DB-005::GLOBAL` |
+
+`SHELL-DB-002` conserva exclusivamente el contrato de gobierno de tipos. `AUTH-DB-026` sigue siendo propietario de generar y publicar físicamente tipos después de cada paquete de base de datos aprobado.
+
+`SHELL-DB-003` conserva su naturaleza incremental: si un paquete DB modifica RPC, su reconciliación de wrappers ocurre dentro del ciclo post-E5 de ese package_id.
+
+Las instancias globales de `SHELL-DB-001`, `SHELL-DB-004` y `SHELL-DB-005` solo materializan infraestructura compartida del package. No autorizan schema, RPC físicas, RLS, grants, datos, migraciones, secretos ni mutaciones remotas de Supabase.
+
 ### ✅ SHELL-DB-001 — Crear @vento/supabase
 
 **Estado:** APROBADA

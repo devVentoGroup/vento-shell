@@ -196,11 +196,14 @@ BLOQUE E2
 BLOQUES E3, E4, X Y ROADMAPS POR APLICACIÓN
 → pueden devolver nuevas brechas o dependencias a E1 y E2
 
+FUNDACIÓN TRANSVERSAL PRE_E5 CUANDO APLIQUE
+→ materializa habilitadores compartidos independientes del package_id bajo autorización física explícita
+
 BLOQUE E5
 → convierte el diseño aprobado en paquetes y planes de ejecución aprobables
 
 BLOQUE T + BLOQUE R CUANDO APLIQUE
-→ implementan y despliegan cada paquete aprobado
+→ implementan y despliegan el trabajo físico post-gate de cada paquete aprobado
 
 READINESS, CUTOVER, PILOTO E HYPERCARE
 → se ejecutan mediante `SHELL-CI-021` a `SHELL-CI-024`
@@ -266,8 +269,10 @@ dependencias contractuales, técnicas y operativas.
 Secuencia transversal de un paquete:
 
 ```text
-E5-GATE-008 — APROBACIÓN PREVIA
-→ SHELL-CI-020 — IMPLEMENTACIÓN Y DESPLIEGUE
+PRE_E5_FOUNDATION APLICABLE — HABILITADOR TRANSVERSAL YA MATERIALIZADO Y VALIDADO
+→ PRE_E5_PLANNING — EXPEDIENTE DEL PACKAGE_ID
+→ E5-GATE-008 — APROBACIÓN PREVIA DEL PAQUETE
+→ SHELL-CI-020 — IMPLEMENTACIÓN Y DESPLIEGUE POST-GATE DEL PAQUETE
 → SHELL-CI-021 — READINESS DE EJECUCIÓN
 → SHELL-CI-022 — CUTOVER Y PILOTO
 → SHELL-CI-023 — HYPERCARE

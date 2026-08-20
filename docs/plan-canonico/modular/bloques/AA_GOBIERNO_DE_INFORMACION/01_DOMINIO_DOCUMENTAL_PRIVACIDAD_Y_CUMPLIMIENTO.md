@@ -10,6 +10,21 @@ Esta sección organiza **dominio documental privacidad y cumplimiento** dentro d
 **Límites funcionales:** comienza con “Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios” y concluye con “Definir auditoría, investigación de accesos o cambios indebidos, preservación y cierre”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:INFO-DOM -->
+### Reconciliación topológica de INFO-DOM-001 a INFO-DOM-013
+
+Estas tareas son contratos y diseños canónicos de gobierno documental, privacidad, retención, autenticidad, cumplimiento y evidencia. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ INFO-DOM-001 — Definir gobierno de información, inventario, propietarios, custodios, responsables, encargados, finalidades y territorios
 
 **Estado:** APROBADA
@@ -10176,4 +10191,3 @@ TAREA ACTUAL APROBADA
 SIGUIENTE TAREA RESERVADA
 
 `INFO-AUTH-001 — Proteger información por clasificación, finalidad, identidad, relación, recurso, territorio y estado`
-

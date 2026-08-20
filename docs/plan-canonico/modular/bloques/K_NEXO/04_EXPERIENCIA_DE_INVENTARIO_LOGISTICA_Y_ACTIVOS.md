@@ -10,6 +10,16 @@ Esta sección organiza **experiencia de inventario logistica y activos** dentro 
 **Límites funcionales:** comienza con “Inventariar procesos reales de inventario y logística” y concluye con “Validar el prototipo con Operaciones, Producción, Limpieza, Mantenimiento, SST y responsables de sede”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:NEXO-UX -->
+### Reconciliación topológica de NEXO-UX-001 a NEXO-UX-048
+
+La familia NEXO-UX define inventario de pantallas, arquitectura de información, flujos, prototipos, criterios de usabilidad y validación de diseño. Su salida alimenta E5 y no constituye código físico implementado.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### ✅ NEXO-UX-001 — Inventariar procesos reales de inventario y logística
 
 **Estado:** APROBADA

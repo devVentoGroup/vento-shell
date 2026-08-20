@@ -1,5 +1,21 @@
 ### CONTRATOS DE INTEGRACIONES EXTERNAS
 
+<!-- EXECUTION-GATE-RECONCILIATION:B001-200:SHELL-CON-017-024 -->
+### Reconciliación topológica de SHELL-CON-017 a SHELL-CON-024
+
+Esta regla se incorpora al contrato de cada marcador `SHELL-CON-017..024`.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad física | `GLOBAL_ENABLE_ONCE` |
+| gate temporal | `PRE_E5_FOUNDATION` |
+| identidad | `<task_id>::GLOBAL` |
+| autorización | explícita por instancia; nunca inferida desde el marcador documental |
+
+Las formas contractuales estáticas de integración pueden materializarse una sola vez como fundación compartida antes de E5. La existencia del contrato global no ejecuta integraciones, llamadas remotas, sincronizaciones, webhooks, credenciales ni efectos empresariales.
+
+Esta reconciliación prevalece únicamente sobre un requisito histórico de esperar E5 para materializar la forma compartida inicial. La ejecución de una integración o su adopción por un package_id conserva el gate propietario correspondiente.
+
 ### ✅ SHELL-CON-017 — Crear contrato de principal técnico de integración
 
 **Estado:** APROBADA
@@ -7888,4 +7904,3 @@ SHELL-CON-024 — Crear contrato de cuarentena, rechazo y compensación
 ##### SIGUIENTE TAREA RESERVADA
 
 SHELL-NORM-001 — Crear `@vento/data-normalization`
-

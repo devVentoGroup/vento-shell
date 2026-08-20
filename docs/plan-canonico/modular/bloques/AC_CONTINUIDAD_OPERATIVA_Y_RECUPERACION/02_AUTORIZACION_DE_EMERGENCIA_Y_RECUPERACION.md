@@ -15,6 +15,21 @@ Esta sección organiza **autorización de emergencia y recuperacion** dentro de 
 - `CONT-AUTH-004`: Separar ejecución, validación, reincorporación, conciliación, cierre y revisión posterior
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:CONT-AUTH -->
+### Reconciliación topológica de CONT-AUTH-001 a CONT-AUTH-004
+
+Estas tareas son contratos y diseños canónicos de autorización de emergencia, break-glass, evidencia y segregación de recuperación. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ CONT-AUTH-001 — Proteger declaración, activación, mando, decisiones excepcionales, comunicación y desactivación
 
 **Estado:** APROBADA
@@ -4224,4 +4239,3 @@ TAREA ACTUAL APROBADA
 SIGUIENTE TAREA RESERVADA
 
 `CONT-UX-001 — Diseñar inicio ejecutivo de continuidad con estado, impacto, prioridades, responsables y decisiones`
-

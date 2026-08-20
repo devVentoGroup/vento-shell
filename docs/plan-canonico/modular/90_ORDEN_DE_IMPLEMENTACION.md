@@ -169,36 +169,58 @@ Reglas:
 - Los defectos encontrados durante piloto o hypercare generan pruebas de regresión.
 - U ejecuta la certificación integral y no sustituye las pruebas de cada paquete.
 
-### Ciclo obligatorio de ejecución de cada paquete aprobado
+### Ciclo obligatorio de fundación, planificación y ejecución de cada paquete
 
 ```text
-SHELL-CI-001 a SHELL-CI-019 — habilitar y certificar CI, pruebas, versionado, evidencia y rollback
-        ↓
-E5-GATE-008 — aprobar un paquete completo y realmente ejecutable; todavía sin despliegue
-        ↓
-SHELL-CI-020 — iniciar la implementación y el despliegue del paquete aprobado
-        ↓
-GRUPOS DE IMPLEMENTACIÓN DEL PAQUETE
-H / J / P / Q / S / R / aplicación y grupos condicionales incluidos en DELIV-PKG
-        ↓
-PRUEBAS INTEGRALES DEL ALCANCE IMPLEMENTADO
-ejecutar los subconjuntos AUTH-QA y UX-QA vinculados al package_id
-        ↓
-SHELL-CI-021 — ejecutar readiness y reunir evidencia
-        ↓
-SHELL-CI-022 — ejecutar cutover y piloto controlado
-        ↓
-SHELL-CI-023 — ejecutar hypercare y estabilización
-        ↓
-SHELL-CI-024 — certificar cierre y transferir a soporte
-        ↓
-BLOQUE U — certificación integral transversal y regresión global cuando corresponda
+SHELL-CI-001 a SHELL-CI-019
+→ habilitar y certificar infraestructura transversal de CI, pruebas, versionado, evidencia y rollback
+
+PRE_E5_FOUNDATION APLICABLE
+→ materializar una sola vez la fundación compartida necesaria
+→ autorización física explícita
+→ pruebas y evidencia propias
+→ reutilización posterior por package_id
+
+PRE_E5_PLANNING
+→ DELIV-PKG / readiness / cutover / hypercare / gates
+→ construir el expediente exacto del package_id
+
+E5-GATE-008::<package_id>
+→ aprobar el paquete completo y realmente ejecutable
+→ todavía sin ejecutar el trabajo POST_E5_PACKAGE
+
+SHELL-CI-020::<package_id>
+→ iniciar implementación y despliegue post-gate del paquete
+
+POST_E5_PACKAGE
+→ ejecutar únicamente las instancias físicas pertenecientes al package_id o implementation_unit_id autorizado
+
+AUTH-QA / UX-QA APLICABLES
+→ validar el alcance implementado
+
+SHELL-CI-021::<package_id>
+→ readiness
+
+SHELL-CI-022::<package_id>
+→ cutover y piloto
+
+SHELL-CI-023::<package_id>
+→ hypercare y estabilización
+
+SHELL-CI-024::<package_id>
+→ cierre y transferencia
+
+BLOQUE U
+→ certificación integral cuando corresponda
 ```
 
-Ningún artefacto de planificación de E5 prueba por sí solo que un despliegue,
-una migración, un piloto o un periodo de hypercare hayan ocurrido. Ninguna
-migración, backfill, cambio físico, creación de paquete compartido o protección
-de consumidor se ejecutará antes de `E5-GATE-008::<package_id>`.
+La cardinalidad y el gate temporal son dimensiones independientes. Una tarea `TEMPLATE_PER_PACKAGE` puede pertenecer a `PRE_E5_PLANNING` o a `POST_E5_PACKAGE`; su modo no determina por sí solo el momento de ejecución.
+
+Una fundación `PRE_E5_FOUNDATION` no necesita un `E5-GATE-008::<package_id>` para su materialización inicial porque no constituye la implementación vertical de un paquete. Sí requiere contrato aprobado, dependencias técnicas satisfechas y autorización física explícita.
+
+Ninguna migración, backfill, despliegue vertical, adopción de consumidor ni otra instancia clasificada `POST_E5_PACKAGE` podrá ejecutarse antes de `E5-GATE-008::<package_id>`.
+
+Una tarea `UNREVIEWED` no recibe ninguna autorización nueva durante esta reconciliación. Su clasificación temporal deberá resolverse en el bloque de auditoría correspondiente.
 
 <!-- PRIORITY-DELIVERY-LANES:START -->
 ### Secuencia VISO-SCHEDULE-MONTHLY-001
@@ -293,7 +315,8 @@ una aprobación global o una autorización de implementación. Los destinos
 operativos actuales se definen mediante `DELIV-PKG-001..025::<package_id>`.
 Las etapas son secuenciales y no se avanza mientras la anterior carezca
 de resultado y evidencia. Las tareas de diseño terminan antes de E5.
-Ninguna tarea de implementación, migración o cambio físico comienza antes
+Los habilitadores PRE_E5_FOUNDATION aplicables pueden materializarse antes de E5 con autorización física explícita y evidencia propia.
+Ninguna migración o cambio físico POST_E5_PACKAGE perteneciente al paquete comienza antes
 de `E5-GATE-008::<package_id>` para el paquete propietario que llegue a aprobarse.
 
 | Etapa | Grupo | Tareas exactas | Resultado para avanzar |
@@ -319,13 +342,13 @@ de `E5-GATE-008::<package_id>` para el paquete propietario que llegue a aprobars
 | 19 | `E5_CUTOVER_PLAN` | `CUTOVER-OPS-001` a `CUTOVER-OPS-010` | cutover, convivencia, doble efecto, conciliación, reversión, métricas y salida de piloto |
 | 20 | `E5_HYPERCARE_PLAN` | `HYPERCARE-OPS-001` a `HYPERCARE-OPS-010` | monitoreo, incidentes, conciliación, deuda, soporte, contingencias y autoridad de cierre |
 | 21 | `CI_FOUNDATION` | `SHELL-CI-001` a `SHELL-CI-019` | capacidad de probar, versionar, actualizar, revertir y publicar evidencia certificada antes de E5-GATE-008 y reutilizable por SHELL-CI-020 |
-| 22 | `E5_ENTRY_GATES` | `E5-GATE-001` a `E5-GATE-007` | cobertura, brechas, NFR, rollout, rollback, piloto, capacitación y trazabilidad TREQ verificadas |
-| 23 | `PACKAGE_GATE` | `E5-GATE-008::NEXO-REMISSIONS-001` | autorización explícita del paquete, todavía sin despliegue ni cambio físico |
-| 24 | `IMPLEMENTATION_START` | `SHELL-CI-020::NEXO-REMISSIONS-001` | Iniciar la implementación y el despliegue únicamente del paquete aprobado. |
-| 25 | `H_SHARED_CONTRACTS` | `SHELL-CON-*` (familia canónica completa) | paquetes de contratos compartidos e integraciones implementados y versionados |
-| 26 | `H_AUTH_CONTEXT_BASE` | `SHELL-AUTH-001`; `SHELL-CTX-001` | núcleo único de autorización y contexto disponible antes del backend autoritativo |
-| 27 | `R0_DATABASE_SAFETY` | `AUTH-DB-015`; `AUTH-DB-027` a `AUTH-DB-029`; `AUTH-DB-001` a `AUTH-DB-005` | migraciones gobernadas, harness, drift, respaldo, rollback y contención inicial de exposición ejecutados bajo el paquete aprobado |
-| 28 | `R1_AUTH_PHYSICAL_CORE` | `AUTH-DB-016`; `AUTH-DB-018`; `AUTH-DB-017`; `AUTH-DB-019`; `AUTH-DB-033`; `AUTH-DB-035`; `AUTH-DB-034`; `AUTH-DB-032`; `AUTH-DB-012` a `AUTH-DB-014` | esquemas, Data API, identidad, contexto, frescura, autorización y auditoría canónicos implementados |
+| 22 | `R0_DATABASE_SAFETY` | `AUTH-DB-015`; `AUTH-DB-027` a `AUTH-DB-029`; `AUTH-DB-001` a `AUTH-DB-005` | migraciones gobernadas, harness, baseline y drift, respaldo, restauración, rollback y contención inicial de exposición disponibles y certificados antes de E5-GATE-008 |
+| 23 | `R1_AUTH_PHYSICAL_CORE` | `AUTH-DB-016`; `AUTH-DB-018`; `AUTH-DB-017`; `AUTH-DB-019`; `AUTH-DB-033`; `AUTH-DB-035`; `AUTH-DB-034`; `AUTH-DB-032`; `AUTH-DB-012` a `AUTH-DB-014` | fundación física canónica de autorización, contexto, identidad y auditoría disponible y certificada antes de los paquetes que dependan de ella |
+| 24 | `E5_ENTRY_GATES` | `E5-GATE-001` a `E5-GATE-007` | cobertura, brechas, NFR, rollout, rollback, piloto, capacitación y trazabilidad TREQ verificadas |
+| 25 | `PACKAGE_GATE` | `E5-GATE-008::NEXO-REMISSIONS-001` | autorización explícita del paquete, todavía sin despliegue ni cambio físico |
+| 26 | `IMPLEMENTATION_START` | `SHELL-CI-020::NEXO-REMISSIONS-001` | Iniciar la implementación y el despliegue únicamente del paquete aprobado. |
+| 27 | `H_SHARED_CONTRACTS` | `SHELL-CON-*` (familia canónica completa) | paquetes de contratos compartidos e integraciones implementados y versionados |
+| 28 | `H_AUTH_CONTEXT_BASE` | `SHELL-AUTH-001`; `SHELL-CTX-001` | núcleo único de autorización y contexto disponible antes del backend autoritativo |
 | 29 | `H_AUTH_CONTEXT_CONVERGENCE` | `SHELL-CTX-002` a `SHELL-CTX-006`; `SHELL-AUTH-002` a `SHELL-AUTH-004` | contexto completo, adapters, scope por solicitud y gates contra legacy implementados |
 | 30 | `H_SHARED_REMAINING` | `SHELL-NORM-*` (familia canónica completa); `SHELL-DB-*` (familia canónica completa); `SHELL-UI-*` (familia canónica completa); `SHELL-MIG-*` (familia canónica completa); `SHELL-NATIVE-*` (familia canónica completa); `SHELL-APP-*` (familia canónica completa) | normalización compartida, acceso a datos, componentes web, migración reversible de consumidores, compatibilidad nativa y experiencia del Hub disponibles antes de consumidores finales |
 | 31 | `CONDITIONAL_IMPLEMENTATION_EXECUTION` | Ejecutar la matriz condicional de implementación aprobada en DELIV-PKG | todos los grupos aplicables ejecutados bajo el mismo package_id; cada no aplicable conserva su justificación aprobada |

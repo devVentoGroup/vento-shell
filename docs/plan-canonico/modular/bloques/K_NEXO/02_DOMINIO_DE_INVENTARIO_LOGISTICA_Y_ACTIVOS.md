@@ -10,6 +10,19 @@ Esta sección organiza **dominio de inventario logistica y activos** dentro de *
 **Límites funcionales:** comienza con “Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores” y concluye con “Definir novedades locativas, severidad, contención, escalamiento, resolución y cierre”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:NEXO-DOM-001-038 -->
+### Reconciliación topológica de NEXO-DOM-001 a NEXO-DOM-038
+
+Las treinta y ocho tareas de dominio NEXO definen taxonomía, identidad, estados, relaciones, reglas, trazabilidad, eventos y fronteras del modelo objetivo. Son contratos de dominio consumidos por paquetes posteriores; no son unidades físicas autónomas.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La materialización de tablas, RPC, RLS, Server Actions, UI, integraciones, backfills y migraciones pertenece a BLOQUE R, tareas de autorización/implementación y package_id aprobados.
+
 ### ✅ NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores
 
 **Estado:** APROBADA

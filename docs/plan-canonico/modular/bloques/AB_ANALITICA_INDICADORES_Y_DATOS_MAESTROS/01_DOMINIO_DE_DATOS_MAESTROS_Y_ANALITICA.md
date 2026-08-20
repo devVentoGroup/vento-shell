@@ -10,6 +10,21 @@ Esta sección organiza **dominio de datos maestros y analitica** dentro de **AB 
 **Límites funcionales:** comienza con “Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad” y concluye con “Definir versionado de métricas, restatements, correcciones históricas y reproducibilidad”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:DATA-DOM -->
+### Reconciliación topológica de DATA-DOM-001 a DATA-DOM-017
+
+Estas tareas son contratos y diseños canónicos de gobierno de datos, maestros, métricas, hechos, calidad, analítica, objetivos y reproducibilidad. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ DATA-DOM-001 — Definir gobierno federado de datos, propietarios, stewards y fuentes de verdad
 
 **Estado:** APROBADA
@@ -12852,4 +12867,3 @@ DATA-DOM-017 — Definir versionado de métricas, restatements, correcciones his
 SIGUIENTE TAREA RESERVADA
 DATA-AUTH-001 — Proteger datos maestros, métricas, reportes y análisis por dominio, entidad, territorio y finalidad
 ```
-

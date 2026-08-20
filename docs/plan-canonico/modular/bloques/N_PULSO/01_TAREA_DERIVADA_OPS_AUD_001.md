@@ -1,5 +1,13 @@
 ### TAREA POS DERIVADA DE OPS-AUD-001
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:OPS-POS-001 -->
+### Reconciliación topológica de OPS-POS-001
+
+La tarea define zonas, mesas, puntos de servicio y reglas por sede como contrato de diseño operativo. No materializa por sí misma configuración física o código del POS.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
 ### [ ] OPS-POS-001 — Definir zonas físicas, mesas y puntos de servicio del POS por sede
 
 **Dependencias:** cierre de E2 y `PULSO-UX-001`.  

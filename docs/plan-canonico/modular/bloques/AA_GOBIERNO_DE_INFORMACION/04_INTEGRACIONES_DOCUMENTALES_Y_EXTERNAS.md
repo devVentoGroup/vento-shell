@@ -14,6 +14,21 @@ Esta sección organiza **integraciones documentales y externas** dentro de **AA 
 - `INFO-INT-003`: Definir contratos con encargados, asesores, autoridades, proveedores y destinatarios externos
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:INFO-INT -->
+### Reconciliación topológica de INFO-INT-001 a INFO-INT-003
+
+Estas tareas son contratos y diseños canónicos de contratos de integración documental y terceros. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ INFO-INT-001 — Definir adaptadores de Storage, escaneo, OCR, firma, certificación, preservación y archivo externo
 
 **Estado:** APROBADA

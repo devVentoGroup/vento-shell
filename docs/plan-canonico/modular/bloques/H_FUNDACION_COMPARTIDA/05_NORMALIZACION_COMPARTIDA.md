@@ -10,6 +10,24 @@ Esta sección organiza **normalización compartida** dentro de **H FUNDACION COM
 **Límites funcionales:** comienza con “Crear `@vento/data-normalization`” y concluye con “Probar idempotencia y conservación semántica”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B001-200:SHELL-NORM-001-009 -->
+### Reconciliación topológica de SHELL-NORM-001 a SHELL-NORM-009
+
+Esta regla se incorpora al contrato de cada marcador `SHELL-NORM-001..009`.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad física | `GLOBAL_ENABLE_ONCE` |
+| gate temporal | `PRE_E5_FOUNDATION` |
+| identidad | `<task_id>::GLOBAL` |
+| autorización | explícita por instancia |
+
+La implementación pura y compartida de `@vento/data-normalization` puede materializarse una sola vez antes de E5.
+
+Esta reconciliación prevalece únicamente sobre cláusulas anteriores que exigían `E5-GATE-008::<package_id>` o `SHELL-CI-020::<package_id>` para crear la **fundación compartida pura**.
+
+No autoriza persistencia, DDL, DML, migraciones, backfills, constraints, índices, triggers ni cambios en Supabase. Esos efectos permanecen en `DATA-NORM-DB-*`, BLOQUE R y sus gates propietarios.
+
 ### ✅ SHELL-NORM-001 — Crear `@vento/data-normalization`
 
 **Estado:** APROBADA

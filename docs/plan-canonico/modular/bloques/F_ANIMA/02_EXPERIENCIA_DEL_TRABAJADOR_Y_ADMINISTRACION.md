@@ -10,6 +10,19 @@ Esta sección organiza **experiencia del trabajador y administracion** dentro de
 **Límites funcionales:** comienza con “Inventariar pantallas personales” y concluye con “Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:ANIMA-UX -->
+### Reconciliación topológica de ANIMA-UX-001 a ANIMA-UX-017
+
+Las tareas de experiencia ANIMA inventarían, diseñan, simplifican, prueban y validan el contrato UX objetivo. No constituyen una segunda unidad física de implementación.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación de pantallas, flujos y comportamiento resultante pertenece a los paquetes E5 y a las tareas físicas propietarias de ANIMA, autorización, contexto, servidor y datos.
+
 ### [ ] ANIMA-UX-001 — Inventariar pantallas personales
 ### [ ] ANIMA-UX-002 — Inventariar pantallas administrativas
 ### [ ] ANIMA-UX-003 — Separar experiencia del trabajador y del administrador

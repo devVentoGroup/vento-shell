@@ -10,6 +10,16 @@ Esta sección organiza **auditoría y decisión de continuidad** dentro de **W A
 **Límites funcionales:** comienza con “Confirmar repositorio propietario” y concluye con “Mantener roadmap de implementación bloqueado hasta decisión”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B801-974:AURA-AUD -->
+### Reconciliación topológica de AURA-AUD-001 a AURA-AUD-012
+
+El mini-bloque es auditoría y decisión: confirma repositorio, producto, usuarios, superficies, datos, relaciones y la continuidad de AURA. No materializa el producto.
+
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+
+`AURA-DOM`, `AURA-AUTH`, `AURA-UX` y `AURA-INT` conservan además el bloqueo explícito hasta resolver `AURA-AUD-010` y `AURA-AUD-011`.
+
 ### [ ] AURA-AUD-001 — Confirmar repositorio propietario
 ### [ ] AURA-AUD-002 — Confirmar estado real del producto
 ### [ ] AURA-AUD-003 — Confirmar usuarios actuales

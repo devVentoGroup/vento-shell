@@ -10,6 +10,16 @@ Esta sección organiza **autorización de venta y caja** dentro de **N PULSO**. 
 **Límites funcionales:** comienza con “Inventariar vistas POS” y concluye con “Ejecutar pruebas integrales”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:PULSO-AUTH -->
+### Reconciliación topológica de PULSO-AUTH-001 a PULSO-AUTH-016
+
+`PULSO-AUTH-001..008` inventarían superficies y definen permisos; `PULSO-AUTH-009..016` materializan protección, contexto, dispositivo, trazabilidad, migración y pruebas.
+
+| Tareas | Modalidad | Gate |
+| --- | --- | --- |
+| `PULSO-AUTH-001..008` | `DEFINE_ONCE` | `NO_PHYSICAL_INSTANCE` |
+| `PULSO-AUTH-009..016` | `PER_IMPLEMENTATION_UNIT` | `POST_E5_PACKAGE` |
+
 ### [ ] PULSO-AUTH-001 — Inventariar vistas POS
 ### [ ] PULSO-AUTH-002 — Inventariar órdenes
 ### [ ] PULSO-AUTH-003 — Inventariar salón

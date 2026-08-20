@@ -15,6 +15,21 @@ Esta sección organiza **integraciones de continuidad y reincorporacion** dentro
 - `CONT-INT-004`: Definir contratos de captura, replay, idempotencia, reincorporación, conciliación y retorno al servicio normal
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:CONT-INT -->
+### Reconciliación topológica de CONT-INT-001 a CONT-INT-004
+
+Estas tareas son contratos y diseños canónicos de contratos de continuidad, dependencias, proveedores, replay y reincorporación. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ CONT-INT-001 — Definir contratos de criticidad, dependencia, salud, estado degradado e incidente con todas las aplicaciones
 
 **Estado:** APROBADA

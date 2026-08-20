@@ -10,6 +10,16 @@ Esta sección organiza **autorización de compras** dentro de **M ORIGO**. Agrup
 **Límites funcionales:** comienza con “Inventariar vistas de compras” y concluye con “Ejecutar pruebas integrales”.
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B601-800:ORIGO-AUTH -->
+### Reconciliación topológica de ORIGO-AUTH-001 a ORIGO-AUTH-015
+
+`ORIGO-AUTH-001..008` inventarían superficies y definen permisos; `ORIGO-AUTH-009..015` materializan límites, protección, contexto, migración y pruebas.
+
+| Tareas | Modalidad | Gate |
+| --- | --- | --- |
+| `ORIGO-AUTH-001..008` | `DEFINE_ONCE` | `NO_PHYSICAL_INSTANCE` |
+| `ORIGO-AUTH-009..015` | `PER_IMPLEMENTATION_UNIT` | `POST_E5_PACKAGE` |
+
 ### [ ] ORIGO-AUTH-001 — Inventariar vistas de compras
 ### [ ] ORIGO-AUTH-002 — Inventariar vistas de proveedores
 ### [ ] ORIGO-AUTH-003 — Inventariar vistas de recepción

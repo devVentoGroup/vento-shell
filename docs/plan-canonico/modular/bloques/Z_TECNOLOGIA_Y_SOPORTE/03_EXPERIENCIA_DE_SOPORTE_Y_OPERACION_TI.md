@@ -17,6 +17,21 @@ Esta sección organiza **experiencia de soporte y operacion ti** dentro de **Z T
 - `TI-UX-006`: Diseñar diagnóstico guiado, base de conocimiento y capacitación contextual sin saturación técnica
 <!-- PLAN-SECTION-META:END -->
 
+<!-- EXECUTION-GATE-RECONCILIATION:B401-600:TI-UX -->
+### Reconciliación topológica de TI-UX-001 a TI-UX-006
+
+Estas tareas son contratos y diseños canónicos de experiencia de soporte, mesa de servicio, mapas, flujos y diagnóstico guiado. No poseen una instancia física independiente.
+
+| Propiedad | Valor |
+| --- | --- |
+| modalidad | `DEFINE_ONCE` |
+| gate temporal | `NO_PHYSICAL_INSTANCE` |
+| identidad | `<task_id>` |
+
+La implementación física posterior pertenece a los `package_id`, repositorios, aplicaciones, servicios, infraestructura y tareas propietarias que materialicen el alcance aprobado. El contrato de esta familia se reutiliza como entrada y criterio de aceptación; no se duplica mediante una instancia `<task_id>::<implementation_unit_id>`.
+
+Esta reconciliación no autoriza cambios físicos ni modifica las decisiones sustantivas ya aprobadas.
+
 ### ✅ TI-UX-001 — Diseñar portal simple de soporte para trabajadores dentro de ANIMA
 
 **Estado:** APROBADA
