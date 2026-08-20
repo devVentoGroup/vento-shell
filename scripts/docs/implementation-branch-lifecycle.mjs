@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 
 import {
   classifyPrChecksProbe,
@@ -22,11 +22,11 @@ const DEFAULT_BRANCH = 'main';
 const IMPLEMENTATION_PREFIX = 'implementation/';
 const RESULT_START = '=== RESULTADO PARA CHATGPT ===';
 const RESULT_END = '=== FIN RESULTADO PARA CHATGPT ===';
-const CHECK_REGISTRATION_ATTEMPTS = 24;
-const CHECK_REGISTRATION_INTERVAL_MS = 5000;
-const CHECK_WATCH_INTERVAL_SECONDS = 5;
-const MERGE_CONFIRM_ATTEMPTS = 24;
-const MERGE_CONFIRM_INTERVAL_MS = 5000;
+const CHECK_REGISTRATION_ATTEMPTS = 60;
+const CHECK_REGISTRATION_INTERVAL_MS = 2000;
+const CHECK_WATCH_INTERVAL_SECONDS = 2;
+const MERGE_CONFIRM_ATTEMPTS = 60;
+const MERGE_CONFIRM_INTERVAL_MS = 2000;
 
 function fail(message, code = 1) {
   const error = new Error(message);
@@ -81,6 +81,55 @@ function run(command, args, {
   return { status, stdout, stderr };
 }
 
+function runAsync(command, args, {
+  cwd = process.cwd(),
+  env = process.env,
+} = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      cwd,
+      windowsHide: true,
+      env,
+      stdio: ['ignore', 'pipe', 'pipe'],
+    });
+
+    let stdout = '';
+    let stderr = '';
+
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
+    child.stdout.on('data', (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr.on('data', (chunk) => {
+      stderr += chunk;
+    });
+
+    child.on('error', (error) => {
+      const next = new Error(`${command} no disponible: ${error.message}`);
+      next.exitCode = 1;
+      reject(next);
+    });
+
+    child.on('close', (code) => {
+      const status = Number.isInteger(code) ? code : 1;
+      const normalizedStdout = stdout.trimEnd();
+      const normalizedStderr = stderr.trimEnd();
+
+      if (status !== 0) {
+        const error = new Error(
+          normalizedStderr || normalizedStdout || `${command} ${args.join(' ')} fallo.`,
+        );
+        error.exitCode = status;
+        reject(error);
+        return;
+      }
+
+      resolve({ status, stdout: normalizedStdout, stderr: normalizedStderr });
+    });
+  });
+}
+
 function git(args, options = {}) {
   return run('git', args, options);
 }
@@ -92,6 +141,11 @@ function gh(args, options = {}) {
 function npm(args, options = {}) {
   const invocation = resolveNpmInvocation();
   return run(invocation.command, [...invocation.prefixArgs, ...args], options);
+}
+
+function npmAsync(args, options = {}) {
+  const invocation = resolveNpmInvocation();
+  return runAsync(invocation.command, [...invocation.prefixArgs, ...args], options);
 }
 
 function sleep(milliseconds) {
@@ -574,7 +628,7 @@ function cleanupBranch(root, branch) {
   return { local: 'DELETED', remote: 'DELETED' };
 }
 
-export function finishImplementation({ instanceId, root = ensureRepositoryRoot() }) {
+export async function finishImplementation({ instanceId, root = ensureRepositoryRoot() }) {
   const { id, instance } = resolveInstance(root, instanceId);
   assertInstanceCanFinish(instance);
 
@@ -588,10 +642,13 @@ export function finishImplementation({ instanceId, root = ensureRepositoryRoot()
 
   npm(['run', '--silent', 'docs:plan:build'], { cwd: root });
   npm(['run', '--silent', 'docs:plan:check'], { cwd: root });
-  npm(['run', '--silent', 'docs:plan:test'], { cwd: root });
-  npm(['run', '--silent', 'docs:treq:check'], { cwd: root });
-  npm(['run', '--silent', 'docs:treq:test'], { cwd: root });
-  npm(['run', '--silent', 'quality:lint:ratchet'], { cwd: root });
+
+  await Promise.all([
+    npmAsync(['run', '--silent', 'docs:plan:test'], { cwd: root }),
+    npmAsync(['run', '--silent', 'docs:treq:check'], { cwd: root }),
+    npmAsync(['run', '--silent', 'docs:treq:test'], { cwd: root }),
+    npmAsync(['run', '--silent', 'quality:lint:ratchet'], { cwd: root }),
+  ]);
 
   const dirty = worktreePaths(root);
   if (dirty.length === 0) {
@@ -746,7 +803,7 @@ function usage() {
   console.log('FINISH exige VERIFIED, ejecuta docs:plan:build una sola vez para el estado final, valida plan, TREQ y lint localmente antes del commit, publica, espera CI, mergea, sincroniza main y limpia la rama.');
 }
 
-function main() {
+async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (args.help) {
     usage();
@@ -756,7 +813,7 @@ function main() {
   if (!args.instanceId) fail('Falta --instance-id.');
 
   if (args.mode === 'start') startImplementation({ instanceId: args.instanceId });
-  else finishImplementation({ instanceId: args.instanceId });
+  else await finishImplementation({ instanceId: args.instanceId });
 }
 
 const isCli = process.argv[1]
@@ -764,7 +821,7 @@ const isCli = process.argv[1]
 
 if (isCli) {
   try {
-    main();
+    await main();
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const code = Number.isInteger(error?.exitCode) ? error.exitCode : 1;
