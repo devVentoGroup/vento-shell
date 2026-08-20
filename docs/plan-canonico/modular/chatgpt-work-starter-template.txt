@@ -191,9 +191,31 @@ Solo `NEXT_TASK_ALLOWED: SI` confirma que la tarea siguiente puede comenzar.
 
 `APROBADO` por sí solo cierra la decisión documental de la tarea, pero no autoriza avanzar a la siguiente mientras el cierre Git anterior no haya producido `NEXT_TASK_ALLOWED: SI`.
 
-Para una implementación física que además modifique repositorios consumidores, las ramas, commits, validaciones y merges propios de esos repositorios continúan gobernados por el expediente físico correspondiente. El cierre de la rama canónica en `vento-shell` no simula ni sustituye la integración pendiente de otro repositorio.
+Para una implementación física en `vento-shell` no uses `docs:task:start` ni `docs:task:finish`, porque esos comandos pertenecen exclusivamente a la continuidad documental y exigen que el `task_id` sea la tarea documental actual.
+
+Después de guardar el registro de instancia en `AUTHORIZED` y detener el watcher, el usuario ejecuta `npm run docs:implementation:start -- --instance-id` seguido del identificador físico exacto. ChatGPT debe entregar siempre el comando completo con el `instance_id` real; nunca debe dejar un identificador genérico para completar.
+
+La convención de rama física es `implementation/<task-id-en-minusculas>/<instance-key-en-minusculas>`. Por ejemplo, `SHELL-CON-001::GLOBAL` utiliza `implementation/shell-con-001/global`.
+
+Antes de crear cualquier rama física, todos los repositorios incluidos en `target_repositories` deben quedar en su rama estable `main`, con `fetch` ejecutado, actualización `pull --ff-only`, worktree limpio y divergencia `0/0` respecto de `origin/main`. Si una instancia afecta más de un repositorio, esta comprobación se realiza en cada uno antes de crear ninguna rama de implementación.
+
+`docs:implementation:start` debe fallar cerrado salvo que `main` esté sincronizado `0/0`, la instancia exista y esté `AUTHORIZED`, conserve autorización humana válida y el único cambio local previo sea su propio archivo de instancia. Antes de crear o recuperar la rama física, el comando ejecuta un readiness físico de solo lectura mientras la instancia permanece `AUTHORIZED`; ese readiness debe confirmar formato canónico `OK`, `active-sequence.json` vigente, contrato de entrega válido, upstream sin divergencia bloqueante y ausencia de cambios locales inesperados. Solo después de `PRE_BRANCH_READINESS: PASS` puede crear o recuperar la rama, configurar y publicar su upstream, cambiar únicamente esa instancia a `IN_PROGRESS` y ejecutar automáticamente una sola vez el preflight físico estricto con `--instance-id`. Solo la combinación `PRE_BRANCH_READINESS: PASS` y `READY_TO_IMPLEMENT: SI` confirma que puede comenzar la materialización.
+
+Después de que la batería física autorizada haya pasado, la evidencia esté consolidada y la instancia quede `VERIFIED`, el usuario ejecuta `npm run docs:implementation:finish -- --instance-id` seguido del identificador exacto. Este comando ejecuta `docs:plan:build` exactamente una vez como sincronización documental convergente de cierre y, antes de stage, commit o push, debe ejecutar localmente `docs:plan:check`, `docs:plan:test`, `docs:treq:check`, `docs:treq:test`, `quality:lint:ratchet` y `git diff --check`. Luego bloquea cambios directos al registro 04A/TREQ, prepara únicamente el alcance automatizable, valida `docs:commit-scope:check`, crea el commit final, publica la rama, crea o actualiza el PR, espera los checks, mergea únicamente el SHA validado, sincroniza `main` `0/0` y limpia la rama. Solo `READY_TO_RESTART_WATCHER: SI` permite volver a encender el watcher.
+
+Para una implementación física que además modifique repositorios consumidores, las ramas, commits, validaciones y merges propios de esos repositorios continúan gobernados por el expediente físico correspondiente. El lifecycle de `vento-shell` no simula ni sustituye la integración pendiente de otro repositorio.
 
 La fuente compartida entre computadores es GitHub. Un cambio sin commit o un commit sin push no forma parte del estado recuperable desde otra estación.
+
+REGLA DE PRECEDENCIA DEL LIFECYCLE FÍSICO
+
+Desde que existen `docs:implementation:start` y `docs:implementation:finish`, esos comandos son la autoridad operativa para abrir y cerrar una instancia física en `vento-shell`.
+
+Si el contenido dinámico de `CURRENT-WORK` conserva instrucciones históricas que indiquen crear una rama física con `git switch -c`, cambiar manualmente `AUTHORIZED` a `IN_PROGRESS`, omitir el readiness previo a la rama, ejecutar manualmente el preflight físico inicial, publicar manualmente la rama de apertura, ejecutar manualmente validadores documentales de cierre que ya pertenecen a `docs:implementation:finish` o realizar manualmente el `docs:plan:build`, commit, push, PR o merge final que ya pertenezcan a `docs:implementation:finish`, ChatGPT debe tratarlas como proyección operativa desactualizada y NO debe entregarlas al usuario.
+
+La materialización del código, la transición posterior a `IMPLEMENTED`, la ejecución de las `validation_commands`, la consolidación de evidencia y el paso a `VERIFIED` continúan siendo responsabilidad humana salvo autorización asistida explícita. El lifecycle físico automatiza únicamente lo que sus comandos declaran expresamente.
+
+Ante cualquier diferencia entre una instrucción dinámica de `CURRENT-WORK` y estas reglas globales del template, prevalece este template para el flujo operativo. Esa precedencia no amplía el alcance autorizado de la instancia ni permite omitir gates, evidencia, TREQ, permisos, credenciales o límites de repositorio.
 
 MODO PREDETERMINADO DE IMPLEMENTACIÓN HUMANA
 
@@ -270,17 +292,17 @@ FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA
 Para una instancia física autorizada, la eficiencia operativa es vinculante:
 
 1. mientras el carril sea documental, el watcher puede permanecer activo para sincronizar artefactos derivados y crear el registro `PENDING_AUTHORIZATION` cuando corresponda;
-2. antes de guardar la transición `AUTHORIZED → IN_PROGRESS`, detén el watcher con `Ctrl+C` si está activo;
-3. desde ese momento el watcher debe permanecer apagado hasta después del commit/push final de cierre y de confirmar worktree limpio y remoto sincronizado;
-4. cambia estados únicamente en el archivo propio de la instancia; no ejecutes un build global solo para reflejar `AUTHORIZED`, `IN_PROGRESS`, `IMPLEMENTED` o `VERIFIED`;
-5. ejecuta el preflight canónico una sola vez después de entrar a `IN_PROGRESS` y antes de modificar código; repítelo únicamente si el checkout cambia materialmente o una discrepancia concreta lo exige;
+2. después de que ChatGPT audite el alcance y el usuario guarde el registro `AUTHORIZED`, detén el watcher con `Ctrl+C` si está activo;
+3. antes de crear cualquier rama física, confirma en todos los `target_repositories` su `main` actualizado con `fetch`, `pull --ff-only`, worktree limpio y sincronización `0/0`; si alguno falla, no se crea ninguna rama;
+4. con el watcher apagado, ejecuta `npm run docs:implementation:start -- --instance-id` seguido del identificador físico exacto resuelto; este comando ejecuta primero readiness físico de solo lectura mientras la instancia sigue `AUTHORIZED`; solo tras `PRE_BRANCH_READINESS: PASS` crea o recupera la rama `implementation/<task-id-en-minusculas>/<instance-key-en-minusculas>`, publica su upstream, cambia únicamente el registro a `IN_PROGRESS` y ejecuta el preflight físico estricto una sola vez;
+5. si `docs:implementation:start` produce `READY_TO_IMPLEMENT: SI`, continúa localmente sin volver al chat; desde ese momento el watcher debe permanecer apagado hasta que el cierre físico confirme `READY_TO_RESTART_WATCHER: SI`; si produce FAIL, ese sí es un gate de evidencia;
 6. después del preflight materializa todos los cambios deterministas de la implementación sin gates intermedios de `git status`, Source Control, capturas, hashes sueltos, diff, build, lint o tests;
 7. cuando todos los cambios físicos estén completos, registra `IMPLEMENTED` con la identidad disponible y ejecuta una sola transacción final fail-fast formada exclusivamente por las `validation_commands` autorizadas de la instancia, en su orden contractual; no agregues automáticamente `docs:plan:build`, `docs:plan:check`, `docs:plan:test`, `docs:treq:check` ni `docs:treq:test`; si toda la evidencia exigida es local, la transacción puede llegar directamente a `VERIFIED` tras PASS; si alguna validación exige evidencia remota sobre código publicado, completa primero el tramo local, realiza el commit/push mínimo de materialización mientras la instancia permanece `IMPLEMENTED` y ejecuta después el tramo remoto contra ese SHA;
 8. si la batería falla en el tramo local o remoto, conserva `IMPLEMENTED`, corrige únicamente la causa dentro del alcance y vuelve a ejecutar la misma batería final completa; si la corrección cambia el SHA publicado, realiza un nuevo commit/push de materialización antes del tramo remoto; no la fragmentes en micro-gates;
 9. cambia la instancia a `VERIFIED` únicamente cuando hayan pasado todos los tramos exigidos por el contrato, incluida la evidencia remota cuando aplique; entonces consolida `evidence` y no repitas validaciones por rutina;
-10. después de `VERIFIED`, ejecuta `npm run docs:plan:build` una sola vez como sincronización documental de cierre; ese build actualiza control, Iniciador, cabecera, continuidad, registros derivados, artefactos de tarea y readiness que le correspondan, por lo que no ejecutes además `docs:implementation:status` ni `docs:chatgpt:starter`;
-11. después del build de cierre, stagea únicamente los derivados versionados legítimos, valida el commit de cierre, realiza el commit/push final y confirma que el worktree quedó limpio y el remoto sincronizado;
-12. solo después de ese cierre limpio y sincronizado vuelve a encender el watcher; al arrancar debe comprobar estado y fuentes en modo de solo lectura, publicar estado runtime y no ejecutar build ni modificar archivos versionados hasta detectar un cambio documental real;
+10. después de `VERIFIED`, ejecuta `npm run docs:implementation:finish -- --instance-id` seguido del identificador físico exacto resuelto; el cierre ejecuta `npm run docs:plan:build` una sola vez, por lo que no debes ejecutarlo manualmente antes ni después;
+11. `docs:implementation:finish` realiza el build documental único y convergente, ejecuta localmente `docs:plan:check`, `docs:plan:test`, `docs:treq:check`, `docs:treq:test`, `quality:lint:ratchet` y `git diff --check` antes de stage/commit/push, valida el commit, realiza el commit/push final de cierre, crea o actualiza el PR, espera CI, mergea el mismo SHA validado, vuelve a `main`, comprueba sincronización `0/0`, limpia la rama y conserva la terminal abierta ante PASS o FAIL;
+12. solo con `READY_TO_RESTART_WATCHER: SI` vuelve a encender el watcher; al arrancar debe comprobar estado y fuentes en modo de solo lectura, publicar estado runtime y no ejecutar build ni modificar archivos versionados hasta detectar un cambio documental real;
 13. si GitHub Push Protection bloquea un push, clasifica primero el hallazgo: un fixture sintético verificado puede exceptuarse como prueba o falso positivo, pero un secreto real debe retirarse y rotarse y nunca puede recibir bypass.
 
 La única excepción es una frase explícita para un paso ya numerado, por ejemplo:
@@ -297,7 +319,7 @@ Cuando exista checkout actualizado de `vento-shell`, entrega al usuario como pas
 
 Si se trabaja sobre una tarea explícita, usa su ID real y exacto en el comando; nunca escribas placeholders ejecutables ni rutas ficticias.
 
-En una instancia física el preflight se ejecuta una sola vez después de `IN_PROGRESS` y antes de tocar código. No se repite como comprobación rutinaria entre archivos ni antes de cada comando; solo se repite si el checkout cambia materialmente o una discrepancia concreta hace que la evidencia anterior deje de ser suficiente.
+En una instancia física existen dos comprobaciones automáticas dentro de `docs:implementation:start` y ninguna se invoca manualmente durante el flujo normal. Primero se ejecuta un readiness de solo lectura mientras la instancia sigue `AUTHORIZED`; esta comprobación ocurre antes de crear o recuperar la rama y debe terminar con `PRE_BRANCH_READINESS: PASS`. Solo entonces el lifecycle crea o recupera la rama, cambia la instancia a `IN_PROGRESS` y ejecuta internamente una sola vez `npm run docs:task:preflight -- --instance-id` con el identificador físico exacto, `--json --strict`. El preflight estricto no se repite como comprobación rutinaria entre archivos ni antes de cada comando; solo se repite si el checkout cambia materialmente o una discrepancia concreta hace que la evidencia anterior deje de ser suficiente.
 
 El preflight debe resolver como mínimo:
 
@@ -655,6 +677,7 @@ En la sección de validaciones diferencia lo ejecutado de lo pendiente. No pegue
 ARCHIVOS .MJS
 
 Si alguna entrega requiere contenido de un `.mjs`, entrégalo al usuario como archivo de texto descargable. En el chat indica el archivo real `.mjs` que se crea o modifica, pero el contenido descargable debe ser `.txt`.
+
 <!-- CURRENT-WORK:START -->
 {{CURRENT_WORK}}
 <!-- CURRENT-WORK:END -->
