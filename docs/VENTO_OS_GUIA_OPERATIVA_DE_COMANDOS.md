@@ -1,76 +1,83 @@
 # VENTO OS — Guía Operativa de Comandos
 
-> **Propósito:** tener en un solo lugar los comandos que necesitas para trabajar con Vento OS sin depender del chat para recordar el flujo Git, las tareas canónicas, los cambios transversales, las validaciones y los diagnósticos básicos.
+> **Propósito:** tener en un solo lugar los comandos que necesitas para trabajar con Vento OS sin depender del chat para recordar el flujo Git, las tareas canónicas, las implementaciones físicas, los cambios transversales, las validaciones y los diagnósticos básicos.
 >
 > **Repositorio principal:** `vento-group-sas/vento-shell`
 >
 > **Rama estable:** `main`
 >
-> **Fecha de esta guía:** 2026-08-19
+> **Fecha de esta guía:** 2026-08-20
 
 ---
 
 ## 1. La regla más importante
 
-En Vento OS existen **tres tipos de trabajo** y no deben mezclarse.
+En Vento OS existen **cuatro tipos de trabajo** y no deben mezclarse.
 
-| Tipo de trabajo                       | Rama        | Comando principal                      |
-| ------------------------------------- | ----------- | -------------------------------------- |
-| Tarea canónica del plan               | `task/...`  | `docs:task:start` / `docs:task:finish` |
-| Cambio transversal de infraestructura | `infra/...` | `docs:infra:publish`                   |
-| Documentación operativa no canónica   | `ops/...`   | `docs:ops:publish`                     |
+| Tipo de trabajo                       | Rama                 | Comando principal                                          |
+| ------------------------------------- | -------------------- | ---------------------------------------------------------- |
+| Tarea canónica documental             | `task/...`           | `docs:task:start` / `docs:task:finish`                     |
+| Implementación física autorizada      | `implementation/...` | `docs:implementation:start` / `docs:implementation:finish` |
+| Cambio transversal de infraestructura | `infra/...`          | `docs:infra:publish`                                       |
+| Documentación operativa no canónica   | `ops/...`            | `docs:ops:publish`                                         |
 
 ### Mapa mental
 
 ```text
-¿Voy a trabajar una tarea del Plan Canónico?
+¿Voy a desarrollar una tarea documental actual del Plan Canónico?
 |
 +-- SI --> docs:task:start
-|          trabajo
+|          trabajo documental
 |          APROBADO
 |          docs:task:finish
 |
-+-- NO --> ¿Es una corrección transversal de scripts, CI, GitHub o tooling?
++-- NO --> ¿Voy a ejecutar una instancia física ya AUTHORIZED?
            |
-           +-- SI --> hago los cambios en main sin commit directo
-           |          docs:infra:publish
+           +-- SI --> docs:implementation:start
+           |          materialización
+           |          validation_commands
+           |          VERIFIED
+           |          docs:implementation:finish
            |
-           +-- NO --> ¿Es documentación operativa Markdown directamente en docs/?
+           +-- NO --> ¿Es una corrección transversal de scripts, CI, GitHub, tooling o política transversal?
                       |
-                      +-- SI --> hago el cambio en main sin commit directo
-                                 docs:ops:publish
+                      +-- SI --> hago los cambios en main sin commit directo
+                      |          docs:infra:publish
+                      |
+                      +-- NO --> ¿Es Markdown operativo directamente en docs/?
+                                 |
+                                 +-- SI --> hago el cambio en main sin commit directo
+                                            docs:ops:publish
 ```
 
-**Nunca uses una rama de tarea para esconder una corrección transversal que no pertenece a esa tarea.**
+**Nunca uses una rama de tarea para esconder una implementación física o una corrección transversal.**
 
-**Nunca hagas un commit directo a `main` para saltarte el flujo.**
+**Nunca uses `docs:task:start` para una instancia física.**
+
+**Nunca hagas un commit directo a `main` para saltarte el lifecycle.**
 
 ---
 
-# 2. Los cuatro comandos que debes memorizar
+# 2. Los seis comandos que debes memorizar
 
-Estos son los cuatro comandos realmente importantes.
-
-## 2.1 Empezar una tarea canónica
-
-Ejemplo actual:
+## 2.1 Empezar una tarea canónica documental
 
 ```powershell
 npm run docs:task:start -- --task-id AUTH-SRV-004
 ```
 
-Este comando debe encargarse de:
+Debe encargarse de:
 
 ```text
 main actualizado
--> preflight
+-> preflight documental
 -> crear o recuperar task/auth-srv-004
 -> publicar la rama
 -> comprobar sincronización
--> dejar READY_TO_WORK: SI
+-> READY_TO_WORK: SI
 ```
 
-Solo empiezas a trabajar cuando el resultado final diga:
+Solo empiezas trabajo documental cuando termine con:
 
 ```text
 ESTADO: PASS
@@ -79,15 +86,13 @@ READY_TO_WORK: SI
 
 ---
 
-## 2.2 Cerrar una tarea canónica
-
-Ejemplo:
+## 2.2 Cerrar una tarea canónica documental
 
 ```powershell
 npm run docs:task:finish -- --task-id AUTH-SRV-004
 ```
 
-Este comando debe encargarse de:
+Debe encargarse de:
 
 ```text
 validar tarea APROBADA
@@ -95,13 +100,13 @@ validar tarea APROBADA
 -> commit
 -> push
 -> PR
--> esperar checks
--> merge
+-> checks
+-> merge del SHA validado
 -> volver a main
 -> sincronizar 0/0
--> comprobar worktree limpio
+-> worktree limpio
 -> eliminar ramas
--> permitir siguiente tarea
+-> NEXT_TASK_ALLOWED: SI
 ```
 
 El cierre solo es válido cuando termina con:
@@ -118,7 +123,96 @@ NEXT_TASK_ALLOWED: SI
 
 ---
 
-## 2.3 Publicar un cambio transversal
+## 2.3 Empezar una implementación física
+
+Ejemplo real de instancia global:
+
+```powershell
+npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
+```
+
+Este comando se usa **solo después de que el registro de instancia esté `AUTHORIZED`**.
+
+Debe encargarse de:
+
+```text
+validar instancia AUTHORIZED
+-> comprobar authorization APPROVED
+-> comprobar que el único cambio local sea el registro de la instancia
+-> crear o recuperar implementation/shell-con-001/global
+-> publicar upstream
+-> cambiar la instancia a IN_PROGRESS
+-> ejecutar una sola vez el preflight físico estricto
+-> READY_TO_IMPLEMENT: SI
+```
+
+Resultado esperado:
+
+```text
+ESTADO: PASS
+OPERACION: IMPLEMENTATION_START
+INSTANCE_ID: SHELL-CON-001::GLOBAL
+INSTANCE_STATUS: IN_PROGRESS
+PREFLIGHT: PASS
+READY_TO_IMPLEMENT: SI
+```
+
+### Regla crítica
+
+No crees manualmente la rama física con `git switch -c` durante el flujo normal.
+
+No cambies manualmente `AUTHORIZED` a `IN_PROGRESS` antes de llamar el comando: `docs:implementation:start` realiza esa transición.
+
+---
+
+## 2.4 Cerrar una implementación física
+
+Cuando la instancia ya esté `VERIFIED` y conserve evidencia consolidada:
+
+```powershell
+npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL
+```
+
+Debe encargarse de:
+
+```text
+validar instancia VERIFIED
+-> comprobar evidence
+-> exigir rama implementation/shell-con-001/global
+-> ejecutar docs:plan:build una sola vez
+-> validar paths de implementación
+-> git diff --check
+-> stage explícito del alcance detectado
+-> docs:commit-scope:check --staged
+-> commit
+-> push
+-> PR
+-> esperar checks
+-> merge del SHA validado
+-> volver a main
+-> main 0/0
+-> worktree limpio
+-> eliminar rama local y remota
+-> READY_TO_RESTART_WATCHER: SI
+```
+
+Resultado esperado:
+
+```text
+ESTADO: PASS
+OPERACION: IMPLEMENTATION_FINISH
+REQUIRED_CHECKS: PASS
+MERGE: PASS
+SYNC_MAIN: 0/0
+WORKTREE: CLEAN
+READY_TO_RESTART_WATCHER: SI
+```
+
+**El watcher solo se vuelve a encender después de `READY_TO_RESTART_WATCHER: SI`.**
+
+---
+
+## 2.5 Publicar un cambio transversal
 
 Ejemplo:
 
@@ -126,7 +220,7 @@ Ejemplo:
 npm run docs:infra:publish -- --change-id task-lifecycle-finish-verification
 ```
 
-Úsalo cuando hayas terminado una tarea o estés en `main` y necesites corregir cosas como:
+Úsalo desde `main` para cambios transversales como:
 
 - scripts de documentación;
 - validadores;
@@ -134,16 +228,16 @@ npm run docs:infra:publish -- --change-id task-lifecycle-finish-verification
 - configuración de calidad;
 - package scripts;
 - herramientas del lifecycle;
-- plantillas operativas;
-- automatización transversal.
+- automatización transversal;
+- archivos que el clasificador de infraestructura admita expresamente.
 
-El comando crea automáticamente una rama:
+Crea automáticamente una rama:
 
 ```text
 infra/task-lifecycle-finish-verification
 ```
 
-y debe realizar:
+Y debe realizar:
 
 ```text
 validación
@@ -155,49 +249,43 @@ validación
 -> merge
 -> main 0/0
 -> worktree limpio
--> eliminar ramas
+-> eliminación de ramas
 ```
 
-Solo queda cerrado cuando diga:
+### Importante sobre archivos transversales del Plan
 
-```text
-ESTADO: PASS
-MERGE: PASS
-SYNC_MAIN: 0/0
-WORKTREE: CLEAN
-READY_FOR_NEXT_TASK: SI
-```
+`commit-scope` puede clasificar determinados archivos del Plan como `TRANSVERSAL`, pero `docs:infra:publish` solo puede publicarlos si `classifyInfraPath()` también los admite expresamente.
+
+Si un archivo transversal legítimo es rechazado por `docs:infra:publish`, **no uses `docs:ops:publish`, no lo mezcles con una tarea y no hagas commit directo a `main`**. Primero se corrige el alcance del publisher transversal.
 
 ---
 
-## 2.4 Publicar documentación operativa no canónica
-
-Ejemplo:
+## 2.6 Publicar documentación operativa no canónica
 
 ```powershell
 npm run docs:ops:publish -- --change-id guia-operativa-comandos
 ```
 
-Úsalo exclusivamente para Markdown operativo ubicado **directamente dentro de `docs/`**, por ejemplo:
+Úsalo exclusivamente para Markdown operativo ubicado directamente dentro de `docs/`, por ejemplo:
 
 ```text
 docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md
 ```
 
-El comando crea automáticamente:
+Crea automáticamente:
 
 ```text
 ops/guia-operativa-comandos
 ```
 
-y ejecuta:
+Y ejecuta:
 
 ```text
 validación local
 -> commit aislado
 -> push
 -> PR a main
--> espera de checks
+-> checks
 -> merge confirmado
 -> main 0/0
 -> worktree limpio
@@ -214,95 +302,47 @@ packages/...
 supabase/...
 ```
 
-Así se evita mezclar documentación de operación con tareas canónicas, infraestructura o aplicación.
-
 ---
 
-# 3. Flujo normal de una tarea
+# 3. Flujo normal de una tarea documental
 
 ## Paso A — Estás en `main`
 
-Comprueba dónde estás:
-
 ```powershell
 git branch --show-current
-```
-
-Debe mostrar:
-
-```text
-main
-```
-
-Comprueba el estado:
-
-```powershell
 git status --short
 ```
 
-Antes de comenzar una nueva tarea debería no mostrar nada.
-
----
+Antes de comenzar una tarea nueva, `main` debe estar limpio.
 
 ## Paso B — Inicias la tarea
-
-Ejemplo:
 
 ```powershell
 npm run docs:task:start -- --task-id AUTH-SRV-004
 ```
 
-Comprueba después:
-
-```powershell
-git branch --show-current
-```
-
-Resultado esperado:
+La rama esperada es:
 
 ```text
 task/auth-srv-004
 ```
 
----
-
 ## Paso C — Trabajas y validas
-
-Mientras trabajas puedes mirar qué cambió:
 
 ```powershell
 git status --short
-```
-
-Ver el diff:
-
-```powershell
 git diff
-```
-
-Ver solamente nombres de archivos:
-
-```powershell
 git diff --name-only
-```
-
-Comprobar problemas de whitespace o conflictos de patch:
-
-```powershell
 git diff --check
 ```
 
----
-
 ## Paso D — La tarea queda APROBADA
-
-Cuando la tarea ya fue revisada y aprobada:
 
 ```powershell
 npm run docs:task:finish -- --task-id AUTH-SRV-004
 ```
 
-No empieces la siguiente tarea hasta recibir:
+No empieces la siguiente hasta recibir:
 
 ```text
 NEXT_TASK_ALLOWED: SI
@@ -310,13 +350,134 @@ NEXT_TASK_ALLOWED: SI
 
 ---
 
-# 4. Flujo de un cambio transversal
+# 4. Flujo normal de una implementación física
+
+## Paso A — La instancia está lista para autorización
+
+El watcher crea o mantiene el registro de instancia en:
+
+```text
+PENDING_AUTHORIZATION
+```
+
+La autorización humana debe completar en ese mismo archivo:
+
+- `target_repositories`;
+- `authorized_changes`;
+- `validation_commands`;
+- `authorization.decision = APPROVED`;
+- evidencia inicialmente vacía;
+- `status = AUTHORIZED`.
+
+## Paso B — Detén el watcher
+
+Si está activo:
+
+```text
+Ctrl+C
+```
+
+El watcher permanece apagado durante toda la implementación física.
+
+## Paso C — Abre la instancia física
+
+Ejemplo:
+
+```powershell
+npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
+```
+
+Solo continúa cuando diga:
+
+```text
+READY_TO_IMPLEMENT: SI
+```
+
+El lifecycle deja la instancia en:
+
+```text
+IN_PROGRESS
+```
+
+## Paso D — Materializas exclusivamente el alcance autorizado
+
+No amplíes el alcance por inferencia.
+
+No uses una tarea posterior para justificar cambios adelantados.
+
+No ejecutes validadores globales por rutina durante esta fase.
+
+## Paso E — Estado `IMPLEMENTED`
+
+Cuando el cambio físico esté materializado, el mismo registro pasa a:
+
+```text
+IMPLEMENTED
+```
+
+## Paso F — Ejecutas la batería física final
+
+Ejecuta exclusivamente las `validation_commands` registradas en la instancia, en el orden contractual.
+
+No agregues automáticamente:
+
+```text
+docs:plan:build
+docs:plan:check
+docs:plan:test
+docs:treq:check
+docs:treq:test
+```
+
+salvo que una `validation_command` los exija expresamente.
+
+Si falla la batería:
+
+```text
+IMPLEMENTED
+-> corregir causa dentro del alcance
+-> repetir la batería completa
+```
+
+No fragmentes el cierre en micro-gates.
+
+## Paso G — Estado `VERIFIED`
+
+Solo después de PASS completo:
+
+```text
+VERIFIED
+```
+
+Consolida la evidencia en el registro de la instancia.
+
+## Paso H — Cierre físico oficial
+
+```powershell
+npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL
+```
+
+No hagas manualmente commit, push, PR o merge que este comando ya administra.
+
+Solo después de:
+
+```text
+READY_TO_RESTART_WATCHER: SI
+```
+
+puedes volver a ejecutar:
+
+```powershell
+npm run docs:plan:watch
+```
+
+---
+
+# 5. Flujo de un cambio transversal
 
 Este flujo existe para evitar commits directos a `main`.
 
-## Situación típica
-
-Terminaste una tarea, estás en `main` y modificaste:
+Ejemplo de cambios:
 
 ```text
 scripts/docs/task-branch-lifecycle.mjs
@@ -324,39 +485,27 @@ scripts/docs/task-branch-lifecycle.test.mjs
 package.json
 ```
 
-No hagas:
+No hagas un commit manual directo sobre `main`.
 
-```powershell
-git commit
-```
-
-directamente en `main`.
-
-Haz:
+Usa:
 
 ```powershell
 npm run docs:infra:publish -- --change-id task-lifecycle-finish-verification
 ```
 
-El comando debe mover esos cambios a una rama `infra/...` sin perderlos.
-
----
-
 ## Cómo nombrar `change-id`
-
-Usa nombres cortos, descriptivos y en minúsculas.
 
 Buenos ejemplos:
 
 ```text
 task-lifecycle-finish-verification
-required-gate-timeout
+implementation-branch-lifecycle
 docs-validator-fix
 windows-npm-portability
 owner-path-resolution
 ```
 
-Evita nombres vagos:
+Evita:
 
 ```text
 fix
@@ -366,38 +515,35 @@ cosas
 nuevo
 ```
 
----
+## 5.1 Cambios de dos tipos al mismo tiempo
 
-# 4.1 Cuando tienes cambios de dos tipos al mismo tiempo
-
-Si una rama de tarea contiene además un documento operativo, **no mezcles ambos commits**.
+No mezcles scopes incompatibles.
 
 Ejemplo:
 
 ```text
-AUTH-SRV-004 modificada
+cambio transversal
 +
 docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md
 ```
 
-Secuencia:
+Secuencia recomendada:
 
 ```text
-1. apartar temporalmente solo el documento operativo con git stash
-2. cerrar la tarea con docs:task:finish
-3. recuperar el stash
-4. publicar el documento con docs:ops:publish
-5. comprobar READY_FOR_NEXT_TASK: SI
-6. iniciar la siguiente tarea
+1. apartar temporalmente la guía operativa
+2. publicar infraestructura con docs:infra:publish
+3. volver a main limpio
+4. recuperar la guía
+5. publicar guía con docs:ops:publish
 ```
 
-Comando de ejemplo para apartar únicamente la guía:
+Comando selectivo:
 
 ```powershell
 git stash push -u -m "ops-doc-pendiente" -- docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md
 ```
 
-Después de cerrar la tarea:
+Después:
 
 ```powershell
 git stash list
@@ -405,13 +551,9 @@ git stash pop
 npm run docs:ops:publish -- --change-id guia-operativa-comandos
 ```
 
-> Si tienes varios stashes, identifica primero el stash correcto con `git stash list` antes de hacer `pop`.
-
 ---
 
-# 5. Validaciones del Plan Canónico
-
-No necesitas ejecutar todas siempre. Úsalas cuando estés diagnosticando o verificando una modificación.
+# 6. Validaciones del Plan Canónico
 
 ## Reconstruir artefactos derivados
 
@@ -419,19 +561,11 @@ No necesitas ejecutar todas siempre. Úsalas cuando estés diagnosticando o veri
 npm run docs:plan:build
 ```
 
-Úsalo cuando una tarea o script modifique contenido del plan que tenga artefactos derivados.
-
----
-
-## Validación estructural del plan
+## Validación estructural
 
 ```powershell
 npm run docs:plan:check
 ```
-
-Comprueba múltiples políticas, formatos, sincronización y artefactos del Plan Canónico.
-
----
 
 ## Tests documentales
 
@@ -439,19 +573,11 @@ Comprueba múltiples políticas, formatos, sincronización y artefactos del Plan
 npm run docs:plan:test
 ```
 
-Es la batería principal de tests del sistema documental.
-
----
-
 ## Validar registro TREQ
 
 ```powershell
 npm run docs:treq:check
 ```
-
-Comprueba integridad estructural del registro de requisitos de prueba.
-
----
 
 ## Tests TREQ
 
@@ -459,120 +585,83 @@ Comprueba integridad estructural del registro de requisitos de prueba.
 npm run docs:treq:test
 ```
 
-Comprueba comportamiento del sistema TREQ.
-
----
-
-## Validar alcance del commit
+## Validar alcance staged
 
 ```powershell
 npm run docs:commit-scope:check -- --staged
 ```
 
-Se usa **después de stagear archivos** para comprobar que el commit no se sale del alcance autorizado.
-
----
-
-## Preflight de una tarea
-
-Ejemplo:
+## Preflight documental
 
 ```powershell
 npm run docs:task:preflight -- --task-id AUTH-SRV-004 --json
 ```
 
-Sirve para saber, antes de trabajar:
+## Preflight físico
 
-- estado de la tarea;
-- propietario;
-- continuidad;
-- orden canónico;
-- si es la tarea actual;
-- bloqueos.
+El lifecycle físico lo ejecuta automáticamente durante `docs:implementation:start` con el `instance-id` real y `--strict`.
+
+No lo repitas manualmente por rutina si `IMPLEMENTATION_START` ya terminó con:
+
+```text
+PREFLIGHT: PASS
+READY_TO_IMPLEMENT: SI
+```
 
 ---
 
-# 6. Comandos Git que sí debes conocer
+# 7. Comandos Git que sí debes conocer
 
-## ¿En qué rama estoy?
+## Rama actual
 
 ```powershell
 git branch --show-current
 ```
 
----
-
-## ¿Qué archivos tengo modificados?
+## Archivos modificados
 
 ```powershell
 git status --short
 ```
 
-Para una vista más completa:
-
-```powershell
-git status
-```
-
----
-
-## ¿Qué cambió?
+## Diff
 
 ```powershell
 git diff
 ```
 
-Solo nombres:
+## Solo nombres
 
 ```powershell
 git diff --name-only
 ```
 
----
-
-## ¿Qué está staged?
+## Staged
 
 ```powershell
 git diff --cached
-```
-
-Solo nombres staged:
-
-```powershell
 git diff --cached --name-only
 ```
 
----
-
-## Ver últimos commits
+## Últimos commits
 
 ```powershell
 git log --oneline -10
 ```
 
----
-
-## Ver HEAD actual
+## HEAD
 
 ```powershell
 git rev-parse HEAD
 ```
 
----
-
-## Actualizar referencias remotas
+## Fetch
 
 ```powershell
 git fetch origin
 ```
 
-Este comando **no modifica tus archivos**. Solo actualiza lo que Git sabe del remoto.
-
----
-
-## Saber si `main` está sincronizado
-
-Estando en `main`:
+## Sincronización de `main`
 
 ```powershell
 git fetch origin main
@@ -585,95 +674,65 @@ Resultado correcto:
 0    0
 ```
 
-Significa:
-
-```text
-0 commits detrás
-0 commits delante
-```
-
 ---
 
-# 7. GitHub CLI — comandos que debes conocer
+# 8. GitHub CLI — comandos que debes conocer
 
-## Comprobar autenticación
+## Autenticación
 
 ```powershell
 gh auth status
 ```
 
-Si falla, los comandos automáticos que crean PR o consultan checks no podrán funcionar.
-
----
-
-## Ver PR de la rama actual
+## PR de la rama actual
 
 ```powershell
 gh pr view
 ```
 
----
-
-## Ver estado resumido de PR
+## Estado resumido
 
 ```powershell
 gh pr status
 ```
 
----
-
-## Ver checks de una PR
-
-Ejemplo:
+## Checks
 
 ```powershell
 gh pr checks
 ```
 
-Esperar a que terminen:
+Esperar:
 
 ```powershell
 gh pr checks --watch --fail-fast --interval 5
 ```
 
-> Si GitHub responde `no checks reported`, puede significar simplemente que los workflows todavía no fueron registrados. El lifecycle automatizado debe esperar ese registro antes de considerar el caso un fallo.
+Si aparece `no checks reported`, puede significar que los workflows todavía no se registraron. Los lifecycle automatizados deben esperar ese registro antes de tratarlo como fallo definitivo.
 
 ---
 
-## Ver información concreta de una PR
-
-Ejemplo:
-
-```powershell
-gh pr view 32 --json number,state,headRefName,headRefOid,baseRefName,mergeable
-```
-
----
-
-# 8. Trabajar desde otro computador
+# 9. Trabajar desde otro computador
 
 GitHub es la fuente compartida.
 
-## Si una tarea ya existe y quieres continuarla en otro PC
-
-No crees la rama manualmente.
-
-Ejecuta de nuevo:
+## Continuar una tarea documental
 
 ```powershell
 npm run docs:task:start -- --task-id AUTH-SRV-004
 ```
 
-El comando debe detectar que la rama existe y recuperarla.
+El comando debe recuperar o reutilizar la rama remota existente.
 
-El resultado debería indicar algo equivalente a:
+## Continuar una implementación física
 
-```text
-BRANCH_MODE: RESUMED
-READY_TO_WORK: SI
+Si la instancia sigue en estado compatible con apertura y la rama física existe, el lifecycle puede recuperarla o reutilizarla mediante:
+
+```powershell
+npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
 ```
 
----
+No recrees manualmente `implementation/shell-con-001/global`.
 
 ## Regla importante
 
@@ -683,7 +742,7 @@ Esto sí viaja entre computadores:
 commit + push
 ```
 
-Esto NO viaja:
+Esto no viaja:
 
 ```text
 cambios sin commit
@@ -692,45 +751,7 @@ commit local sin push
 
 ---
 
-# 9. Si `docs:task:start` dice que hay cambios pendientes
-
-Primero:
-
-```powershell
-git status --short
-```
-
-Luego clasifica los cambios.
-
-### Si pertenecen a una tarea anterior todavía abierta
-
-No abras la siguiente. Termina la tarea anterior.
-
-### Si son una corrección transversal posterior
-
-Usa:
-
-```powershell
-npm run docs:infra:publish -- --change-id task-lifecycle-finish-verification
-```
-
-con un `change-id` descriptivo del cambio real.
-
-### Si no sabes de dónde salieron
-
-No hagas `git add -A`.
-
-Inspecciona:
-
-```powershell
-git diff
-```
-
-y decide qué son antes de continuar.
-
----
-
-# 10. Si `docs:task:finish` falla
+# 10. Si un lifecycle falla
 
 La regla general es:
 
@@ -740,81 +761,61 @@ FAIL
 repetir todo desde cero
 ```
 
-Primero identifica:
+Conserva la rama y el worktree y diagnostica la comprobación concreta.
 
-```text
-COMPROBACION_FALLIDA
-DETALLE_FALLO
-```
-
----
-
-## Caso: `no checks reported`
-
-Normalmente significa que GitHub todavía no registró los workflows.
-
-El lifecycle nuevo debe manejar esta espera automáticamente.
-
-Puedes inspeccionar manualmente:
-
-```powershell
-gh pr status
-```
-
-y luego:
-
-```powershell
-gh pr checks
-```
-
-usando el número real de la PR que produjo el cierre.
-
----
-
-## Caso: worktree no limpio
+## `docs:task:start` dice cambios pendientes
 
 ```powershell
 git status --short
 ```
 
-No borres nada automáticamente.
+No uses `git add -A`.
 
----
+## `docs:implementation:start` falla
 
-## Caso: rama incorrecta
+Comprueba especialmente:
 
-```powershell
-git branch --show-current
-```
+- instancia realmente `AUTHORIZED`;
+- `authorization.decision = APPROVED`;
+- único cambio local = archivo de la instancia;
+- `main` 0/0;
+- `gh` autenticado.
 
-`docs:task:finish` debe ejecutarse desde la rama exacta:
+## `docs:implementation:finish` falla
 
-```text
-task/auth-srv-004
-```
+Comprueba especialmente:
 
----
+- instancia `VERIFIED`;
+- evidencia no vacía;
+- rama exacta `implementation/<task>/<instance-key>`;
+- paths dentro del alcance automatizable;
+- checks del PR;
+- mismo SHA validado y mergeado.
 
-## Caso: GitHub CLI no autenticado
+## GitHub CLI
 
 ```powershell
 gh auth status
+gh pr status
+gh pr checks
 ```
 
 ---
 
 # 11. Comandos de sintaxis y tests para scripts `.mjs`
 
-Validar sintaxis:
+Lifecycle documental:
 
 ```powershell
 node --check scripts/docs/task-branch-lifecycle.mjs
+node --test scripts/docs/task-branch-lifecycle.test.mjs
 ```
 
-Ejecutar su test:
+Lifecycle físico:
 
 ```powershell
-node --test scripts/docs/task-branch-lifecycle.test.mjs
+node --check scripts/docs/implementation-branch-lifecycle.mjs
+node --test scripts/docs/implementation-branch-lifecycle.test.mjs
 ```
 
 ---
@@ -831,69 +832,57 @@ git commit -m 'cambio'
 git push origin main
 ```
 
-Para tareas usa:
+## No abras implementación física con Git manual
 
-```text
-docs:task:start
-docs:task:finish
+Evita como flujo normal:
+
+```powershell
+git switch -c implementation/shell-con-001/global
 ```
 
-Para infraestructura transversal usa:
+Usa:
 
-```text
-docs:infra:publish
+```powershell
+npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
 ```
 
----
+## Evita `git add -A`
 
-## Evita `git add -A` como hábito
-
-Puede meter archivos que no querías.
-
-Es preferible que los scripts automatizados stageen exactamente el alcance que ya inspeccionaron.
-
----
+Puede incluir archivos ajenos al alcance.
 
 ## No uses `git push --force` como rutina
 
-Una rama normal de Vento OS no debería requerir force push.
+No forma parte del lifecycle normal.
 
----
+## No empieces la siguiente tarea desde una rama anterior
 
-## No empieces la siguiente tarea desde la rama anterior
-
-La secuencia correcta siempre es:
+Secuencia correcta:
 
 ```text
-task anterior
+rama actual
 -> PR
 -> merge
 -> main
--> main actualizado
--> nueva task
-```
-
-Nunca:
-
-```text
-task anterior
--> nueva task
+-> main 0/0
+-> siguiente carril
 ```
 
 ---
 
 # 13. Cómo pedir ayuda al propio comando
 
-## Lifecycle de tareas
+## Lifecycle documental
 
 ```powershell
 npm run docs:task:start -- --help
+npm run docs:task:finish -- --help
 ```
 
-o:
+## Lifecycle físico
 
 ```powershell
-npm run docs:task:finish -- --help
+npm run docs:implementation:start -- --help
+npm run docs:implementation:finish -- --help
 ```
 
 ## Cambios transversales
@@ -912,28 +901,29 @@ npm run docs:ops:publish -- --help
 
 # 14. Tabla de decisión rápida
 
-| Situación                                        | Qué hacer                                                             |
-| ------------------------------------------------ | --------------------------------------------------------------------- |
-| Voy a comenzar una tarea                         | `docs:task:start`                                                     |
-| Terminé y fue aprobada                           | `docs:task:finish`                                                    |
-| Cambié tooling/CI/scripts entre tareas           | `docs:infra:publish`                                                  |
-| Cambié una guía Markdown directamente en `docs/` | `docs:ops:publish`                                                    |
-| Tengo tarea + guía operativa al mismo tiempo     | stash selectivo → `docs:task:finish` → recuperar → `docs:ops:publish` |
-| No sé qué archivos están modificados             | `git status --short`                                                  |
-| Quiero ver exactamente qué cambié                | `git diff`                                                            |
-| Quiero verificar plan                            | `docs:plan:check`                                                     |
-| Quiero correr tests documentales                 | `docs:plan:test`                                                      |
-| Quiero revisar TREQ                              | `docs:treq:check` + `docs:treq:test`                                  |
-| Quiero comprobar PR                              | `gh pr view`                                                          |
-| Quiero comprobar checks                          | `gh pr checks`                                                        |
-| Quiero saber si main está 0/0                    | `git rev-list --left-right --count HEAD...origin/main`                |
-| Trabajo desde otro PC                            | volver a ejecutar `docs:task:start` con el mismo ID                   |
+| Situación                                        | Qué hacer                                                          |
+| ------------------------------------------------ | ------------------------------------------------------------------ |
+| Voy a comenzar una tarea documental actual       | `docs:task:start`                                                  |
+| La tarea documental quedó APROBADA               | `docs:task:finish`                                                 |
+| Una instancia física ya quedó AUTHORIZED         | `docs:implementation:start`                                        |
+| La instancia física ya quedó VERIFIED            | `docs:implementation:finish`                                       |
+| Cambié tooling/CI/scripts entre tareas           | `docs:infra:publish`                                               |
+| Cambié una guía Markdown directamente en `docs/` | `docs:ops:publish`                                                 |
+| Tengo scopes incompatibles al mismo tiempo       | separar con stash selectivo y publicar cada scope con su lifecycle |
+| No sé qué archivos están modificados             | `git status --short`                                               |
+| Quiero ver exactamente qué cambié                | `git diff`                                                         |
+| Quiero verificar plan                            | `docs:plan:check`                                                  |
+| Quiero correr tests documentales                 | `docs:plan:test`                                                   |
+| Quiero revisar TREQ                              | `docs:treq:check` + `docs:treq:test`                               |
+| Quiero comprobar PR                              | `gh pr view`                                                       |
+| Quiero comprobar checks                          | `gh pr checks`                                                     |
+| Quiero saber si main está 0/0                    | `git rev-list --left-right --count HEAD...origin/main`             |
 
 ---
 
-# 15. La secuencia que deberías tener en la cabeza
+# 15. Las secuencias que debes tener en la cabeza
 
-## Tarea normal
+## Tarea documental
 
 ```text
 main limpio
@@ -945,7 +935,7 @@ docs:task:start
 task/<id>
    |
    v
-trabajo + validación
+trabajo documental + validación
    |
    v
 APROBADO
@@ -963,6 +953,48 @@ main 0/0 + clean
 NEXT_TASK_ALLOWED: SI
 ```
 
+## Implementación física
+
+```text
+PENDING_AUTHORIZATION
+   |
+   v
+AUTHORIZED
+   |
+   v
+docs:implementation:start
+   |
+   v
+implementation/<task>/<instance>
+   |
+   v
+IN_PROGRESS
+   |
+   v
+materialización
+   |
+   v
+IMPLEMENTED
+   |
+   v
+validation_commands
+   |
+   v
+VERIFIED
+   |
+   v
+docs:implementation:finish
+   |
+   v
+PR + checks + merge
+   |
+   v
+main 0/0 + clean
+   |
+   v
+READY_TO_RESTART_WATCHER: SI
+```
+
 ## Cambio transversal
 
 ```text
@@ -978,19 +1010,11 @@ docs:infra:publish
 infra/<change-id>
    |
    v
-validación
-   |
-   v
 PR + checks + merge
    |
    v
 main 0/0 + clean
-   |
-   v
-READY_FOR_NEXT_TASK: SI
 ```
-
----
 
 ## Documentación operativa
 
@@ -1007,55 +1031,58 @@ docs:ops:publish
 ops/<change-id>
    |
    v
-validación
-   |
-   v
 PR + checks + merge
    |
    v
 main 0/0 + clean
-   |
-   v
-READY_FOR_NEXT_TASK: SI
 ```
 
 ---
 
-# 16. Ejemplo completo con la siguiente tarea
+# 16. Ejemplo completo de implementación física
 
-Cuando `main` esté limpio y sincronizado:
+Supón que `SHELL-CON-001::GLOBAL` ya está `AUTHORIZED`.
 
-```powershell
-npm run docs:task:start -- --task-id AUTH-SRV-004
-```
-
-Cuando `AUTH-SRV-004` haya quedado aprobada:
+Abres el lifecycle:
 
 ```powershell
-npm run docs:task:finish -- --task-id AUTH-SRV-004
+npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
 ```
 
-Si entre ambas tareas aparece una corrección transversal de infraestructura:
-
-```powershell
-npm run docs:infra:publish -- --change-id docs-validator-fix
-```
-
-Si el cambio entre tareas es una guía operativa Markdown, usa:
-
-```powershell
-npm run docs:ops:publish -- --change-id guia-operativa-comandos
-```
-
-Después de que cualquiera de los publishers vuelva a:
+Después del PASS:
 
 ```text
-main
-0/0
-CLEAN
+READY_TO_IMPLEMENT: SI
 ```
 
-puedes iniciar la siguiente tarea canónica.
+materializas únicamente los cambios autorizados.
+
+Cuando los cambios estén listos:
+
+```text
+IMPLEMENTED
+-> ejecutar validation_commands
+-> PASS
+-> VERIFIED
+```
+
+Cierras:
+
+```powershell
+npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL
+```
+
+Solo cuando aparezca:
+
+```text
+READY_TO_RESTART_WATCHER: SI
+```
+
+reactivas:
+
+```powershell
+npm run docs:plan:watch
+```
 
 ---
 
@@ -1078,20 +1105,23 @@ git rev-list --left-right --count HEAD...origin/main
 ¿GitHub funciona?
 gh auth status
 
-¿Hay PR?
-gh pr status
-
-¿Checks?
-gh pr checks
-
-¿Comienzo tarea?
+¿Comienzo tarea documental?
 npm run docs:task:start -- --task-id AUTH-SRV-004
 
-¿Cierro tarea aprobada?
+¿Cierro tarea documental aprobada?
 npm run docs:task:finish -- --task-id AUTH-SRV-004
+
+¿Abro implementación física autorizada?
+npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
+
+¿Cierro implementación física verificada?
+npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL
 
 ¿Publico corrección transversal?
 npm run docs:infra:publish -- --change-id docs-validator-fix
+
+¿Publico guía operativa?
+npm run docs:ops:publish -- --change-id guia-operativa-comandos
 ```
 
 ---
@@ -1099,45 +1129,54 @@ npm run docs:infra:publish -- --change-id docs-validator-fix
 # 18. Principios operativos
 
 1. **`main` es la línea estable.**
-2. **Una tarea = una rama `task/...`.**
-3. **Un cambio transversal = una rama `infra/...`.**
-4. **Un documento operativo = una rama `ops/...`.**
-5. **No se trabaja normalmente directo sobre `main`.**
-6. **No se avanza de tarea hasta que el cierre Git lo autorice.**
-7. **GitHub, no el chat, es la fuente compartida entre computadores.**
-8. **Un FAIL se diagnostica; no se reinicia todo automáticamente.**
-9. **No se stagean archivos desconocidos.**
-10. **Los checks deben corresponder al mismo SHA que se mergea.**
-11. **PASS significa cierre comprobado, no simplemente comando ejecutado.**
+2. **Una tarea documental = una rama `task/...`.**
+3. **Una instancia física = una rama `implementation/...`.**
+4. **Un cambio transversal = una rama `infra/...`.**
+5. **Un documento operativo = una rama `ops/...`.**
+6. **No se trabaja normalmente directo sobre `main`.**
+7. **No se usa el lifecycle documental para ejecutar una instancia física.**
+8. **Una instancia física requiere autorización explícita antes de abrirse.**
+9. **No se avanza de tarea hasta que el cierre correspondiente lo autorice.**
+10. **GitHub, no el chat, es la fuente compartida entre computadores.**
+11. **Un FAIL se diagnostica; no se reinicia todo automáticamente.**
+12. **No se stagean archivos desconocidos.**
+13. **Los checks deben corresponder al mismo SHA que se mergea.**
+14. **PASS significa cierre comprobado, no simplemente comando ejecutado.**
 
 ---
 
 ## Comandos esenciales — versión ultra corta
 
 ```powershell
-# 1. Empezar tarea
+# 1. Empezar tarea documental
 npm run docs:task:start -- --task-id AUTH-SRV-004
 
-# 2. Cerrar tarea aprobada
+# 2. Cerrar tarea documental
 npm run docs:task:finish -- --task-id AUTH-SRV-004
 
-# 3. Publicar cambio transversal
+# 3. Empezar implementación física
+npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
+
+# 4. Cerrar implementación física
+npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL
+
+# 5. Publicar cambio transversal
 npm run docs:infra:publish -- --change-id docs-validator-fix
 
-# 4. Publicar documentación operativa
+# 6. Publicar documentación operativa
 npm run docs:ops:publish -- --change-id guia-operativa-comandos
 
-# 5. Ver estado local
+# 7. Ver estado local
 git status --short
 
-# 6. Ver rama
+# 8. Ver rama
 git branch --show-current
 
-# 7. Ver cambios
+# 9. Ver cambios
 git diff
 
-# 8. Revisar GitHub
+# 10. Revisar GitHub
 gh pr status
 ```
 
-Si recuerdas esos ocho, puedes resolver la mayoría del trabajo diario sin memorizar el resto.
+Si recuerdas estos diez comandos, puedes resolver la mayoría del trabajo diario sin memorizar el resto.
