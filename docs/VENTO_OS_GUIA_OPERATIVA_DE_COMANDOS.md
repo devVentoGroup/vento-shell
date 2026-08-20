@@ -139,6 +139,10 @@ Debe encargarse de:
 validar instancia AUTHORIZED
 -> comprobar authorization APPROVED
 -> comprobar que el único cambio local sea el registro de la instancia
+-> verificar main 0/0
+-> ejecutar readiness físico de solo lectura antes de crear la rama
+-> comprobar formato, active-sequence, contrato, upstream y worktree
+-> PRE_BRANCH_READINESS: PASS
 -> crear o recuperar implementation/shell-con-001/global
 -> publicar upstream
 -> cambiar la instancia a IN_PROGRESS
@@ -152,6 +156,7 @@ Resultado esperado:
 ESTADO: PASS
 OPERACION: IMPLEMENTATION_START
 INSTANCE_ID: SHELL-CON-001::GLOBAL
+PRE_BRANCH_READINESS: PASS
 INSTANCE_STATUS: IN_PROGRESS
 PREFLIGHT: PASS
 READY_TO_IMPLEMENT: SI
@@ -179,7 +184,12 @@ Debe encargarse de:
 validar instancia VERIFIED
 -> comprobar evidence
 -> exigir rama implementation/shell-con-001/global
--> ejecutar docs:plan:build una sola vez
+-> ejecutar docs:plan:build una sola vez y de forma convergente
+-> docs:plan:check local
+-> docs:plan:test local
+-> docs:treq:check local
+-> docs:treq:test local
+-> quality:lint:ratchet local
 -> validar paths de implementación
 -> git diff --check
 -> stage explícito del alcance detectado
@@ -379,7 +389,19 @@ Ctrl+C
 
 El watcher permanece apagado durante toda la implementación física.
 
-## Paso C — Abre la instancia física
+## Paso C — Sincroniza todos los repositorios afectados y abre la instancia física
+
+Antes de crear cualquier rama de implementación, cada repositorio incluido en `target_repositories` debe quedar en:
+
+```text
+main
+fetch ejecutado
+pull --ff-only completado
+worktree limpio
+origin/main...HEAD = 0/0
+```
+
+Si la instancia afecta varios repositorios, valida todos antes de crear la primera rama. `docs:implementation:start` controla esta condición dentro de `vento-shell`; los demás repositorios afectados se verifican por separado antes de continuar.
 
 Ejemplo:
 
@@ -387,16 +409,16 @@ Ejemplo:
 npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
 ```
 
-Solo continúa cuando diga:
+El comando primero ejecuta readiness de solo lectura mientras la instancia sigue `AUTHORIZED`. Solo puede crear o recuperar la rama cuando termine con:
+
+```text
+PRE_BRANCH_READINESS: PASS
+```
+
+Después cambia la instancia a `IN_PROGRESS`, ejecuta el preflight físico estricto y solo continúa cuando diga:
 
 ```text
 READY_TO_IMPLEMENT: SI
-```
-
-El lifecycle deja la instancia en:
-
-```text
-IN_PROGRESS
 ```
 
 ## Paso D — Materializas exclusivamente el alcance autorizado
@@ -457,7 +479,7 @@ Consolida la evidencia en el registro de la instancia.
 npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL
 ```
 
-No hagas manualmente commit, push, PR o merge que este comando ya administra.
+No ejecutes manualmente `docs:plan:build`, `docs:plan:check`, `docs:plan:test`, `docs:treq:check`, `docs:treq:test` ni `quality:lint:ratchet` como pasos de cierre: `docs:implementation:finish` los administra localmente antes de commit/push. Tampoco hagas manualmente commit, push, PR o merge que este comando ya administra.
 
 Solo después de:
 
@@ -597,13 +619,19 @@ npm run docs:commit-scope:check -- --staged
 npm run docs:task:preflight -- --task-id AUTH-SRV-004 --json
 ```
 
-## Preflight físico
+## Readiness y preflight físico
 
-El lifecycle físico lo ejecuta automáticamente durante `docs:implementation:start` con el `instance-id` real y `--strict`.
-
-No lo repitas manualmente por rutina si `IMPLEMENTATION_START` ya terminó con:
+`docs:implementation:start` ejecuta dos comprobaciones automáticas:
 
 ```text
+1. readiness de solo lectura con la instancia todavía AUTHORIZED y antes de crear la rama
+2. preflight físico estricto después de cambiar a IN_PROGRESS
+```
+
+No las ejecutes manualmente por rutina. El inicio solo es válido cuando termina con:
+
+```text
+PRE_BRANCH_READINESS: PASS
 PREFLIGHT: PASS
 READY_TO_IMPLEMENT: SI
 ```
@@ -661,18 +689,24 @@ git rev-parse HEAD
 git fetch origin
 ```
 
-## Sincronización de `main`
+## Sincronización obligatoria de `main` antes de una rama de implementación
 
 ```powershell
-git fetch origin main
-git rev-list --left-right --count HEAD...origin/main
+git switch main
+git fetch origin --prune
+git pull --ff-only origin main
+git status --short
+git rev-list --left-right --count origin/main...HEAD
 ```
 
 Resultado correcto:
 
 ```text
+worktree sin salida
 0    0
 ```
+
+Esta comprobación se repite en cada repositorio incluido en `target_repositories` antes de crear cualquier rama física.
 
 ---
 
@@ -1043,7 +1077,7 @@ main 0/0 + clean
 
 Supón que `SHELL-CON-001::GLOBAL` ya está `AUTHORIZED`.
 
-Abres el lifecycle:
+Primero confirma `main` limpio y `0/0` en todos los repositorios afectados. Después abres el lifecycle:
 
 ```powershell
 npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
@@ -1052,6 +1086,8 @@ npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
 Después del PASS:
 
 ```text
+PRE_BRANCH_READINESS: PASS
+PREFLIGHT: PASS
 READY_TO_IMPLEMENT: SI
 ```
 
@@ -1136,12 +1172,14 @@ npm run docs:ops:publish -- --change-id guia-operativa-comandos
 6. **No se trabaja normalmente directo sobre `main`.**
 7. **No se usa el lifecycle documental para ejecutar una instancia física.**
 8. **Una instancia física requiere autorización explícita antes de abrirse.**
-9. **No se avanza de tarea hasta que el cierre correspondiente lo autorice.**
-10. **GitHub, no el chat, es la fuente compartida entre computadores.**
-11. **Un FAIL se diagnostica; no se reinicia todo automáticamente.**
-12. **No se stagean archivos desconocidos.**
-13. **Los checks deben corresponder al mismo SHA que se mergea.**
-14. **PASS significa cierre comprobado, no simplemente comando ejecutado.**
+9. **Antes de cualquier rama física, todos los repositorios afectados deben estar en `main`, limpios y `0/0`.**
+10. **`docs:implementation:start` debe completar readiness antes de crear o recuperar la rama.**
+11. **No se avanza de tarea hasta que el cierre correspondiente lo autorice.**
+12. **GitHub, no el chat, es la fuente compartida entre computadores.**
+13. **Un FAIL se diagnostica; no se reinicia todo automáticamente.**
+14. **No se stagean archivos desconocidos.**
+15. **Los checks deben corresponder al mismo SHA que se mergea.**
+16. **PASS significa cierre comprobado, no simplemente comando ejecutado.**
 
 ---
 
