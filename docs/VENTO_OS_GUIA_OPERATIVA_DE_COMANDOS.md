@@ -133,6 +133,8 @@ npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL
 
 Este comando se usa **solo después de que el registro de instancia esté `AUTHORIZED`**.
 
+Antes de escribir `PENDING_AUTHORIZATION -> AUTHORIZED`, el orden obligatorio es: detener primero el watcher, confirmar `main` limpio/actualizado/sincronizado `0/0`, guardar después `AUTHORIZED` y ejecutar inmediatamente `docs:implementation:start`. Nunca guardes `AUTHORIZED` con el watcher activo, porque el watcher puede reconstruir derivados versionados antes de que el lifecycle físico cree su rama.
+
 Una instancia física puede ejecutarse mucho después de que su tarea documental haya sido aprobada. Por eso el carril físico no obliga a que esa tarea histórica sea la tarea documental actual ni exige reformatearla para poder implementar. La continuidad documental adelantada, el formato histórico del marcador propietario y `active-sequence.json` pendiente de regeneración se tratan como **avisos documentales**, no como bloqueos físicos.
 
 Debe encargarse de:
@@ -378,15 +380,35 @@ NEXT_TASK_ALLOWED: SI
 
 # 4. Flujo normal de una implementación física
 
-## Paso A — La instancia está lista para autorización
+## Paso A — Detén el watcher antes de autorizar
 
-El watcher crea o mantiene el registro de instancia en:
+El watcher puede crear o mantener el registro de instancia en:
 
 ```text
 PENDING_AUTHORIZATION
 ```
 
-La autorización humana debe completar en ese mismo archivo:
+Mientras siga `PENDING_AUTHORIZATION`, si el watcher está activo deténlo:
+
+```text
+Ctrl+C
+```
+
+Desde este punto permanece apagado durante toda la implementación física. No escribas todavía `AUTHORIZED`.
+
+## Paso B — Sincroniza `main` y guarda la autorización
+
+Con el watcher ya apagado, confirma primero en todos los `target_repositories`:
+
+```text
+main
+fetch ejecutado
+pull --ff-only completado
+worktree limpio
+sincronización 0/0
+```
+
+Solo después completa en el registro de instancia:
 
 - `target_repositories`;
 - `authorized_changes`;
@@ -395,17 +417,9 @@ La autorización humana debe completar en ese mismo archivo:
 - evidencia inicialmente vacía;
 - `status = AUTHORIZED`.
 
-## Paso B — Detén el watcher
+No ejecutes ningún build manual entre `AUTHORIZED` y `docs:implementation:start`.
 
-Si está activo:
-
-```text
-Ctrl+C
-```
-
-El watcher permanece apagado durante toda la implementación física.
-
-## Paso C — Sincroniza todos los repositorios afectados y abre la instancia física
+## Paso C — Abre la instancia física
 
 Antes de crear cualquier rama de implementación, cada repositorio incluido en `target_repositories` debe quedar en:
 
