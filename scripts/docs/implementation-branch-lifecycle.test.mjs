@@ -176,17 +176,19 @@ test('start abre carril fisico antes de reconciliar derivados versionados y no e
   assert.match(source, /DOCUMENTARY_LANE_FOR_PHYSICAL: 'ADVISORY_ONLY'/u);
 });
 
-test('finish valida plan y TREQ localmente antes de commit, push y CI', () => {
+test('finish conserva validadores y paraleliza el tramo local pesado antes de commit, push y CI', () => {
   const source = fs.readFileSync('scripts/docs/implementation-branch-lifecycle.mjs', 'utf8');
-  const finish = source.indexOf('export function finishImplementation');
+  const finish = source.indexOf('export async function finishImplementation');
   const verified = source.indexOf('assertInstanceCanFinish(instance);', finish);
   const build = source.indexOf("npm(['run', '--silent', 'docs:plan:build']", verified);
   const planCheck = source.indexOf("npm(['run', '--silent', 'docs:plan:check']", build);
-  const planTest = source.indexOf("npm(['run', '--silent', 'docs:plan:test']", planCheck);
-  const treqCheck = source.indexOf("npm(['run', '--silent', 'docs:treq:check']", planTest);
-  const treqTest = source.indexOf("npm(['run', '--silent', 'docs:treq:test']", treqCheck);
-  const lint = source.indexOf("npm(['run', '--silent', 'quality:lint:ratchet']", treqTest);
-  const commitScope = source.indexOf("'docs:commit-scope:check'", lint);
+  const parallel = source.indexOf('await Promise.all([', planCheck);
+  const planTest = source.indexOf("npmAsync(['run', '--silent', 'docs:plan:test']", parallel);
+  const treqCheck = source.indexOf("npmAsync(['run', '--silent', 'docs:treq:check']", parallel);
+  const treqTest = source.indexOf("npmAsync(['run', '--silent', 'docs:treq:test']", parallel);
+  const lint = source.indexOf("npmAsync(['run', '--silent', 'quality:lint:ratchet']", parallel);
+  const dirty = source.indexOf('const dirty = worktreePaths(root);', parallel);
+  const commitScope = source.indexOf("'docs:commit-scope:check'", dirty);
   const push = source.indexOf("git(['push', '-u', 'origin', branch]", commitScope);
   const checks = source.indexOf('waitForPrChecksToRegister(root, prNumber)', push);
   const merge = source.indexOf("'pr', 'merge'", checks);
@@ -194,16 +196,20 @@ test('finish valida plan y TREQ localmente antes de commit, push y CI', () => {
   const localDerivedSync = source.indexOf('syncLocalDerivedArtifacts({ root, quiet: true });', mainPull);
   const cleanup = source.indexOf('cleanupBranch(root, branch)', localDerivedSync);
   const ready = source.indexOf("READY_TO_RESTART_WATCHER: 'SI'", cleanup);
+  const main = source.indexOf('async function main()');
+  const awaitedFinish = source.indexOf('await finishImplementation({ instanceId: args.instanceId });', main);
+  const awaitedMain = source.indexOf('await main();', awaitedFinish);
 
   assert.ok(finish >= 0);
   assert.ok(verified > finish);
   assert.ok(build > verified);
   assert.ok(planCheck > build);
-  assert.ok(planTest > planCheck);
-  assert.ok(treqCheck > planTest);
-  assert.ok(treqTest > treqCheck);
-  assert.ok(lint > treqTest);
-  assert.ok(commitScope > lint);
+  assert.ok(parallel > planCheck);
+  assert.ok(planTest > parallel && planTest < dirty);
+  assert.ok(treqCheck > parallel && treqCheck < dirty);
+  assert.ok(treqTest > parallel && treqTest < dirty);
+  assert.ok(lint > parallel && lint < dirty);
+  assert.ok(commitScope > dirty);
   assert.ok(push > commitScope);
   assert.ok(checks > push);
   assert.ok(merge > checks);
@@ -211,7 +217,33 @@ test('finish valida plan y TREQ localmente antes de commit, push y CI', () => {
   assert.ok(localDerivedSync > mainPull);
   assert.ok(cleanup > localDerivedSync);
   assert.ok(ready > cleanup);
+  assert.ok(main >= 0);
+  assert.ok(awaitedFinish > main);
+  assert.ok(awaitedMain > awaitedFinish);
+  assert.match(source, /import \{ spawn, spawnSync \} from 'node:child_process';/u);
+  assert.match(source, /const CHECK_REGISTRATION_ATTEMPTS = 60;/u);
+  assert.match(source, /const CHECK_REGISTRATION_INTERVAL_MS = 2000;/u);
+  assert.match(source, /const CHECK_WATCH_INTERVAL_SECONDS = 2;/u);
+  assert.match(source, /const MERGE_CONFIRM_ATTEMPTS = 60;/u);
+  assert.match(source, /const MERGE_CONFIRM_INTERVAL_MS = 2000;/u);
   assert.match(source, /LOCAL_DERIVED_SYNC: 'PASS_AFTER_MERGE'/u);
+});
+
+test('CI usa fast lane en PR fisico sin duplicar suites cubiertas por Required Gate', () => {
+  const source = fs.readFileSync('.github/workflows/validate-canonical-plan.yml', 'utf8');
+
+  assert.match(source, /implementation_pr=false/u);
+  assert.match(source, /\$\{HEAD_REF:-\}" == implementation\/\*/u);
+  assert.match(source, /implementation_pr=\$implementation_pr/u);
+  assert.match(
+    source,
+    /steps\.scope\.outputs\.implementation_pr != 'true'/u,
+  );
+
+  const planChecks = source.match(/run: npm run docs:plan:check/gu) ?? [];
+  assert.equal(planChecks.length, 1);
+  assert.equal(source.includes('run: npm run docs:delivery:check'), false);
+  assert.match(source, /npm ci --prefer-offline --no-audit --no-fund/u);
 });
 
 test('docs:plan:build materializa la siguiente instancia pendiente antes del core build', () => {
