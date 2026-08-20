@@ -1,10 +1,41 @@
 {
   "instance_id": "SHELL-CON-006::GLOBAL",
   "task_id": "SHELL-CON-006",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/authorization/catalog/scopes/versions/1.0.0/scopes.json como fuente interna versionada con exactamente los trece PermissionScopeCode NT, ORG, G, AS, SS, AST, TST, AA, SA, AAT, ATW, CTX y OWN, en su orden normativo, con categoria derivada y semantica vinculante; no incorporar perfiles descriptivos, calificadores de carril, aliases, fallbacks, asignaciones por permiso ni codigos adicionales.",
+    "Crear packages/contracts/authorization/scripts/generate-permission-scope-contracts.mjs para validar la fuente y su huella, y generar deterministamente PermissionScopeCode, PermissionScopeCategory, AllowedScopeSet, MaximumScope, TerritorialScope, NonTerritorialScope, OperationalContextScope, OwnershipScope, PermissionScopeDefinition, PermissionScopeByCode, colecciones derivadas e isPermissionScopeCode, isAllowedScopeSet e isMaximumScope sin crear exports publicos.",
+    "Crear packages/contracts/authorization/scripts/validate-permission-scope-contracts.mjs para validar exactamente 13 codigos unicos y ordenados, distribucion 2 NON_TERRITORIAL, 9 TERRITORIAL, 1 OPERATIONAL_CONTEXT y 1 OWNERSHIP, semantica exacta y fronteras de G, TST, ATW, CTX y OWN, fuente inmutable, artefactos generados, package privado sin exports y preservacion de las 140 identidades activas de permiso con su keyset vigente.",
+    "Materializar exclusivamente mediante el generador packages/contracts/authorization/generated/scopes/versions/1.0.0/permission-scope.types.ts, permission-scope.values.ts e index.ts; estos derivados no se editan manualmente ni se integran en una superficie publica durante esta instancia.",
+    "Actualizar packages/contracts/authorization/README.md para registrar la materializacion interna de scopes, sus trece miembros, tipos derivados, predicados y limites, manteniendo expresamente diferidas las asignaciones allowed_scopes y maximum_scope por permiso, el evaluador runtime, consumidores, publicacion y adopcion.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-006__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar 04A/TREQ, permissions.json, roles, concesiones, contextos, resource contracts, consumidores, @vento/os-context, Supabase, RLS, RPC, migraciones, exports publicos, version del package, catalog/current.json, manifest publicado, checksums globales, changelog de publicacion, registry, tags, releases, despliegues, secretos ni responsabilidades de SHELL-CON-007 o tareas posteriores."
+  ],
+  "validation_commands": [
+    "node packages/contracts/authorization/scripts/generate-permission-scope-contracts.mjs --check",
+    "node packages/contracts/authorization/scripts/validate-permission-scope-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-20T17:52:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-006::GLOBAL en vento-group-sas/vento-shell para materializar como fuente interna versionada los trece PermissionScopeCode canonicos, generar sus tipos, valores, categorias y predicados internos, validar su orden, unicidad, semantica, huella y fronteras de seguridad, y documentar esta porcion estatica prepublicacion. No autorizo perfiles descriptivos como scopes, aliases, fallbacks, nuevos codigos, asignaciones allowed_scopes o maximum_scope por permiso, cambios a las 140 identidades activas, roles, concesiones, contextos, contratos de recurso, evaluacion runtime, consumidores, @vento/os-context, Supabase, RLS, RPC, migraciones, datos, 04A/TREQ, exports publicos, cambio de version del package, catalog/current.json, manifest, checksums globales, changelog de publicacion, CI adicional, registry, tags, releases, despliegues, secretos ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "bf6ca9bfaf416558b84566625f2de2e444e4558ecc9ceb63dc64509bcdadf9e1"
+  },
+  "evidence": [
+    "MATERIALIZATION thirteen canonical PermissionScopeCode definitions, deterministic generated TypeScript scope contracts, validation script and internal authorization documentation created",
+    "VALIDATION generate-permission-scope-contracts --check PASS",
+    "VALIDATION PermissionScopeCode count=13 unique=13",
+    "VALIDATION scope categories non_territorial=2 territorial=9 operational_context=1 ownership=1",
+    "VALIDATION scopes source SHA256 70987732aae8d2d6e6bad40e6abba16e98823224cd1c19b28f0bfd1088dcd85d",
+    "VALIDATION permission identity boundary permissions=140 permission_keyset_sha256=8bfa524537c8378907d07487cfd445ada99448e1804a2ac8b3681bc41877afda",
+    "VALIDATION G not universal; TST not inferred from AST; ATW upper bound preserved; CTX prerequisites not implied; OWN does not expand territory",
+    "VALIDATION generated permission scope contracts FRESH",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-006::GLOBAL VERIFIED"
+  ]
 }
