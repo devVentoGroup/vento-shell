@@ -1,10 +1,37 @@
 {
   "instance_id": "SHELL-CON-001::GLOBAL",
   "task_id": "SHELL-CON-001",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/package.json para materializar la raiz workspace @vento/contracts como package privado de autoria en version 1.0.0-alpha.1, sin publicacion, registry, tag, release, dependencias runtime ni exports publicos anticipados.",
+    "Crear packages/contracts/README.md para documentar identidad, fronteras, estado PRE_E5_FOUNDATION y prohibiciones de la raiz @vento/contracts sin absorber responsabilidades de SHELL-CON-002 a SHELL-CON-016.",
+    "Crear packages/contracts/authorization/README.md para materializar exclusivamente la reserva fisica del subpath @vento/contracts/authorization ya aprobado, sin crear catalogos, schemas, tipos generados, permisos, aplicaciones ni contratos especializados reservados a otras instancias.",
+    "Actualizar package-lock.json exclusivamente como consecuencia determinista de registrar packages/contracts dentro del workspace packages/* ya existente. No modificar el workspace raiz de package.json porque packages/* ya incluye el nuevo package.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-001__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar implementation-control.json ni registros VERIFIED anteriores."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node -e \"const fs=require('fs');const p=JSON.parse(fs.readFileSync('packages/contracts/package.json','utf8'));const root=fs.readdirSync('packages/contracts').sort();const auth=fs.readdirSync('packages/contracts/authorization').sort();const ok=p.name==='@vento/contracts'&&p.version==='1.0.0-alpha.1'&&p.private===true&&p.type==='module'&&!('exports' in p)&&!('dependencies' in p)&&JSON.stringify(root)===JSON.stringify(['README.md','authorization','package.json'])&&JSON.stringify(auth)===JSON.stringify(['README.md']);if(!ok){throw new Error('SHELL-CON-001 physical scope mismatch')}\"",
+    "npm ls --workspace @vento/contracts --depth=0",
+    "git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-20T10:52:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-001::GLOBAL en vento-group-sas/vento-shell para materializar la raiz workspace @vento/contracts, reservar fisicamente authorization, actualizar package-lock.json como consecuencia del nuevo workspace y ejecutar unicamente las validaciones enumeradas. No autorizo catalogos de aplicaciones o permisos, schemas, tipos generados, exports publicos adicionales, SHELL-CON-002..016, consumidores, registry, tags, releases, publicacion npm, CI adicional, Supabase, migraciones, datos, secretos, despliegues ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "f33b2ff87890f912f32bbb7a91bc4ec70ddb2febc348ce9b8389f3f0404f231b"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/contracts root created with authorization reservation; package-lock workspace registration updated",
+    "VALIDATION npm ci PASS",
+    "VALIDATION SHELL-CON-001 authorized structure PASS; package=@vento/contracts; version=1.0.0-alpha.1",
+    "VALIDATION npm ls --workspace @vento/contracts --depth=0 PASS",
+    "VALIDATION git diff --check PASS",
+    "RESULT SHELL-CON-001::GLOBAL VERIFIED"
+  ]
 }
