@@ -1,10 +1,40 @@
 {
   "instance_id": "SHELL-CON-004::GLOBAL",
   "task_id": "SHELL-CON-004",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/authorization/catalog/base-roles/versions/1.1.0/base-roles.json como fuente versionada interna con exactamente los ocho BaseRoleCode aprobados y sin aliases, oficios legacy, logistica ni talento_humano.",
+    "Crear packages/contracts/authorization/scripts/generate-base-role-contracts.mjs para extraer y certificar el payload inmutable de AUTH-RBAC-024, materializar sin cambios vento.authorization.base-role-grants@1.0.0, derivar vento.authorization.base-role-grants@1.1.0 agregando exclusivamente las cinco filas de trabajador_operativo, verificar los hashes contractuales y generar la proyeccion TypeScript versionada de BaseRoleCode.",
+    "Crear packages/contracts/authorization/scripts/validate-base-role-contracts.mjs para validar los ocho roles, los datasets 1.0.0 y 1.1.0, 504 pares unicos, 468 DIRECT_BASE, 36 BASE_COMPONENT, modalidades y distribucion por aplicacion, las cinco concesiones exactas de trabajador_operativo, pertenencia a las 140 PermissionKey activas y ausencia de roles legacy o ampliaciones inferidas.",
+    "Materializar exclusivamente mediante el generador packages/contracts/authorization/datasets/base-role-grants/versions/1.0.0/base-role-grants.jsonl, packages/contracts/authorization/datasets/base-role-grants/versions/1.1.0/base-role-grants.jsonl y packages/contracts/authorization/generated/base-roles/versions/1.1.0/base-role.types.ts, base-role.values.ts e index.ts; estos derivados no se editan manualmente.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-004__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar 04A/TREQ, implementation-control.json, consumidores, Supabase, exports publicos, version del package, registry, tags, releases ni responsabilidades de SHELL-CON-005 o tareas posteriores."
+  ],
+  "validation_commands": [
+    "node packages/contracts/authorization/scripts/generate-base-role-contracts.mjs --check",
+    "node packages/contracts/authorization/scripts/validate-authorization-catalog.mjs",
+    "node packages/contracts/authorization/scripts/validate-base-role-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-20T15:00:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-004::GLOBAL en vento-group-sas/vento-shell para materializar la fuente interna versionada de los ocho BaseRoleCode, preservar y certificar el dataset base-role-grants@1.0.0, derivar exactamente base-role-grants@1.1.0 con las cinco concesiones BASE_ONLY de trabajador_operativo, generar la proyeccion TypeScript interna de BaseRoleCode y validar sus hashes, conteos, membresias y fronteras. No autorizo roles operativos, aliases o conversiones legacy, cambios a PermissionKey o vento.authorization@1.0.0, scopes nuevos, consumidores, AccessContext runtime, Supabase, migraciones, datos de empleados, exports publicos, cambio de version del package, catalog/current.json, manifest publicado, checksums globales, changelog de publicacion, CI adicional, registry, tags, releases, despliegues, secretos ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "d6b8ffbe49c427e2da29138f07c8949668d00b10548cd11b265322d87a1b747a"
+  },
+  "evidence": [
+    "MATERIALIZATION eight BaseRoleCode source identities, immutable base-role-grants 1.0.0, deterministic base-role-grants 1.1.0 successor and generated BaseRoleCode TypeScript artifacts created",
+    "VALIDATION generate-base-role-contracts --check PASS",
+    "VALIDATION authorization application and permission catalog PASS after local EOL normalization; inherited generated/versions/1.0.0 files restored unchanged before closure",
+    "VALIDATION BaseRoleCode count=8",
+    "VALIDATION base-role-grants@1.0.0 records=499 sha256=bcea5460dfea42ecd2491a550bfe511478faa5403d766166c9e731cb499214e1",
+    "VALIDATION base-role-grants@1.1.0 records=504 direct_base=468 base_component=36 sha256=5fcde3858d5fc6ba1c210987962e32b3e2d535dc286b225b1ddb6ba4b0bb06d0",
+    "VALIDATION trabajador_operativo grants=5 default_deny_permissions=135",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-004::GLOBAL VERIFIED"
+  ]
 }
