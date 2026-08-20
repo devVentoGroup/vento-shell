@@ -62,14 +62,15 @@ export function actionResponseContract(control, sourceContractHash) {
     'No uses placeholders sin resolver. Cada JSON, ruta, identificador, fecha, hash, estado y texto que el usuario deba copiar debe quedar completo y válido.',
   ];
   const physicalCommon = [
-    'Durante una implementación física el watcher del plan debe permanecer apagado desde antes de cambiar la instancia a IN_PROGRESS hasta después del commit/push final de cierre y de confirmar worktree limpio y remoto sincronizado. No uses el watcher como gate de implementación ni permitas que un cambio de estado dispare compilaciones globales repetidas.',
-    `Para una instancia física usa el preflight exacto npm run docs:task:preflight -- --instance-id ${target} --json --strict. Debe ejecutarse una sola vez después de IN_PROGRESS y antes de aplicar código.`,
-    'El lote local debe ejecutar el preflight dentro de la misma envoltura de evidencia compacta y comprobar su código de salida. Si es 0, continúa sin volver al chat. Si es distinto de 0, detén todo antes de modificar código y pide RESULTADO DEL PASO con solo el bloque final RESULTADO PARA CHATGPT; únicamente si ese bloque no pudo generarse o es insuficiente pide la salida adicional estrictamente necesaria.',
-    'Después del preflight PASS no solicites git status, Source Control, capturas, hashes sueltos, diff, build, lint ni tests como gates intermedios. Materializa primero todos los cambios deterministas y ejecuta después una sola batería final de validación.',
-    'La batería física final debe ser fail-fast y contener exclusivamente las validation_commands autorizadas en su orden contractual. No añadas automáticamente docs:plan:build, docs:plan:check, docs:plan:test, docs:treq:check ni docs:treq:test. Si toda la evidencia exigida es local y las validation_commands terminan con código 0, consolida la evidencia y cambia a VERIFIED. Si alguna validación exige evidencia remota sobre código publicado, la misma transacción final se divide en tramo local y tramo remoto: el tramo local debe pasar mientras la instancia permanece IMPLEMENTED; después se permite el commit/push mínimo de materialización necesario para obtener un SHA remoto real; el tramo remoto valida exactamente ese SHA; solo con PASS remoto se consolida evidence y se cambia a VERIFIED.',
+    'Durante una implementación física el watcher del plan debe permanecer apagado desde antes de docs:implementation:start hasta después de docs:implementation:finish y de confirmar worktree limpio y remoto sincronizado.',
+    `La apertura física se ejecuta exclusivamente con npm run docs:implementation:start -- --instance-id ${target}. No indiques cambiar manualmente AUTHORIZED a IN_PROGRESS, no indiques crear la rama manualmente y no indiques ejecutar manualmente el preflight inicial ni docs:plan:build de apertura.`,
+    'Una instancia física puede ejecutarse mucho después de su aprobación documental. La continuidad documental actual, el formato histórico del marcador propietario y active-sequence pendiente de regeneración se tratan como avisos documentales dentro del lifecycle físico; no obligan a reabrir ni reformatear tareas históricas. Los bloqueos físicos reales, la autorización, el contrato, el worktree y la divergencia sí permanecen fail-closed.',
+    'docs:implementation:start realiza readiness mientras la instancia sigue AUTHORIZED; tras PRE_BRANCH_READINESS: PASS crea o recupera la rama, cambia a IN_PROGRESS, ejecuta una sola vez el preflight físico estricto y después ejecuta docs:plan:build una vez seguido de docs:plan:check para reconciliar cabecera, control, Iniciador y derivados versionados antes de READY_TO_IMPLEMENT: SI.',
+    'Después de READY_TO_IMPLEMENT: SI no solicites git status, Source Control, capturas, hashes sueltos, diff, build, lint ni tests como gates intermedios. Materializa primero todos los cambios deterministas y ejecuta después una sola batería final de validación.',
+    'La batería física final debe ser fail-fast y contener exclusivamente las validation_commands autorizadas en su orden contractual. El docs:plan:build de apertura y el docs:plan:build de cierre pertenecen al lifecycle y no forman parte de esa batería. Si toda la evidencia exigida es local y las validation_commands terminan con código 0, consolida la evidencia y cambia a VERIFIED. Si alguna validación exige evidencia remota sobre código publicado, la misma transacción final se divide en tramo local y tramo remoto: el tramo local debe pasar mientras la instancia permanece IMPLEMENTED; después se permite el commit/push mínimo de materialización necesario para obtener un SHA remoto real; el tramo remoto valida exactamente ese SHA; solo con PASS remoto se consolida evidence y se cambia a VERIFIED.',
     'Si la batería final falla en el tramo local o remoto, conserva IMPLEMENTED, corrige únicamente la causa dentro del alcance y vuelve a ejecutar la misma batería final completa sobre el estado corregido. Si la corrección cambia el SHA publicado, realiza un nuevo commit/push de materialización antes del tramo remoto. Ese fallo sí es un gate de evidencia.',
-    'Después de VERIFIED ejecuta npm run docs:plan:build una sola vez como sincronización documental de cierre. Ese build actualiza control, Iniciador, continuidad y demás derivados que le pertenecen; no ejecutes además docs:implementation:status ni docs:chatgpt:starter. Después stagea únicamente los derivados versionados del cierre, valida el commit, realiza el commit/push final y confirma worktree limpio y remoto sincronizado.',
-    'Solo después del cierre limpio y sincronizado vuelve a encender el watcher. Su arranque debe ser de solo lectura: comprueba estado y fuentes, publica estado runtime y no ejecuta build ni modifica archivos versionados hasta detectar un cambio documental real.',
+    `Después de VERIFIED ejecuta exclusivamente npm run docs:implementation:finish -- --instance-id ${target}. No indiques docs:plan:build, docs:plan:check, stage, commit, push, PR o merge manuales de cierre: el lifecycle ejecuta una vez el build final, valida, publica, espera CI, mergea, vuelve a main, sincroniza derivados locales y limpia la rama.`,
+    'Solo después de READY_TO_RESTART_WATCHER: SI vuelve a encender el watcher. Su arranque sincroniza derivados locales ignorados antes de comprobar el estado canónico.',
     'Si GitHub Push Protection bloquea un push, clasifica primero el hallazgo. Solo puede usarse un bypass de prueba o falso positivo cuando el valor esté verificado como fixture sintético; un secreto real debe retirarse y rotarse, nunca exceptuarse.',
   ];
 
@@ -87,30 +88,28 @@ export function actionResponseContract(control, sourceContractHash) {
       'Distingue la evidencia de autorización de la evidencia de implementación: evidence debe permanecer [] mientras el estado sea AUTHORIZED.',
       'En la misma respuesta, después de la autorización, entrega también todos los archivos y cambios físicos deterministas que requerirá la instancia. Para .mjs entrega siempre el contenido como .txt descargable e indica el archivo .mjs real que debe crearse o reemplazarse.',
       'No obligues a regenerar el Iniciador, crear un commit exclusivo de autorización ni volver al chat entre AUTHORIZED e IN_PROGRESS.',
-      `En PASOS EXACTOS PARA EL USUARIO indica una única secuencia: guardar primero el registro AUTHORIZED; detener el watcher; cambiar únicamente ese registro a IN_PROGRESS; ejecutar el preflight estricto de ${target}; si PASS continuar localmente; aplicar todos los archivos; registrar IMPLEMENTED; ejecutar una sola batería final formada exclusivamente por validation_commands. Si toda la evidencia exigida es local y PASS, registrar VERIFIED, ejecutar npm run docs:plan:build una sola vez, stagear los derivados versionados del cierre, validar y hacer el commit/push final, confirmar worktree limpio y remoto sincronizado y solo entonces encender el watcher. Si la batería exige evidencia remota que solo puede existir sobre código publicado, completar primero el tramo local, hacer el commit/push mínimo de materialización mientras la instancia permanece IMPLEMENTED, ejecutar el tramo remoto contra ese SHA y solo con PASS remoto registrar VERIFIED; después ejecutar el mismo cierre documental único con docs:plan:build, commit/push final, comprobación de sincronía y reactivación del watcher.`,
+      `En PASOS EXACTOS PARA EL USUARIO indica una única secuencia: guardar primero el registro AUTHORIZED; detener el watcher; ejecutar npm run docs:implementation:start -- --instance-id ${target}; si produce PRE_BRANCH_READINESS: PASS, PREFLIGHT: PASS, START_DOCS_PLAN_BUILD: PASS_ONCE, START_DOCS_PLAN_CHECK: PASS y READY_TO_IMPLEMENT: SI, aplicar todos los archivos sin volver al chat; registrar IMPLEMENTED; ejecutar una sola batería final formada exclusivamente por validation_commands; si toda la evidencia exigida es local y PASS, registrar VERIFIED y ejecutar npm run docs:implementation:finish -- --instance-id ${target}; si la batería exige evidencia remota, completar primero el tramo local, hacer el commit/push mínimo de materialización mientras la instancia permanece IMPLEMENTED, ejecutar el tramo remoto contra ese SHA, registrar VERIFIED solo con PASS remoto y entonces ejecutar docs:implementation:finish. El usuario no ejecuta manualmente los builds documentales de apertura o cierre.`,
       'Si el archivo exacto no existe o no está PENDING_AUTHORIZATION, no propongas crear ni sobrescribir nada por inferencia: ese sí es un bloqueo real.',
-      'Incluye el mensaje de commit recomendado para el lote completo. Cuando exista evidencia remota dependiente de un SHA publicado, incluye un mensaje para el commit de materialización previo al tramo remoto y otro para el commit/sync final de VERIFIED, evidence y derivados.',
     ].join('\n');
   }
 
   if (type === 'EJECUTAR_IMPLEMENTACION') {
     const phaseInstruction = activeStatus === 'AUTHORIZED'
-      ? `El lote comienza cambiando únicamente ${instanceRecordPath} de AUTHORIZED a IN_PROGRESS y ejecutando inmediatamente el preflight estricto de ${target}.`
+      ? `El lote comienza ejecutando npm run docs:implementation:start -- --instance-id ${target}; el lifecycle realiza AUTHORIZED -> IN_PROGRESS, preflight y reconciliación documental de apertura.`
       : activeStatus === 'IN_PROGRESS'
-        ? `La instancia ya está IN_PROGRESS. Si la evidencia vigente confirma que el preflight estricto de ${target} ya pasó y el checkout no cambió materialmente, no lo repitas; de lo contrario ejecútalo una sola vez antes de aplicar código.`
+        ? `La instancia ya está IN_PROGRESS. Si existe evidencia vigente de READY_TO_IMPLEMENT: SI, continúa con la materialización sin repetir preflight ni build; si el lifecycle de apertura falló antes de READY_TO_IMPLEMENT, diagnostica ese fallo exacto y no inventes pasos manuales equivalentes.`
         : `La instancia ya está IMPLEMENTED. No repitas preflight ni rematerialices cambios correctos; ejecuta la batería final completa y finaliza solo si pasa.`;
     return [
       ...common,
       ...physicalCommon,
       `Para ${target}, entrega una TRANSACCIÓN COMPLETA DE IMPLEMENTACIÓN desde el estado ${activeStatus ?? 'DESCONOCIDO'} hasta el cierre final posterior a VERIFIED. No la dividas artificialmente en INICIAR, CONTINUAR y VALIDAR.`,
       phaseInstruction,
-      'Entrega desde el inicio todos los cambios físicos deterministas necesarios. El hecho de entregarlos antes de ejecutar el preflight no autoriza aplicarlos: los pasos del usuario deben aplicar el código únicamente después de que el preflight estricto haya terminado con código 0.',
+      'Entrega desde el inicio todos los cambios físicos deterministas necesarios. El hecho de entregarlos antes del lifecycle de apertura no autoriza aplicarlos: los pasos del usuario deben aplicar el código únicamente después de READY_TO_IMPLEMENT: SI.',
       'Si la operación es CREAR: indica repositorio, ruta absoluta y relativa, codificación, nombre exacto y contenido completo sin elipsis. Para archivos .mjs entrega además un .txt descargable con el mismo contenido.',
       'Si la operación es MODIFICAR: entrega el archivo completo listo para reemplazar. Solo si es materialmente enorme permite un bloque anterior literal y único más su reemplazo completo; nunca uses fragmentos ambiguos, resúmenes ni “resto sin cambios”.',
       'No ejecutes validaciones entre archivos ni pidas comprobaciones de Source Control, git status, diff o hashes como gates intermedios.',
       `Cuando todos los cambios físicos estén materializados, lleva ${instanceRecordPath} a IMPLEMENTED con evidencia disponible y ejecuta una sola transacción final fail-fast con las validation_commands autorizadas, sin inyectar validadores documentales globales por rutina. Si toda la evidencia exigida es local, puede continuar directamente a VERIFIED tras PASS. Si alguna validación necesita evidencia remota sobre código publicado, completa primero el tramo local, realiza el commit/push mínimo de materialización mientras ${instanceRecordPath} permanece IMPLEMENTED y ejecuta después el tramo remoto contra ese SHA antes de VERIFIED.`,
-      'La transacción debe detenerse en el primer fallo real. Si falla, el usuario responde una sola vez con ese fallo. Si todo pasa y no existe evidencia remota obligatoria, continúa a VERIFIED y al cierre documental único: docs:plan:build una vez, stage de derivados, validación del commit, commit/push final, comprobación de sincronía y reactivación del watcher. Si existe evidencia remota obligatoria, solo el PASS remoto permite pasar a VERIFIED y ejecutar ese mismo cierre documental.',
-      'No vuelvas a ejecutar la batería después de PASS completo. No vuelvas a ejecutar el preflight después de PASS salvo cambio material del checkout.',
+      `La transacción debe detenerse en el primer fallo real. Si todo pasa, registra VERIFIED y ejecuta npm run docs:implementation:finish -- --instance-id ${target}. No vuelvas a ejecutar la batería después de PASS completo y no repitas el preflight después de READY_TO_IMPLEMENT salvo cambio material del checkout.`,
     ].join('\n');
   }
 
@@ -118,7 +117,7 @@ export function actionResponseContract(control, sourceContractHash) {
     return [
       ...common,
       `Para ${target}, identifica la causa raíz en solo lectura y entrega al usuario todos los pasos deterministas de resolución dentro del alcance.`,
-      'Mantén el watcher apagado si la instancia está en fase física o si todavía no terminó el commit/push final de cierre.',
+      'Mantén el watcher apagado si la instancia está en fase física o si todavía no terminó docs:implementation:finish.',
       'Pausa únicamente cuando la condición de salida necesite evidencia nueva y pide RESULTADO DEL PASO N. No resuelvas el bloqueo mediante escrituras automáticas.',
     ].join('\n');
   }
@@ -127,7 +126,7 @@ export function actionResponseContract(control, sourceContractHash) {
     ...common,
     `Para ${target}, entrega el artefacto documental completo listo para revisión y reemplazo, sin aprobarlo por inferencia.`,
     'En PASOS EXACTOS PARA EL USUARIO indica el archivo propietario exacto, qué bloque reemplazar, cómo revisar el cambio, qué palabra debe usar para aprobar y qué ocurrirá después; no le pidas deducir la continuidad.',
-    'La regla de watcher apagado, preflight estricto, batería física limitada a validation_commands y cierre documental único aplica a la futura instancia física, no obliga a modificar el watcher durante una tarea documental.',
+    'Las reglas del lifecycle físico aplican a la futura instancia autorizada y no obligan a modificar tareas documentales históricas para implementarlas después.',
   ].join('\n');
 }
 
@@ -137,13 +136,13 @@ function actionInstruction(control) {
     return [
       `Prepara el alcance físico exacto y verificable de ${target}.`,
       'Audita primero el repositorio y los consumidores necesarios; identifica archivos, símbolos, comportamiento actual, cambios permitidos, pruebas, evidencia y rollback.',
-      'Entrega en la misma respuesta la autorización completa y, cuando el cambio sea determinista, el paquete físico entero condicionado a que el usuario guarde primero la autorización y supere el preflight estricto.',
+      'Entrega en la misma respuesta la autorización completa y, cuando el cambio sea determinista, el paquete físico entero condicionado a que el usuario guarde primero la autorización y supere docs:implementation:start.',
     ].join(' ');
   }
   if (type === 'EJECUTAR_IMPLEMENTACION') {
     return [
       `Guía al usuario en una sola transacción humana continua de ${target} hasta el cierre final posterior a VERIFIED; no la ejecutes por él.`,
-      'El preflight estricto es local, la batería física final contiene solo validation_commands y el cierre documental ejecuta docs:plan:build una sola vez; PASS continúa automáticamente dentro del lote y solo FAIL o un bloqueo real vuelven al chat.',
+      'La apertura se realiza con docs:implementation:start, la batería física final contiene solo validation_commands y el cierre se realiza con docs:implementation:finish; PASS continúa automáticamente dentro del lote y solo FAIL o un bloqueo real vuelven al chat.',
     ].join(' ');
   }
   if (type === 'RESOLVER_BLOQUEO') {
@@ -214,14 +213,17 @@ MODO DE EJECUCIÓN Y OPERADOR
 - Comandos y validaciones ejecutados por el asistente: NO AUTORIZADOS
 - Commit, push, PR, despliegues y mutaciones remotas del asistente: NO AUTORIZADOS
 - Auditoría de solo lectura por el asistente: AUTORIZADA
-- Watcher durante implementación física: APAGADO desde antes de IN_PROGRESS hasta después del commit/push final de cierre y de confirmar sincronía
-- Preflight físico: UNA VEZ, con --instance-id y --strict, antes de aplicar código
+- Watcher durante implementación física: APAGADO desde antes de docs:implementation:start hasta READY_TO_RESTART_WATCHER: SI
+- Apertura física: docs:implementation:start gestiona AUTHORIZED -> IN_PROGRESS, preflight y reconciliación documental
+- Carril documental durante implementación física: ADVISORY_ONLY para continuidad adelantada, formato histórico y active-sequence pendiente
+- Preflight físico: UNA VEZ, automático dentro de docs:implementation:start, antes de aplicar código
+- Reconciliación de apertura: docs:plan:build UNA VEZ + docs:plan:check dentro de docs:implementation:start
 - Gates intermedios rutinarios: PROHIBIDOS
-- Preflight PASS: CONTINUAR LOCALMENTE SIN VOLVER AL CHAT
+- READY_TO_IMPLEMENT: SI: CONTINUAR LOCALMENTE SIN VOLVER AL CHAT
 - Batería física final: SOLO validation_commands AUTORIZADAS
 - Batería final PASS: CONTINUAR EN LA MISMA TRANSACCIÓN; EVIDENCIA REMOTA, SI APLICA, ANTES DE VERIFIED
-- Cierre documental: npm run docs:plan:build UNA SOLA VEZ después de VERIFIED
-- Reactivación del watcher: SOLO DESPUÉS DEL CIERRE LIMPIO Y SINCRONIZADO
+- Cierre físico: docs:implementation:finish ejecuta la reconciliación documental final, commit, push, PR, CI y merge
+- Reactivación del watcher: SOLO DESPUÉS DE READY_TO_RESTART_WATCHER: SI
 - Pausa obligatoria: solo FAIL, contradicción real, decisión humana, permiso o credencial no resuelta
 - Respuesta del usuario ante una pausa real: RESULTADO DEL PASO N
 - Evidencia de baterías solicitada al usuario: SOLO EL BLOQUE FINAL === RESULTADO PARA CHATGPT === GENERADO POR EL MISMO COMANDO
@@ -264,7 +266,7 @@ HISTORIAL FÍSICO ACUMULATIVO
 
 ${list(recordedInstanceRows, 'Ninguno; la primera autorización creará el primer archivo.')}
 
-El flujo canónico conserva un archivo por instancia. El watcher puede crear el PENDING_AUTHORIZATION durante el carril documental, pero debe detenerse antes de entrar a la implementación física y permanecer apagado hasta terminar el commit/push final de cierre. El preflight estricto que pasa no obliga a volver al chat; la batería física ejecuta exclusivamente validation_commands; después de VERIFIED, docs:plan:build sincroniza una sola vez los derivados del cierre. Solo con el worktree limpio y el remoto sincronizado se reactiva el watcher, cuyo arranque es de solo lectura. Los registros anteriores nunca se reemplazan.
+El flujo canónico conserva un archivo por instancia. El watcher puede crear el PENDING_AUTHORIZATION durante el carril documental, pero debe detenerse antes de entrar a la implementación física y permanecer apagado hasta READY_TO_RESTART_WATCHER: SI. Guardar AUTHORIZED no exige reconciliar manualmente la documentación: docs:implementation:start abre la rama, cambia a IN_PROGRESS, ejecuta el preflight y reconcilia una vez los derivados de apertura. La batería física ejecuta exclusivamente validation_commands. Después de VERIFIED, docs:implementation:finish reconcilia una vez los derivados finales, publica y cierra Git. Los registros anteriores nunca se reemplazan.
 
 CONTENIDO LOCAL EXACTO DEL REGISTRO ACTIVO
 
@@ -293,9 +295,9 @@ CONTRATO OBLIGATORIO DE LA RESPUESTA Y DEL PASO MANUAL
 
 ${actionResponseContract(control, sourceContractHash)}
 
-No desarrolles la tarea documental ${control.documentary.taskId} mientras su carril figure ${control.documentary.state}, salvo que esa misma tarea sea el objetivo exacto de la acción principal. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
+No desarrolles la tarea documental ${control.documentary.taskId} mientras su carril figure ${control.documentary.state}, salvo que esa misma tarea sea el objetivo exacto de la acción principal. Una instancia física puede pertenecer a una tarea documental histórica: no la reabras, no la reformatees y no cambies la continuidad documental para ejecutarla. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
 
-Este iniciador ya contiene la instrucción de trabajo. En implementación física entrega los artefactos de una vez, usa preflight estricto único, watcher apagado, cambios deterministas en lote y una sola batería física fail-fast formada exclusivamente por validation_commands. PASS continúa dentro del mismo lote; cuando el contrato exija evidencia remota sobre código publicado, la instancia permanece IMPLEMENTED durante el commit/push de materialización y la validación remota, y solo pasa a VERIFIED después del PASS remoto. Tras VERIFIED ejecuta docs:plan:build una sola vez, guarda los derivados del cierre en el commit/push final y reactiva el watcher únicamente cuando el worktree esté limpio y el remoto sincronizado. Solo un bloqueo real debe producir una ronda intermedia de chat. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
+Este iniciador ya contiene la instrucción de trabajo. En implementación física entrega los artefactos de una vez. El usuario guarda AUTHORIZED y ejecuta docs:implementation:start; el lifecycle resuelve IN_PROGRESS, preflight y build/check de apertura. READY_TO_IMPLEMENT: SI permite materializar todo el lote y ejecutar una sola batería física fail-fast formada exclusivamente por validation_commands. PASS continúa dentro del mismo lote; cuando el contrato exija evidencia remota sobre código publicado, la instancia permanece IMPLEMENTED durante el commit/push de materialización y la validación remota, y solo pasa a VERIFIED después del PASS remoto. Tras VERIFIED el usuario ejecuta docs:implementation:finish, que realiza el build/check final, commit, push, PR, CI, merge, sincronización y limpieza. Solo READY_TO_RESTART_WATCHER: SI permite reactivar el watcher. Solo un bloqueo real debe producir una ronda intermedia de chat. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
 
 TRAZABILIDAD DEL INICIADOR
 
@@ -304,8 +306,9 @@ TRAZABILIDAD DEL INICIADOR
 - Fuente de control: docs/plan-canonico/modular/implementation-control.json
 - Directiva local equivalente: .delivery/current-work-directive.md
 - Batería física: exclusivamente validation_commands de la instancia
-- Cierre documental único: npm run docs:plan:build después de VERIFIED; sustituye docs:implementation:status y docs:chatgpt:starter como regeneraciones separadas
-- Reactivación del watcher: solo tras commit/push final, worktree limpio y remoto sincronizado; arranque de solo lectura
+- Apertura física: docs:implementation:start incluye preflight y docs:plan:build + docs:plan:check de IN_PROGRESS
+- Cierre físico: docs:implementation:finish incluye docs:plan:build final, validadores, commit, push, PR, CI y merge
+- Reactivación del watcher: solo tras READY_TO_RESTART_WATCHER: SI
 
 ${sourceContext(task, workTopology, emptyDraft)}
 `;

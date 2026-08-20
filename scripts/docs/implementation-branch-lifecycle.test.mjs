@@ -10,6 +10,7 @@ import {
   classifyImplementationPath,
   implementationBranchName,
   normalizeInstanceId,
+  physicalLaneBlockers,
   readinessBlockers,
 } from './implementation-branch-lifecycle.mjs';
 
@@ -113,43 +114,66 @@ test('PR fisico declara TREQ NONE y lista el alcance real', () => {
   );
 });
 
-test('readiness previa a la rama ignora solo el bloqueo esperado AUTHORIZED', () => {
+test('readiness fisica desacopla continuidad y formato documentales historicos', () => {
   const instanceId = 'SHELL-CON-001::GLOBAL';
-  const blockers = readinessBlockers({
+  const report = {
     blockers: [
       `${instanceId} debe estar IN_PROGRESS para ejecutar el preflight fisico; estado actual: AUTHORIZED.`,
       'formato de tarea: NEEDS_FORMAT.',
+      'active-sequence.json requiere regeneración.',
+      'contrato de entrega inválido: CONTRACT_ERROR',
     ],
-  }, instanceId);
+  };
 
-  assert.deepEqual(blockers, ['formato de tarea: NEEDS_FORMAT.']);
+  assert.deepEqual(
+    readinessBlockers(report, instanceId),
+    ['contrato de entrega inválido: CONTRACT_ERROR'],
+  );
+  assert.deepEqual(
+    physicalLaneBlockers(report, instanceId),
+    [
+      `${instanceId} debe estar IN_PROGRESS para ejecutar el preflight fisico; estado actual: AUTHORIZED.`,
+      'contrato de entrega inválido: CONTRACT_ERROR',
+    ],
+  );
 });
 
-test('start ejecuta readiness antes de crear rama y luego preflight IN_PROGRESS estricto', () => {
+test('start abre carril fisico antes de reconciliar derivados versionados y no exige formato documental historico', () => {
   const source = fs.readFileSync('scripts/docs/implementation-branch-lifecycle.mjs', 'utf8');
+  const start = source.indexOf('export function startImplementation');
   const readinessDefinition = source.indexOf('function physicalReadiness');
-  const firstLocalSync = source.indexOf('syncLocalDerivedArtifacts({ root, quiet: true });');
-  const readinessCall = source.indexOf('const readiness = physicalReadiness(root, id);');
+  const worktreeGuard = source.indexOf('assertStartWorktree(worktreePaths(root), recordPath);', start);
+  const readinessCall = source.indexOf('const readiness = physicalReadiness(root, id);', worktreeGuard);
   const branchMutation = source.indexOf('const branchMode = ensureBranchReadyForStart(root, branch);', readinessCall);
-  const secondLocalSync = source.indexOf('syncLocalDerivedArtifacts({ root, quiet: true });', branchMutation);
-  const statusWrite = source.indexOf("writeInstanceStatus(root, id, 'IN_PROGRESS')", branchMutation);
+  const secondWorktreeGuard = source.indexOf('assertStartWorktree(worktreePaths(root), recordPath);', branchMutation);
+  const statusWrite = source.indexOf("writeInstanceStatus(root, id, 'IN_PROGRESS')", secondWorktreeGuard);
   const preflightDefinition = source.indexOf('function physicalPreflight');
   const instanceArg = source.indexOf("'--instance-id', instanceId", preflightDefinition);
   const strict = source.indexOf("'--strict'", instanceArg);
   const preflightCall = source.indexOf('const report = physicalPreflight(root, id);', statusWrite);
-  const ready = source.indexOf("READY_TO_IMPLEMENT: 'SI'", preflightCall);
+  const build = source.indexOf("npm(['run', '--silent', 'docs:plan:build']", preflightCall);
+  const planCheck = source.indexOf("npm(['run', '--silent', 'docs:plan:check']", build);
+  const diffCheck = source.indexOf("git(['diff', '--check']", planCheck);
+  const ready = source.indexOf("READY_TO_IMPLEMENT: 'SI'", diffCheck);
+  const preStartLocalSync = source.indexOf('syncLocalDerivedArtifacts({ root, quiet: true });', start);
 
   assert.ok(readinessDefinition >= 0);
-  assert.ok(firstLocalSync >= 0 && firstLocalSync < readinessCall);
+  assert.ok(worktreeGuard > start);
   assert.ok(readinessCall > readinessDefinition);
   assert.ok(branchMutation > readinessCall);
-  assert.ok(secondLocalSync > branchMutation && secondLocalSync < statusWrite);
+  assert.ok(secondWorktreeGuard > branchMutation && secondWorktreeGuard < statusWrite);
   assert.ok(statusWrite > branchMutation);
   assert.ok(preflightDefinition >= 0);
   assert.ok(instanceArg > preflightDefinition);
   assert.ok(strict > instanceArg);
   assert.ok(preflightCall > statusWrite);
-  assert.ok(ready > preflightCall);
+  assert.ok(build > preflightCall);
+  assert.ok(planCheck > build);
+  assert.ok(diffCheck > planCheck);
+  assert.ok(ready > diffCheck);
+  assert.ok(preStartLocalSync === -1 || preStartLocalSync > ready);
+  assert.match(source, /START_DOCS_PLAN_BUILD: 'PASS_ONCE'/u);
+  assert.match(source, /DOCUMENTARY_LANE_FOR_PHYSICAL: 'ADVISORY_ONLY'/u);
 });
 
 test('finish valida plan y TREQ localmente antes de commit, push y CI', () => {
