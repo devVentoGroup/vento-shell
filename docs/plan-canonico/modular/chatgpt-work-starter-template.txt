@@ -655,3 +655,6 @@ En la sección de validaciones diferencia lo ejecutado de lo pendiente. No pegue
 ARCHIVOS .MJS
 
 Si alguna entrega requiere contenido de un `.mjs`, entrégalo al usuario como archivo de texto descargable. En el chat indica el archivo real `.mjs` que se crea o modifica, pero el contenido descargable debe ser `.txt`.
+<!-- CURRENT-WORK:START -->
+{{CURRENT_WORK}}
+<!-- CURRENT-WORK:END -->
