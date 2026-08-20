@@ -16,6 +16,7 @@ import {
   validateImplementationControl,
 } from './implementation-control.mjs';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
+import { syncLocalDerivedArtifacts } from './sync-local-derived-artifacts.mjs';
 
 const DEFAULT_BRANCH = 'main';
 const IMPLEMENTATION_PREFIX = 'implementation/';
@@ -371,10 +372,12 @@ export function startImplementation({ instanceId, root = ensureRepositoryRoot() 
 
   ensureGhReady(root);
   git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
+  syncLocalDerivedArtifacts({ root, quiet: true });
   assertStartWorktree(worktreePaths(root), recordPath);
 
   const readiness = physicalReadiness(root, id);
   const branchMode = ensureBranchReadyForStart(root, branch);
+  syncLocalDerivedArtifacts({ root, quiet: true });
   assertStartWorktree(worktreePaths(root), recordPath);
 
   writeInstanceStatus(root, id, 'IN_PROGRESS');
@@ -388,6 +391,7 @@ export function startImplementation({ instanceId, root = ensureRepositoryRoot() 
     BRANCH: branch,
     BRANCH_MODE: branchMode,
     PRE_BRANCH_READINESS: readinessBlockers(readiness, id).length === 0 ? 'PASS' : 'FAIL',
+    LOCAL_DERIVED_SYNC: 'PASS_BEFORE_AND_AFTER_BRANCH',
     INSTANCE_STATUS: 'IN_PROGRESS',
     PREFLIGHT: 'PASS',
     VALIDATION_COMMANDS: Array.isArray(instance.validation_commands) ? instance.validation_commands.length : 0,
@@ -625,6 +629,7 @@ export function finishImplementation({ instanceId, root = ensureRepositoryRoot()
   git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
   git(['switch', DEFAULT_BRANCH], { cwd: root });
   git(['pull', '--ff-only', 'origin', DEFAULT_BRANCH], { cwd: root });
+  syncLocalDerivedArtifacts({ root, quiet: true });
 
   if (worktreePaths(root).length > 0) fail('main no quedo limpio despues del merge.');
   const mainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
@@ -670,6 +675,7 @@ export function finishImplementation({ instanceId, root = ensureRepositoryRoot()
     DOCS_TREQ_CHECK: 'PASS_LOCAL_BEFORE_COMMIT',
     DOCS_TREQ_TEST: 'PASS_LOCAL_BEFORE_COMMIT',
     LINT_RATCHET: 'PASS_LOCAL_BEFORE_COMMIT',
+    LOCAL_DERIVED_SYNC: 'PASS_AFTER_MERGE',
     HEAD_VALIDATED: headSha,
     PR: prNumber,
     CHECKS_REGISTERED: registeredCheckCount,

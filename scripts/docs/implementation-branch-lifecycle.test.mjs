@@ -128,8 +128,10 @@ test('readiness previa a la rama ignora solo el bloqueo esperado AUTHORIZED', ()
 test('start ejecuta readiness antes de crear rama y luego preflight IN_PROGRESS estricto', () => {
   const source = fs.readFileSync('scripts/docs/implementation-branch-lifecycle.mjs', 'utf8');
   const readinessDefinition = source.indexOf('function physicalReadiness');
+  const firstLocalSync = source.indexOf('syncLocalDerivedArtifacts({ root, quiet: true });');
   const readinessCall = source.indexOf('const readiness = physicalReadiness(root, id);');
   const branchMutation = source.indexOf('const branchMode = ensureBranchReadyForStart(root, branch);', readinessCall);
+  const secondLocalSync = source.indexOf('syncLocalDerivedArtifacts({ root, quiet: true });', branchMutation);
   const statusWrite = source.indexOf("writeInstanceStatus(root, id, 'IN_PROGRESS')", branchMutation);
   const preflightDefinition = source.indexOf('function physicalPreflight');
   const instanceArg = source.indexOf("'--instance-id', instanceId", preflightDefinition);
@@ -138,8 +140,10 @@ test('start ejecuta readiness antes de crear rama y luego preflight IN_PROGRESS 
   const ready = source.indexOf("READY_TO_IMPLEMENT: 'SI'", preflightCall);
 
   assert.ok(readinessDefinition >= 0);
+  assert.ok(firstLocalSync >= 0 && firstLocalSync < readinessCall);
   assert.ok(readinessCall > readinessDefinition);
   assert.ok(branchMutation > readinessCall);
+  assert.ok(secondLocalSync > branchMutation && secondLocalSync < statusWrite);
   assert.ok(statusWrite > branchMutation);
   assert.ok(preflightDefinition >= 0);
   assert.ok(instanceArg > preflightDefinition);
@@ -162,7 +166,9 @@ test('finish valida plan y TREQ localmente antes de commit, push y CI', () => {
   const push = source.indexOf("git(['push', '-u', 'origin', branch]", commitScope);
   const checks = source.indexOf('waitForPrChecksToRegister(root, prNumber)', push);
   const merge = source.indexOf("'pr', 'merge'", checks);
-  const cleanup = source.indexOf('cleanupBranch(root, branch)', merge);
+  const mainPull = source.indexOf("git(['pull', '--ff-only', 'origin', DEFAULT_BRANCH]", merge);
+  const localDerivedSync = source.indexOf('syncLocalDerivedArtifacts({ root, quiet: true });', mainPull);
+  const cleanup = source.indexOf('cleanupBranch(root, branch)', localDerivedSync);
   const ready = source.indexOf("READY_TO_RESTART_WATCHER: 'SI'", cleanup);
 
   assert.ok(finish >= 0);
@@ -177,8 +183,11 @@ test('finish valida plan y TREQ localmente antes de commit, push y CI', () => {
   assert.ok(push > commitScope);
   assert.ok(checks > push);
   assert.ok(merge > checks);
-  assert.ok(cleanup > merge);
+  assert.ok(mainPull > merge);
+  assert.ok(localDerivedSync > mainPull);
+  assert.ok(cleanup > localDerivedSync);
   assert.ok(ready > cleanup);
+  assert.match(source, /LOCAL_DERIVED_SYNC: 'PASS_AFTER_MERGE'/u);
 });
 
 test('docs:plan:build materializa la siguiente instancia pendiente antes del core build', () => {
@@ -208,4 +217,26 @@ test('package.json expone el lifecycle fisico y docs:plan:test lo autocertifica'
     packageJson.scripts['docs:plan:test'],
     /scripts\/docs\/implementation-branch-lifecycle\.test\.mjs/u,
   );
+});
+test('sync local de derivados protege watcher y no cambia el worktree versionado', () => {
+  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  assert.equal(
+    packageJson.scripts['docs:plan:local-sync'],
+    'node scripts/docs/sync-local-derived-artifacts.mjs',
+  );
+  assert.equal(
+    packageJson.scripts['docs:plan:watch'],
+    'node scripts/docs/sync-local-derived-artifacts.mjs && node scripts/docs/watch-plan-canonico.mjs',
+  );
+  assert.match(
+    packageJson.scripts['docs:plan:check'],
+    /^node scripts\/docs\/sync-local-derived-artifacts\.mjs && /u,
+  );
+
+  const source = fs.readFileSync('scripts/docs/sync-local-derived-artifacts.mjs', 'utf8');
+  assert.match(source, /git\(\s*\['check-ignore', '--quiet', '--', relativePath\]/u);
+  assert.match(source, /writeChatgptWorkStarter\(\{ root: repositoryRoot \}\)/u);
+  assert.match(source, /build-plan-canonico-core\.mjs', '--check'/u);
+  assert.match(source, /afterStatus !== beforeStatus/u);
+  assert.match(source, /VERSIONED_WORKTREE: UNCHANGED/u);
 });
