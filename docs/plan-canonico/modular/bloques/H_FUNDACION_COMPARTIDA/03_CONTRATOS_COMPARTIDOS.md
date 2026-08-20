@@ -492,13 +492,22 @@ Todos los elementos tienen propietario documental identificado y ninguno exige c
 - reutiliza requisitos de prueba vigentes sin crear ni modificar `TREQ-*`;
 - deja `SHELL-CON-002` como única continuidad reservada.
 
+- **ÚLTIMA TAREA APROBADA:** SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
+- **TAREA ACTUAL APROBADA:** SHELL-CON-001 — Crear @vento/contracts
+- **SIGUIENTE TAREA RESERVADA:** SHELL-CON-002 — Centralizar códigos de aplicaciones
+
 ---
 
 #### 20. Continuidad
 
-- **ÚLTIMA TAREA APROBADA:** SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
-- **TAREA ACTUAL APROBADA:** SHELL-CON-001 — Crear @vento/contracts
-- **SIGUIENTE TAREA RESERVADA:** SHELL-CON-002 — Centralizar códigos de aplicaciones
+**ÚLTIMA TAREA APROBADA**
+`SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-CON-001 — Crear @vento/contracts`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-CON-002 — Centralizar códigos de aplicaciones`
 
 
 ### ✅ SHELL-CON-002 — Centralizar códigos de aplicaciones
