@@ -1,10 +1,37 @@
 {
   "instance_id": "SHELL-CON-002::GLOBAL",
   "task_id": "SHELL-CON-002",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar packages/contracts/authorization/catalog/versions/1.0.0/applications.json con exactamente las diez identidades canonicas de aplicacion de SHELL-CON-002, conservando app_code, display_name, app_kind, domain, roadmap_scope, lifecycle_status, permission_namespace, is_authorization_catalog_member y repository_owner canonico cuando la tarea lo declara; AURA permanece sin repository_owner.",
+    "Materializar packages/contracts/authorization/schemas/application.schema.json como schema cerrado de la definicion de aplicacion, sin crear schemas de permisos, aliases, resource contracts ni otros contratos reservados a instancias posteriores.",
+    "Crear packages/contracts/authorization/scripts/generate-authorization-types.mjs para generar deterministamente, solo desde applications.json, la porcion de aplicaciones de generated/versions/1.0.0/catalog.types.ts, catalog.values.ts e index.ts, sin generar PermissionKey, permisos, aliases, current.ts ni exports publicos del package.",
+    "Crear packages/contracts/authorization/scripts/validate-authorization-catalog.mjs para validar exclusivamente la porcion materializada de aplicaciones, sus conciliaciones canonicas, repository_owner verificados, schema, artefactos generados y fronteras de alcance de SHELL-CON-002.",
+    "Actualizar packages/contracts/authorization/README.md para registrar la porcion de aplicaciones materializada por SHELL-CON-002::GLOBAL y mantener expresamente diferidos catalog/current.json, manifest publicado, permisos, aliases, resource contracts, checksums globales, changelog de publicacion, consumidores, Supabase, releases, registry y exports publicos.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-002__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar registros VERIFIED anteriores ni docs/plan-canonico/modular/implementation-control.json."
+  ],
+  "validation_commands": [
+    "node packages/contracts/authorization/scripts/generate-authorization-types.mjs --check",
+    "node packages/contracts/authorization/scripts/validate-authorization-catalog.mjs",
+    "git diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-20T12:55:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-002::GLOBAL en vento-group-sas/vento-shell para materializar la fuente versionada de las diez aplicaciones canonicas, su schema de aplicacion, la generacion determinista de AppCode y metadata TypeScript de aplicaciones, la validacion local de esta porcion y la documentacion interna del subpath authorization. No autorizo reinterpretar ni normalizar silenciosamente identidades o metadata canonica de aplicaciones, codigos de permisos completos, roles, scopes, aliases, permisos legacy o retirados, resource contracts, catalog/current.json, manifest publicado, checksums globales, changelog de publicacion, exports publicos, cambio de version del package, consumidores, migracion de AppSwitcher o listas legacy, Supabase, CI adicional, registry, tags, releases, publicacion npm, despliegues, secretos ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "8135b91d8ea543195fcba32d8f3eaa451061bf81fb70b73dbeae4fe99739ed77"
+  },
+  "evidence": [
+    "MATERIALIZATION applications.json, application schema, deterministic application type generator, application validator and generated versioned TypeScript artifacts created",
+    "VALIDATION generate-authorization-types --check PASS",
+    "VALIDATION authorization application catalog PASS; applications=10; unique_app_codes=10",
+    "VALIDATION generated application contracts FRESH",
+    "VALIDATION git diff --check PASS",
+    "RESULT SHELL-CON-002::GLOBAL VERIFIED"
+  ]
 }

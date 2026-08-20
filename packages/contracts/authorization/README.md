@@ -1,24 +1,60 @@
 # @vento/contracts/authorization
 
-Reserva física del subpath contractual de autorización aprobado para `@vento/contracts`.
+Contrato estático de autorización compartido de Vento OS.
 
-`SHELL-CON-001::GLOBAL` crea únicamente esta raíz.
+## Estado materializado
 
-Los contratos documentales `AUTH-CAT-017` y `AUTH-CAT-018` continúan gobernando el catálogo versionado, schemas, tipos derivados, checksums, changelog y metadata de autorización.
+La raíz fue creada por `SHELL-CON-001::GLOBAL`.
 
-Esta instancia no materializa todavía:
+`SHELL-CON-002::GLOBAL` materializa exclusivamente la identidad canónica de aplicaciones:
 
-- `applications.json`;
-- `permissions.json`;
+- fuente versionada: `catalog/versions/1.0.0/applications.json`;
+- schema de aplicación: `schemas/application.schema.json`;
+- tipos y valores TypeScript generados bajo `generated/versions/1.0.0/`;
+- generación determinista mediante `scripts/generate-authorization-types.mjs`;
+- validación de la porción de aplicaciones mediante `scripts/validate-authorization-catalog.mjs`.
+
+Esta materialización es una fundación `PRE_E5_FOUNDATION`.
+
+No constituye una publicación del catálogo `1.0.0`, una release de `@vento/contracts`, un tag, una publicación en registry ni una adopción por consumidores.
+
+Por esa razón no se materializan todavía `catalog/current.json`, un manifiesto `published`, exports públicos consumibles ni metadata que afirme publicación.
+
+## Aplicaciones canónicas
+
+El universo vigente contiene exactamente:
+
+- `shell`;
+- `anima`;
+- `viso`;
+- `nexo`;
+- `fogo`;
+- `origo`;
+- `pulso`;
+- `numera`;
+- `aura`;
+- `pass`.
+
+`hub` y `default` no pertenecen a `AppCode`.
+
+## Frontera de responsabilidad
+
+Esta instancia no materializa:
+
+- códigos de permisos completos;
+- roles base u operativos;
+- scopes;
 - aliases;
 - permisos legacy o retirados;
 - resource contracts;
-- JSON Schemas;
-- tipos TypeScript derivados;
-- generadores;
-- validadores propios del catálogo;
-- exports públicos consumibles.
+- catálogo completo publicado;
+- changelog de publicación;
+- checksums globales;
+- migraciones de consumidores;
+- cambios en Supabase;
+- exports públicos adicionales;
+- releases o registry.
 
-Esos artefactos solo se incorporarán cuando la instancia física propietaria correspondiente cierre su alcance sin absorber responsabilidades de otras tareas.
+Esas responsabilidades permanecen en sus tareas e instancias propietarias.
 
-Hasta entonces ningún consumidor debe importar rutas internas de este directorio.
+Hasta que exista publicación y adopción autorizadas, ningún consumidor debe importar rutas internas de este directorio.
