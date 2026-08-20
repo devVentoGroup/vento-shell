@@ -10,6 +10,7 @@ import {
   classifyImplementationPath,
   implementationBranchName,
   normalizeInstanceId,
+  readinessBlockers,
 } from './implementation-branch-lifecycle.mjs';
 
 test('normaliza instance_id y deriva rama fisica estable', () => {
@@ -112,29 +113,52 @@ test('PR fisico declara TREQ NONE y lista el alcance real', () => {
   );
 });
 
-test('start transiciona a IN_PROGRESS y usa el preflight fisico estricto', () => {
+test('readiness previa a la rama ignora solo el bloqueo esperado AUTHORIZED', () => {
+  const instanceId = 'SHELL-CON-001::GLOBAL';
+  const blockers = readinessBlockers({
+    blockers: [
+      `${instanceId} debe estar IN_PROGRESS para ejecutar el preflight fisico; estado actual: AUTHORIZED.`,
+      'formato de tarea: NEEDS_FORMAT.',
+    ],
+  }, instanceId);
+
+  assert.deepEqual(blockers, ['formato de tarea: NEEDS_FORMAT.']);
+});
+
+test('start ejecuta readiness antes de crear rama y luego preflight IN_PROGRESS estricto', () => {
   const source = fs.readFileSync('scripts/docs/implementation-branch-lifecycle.mjs', 'utf8');
+  const readinessDefinition = source.indexOf('function physicalReadiness');
+  const readinessCall = source.indexOf('const readiness = physicalReadiness(root, id);');
+  const branchMutation = source.indexOf('const branchMode = ensureBranchReadyForStart(root, branch);', readinessCall);
+  const statusWrite = source.indexOf("writeInstanceStatus(root, id, 'IN_PROGRESS')", branchMutation);
   const preflightDefinition = source.indexOf('function physicalPreflight');
   const instanceArg = source.indexOf("'--instance-id', instanceId", preflightDefinition);
   const strict = source.indexOf("'--strict'", instanceArg);
-  const statusWrite = source.indexOf("writeInstanceStatus(root, id, 'IN_PROGRESS')");
   const preflightCall = source.indexOf('const report = physicalPreflight(root, id);', statusWrite);
   const ready = source.indexOf("READY_TO_IMPLEMENT: 'SI'", preflightCall);
 
+  assert.ok(readinessDefinition >= 0);
+  assert.ok(readinessCall > readinessDefinition);
+  assert.ok(branchMutation > readinessCall);
+  assert.ok(statusWrite > branchMutation);
   assert.ok(preflightDefinition >= 0);
   assert.ok(instanceArg > preflightDefinition);
   assert.ok(strict > instanceArg);
-  assert.ok(statusWrite >= 0);
   assert.ok(preflightCall > statusWrite);
   assert.ok(ready > preflightCall);
 });
 
-test('finish exige VERIFIED antes del unico docs:plan:build y cierre fuerte', () => {
+test('finish valida plan y TREQ localmente antes de commit, push y CI', () => {
   const source = fs.readFileSync('scripts/docs/implementation-branch-lifecycle.mjs', 'utf8');
   const finish = source.indexOf('export function finishImplementation');
   const verified = source.indexOf('assertInstanceCanFinish(instance);', finish);
   const build = source.indexOf("npm(['run', '--silent', 'docs:plan:build']", verified);
-  const commitScope = source.indexOf("'docs:commit-scope:check'", build);
+  const planCheck = source.indexOf("npm(['run', '--silent', 'docs:plan:check']", build);
+  const planTest = source.indexOf("npm(['run', '--silent', 'docs:plan:test']", planCheck);
+  const treqCheck = source.indexOf("npm(['run', '--silent', 'docs:treq:check']", planTest);
+  const treqTest = source.indexOf("npm(['run', '--silent', 'docs:treq:test']", treqCheck);
+  const lint = source.indexOf("npm(['run', '--silent', 'quality:lint:ratchet']", treqTest);
+  const commitScope = source.indexOf("'docs:commit-scope:check'", lint);
   const push = source.indexOf("git(['push', '-u', 'origin', branch]", commitScope);
   const checks = source.indexOf('waitForPrChecksToRegister(root, prNumber)', push);
   const merge = source.indexOf("'pr', 'merge'", checks);
@@ -144,12 +168,30 @@ test('finish exige VERIFIED antes del unico docs:plan:build y cierre fuerte', ()
   assert.ok(finish >= 0);
   assert.ok(verified > finish);
   assert.ok(build > verified);
-  assert.ok(commitScope > build);
+  assert.ok(planCheck > build);
+  assert.ok(planTest > planCheck);
+  assert.ok(treqCheck > planTest);
+  assert.ok(treqTest > treqCheck);
+  assert.ok(lint > treqTest);
+  assert.ok(commitScope > lint);
   assert.ok(push > commitScope);
   assert.ok(checks > push);
   assert.ok(merge > checks);
   assert.ok(cleanup > merge);
   assert.ok(ready > cleanup);
+});
+
+test('docs:plan:build materializa la siguiente instancia pendiente antes del core build', () => {
+  const source = fs.readFileSync('scripts/docs/build-plan-canonico.mjs', 'utf8');
+  const derive = source.indexOf('deriveImplementationControl({ root })');
+  const pending = source.indexOf('ensurePendingImplementationRecord({ root, control: preBuildControl })', derive);
+  const coreBuild = source.indexOf("await import('./safe-build-plan-canonico.mjs')", pending);
+  const finalControl = source.indexOf('writeImplementationControlArtifacts({ root })', coreBuild);
+
+  assert.ok(derive >= 0);
+  assert.ok(pending > derive);
+  assert.ok(coreBuild > pending);
+  assert.ok(finalControl > coreBuild);
 });
 
 test('package.json expone el lifecycle fisico y docs:plan:test lo autocertifica', () => {

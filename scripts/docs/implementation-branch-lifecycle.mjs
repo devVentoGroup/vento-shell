@@ -274,6 +274,41 @@ function physicalPreflight(root, instanceId) {
   return report;
 }
 
+export function readinessBlockers(report, instanceId) {
+  const blockers = Array.isArray(report?.blockers) ? report.blockers : [];
+  const expectedPrefix = `${instanceId} debe estar IN_PROGRESS para ejecutar el preflight fisico;`;
+  return blockers.filter((entry) => !(
+    entry.startsWith(expectedPrefix)
+    && entry.endsWith('estado actual: AUTHORIZED.')
+  ));
+}
+
+function physicalReadiness(root, instanceId) {
+  const result = npm([
+    'run', '--silent', 'docs:task:preflight', '--',
+    '--instance-id', instanceId,
+    '--json',
+  ], { cwd: root, allowFailure: true });
+
+  const report = result.stdout.trim()
+    ? parseJsonOutput(result.stdout, 'docs:task:preflight readiness')
+    : null;
+
+  if (result.status !== 0) {
+    const detail = result.stderr || result.stdout || 'Readiness fisica previa a la rama fallo.';
+    fail(detail, result.status);
+  }
+  if (!report?.instance || report.instance.id !== instanceId || report.instance.status !== 'AUTHORIZED') {
+    fail(`Readiness no confirmo ${instanceId} en AUTHORIZED.`);
+  }
+
+  const blockers = readinessBlockers(report, instanceId);
+  if (blockers.length > 0) {
+    fail(`Readiness fisica bloqueada antes de crear la rama: ${blockers.join(' | ')}.`);
+  }
+  return report;
+}
+
 function ensureBranchReadyForStart(root, branch) {
   const startingBranch = currentBranch(root);
   if (![DEFAULT_BRANCH, branch].includes(startingBranch)) {
@@ -338,6 +373,7 @@ export function startImplementation({ instanceId, root = ensureRepositoryRoot() 
   git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
   assertStartWorktree(worktreePaths(root), recordPath);
 
+  const readiness = physicalReadiness(root, id);
   const branchMode = ensureBranchReadyForStart(root, branch);
   assertStartWorktree(worktreePaths(root), recordPath);
 
@@ -351,6 +387,7 @@ export function startImplementation({ instanceId, root = ensureRepositoryRoot() 
     TASK_ID: instance.task_id,
     BRANCH: branch,
     BRANCH_MODE: branchMode,
+    PRE_BRANCH_READINESS: readinessBlockers(readiness, id).length === 0 ? 'PASS' : 'FAIL',
     INSTANCE_STATUS: 'IN_PROGRESS',
     PREFLIGHT: 'PASS',
     VALIDATION_COMMANDS: Array.isArray(instance.validation_commands) ? instance.validation_commands.length : 0,
@@ -519,6 +556,11 @@ export function finishImplementation({ instanceId, root = ensureRepositoryRoot()
   git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
 
   npm(['run', '--silent', 'docs:plan:build'], { cwd: root });
+  npm(['run', '--silent', 'docs:plan:check'], { cwd: root });
+  npm(['run', '--silent', 'docs:plan:test'], { cwd: root });
+  npm(['run', '--silent', 'docs:treq:check'], { cwd: root });
+  npm(['run', '--silent', 'docs:treq:test'], { cwd: root });
+  npm(['run', '--silent', 'quality:lint:ratchet'], { cwd: root });
 
   const dirty = worktreePaths(root);
   if (dirty.length === 0) {
@@ -623,6 +665,11 @@ export function finishImplementation({ instanceId, root = ensureRepositoryRoot()
     FILES: changedPaths.length,
     PHYSICAL_VALIDATIONS: 'REUSED_FROM_VERIFIED_EVIDENCE',
     DOCS_PLAN_BUILD: 'PASS_ONCE',
+    DOCS_PLAN_CHECK: 'PASS_LOCAL_BEFORE_COMMIT',
+    DOCS_PLAN_TEST: 'PASS_LOCAL_BEFORE_COMMIT',
+    DOCS_TREQ_CHECK: 'PASS_LOCAL_BEFORE_COMMIT',
+    DOCS_TREQ_TEST: 'PASS_LOCAL_BEFORE_COMMIT',
+    LINT_RATCHET: 'PASS_LOCAL_BEFORE_COMMIT',
     HEAD_VALIDATED: headSha,
     PR: prNumber,
     CHECKS_REGISTERED: registeredCheckCount,
@@ -662,8 +709,8 @@ function usage() {
   console.log('  npm run docs:implementation:start -- --instance-id SHELL-CON-001::GLOBAL');
   console.log('  npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL');
   console.log('');
-  console.log('START exige registro AUTHORIZED, crea o recupera implementation/<task-id>/<instance-key>, cambia a IN_PROGRESS y ejecuta el preflight fisico estricto una sola vez.');
-  console.log('FINISH exige VERIFIED, ejecuta docs:plan:build una sola vez, valida el commit, publica, espera CI, mergea, sincroniza main y limpia la rama.');
+  console.log('START exige registro AUTHORIZED, ejecuta readiness fisica de solo lectura antes de mutar Git, crea o recupera implementation/<task-id>/<instance-key>, cambia a IN_PROGRESS y ejecuta el preflight fisico estricto una sola vez.');
+  console.log('FINISH exige VERIFIED, ejecuta docs:plan:build una sola vez, valida plan, TREQ y lint localmente antes del commit, publica, espera CI, mergea, sincroniza main y limpia la rama.');
 }
 
 function main() {

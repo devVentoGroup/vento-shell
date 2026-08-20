@@ -35,6 +35,21 @@ function installTerminalSafeConsole() {
 
 installTerminalSafeConsole();
 
+const root = process.cwd();
+
+try {
+  const {
+    deriveImplementationControl,
+    ensurePendingImplementationRecord,
+  } = await import('./implementation-control.mjs');
+  const preBuildControl = deriveImplementationControl({ root });
+  ensurePendingImplementationRecord({ root, control: preBuildControl });
+} catch (error) {
+  console.error('[PLAN CAN\u00d3NICO] Preparaci\u00f3n f\u00edsica previa a compilaci\u00f3n bloqueada:');
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+}
+
 try {
   await import('./safe-build-plan-canonico.mjs');
 } catch (error) {
@@ -53,7 +68,6 @@ try {
   const { writeChatgptWorkStarter } = await import('./chatgpt-work-starter.mjs');
   const { writeCurrentTaskDevelopmentArtifacts } = await import('./task-development-artifacts.mjs');
   const { writePlanWatchStatus } = await import('./plan-watch-runtime.mjs');
-  const root = process.cwd();
   const completedAt = new Date().toISOString();
   const { control: implementationControl } = writeImplementationControlArtifacts({ root });
   writeChatgptWorkStarter({ root });
