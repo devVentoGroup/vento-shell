@@ -5,3 +5,9 @@ docs/plan-canonico/modular/** text eol=lf
 docs/plan-canonico/modular/.generated/*.md whitespace=-blank-at-eol
 scripts/docs/** text eol=lf
 package.json text eol=lf
+# Los contratos de autorización deben ser byte-estables entre Windows y CI/Linux.
+packages/contracts/authorization/**/*.json text eol=lf
+packages/contracts/authorization/**/*.jsonl text eol=lf
+packages/contracts/authorization/**/*.ts text eol=lf
+packages/contracts/authorization/**/*.mjs text eol=lf
+packages/contracts/authorization/**/*.md text eol=lf

@@ -140,6 +140,10 @@ test('la autorizacion conserva ledger y delega apertura al lifecycle', () => {
   assert.match(source, /En la misma respuesta/u);
   assert.match(source, /todos los archivos y cambios físicos deterministas/u);
   assert.match(source, /No obligues a regenerar el Iniciador/u);
+  assert.match(source, /detener primero el watcher/u);
+  assert.match(source, /main limpio, actualizado y sincronizado 0\/0/u);
+  assert.match(source, /guardar después el registro AUTHORIZED/u);
+  assert.doesNotMatch(source, /guardar primero el registro AUTHORIZED; detener el watcher/u);
   assert.match(source, /docs:implementation:start -- --instance-id SHELL-CI-002::GLOBAL/u);
   assert.match(source, /START_DOCS_PLAN_BUILD: PASS_ONCE/u);
   assert.match(source, /docs:implementation:finish -- --instance-id SHELL-CI-002::GLOBAL/u);
@@ -198,6 +202,13 @@ test('la plantilla global desacopla el carril fisico de la continuidad documenta
   assert.match(template, /nunca se reemplaza un arreglo global `instances`/u);
   assert.match(template, /FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA/u);
   assert.match(template, /watcher debe permanecer apagado/u);
+  assert.match(template, /detén primero el watcher/u);
+  assert.match(template, /guarda después el registro de instancia en `AUTHORIZED`/u);
+  assert.doesNotMatch(template, /guarde el registro `AUTHORIZED`, detén el watcher/u);
+  const attributes = fs.readFileSync('.gitattributes', 'utf8');
+  assert.match(attributes, /packages\/contracts\/authorization\/\*\*\/\*\.ts text eol=lf/u);
+  assert.match(attributes, /packages\/contracts\/authorization\/\*\*\/\*\.mjs text eol=lf/u);
+  assert.match(attributes, /packages\/contracts\/authorization\/\*\*\/\*\.jsonl text eol=lf/u);
   assert.match(template, /commit\/push final de cierre/u);
   assert.match(template, /una sola transacción final fail-fast/u);
   assert.match(template, /exclusivamente las `validation_commands`/u);
