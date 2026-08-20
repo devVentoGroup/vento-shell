@@ -108,6 +108,59 @@ Antes de actuar determina:
 
 El verbo del título es solo una señal. El alcance real se obtiene de la tarea completa y sus fuentes.
 
+VERIFICACIÓN OBLIGATORIA DE LA ACCIÓN RESULTANTE
+
+La acción principal, el modo operativo, el carril físico, la identidad de instancia y cualquier clasificación incluida en `CURRENT-WORK` son una proyección generada y NO sustituyen la auditoría independiente de las fuentes canónicas.
+
+Antes de desarrollar una tarea, autorizar una instancia o aceptar la acción principal indicada por el Iniciador, ChatGPT debe recalcular y verificar por su cuenta:
+
+1. si el trabajo es exclusivamente documental o admite materialización física propia;
+2. el `mode` aplicable en `task-work-topology.json`:
+   - `DEFINE_ONCE`;
+   - `GLOBAL_ENABLE_ONCE`;
+   - `TEMPLATE_PER_PACKAGE`;
+   - `PER_IMPLEMENTATION_UNIT`;
+   - `PER_PACKAGE_AND_GLOBAL_FINAL`;
+   - `GLOBAL_FINAL`;
+3. el `execution_gate` aplicable y su significado temporal;
+4. la identidad física válida derivada del modo:
+   - sin instancia física propia;
+   - `<task_id>::GLOBAL`;
+   - `<task_id>::<package_id>`;
+   - `<task_id>::<implementation_unit_id>`;
+   - `<task_id>::GLOBAL-FINAL`;
+5. si las dependencias técnicas y contractuales permiten ejecutar ahora esa materialización;
+6. si el archivo propietario contiene cláusulas históricas y si existe una reconciliación canónica posterior que las sustituya o limite;
+7. si el resultado físico propuesto pertenece realmente a la tarea actual o está reservado a otra tarea, package_id, implementation_unit_id, fase o gate;
+8. si el generador está proponiendo por error:
+   - implementación global cuando corresponde paquete;
+   - implementación por paquete cuando corresponde global;
+   - implementación física cuando corresponde `DEFINE_ONCE` o `NO_PHYSICAL_INSTANCE`;
+   - ejecución `POST_E5_PACKAGE` antes de E5;
+   - espera de E5 cuando corresponde `PRE_E5_FOUNDATION`;
+   - una instancia distinta de la permitida por la cardinalidad;
+9. si el código, infraestructura y consumidores actuales confirman que el alcance resultante es materializable sin invadir responsabilidades ajenas.
+
+La verificación debe comparar explícitamente:
+
+```text
+CLASIFICACIÓN RECOMPUTADA DESDE FUENTES CANÓNICAS
+vs.
+ACCIÓN / MODO / INSTANCIA PROPUESTOS POR CURRENT-WORK
+```
+
+Resultado obligatorio de la auditoría:
+
+- `COINCIDE` → puede continuarse con la acción propuesta;
+- `NO_COINCIDE` → no se ejecuta ni se autoriza esa acción; se identifica la fuente o proyección incorrecta y se corrige antes de continuar;
+- `CONTRADICCIÓN_NO_RESUELTA` → se detienen únicamente las escrituras o el avance afectados hasta reconciliar la contradicción.
+
+Una reconciliación explícita ubicada en una fuente canónica superior o en una sección normativa del mismo archivo propietario puede invalidar cláusulas históricas sin convertirlas en una contradicción pendiente. ChatGPT debe leer también el contexto inmediatamente anterior y posterior al bloque de la tarea y no limitarse al texto aislado incluido en `CONTENIDO CANÓNICO DE LA TAREA OBJETIVO`.
+
+Nunca aceptes automáticamente `AUTORIZAR_IMPLEMENTACION`, `EJECUTAR_IMPLEMENTACION`, `DOCUMENTAR_TAREA`, `GLOBAL_IMPLEMENTATION_READY`, `PACKAGE_IMPLEMENTATION_READY` ni equivalentes solo porque aparezcan generados en el Iniciador.
+
+Esta auditoría es obligatoria en CADA tarea antes de desarrollar o implementar y debe realizarse de nuevo cuando cambie `task-work-topology.json`, `execution-route.json`, una reconciliación topológica, el archivo propietario o el estado físico de las instancias.
+
 REGLA OBLIGATORIA DE RAMA POR TAREA Y CIERRE EN MAIN
 
 Toda tarea canónica debe comenzar desde una rama de trabajo propia antes de modificar su contenido, código, datos, configuración o artefactos derivados.
@@ -602,7 +655,6 @@ En la sección de validaciones diferencia lo ejecutado de lo pendiente. No pegue
 ARCHIVOS .MJS
 
 Si alguna entrega requiere contenido de un `.mjs`, entrégalo al usuario como archivo de texto descargable. En el chat indica el archivo real `.mjs` que se crea o modifica, pero el contenido descargable debe ser `.txt`.
-
 <!-- CURRENT-WORK:START -->
 {{CURRENT_WORK}}
 <!-- CURRENT-WORK:END -->
