@@ -3681,7 +3681,675 @@ Estos identificadores se reutilizan únicamente como cobertura vigente. Esta tar
 `AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`
 
 
-### [ ] AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
+### ✅ AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
+**Tarea siguiente:** AUTH-DB-004 — Reducir grants innecesarios de authenticated
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md`
+**Estado físico resultante:** Contrato de endurecimiento `SECURITY DEFINER` cerrado; futura instancia global `AUTH-DB-003::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-003` define el contrato de endurecimiento de las funciones PostgreSQL `SECURITY DEFINER` gobernadas por Vento OS que deban conservar, transformar, mover, sustituir o retirar privilegio elevado conforme a la política canónica ya aprobada.
+
+La regla de entrada es:
+
+```text
+SECURITY INVOKER
+= modo predeterminado
+
+SECURITY DEFINER
+= excepción individual
+= necesidad demostrada
+= privilegio mínimo
+= autorización interna
+= evidencia negativa
+```
+
+Esta tarea no interpreta `SECURITY DEFINER` como vulnerabilidad automática ni como aprobación automática. Cada firma debe tener una disposición explícita y verificable antes de cualquier cambio físico.
+
+---
+
+#### 2. Resultado canónico
+
+Queda fijado el siguiente modelo:
+
+```text
+SUPA-ARC-014
+→ autoridad normativa sobre SECURITY DEFINER
+
+SUPA-TRANS-*
+→ disposición, movimiento, compatibilidad y retiro de objetos concretos
+
+AUTH-DB-003
+→ contrato físico de endurecimiento inicial
+
+AUTH-DB-003::GLOBAL
+→ única futura materialización física de esta contención
+
+AUTH-DB-004
+→ grants de authenticated
+
+AUTH-DB-005
+→ grants de anon
+```
+
+`AUTH-DB-003` no absorbe las responsabilidades de grants ni reemplaza los contratos de RLS, autorización empresarial, consumidores o transición.
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente de R0 establece:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-003::GLOBAL
+```
+
+Consecuencias:
+
+1. existe una única instancia física global;
+2. no se crea una instancia por paquete;
+3. la contención debe estar disponible antes de autorizar paquetes E5 que dependan de estas superficies;
+4. la aprobación documental no ejecuta ni autoriza la instancia;
+5. toda materialización conservará autorización humana explícita, migración versionada, pruebas y rollback.
+
+---
+
+#### 4. Fuentes vinculantes
+
+La tarea consume y preserva:
+
+- `SUPA-AUD-006` y `SUPA-AUD-007`, como línea base de firmas, modos de seguridad, owners, ACL, `search_path` y exposición efectiva;
+- `SUPA-AUD-009`, como frontera de grants, policies y privilegios efectivos;
+- `SUPA-ARC-013`, como contrato de funciones, RPC y triggers;
+- `SUPA-ARC-014`, como política canónica de `SECURITY DEFINER`;
+- `SUPA-ARC-015`, como propietario de grants, RLS, roles de ejecución y `FORCE RLS`;
+- `SUPA-TRANS-*`, como autoridad de disposición, movimiento, compatibilidad y retiro por objeto;
+- el Registro Canónico de Requisitos de Prueba vigente;
+- el estado remoto verificable, únicamente como evidencia de línea base.
+
+Precedencia:
+
+```text
+POLÍTICA CANÓNICA
+→ define seguridad objetivo
+
+DISPOSICIÓN CANÓNICA
+→ define destino del objeto
+
+ESTADO REMOTO
+→ demuestra qué existe hoy
+
+AUTH-DB-003
+→ define cómo endurecer sin inventar destino
+```
+
+---
+
+#### 5. Línea base reconciliada
+
+El corte histórico de `SUPA-ARC-014` registraba:
+
+```text
+347 funciones Vento
+210 SECURITY DEFINER
+179 SECURITY DEFINER directas
+45 ejecutables por anon
+151 ejecutables por authenticated
+29 triggers usando función SECURITY DEFINER
+```
+
+La línea base remota vigente presenta una reconciliación posterior:
+
+```text
+348 funciones gobernadas en el universo auditado
+211 SECURITY DEFINER
+179 SECURITY DEFINER directas
+32 funciones trigger SECURITY DEFINER
+46 SECURITY DEFINER ejecutables efectivamente por anon
+152 SECURITY DEFINER ejecutables efectivamente por authenticated
+14 SECURITY DEFINER con row_security=off
+```
+
+El incremento se explica por:
+
+```text
+public.viso_enforce_monthly_schedule_publish_limit()
+```
+
+y su trigger asociado sobre `public.employee_shifts`.
+
+La función fue introducida mediante migración versionada y ya aparece reconciliada en el registro canónico posterior. Por tanto, los conteos antiguos permanecen como baseline histórico y no como cardinalidad vigente.
+
+---
+
+#### 6. Frontera de producto
+
+El universo auditado contiene también funciones pertenecientes a la frontera separada de VITAL.
+
+Para `AUTH-DB-003`:
+
+```text
+UNIVERSO GOBERNADO OBSERVADO
+= 211 SECURITY DEFINER
+
+FRONTERA VITAL
+= 5 SECURITY DEFINER
+= fuera del alcance físico de Vento OS
+
+UNIVERSO VENTO OS PARA CONTENCIÓN
+= 206 SECURITY DEFINER
+```
+
+Reglas:
+
+1. VITAL no se incorpora por semejanza técnica;
+2. una función VITAL conserva su propia disposición y gobierno;
+3. la futura instancia no modifica objetos de VITAL;
+4. los conteos globales pueden usarse para reconciliación, pero no amplían el alcance físico.
+
+---
+
+#### 7. Clases de excepción permitidas
+
+Una función solo puede permanecer `SECURITY DEFINER` cuando pertenezca exactamente a una clase aprobada:
+
+| Clase                                   | Finalidad                                                        |
+| --------------------------------------- | ---------------------------------------------------------------- |
+| `PRIVILEGED_READ_BRIDGE`                | lectura mínima privilegiada para contrato autorizado             |
+| `PRIVILEGED_COMMAND_GATEWAY`            | comando con un efecto primario que requiere privilegio adicional |
+| `RLS_SUPPORT_PRIMITIVE`                 | primitiva estrecha de soporte para RLS o autorización            |
+| `AUDIT_APPEND_GATE`                     | escritura append-only de evidencia o evento                      |
+| `TRIGGER_INVARIANT_ENFORCER`            | preservación de invariante mediante trigger                      |
+| `PLATFORM_ADAPTER`                      | adaptación mínima a una superficie administrada                  |
+| `TRANSITIONAL_PRIVILEGED_COMPATIBILITY` | compatibilidad privilegiada temporal durante cutover             |
+
+Cualquier función sin clase inequívoca queda:
+
+```text
+BLOCKED_PENDING_EVIDENCE
+```
+
+No existen clases genéricas de bypass administrativo, wrapper de `service_role`, helper universal ni ejecución arbitraria.
+
+---
+
+#### 8. Disposición obligatoria por firma
+
+Cada función Vento OS `SECURITY DEFINER` recibirá exactamente una disposición:
+
+| Disposición                            | Resultado                                              |
+| -------------------------------------- | ------------------------------------------------------ |
+| `KEEP_AS_DEFINER`                      | conserva elevación tras superar el gate completo       |
+| `CONVERT_TO_INVOKER`                   | elimina elevación porque no es necesaria               |
+| `SPLIT_CONTRACT_AND_PRIVILEGED_CORE`   | separa contrato invoker de núcleo privilegiado privado |
+| `REPLACE_WITH_RLS_CONSTRAINT_OR_MODEL` | elimina necesidad mediante RLS, constraint o rediseño  |
+| `TRANSITIONAL_COMPATIBILITY`           | conserva temporalmente con sucesor y salida            |
+| `RETIRE`                               | se elimina después de demostrar reemplazo o cero uso   |
+| `BLOCKED_PENDING_EVIDENCE`             | no se modifica ni promueve sin evidencia suficiente    |
+
+La clase no se infiere desde nombre, schema, owner, ACL o uso histórico.
+
+---
+
+#### 9. Prioridad de revisión
+
+La futura materialización revisará primero las cohortes con mayor radio de impacto:
+
+1. funciones Vento OS `SECURITY DEFINER` ejecutables efectivamente por `anon`;
+2. funciones ejecutables por `authenticated`;
+3. funciones directas invocables;
+4. funciones de trigger privilegiadas;
+5. funciones con `row_security=off`;
+6. helpers internos y adapters;
+7. compatibilidades, overloads, funciones huérfanas y resto del universo.
+
+La pertenencia a varias cohortes no duplica la firma.
+
+---
+
+#### 10. Owner técnico objetivo
+
+Toda función que conserve `SECURITY DEFINER` deberá abandonar el patrón histórico de owner privilegiado amplio.
+
+El owner objetivo:
+
+1. será un rol técnico dedicado;
+2. será `NOLOGIN`;
+3. no será `postgres`, `supabase_admin`, `service_role`, `anon`, `authenticated`, usuario humano ni rol de aplicación;
+4. tendrá cero `SUPERUSER`;
+5. tendrá cero `BYPASSRLS`;
+6. no será owner de tablas de dominio por conveniencia;
+7. recibirá únicamente los privilegios requeridos por el cuerpo;
+8. tendrá memberships explícitas, mínimas y verificables.
+
+La identidad concreta del rol y sus grants pertenecen a la materialización gobernada por `SUPA-ARC-015`; esta tarea no inventa nombres de roles.
+
+---
+
+#### 11. Autorización interna
+
+Una función privilegiada no puede depender de que el caller haya llegado desde una interfaz, wrapper o RPC aparentemente autorizado.
+
+Debe resolver server-side:
+
+```text
+principal válido
++ sesión activa
++ identidad vigente
++ actor efectivo
++ permiso atómico
++ scope
++ territorio
++ recurso
++ precondiciones
+= efecto permitido
+```
+
+Queda prohibido tratar como autoridad final:
+
+- `raw_user_meta_data`;
+- roles enviados por cliente;
+- identificadores de empleado o actor enviados por caller;
+- `current_user`;
+- el owner PostgreSQL;
+- pertenencia a `authenticated`;
+- una conexión `service_role`;
+- una policy RLS que el owner privilegiado pueda omitir.
+
+---
+
+#### 12. `search_path` y resolución
+
+Toda función que permanezca `SECURITY DEFINER` tendrá:
+
+1. `search_path` explícito;
+2. conjunto mínimo de schemas confiables;
+3. ausencia de schemas controlables por callers;
+4. referencias empresariales calificadas;
+5. dependencias inventariadas;
+6. prueba contra shadowing;
+7. hash contractual que cambie cuando cambie la resolución de nombres.
+
+La línea base vigente conserva funciones con `search_path` centrado en `public` y variantes con otros schemas. La existencia de configuración explícita no demuestra por sí sola seguridad objetivo.
+
+No se preservará `public` en `search_path` únicamente por compatibilidad histórica.
+
+---
+
+#### 13. SQL dinámico
+
+SQL dinámico queda prohibido por defecto.
+
+Una excepción deberá:
+
+- demostrar necesidad;
+- usar allowlist server-side cerrada;
+- separar identificadores y valores;
+- parametrizar valores;
+- impedir fragmentos SQL libres;
+- limitar filas y tiempo;
+- registrar owner, consumidores y pruebas de inyección.
+
+No se autoriza una función genérica de lectura, escritura, administración de objetos o bypass.
+
+---
+
+#### 14. Funciones de lectura privilegiada
+
+Una `PRIVILEGED_READ_BRIDGE`:
+
+- no ejecuta DML;
+- no produce red, colas o webhooks;
+- usa filtros contractuales;
+- aplica minimización;
+- limita columnas y filas;
+- evita enumeración transversal;
+- no devuelve internals, ACL, SQL, secretos ni información fuera de finalidad.
+
+Si la misma lectura puede expresarse con `SECURITY INVOKER` y RLS correctos, la disposición será `CONVERT_TO_INVOKER` o `REPLACE_WITH_RLS_CONSTRAINT_OR_MODEL`.
+
+---
+
+#### 15. Funciones de comando privilegiado
+
+Una `PRIVILEGED_COMMAND_GATEWAY`:
+
+1. tiene un único efecto primario;
+2. valida autorización antes del primer efecto;
+3. declara read set y write set;
+4. no escribe entre dominios sin contrato propietario;
+5. declara idempotencia;
+6. controla concurrencia;
+7. no ejecuta transacciones autónomas;
+8. devuelve resultado estable;
+9. conserva auditoría y correlación;
+10. trata resultados inciertos mediante conciliación.
+
+---
+
+#### 16. Funciones de trigger
+
+Una función privilegiada de trigger:
+
+1. pertenece a un conjunto cerrado de triggers;
+2. no es una RPC;
+3. no conserva `EXECUTE` cliente por necesidad del trigger;
+4. declara relación, timing, evento, nivel y condición;
+5. no ejecuta red;
+6. no oculta un proceso empresarial completo;
+7. demuestra terminación y ausencia de doble efecto;
+8. conserva comportamiento ante bulk, replay y concurrencia.
+
+Una función trigger sin asociación válida queda bloqueada hasta su disposición de drift, compatibilidad o retiro.
+
+---
+
+#### 17. Caso reconciliado VISO
+
+La función:
+
+```text
+public.viso_enforce_monthly_schedule_publish_limit()
+```
+
+tiene una disposición de transición ya definida:
+
+```text
+MOVER
+→ DISP::MOVE::VISO_MONTHLY_LIMIT_GUARD
+```
+
+Su efecto deberá conservarse únicamente dentro de una frontera interna gobernada.
+
+Sin embargo, la migración que la introdujo declara la regla de 186 horas como provisional y pendiente de aprobación canónica.
+
+Por tanto:
+
+```text
+DESTINO ESTRUCTURAL
+= MOVER
+
+APROBACIÓN PARA CONSERVAR SECURITY DEFINER
+= BLOCKED_PENDING_EVIDENCE
+```
+
+hasta que la regla empresarial, owner, excepción, autorización, alcance, pruebas y transición estén aprobados.
+
+Esta tarea no legitima la regla provisional por el hecho de que exista físicamente.
+
+---
+
+#### 18. Frontera con grants
+
+`AUTH-DB-003` endurece la identidad y ejecución privilegiada, pero no absorbe los cambios de grants.
+
+```text
+AUTH-DB-003
+→ modo de seguridad
+→ necesidad de excepción
+→ owner objetivo
+→ search_path
+→ dependencias
+→ autorización interna
+→ disposición
+
+AUTH-DB-004
+→ grants innecesarios de authenticated
+
+AUTH-DB-005
+→ grants innecesarios de anon
+```
+
+La futura materialización puede depender de que esas tareas completen la audiencia efectiva. No deberá simular su resultado mediante cambios fuera de alcance.
+
+---
+
+#### 19. Manifiesto de endurecimiento
+
+Antes de modificar una firma, la instancia física deberá materializar o derivar un registro verificable con:
+
+```text
+qualified_signature
+product_boundary
+current_security_mode
+current_owner
+current_owner_attributes
+current_search_path
+current_execute_audiences
+current_row_security_config
+trigger_associations
+current_definition_hash
+canonical_disposition
+exception_class
+target_location
+target_security_mode
+target_owner_contract
+authorization_contract
+grant_contract_reference
+dependencies
+read_set
+write_set
+migration_reference
+rollback
+evidence
+```
+
+Ninguna firma puede modificarse sin identidad y disposición inequívocas.
+
+---
+
+#### 20. Migración física posterior
+
+La futura instancia:
+
+```text
+AUTH-DB-003::GLOBAL
+```
+
+deberá:
+
+1. reconciliar el universo real antes del cambio;
+2. fallar ante drift no clasificado;
+3. excluir la frontera VITAL;
+4. crear una migración forward versionada;
+5. no reescribir migraciones históricas;
+6. aplicar únicamente firmas con disposición suficiente;
+7. preservar compatibilidad solo cuando exista contrato;
+8. ejecutar pruebas negativas y positivas;
+9. demostrar que no aparece una nueva función privilegiada sin registro;
+10. conservar rollback y evidencia.
+
+Una firma sin evidencia suficiente permanece sin promoción y no se normaliza por inferencia.
+
+---
+
+#### 21. Pruebas negativas mínimas
+
+La futura validación incluirá, según aplique:
+
+1. caller no autorizado invocando directamente la función;
+2. `anon` frente a función no pública;
+3. `authenticated` sin identidad empresarial vigente;
+4. actor fuera de sede, área o recurso;
+5. parámetros que intentan seleccionar otro actor;
+6. metadata autoadministrable manipulada;
+7. objeto homónimo en schema no confiable;
+8. SQL dinámico o identificador fuera de allowlist;
+9. replay de comando;
+10. llamadas concurrentes;
+11. acceso a recurso que RLS denegaría al actor;
+12. función trigger llamada como RPC;
+13. trigger huérfano o duplicado;
+14. dependencia nueva no inventariada;
+15. owner con privilegio excedente;
+16. función nueva `SECURITY DEFINER` sin registro.
+
+Los casos positivos deberán demostrar que el actor autorizado conserva la operación mínima necesaria.
+
+---
+
+#### 22. Rollback seguro
+
+El rollback no puede restaurar silenciosamente una elevación ya clasificada como insegura.
+
+Orden preferente:
+
+```text
+CORRECCIÓN FORWARD
+→ RESTAURAR CONTRATO SEGURO
+→ DESHABILITAR CAPACIDAD
+→ REVERTIR SOLO A ESTADO ANTERIOR QUE SIGA CUMPLIENDO EL CONTRATO
+```
+
+Toda reversión conservará migración, hash, motivo, owner, consumidores, evidencia y validación posterior.
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la política `SECURITY DEFINER`, sus clases de excepción, owner, privilegio mínimo, autorización interna, `search_path`, SQL dinámico, triggers, compatibilidad, drift y pruebas ya están protegidos por requisitos canónicos vigentes. El drift VISO posterior también está reconciliado en el registro. Esta tarea materializa el contrato de contención sin crear una regla protegida nueva.
+
+---
+
+#### 24. Cobertura de prueba vigente reutilizada
+
+La cobertura existente incluye:
+
+- `TREQ-SUPABASE-005`;
+- `TREQ-SUPABASE-007`;
+- `TREQ-SUPABASE-008`;
+- `TREQ-SUPABASE-1005` a `TREQ-SUPABASE-1046`;
+- `TREQ-SUPABASE-1760`.
+
+Estos identificadores se reutilizan como trazabilidad. Esta tarea no modifica sus filas ni su estado.
+
+---
+
+#### 25. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                        |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | pendiente de materialización documental en el checkout de la tarea                                                               |
+| LOCAL     | NOT_EXECUTED   | pendiente de preflight, quality, delivery y validadores del repositorio                                                          |
+| REMOTA    | PASS           | inventario `SECURITY DEFINER` contrastado en modo read-only; drift VISO identificado y reconciliado con migración y 04A vigentes |
+| OPERATIVA | NOT_APPLICABLE | la tarea documental no cambia flujos ni ejecuta funciones                                                                        |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-003::GLOBAL` permanece sin autorización física                                                                          |
+
+---
+
+#### 26. Decisiones vinculantes
+
+1. `SECURITY INVOKER` es el modo predeterminado.
+2. `SECURITY DEFINER` requiere excepción individual.
+3. Existen exactamente siete clases de excepción.
+4. Existen exactamente siete clases de disposición.
+5. La futura instancia es `AUTH-DB-003::GLOBAL`.
+6. Su modo es `GLOBAL_ENABLE_ONCE`.
+7. Su gate es `PRE_E5_FOUNDATION`.
+8. El universo remoto auditado vigente contiene 211 funciones `SECURITY DEFINER`.
+9. Cinco pertenecen a la frontera VITAL y no forman parte del alcance físico Vento OS.
+10. El universo Vento OS de contención es 206 funciones `SECURITY DEFINER`.
+11. La cardinalidad se reconcilia nuevamente antes de cualquier migración.
+12. Ninguna función se modifica por su nombre o modo de seguridad aislado.
+13. Una función sin disposición suficiente queda `BLOCKED_PENDING_EVIDENCE`.
+14. Una función que conserve elevación usa owner técnico dedicado `NOLOGIN`.
+15. El owner objetivo no tiene `SUPERUSER` ni `BYPASSRLS`.
+16. `postgres` no es owner objetivo de funciones privilegiadas Vento.
+17. Toda función privilegiada aplica autorización interna server-side.
+18. RLS y `SECURITY DEFINER` son controles separados.
+19. `search_path` es explícito, mínimo y no controlable por caller.
+20. Las dependencias empresariales se califican e inventarían.
+21. SQL dinámico queda prohibido por defecto.
+22. Una función trigger privilegiada no es RPC.
+23. `public.viso_enforce_monthly_schedule_publish_limit()` conserva destino estructural `MOVER`.
+24. Su permanencia como `SECURITY DEFINER` queda bloqueada hasta evidencia completa.
+25. `AUTH-DB-004` conserva grants de `authenticated`.
+26. `AUTH-DB-005` conserva grants de `anon`.
+27. VITAL no se modifica por esta tarea.
+28. Toda corrección se realiza mediante migración forward.
+29. No se crea ni modifica ningún requisito de prueba.
+30. La aprobación documental no autoriza cambios en Supabase.
+
+---
+
+#### 27. Criterios de aceptación
+
+`AUTH-DB-003` queda documentalmente completa cuando:
+
+- el modo predeterminado sea `SECURITY INVOKER`;
+- las siete clases de excepción estén preservadas;
+- las siete disposiciones estén preservadas;
+- la cardinalidad histórica y el drift vigente estén reconciliados;
+- VITAL permanezca fuera del alcance físico;
+- el nuevo guard VISO tenga destino explícito sin convertir su regla provisional en aprobación;
+- owner, `BYPASSRLS`, `search_path`, dependencias y autorización interna tengan reglas cerradas;
+- grants permanezcan en sus tareas propietarias;
+- exista manifiesto mínimo por firma;
+- existan pruebas negativas y positivas definidas;
+- el rollback no pueda reabrir privilegio inseguro por omisión;
+- la futura instancia quede identificada como `AUTH-DB-003::GLOBAL`;
+- no exista autorización física implícita;
+- no exista cambio 04A.
+
+---
+
+#### 28. Límites
+
+`AUTH-DB-003` no:
+
+- ejecuta SQL;
+- crea migraciones;
+- modifica funciones remotas;
+- cambia owners;
+- crea roles;
+- cambia memberships;
+- cambia grants;
+- cambia policies RLS;
+- cambia `FORCE ROW LEVEL SECURITY`;
+- modifica Edge Functions;
+- modifica VITAL;
+- aprueba reglas empresariales provisionales;
+- modifica consumidores;
+- retira funciones;
+- crea wrappers;
+- mueve objetos;
+- ejecuta cutover;
+- modifica 04A;
+- autoriza `AUTH-DB-003::GLOBAL`;
+- desarrolla `AUTH-DB-004`.
+
+---
+
+#### 29. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-004 — Reducir grants innecesarios de authenticated`
+
+
 ### [ ] AUTH-DB-004 — Reducir grants innecesarios de authenticated
 ### [ ] AUTH-DB-005 — Revocar grants innecesarios de anon
 

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1007** |
+| Aprobadas | **1008** |
 | En propuesta | **0** |
-| No iniciadas | **587** |
+| No iniciadas | **586** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **63.17% (1007/1594)** |
+| Porcentaje de completamiento | **63.24% (1008/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-002` — Endurecer políticas RLS demasiado amplias aprobadas para corrección | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-004` — Reducir grants innecesarios de authenticated | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-004` — Reducir grants innecesarios de authenticated | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-005` — Revocar grants innecesarios de anon | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1217,7 +1217,7 @@
 | ✅ APROBADA | `AUTH-DB-029` | Validar respaldo, restauración y rollback antes del primer paquete | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ✅ APROBADA | `AUTH-DB-001` | Corregir tablas sin RLS identificadas en SUPA-AUD | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ✅ APROBADA | `AUTH-DB-002` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-003` | Endurecer funciones SECURITY DEFINER aprobadas | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
+| ✅ APROBADA | `AUTH-DB-003` | Endurecer funciones SECURITY DEFINER aprobadas | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-004` | Reducir grants innecesarios de authenticated | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-005` | Revocar grants innecesarios de anon | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-016` | Crear esquemas empresariales aprobados | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
