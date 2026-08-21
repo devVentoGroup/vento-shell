@@ -429,10 +429,112 @@ export function orderPendingTasksByRoute(tasks, route) {
   return ordered;
 }
 
-function render(tasks, route, active, workTopology, implementationControl) {
+export function physicalLaneSummary(implementationControl, { limit = 12 } = {}) {
+  const instances = Array.isArray(implementationControl?.physical?.instances)
+    ? implementationControl.physical.instances
+    : [];
+  const terminal = new Set(['VERIFIED', 'DEFERRED']);
+  const pending = instances.filter(({ status }) => !terminal.has(status));
+  const selected = implementationControl?.physical?.active ?? null;
+  const queue = selected
+    ? [selected, ...pending.filter(({ instanceId }) => instanceId !== selected.instanceId)]
+    : pending;
+  const counts = {};
+  for (const instance of instances) {
+    counts[instance.status] = (counts[instance.status] ?? 0) + 1;
+  }
+  return {
+    total: instances.length,
+    verified: counts.VERIFIED ?? 0,
+    deferred: counts.DEFERRED ?? 0,
+    waiting: counts.WAITING_FOR_PREVIOUS_INSTANCE ?? 0,
+    remaining: pending.length,
+    current: queue[0] ?? null,
+    next: queue[1] ?? null,
+    queue: queue.slice(0, Math.max(1, Number(limit) || 12)),
+    counts,
+  };
+}
+
+function documentaryLaneSummary(tasks, implementationControl) {
+  const currentId = implementationControl?.documentary?.taskId ?? tasks[0]?.id ?? null;
+  const currentIndex = tasks.findIndex(({ id }) => id === currentId);
+  const current = currentIndex >= 0 ? tasks[currentIndex] : tasks[0] ?? null;
+  const next = currentIndex >= 0 ? tasks[currentIndex + 1] ?? null : tasks[1] ?? null;
+  return { current, next };
+}
+
+function laneCell(value) {
+  return String(value ?? '—').replaceAll('|', '\\|').replaceAll('\n', ' ');
+}
+
+export function renderDualLaneOverview(tasks, route, active, workTopology, implementationControl) {
+  const documentary = documentaryLaneSummary(tasks, implementationControl);
+  const physical = physicalLaneSummary(implementationControl);
+  const totalTasks = Array.isArray(workTopology?.ordered) ? workTopology.ordered.length : tasks.length;
+  const approvedTasks = Array.isArray(workTopology?.ordered)
+    ? workTopology.ordered.filter(({ marker }) => stateFromMarker(marker) === 'APROBADA').length
+    : Math.max(0, totalTasks - tasks.length);
+  const proposedTasks = Array.isArray(workTopology?.ordered)
+    ? workTopology.ordered.filter(({ marker }) => stateFromMarker(marker) === 'PROPUESTA PARA APROBACIÓN').length
+    : 0;
+  const rejectedTasks = Array.isArray(workTopology?.ordered)
+    ? workTopology.ordered.filter(({ marker }) => stateFromMarker(marker) === 'RECHAZADA').length
+    : 0;
   const activeTaskId = active.segments?.[0]
     ? `${active.segments[0].prefix}-${String(active.segments[0].from).padStart(3, '0')}`
-    : 'NINGUNA';
+    : implementationControl?.documentary?.taskId ?? 'NINGUNA';
+  const physicalCurrent = physical.current;
+  const physicalNext = physical.next;
+  const documentaryCurrent = documentary.current;
+  const documentaryNext = documentary.next;
+  const coordination = implementationControl?.coordination ?? {};
+  const physicalRows = physical.queue.length > 0
+    ? physical.queue.map((instance, index) => {
+      const isCurrent = index === 0 && physicalCurrent?.instanceId === instance.instanceId;
+      const condition = isCurrent
+        ? `ACTUAL — ${implementationControl.primaryAction.type}`
+        : instance.blocker ?? (instance.status === 'READY_FOR_AUTHORIZATION'
+          ? 'Elegible cuando corresponda'
+          : 'Sin bloqueo adicional declarado');
+      return `| ${index + 1} | ${isCurrent ? '**ACTUAL**' : 'PENDIENTE'} | \`${laneCell(instance.instanceId)}\` | ${laneCell(instance.taskTitle)} | \`${laneCell(instance.status)}\` | ${laneCell(condition)} |`;
+    })
+    : ['| — | — | — | Sin instancia física pendiente conocida | — | — |'];
+  return [
+    '## Panel de control — dos carriles',
+    '',
+    '| Carril | Estado | Trabajo actual | Siguiente | Regla |',
+    '| --- | --- | --- | --- | --- |',
+    `| 🟦 **DOCUMENTACIÓN** | \`${laneCell(implementationControl.documentary.state)}\` | ${documentaryCurrent ? `\`${laneCell(documentaryCurrent.id)}\` — ${laneCell(documentaryCurrent.title)}` : '—'} | ${documentaryNext ? `\`${laneCell(documentaryNext.id)}\` — ${laneCell(documentaryNext.title)}` : 'FIN DE RUTA'} | Una tarea documental activa |`,
+    `| 🟧 **IMPLEMENTACIÓN FÍSICA** | ${physicalCurrent ? `\`${laneCell(physicalCurrent.status)}\`` : '`SIN_INSTANCIA_ACTIVA`'} | ${physicalCurrent ? `\`${laneCell(physicalCurrent.instanceId)}\` — ${laneCell(physicalCurrent.taskTitle)}` : '—'} | ${physicalNext ? `\`${laneCell(physicalNext.instanceId)}\`` : 'SIN SIGUIENTE PROYECTADA'} | Una instancia física activa |`,
+    '',
+    `> Coordinación: \`${laneCell(coordination.mode ?? 'CONTROLLED_DUAL_LANE')}\`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el \`main\` más reciente antes de cerrar.`,
+    '',
+    '## Progreso por carril',
+    '',
+    '| Carril | Completado | Pendiente / restante | Actual |',
+    '| --- | ---: | ---: | --- |',
+    `| 🟦 **Documentación** | **${approvedTasks}/${totalTasks} aprobadas** | **${tasks.length}** no aprobadas (${proposedTasks} propuesta, ${rejectedTasks} rechazadas) | \`${laneCell(activeTaskId)}\` |`,
+    `| 🟧 **Implementación física conocida** | **${physical.verified}/${physical.total} VERIFIED** | **${physical.remaining}** no terminales | ${physicalCurrent ? `\`${laneCell(physicalCurrent.instanceId)}\`` : '—'} |`,
+    '',
+    `- **Ruta documental activa:** \`${laneCell(active.route_id)}\``,
+    `- **Etapa documental:** \`${laneCell(active.sequence_id)}\` — ${laneCell(active.block_title)}`,
+    `- **Siguiente etapa documental:** \`${laneCell(active.handoff_sequence_id ?? 'NINGUNA')}\``,
+    `- **Acción física prioritaria:** \`${laneCell(implementationControl.primaryAction.type)}\` — \`${laneCell(implementationControl.primaryAction.target)}\``,
+    `- **Instancias físicas en espera de predecesora:** **${physical.waiting}**`,
+    `- **Cobertura documental de la ruta:** **${route.coverage_policy === 'ALL_CANONICAL_TASKS_EXACTLY_ONCE' ? 'todas las tareas, exactamente una vez' : laneCell(route.coverage_policy)}**`,
+    '',
+    '### 🟧 Cola física visible',
+    '',
+    '> Muestra hasta 12 instancias físicas no terminales conocidas por el control. No crea autorizaciones ni materializa instancias futuras por inferencia.',
+    '',
+    '| # | Posición | Instancia | Contrato | Estado | Condición |',
+    '| ---: | --- | --- | --- | --- | --- |',
+    ...physicalRows,
+  ];
+}
+
+function render(tasks, route, active, workTopology, implementationControl) {
   const stageIds = new Set();
   const stages = tasks.filter((task) => {
     if (stageIds.has(task.sequenceId)) return false;
@@ -447,50 +549,33 @@ function render(tasks, route, active, workTopology, implementationControl) {
       return `| \`${mode}\` | ${definition.label} | ${count} | ${definition.execution_rule} |`;
     });
   const lines = [
-    '# GUÍA MAESTRA DE EJECUCIÓN TAREA POR TAREA — VENTO OS',
+    '# VENTO OS — MAPA MAESTRO DE TRABAJO Y CONTINUIDAD',
     '',
     '> Archivo derivado. No editar manualmente.',
     '>',
-    '> Esta guía ordena todas las tareas pendientes del flujo canónico integral. El contenido completo y los criterios específicos permanecen en el fragmento propietario enlazado por cada fila.',
+    '> Vista humana de los dos carriles operativos: documentación canónica e implementación física. El detalle exhaustivo inferior conserva la autoridad estructural utilizada por los validadores.',
     '>',
-    '> En planeación, el marcador global aprueba una sola definición verificable y no afirma ejecución física. La implementación, las pruebas reales y los cierres posteriores viven en la instancia indicada por su ciclo y nunca obligan a reabrir la definición.',
+    '> El marcador documental define contratos; las instancias físicas materializan únicamente lo autorizado. Ningún carril reabre ni sustituye silenciosamente al otro.',
     '',
-    '## Qué toca hacer ahora',
+    ...renderDualLaneOverview(tasks, route, active, workTopology, implementationControl),
     '',
-    `- **Acción principal obligatoria:** \`${implementationControl.primaryAction.type}\``,
-    `- **Objetivo exacto:** \`${implementationControl.primaryAction.target}\` — ${implementationControl.primaryAction.title}`,
-    `- **Instrucción:** ${implementationControl.primaryAction.instruction}`,
-    `- **Carril documental:** ${implementationControl.documentary.state} — \`${implementationControl.documentary.taskId}\``,
-    `- **Implementación física autorizada:** ${implementationControl.physical.authorized.length > 0 ? implementationControl.physical.authorized.map(({ instanceId }) => `\`${instanceId}\``).join(', ') : '**NINGUNA**'}`,
+    '## Modos de trabajo y materialización',
     '',
-    '> Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.',
-    '',
-    '## Estado ejecutivo',
-    '',
-    `- **Ruta activa:** \`${active.route_id}\``,
-    `- **Etapa actual:** \`${active.sequence_id}\` — ${active.block_title}`,
-    `- **Tarea actual:** \`${activeTaskId}\``,
-    `- **Siguiente etapa:** \`${active.handoff_sequence_id ?? 'NINGUNA'}\``,
-    `- **Tareas pendientes ordenadas:** **${tasks.length}**`,
-    `- **Tareas canónicas cubiertas por la ruta:** **${route.coverage_policy === 'ALL_CANONICAL_TASKS_EXACTLY_ONCE' ? 'todas, exactamente una vez' : route.coverage_policy}**`,
-    '',
-    '## Cómo leer el orden sin repetir trabajo',
-    '',
-    '> El marcador canónico siempre define el contrato una sola vez. La columna de ciclo indica si después existe una ejecución global, por paquete, por unidad de implementación o una certificación final. Una instancia nunca reabre ni aprueba el marcador global.',
+    '> La topología determina si una definición queda solo como contrato o genera trabajo físico global, por paquete, por unidad o de cierre final. La tabla siguiente sigue siendo descriptiva; la autorización física continúa gobernada por implementation-control.',
     '',
     '| Modo | Significado | Tareas en el plan | Regla contra repetición |',
     '| --- | --- | ---: | --- |',
     ...modeRows,
     '',
-    '## Próximas tareas — vista rápida',
+    '## 🟦 Carril documental — próximas tareas',
     '',
-    '> Estas frases orientan la lectura sin iniciar ni ampliar las tareas. El contrato y el fragmento propietario siguen siendo la autoridad.',
+    '> Esta es la línea documental inmediata. Orienta la lectura sin iniciar ni ampliar tareas; el contrato y el fragmento propietario siguen siendo la autoridad.',
     '',
-    '| # | Tarea | Qué hace |',
-    '| ---: | --- | --- |',
-    ...quickTasks.map((task, index) => `| ${index + 1} | \`${task.id}\` — ${task.title.replaceAll('|', '\\|')} | ${describeTaskScope(task).replaceAll('|', '\\|').replaceAll('\n', ' ')} |`),
+    '| # | Estado | Tarea | Qué hace |',
+    '| ---: | --- | --- | --- |',
+    ...quickTasks.map((task, index) => `| ${index + 1} | ${task.id === implementationControl.documentary.taskId ? '**ACTUAL**' : 'PENDIENTE'} | \`${task.id}\` — ${task.title.replaceAll('|', '\\|')} | ${describeTaskScope(task).replaceAll('|', '\\|').replaceAll('\n', ' ')} |`),
     '',
-    '## Preparación de las próximas tareas',
+    '## 🟦 Preparación documental — próximas tareas',
     '',
     '> Dependencias, pruebas y cierre se leen de la tarea cuando ya están declarados. "Precedencia de ruta" y "perfil previsto" son ayudas derivadas y no amplían el contrato canónico.',
     '',
@@ -548,15 +633,15 @@ function render(tasks, route, active, workTopology, implementationControl) {
     '',
     '**Regla de cero omisiones:** una función, archivo, ruta, objeto de datos o consumidor descubierto sin tarea propietaria bloquea el cierre. Debe incorporarse al alcance actual o asignarse expresamente a una tarea posterior existente; si ninguna existe, se crea primero la tarea canónica faltante y se regenera esta guía.',
     '',
-    '## Etapas pendientes',
+    '## 🟦 Etapas documentales pendientes',
     '',
     '| Orden | Etapa | Bloque | Activación | Primera tarea pendiente |',
     '| ---: | --- | --- | --- | --- |',
     ...stages.map((stage) => `| ${stage.stageOrder} | \`${stage.sequenceId}\` | ${stage.blockCode} — ${stage.blockTitle} | ${stage.activationState} | \`${stage.id}\` |`),
     '',
-    '## Secuencia pendiente exacta',
+    '## 🟦 Secuencia documental pendiente exacta — autoridad machine-readable',
     '',
-    '> Las etapas `ACTIVE` aparecen primero en su orden ejecutable. Las tareas de etapas `DEFERRED` permanecen incluidas al final y no se pierden, pero no bloquean la continuidad activa hasta que se resuelva su condición de activación.',
+    '> Esta tabla conserva deliberadamente las columnas `Identificador` y `Título canónico`: otros validadores la consumen como autoridad machine-readable. Las etapas `ACTIVE` aparecen primero; las `DEFERRED` permanecen al final sin perderse.',
     '',
     '| Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Qué hace | Ciclo | Dependencias para desarrollar | Ejecución posterior | Pruebas / TREQ | Cierre global | Fragmento propietario |',
     '| ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |',
