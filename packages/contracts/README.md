@@ -68,7 +68,7 @@ Los estados se materializan internamente bajo `packages/contracts/processes/gene
 
 El módulo de procesos no absorbe identificadores de pantallas. La identidad de pantalla se materializa en el módulo hermano `packages/contracts/screens`.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores y no toca Supabase.
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores y no toca Supabase. La continuidad histórica mantiene `SHELL-CON-011` como la responsabilidad separada de identidad de pantallas, materializada en `packages/contracts/screens`.
 
 ## Módulo de pantallas
 
@@ -92,7 +92,7 @@ Cada `ScreenId` aporta una identidad `::PRIMARY` y cuatro identidades `::SECONDA
 
 Familias, efectos, clases secundarias, relaciones, disponibilidad, ubicación y confirmación continúan gobernados por E2; no se convierten en una segunda autoridad dentro del módulo de identidad.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no concede autorización y no toca Supabase. La identidad de eventos empresariales se materializa separadamente en el módulo hermano `packages/contracts/events`.
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no concede autorización y no toca Supabase. `SHELL-CON-013` conserva la responsabilidad separada de identidad de eventos empresariales, materializada en el módulo hermano `packages/contracts/events`.
 
 ## Módulo de eventos empresariales
 
@@ -114,4 +114,16 @@ Cada relación conserva `DIRECTA` o `CONDICIONAL`, `HANDOFF_PROJECTION` y `HANDO
 
 La materialización reutiliza `AppCode` y `ProcessId`; no crea un identificador serializado paralelo, no implementa el payload runtime de continuidad, no crea rutas o deep links, no implementa inbox/outbox, productores, consumidores ni escritura cruzada.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no toca Supabase y no materializa tareas pendientes reservadas a `SHELL-CON-015`.
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts` y no toca Supabase. `SHELL-CON-015` materializa separadamente el contrato estático de ítems de trabajo en el módulo hermano `packages/contracts/work-items`.
+
+## Módulo de ítems de trabajo
+
+`SHELL-CON-015::GLOBAL` materializa internamente `packages/contracts/work-items` como proyección estática del contrato lógico `@vento/contracts/work-items`.
+
+La superficie contiene exactamente 29 campos contractuales, 8 clases de ítem de trabajo, 16 estados conceptuales, 7 estados de readiness y 6 niveles de prioridad. No contiene instancias runtime ni un catálogo de obligaciones actuales.
+
+`work_item_id` permanece como referencia opaca: esta materialización no define sintaxis, patrón, longitud, serialización ni pertenencia estática. La identidad de proceso, estado, acción, evento y handoff continúa en sus autoridades compartidas existentes.
+
+La materialización reutiliza `AppCode`, `ProcessId`, `ProcessStateId`, `FunctionalActionId`, `BusinessEventId` y `ApplicationHandoffRelation` cuando corresponda, sin copiar sus catálogos ni transportar autoridad.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no implementa claims, leases, prioridad runtime, scheduler, workflow engine, persistencia, colas, APIs, navegación, UI, autorización ni Supabase. `SHELL-CON-016` permanece reservado para el contrato de propiedad funcional.

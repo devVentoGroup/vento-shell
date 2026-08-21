@@ -1,0 +1,10 @@
+{
+  "instance_id": "SHELL-CON-016::GLOBAL",
+  "task_id": "SHELL-CON-016",
+  "status": "PENDING_AUTHORIZATION",
+  "target_repositories": [],
+  "authorized_changes": [],
+  "validation_commands": [],
+  "authorization": null,
+  "evidence": []
+}

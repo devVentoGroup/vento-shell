@@ -1,10 +1,58 @@
 {
   "instance_id": "SHELL-CON-015::GLOBAL",
   "task_id": "SHELL-CON-015",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/work-items/scripts/generate-work-item-contracts.mjs para leer y reconciliar SHELL-CON-015, UX-BASE-002, la cobertura vigente TREQ-UX-024..TREQ-UX-040 y las autoridades fisicas AppCode, ProcessId, ProcessStateId, FunctionalActionId, BusinessEventId y ApplicationHandoffRelation; validar exactamente 29 campos contractuales, 8 clases, 16 estados conceptuales, 7 estados de readiness y 6 niveles de prioridad, preservando work_item_id como referencia runtime opaca sin sintaxis, serializacion ni registro estatico inventados.",
+    "Crear packages/contracts/work-items/scripts/validate-work-item-contracts.mjs para validar freshness, secuencias y conteos 29/8/16/7/6, separacion de identidades, dependencias fisicas, documentacion interna, package privado, version inalterada, ausencia de exports publicos y ausencia de instancias, persistencia, autorizacion, scheduling, claims, colas, APIs o infraestructura runtime de work items.",
+    "Materializar exclusivamente mediante el generador packages/contracts/work-items/generated/work-item.contract.ts e index.ts con vocabularios estaticos, metadata contractual, politica opaca de work_item_id, separaciones de identidad, aliases tipados hacia autoridades compartidas existentes y helpers de pertenencia solo para vocabularios cerrados; no crear WORK_ITEM_IDS, patron de work_item_id, catalogo de instancias ni datos empresariales ficticios.",
+    "Crear packages/contracts/work-items/README.md para documentar SHELL-CON-015::GLOBAL como materializacion interna PRE_E5_FOUNDATION del namespace logico @vento/contracts/work-items, sus autoridades, superficie 29/8/16/7/6, limites de autoridad, concurrencia, offline, handoff, eventos, proyeccion cross-app y reutilizacion sin cambios de TREQ-UX-024..TREQ-UX-040.",
+    "Modificar packages/contracts/README.md exclusivamente para registrar packages/contracts/work-items como materializacion interna de SHELL-CON-015::GLOBAL y actualizar la frontera del modulo handoffs; mantener sin cambios packages/contracts/package.json, la version 1.0.0-alpha.1, su condicion private y la ausencia de exports publicos.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-015__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar 04A/TREQ, implementation-control.json, packages/contracts/package.json, fuentes documentales, contratos existentes de authorization/processes/screens/actions/events/handoffs, identidades canonicas, consumidores, rutas o deep links, UI, permisos o autorizacion runtime, claims o leases runtime, scheduler o workflow engine, persistencia, outbox/inbox, topics, colas, brokers, webhooks, APIs, Server Actions, RPC, Supabase, RLS, migraciones, datos, CI transversal, manifests de publicacion, checksums de release, changelog, registry, tags, releases, despliegues, secretos, SHELL-CON-016 ni ninguna responsabilidad posterior."
+  ],
+  "validation_commands": [
+    "node packages/contracts/work-items/scripts/generate-work-item-contracts.mjs --check",
+    "node packages/contracts/work-items/scripts/validate-work-item-contracts.mjs",
+    "node packages/contracts/processes/scripts/validate-process-id-contracts.mjs",
+    "node packages/contracts/processes/scripts/validate-process-state-contracts.mjs",
+    "node packages/contracts/actions/scripts/validate-functional-action-contracts.mjs",
+    "node packages/contracts/authorization/scripts/validate-authorization-catalog.mjs",
+    "node packages/contracts/events/scripts/validate-business-event-contracts.mjs",
+    "node packages/contracts/handoffs/scripts/validate-handoff-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T16:46:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-015::GLOBAL en vento-group-sas/vento-shell para materializar internamente, como PRE_E5_FOUNDATION y sin publicacion ni adopcion de consumidores, el contrato estatico de items de trabajo aprobado: 29 campos contractuales, 8 clases, 16 estados conceptuales, 7 estados de readiness y 6 niveles de prioridad; preservar work_item_id como referencia runtime opaca sin fijar sintaxis, serializacion, patron o catalogo de instancias; reutilizar AppCode, ProcessId, ProcessStateId, FunctionalActionId, BusinessEventId y ApplicationHandoffRelation como autoridades compartidas existentes cuando apliquen; y conservar las fronteras de propiedad, autorizacion, concurrencia, handoff, offline y proyeccion cross-app sin materializar un motor runtime. No autorizo modificar 04A/TREQ, implementation-control.json, packages/contracts/package.json, version o exports publicos de @vento/contracts, contratos existentes, fuentes documentales, consumidores, rutas o deep links, UI, permisos o autorizacion runtime, instancias empresariales de trabajo, claims o leases runtime, scheduler o workflow engine, persistencia, outbox/inbox, topics, colas, brokers, webhooks, APIs, Server Actions, RPC, Supabase, RLS, migraciones, datos, CI transversal, manifests, checksums de release, changelog, registry, tags, releases, despliegues, secretos, SHELL-CON-016 ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "79b15488e1366e8848fafbdda0fe9e267fef3db0542a490ba3a07eb6c68812c4"
+  },
+  "evidence": [
+    "MATERIALIZATION internal work-item static contract created",
+    "VALIDATION work-item fields=29",
+    "VALIDATION work-item types=8",
+    "VALIDATION work-item statuses=16",
+    "VALIDATION work-item readiness statuses=7",
+    "VALIDATION work-item priority levels=6",
+    "VALIDATION work_item_id remains opaque with no static registry or syntax pattern",
+    "VALIDATION UX-BASE-002 and SHELL-CON-015 reconciled",
+    "VALIDATION TREQ-UX-024..TREQ-UX-040 coverage reused without modifications",
+    "VALIDATION ProcessId dependency PASS",
+    "VALIDATION ProcessStateId dependency PASS",
+    "VALIDATION ProcessStateId Windows CRLF/LF freshness issue isolated with semantic content identical",
+    "VALIDATION ProcessStateId temporary LF preparation PASS and predecessor restored byte-exact",
+    "VALIDATION FunctionalActionId dependency PASS",
+    "VALIDATION AppCode authorization catalog dependency PASS",
+    "VALIDATION BusinessEventId dependency PASS",
+    "VALIDATION ApplicationHandoffRelation dependency PASS",
+    "VALIDATION package remains private at 1.0.0-alpha.1 with no public exports",
+    "VALIDATION no runtime work-item instance registry, persistence, scheduling, claims or transport infrastructure",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-015::GLOBAL VERIFIED"
+  ]
 }
