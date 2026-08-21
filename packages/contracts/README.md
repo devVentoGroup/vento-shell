@@ -102,4 +102,16 @@ La materialización contiene exactamente 395 definiciones normales derivadas de 
 
 Las ocho familias condicionales se proyectan por separado como plantillas canónicas y permanecen fuera del inventario normal de 395. Sintaxis y pertenencia de `BusinessEventId` se validan de manera separada.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta productores o consumidores, no implementa infraestructura runtime de eventos, no toca Supabase y no materializa traspasos entre aplicaciones reservados a `SHELL-CON-014`.
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta productores o consumidores, no implementa infraestructura runtime de eventos y no toca Supabase. `SHELL-CON-014` materializa separadamente los traspasos entre aplicaciones en el módulo hermano `packages/contracts/handoffs`.
+
+## Módulo de traspasos entre aplicaciones
+
+`SHELL-CON-014::GLOBAL` materializa internamente `packages/contracts/handoffs` como proyección estática de las relaciones admitidas para el subpath lógico `@vento/contracts/handoffs`.
+
+El corte vigente contiene exactamente 49 relaciones únicas por la tupla `ProcessId + owner_application + participant_application`: 27 directas y 22 condicionales, distribuidas sobre 8 procesos con modalidad `SOLICITUD_HANDOFF_Y_EVENTO`, con `viso` como única propietaria en este corte y 9 aplicaciones participantes.
+
+Cada relación conserva `DIRECTA` o `CONDICIONAL`, `HANDOFF_PROJECTION` y `HANDOFF_REQUEST`. La existencia de una relación no concede autorización, no transfiere la propiedad del proceso y no obliga a ejecutar el handoff en toda instancia.
+
+La materialización reutiliza `AppCode` y `ProcessId`; no crea un identificador serializado paralelo, no implementa el payload runtime de continuidad, no crea rutas o deep links, no implementa inbox/outbox, productores, consumidores ni escritura cruzada.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no toca Supabase y no materializa tareas pendientes reservadas a `SHELL-CON-015`.

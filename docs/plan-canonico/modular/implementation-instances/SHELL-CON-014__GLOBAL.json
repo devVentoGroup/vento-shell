@@ -1,10 +1,49 @@
 {
   "instance_id": "SHELL-CON-014::GLOBAL",
   "task_id": "SHELL-CON-014",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/handoffs/scripts/generate-handoff-contracts.mjs para leer PROC-CAT-006, SHELL-CON-014, el catalogo fisico AppCode vigente y el contrato ProcessId vigente; reconciliar exactamente 8 procesos con modalidad SOLICITUD_HANDOFF_Y_EVENTO, 49 relaciones unicas por tupla ProcessId/owner_application/participant_application, 27 DIRECTA, 22 CONDICIONAL, una propietaria viso y 9 aplicaciones participantes, y generar una proyeccion TypeScript interna sin inventar un identificador serializado paralelo.",
+    "Crear packages/contracts/handoffs/scripts/validate-handoff-contracts.mjs para validar freshness, conteos 49/27/22/8/9, unicidad de tuplas, pertenencia de ProcessId y AppCode, constantes SOLICITUD_HANDOFF_Y_EVENTO/HANDOFF_PROJECTION/HANDOFF_REQUEST, documentacion interna, package privado, ausencia de exports publicos y ausencia de payload, navegacion o infraestructura runtime.",
+    "Materializar exclusivamente mediante el generador packages/contracts/handoffs/generated/application-handoff-relation.contract.ts e index.ts con tipos y valores estaticos de ApplicationHandoffRelation, clases DIRECTA/CONDICIONAL, constantes de modalidad/perfil/familia, matriz de 49 relaciones, metadata, comprobacion de pertenencia y resolutores estaticos por tupla y ProcessId.",
+    "Crear packages/contracts/handoffs/README.md para documentar SHELL-CON-014::GLOBAL como materializacion interna PRE_E5_FOUNDATION, sus fuentes PROC-CAT-005/006, INT-APP-003/004/010, dependencias AppCode y ProcessId, universo 49/27/22/8/9, identidad por tupla, reglas de continuidad y fronteras de runtime.",
+    "Modificar packages/contracts/README.md exclusivamente para registrar packages/contracts/handoffs como materializacion interna de SHELL-CON-014::GLOBAL y actualizar la frontera del modulo events; mantener sin cambios packages/contracts/package.json, la version del package, su condicion private y la ausencia de exports publicos.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-014__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar 04A/TREQ, implementation-control.json, packages/contracts/package.json, modulos existentes de authorization/processes/screens/actions/events, fuentes documentales, identidades canonicas, consumidores, rutas o deep links, payloads runtime, autorizacion, persistencia, outbox/inbox, topics, colas, brokers, webhooks, APIs, Server Actions, RPC, Supabase, RLS, migraciones, datos, CI transversal, manifests de publicacion, checksums de release, changelog, registry, tags, releases, despliegues, secretos, SHELL-CON-015 ni ninguna responsabilidad posterior."
+  ],
+  "validation_commands": [
+    "node packages/contracts/handoffs/scripts/generate-handoff-contracts.mjs --check",
+    "node packages/contracts/handoffs/scripts/validate-handoff-contracts.mjs",
+    "node packages/contracts/processes/scripts/validate-process-id-contracts.mjs",
+    "node packages/contracts/authorization/scripts/validate-authorization-catalog.mjs",
+    "node packages/contracts/events/scripts/validate-business-event-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T16:06:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-014::GLOBAL en vento-group-sas/vento-shell para materializar internamente, como PRE_E5_FOUNDATION y sin publicacion ni adopcion de consumidores, el contrato estatico de las 49 relaciones de handoff ya aprobadas: 8 ProcessId con modalidad SOLICITUD_HANDOFF_Y_EVENTO, 27 relaciones DIRECTA, 22 CONDICIONAL, viso como unica propietaria en el corte vigente y 9 aplicaciones participantes, usando la tupla ProcessId + owner_application + participant_application como identidad sin crear un ID serializado paralelo; reutilizar AppCode y ProcessId fisicos vigentes, proyectar HANDOFF_PROJECTION/HANDOFF_REQUEST y conservar las fronteras de autoridad, idempotencia y continuidad sin materializar el payload runtime. No autorizo modificar 04A/TREQ, implementation-control.json, packages/contracts/package.json, version o exports publicos de @vento/contracts, contratos existentes, fuentes documentales, productores o consumidores, rutas o deep links, autenticacion o autorizacion runtime, outbox/inbox, topics, colas, brokers, webhooks, APIs, Server Actions, RPC, Supabase, RLS, migraciones, datos, CI transversal, manifests, checksums de release, changelog, registry, tags, releases, despliegues, secretos, SHELL-CON-015 ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "5cb5fba2d7a08733387c335cc23fcd245d96befbb2852b1809d358047846f62d"
+  },
+  "evidence": [
+    "MATERIALIZATION internal ApplicationHandoffRelation contract created",
+    "VALIDATION handoff relations=49",
+    "VALIDATION direct relations=27 conditional relations=22",
+    "VALIDATION handoff ProcessId coverage=8",
+    "VALIDATION participant AppCode coverage=9",
+    "VALIDATION owner application set=viso",
+    "VALIDATION relation tuples unique and owner differs from participant",
+    "VALIDATION PROC-CAT-006 and SHELL-CON-014 reconciled",
+    "VALIDATION SOLICITUD_HANDOFF_Y_EVENTO HANDOFF_PROJECTION HANDOFF_REQUEST preserved",
+    "VALIDATION AppCode physical dependency PASS",
+    "VALIDATION ProcessId physical dependency PASS",
+    "VALIDATION BusinessEvent contract dependency PASS",
+    "VALIDATION package remains private with no public exports or runtime handoff infrastructure",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-014::GLOBAL VERIFIED"
+  ]
 }
