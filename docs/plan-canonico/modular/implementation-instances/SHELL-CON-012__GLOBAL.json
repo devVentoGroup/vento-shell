@@ -1,10 +1,43 @@
 {
   "instance_id": "SHELL-CON-012::GLOBAL",
   "task_id": "SHELL-CON-012",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/actions/scripts/generate-functional-action-contracts.mjs para componer las fuentes canónicas de pantallas, leer PROC-SCREEN-014, PROC-SCREEN-015, SHELL-CON-012 y el contrato ScreenId vigente de SHELL-CON-011; extraer y reconciliar determinísticamente 177 acciones principales y 708 secundarias, comprobar 885 FunctionalActionId únicos sobre 177 ScreenId, exactamente cinco identidades por pantalla, ordinales secundarios actuales 01..04, distribuciones heredadas aprobadas, decisión CENTRALIZAR_SIN_RENUMERAR, estado ESPECIFICADO y bloqueo NO_APLICA, y generar la proyección TypeScript interna.",
+    "Crear packages/contracts/actions/scripts/validate-functional-action-contracts.mjs para validar freshness de los derivados, conjunto exacto de 885 FunctionalActionId, gramática ^VSCREEN-[0-9]{4,}::(?:PRIMARY|SECONDARY:[0-9]{2})$, pertenencia cerrada, subconjuntos 177 PRIMARY y 708 SECONDARY, cobertura exacta de 177 ScreenId, metadata mínima de identidad, resolutores estáticos, documentación interna, package privado y ausencia de exports públicos, semántica duplicada, autorización runtime o BusinessEventId.",
+    "Materializar exclusivamente mediante el generador packages/contracts/actions/generated/functional-action.contract.ts e index.ts con FUNCTIONAL_ACTION_ID_PATTERN_SOURCE, FUNCTIONAL_ACTION_ID_PATTERN, FUNCTIONAL_ACTION_KINDS, FUNCTIONAL_ACTION_SOURCES, SECONDARY_FUNCTIONAL_ACTION_ORDINALS, FUNCTIONAL_ACTION_IDS, FunctionalActionId, subconjuntos principal/secundario, FUNCTIONAL_ACTION_DEFINITIONS, FUNCTIONAL_ACTION_REGISTRY_METADATA, guards, aserción y resolutores estáticos de ScreenId, kind, source y ordinal secundario; no copiar como nueva autoridad familia, efecto, clase secundaria, relación, disponibilidad, ubicación o confirmación.",
+    "Crear packages/contracts/actions/README.md para documentar SHELL-CON-012::GLOBAL como materialización interna PRE_E5_FOUNDATION de 885 identidades funcionales, su dependencia de ScreenId, fuentes PROC-SCREEN-014/015, separación sintaxis-pertenencia, ordinales actuales 01..04, límites de autorización y frontera con SHELL-CON-013.",
+    "Modificar packages/contracts/README.md exclusivamente para registrar packages/contracts/actions como materialización interna de SHELL-CON-012::GLOBAL; mantener sin cambios packages/contracts/package.json, la versión del package, su condición private y la ausencia de exports públicos.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-012__GLOBAL.json para conservar autorización, estados y evidencia de esta instancia. No modificar 04A/TREQ, implementation-control.json, packages/contracts/package.json, packages/contracts/screens, packages/contracts/processes, fuentes PROC-SCREEN-014/015, catálogo de pantallas, identidades canónicas, familias, efectos, clases secundarias, relaciones, disponibilidad, ubicación, confirmación, permisos, autorización, consumidores, rutas, componentes, Server Actions, APIs, RPC, Supabase, RLS, migraciones, datos, process_id, process_state_id, BusinessEventId o eventos reservados a SHELL-CON-013, manifests de publicación, checksums de release, changelog de publicación, registry, tags, releases, despliegues, secretos ni responsabilidades de tareas posteriores."
+  ],
+  "validation_commands": [
+    "node packages/contracts/actions/scripts/generate-functional-action-contracts.mjs --check",
+    "node packages/contracts/actions/scripts/validate-functional-action-contracts.mjs",
+    "node packages/contracts/screens/scripts/validate-screen-id-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T13:48:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-012::GLOBAL en vento-group-sas/vento-shell para materializar internamente, como PRE_E5_FOUNDATION y sin publicación ni adopción de consumidores, el contrato estático de identidad de exactamente 885 acciones funcionales ya aprobadas: 177 VSCREEN-*::PRIMARY y 708 VSCREEN-*::SECONDARY:01..04 sobre los 177 ScreenId vigentes; derivar FunctionalActionId desde PROC-SCREEN-014 y PROC-SCREEN-015, reconciliarlo contra el contrato ScreenId de SHELL-CON-011 y la matriz de SHELL-CON-012, distinguir sintaxis de pertenencia, conservar únicamente metadata mínima de identidad y crear exclusivamente el módulo packages/contracts/actions, sus generadores, validadores, derivados TypeScript y documentación enumerados. No autorizo modificar 04A/TREQ, implementation-control.json, packages/contracts/package.json, versión o exports públicos de @vento/contracts, packages/contracts/screens, packages/contracts/processes, fuentes PROC-SCREEN, catálogo o identidades, familias, efectos, clases, relaciones, disponibilidad, ubicación, confirmación, permisos o autorización, consumidores, rutas, componentes, Server Actions, APIs, RPC, Supabase, RLS, migraciones, datos, procesos o estados de proceso, BusinessEventId o eventos empresariales reservados a SHELL-CON-013, manifests, checksums de release, changelog de publicación, registry, tags, releases, despliegues, secretos ni ninguna ampliación inferida.",
+    "source_contract_sha256": "3ed778211435d455cea9e10b4a3d1be9c1fedbfd32b1e0a759bc8554958f3c02"
+  },
+  "evidence": [
+    "MATERIALIZATION internal FunctionalActionId contract for 885 canonical actions created",
+    "VALIDATION generate-functional-action-contracts --check PASS",
+    "VALIDATION FunctionalActionId total=885 PRIMARY=177 SECONDARY=708",
+    "VALIDATION ScreenId coverage=177 VSCREEN-0001..VSCREEN-0177 with five actions per screen",
+    "VALIDATION current secondary ordinals=01..04 and SECONDARY:05 excluded from membership",
+    "VALIDATION syntax and closed membership separated",
+    "VALIDATION ScreenId kind source and secondary ordinal resolution PASS",
+    "VALIDATION predecessor ScreenId contract PASS",
+    "VALIDATION package remains private with no public exports, consumers, runtime authorization or business events",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-012::GLOBAL VERIFIED"
+  ]
 }

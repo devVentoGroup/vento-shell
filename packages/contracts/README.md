@@ -81,3 +81,15 @@ La materialización contiene exactamente 177 identidades derivadas de `SCREEN-CA
 La materialización reconcilia que `PROC-SCREEN-003` y `PROC-SCREEN-004` conservan las mismas 177 identidades, pero no incorpora sus vínculos a la superficie de identidad compartida.
 
 Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no toca Supabase y no materializa acciones funcionales reservadas a `SHELL-CON-012`.
+
+## Módulo de acciones funcionales
+
+`SHELL-CON-012::GLOBAL` materializa internamente `packages/contracts/actions` como proyección estática de identidad de acciones funcionales para el subpath lógico `@vento/contracts/actions`.
+
+La materialización contiene exactamente 885 identidades funcionales derivadas de `PROC-SCREEN-014` y `PROC-SCREEN-015`: 177 principales y 708 secundarias sobre las 177 pantallas vigentes.
+
+Cada `ScreenId` aporta una identidad `::PRIMARY` y cuatro identidades `::SECONDARY:01..04` en el corte actual. `FunctionalActionId` distingue sintaxis de pertenencia y conserva la referencia determinista a su pantalla, clase, fuente documental y ordinal secundario cuando aplica.
+
+Familias, efectos, clases secundarias, relaciones, disponibilidad, ubicación y confirmación continúan gobernados por E2; no se convierten en una segunda autoridad dentro del módulo de identidad.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no concede autorización, no toca Supabase y no materializa eventos empresariales reservados a `SHELL-CON-013`.
