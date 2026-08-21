@@ -1,10 +1,41 @@
 {
   "instance_id": "SHELL-CON-011::GLOBAL",
   "task_id": "SHELL-CON-011",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/screens/scripts/generate-screen-id-contracts.mjs para componer la fuente canónica de pantallas, leer PROC-SCREEN-001, PROC-SCREEN-002, PROC-SCREEN-003, PROC-SCREEN-004 y SHELL-CON-011, extraer y reconciliar determinísticamente exactamente VSCREEN-0001..VSCREEN-0177, comprobar 177 identidades únicas CANONICAL, secuencia global sin faltantes ni duplicados, distribución heredada por aplicación 7/31/14/37/15/14/20/20/19/0, preservación exacta de identidades en los vínculos de proceso y paso, exclusión de VSCREEN-0000 y VSCREEN-0178 del conjunto asignado y generar la proyección TypeScript interna.",
+    "Crear packages/contracts/screens/scripts/validate-screen-id-contracts.mjs para validar freshness de los derivados, conjunto exacto de 177 ScreenId, formato ^VSCREEN-[0-9]{4,}$, pertenencia cerrada, procedencia, distribución heredada, separación de aplicación/proceso/paso/ruta/componente/permiso/acción respecto de ScreenId, documentación interna, package privado y ausencia de exports públicos.",
+    "Materializar exclusivamente mediante el generador packages/contracts/screens/generated/screen-id.contract.ts e index.ts con SCREEN_ID_PATTERN_SOURCE, SCREEN_ID_PATTERN, SCREEN_IDS, ScreenId, SCREEN_ID_REGISTRY_METADATA, ScreenIdRegistryMetadata, isScreenIdFormat e isScreenId, sin convertir aplicación, proceso, paso, ruta, componente, permiso, estado de UI o acción funcional en parte de la identidad.",
+    "Crear packages/contracts/screens/README.md para documentar la materialización interna PRE_E5_FOUNDATION de SHELL-CON-011::GLOBAL, su autoridad semántica en SCREEN-IDENTITY-CONTRACT-001 y SCREEN-CANONICAL-CATALOG-001, el universo VSCREEN-0001..VSCREEN-0177, VSCREEN-0178 como no asignado, validación por sintaxis y pertenencia, distribución heredada, reconciliación de proceso/paso y límites de la instancia.",
+    "Actualizar packages/contracts/README.md exclusivamente para registrar packages/contracts/screens como materialización interna de SHELL-CON-011::GLOBAL y aclarar que el módulo de procesos no absorbe ScreenId; mantener sin cambios la versión del package, su condición private y la ausencia de exports públicos.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-011__GLOBAL.json para conservar autorización, estados y evidencia de esta instancia. No modificar 04A/TREQ, implementation-control.json, packages/contracts/package.json, packages/contracts/processes ni sus generadores o derivados, PROC-SCREEN-001..004, catálogo o identidades canónicas, consumidores, rutas, slugs, layouts, componentes, navegación runtime, permisos, autorización, Supabase, RLS, RPC, migraciones, datos, process_instance_id, estados de proceso, acciones funcionales reservadas a SHELL-CON-012, eventos, comandos, manifests de publicación, checksums de release, changelog de publicación, registry, tags, releases, despliegues, secretos ni responsabilidades de tareas posteriores."
+  ],
+  "validation_commands": [
+    "node packages/contracts/screens/scripts/generate-screen-id-contracts.mjs --check",
+    "node packages/contracts/screens/scripts/validate-screen-id-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T12:09:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-011::GLOBAL en vento-group-sas/vento-shell para materializar internamente, sin publicación ni adopción de consumidores, la identidad canónica de exactamente 177 pantallas VSCREEN-0001..VSCREEN-0177 derivadas de SCREEN-IDENTITY-CONTRACT-001 y SCREEN-CANONICAL-CATALOG-001; preservar VSCREEN-0178 fuera de SCREEN_IDS como identidad no asignada, exigir validación de sintaxis y pertenencia, reconciliar sin copiar semántica de aplicación/proceso/paso las 177 identidades conservadas por PROC-SCREEN-003 y PROC-SCREEN-004, crear exclusivamente el módulo packages/contracts/screens, sus generadores, validadores, derivados TypeScript y documentación enumerados, y actualizar únicamente la documentación raíz de @vento/contracts necesaria para registrar esa materialización. No autorizo modificar 04A/TREQ, implementation-control.json, package.json, versión o exports públicos de @vento/contracts, el módulo packages/contracts/processes, las fuentes PROC-SCREEN, catálogo o identidades, consumidores, rutas, componentes, navegación runtime, permisos, autorización, Supabase, RLS, RPC, migraciones, datos, acciones funcionales reservadas a SHELL-CON-012, eventos, comandos, manifests, checksums de release, changelog de publicación, registry, tags, releases, despliegues, secretos ni ninguna ampliación inferida.",
+    "source_contract_sha256": "d7f93b1a7628879958353a915f333eb184900f05f1d37db02e7ca6c5f9a84b99"
+  },
+  "evidence": [
+    "MATERIALIZATION internal ScreenId contract for VSCREEN-0001..VSCREEN-0177 created",
+    "VALIDATION generate-screen-id-contracts --check PASS",
+    "VALIDATION ScreenId count=177 first=VSCREEN-0001 last=VSCREEN-0177 next_unassigned=VSCREEN-0178",
+    "VALIDATION canonical status=177 application distribution shell=7 viso=31 anima=14 nexo=37 fogo=15 origo=14 pulso=20 numera=20 pass=19 aura=0",
+    "VALIDATION VSCREEN-0000 and VSCREEN-0178 excluded from SCREEN_IDS",
+    "VALIDATION ScreenId derives from SCREEN_IDS and runtime validation requires syntax plus membership",
+    "VALIDATION PROC-SCREEN-003 and PROC-SCREEN-004 preserve the same 177 identities",
+    "VALIDATION package remains private with no public exports and no screen action/runtime/consumer materialization",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-011::GLOBAL VERIFIED"
+  ]
 }

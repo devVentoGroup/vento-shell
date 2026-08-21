@@ -66,4 +66,18 @@ La materialización contiene exactamente 69 identidades derivadas de `PROC-CANON
 
 Los estados se materializan internamente bajo `packages/contracts/processes/generated/states/`; las 590 transiciones normales y las acciones excepcionales permanecen fuera de `ProcessStateId`.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no toca Supabase y no materializa identificadores de pantallas reservados a `SHELL-CON-011`.
+El módulo de procesos no absorbe identificadores de pantallas. La identidad de pantalla se materializa en el módulo hermano `packages/contracts/screens`.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores y no toca Supabase.
+
+## Módulo de pantallas
+
+`SHELL-CON-011::GLOBAL` materializa internamente `packages/contracts/screens` como proyección estática de identidad de pantallas para el subpath lógico `@vento/contracts/screens`.
+
+La materialización contiene exactamente 177 identidades derivadas de `SCREEN-CANONICAL-CATALOG-001`, desde `VSCREEN-0001` hasta `VSCREEN-0177`, junto con validación de sintaxis y pertenencia.
+
+`VSCREEN-0178` permanece fuera de `SCREEN_IDS` como siguiente identidad no asignada en este corte. La aplicación, los procesos, los pasos, las rutas, los componentes y los permisos no forman parte de `ScreenId`.
+
+La materialización reconcilia que `PROC-SCREEN-003` y `PROC-SCREEN-004` conservan las mismas 177 identidades, pero no incorpora sus vínculos a la superficie de identidad compartida.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no toca Supabase y no materializa acciones funcionales reservadas a `SHELL-CON-012`.
