@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `AUTH-DB-004` — Reducir grants innecesarios de authenticated | `AUTH-DB-005` — Revocar grants innecesarios de anon | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-CON-014::GLOBAL` — Crear contrato de traspasos entre aplicaciones | `SHELL-CON-015::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-CON-015::GLOBAL` — Crear contrato de tareas pendientes | `SHELL-CON-016::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1007/1594 aprobadas** | **586** no aprobadas (1 propuesta, 0 rechazadas) | `AUTH-DB-004` |
-| 🟧 **Implementación física conocida** | **32/82 VERIFIED** | **50** no terminales | `SHELL-CON-014::GLOBAL` |
+| 🟧 **Implementación física conocida** | **33/82 VERIFIED** | **49** no terminales | `SHELL-CON-015::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-CON-014::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **49**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-CON-015::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **48**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,18 +35,18 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `SHELL-CON-014::GLOBAL` | Crear contrato de traspasos entre aplicaciones | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `SHELL-CON-015::GLOBAL` | Crear contrato de tareas pendientes | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 3 | PENDIENTE | `SHELL-CON-016::GLOBAL` | Crear contrato de propiedad funcional | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 4 | PENDIENTE | `SHELL-CON-017::GLOBAL` | Crear contrato de principal técnico de integración | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 5 | PENDIENTE | `SHELL-CON-018::GLOBAL` | Crear contrato de referencia de credencial externa sin incluir el secreto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 6 | PENDIENTE | `SHELL-CON-019::GLOBAL` | Crear contrato de evento externo recibido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 7 | PENDIENTE | `SHELL-CON-020::GLOBAL` | Crear contrato canónico de venta | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 8 | PENDIENTE | `SHELL-CON-021::GLOBAL` | Crear contrato canónico de línea de venta | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 9 | PENDIENTE | `SHELL-CON-022::GLOBAL` | Crear contrato de mapeo de identificadores externos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 10 | PENDIENTE | `SHELL-CON-023::GLOBAL` | Crear contrato de idempotencia y conciliación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 11 | PENDIENTE | `SHELL-CON-024::GLOBAL` | Crear contrato de cuarentena, rechazo y compensación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
-| 12 | PENDIENTE | `SHELL-NORM-001::GLOBAL` | Crear `@vento/data-normalization` | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-014::GLOBAL. |
+| 1 | **ACTUAL** | `SHELL-CON-015::GLOBAL` | Crear contrato de tareas pendientes | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `SHELL-CON-016::GLOBAL` | Crear contrato de propiedad funcional | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 3 | PENDIENTE | `SHELL-CON-017::GLOBAL` | Crear contrato de principal técnico de integración | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 4 | PENDIENTE | `SHELL-CON-018::GLOBAL` | Crear contrato de referencia de credencial externa sin incluir el secreto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 5 | PENDIENTE | `SHELL-CON-019::GLOBAL` | Crear contrato de evento externo recibido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 6 | PENDIENTE | `SHELL-CON-020::GLOBAL` | Crear contrato canónico de venta | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 7 | PENDIENTE | `SHELL-CON-021::GLOBAL` | Crear contrato canónico de línea de venta | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 8 | PENDIENTE | `SHELL-CON-022::GLOBAL` | Crear contrato de mapeo de identificadores externos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 9 | PENDIENTE | `SHELL-CON-023::GLOBAL` | Crear contrato de idempotencia y conciliación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 10 | PENDIENTE | `SHELL-CON-024::GLOBAL` | Crear contrato de cuarentena, rechazo y compensación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 11 | PENDIENTE | `SHELL-NORM-001::GLOBAL` | Crear `@vento/data-normalization` | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
+| 12 | PENDIENTE | `SHELL-NORM-002::GLOBAL` | Centralizar tipos de campo normalizable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-015::GLOBAL. |
 
 ## Modos de trabajo y materialización
 
