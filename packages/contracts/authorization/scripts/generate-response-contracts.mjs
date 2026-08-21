@@ -41,6 +41,7 @@ const simulationContextPath = path.join(generatedDirectory, 'simulation-context.
 const indexPath = path.join(generatedDirectory, 'index.ts');
 
 const sourceContractSha256 = '63450829623c0d1fcc490b7417d70f71b61a2c160b029437412bc01b82de40f8';
+const reasonCodeSourceContractSha256 = 'ef042d037827ce14470e1cffa7ba3c76bf88318a21a65644cd465efdc65b5122';
 const contractFamily = 'vento.authorization.response-contracts';
 const contractFamilyVersion = '1.0.0';
 const releaseHash = 'sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd';
@@ -89,6 +90,7 @@ function validateCanonicalSources() {
 
   const shellMarkers = [
     '### ✅ SHELL-CON-007 — Centralizar tipos de contexto',
+    '### ✅ SHELL-CON-008 — Centralizar códigos de error',
     'modalidad física | `GLOBAL_ENABLE_ONCE`',
     'gate temporal | `PRE_E5_FOUNDATION`',
     'vento.authorization.response-contracts@1.0.0',
@@ -98,10 +100,16 @@ function validateCanonicalSources() {
     '`DeviceContext.allowed_application_codes[]`',
     '`EffectiveContext` físico actual no es fuente de verdad canónica.',
     '`ContextSimulationInput` físico actual no es `SimulationContextV1`.',
+    'type StructuralIssueCode =',
+    'type LaneAvailabilityReasonCode =',
+    'type LaneReasonCode =',
+    'type StructuralIssueSeverity =',
+    'type StructuralIssueSubjectType =',
+    'type StructuralIssueSource =',
   ];
 
   for (const marker of shellMarkers) {
-    assertIncludes(shellSource, marker, 'SHELL-CON-007 canonical source');
+    assertIncludes(shellSource, marker, 'SHELL-CON canonical source');
   }
 }
 
@@ -133,9 +141,18 @@ export type ContractMetadata = {
 }
 
 function renderAccessContext() {
-  return `${renderHeader('AUTH-CTX-001 + AUTH-MOD-021 + SHELL-CON-007')}import type { AppCode } from "../../../versions/1.0.0/catalog.types.js";
+  return `${renderHeader('AUTH-CTX-001 + AUTH-MOD-021 + SHELL-CON-007 + SHELL-CON-008')}// Reason code source contract SHA256: ${reasonCodeSourceContractSha256}
+
+import type { AppCode } from "../../../versions/1.0.0/catalog.types.js";
 import type { BaseRoleCode } from "../../../base-roles/versions/1.1.0/base-role.types.js";
 import type { OperationalRoleCode } from "../../../operational-roles/versions/1.0.0/operational-role.types.js";
+import type {
+  LaneReasonCode,
+  StructuralIssueCode,
+  StructuralIssueSeverity,
+  StructuralIssueSource,
+  StructuralIssueSubjectType,
+} from "../../../reason-codes/versions/1.0.0/reason-code.types.js";
 import type { ContractMetadata } from "./contract-metadata.types.js";
 
 export type PrincipalContext = {
@@ -287,20 +304,15 @@ export type DeviceContext = {
 
 export type LaneReadiness = {
   status: "READY" | "UNAVAILABLE" | "INVALID" | "NOT_APPLICABLE";
-  reason_codes: string[];
+  reason_codes: LaneReasonCode[];
 };
 
 export type StructuralIssue = {
-  issue_code: string;
-  severity:
-    | "BLOCKING_ALL"
-    | "BLOCKING_BASE"
-    | "BLOCKING_OPERATIONAL"
-    | "WARNING"
-    | "INFO";
-  subject_type: string;
+  issue_code: StructuralIssueCode;
+  severity: StructuralIssueSeverity;
+  subject_type: StructuralIssueSubjectType;
   subject_id: string | null;
-  source: string;
+  source: StructuralIssueSource;
   safe_message: string;
 };
 

@@ -22,6 +22,15 @@ const accessContextPath = path.join(generatedDirectory, 'access-context.types.ts
 const simulationContextPath = path.join(generatedDirectory, 'simulation-context.types.ts');
 const indexPath = path.join(generatedDirectory, 'index.ts');
 
+const reasonCodeTypesPath = path.join(
+  authorizationRoot,
+  'generated',
+  'reason-codes',
+  'versions',
+  '1.0.0',
+  'reason-code.types.ts',
+);
+
 const applicationsPath = path.join(
   authorizationRoot,
   'catalog',
@@ -55,6 +64,7 @@ const legacyContextPath = path.join(repositoryRoot, 'packages', 'os-context', 's
 const contractFamily = 'vento.authorization.response-contracts';
 const contractFamilyVersion = '1.0.0';
 const releaseHash = 'sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd';
+const reasonCodeSourceContractSha256 = 'ef042d037827ce14470e1cffa7ba3c76bf88318a21a65644cd465efdc65b5122';
 
 const expectedAppCodes = [
   'shell',
@@ -161,10 +171,28 @@ function validatePackageBoundary() {
     fail('@vento/contracts package identity changed.');
   }
   if (packageJson.private !== true) {
-    fail('@vento/contracts must remain private during SHELL-CON-007.');
+    fail('@vento/contracts must remain private during SHELL-CON-008.');
   }
   if (Object.prototype.hasOwnProperty.call(packageJson, 'exports')) {
-    fail('SHELL-CON-007 must not create public package exports.');
+    fail('SHELL-CON-008 must not create public package exports.');
+  }
+}
+
+function validateReasonCodeDependency() {
+  const source = readText(reasonCodeTypesPath, 'reason-code types');
+  const required = [
+    reasonCodeSourceContractSha256,
+    'export type AuthorizationReasonCode =',
+    'export type StructuralIssueCode =',
+    'export type LaneAvailabilityReasonCode =',
+    'export type LaneReasonCode =',
+    'export type StructuralIssueSeverity =',
+    'export type StructuralIssueSubjectType =',
+    'export type StructuralIssueSource =',
+  ];
+
+  for (const marker of required) {
+    assertIncludes(source, marker, 'reason-code types');
   }
 }
 
@@ -192,6 +220,13 @@ function validateAccessContext(accessSource) {
     'import type { AppCode }',
     'import type { BaseRoleCode }',
     'import type { OperationalRoleCode }',
+    'LaneReasonCode,',
+    'StructuralIssueCode,',
+    'StructuralIssueSeverity,',
+    'StructuralIssueSource,',
+    'StructuralIssueSubjectType,',
+    'from "../../../reason-codes/versions/1.0.0/reason-code.types.js";',
+    reasonCodeSourceContractSha256,
     'export type AccessContextV1 = ContractMetadata & {',
     'contract_name: "AccessContext";',
     'contract_version: "1.0.0";',
@@ -202,8 +237,11 @@ function validateAccessContext(accessSource) {
     'role_code: OperationalRoleCode;',
     'allowed_application_codes: AppCode[];',
     'status: "READY" | "UNAVAILABLE" | "INVALID" | "NOT_APPLICABLE";',
-    'reason_codes: string[];',
-    'issue_code: string;',
+    'reason_codes: LaneReasonCode[];',
+    'issue_code: StructuralIssueCode;',
+    'severity: StructuralIssueSeverity;',
+    'subject_type: StructuralIssueSubjectType;',
+    'source: StructuralIssueSource;',
     'source_versions: Record<string, string>;',
     'source_fingerprints: Record<string, string>;',
   ];
@@ -213,6 +251,8 @@ function validateAccessContext(accessSource) {
   }
 
   const forbidden = [
+    'reason_codes: string[];',
+    'issue_code: string;',
     'EffectiveContext',
     'EffectiveContextSource',
     'ContextSimulationInput',
@@ -296,6 +336,7 @@ function validateLegacyBoundary() {
     'export type EffectiveContextSource =',
     'export type EffectiveContext = {',
     'export type ContextSimulationInput = {',
+    'blocked_reasons: string[];',
     'bypass_applied: boolean;',
     'can_operate: boolean;',
     'metadata: Record<string, unknown>;',
@@ -315,6 +356,10 @@ function validateReadme() {
     '`SimulationContextV1`',
     '`SimulatedAuthorizationDecisionV1`',
     '`generated/response-contracts/versions/1.0.0/`',
+    '## Códigos de autorización y contexto canónicos',
+    '`SHELL-CON-008::GLOBAL`',
+    '`LaneReasonCode`',
+    '`StructuralIssueCode`',
     'no modifica `@vento/os-context`',
   ];
 
@@ -333,6 +378,7 @@ export function validateResponseContracts() {
 
   validatePackageBoundary();
   const counts = validateCatalogDependencies();
+  validateReasonCodeDependency();
   validateMetadata(metadataSource);
   validateAccessContext(accessSource);
   validateSimulationContext(simulationSource);
@@ -362,6 +408,7 @@ if (isCli) {
     console.log(`[VENTO CONTRACTS] BASE_ROLE_CODES ${counts.baseRoles}`);
     console.log(`[VENTO CONTRACTS] OPERATIONAL_ROLE_CODES ${counts.operationalRoles}`);
     console.log(`[VENTO CONTRACTS] RELEASE_HASH ${releaseHash}`);
+    console.log('[VENTO CONTRACTS] REASON_CODE_TYPES TYPED');
     console.log('[VENTO CONTRACTS] LEGACY_BOUNDARY PRESERVED');
     console.log('[VENTO CONTRACTS] PUBLIC_EXPORTS NONE');
   } catch (error) {

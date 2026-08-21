@@ -257,8 +257,34 @@ La materialización preserva:
 - `schema_version = 1.0.0`;
 - `release_hash = sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd`.
 
-`LaneReadiness.reason_codes` continúa como `string[]` y `StructuralIssue.issue_code` continúa como `string`; sus vocabularios cerrados permanecen reservados a `SHELL-CON-008`.
+La reserva histórica de `LaneReadiness.reason_codes` y `StructuralIssue.issue_code` quedó resuelta por `SHELL-CON-008::GLOBAL`: esas superficies reutilizan ahora los vocabularios cerrados `LaneReasonCode` y `StructuralIssueCode` sin cambiar la forma serializada de `AccessContext@1.0.0`.
 
 Esta instancia no modifica `@vento/os-context`. `EffectiveContext` y `ContextSimulationInput` permanecen superficies legacy de compatibilidad y no son fuentes contractuales.
 
 Esta instancia tampoco crea parsers runtime, evaluadores, consumers, RPC, RLS, migraciones, exports públicos, publicación de package, registry, tags ni releases.
+
+## Códigos de autorización y contexto canónicos
+
+`SHELL-CON-008::GLOBAL` materializa internamente los vocabularios cerrados definidos por `AUTH-ERR-020`, `AUTH-CTX-015` y `SHELL-CON-008` bajo:
+
+`generated/reason-codes/versions/1.0.0/`
+
+La superficie contiene exactamente:
+
+- `AuthorizationReasonCode`: **20** códigos públicos;
+- `StructuralIssueCode`: **100** códigos estructurales;
+- `LaneAvailabilityReasonCode`: **10** razones normales de disponibilidad;
+- `LaneReasonCode`: **110** valores por composición exacta de los dos vocabularios contextuales;
+- `StructuralIssueSeverity`: **5** valores;
+- `StructuralIssueSubjectType`: **17** valores;
+- `StructuralIssueSource`: **15** valores.
+
+`STRUCTURAL_ISSUE_CATALOG` conserva para los cien problemas estructurales la metadata canónica de `AUTH-CTX-015`: `severity`, `subject_type`, `source` y `safe_message`.
+
+Los namespaces permanecen separados. Los estados interactivos `ACTOR_IDENTIFICATION_REQUIRED` y `STRONG_REAUTHENTICATION_REQUIRED` no pertenecen a `AuthorizationReasonCode`. HTTP, SQLSTATE, excepciones, familias privadas, textos humanos y códigos locales tampoco se promueven a estos vocabularios.
+
+`AccessContextV1` reutiliza `LaneReasonCode[]` en `LaneReadiness.reason_codes` y los tipos cerrados `StructuralIssueCode`, `StructuralIssueSeverity`, `StructuralIssueSubjectType` y `StructuralIssueSource` en `StructuralIssue`, sin modificar nombres de campos, cardinalidad, nulabilidad, `contract_version`, `schema_version` ni la serialización de `AccessContext@1.0.0`.
+
+`@vento/os-context` no se modifica. Su superficie legacy `blocked_reasons: string[]` continúa siendo compatibilidad transitoria y no una fuente canónica.
+
+Esta instancia no crea exports públicos, no cambia la versión de `@vento/contracts`, no publica paquetes, no modifica consumidores, no altera `vento.authorization.messages@1.0.0`, no implementa evaluación runtime y no toca Supabase, RLS, RPC, migraciones, registry, tags ni releases.

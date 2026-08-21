@@ -1,10 +1,45 @@
 {
   "instance_id": "SHELL-CON-008::GLOBAL",
   "task_id": "SHELL-CON-008",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/authorization/scripts/generate-reason-code-contracts.mjs para leer las fuentes canonicas SHELL-CON-008, AUTH-CTX-015 y AUTH-ERR-020 y materializar deterministicamente los vocabularios cerrados AuthorizationReasonCode, StructuralIssueCode, LaneAvailabilityReasonCode, LaneReasonCode, StructuralIssueSeverity, StructuralIssueSubjectType y StructuralIssueSource, junto con la metadata estructural canonica de los cien StructuralIssueCode.",
+    "Crear packages/contracts/authorization/scripts/validate-reason-code-contracts.mjs para validar exactamente 20 AuthorizationReasonCode, 100 StructuralIssueCode, 10 LaneAvailabilityReasonCode, 110 LaneReasonCode, 5 StructuralIssueSeverity, 17 StructuralIssueSubjectType, 15 StructuralIssueSource y 100 entradas de metadata estructural; comprobar intersecciones vacias, exclusion de estados interactivos auxiliares, frontera legacy y ausencia de exports publicos.",
+    "Modificar packages/contracts/authorization/scripts/generate-response-contracts.mjs exclusivamente para que la proyeccion generada de AccessContextV1 reutilice LaneReasonCode, StructuralIssueCode, StructuralIssueSeverity, StructuralIssueSubjectType y StructuralIssueSource sin cambiar nombres de campos, cardinalidad, nulabilidad, contract_version, schema_version, familia contractual ni release_hash.",
+    "Modificar packages/contracts/authorization/scripts/validate-response-contracts.mjs para exigir los tipos cerrados materializados por SHELL-CON-008 y conservar todas las validaciones previamente establecidas por SHELL-CON-007.",
+    "Materializar mediante los generadores packages/contracts/authorization/generated/reason-codes/versions/1.0.0/reason-code.types.ts, reason-code.values.ts e index.ts y regenerar packages/contracts/authorization/generated/response-contracts/versions/1.0.0/access-context.types.ts con la tipificacion cerrada aprobada.",
+    "Actualizar packages/contracts/authorization/README.md para documentar SHELL-CON-008::GLOBAL, los conteos canonicos, la metadata estructural, la separacion de namespaces, la tipificacion de AccessContextV1 y los limites de esta materializacion interna.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-008__GLOBAL.json para conservar autorizacion, estados y evidencia de la instancia. No modificar 04A/TREQ, implementation-control.json, @vento/os-context, consumidores, Supabase, RLS, RPC, migraciones, datos, copy o perfiles de vento.authorization.messages, evaluadores runtime, parsers publicos, exports publicos, version del package, catalog/current.json, manifests de publicacion, checksums globales, changelog de publicacion, registry, tags, releases, despliegues, secretos ni responsabilidades de tareas posteriores."
+  ],
+  "validation_commands": [
+    "node packages/contracts/authorization/scripts/generate-reason-code-contracts.mjs --check",
+    "node packages/contracts/authorization/scripts/generate-response-contracts.mjs --check",
+    "node packages/contracts/authorization/scripts/validate-reason-code-contracts.mjs",
+    "node packages/contracts/authorization/scripts/validate-response-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T10:03:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-008::GLOBAL en vento-group-sas/vento-shell para centralizar internamente los vocabularios cerrados aprobados de veinte AuthorizationReasonCode, cien StructuralIssueCode, diez LaneAvailabilityReasonCode, LaneReasonCode como union exacta de ciento diez miembros, cinco StructuralIssueSeverity, diecisiete StructuralIssueSubjectType y quince StructuralIssueSource; preservar la metadata estructural canonica de AUTH-CTX-015; tipar las superficies correspondientes de AccessContextV1 sin cambiar su forma serializada; generar y validar deterministicamente esos artefactos; y documentar esta materializacion estatica prepublicacion. No autorizo modificar 04A/TREQ, implementation-control.json, @vento/os-context, consumidores, Supabase, RLS, RPC, migraciones, datos, copy o perfiles del catalogo de mensajes, evaluadores runtime, parsers publicos, exports publicos, version del package, catalog/current.json, manifests de publicacion, checksums globales, changelog de publicacion, registry, tags, releases, despliegues, secretos ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "ef042d037827ce14470e1cffa7ba3c76bf88318a21a65644cd465efdc65b5122"
+  },
+  "evidence": [
+    "MATERIALIZATION closed reason-code contracts and typed AccessContextV1 internal artifacts created",
+    "VALIDATION generate-reason-code-contracts --check PASS",
+    "VALIDATION generate-response-contracts --check PASS",
+    "VALIDATION AuthorizationReasonCode=20 StructuralIssueCode=100 LaneAvailabilityReasonCode=10 LaneReasonCode=110",
+    "VALIDATION StructuralIssueSeverity=5 StructuralIssueSubjectType=17 StructuralIssueSource=15 StructuralIssueMetadata=100",
+    "VALIDATION namespace intersections=0 and auxiliary interaction states excluded",
+    "VALIDATION AccessContextV1 uses LaneReasonCode and typed StructuralIssue fields with response release hash preserved",
+    "VALIDATION @vento/contracts remains private with no public exports and legacy @vento/os-context blocked_reasons preserved",
+    "VALIDATION validate-response-contracts PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-008::GLOBAL VERIFIED"
+  ]
 }
