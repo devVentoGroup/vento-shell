@@ -15,12 +15,12 @@ Esta sección organiza **contratos compartidos** dentro de **H FUNDACION COMPART
 
 Esta regla se incorpora al contrato de cada marcador `SHELL-CON-001..016`.
 
-| Propiedad | Valor |
-| --- | --- |
-| modalidad física | `GLOBAL_ENABLE_ONCE` |
-| gate temporal | `PRE_E5_FOUNDATION` |
-| identidad | `<task_id>::GLOBAL` |
-| autorización | explícita por instancia; nunca inferida desde el marcador documental |
+| Propiedad        | Valor                                                                |
+| ---------------- | -------------------------------------------------------------------- |
+| modalidad física | `GLOBAL_ENABLE_ONCE`                                                 |
+| gate temporal    | `PRE_E5_FOUNDATION`                                                  |
+| identidad        | `<task_id>::GLOBAL`                                                  |
+| autorización     | explícita por instancia; nunca inferida desde el marcador documental |
 
 Estas tareas pueden materializar los contratos estáticos compartidos una sola vez antes de E5 cuando se satisfagan sus dependencias técnicas y exista autorización física explícita.
 
@@ -9156,20 +9156,22 @@ Las clases y sensibilidades siguen siendo metadata semántica gobernada por la f
 
 #### 9. Familias condicionales
 
-Las familias siguientes se preservan como eventos condicionales separados de las 395 definiciones normales:
+Las ocho familias siguientes se preservan exactamente desde `PROC-CAT-017` y permanecen separadas del inventario normal de 395 definiciones:
 
-| Familia                              | Naturaleza | Tratamiento                        |
-| ------------------------------------ | ---------- | ---------------------------------- |
-| `PROC.FAMILY.CANCELLATION_REQUESTED` | `Pedido`   | Fuera del inventario normal de 395 |
-| `PROC.FAMILY.CANCELLATION_CONFIRMED` | `Hecho`    | Fuera del inventario normal de 395 |
-| `PROC.FAMILY.REVERSAL_REQUESTED`     | `Pedido`   | Fuera del inventario normal de 395 |
-| `PROC.FAMILY.REVERSAL_CONFIRMED`     | `Hecho`    | Fuera del inventario normal de 395 |
-| `PROC.FAMILY.COMPENSATION_REQUIRED`  | `Hecho`    | Fuera del inventario normal de 395 |
-| `PROC.FAMILY.EXCEPTION_OPENED`       | `Hecho`    | Fuera del inventario normal de 395 |
-| `PROC.FAMILY.EXCEPTION_RESOLVED`     | `Hecho`    | Fuera del inventario normal de 395 |
-| `PROC.FAMILY.LINKED_REVIEW_CREATED`  | `Hecho`    | Fuera del inventario normal de 395 |
+| Tipo plantilla                                      | Se emite cuando                                                              | Regla                                                                             |
+| --------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `vento.process.vproc-####.exception-applied.v1`     | Una acción `EX-*` altera tratamiento, control, asignación o ruta.            | Incluye `exception_action_id`, vigencia, autoridad y efecto sin fingir reversión. |
+| `vento.process.vproc-####.exception-resolved.v1`    | La condición excepcional queda levantada o con destino controlado.           | No cambia el estado principal si el contrato no lo ordena.                        |
+| `vento.process.vproc-####.cancellation-recorded.v1` | Se cancela trabajo futuro válido.                                            | Conserva efectos ya ejecutados y obligaciones residuales.                         |
+| `vento.process.vproc-####.void-recorded.v1`         | Se demuestra que el registro nunca produjo un efecto válido o era duplicado. | Requiere evidencia y no se usa como borrado genérico.                             |
+| `vento.process.vproc-####.reversal-applied.v1`      | Se crea un efecto inverso legítimo.                                          | Referencia el efecto original y conserva ambos.                                   |
+| `vento.process.vproc-####.compensation-posted.v1`   | Un hecho irreversible requiere efecto compensatorio.                         | No declara deshecho el hecho original.                                            |
+| `vento.process.vproc-####.correction-applied.v1`    | Se rectifica información conservando antes y después.                        | Incluye motivo, autoridad, versión y campos afectados.                            |
+| `vento.process.vproc-####.linked-review-opened.v1`  | Un cierre requiere revisión o instancia posterior.                           | Conserva inmutable la instancia original y su correlación.                        |
 
-Estas ocho familias aparecen únicamente cuando existe el hecho excepcional correspondiente. Conservan el `process_id` propietario, el `process_instance_id`, la correlación, la causalidad y la referencia al registro excepcional que las origina. No se les asigna artificialmente una identidad base `VPROC-####.EVT-###` dentro de esta tarea.
+Estas familias son parametrizadas por proceso y no se cuentan dentro de las 395 definiciones de hitos normales. Su payload deberá incluir el identificador exacto `EX-*` o `CCR-*` que las originó.
+
+Conservan el `process_id` propietario, el `process_instance_id`, la correlación, la causalidad y la referencia al registro excepcional que las origina. No se les asigna artificialmente una identidad base `VPROC-####.EVT-###` dentro de esta tarea.
 
 ---
 
