@@ -7,6 +7,8 @@ import {
   orderPendingTasksByRoute,
   parseTaskScopeContracts,
   pendingTaskExecutionContext,
+  physicalLaneSummary,
+  renderDualLaneOverview,
   validationProfileForTask,
 } from './sync-pending-task-context.mjs';
 
@@ -192,4 +194,83 @@ test('rechaza contratos de alcance ambiguos o incompletos', () => {
     () => parseTaskScopeContracts('<!-- TASK-SCOPE-CONTRACT:START -->', 'test.md'),
     /sin cierre válido/u,
   );
+});
+
+test('resume el carril fisico sin mezclar instancias terminales con la cola pendiente', () => {
+  const summary = physicalLaneSummary({
+    primaryAction: { type: 'AUTORIZAR_IMPLEMENTACION', target: 'SHELL-CON-008::GLOBAL' },
+    physical: {
+      active: {
+        instanceId: 'SHELL-CON-008::GLOBAL',
+        taskTitle: 'Centralizar códigos de error',
+        status: 'PENDING_AUTHORIZATION',
+      },
+      instances: [
+        { instanceId: 'SHELL-CON-007::GLOBAL', taskTitle: 'Anterior', status: 'VERIFIED' },
+        { instanceId: 'SHELL-CON-008::GLOBAL', taskTitle: 'Centralizar códigos de error', status: 'PENDING_AUTHORIZATION' },
+        { instanceId: 'SHELL-CON-009::GLOBAL', taskTitle: 'Siguiente', status: 'WAITING_FOR_PREVIOUS_INSTANCE', blocker: 'Debe verificarse primero SHELL-CON-008::GLOBAL.' },
+      ],
+    },
+  });
+  assert.equal(summary.total, 3);
+  assert.equal(summary.verified, 1);
+  assert.equal(summary.remaining, 2);
+  assert.equal(summary.current.instanceId, 'SHELL-CON-008::GLOBAL');
+  assert.equal(summary.next.instanceId, 'SHELL-CON-009::GLOBAL');
+  assert.deepEqual(summary.queue.map(({ instanceId }) => instanceId), [
+    'SHELL-CON-008::GLOBAL',
+    'SHELL-CON-009::GLOBAL',
+  ]);
+});
+
+test('renderiza un tablero dual legible sin perder la identidad documental ni fisica', () => {
+  const documentaryTasks = [
+    { ...task('AUTH-DB-015'), title: 'Documentar migraciones' },
+    { ...task('AUTH-DB-027'), title: 'Crear harness de pruebas' },
+  ];
+  const source = renderDualLaneOverview(
+    documentaryTasks,
+    { coverage_policy: 'ALL_CANONICAL_TASKS_EXACTLY_ONCE' },
+    {
+      route_id: 'NORMAL-CANONICAL-FLOW-001',
+      sequence_id: 'PHASE-03-R-DATABASE-IMPLEMENTATION',
+      block_title: 'Fundación física',
+      handoff_sequence_id: 'PHASE-04-F-ANIMA',
+      segments: [{ prefix: 'AUTH-DB', from: 15 }],
+    },
+    {
+      ordered: [
+        { marker: '✅' },
+        { marker: '[ ]' },
+        { marker: '[ ]' },
+      ],
+    },
+    {
+      primaryAction: { type: 'AUTORIZAR_IMPLEMENTACION', target: 'SHELL-CON-008::GLOBAL' },
+      coordination: { mode: 'CONTROLLED_DUAL_LANE' },
+      documentary: { state: 'ACTIVO', taskId: 'AUTH-DB-015' },
+      physical: {
+        active: {
+          instanceId: 'SHELL-CON-008::GLOBAL',
+          taskTitle: 'Centralizar códigos de error',
+          status: 'PENDING_AUTHORIZATION',
+        },
+        instances: [
+          { instanceId: 'SHELL-CON-007::GLOBAL', taskTitle: 'Anterior', status: 'VERIFIED' },
+          { instanceId: 'SHELL-CON-008::GLOBAL', taskTitle: 'Centralizar códigos de error', status: 'PENDING_AUTHORIZATION' },
+          { instanceId: 'SHELL-CON-009::GLOBAL', taskTitle: 'Siguiente', status: 'WAITING_FOR_PREVIOUS_INSTANCE', blocker: 'Debe verificarse primero SHELL-CON-008::GLOBAL.' },
+        ],
+      },
+    },
+  ).join('\n');
+
+  assert.match(source, /Panel de control — dos carriles/u);
+  assert.ok(source.includes('🟦 **DOCUMENTACIÓN**'));
+  assert.match(source, /AUTH-DB-015/u);
+  assert.match(source, /AUTH-DB-027/u);
+  assert.ok(source.includes('🟧 **IMPLEMENTACIÓN FÍSICA**'));
+  assert.match(source, /SHELL-CON-008::GLOBAL/u);
+  assert.match(source, /SHELL-CON-009::GLOBAL/u);
+  assert.match(source, /CONTROLLED_DUAL_LANE/u);
+  assert.match(source, /Cola física visible/u);
 });

@@ -1,33 +1,56 @@
-# GUÍA MAESTRA DE EJECUCIÓN TAREA POR TAREA — VENTO OS
+# VENTO OS — MAPA MAESTRO DE TRABAJO Y CONTINUIDAD
 
 > Archivo derivado. No editar manualmente.
 >
-> Esta guía ordena todas las tareas pendientes del flujo canónico integral. El contenido completo y los criterios específicos permanecen en el fragmento propietario enlazado por cada fila.
+> Vista humana de los dos carriles operativos: documentación canónica e implementación física. El detalle exhaustivo inferior conserva la autoridad estructural utilizada por los validadores.
 >
-> En planeación, el marcador global aprueba una sola definición verificable y no afirma ejecución física. La implementación, las pruebas reales y los cierres posteriores viven en la instancia indicada por su ciclo y nunca obligan a reabrir la definición.
+> El marcador documental define contratos; las instancias físicas materializan únicamente lo autorizado. Ningún carril reabre ni sustituye silenciosamente al otro.
 
-## Qué toca hacer ahora
+## Panel de control — dos carriles
 
-- **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CON-008::GLOBAL` — Centralizar códigos de error
-- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CON-008::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
-- **Carril documental:** ACTIVO — `AUTH-DB-015`
-- **Implementación física autorizada:** **NINGUNA**
+| Carril | Estado | Trabajo actual | Siguiente | Regla |
+| --- | --- | --- | --- | --- |
+| 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | Una tarea documental activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-CON-008::GLOBAL` — Centralizar códigos de error | `SHELL-CON-009::GLOBAL` | Una instancia física activa |
 
-> Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
+> Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
-## Estado ejecutivo
+## Progreso por carril
 
-- **Ruta activa:** `NORMAL-CANONICAL-FLOW-001`
-- **Etapa actual:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
-- **Tarea actual:** `AUTH-DB-015`
-- **Siguiente etapa:** `PHASE-04-F-ANIMA`
-- **Tareas pendientes ordenadas:** **593**
-- **Tareas canónicas cubiertas por la ruta:** **todas, exactamente una vez**
+| Carril | Completado | Pendiente / restante | Actual |
+| --- | ---: | ---: | --- |
+| 🟦 **Documentación** | **1000/1594 aprobadas** | **593** no aprobadas (1 propuesta, 0 rechazadas) | `AUTH-DB-015` |
+| 🟧 **Implementación física conocida** | **26/75 VERIFIED** | **49** no terminales | `SHELL-CON-008::GLOBAL` |
 
-## Cómo leer el orden sin repetir trabajo
+- **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
+- **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
+- **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-CON-008::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **48**
+- **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
-> El marcador canónico siempre define el contrato una sola vez. La columna de ciclo indica si después existe una ejecución global, por paquete, por unidad de implementación o una certificación final. Una instancia nunca reabre ni aprueba el marcador global.
+### 🟧 Cola física visible
+
+> Muestra hasta 12 instancias físicas no terminales conocidas por el control. No crea autorizaciones ni materializa instancias futuras por inferencia.
+
+| # | Posición | Instancia | Contrato | Estado | Condición |
+| ---: | --- | --- | --- | --- | --- |
+| 1 | **ACTUAL** | `SHELL-CON-008::GLOBAL` | Centralizar códigos de error | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `SHELL-CON-009::GLOBAL` | Centralizar identificadores de procesos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 3 | PENDIENTE | `SHELL-CON-010::GLOBAL` | Centralizar estados de procesos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 4 | PENDIENTE | `SHELL-CON-011::GLOBAL` | Centralizar identificadores de pantallas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 5 | PENDIENTE | `SHELL-CON-012::GLOBAL` | Crear contrato de acciones funcionales | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 6 | PENDIENTE | `SHELL-CON-013::GLOBAL` | Crear contrato de eventos empresariales | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 7 | PENDIENTE | `SHELL-CON-014::GLOBAL` | Crear contrato de traspasos entre aplicaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 8 | PENDIENTE | `SHELL-CON-015::GLOBAL` | Crear contrato de tareas pendientes | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 9 | PENDIENTE | `SHELL-CON-016::GLOBAL` | Crear contrato de propiedad funcional | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 10 | PENDIENTE | `SHELL-CON-017::GLOBAL` | Crear contrato de principal técnico de integración | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 11 | PENDIENTE | `SHELL-CON-018::GLOBAL` | Crear contrato de referencia de credencial externa sin incluir el secreto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+| 12 | PENDIENTE | `SHELL-CON-019::GLOBAL` | Crear contrato de evento externo recibido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-008::GLOBAL. |
+
+## Modos de trabajo y materialización
+
+> La topología determina si una definición queda solo como contrato o genera trabajo físico global, por paquete, por unidad o de cierre final. La tabla siguiente sigue siendo descriptiva; la autorización física continúa gobernada por implementation-control.
 
 | Modo | Significado | Tareas en el plan | Regla contra repetición |
 | --- | --- | ---: | --- |
@@ -38,26 +61,26 @@
 | `PER_PACKAGE_AND_GLOBAL_FINAL` | Instancia por paquete y certificación global final | 60 | Se registra una ejecución por package_id y una certificación GLOBAL-FINAL agregada cuando corresponda. |
 | `TEMPLATE_PER_PACKAGE` | Una instancia por package_id | 111 | Cada package_id aplicable registra su propia instancia sin reabrir el marcador global. |
 
-## Próximas tareas — vista rápida
+## 🟦 Carril documental — próximas tareas
 
-> Estas frases orientan la lectura sin iniciar ni ampliar las tareas. El contrato y el fragmento propietario siguen siendo la autoridad.
+> Esta es la línea documental inmediata. Orienta la lectura sin iniciar ni ampliar tareas; el contrato y el fragmento propietario siguen siendo la autoridad.
 
-| # | Tarea | Qué hace |
-| ---: | --- | --- |
-| 1 | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell | Documenta y versionar todas las migraciones en vento-shell con fuentes, decisiones, límites y evidencia. |
-| 2 | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | Crea harness de pruebas de esquema, integridad, RLS, RPC y migraciones como artefacto verificable, con relaciones y aceptación claras. |
-| 3 | `AUTH-DB-028` — Establecer baseline y control de drift entre local, staging y producción | Convierte «Establecer baseline y control de drift entre local, staging y producción» en una condición verificable, con responsable, evidencia y criterio de cierre. |
-| 4 | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete | Valida respaldo, restauración y rollback antes del primer paquete contra los contratos y escenarios aprobados y registra evidencia. |
-| 5 | `AUTH-DB-001` — Corregir tablas sin RLS identificadas en SUPA-AUD | Convierte «Corregir tablas sin RLS identificadas en SUPA-AUD» en una condición verificable, con responsable, evidencia y criterio de cierre. |
-| 6 | `AUTH-DB-002` — Endurecer políticas RLS demasiado amplias aprobadas para corrección | Convierte «Endurecer políticas RLS demasiado amplias aprobadas para corrección» en una condición verificable, con responsable, evidencia y criterio de cierre. |
-| 7 | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas | Convierte «Endurecer funciones SECURITY DEFINER aprobadas» en una condición verificable, con responsable, evidencia y criterio de cierre. |
-| 8 | `AUTH-DB-004` — Reducir grants innecesarios de authenticated | Convierte «Reducir grants innecesarios de authenticated» en una condición verificable, con responsable, evidencia y criterio de cierre. |
-| 9 | `AUTH-DB-005` — Revocar grants innecesarios de anon | Convierte «Revocar grants innecesarios de anon» en una condición verificable, con responsable, evidencia y criterio de cierre. |
-| 10 | `AUTH-DB-016` — Crear esquemas empresariales aprobados | Crea esquemas empresariales aprobados como artefacto verificable, con relaciones y aceptación claras. |
-| 11 | `AUTH-DB-018` — Separar vistas y RPC expuestas de helpers internos | Convierte «Separar vistas y RPC expuestas de helpers internos» en una condición verificable, con responsable, evidencia y criterio de cierre. |
-| 12 | `AUTH-DB-017` — Configurar esquemas expuestos y privilegios de Data API | Configura esquemas expuestos y privilegios de Data API con valores, propietarios, validaciones y rollback. |
+| # | Estado | Tarea | Qué hace |
+| ---: | --- | --- | --- |
+| 1 | **ACTUAL** | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell | Documenta y versionar todas las migraciones en vento-shell con fuentes, decisiones, límites y evidencia. |
+| 2 | PENDIENTE | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | Crea harness de pruebas de esquema, integridad, RLS, RPC y migraciones como artefacto verificable, con relaciones y aceptación claras. |
+| 3 | PENDIENTE | `AUTH-DB-028` — Establecer baseline y control de drift entre local, staging y producción | Convierte «Establecer baseline y control de drift entre local, staging y producción» en una condición verificable, con responsable, evidencia y criterio de cierre. |
+| 4 | PENDIENTE | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete | Valida respaldo, restauración y rollback antes del primer paquete contra los contratos y escenarios aprobados y registra evidencia. |
+| 5 | PENDIENTE | `AUTH-DB-001` — Corregir tablas sin RLS identificadas en SUPA-AUD | Convierte «Corregir tablas sin RLS identificadas en SUPA-AUD» en una condición verificable, con responsable, evidencia y criterio de cierre. |
+| 6 | PENDIENTE | `AUTH-DB-002` — Endurecer políticas RLS demasiado amplias aprobadas para corrección | Convierte «Endurecer políticas RLS demasiado amplias aprobadas para corrección» en una condición verificable, con responsable, evidencia y criterio de cierre. |
+| 7 | PENDIENTE | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas | Convierte «Endurecer funciones SECURITY DEFINER aprobadas» en una condición verificable, con responsable, evidencia y criterio de cierre. |
+| 8 | PENDIENTE | `AUTH-DB-004` — Reducir grants innecesarios de authenticated | Convierte «Reducir grants innecesarios de authenticated» en una condición verificable, con responsable, evidencia y criterio de cierre. |
+| 9 | PENDIENTE | `AUTH-DB-005` — Revocar grants innecesarios de anon | Convierte «Revocar grants innecesarios de anon» en una condición verificable, con responsable, evidencia y criterio de cierre. |
+| 10 | PENDIENTE | `AUTH-DB-016` — Crear esquemas empresariales aprobados | Crea esquemas empresariales aprobados como artefacto verificable, con relaciones y aceptación claras. |
+| 11 | PENDIENTE | `AUTH-DB-018` — Separar vistas y RPC expuestas de helpers internos | Convierte «Separar vistas y RPC expuestas de helpers internos» en una condición verificable, con responsable, evidencia y criterio de cierre. |
+| 12 | PENDIENTE | `AUTH-DB-017` — Configurar esquemas expuestos y privilegios de Data API | Configura esquemas expuestos y privilegios de Data API con valores, propietarios, validaciones y rollback. |
 
-## Preparación de las próximas tareas
+## 🟦 Preparación documental — próximas tareas
 
 > Dependencias, pruebas y cierre se leen de la tarea cuando ya están declarados. "Precedencia de ruta" y "perfil previsto" son ayudas derivadas y no amplían el contrato canónico.
 
@@ -237,7 +260,7 @@ Para cerrar:
 
 **Regla de cero omisiones:** una función, archivo, ruta, objeto de datos o consumidor descubierto sin tarea propietaria bloquea el cierre. Debe incorporarse al alcance actual o asignarse expresamente a una tarea posterior existente; si ninguna existe, se crea primero la tarea canónica faltante y se regenera esta guía.
 
-## Etapas pendientes
+## 🟦 Etapas documentales pendientes
 
 | Orden | Etapa | Bloque | Activación | Primera tarea pendiente |
 | ---: | --- | --- | --- | --- |
@@ -259,9 +282,9 @@ Para cerrar:
 | 3 | `PHASE-02-E1-EXTERNAL-GOVERNANCE-CONDITIONAL` | BLOQUE E1 — Expediente condicional de gobierno externo | DEFERRED | `EXT-GOV-001` |
 | 8 | `PHASE-02-VISO-SCHEDULE-DELTA` | BLOQUE G — Reconciliación de programación laboral VISO | DEFERRED | `VISO-SCH-001` |
 
-## Secuencia pendiente exacta
+## 🟦 Secuencia documental pendiente exacta — autoridad machine-readable
 
-> Las etapas `ACTIVE` aparecen primero en su orden ejecutable. Las tareas de etapas `DEFERRED` permanecen incluidas al final y no se pierden, pero no bloquean la continuidad activa hasta que se resuelva su condición de activación.
+> Esta tabla conserva deliberadamente las columnas `Identificador` y `Título canónico`: otros validadores la consumen como autoridad machine-readable. Las etapas `ACTIVE` aparecen primero; las `DEFERRED` permanecen al final sin perderse.
 
 | Pendiente # | Orden canónico | Etapa | Estado | Identificador | Título canónico | Qué hace | Ciclo | Dependencias para desarrollar | Ejecución posterior | Pruebas / TREQ | Cierre global | Fragmento propietario |
 | ---: | ---: | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
