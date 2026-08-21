@@ -11086,7 +11086,7 @@ ownership_id nuevo = NO REQUERIDO
 
 No se concatenarán `app_code`, nombres de módulo, tabla, repositorio o dominio para fabricar una identidad alternativa.
 
-#### 7. Universo de aplicaciones propietarias
+#### 7. Universo de aplicaciones canónicas
 
 Toda referencia interna de aplicación utiliza `AppCode` conforme a `SHELL-CON-002`.
 
@@ -11114,6 +11114,8 @@ Reglas:
 5. una aplicación del catálogo puede existir como identidad sin estar materializada o disponible operativamente;
 6. pertenecer al catálogo no concede propiedad sobre ningún resultado concreto.
 
+La cardinalidad del universo y la cardinalidad de aplicaciones efectivamente asignadas como propietarias son conceptos distintos. El universo contiene 10 `AppCode`; el registro vigente de procesos utiliza 9 como propietaria porque `shell` conserva 0 procesos asignados.
+
 #### 8. Propiedad de procesos
 
 `PROC-APPLICATION-OWNERSHIP-REGISTRY-001` permanece como única autoridad semántica para la propietaria de proceso.
@@ -11124,10 +11126,12 @@ La proyección compartida adopta exactamente:
 69 ProcessId
 VPROC-0001..VPROC-0069
 69 asignaciones de owner_app_code
-10 aplicaciones propietarias utilizadas
+10 AppCode en el universo canónico
+9 AppCode efectivamente utilizados como propietaria de proceso
 1 propietaria por proceso
 0 procesos sin propietaria
 0 procesos con doble propietaria vigente
+0 procesos asignados a shell
 ```
 
 La adopción no reenumera procesos ni reproduce manualmente su matriz como otra fuente normativa.
@@ -11594,7 +11598,8 @@ La centralización produce la siguiente reconciliación:
 | Conjunto                                                         | Esperado |                 Adoptado o representado | Faltantes | Duplicados o fuente paralela |
 | ---------------------------------------------------------------- | -------: | --------------------------------------: | --------: | ---------------------------: |
 | asignaciones de propiedad de proceso                             |       69 |              69 por referencia canónica |         0 |                            0 |
-| aplicaciones propietarias usadas por el registro de procesos     |       10 |                                      10 |         0 |                            0 |
+| `AppCode` del universo canónico                                  |       10 |                                      10 |         0 |                            0 |
+| aplicaciones efectivamente usadas como propietarias de proceso   |        9 |                                       9 |         0 |                            0 |
 | decisiones de fuente por subcapacidad                            |      217 |             217 por referencia canónica |         0 |                            0 |
 | estados de fuente objetivo                                       |        5 |                                       5 |         0 |                            0 |
 | casos confirmados de propiedad funcional competidora en el AS-IS |        1 | 1 preservado como hallazgo preexistente |         0 |                     0 nuevas |
@@ -11653,20 +11658,21 @@ La materialización queda asignada a `E5-GATE-008` y `SHELL-CI-020`; pruebas, bu
 3. las 69 asignaciones de propiedad de proceso se adoptan desde `PROC-APPLICATION-OWNERSHIP-REGISTRY-001` sin duplicarlas;
 4. las 217 decisiones de fuente objetivo se adoptan desde `CAP-MAP-008` sin duplicarlas;
 5. se conservan exactamente los diez `AppCode` vigentes como universo de identidad de aplicaciones;
-6. se conservan exactamente los cinco estados de fuente objetivo;
-7. `OBJETIVO_DIVIDIDO` se interpreta como resultados separados y no como doble propietaria del mismo hecho;
-8. propiedad permanece separada de actor, rol, permiso, aprobación, participación, consumo, repositorio, Supabase, almacenamiento, pantalla, navegación y publicador técnico;
-9. captura única y reutilización trazable quedan vinculadas a la fuente autoritativa;
-10. una proyección o caché no puede convertirse en fuente mutable competidora;
-11. corrección, reversión y conciliación preservan la frontera propietaria y la historia;
-12. eventos, handoffs e ítems de trabajo conservan sus identidades y responsabilidades separadas;
-13. sistemas externos conservan sus hechos externos sin apropiarse del estado interno de Vento;
-14. SHELL conserva coordinación y navegación sin propiedad universal;
-15. el caso competitivo de `employee_shifts` queda reconocido como deuda AS-IS con frontera objetivo preservada;
-16. un cambio de propietaria exige decisión canónica explícita y transición controlada;
-17. no se crea un `ownership_id` paralelo ni un registro editable duplicado;
-18. no se ejecutan cambios físicos;
-19. se declaran cero cambios de requisitos de prueba porque la cobertura vigente ya protege la semántica centralizada.
+6. se reconoce que exactamente nueve `AppCode` están efectivamente asignados como propietaria de proceso y que `shell` conserva cero procesos asignados;
+7. se conservan exactamente los cinco estados de fuente objetivo;
+8. `OBJETIVO_DIVIDIDO` se interpreta como resultados separados y no como doble propietaria del mismo hecho;
+9. propiedad permanece separada de actor, rol, permiso, aprobación, participación, consumo, repositorio, Supabase, almacenamiento, pantalla, navegación y publicador técnico;
+10. captura única y reutilización trazable quedan vinculadas a la fuente autoritativa;
+11. una proyección o caché no puede convertirse en fuente mutable competidora;
+12. corrección, reversión y conciliación preservan la frontera propietaria y la historia;
+13. eventos, handoffs e ítems de trabajo conservan sus identidades y responsabilidades separadas;
+14. sistemas externos conservan sus hechos externos sin apropiarse del estado interno de Vento;
+15. SHELL conserva coordinación y navegación sin propiedad universal;
+16. el caso competitivo de `employee_shifts` queda reconocido como deuda AS-IS con frontera objetivo preservada;
+17. un cambio de propietaria exige decisión canónica explícita y transición controlada;
+18. no se crea un `ownership_id` paralelo ni un registro editable duplicado;
+19. no se ejecutan cambios físicos;
+20. se declaran cero cambios de requisitos de prueba porque la cobertura vigente ya protege la semántica centralizada.
 
 #### 34. Decisiones aprobadas
 
@@ -11678,23 +11684,24 @@ La materialización queda asignada a `E5-GATE-008` y `SHELL-CI-020`; pruebas, bu
 6. `CAP-MAP-008` conserva autoridad sobre las 217 decisiones de fuente objetivo por subcapacidad.
 7. La centralización adopta esas 286 decisiones por referencia y no crea otra matriz editable.
 8. El universo de aplicaciones sigue siendo exactamente el conjunto de diez `AppCode` aprobado.
-9. Los cinco estados de fuente objetivo se conservan sin reinterpretación.
-10. `OBJETIVO_DIVIDIDO` representa varios resultados independientes, no dos propietarias del mismo hecho.
-11. Propiedad funcional no equivale a autorización, rol, actor, aprobación, participación, consumo, persistencia, presentación ni ejecución técnica.
-12. Una proyección, referencia, caché o evidencia no adquiere propiedad del original.
-13. Un hecho empresarial se captura o produce una vez en su fuente autoritativa y se reutiliza de forma trazable.
-14. Una escritura cross-app se expresa mediante un contrato autorizado y es evaluada por la propietaria; no mediante mutación libre del estado ajeno.
-15. Eventos comunican hechos confirmados y no transfieren propiedad.
-16. Handoffs transfieren trabajo o custodia según su contrato y no transfieren propiedad funcional automáticamente.
-17. `work_item.owner_app_code` se resuelve desde la fuente empresarial de la obligación, no desde la aplicación que muestra la tarea.
-18. SHELL coordina, proyecta y navega sin convertirse en fuente empresarial universal.
-19. Sistemas externos pueden gobernar hechos externos; Vento gobierna sus referencias, decisiones y efectos internos.
-20. NUMERA puede gobernar resultados analíticos derivados sin reescribir hechos de origen.
-21. Documentos y evidencia siguen al hecho que respaldan y no se vuelven fuente autoritativa por ubicación física.
-22. El caso VISO/ANIMA sobre `employee_shifts` permanece como conflicto AS-IS preexistente; la frontera objetivo conserva a VISO para publicación/corrección del turno y a ANIMA como consumidora de ese estado.
-23. Cambiar repositorio, tabla, publicador, UI o tecnología no cambia propiedad funcional.
-24. Un cambio de propietaria exige una decisión canónica explícita, vigencia y transición controlada.
-25. No se modifica código, datos, Supabase, packages físicos ni requisitos de prueba.
+9. El registro vigente de procesos utiliza exactamente nueve `AppCode` como propietaria; `shell` pertenece al universo canónico pero conserva cero procesos asignados.
+10. Los cinco estados de fuente objetivo se conservan sin reinterpretación.
+11. `OBJETIVO_DIVIDIDO` representa varios resultados independientes, no dos propietarias del mismo hecho.
+12. Propiedad funcional no equivale a autorización, rol, actor, aprobación, participación, consumo, persistencia, presentación ni ejecución técnica.
+13. Una proyección, referencia, caché o evidencia no adquiere propiedad del original.
+14. Un hecho empresarial se captura o produce una vez en su fuente autoritativa y se reutiliza de forma trazable.
+15. Una escritura cross-app se expresa mediante un contrato autorizado y es evaluada por la propietaria; no mediante mutación libre del estado ajeno.
+16. Eventos comunican hechos confirmados y no transfieren propiedad.
+17. Handoffs transfieren trabajo o custodia según su contrato y no transfieren propiedad funcional automáticamente.
+18. `work_item.owner_app_code` se resuelve desde la fuente empresarial de la obligación, no desde la aplicación que muestra la tarea.
+19. SHELL coordina, proyecta y navega sin convertirse en fuente empresarial universal.
+20. Sistemas externos pueden gobernar hechos externos; Vento gobierna sus referencias, decisiones y efectos internos.
+21. NUMERA puede gobernar resultados analíticos derivados sin reescribir hechos de origen.
+22. Documentos y evidencia siguen al hecho que respaldan y no se vuelven fuente autoritativa por ubicación física.
+23. El caso VISO/ANIMA sobre `employee_shifts` permanece como conflicto AS-IS preexistente; la frontera objetivo conserva a VISO para publicación/corrección del turno y a ANIMA como consumidora de ese estado.
+24. Cambiar repositorio, tabla, publicador, UI o tecnología no cambia propiedad funcional.
+25. Un cambio de propietaria exige una decisión canónica explícita, vigencia y transición controlada.
+26. No se modifica código, datos, Supabase, packages físicos ni requisitos de prueba.
 
 #### 35. Continuidad
 
