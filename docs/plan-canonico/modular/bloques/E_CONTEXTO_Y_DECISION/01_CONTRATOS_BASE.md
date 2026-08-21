@@ -3669,12 +3669,12 @@ AUTH-CTX-002.
 
 ### ✅ AUTH-CTX-003 — Diseñar SimulationContext separado
 
-**Estado:** APROBADA 
+**Estado:** APROBADA  
+**Tarea anterior:** `AUTH-CTX-002 — Diseñar AuthorizationDecision canónica` — APROBADA  
+**Tarea siguiente:** `AUTH-CTX-004 — Versionar los contratos de respuesta` — RESERVADA  
+**Tipo de tarea:** Diseño documental de contrato canónico  
 **Bloque:** BLOQUE E — Contexto y decisión de autorización unificados  
-**Naturaleza:** Diseño documental de contrato canónico  
 **Implementación física:** No incluida  
-**Tarea anterior vigente:** AUTH-CTX-002 — APROBADA  
-**Tarea posterior reservada:** AUTH-CTX-004 — Versionar los contratos de respuesta  
 **Contrato diseñado:** `SimulationContext`  
 **Contratos relacionados:** `AccessContext` y `AuthorizationDecision`  
 **Versión contractual:** Pendiente de AUTH-CTX-004  
@@ -4311,7 +4311,104 @@ revelar valores reales.
 
 #### 16. Evaluación simulada
 
-Forma conceptual:
+Las dos formas auxiliares consumidas por la decisión simulada quedan
+definidas explícitamente como parte de este contrato documental.
+
+##### 16.1 `SimulatedLaneResult`
+
+```ts
+type SimulatedLaneResult =
+  | {
+      required: false;
+      result: null;
+    }
+  | {
+      required: true;
+      result:
+        | "WOULD_ALLOW"
+        | "WOULD_DENY"
+        | "INDETERMINATE";
+    };
+```
+
+Reglas:
+
+1. `base_result` representa exclusivamente el carril `BASE`;
+2. `operational_result` representa exclusivamente el carril `OPERATIONAL`;
+3. `required = false` solo puede coexistir con `result = null` y significa
+   que ese carril no participa en la combinación de la modalidad evaluada;
+4. `required = true` solo puede coexistir con exactamente uno de
+   `WOULD_ALLOW`, `WOULD_DENY` o `INDETERMINATE`;
+5. el tipo no admite materializar `required = false` con un resultado ni
+   `required = true` con `null`;
+6. `null` nunca equivale a `WOULD_ALLOW`, `WOULD_DENY` ni
+   `INDETERMINATE`;
+7. la ausencia de participación de un carril no crea una cuarta decisión
+   simulada;
+8. la modalidad canónica determina qué carriles tienen `required = true`.
+
+Relación con modalidades:
+
+```text
+BASE_ONLY
+→ base_result.required = true
+→ operational_result.required = false
+
+OPERATIONAL_ONLY
+→ base_result.required = false
+→ operational_result.required = true
+
+BASE_OR_OPERATIONAL
+→ base_result.required = true
+→ operational_result.required = true
+
+BASE_AND_OPERATIONAL
+→ base_result.required = true
+→ operational_result.required = true
+```
+
+##### 16.2 `SimulationMatch`
+
+```ts
+type SimulationMatch =
+  | {
+      effect: "ALLOW";
+      lane: "BASE" | "OPERATIONAL";
+      provenance: "VIGENTE" | "PROPUESTA" | "SINTÉTICA";
+      source_id: string | null;
+    }
+  | {
+      effect: "DENY";
+      lane: "BASE" | "OPERATIONAL" | "ALL";
+      provenance: "VIGENTE" | "PROPUESTA" | "SINTÉTICA";
+      source_id: string | null;
+    };
+```
+
+Reglas:
+
+1. `effect = ALLOW` solo admite `lane = BASE` o `lane = OPERATIONAL`;
+2. `effect = DENY` admite `lane = BASE`, `lane = OPERATIONAL` o
+   `lane = ALL`;
+3. `lane = ALL` queda reservado a una denegación transversal que bloquee
+   los carriles compatibles; nunca representa un allow transversal;
+4. `provenance` reutiliza exactamente la clasificación de procedencia
+   establecida para allows y denegaciones hipotéticos:
+   `VIGENTE`, `PROPUESTA` o `SINTÉTICA`;
+5. `source_id` conserva la referencia de la fuente cuando existe una
+   identidad canónica o propuesta identificable;
+6. `source_id = null` solo es válido cuando la fuente no posee identidad
+   persistida, como un elemento estrictamente sintético;
+7. todo elemento de `matched_hypothetical_allows` debe declarar
+   `effect = ALLOW`;
+8. todo elemento de `matched_hypothetical_denies` debe declarar
+   `effect = DENY`;
+9. una misma evidencia no se duplica entre ambos arrays para representar
+   efectos contradictorios;
+10. los problemas estructurales permanecen en `blocked_reasons` y no se
+    convierten en `SimulationMatch` sin una fila hipotética concreta.
+
+Forma conceptual de la decisión:
 
 ```ts
 type SimulatedAuthorizationDecision = {
@@ -5186,7 +5283,21 @@ El contrato deberá permitir probar:
 32. intento de usar `WOULD_ALLOW` como `ALLOW`;
 33. comparación entre dos escenarios;
 34. incompatibilidad de versiones;
-35. minimización de datos sensibles.
+35. minimización de datos sensibles;
+36. `BASE_ONLY` materializado con `base_result.required = true` y
+    `operational_result.required = false`;
+37. `OPERATIONAL_ONLY` materializado con `base_result.required = false` y
+    `operational_result.required = true`;
+38. carril no requerido con `result = null`;
+39. rechazo de carril requerido con `result = null`;
+40. match base vigente;
+41. match operativo propuesto;
+42. deny transversal sintético con `lane = ALL` y sin `source_id`
+    persistido;
+43. rechazo de `effect = ALLOW` con `lane = ALL`;
+44. rechazo de procedencia fuera de `VIGENTE`, `PROPUESTA` o `SINTÉTICA`;
+45. prohibición de convertir un problema estructural sin fila concreta en
+    `SimulationMatch`.
 
 El plan completo de pruebas se definirá en AUTH-CTX-030.
 
@@ -5229,6 +5340,14 @@ El plan completo de pruebas se definirá en AUTH-CTX-030.
 33. La simulación real y la evaluación real usan contratos distintos.
 34. APP-REVIEW y entornos aislados requieren autorización específica real.
 35. Un error interno falla cerrado.
+36. `SimulatedLaneResult` no admite resultados fuera de los tres resultados
+    simulados ni `null` para un carril requerido.
+37. `SimulationMatch` no admite procedencia libre ni un carril distinto de
+    `BASE`, `OPERATIONAL` o `ALL`.
+38. `SimulationMatch` impide `effect = ALLOW` con `lane = ALL`; el carril
+    transversal queda reservado a denegaciones.
+39. `matched_hypothetical_allows` y `matched_hypothetical_denies` conservan
+    efectos explícitos y coherentes con la colección que los contiene.
 
 ---
 
@@ -5470,7 +5589,7 @@ dispositivo solo restringe
 
 #### 46. Criterios de aprobación
 
-AUTH-CTX-003 podrá aprobarse cuando se acepte que:
+AUTH-CTX-003 queda aprobada bajo los siguientes criterios:
 
 1. `SimulationContext` es un contrato separado;
 2. conserva al actor real;
@@ -5501,20 +5620,34 @@ AUTH-CTX-003 podrá aprobarse cuando se acepte que:
 27. la auditoría atribuye la acción al actor real;
 28. la UI deberá identificar el modo simulación;
 29. los datos sensibles se minimizan;
-30. la implementación física queda reservada para BLOQUE R.
+30. la implementación física queda reservada para BLOQUE R;
+31. `SimulatedLaneResult` queda definido explícitamente y no requiere
+    `unknown`, `Record<string, unknown>` ni un catch-all para materializarse;
+32. `SimulationMatch` queda definido explícitamente y no requiere
+    `unknown`, `Record<string, unknown>` ni un catch-all para materializarse;
+33. un carril no requerido se representa con `required = false` y
+    `result = null`, sin crear un cuarto resultado simulado;
+34. los matches hipotéticos conservan efecto, carril, procedencia y
+    referencia de fuente sin redefinir silenciosamente la decisión simulada;
+35. `lane = ALL` solo puede materializarse con `effect = DENY`, preservando
+    la semántica de denegación transversal vigente.
 
 ---
 
-#### 47. Estado final de la propuesta
+#### 47. Continuidad
 
-| Tarea        | Estado      |
-| ------------ | ----------- |
-| AUTH-CTX-002 | APROBADA    |
-| AUTH-CTX-003 | APROBADA    |
-| AUTH-CTX-004 | NO INICIADA |
+**ÚLTIMA TAREA APROBADA**
 
-No se avanza a AUTH-CTX-004 hasta recibir aprobación explícita de
-AUTH-CTX-003.
+`AUTH-CTX-002 — Diseñar AuthorizationDecision canónica`
+
+**TAREA ACTUAL APROBADA**
+
+`AUTH-CTX-003 — Diseñar SimulationContext separado`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`AUTH-CTX-004 — Versionar los contratos de respuesta`
+
 
 ### ✅ AUTH-CTX-004 — Versionar los contratos de respuesta
 
