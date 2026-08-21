@@ -390,6 +390,8 @@ export function classifyInfraPath(filePath) {
     normalized === 'AGENTS.md'
     || normalized === 'package.json'
     || normalized === 'package-lock.json'
+    || normalized === 'packages/contracts/README.md'
+    || normalized === 'packages/contracts/authorization/README.md'
     || normalized.startsWith('scripts/docs/')
     || normalized.startsWith('scripts/quality/')
     || normalized.startsWith('quality/')
