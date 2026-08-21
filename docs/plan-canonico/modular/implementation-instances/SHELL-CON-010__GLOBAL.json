@@ -1,10 +1,45 @@
 {
   "instance_id": "SHELL-CON-010::GLOBAL",
   "task_id": "SHELL-CON-010",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/processes/scripts/generate-process-state-contracts.mjs para leer PROC-CAT-009, PROC-CAT-010, PROC-CAT-011, PROC-CAT-012, SHELL-CON-010 y la proyeccion ProcessId vigente de SHELL-CON-009; extraer y reconciliar deterministicamente las 69 identidades INITIAL, 454 INTERMEDIATE y 69 FINAL_NORMAL; comprobar 592 ProcessStateId unicos, 69 procesos, prefijo ProcessId correcto, distribucion exacta de fases intermedias y tipos terminales, y 590 transiciones normales separadas del namespace de estados.",
+    "Crear packages/contracts/processes/scripts/validate-process-state-contracts.mjs para validar freshness de los derivados, conteos 69/454/69/592, correspondencia proceso-estado, formato y pertenencia cerrada, metadata semantica proyectada, separacion de transiciones y acciones, preservacion del contrato ProcessId de SHELL-CON-009, documentacion interna, package privado y ausencia de exports publicos.",
+    "Materializar exclusivamente mediante el generador packages/contracts/processes/generated/states/process-state.contract.ts e index.ts con PROCESS_STATE_ID_PATTERN_SOURCE, PROCESS_STATE_ID_PATTERN, PROCESS_STATE_KINDS, PROCESS_INTERMEDIATE_PHASES, PROCESS_FINAL_TYPES, PROCESS_STATE_IDS, ProcessStateId, PROCESS_STATE_DEFINITIONS, PROCESS_STATE_REGISTRY_METADATA y guards/resolvers estaticos de formato, pertenencia y correspondencia ProcessId-ProcessStateId.",
+    "Modificar packages/contracts/processes/README.md para documentar SHELL-CON-010::GLOBAL, las 592 identidades, sus 69 INITIAL, 454 INTERMEDIATE y 69 FINAL_NORMAL, las diez fases intermedias, los ocho tipos terminales, las 590 transiciones excluidas, la validacion cerrada de entradas externas, las fuentes semanticas propietarias y los limites de esta materializacion interna.",
+    "Modificar packages/contracts/README.md exclusivamente para registrar que SHELL-CON-010::GLOBAL amplia packages/contracts/processes con la proyeccion interna de 592 estados principales normales, manteniendo el package privado, sin exports publicos, sin consumidores y sin publicacion.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-010__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar 04A/TREQ, implementation-control.json, el contrato ProcessId o sus artefactos generados de SHELL-CON-009, package.json, version del package, exports publicos, consumidores, Supabase, RLS, RPC, migraciones, datos, las 590 transiciones normales, las 276 acciones excepcionales, las 276 acciones de cancelacion/anulacion/reversion/compensacion/correccion, condiciones transversales, process_instance_id, motores de transicion, pasos, pantallas reservadas a SHELL-CON-011, eventos, comandos, auditoria, manifests de publicacion, checksums de release, changelog de publicacion, registry, tags, releases, despliegues, secretos ni responsabilidades de tareas posteriores."
+  ],
+  "validation_commands": [
+    "node packages/contracts/processes/scripts/generate-process-state-contracts.mjs --check",
+    "node packages/contracts/processes/scripts/validate-process-state-contracts.mjs",
+    "node packages/contracts/processes/scripts/validate-process-id-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T11:34:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-010::GLOBAL en vento-group-sas/vento-shell para materializar internamente, dentro del modulo packages/contracts/processes y sin publicacion, el universo canonico de exactamente 592 estados principales normales ya aprobado: 69 INITIAL, 454 INTERMEDIATE y 69 FINAL_NORMAL para VPROC-0001..VPROC-0069; preservar las diez fases intermedias, los ocho tipos terminales y la metadata semantica derivada de PROC-CAT-009..011; reconciliar contra PROC-CAT-012 manteniendo sus 590 transiciones fuera de ProcessStateId; validar formato, pertenencia y correspondencia proceso-estado; crear exclusivamente los generadores, validadores, derivados internos bajo generated/states y documentacion enumerados. No autorizo modificar 04A/TREQ, implementation-control.json, el contrato ProcessId o sus derivados de SHELL-CON-009, package.json, version del package, exports publicos, consumidores, Supabase, RLS, RPC, migraciones, datos, transiciones, acciones excepcionales, acciones CCR, condiciones transversales, process_instance_id, motores de transicion, pasos, pantallas, eventos, comandos, auditoria, manifests de publicacion, checksums de release, changelog de publicacion, registry, tags, releases, despliegues, secretos ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "0c20de58e5ffdbfcaf80f469e906816f8cab4f870f1a2e067fb46cb811b6d9d4"
+  },
+  "evidence": [
+    "MATERIALIZATION ProcessStateId contract generated under packages/contracts/processes/generated/states",
+    "VALIDATION generate-process-state-contracts --check PASS",
+    "VALIDATION ProcessStateId total=592 INITIAL=69 INTERMEDIATE=454 FINAL_NORMAL=69",
+    "VALIDATION ProcessId coverage=69 VPROC-0001..VPROC-0069",
+    "VALIDATION intermediate phase distribution reconciled",
+    "VALIDATION final type distribution reconciled",
+    "VALIDATION normal transitions=590 and excluded from ProcessStateId",
+    "VALIDATION process-state prefix alignment and closed membership PASS",
+    "VALIDATION predecessor ProcessId artifacts normalized LF in worktree with zero Git diff",
+    "VALIDATION predecessor ProcessId contract PASS",
+    "VALIDATION package remains private with no public exports or consumers",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-010::GLOBAL VERIFIED"
+  ]
 }

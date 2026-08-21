@@ -62,4 +62,8 @@ No publica exports públicos adicionales antes de que su tarea propietaria los m
 
 La materialización contiene exactamente 69 identidades derivadas de `PROC-CANONICAL-ID-REGISTRY-001`, desde `VPROC-0001` hasta `VPROC-0069`, junto con validación de formato y pertenencia.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores y no incorpora estados de proceso reservados a `SHELL-CON-010`.
+`SHELL-CON-010::GLOBAL` amplía el mismo módulo con exactamente 592 estados principales normales derivados de los registros `PROC-CAT-009`, `PROC-CAT-010` y `PROC-CAT-011`, reconciliados por `PROC-CAT-012`: 69 `INITIAL`, 454 `INTERMEDIATE` y 69 `FINAL_NORMAL`.
+
+Los estados se materializan internamente bajo `packages/contracts/processes/generated/states/`; las 590 transiciones normales y las acciones excepcionales permanecen fuera de `ProcessStateId`.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no toca Supabase y no materializa identificadores de pantallas reservados a `SHELL-CON-011`.
