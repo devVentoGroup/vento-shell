@@ -1806,7 +1806,770 @@ Esta tarea reutiliza esas obligaciones sin modificar ninguna fila del registro 0
 `AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete`
 
 
-### [ ] AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
+### ✅ AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción
+**Tarea siguiente:** AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md`
+**Estado físico resultante:** Contrato documental cerrado; futura instancia global `AUTH-DB-029::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-029` establece la fundación global de recuperación que debe existir antes del primer paquete físico que pueda modificar Supabase. Su objetivo no es demostrar que existe una copia de seguridad, sino demostrar que un candidato y un ambiente pueden volver a un estado permitido, verificable y operable después de un fallo o de una reversión autorizada.
+
+La decisión vinculante es:
+
+```text
+BACKUP_EXISTE
+≠
+RECUPERACION_VERIFICADA
+
+ROLLBACK_DEFINIDO
+≠
+ROLLBACK_PROBADO
+```
+
+La recuperación solo puede considerarse demostrada cuando existe evidencia conjunta de:
+
+```text
+candidate identity
++
+environment identity
++
+recovery point válido
++
+modo de rollback o recovery aplicable
++
+point of no return explícito
++
+RPO/RTO objetivo
++
+ensayo controlado
++
+validación post-recuperación
++
+evidencia reproducible
+```
+
+---
+
+#### 2. Resultado canónico
+
+Queda aprobado el siguiente cierre de R0:
+
+```text
+AUTH-DB-015
+→ migraciones versionadas e inventariadas
+
+AUTH-DB-027
+→ harness reproducible de esquema, integridad, RLS, RPC y migraciones
+
+AUTH-DB-028
+→ candidate identity + environment identity
+→ baseline expected/observed
+→ clasificación de drift
+
+AUTH-DB-029
+→ recovery envelope
+→ recovery point
+→ rollback pre-PONR
+→ forward recovery / compensación post-PONR
+→ restore cuando corresponda
+→ RPO/RTO medidos
+→ validación post-recuperación con 027 + 028
+```
+
+`AUTH-DB-029` no crea una segunda semántica de rollback. Operacionaliza en R0 el contrato ya definido por `SUPA-TRANS-011` y reutiliza las identidades ambientales y el baseline de `AUTH-DB-028`.
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente de R0 establece:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-029::GLOBAL
+```
+
+Interpretación:
+
+1. el contrato documental se define una sola vez;
+2. la futura instancia `AUTH-DB-029::GLOBAL` materializa una única infraestructura reusable para ensayar y verificar recuperación;
+3. los paquetes posteriores reutilizan la infraestructura y aportan sus candidatos, ambientes, recovery points y evidencia específica;
+4. no se crea una instancia `AUTH-DB-029::<package_id>`;
+5. la aprobación documental no autoriza la instancia física;
+6. `PRE_E5_FOUNDATION` permite preparar esta capacidad antes del primer paquete, pero no autoriza migraciones, restores ni cambios remotos.
+
+---
+
+#### 4. Fuentes vinculantes
+
+| Fuente                                               | Uso vinculante                                                           |
+| ---------------------------------------------------- | ------------------------------------------------------------------------ |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`         | continuidad, separación documental/física y autorización explícita       |
+| `docs/plan-canonico/modular/delivery-contract.json`  | estructura validable de la entrega                                       |
+| `docs/plan-canonico/modular/active-sequence.json`    | `AUTH-DB-029` como tarea documental actual                               |
+| `docs/plan-canonico/modular/task-work-topology.json` | `GLOBAL_ENABLE_ONCE` + `PRE_E5_FOUNDATION`                               |
+| `AUTH-DB-015`                                        | fuente canónica de migraciones e inventario versionado                   |
+| `AUTH-DB-027`                                        | harness de reconstrucción y pruebas post-recuperación                    |
+| `AUTH-DB-028`                                        | candidate, environment, baseline y clasificación de drift                |
+| `SUPA-TRANS-011`                                     | rollback, recovery point, PONR, RPO/RTO, outcomes y evidencia            |
+| `SUPA-TRANS-013`                                     | paridad y evidencia por ambiente                                         |
+| `SUPA-TRANS-016`                                     | orden obligatorio de R0                                                  |
+| documentación oficial vigente de Supabase            | capacidades y límites actuales de backups, PITR, restore, Auth y Storage |
+
+La capacidad concreta de backup, PITR, restore o recuperación ofrecida por la plataforma deberá comprobarse nuevamente en el momento de una ejecución física. Este contrato no convierte una capacidad de producto dependiente de plan, configuración o versión en una garantía estática.
+
+---
+
+#### 5. Frontera entre backup, restore, rollback y recovery
+
+Los términos quedan separados:
+
+| Concepto           | Significado contractual                                                                                           |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `backup`           | artefacto o capacidad de recuperación que preserva un punto recuperable; no demuestra restaurabilidad por sí solo |
+| `recovery point`   | referencia exacta, identificable y verificable desde la cual puede ejecutarse la estrategia aprobada              |
+| `restore`          | reconstrucción de un estado desde un recovery point mediante el mecanismo soportado aplicable                     |
+| `rollback`         | retorno controlado a la autoridad o comportamiento previo cuando todavía es semánticamente reversible             |
+| `forward recovery` | restauración de invariantes mediante avance, compensación o reconciliación cuando ya no es seguro volver atrás    |
+| `recovery drill`   | ensayo controlado que demuestra el mecanismo, mide RPO/RTO y verifica el estado posterior                         |
+
+Por tanto:
+
+```text
+backup disponible
+NO IMPLICA
+restore demostrado
+
+restore completado
+NO IMPLICA
+servicio operable
+
+rollback SQL
+NO IMPLICA
+recuperación empresarial completa
+```
+
+---
+
+#### 6. Recovery envelope obligatorio
+
+Toda unidad que deba demostrar recuperabilidad deberá resolverse dentro de un `recovery envelope` que conserve como mínimo:
+
+| Campo                     | Regla                                                       |
+| ------------------------- | ----------------------------------------------------------- |
+| candidate identity        | candidato exacto recibido de `AUTH-DB-028`                  |
+| commit SHA                | commit exacto asociado al candidato                         |
+| environment identity      | ambiente inequívoco recibido de `AUTH-DB-028`               |
+| migration set             | conjunto ordenado aplicable                                 |
+| migration manifest digest | digest del manifiesto materializado por `AUTH-DB-015`       |
+| expected baseline         | referencia al baseline esperado de `AUTH-DB-028`            |
+| observed baseline         | referencia al baseline previo observado                     |
+| rollback mode             | modo heredado de `SUPA-TRANS-011`                           |
+| recovery point            | tipo, identidad, timestamp y evidencia de disponibilidad    |
+| point of no return        | condición concreta a partir de la cual cambia la estrategia |
+| RPO target                | objetivo aprobado para la unidad                            |
+| RTO target                | objetivo aprobado para la unidad                            |
+| owner                     | responsable técnico/operativo                               |
+| approver                  | autoridad requerida para el ambiente                        |
+| pre-PONR strategy         | reversión antes del punto de no retorno                     |
+| post-PONR strategy        | forward recovery, compensación o reconciliación posterior   |
+| data reconciliation       | invariantes y cohortes que deben reconciliarse              |
+| security validation       | suites de seguridad aplicables                              |
+| consumer validation       | consumidores esenciales que deben recuperar operabilidad    |
+| evidence bundle           | referencia inmutable al expediente de ejecución             |
+
+No se permite un recovery envelope con referencias narrativas ambiguas como “último backup”, “estado anterior” o “versión previa” sin identidad verificable.
+
+---
+
+#### 7. Modos de recuperación heredados
+
+`AUTH-DB-029` conserva los modos aprobados en `SUPA-TRANS-011` y no inventa una taxonomía competidora.
+
+Entre los modos globales vigentes se encuentran:
+
+```text
+TRANSACTION_ABORT
+REDEPLOY_PRIOR_ARTIFACT
+TRAFFIC_ROUTE_BACK
+AUTHORITY_RETURN_WITH_DELTA
+FORWARD_FIX
+SELECTIVE_DATA_RESTORE
+COMPENSATE_FORWARD
+RESTORE_PROJECT_OR_PITR
+NO_INDEPENDENT_ROLLBACK
+BOUNDARY_NO_TOUCH
+```
+
+También se conservan las composiciones especializadas definidas por el propietario, entre ellas:
+
+```text
+TRANSACTION_ABORT_OR_FORWARD_FIX
+TRAFFIC_ROUTE_BACK+UNKNOWN_OUTCOME_RECONCILIATION
+STOP_REPLAY+CHECKPOINT_RESTORE+COMPENSATE_FORWARD
+ABORT_BEFORE_MERGE_OR_COMPENSATE_FORWARD
+STOP_ROUTING+RETURN_SOURCE+RECONCILE_DESTINATIONS
+RESTORE_LIMITED_COMPATIBILITY_NO_LEGACY_AUTHORITY
+RETURN_AUTHORITY_WITH_DELTA_IF_SAFE_ELSE_FORWARD_RECOVERY
+```
+
+Reglas:
+
+1. el modo se hereda de la unidad propietaria; no se decide por conveniencia en el momento del fallo;
+2. `NO_INDEPENDENT_ROLLBACK` significa que la identidad hereda recovery point y evidencia de su unidad padre; no significa que pueda omitirse de la verificación;
+3. `BOUNDARY_NO_TOUCH` conserva una frontera explícita sin operación de recuperación sobre el objeto excluido;
+4. un restore de proyecto completo no sustituye modos más seguros o más acotados cuando estos son suficientes;
+5. un forward fix no se utiliza para ocultar la ausencia de rollback donde el rollback era obligatorio antes del PONR.
+
+---
+
+#### 8. Point of no return
+
+Cada recovery envelope debe identificar un `point_of_no_return` verificable.
+
+Antes del PONR:
+
+```text
+preferencia
+→ abortar o revertir de forma determinista
+→ restaurar autoridad previa
+→ reconciliar cualquier efecto transitorio
+```
+
+Después del PONR:
+
+```text
+prohibido fingir que la reversión conserva la misma semántica
+
+estrategia
+→ completar forward recovery
+→ compensar efectos
+→ reconciliar eventos/datos
+→ escalar manualmente cuando el contrato lo exija
+```
+
+Ejemplos de PONR ya reconocidos por el contrato de transición incluyen primera escritura exclusiva en destino, primer efecto externo no reversible, commit de una transacción crítica, retiro de compatibilidad recuperable o redirección de referencias sin crosswalk reversible.
+
+El PONR debe poder observarse durante el drill y quedar registrado en evidencia.
+
+---
+
+#### 9. Recovery point por superficie
+
+La recuperación se diseña por superficie y no presupone que un backup PostgreSQL cubra todo Supabase.
+
+| Superficie                   | Recovery point / mecanismo permitido                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| proyecto PostgreSQL completo | backup soportado, PITR o mecanismo equivalente expresamente seleccionado y disponible                        |
+| relaciones y datos           | snapshot controlado, watermark, delta, inverse transaction o restore selectivo según contrato                |
+| historial migratorio         | manifiesto, ledger reconciliado y archivos SQL versionados; no reescritura silenciosa                        |
+| Auth                         | mecanismos soportados de Auth/Admin/export/restore; no escritura directa de tablas internas de Auth          |
+| Storage                      | recuperación consciente de objetos mediante Storage API o worker controlado; SQL por sí solo es insuficiente |
+| Edge Functions               | fuente/bundle/configuración versionados y redeploy de artefacto previo cuando corresponda                    |
+| secretos                     | nombre, versión, presencia y referencia al secret manager; nunca valor del secreto dentro de evidencia       |
+| cron/jobs/webhooks           | definición versionada, checkpoint y reconciliación de efectos según contrato                                 |
+| consumidores                 | versión/route/candidate compatible y capacidad de volver a un contrato aceptado                              |
+| frontera externa excluida    | `BOUNDARY_NO_TOUCH` y evidencia de no intervención                                                           |
+
+La existencia de backup de base de datos no autoriza a declarar recuperados Auth, objetos de Storage, secretos, Edge Functions, callbacks, integraciones o consumidores.
+
+---
+
+#### 10. Política de backup
+
+Antes de una ejecución que pueda necesitar recuperación debe demostrarse:
+
+1. qué mecanismo de backup o recovery point se utilizará;
+2. que el mecanismo está disponible para el ambiente real;
+3. qué superficies incluye;
+4. qué superficies excluye;
+5. identidad y timestamp del recovery point;
+6. retención suficiente para la ventana de cambio;
+7. owner y control de acceso;
+8. integridad o verificabilidad del artefacto cuando corresponda;
+9. procedimiento soportado de restauración;
+10. impacto operativo esperado durante restore;
+11. vínculo con el candidato y el baseline inmediatamente anteriores.
+
+No se considera evidencia suficiente:
+
+- una captura de Dashboard;
+- una afirmación de que “Supabase hace backups”;
+- un backup sin identidad;
+- un backup cuya retención no cubre la ventana;
+- un artefacto cuyo restore no se haya validado en un ambiente permitido;
+- un dump que omite superficies necesarias para recuperar el servicio.
+
+---
+
+#### 11. Política de restore
+
+El restore se considera válido únicamente cuando el resultado recuperado vuelve a superar las verificaciones contractuales aplicables.
+
+Un restore debe incluir:
+
+```text
+RECOVERY_POINT_SELECTED
+→ RESTORE_EXECUTED
+→ DATABASE_AVAILABLE
+→ AUTH-DB-027 POST-RECOVERY HARNESS
+→ AUTH-DB-028 BASELINE/DRIFT CHECK
+→ DATA RECONCILIATION
+→ SECURITY CHECKS
+→ ESSENTIAL_CONSUMER CHECKS
+→ RPO/RTO MEASUREMENT
+→ RECOVERY OUTCOME
+```
+
+`DATABASE_AVAILABLE` no es equivalente a `RECOVERY_PASS`.
+
+La verificación posterior debe demostrar, según aplicabilidad:
+
+- schema;
+- constraints;
+- integridad;
+- RLS;
+- RPC;
+- grants;
+- datos e invariantes;
+- historial migratorio;
+- funciones/triggers;
+- Auth;
+- Storage;
+- Realtime;
+- Edge Functions;
+- jobs/webhooks;
+- consumidores esenciales;
+- ausencia de drift no autorizado.
+
+---
+
+#### 12. Drill de recuperación
+
+La futura infraestructura global deberá soportar un ensayo reproducible con esta secuencia lógica:
+
+1. identificar candidate y environment;
+2. comprobar precondiciones y blockers;
+3. capturar expected/observed baseline de `AUTH-DB-028`;
+4. seleccionar y verificar el recovery point;
+5. registrar `T0`;
+6. aplicar la unidad forward en un ambiente autorizado para el ensayo;
+7. ejecutar postcheck forward;
+8. registrar si se alcanzó el PONR;
+9. ejecutar rollback cuando siga siendo válido o forward recovery/compensación después del PONR;
+10. registrar `T1`;
+11. medir RTO real;
+12. determinar pérdida o lag respecto del recovery point y medir RPO real;
+13. ejecutar el harness post-recuperación de `AUTH-DB-027`;
+14. ejecutar comparación de baseline/drift de `AUTH-DB-028`;
+15. reconciliar invariantes de datos, writers, eventos y consumidores;
+16. verificar seguridad y permisos;
+17. emitir outcome cerrado;
+18. preservar evidencia append-only;
+19. limpiar únicamente después de conservar el expediente.
+
+El drill no puede introducir una mutación permanente en producción que no estuviera ya autorizada por la tarea física propietaria.
+
+---
+
+#### 13. RPO
+
+`RPO` mide la cantidad máxima de información o efecto empresarial que puede perderse o requerir reconciliación después de la recuperación.
+
+Reglas:
+
+1. no se reduce a diferencia entre timestamps;
+2. debe expresarse en una unidad significativa para la unidad de cambio cuando corresponda;
+3. puede incluir eventos, movimientos, pagos, documentos, writes, archivos o referencias pendientes de reconciliación;
+4. el objetivo procede del contrato aplicable; `AUTH-DB-029` no inventa un RPO universal;
+5. el drill debe producir un valor real u otra evidencia cuantificable equivalente;
+6. exceder el RPO objetivo bloquea promoción salvo rediseño o aprobación explícita por el gate propietario.
+
+---
+
+#### 14. RTO
+
+`RTO` se mide desde la decisión de ejecutar rollback/recovery hasta recuperar un estado operable permitido.
+
+El cronómetro no termina cuando PostgreSQL acepta conexiones. Termina cuando se han restaurado, según aplicabilidad:
+
+```text
+contrato
++
+invariantes de datos
++
+seguridad
++
+servicios requeridos
++
+consumidores esenciales
++
+capacidad operativa mínima
+```
+
+Reglas:
+
+1. el objetivo procede del contrato aplicable;
+2. el drill mide `T1 - T0` según el evento de inicio y cierre definido;
+3. pausas manuales necesarias forman parte del RTO real si el procedimiento las exige;
+4. exceder el objetivo bloquea promoción salvo rediseño o aprobación explícita;
+5. un restore exitoso con RTO incumplido no produce `PASS`.
+
+---
+
+#### 15. Matriz de ambientes
+
+##### Local / entorno efímero controlado
+
+- puede ejecutar drills destructivos;
+- utiliza datos sintéticos;
+- puede reconstruirse desde migraciones;
+- valida primero la mecánica del recovery envelope;
+- no demuestra por sí solo capacidades hosted ausentes localmente.
+
+##### Staging / hosted no productivo
+
+- debe tener identidad técnica separada y verificable;
+- recibe el mismo candidato;
+- prueba capacidades hosted reales que no existen localmente;
+- usa datos sintéticos o sanitizados autorizados;
+- permite drills controlados dentro de su autorización;
+- debe medir RPO/RTO y recuperación de superficies hosted aplicables.
+
+##### Producción
+
+- no ejecuta drills destructivos rutinarios;
+- exige precheck de recovery point y capacidad real de recuperación;
+- el procedimiento de restore/rollback productivo debe estar listo antes de promover;
+- una ejecución real de restore, PITR o recuperación mayor exige la autorización física/operativa aplicable al incidente o cambio;
+- pruebas post-recuperación deben ser no destructivas salvo autorización excepcional expresa;
+- el impacto de indisponibilidad durante restore forma parte del RTO y de la decisión operacional.
+
+Un ambiente inexistente o no identificado no puede producir evidencia de recovery drill.
+
+---
+
+#### 16. Producción y recuperación mayor
+
+`RESTORE_PROJECT_OR_PITR` es una capacidad de recuperación mayor, no el rollback rutinario de toda migración.
+
+Antes de depender de ese mecanismo en producción deberá verificarse:
+
+1. disponibilidad real del mecanismo para el proyecto y plan vigentes;
+2. recovery point seleccionable;
+3. retención suficiente;
+4. alcance exacto de lo restaurado;
+5. superficies que requieren recuperación separada;
+6. indisponibilidad esperada;
+7. credenciales y owner autorizados;
+8. procedimiento de verificación post-restore;
+9. reconciliación de writes externos ocurridos alrededor de la ventana;
+10. estrategia si el restore falla o excede el RTO.
+
+PITR puede reducir la pérdida potencial frente a snapshots más espaciados, pero no elimina la necesidad de medir RPO real ni demuestra por sí solo el RTO de servicio completo.
+
+---
+
+#### 17. Historial migratorio y rollback
+
+El historial canónico de migraciones sigue siendo inmutable conforme a `AUTH-DB-015`.
+
+Por tanto:
+
+- rollback no significa borrar una migración histórica;
+- rollback no significa modificar silenciosamente un SQL ya versionado;
+- `migration repair` no es un sustituto genérico de rollback;
+- cualquier reparación de ledger debe tener propietario, motivo y evidencia;
+- una corrección posterior al PONR puede requerir una nueva migración forward;
+- el recovery envelope debe conservar el vínculo con el migration manifest y con la historia observada del ambiente;
+- el estado post-recuperación debe volver a ser reconciliable con el repositorio y el baseline esperado.
+
+---
+
+#### 18. Datos, idempotencia y efectos externos
+
+Un rollback se considera incompleto si recupera DDL pero deja efectos empresariales inconsistentes.
+
+La reconciliación debe considerar, según la unidad:
+
+- writers concurrentes;
+- high-watermarks;
+- deltas;
+- eventos append-only;
+- idempotency keys;
+- pagos o efectos externos;
+- documentos emitidos;
+- webhooks;
+- jobs;
+- archivos;
+- integraciones;
+- crosswalks;
+- referencias migradas;
+- reintentos con outcome desconocido.
+
+Después del PONR puede ser obligatorio compensar o reconciliar en lugar de intentar restaurar mecánicamente el estado anterior.
+
+---
+
+#### 19. Seguridad durante recuperación
+
+La recuperación no puede degradar autorización o privacidad para acelerar el restablecimiento.
+
+Debe comprobarse:
+
+1. RLS habilitada donde corresponde;
+2. policies y grants esperados;
+3. funciones/RPC con security mode y `search_path` correctos;
+4. ausencia de `service_role` en clientes;
+5. secretos no expuestos en evidencia;
+6. Auth recuperado mediante mecanismos soportados;
+7. Storage y objetos con acceso coherente;
+8. consumidores con credenciales del ambiente correcto;
+9. ninguna apertura temporal de permisos queda persistente después del recovery;
+10. el baseline post-recuperación no contiene drift de seguridad no autorizado.
+
+Un restore que recupera datos pero degrada seguridad es `FAIL`.
+
+---
+
+#### 20. Outcomes cerrados
+
+La fundación conserva los outcomes aprobados por `SUPA-TRANS-011`:
+
+| Outcome                           | Significado                                                          |
+| --------------------------------- | -------------------------------------------------------------------- |
+| `PASS_ROLLBACK_VERIFIED`          | rollback pre-PONR demostrado y estado permitido recuperado           |
+| `PASS_FORWARD_RECOVERY_VERIFIED`  | recovery/compensación post-PONR demostrada                           |
+| `FAIL_PRECHECK`                   | no se cumplieron precondiciones antes del ensayo                     |
+| `FAIL_FORWARD_EXECUTION`          | la ejecución forward falló de forma no aceptada                      |
+| `FAIL_ROLLBACK`                   | rollback/recovery no logró el estado permitido                       |
+| `FAIL_POSTCHECK`                  | las verificaciones posteriores fallaron                              |
+| `FAIL_RPO`                        | el resultado excedió el RPO objetivo                                 |
+| `FAIL_RTO`                        | el resultado excedió el RTO objetivo                                 |
+| `BLOCKED_BEFORE_ROLLBACK_DRILL`   | existe blocker contractual previo al ensayo                          |
+| `NOT_ELIGIBLE_FOR_ROLLBACK_DRILL` | faltan evidencias o condiciones para habilitar el drill              |
+| `NOT_EXECUTED`                    | drill definido pero no ejecutado                                     |
+| `NOT_APPLICABLE`                  | la identidad no requiere ensayo independiente conforme a su contrato |
+
+No se crea un outcome alternativo para convertir evidencia incompleta en éxito.
+
+---
+
+#### 21. Condiciones de bloqueo antes del primer paquete
+
+La capacidad de recuperación bloquea la promoción del primer paquete aplicable cuando ocurra cualquiera de estas condiciones:
+
+```text
+RECOVERY_POINT_MISSING
+RECOVERY_POINT_NOT_VERIFIED
+ROLLBACK_MODE_UNRESOLVED
+POINT_OF_NO_RETURN_UNRESOLVED
+RPO_TARGET_UNRESOLVED
+RTO_TARGET_UNRESOLVED
+DRILL_NOT_ELIGIBLE
+DRILL_FAILED
+POST_RECOVERY_HARNESS_FAILED
+UNAUTHORIZED_DRIFT_AFTER_RECOVERY
+DATA_RECONCILIATION_FAILED
+SECURITY_RECOVERY_FAILED
+ESSENTIAL_CONSUMER_RECOVERY_FAILED
+EVIDENCE_INCOMPLETE
+```
+
+Estas etiquetas describen condiciones contractuales de bloqueo y no crean por sí mismas nuevos enums, tablas o estados físicos.
+
+---
+
+#### 22. Evidencia y cadena de custodia
+
+Cada drill futuro debe conservar como mínimo:
+
+1. candidate identity;
+2. environment identity;
+3. commit SHA;
+4. recovery envelope identity;
+5. recovery point identity;
+6. timestamp UTC;
+7. herramientas y versiones;
+8. baseline previo;
+9. estado forward alcanzado;
+10. PONR alcanzado o no alcanzado;
+11. modo de recuperación ejecutado;
+12. `T0` y `T1`;
+13. RPO objetivo y resultado;
+14. RTO objetivo y resultado;
+15. resultados del harness de `AUTH-DB-027`;
+16. comparación post-recuperación de `AUTH-DB-028`;
+17. reconciliación de datos y efectos;
+18. verificación de seguridad;
+19. verificación de consumidores esenciales;
+20. outcome final;
+21. logs o referencias no sensibles;
+22. owner y aprobador;
+23. digest del evidence bundle.
+
+La evidencia es append-only. Un segundo drill no borra ni sustituye un fallo anterior.
+
+---
+
+#### 23. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+**Justificación:** la obligación de demostrar backup, restauración, rollback y recuperación ya existe en el registro canónico y en los contratos de transición aprobados. `AUTH-DB-029` la operacionaliza como fundación global de R0 sin introducir una regla de negocio, seguridad o recuperación adicional que requiera una nueva fila.
+
+---
+
+#### 24. Cobertura de prueba vigente reutilizada
+
+`TREQ-SUPABASE-008` ya exige que toda migración supere reconstrucción limpia, upgrade, validación de datos, constraints, RLS, RPC, tipos, rendimiento, backup, restauración y rollback, además de controlar el drift entre ambientes.
+
+`SUPA-TRANS-011` aporta el contrato detallado de recovery points, PONR, modos de recuperación, RPO/RTO, drills y outcomes. `AUTH-DB-027` y `AUTH-DB-028` aportan respectivamente el harness post-recuperación y el baseline/drift que deben volver a pasar después de un restore o rollback.
+
+El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 25. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                  |
+| --------- | -------------- | ------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED   | pendiente de materialización local del artefacto documental y validación del plan          |
+| LOCAL     | NOT_EXECUTED   | pendiente de preflight, formato, quality, delivery y validadores documentales del checkout |
+| REMOTA    | NOT_EXECUTED   | no se ejecutó backup, restore, PITR, rollback ni drill contra un ambiente alojado          |
+| OPERATIVA | NOT_APPLICABLE | esta tarea documental no ejecuta incidente, promoción, downtime ni recuperación operativa  |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-029::GLOBAL` permanece separada y sin autorización física                         |
+
+---
+
+#### 26. Decisiones vinculantes
+
+1. `AUTH-DB-029` es una fundación global reusable de R0.
+2. Su futura instancia física es `AUTH-DB-029::GLOBAL`.
+3. El modo es `GLOBAL_ENABLE_ONCE`.
+4. El gate es `PRE_E5_FOUNDATION`.
+5. La aprobación documental no autoriza la instancia física.
+6. Existencia de backup no equivale a recuperación verificada.
+7. Restore completado no equivale a servicio recuperado.
+8. Rollback no equivale a borrar o reescribir migraciones históricas.
+9. El recovery envelope se ancla a candidate y environment identities.
+10. Todo recovery envelope tiene recovery point identificable.
+11. Todo recovery envelope tiene PONR explícito.
+12. Todo recovery envelope tiene RPO/RTO objetivo provenientes del contrato aplicable.
+13. RPO se evalúa semánticamente y no solo por timestamp.
+14. RTO termina cuando se recupera operabilidad aceptable, no cuando la base simplemente responde.
+15. Los modos de recuperación se heredan de `SUPA-TRANS-011`.
+16. `NO_INDEPENDENT_ROLLBACK` hereda recovery y evidencia de la unidad padre; no elimina la verificación.
+17. Antes del PONR se prefiere reversión determinista a la autoridad previa.
+18. Después del PONR puede ser obligatorio forward recovery, compensación o reconciliación.
+19. Restore de proyecto o PITR es recuperación mayor, no rollback rutinario de toda migración.
+20. La capacidad real de backup/PITR/restore se verifica nuevamente al ejecutar.
+21. Un backup PostgreSQL no demuestra recuperación completa de Storage, Auth, secretos, Edge Functions o consumidores.
+22. Auth no se recupera mediante escrituras directas a tablas internas.
+23. Storage requiere recuperación consciente de objetos, no solo SQL.
+24. Secretos no se copian a evidencia.
+25. Producción no ejecuta drills destructivos rutinarios.
+26. Un restore productivo real exige la autorización aplicable.
+27. Todo resultado recuperado vuelve a ejecutar el harness de `AUTH-DB-027`.
+28. Todo resultado recuperado vuelve a compararse con baseline/drift de `AUTH-DB-028`.
+29. Drift no autorizado después de recovery bloquea.
+30. Fallo de seguridad después de recovery bloquea.
+31. Fallo de reconciliación de datos o consumidores esenciales bloquea.
+32. Un RPO o RTO incumplido no produce PASS.
+33. La evidencia conserva fallos históricos append-only.
+34. `migration repair` no sustituye el rollback.
+35. Esta tarea no crea ni modifica requisitos de prueba.
+36. Esta tarea no realiza cambios físicos.
+37. `AUTH-DB-001` permanece exclusivamente reservada.
+
+---
+
+#### 27. Criterios de aceptación
+
+`AUTH-DB-029` queda documentalmente completa cuando:
+
+- exista una distinción contractual inequívoca entre backup, recovery point, restore, rollback y forward recovery;
+- quede definida una única fundación global `AUTH-DB-029::GLOBAL`;
+- cada ensayo se ancle a candidate y environment identities;
+- cada recovery envelope declare recovery point, PONR, RPO, RTO, owner y evidencia;
+- se conserven los modos y outcomes actuales de `SUPA-TRANS-011`;
+- exista una estrategia diferenciada pre-PONR y post-PONR;
+- se documente recuperación por superficie y no solo de PostgreSQL;
+- Auth, Storage, secretos, Edge Functions, jobs e integraciones tengan fronteras de recuperación explícitas cuando apliquen;
+- el drill mida RPO y RTO reales;
+- post-recovery ejecute el harness de `AUTH-DB-027`;
+- post-recovery compare baseline/drift mediante `AUTH-DB-028`;
+- producción quede protegida contra drills destructivos rutinarios;
+- restore/PITR productivo requiera autorización operativa/física aplicable;
+- el historial migratorio permanezca inmutable;
+- un failure anterior permanezca en evidencia;
+- ninguna capacidad de Supabase dependiente de plan/configuración se declare disponible sin verificación de ejecución;
+- no se cree ni modifique ningún requisito de prueba;
+- no se ejecute ningún cambio físico;
+- la continuidad reserve exclusivamente `AUTH-DB-001`.
+
+---
+
+#### 28. Límites
+
+`AUTH-DB-029` no:
+
+- crea backups;
+- obtiene copias de respaldo;
+- ejecuta restores;
+- ejecuta PITR;
+- ejecuta rollback;
+- ejecuta forward recovery;
+- ejecuta drills destructivos;
+- modifica Supabase;
+- aplica migraciones;
+- ejecuta `migration repair`;
+- reescribe historial migratorio;
+- modifica datos;
+- modifica Auth;
+- modifica Storage;
+- rota secretos;
+- redeploya Edge Functions;
+- cambia cron, webhooks o Realtime;
+- crea staging;
+- crea producción;
+- afirma que un mecanismo hosted está disponible sin verificarlo;
+- fija resultados reales de RPO/RTO sin medición;
+- autoriza un incidente o restore productivo;
+- autoriza `AUTH-DB-029::GLOBAL`;
+- modifica `AUTH-DB-001`;
+- crea o modifica requisitos de prueba;
+- modifica el Registro 04A.
+
+---
+
+#### 29. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD`
+
+
 ### [ ] AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
 ### [ ] AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
 ### [ ] AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
