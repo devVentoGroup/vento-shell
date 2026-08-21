@@ -85,7 +85,7 @@ function scope(status, taskId = 'SHELL-CI-001') {
   };
 }
 
-test('elige una sola autorización física y pausa la documentación sin autorizar código', () => {
+test('elige una sola autorización física y mantiene activo el carril documental', () => {
   const result = deriveImplementationControl({
     control: baseControl,
     workTopology: topology(),
@@ -94,7 +94,15 @@ test('elige una sola autorización física y pausa la documentación sin autoriz
   assert.equal(result.primaryAction.target, 'SHELL-CI-001::GLOBAL');
   assert.equal(result.implementationAuthorized, false);
   assert.equal(result.documentary.taskId, 'SHELL-CI-003');
-  assert.equal(result.documentary.state, 'PAUSADO_POR_ACCION_FISICA_PRIORITARIA');
+  assert.equal(result.documentary.state, 'ACTIVO');
+  assert.equal(result.documentary.parallelWithPhysical, true);
+  assert.equal(result.coordination.mode, 'CONTROLLED_DUAL_LANE');
+  assert.equal(result.coordination.documentaryConcurrency, 'ONE_ACTIVE_TASK');
+  assert.equal(result.coordination.physicalConcurrency, 'ONE_ACTIVE_INSTANCE');
+  assert.equal(result.coordination.separateCheckoutsRequired, true);
+  assert.equal(result.coordination.mergePolicy, 'SERIALIZED_CLOSE');
+  assert.equal(result.coordination.latestMainReconciliationRequired, true);
+  assert.equal(result.coordination.physicalContractFreeze, 'SOURCE_CONTRACT_SHA256');
   assert.equal(result.physical.instances[1].status, 'WAITING_FOR_PREVIOUS_INSTANCE');
 });
 
@@ -174,6 +182,8 @@ test('la autorización explícita conserva operador humano y pausa solo por evid
   assert.equal(result.executionOperatorPolicy.pauseOnlyWhenNextStepDependsOnEvidence, true);
   assert.equal(result.executionOperatorPolicy.evidenceReplyPrefix, 'RESULTADO DEL PASO ');
   assert.deepEqual(result.physical.authorized.map(({ instanceId }) => instanceId), ['SHELL-CI-001::GLOBAL']);
+  assert.equal(result.documentary.state, 'ACTIVO');
+  assert.equal(result.documentary.parallelWithPhysical, true);
 });
 
 test('la directiva conserva IMPLEMENTED hasta completar evidencia remota', () => {
@@ -185,6 +195,10 @@ test('la directiva conserva IMPLEMENTED hasta completar evidencia remota', () =>
   assert.match(source, /evidencia remota/u);
   assert.match(source, /commit\/push de materialización/u);
   assert.match(source, /antes de VERIFIED/u);
+  assert.match(source, /CONTROLLED_DUAL_LANE/u);
+  assert.match(source, /checkout independiente/u);
+  assert.match(source, /Cierre:\*\* serializado/u);
+  assert.match(source, /reconciliar el `main` más reciente/u);
 });
 
 test('rechaza habilitar escrituras automáticas del asistente por inferencia', () => {

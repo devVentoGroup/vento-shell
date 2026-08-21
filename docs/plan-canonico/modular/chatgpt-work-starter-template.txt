@@ -161,6 +161,25 @@ Nunca aceptes automáticamente `AUTORIZAR_IMPLEMENTACION`, `EJECUTAR_IMPLEMENTAC
 
 Esta auditoría es obligatoria en CADA tarea antes de desarrollar o implementar y debe realizarse de nuevo cuando cambie `task-work-topology.json`, `execution-route.json`, una reconciliación topológica, el archivo propietario o el estado físico de las instancias.
 
+PARALELISMO CONTROLADO DE CARRILES
+
+VENTO puede mantener simultáneamente un carril documental y un carril físico, sin convertirlos en una sola cola global.
+
+Reglas vinculantes:
+
+1. el carril documental conserva como máximo una tarea canónica activa y sigue obedeciendo continuidad, `APROBADO`, `docs:task:start` y `docs:task:finish`;
+2. el carril físico conserva como máximo una instancia activa y sigue siendo estrictamente serial: la siguiente instancia no puede adelantarse a la verificación exigida de la anterior;
+3. cuando ambos carriles estén activos deben utilizar un checkout o clon independiente por carril; nunca se cambia entre `task/...` e `implementation/...` dentro del mismo worktree para simular simultaneidad;
+4. el watcher puede permanecer activo en el checkout documental cuando corresponda, pero permanece apagado en el checkout físico desde antes de `docs:implementation:start` hasta `READY_TO_RESTART_WATCHER: SI`;
+5. la continuidad documental que avanza mientras una instancia física está en vuelo no cambia el contrato físico ya autorizado. La implementación queda congelada por su `authorization.source_contract_sha256` y por su alcance explícito;
+6. una tarea documental posterior no puede ampliar silenciosamente una instancia física ya autorizada. Si descubre una contradicción material con el contrato físico en vuelo, se bloquea únicamente el carril afectado hasta reconciliarla;
+7. ambos carriles pueden desarrollar y validar trabajo al mismo tiempo, pero solo un carril puede cerrar y mergear a la vez;
+8. después del primer merge, el segundo carril debe incorporar el `main` resultante antes de su validación final y repetir las comprobaciones finales sobre esa base. No se considera válido un cierre probado únicamente contra un `main` anterior;
+9. si `main` cambia nuevamente después de esa reconciliación y antes del merge del segundo carril, ese carril debe reconciliar y revalidar otra vez;
+10. conflictos sobre derivados compartidos no se resuelven copiando ciegamente una versión. Se conserva la fuente canónica de ambos trabajos, se regenera el derivado desde el `main` reconciliado y se vuelve a validar;
+11. una acción física prioritaria en `CURRENT-WORK` gobierna el carril físico, pero no pausa por sí misma la tarea documental actual;
+12. la instrucción explícita del usuario selecciona el carril de la conversación: desarrollar/documentar la tarea actual trabaja el carril documental; implementar/autorizar/continuar una instancia trabaja el carril físico.
+
 REGLA OBLIGATORIA DE RAMA POR TAREA Y CIERRE EN MAIN
 
 Toda tarea canónica debe comenzar desde una rama de trabajo propia antes de modificar su contenido, código, datos, configuración o artefactos derivados.
@@ -337,7 +356,9 @@ Un warning de preflight debe clasificarse antes de continuar. No lo ignores por 
 
 INTERPRETACIÓN DE INSTRUCCIONES DEL USUARIO
 
-- “Sigamos con X” → desarrolla únicamente X si la continuidad confirma que corresponde.
+- “Sigamos con X” → desarrolla únicamente X si la continuidad confirma que corresponde en el carril seleccionado.
+- “Sigamos desarrollando el plan” → selecciona el carril documental y continúa únicamente la tarea documental actual, aunque exista una instancia física prioritaria en paralelo.
+- “Sigamos implementando” → selecciona el carril físico y continúa únicamente la instancia física activa o la primera elegible conforme al control.
 - “Desarrolla X” → materializa el resultado completo de X.
 - “Revisa X” → revisión de solo lectura.
 - “Analiza X” → diagnóstico de solo lectura salvo instrucción expresa de modificar.

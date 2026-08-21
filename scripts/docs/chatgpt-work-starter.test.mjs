@@ -18,7 +18,11 @@ test('genera un unico iniciador desde la accion operativa vigente', () => {
   assert.match(result.source, /Interacción: TRANSACCIÓN CONTINUA \+ UNA SOLA BATERÍA FINAL/u);
   assert.match(result.source, /Watcher durante implementación física: APAGADO/u);
   assert.match(result.source, /Apertura física: docs:implementation:start/u);
-  assert.match(result.source, /Carril documental durante implementación física: ADVISORY_ONLY/u);
+  assert.match(result.source, /Carril documental durante implementación física: ACTIVO_EN_PARALELO/u);
+  assert.match(result.source, /CONTROLLED_DUAL_LANE/u);
+  assert.match(result.source, /Checkouts independientes: OBLIGATORIOS/u);
+  assert.match(result.source, /Cierre entre carriles: SERIALIZADO/u);
+  assert.match(result.source, /CONGELADO POR source_contract_sha256/u);
   assert.match(result.source, /Preflight físico: UNA VEZ/u);
   assert.match(result.source, /Reconciliación de apertura: docs:plan:build UNA VEZ \+ docs:plan:check/u);
   assert.match(result.source, /Batería física final: SOLO validation_commands AUTORIZADAS/u);
@@ -219,6 +223,10 @@ test('la plantilla global desacopla el carril fisico de la continuidad documenta
   assert.match(template, /START_DOCS_PLAN_BUILD: PASS_ONCE/u);
   assert.match(template, /START_DOCS_PLAN_CHECK: PASS/u);
   assert.match(template, /DOCUMENTARY_LANE_FOR_PHYSICAL: ADVISORY_ONLY/u);
+  assert.match(template, /PARALELISMO CONTROLADO DE CARRILES/u);
+  assert.match(template, /un checkout o clon independiente por carril/u);
+  assert.match(template, /solo un carril puede cerrar y mergear a la vez/u);
+  assert.match(template, /source_contract_sha256/u);
   assert.doesNotMatch(template, /después de `VERIFIED`, deriva el control y regenera el Iniciador mediante `npm run docs:implementation:status`/u);
   assert.match(template, /al arrancar debe comprobar estado y fuentes en modo de solo lectura/u);
   assert.match(template, /Push Protection/u);

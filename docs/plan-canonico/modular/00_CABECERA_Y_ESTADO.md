@@ -36,7 +36,7 @@
 | Progreso del bloque | **BLOQUE R: 0 de 51 aprobadas; AUTH-DB-015 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-008::GLOBAL** |
-| Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — AUTH-DB-015** |
+| Carril documental | **ACTIVO — AUTH-DB-015** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-008::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 

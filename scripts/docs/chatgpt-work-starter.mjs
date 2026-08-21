@@ -60,9 +60,11 @@ export function actionResponseContract(control, sourceContractHash) {
     'La prohibición de `exit` aplica a comandos manuales entregados al usuario; no prohíbe mecanismos internos como process.exit(...) dentro del código fuente normal de herramientas del repositorio.',
     'Toda salida operativa destinada a terminal debe usar ASCII seguro en sus etiquetas y mensajes de control: sin tildes, emojis, flechas Unicode ni símbolos decorativos. Usa formas como [PLAN CANONICO], ->, PASS, FAIL, WAIT, RETRY y OK. Los archivos y la documentación siguen usando UTF-8 completo; esta restricción aplica solo a la salida de consola.',
     'No uses placeholders sin resolver. Cada JSON, ruta, identificador, fecha, hash, estado y texto que el usuario deba copiar debe quedar completo y válido.',
+    'El carril documental y el carril físico pueden avanzar en paralelo cuando ambos estén disponibles. Cada carril conserva una sola unidad activa y debe usar un checkout independiente; la acción física prioritaria nunca pausa por sí sola la continuidad documental.',
+    'Los cierres de ambos carriles se serializan. El segundo carril en cerrar debe reconciliar el main ya actualizado por el primero y repetir sus validaciones finales sobre esa base antes de mergear.',
   ];
   const physicalCommon = [
-    'Durante una implementación física el watcher del plan debe permanecer apagado desde antes de docs:implementation:start hasta después de docs:implementation:finish y de confirmar worktree limpio y remoto sincronizado.',
+    'Durante una implementación física el watcher del checkout físico debe permanecer apagado desde antes de docs:implementation:start hasta después de docs:implementation:finish y de confirmar worktree limpio y remoto sincronizado. El watcher de un checkout documental independiente puede continuar según su propio lifecycle.',
     `La apertura física se ejecuta exclusivamente con npm run docs:implementation:start -- --instance-id ${target}. No indiques cambiar manualmente AUTHORIZED a IN_PROGRESS, no indiques crear la rama manualmente y no indiques ejecutar manualmente el preflight inicial ni docs:plan:build de apertura.`,
     'Una instancia física puede ejecutarse mucho después de su aprobación documental. La continuidad documental actual, el formato histórico del marcador propietario y active-sequence pendiente de regeneración se tratan como avisos documentales dentro del lifecycle físico; no obligan a reabrir ni reformatear tareas históricas. Los bloqueos físicos reales, la autorización, el contrato, el worktree y la divergencia sí permanecen fail-closed.',
     'docs:implementation:start realiza readiness mientras la instancia sigue AUTHORIZED; tras PRE_BRANCH_READINESS: PASS crea o recupera la rama, cambia a IN_PROGRESS, ejecuta una sola vez el preflight físico estricto y después ejecuta docs:plan:build una vez seguido de docs:plan:check para reconciliar cabecera, control, Iniciador y derivados versionados antes de READY_TO_IMPLEMENT: SI.',
@@ -201,6 +203,7 @@ ACCIÓN PRINCIPAL OBLIGATORIA
 - Objetivo exacto: ${control.primaryAction.target} — ${control.primaryAction.title}
 - Instrucción derivada: ${control.primaryAction.instruction}
 - Motivo: ${control.primaryAction.why}
+- Alcance de esta prioridad: ${physical ? 'CARRIL FÍSICO SOLAMENTE; EL CARRIL DOCUMENTAL SIGUE ACTIVO' : 'CARRIL DOCUMENTAL'}
 - Modo operativo: ${control.mode}
 - Autorización física para este objetivo: ${implementationAuthorized ? 'SÍ' : 'NO'}
 - Raíz local exacta del repositorio: ${repositoryRoot}
@@ -213,9 +216,9 @@ MODO DE EJECUCIÓN Y OPERADOR
 - Comandos y validaciones ejecutados por el asistente: NO AUTORIZADOS
 - Commit, push, PR, despliegues y mutaciones remotas del asistente: NO AUTORIZADOS
 - Auditoría de solo lectura por el asistente: AUTORIZADA
-- Watcher durante implementación física: APAGADO desde antes de docs:implementation:start hasta READY_TO_RESTART_WATCHER: SI
+- Watcher durante implementación física: APAGADO EN EL CHECKOUT FÍSICO desde antes de docs:implementation:start hasta READY_TO_RESTART_WATCHER: SI; el checkout documental independiente conserva su propio watcher
 - Apertura física: docs:implementation:start gestiona AUTHORIZED -> IN_PROGRESS, preflight y reconciliación documental
-- Carril documental durante implementación física: ADVISORY_ONLY para continuidad adelantada, formato histórico y active-sequence pendiente
+- Carril documental durante implementación física: ACTIVO_EN_PARALELO en un checkout independiente; dentro del preflight físico su continuidad adelantada, formato histórico y active-sequence pendiente siguen siendo ADVISORY_ONLY
 - Preflight físico: UNA VEZ, automático dentro de docs:implementation:start, antes de aplicar código
 - Reconciliación de apertura: docs:plan:build UNA VEZ + docs:plan:check dentro de docs:implementation:start
 - Gates intermedios rutinarios: PROHIBIDOS
@@ -249,9 +252,13 @@ TAREA O CONTRATO PROPIETARIO
 
 CARRILES Y CONTINUIDAD
 
+- Coordinación: ${control.coordination.mode}
 - Carril documental: ${control.documentary.state}
 - Tarea documental actual: ${control.documentary.taskId} — ${control.documentary.taskTitle}
 - Carril físico: ${physical ? `${physical.status} — ${physical.instanceId}` : 'SIN INSTANCIA ACTIVA'}
+- Checkouts independientes: ${control.coordination.separateCheckoutsRequired ? 'OBLIGATORIOS MIENTRAS AMBOS CARRILES ESTÉN ACTIVOS' : 'NO NECESARIOS AHORA'}
+- Cierre entre carriles: SERIALIZADO; el segundo incorpora el main resultante del primero y revalida antes de merge
+- Contrato físico en vuelo: CONGELADO POR source_contract_sha256
 - Regla de ejecución: ${lifecycle.executionRule}
 - Dependencias para desarrollar: ${dependencies.developmentSource ?? 'Solo precedencia canónica vigente.'}
 - Dependencias para ejecutar: ${dependencies.executionSource ?? lifecycle.executionDependencies}
@@ -295,9 +302,9 @@ CONTRATO OBLIGATORIO DE LA RESPUESTA Y DEL PASO MANUAL
 
 ${actionResponseContract(control, sourceContractHash)}
 
-No desarrolles la tarea documental ${control.documentary.taskId} mientras su carril figure ${control.documentary.state}, salvo que esa misma tarea sea el objetivo exacto de la acción principal. Una instancia física puede pertenecer a una tarea documental histórica: no la reabras, no la reformatees y no cambies la continuidad documental para ejecutarla. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
+La tarea documental ${control.documentary.taskId} permanece ${control.documentary.state} y puede desarrollarse en paralelo con la instancia física cuando exista, siempre en otro checkout o clon independiente. La acción principal generada gobierna el carril físico cuando haya una instancia prioritaria, pero no suspende el carril documental. Una instancia física puede pertenecer a una tarea documental histórica: no la reabras, no la reformatees y no cambies la continuidad documental para ejecutarla. No ejecutes otra instancia, no interpretes la aprobación documental como autorización física y no sustituyas el resultado material por recomendaciones genéricas.
 
-Este iniciador ya contiene la instrucción de trabajo. En implementación física entrega los artefactos de una vez. El usuario detiene primero el watcher, confirma main limpio y sincronizado 0/0, guarda después AUTHORIZED y ejecuta docs:implementation:start; el lifecycle resuelve IN_PROGRESS, preflight y build/check de apertura. READY_TO_IMPLEMENT: SI permite materializar todo el lote y ejecutar una sola batería física fail-fast formada exclusivamente por validation_commands. PASS continúa dentro del mismo lote; cuando el contrato exija evidencia remota sobre código publicado, la instancia permanece IMPLEMENTED durante el commit/push de materialización y la validación remota, y solo pasa a VERIFIED después del PASS remoto. Tras VERIFIED el usuario ejecuta docs:implementation:finish, que realiza el build/check final, commit, push, PR, CI, merge, sincronización y limpieza. Solo READY_TO_RESTART_WATCHER: SI permite reactivar el watcher. Solo un bloqueo real debe producir una ronda intermedia de chat. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
+Este iniciador gobierna dos carriles independientes cuando ambos están disponibles. En implementación física entrega los artefactos de una vez. El usuario detiene primero el watcher únicamente en el checkout físico, confirma main limpio y sincronizado 0/0, guarda después AUTHORIZED y ejecuta docs:implementation:start; el lifecycle resuelve IN_PROGRESS, preflight y build/check de apertura. El checkout documental puede continuar con su propia rama y su propio watcher. READY_TO_IMPLEMENT: SI permite materializar todo el lote físico y ejecutar una sola batería física fail-fast formada exclusivamente por validation_commands. PASS continúa dentro del mismo lote; cuando el contrato exija evidencia remota sobre código publicado, la instancia permanece IMPLEMENTED durante el commit/push de materialización y la validación remota, y solo pasa a VERIFIED después del PASS remoto. Los cierres se serializan: el carril que cierre segundo debe reconciliar el main ya actualizado por el primero y repetir su validación final antes de mergear. Tras VERIFIED el usuario ejecuta docs:implementation:finish, que realiza el build/check final, commit, push, PR, CI, merge, sincronización y limpieza. Solo READY_TO_RESTART_WATCHER: SI permite reactivar el watcher del checkout físico. Solo un bloqueo real debe producir una ronda intermedia de chat. No hagas ninguna escritura mientras no exista autorización asistida explícita para el número exacto del paso.
 
 TRAZABILIDAD DEL INICIADOR
 

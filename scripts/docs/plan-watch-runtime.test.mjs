@@ -85,7 +85,7 @@ test('renderiza un estado legible sin convertirlo en fuente canónica', () => {
         title: 'Crear pruebas de paquetes compartidos',
         instruction: 'Definir el alcance exacto; todavía no modificar código.',
       },
-      documentary: { state: 'PAUSADO_POR_ACCION_FISICA_PRIORITARIA', taskId: 'SHELL-CI-003' },
+      documentary: { state: 'ACTIVO', taskId: 'SHELL-CI-003' },
       physical: { authorized: [] },
     },
   });
