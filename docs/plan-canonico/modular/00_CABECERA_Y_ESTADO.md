@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1008** |
+| Tareas aprobadas | **1009** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **586** |
+| Tareas no iniciadas | **585** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **63.24% (1008/1594)** |
+| Porcentaje de completamiento | **63.30% (1009/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas** |
-| Tarea actual | **AUTH-DB-004 — Reducir grants innecesarios de authenticated** |
+| Última tarea aprobada | **AUTH-DB-004 — Reducir grants innecesarios de authenticated** |
+| Tarea actual | **AUTH-DB-005 — Revocar grants innecesarios de anon** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-005 — Revocar grants innecesarios de anon** |
+| Siguiente tarea | **AUTH-DB-016 — Crear esquemas empresariales aprobados** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 7 de 51 aprobadas; AUTH-DB-004 pendiente** |
+| Progreso del bloque | **BLOQUE R: 8 de 51 aprobadas; AUTH-DB-005 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-015::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-004** |
+| Carril documental | **ACTIVO — AUTH-DB-005** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-015::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas |
-| Tarea actual | `AUTH-DB-004` — Reducir grants innecesarios de authenticated — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-005` — Revocar grants innecesarios de anon |
+| Última aprobada | `AUTH-DB-004` — Reducir grants innecesarios de authenticated |
+| Tarea actual | `AUTH-DB-005` — Revocar grants innecesarios de anon — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-016` — Crear esquemas empresariales aprobados |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 7 DE 51 APROBADAS — ACTUAL AUTH-DB-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 8 DE 51 APROBADAS — ACTUAL AUTH-DB-005** |
 | Implementación física | **SHELL-CON-015::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
-        ↓
-TAREA ACTUAL
 AUTH-DB-004 — Reducir grants innecesarios de authenticated
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-005 — Revocar grants innecesarios de anon
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-016 — Crear esquemas empresariales aprobados
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 7 de 51 tareas aprobadas
+BLOQUE R — 8 de 51 tareas aprobadas
 ```
