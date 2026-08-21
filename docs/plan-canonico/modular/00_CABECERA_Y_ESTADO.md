@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1005** |
+| Tareas aprobadas | **1006** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **589** |
+| Tareas no iniciadas | **588** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **63.05% (1005/1594)** |
+| Porcentaje de completamiento | **63.11% (1006/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete** |
-| Tarea actual | **AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD** |
+| Última tarea aprobada | **AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD** |
+| Tarea actual | **AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección** |
+| Siguiente tarea | **AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 4 de 51 aprobadas; AUTH-DB-001 pendiente** |
+| Progreso del bloque | **BLOQUE R: 5 de 51 aprobadas; AUTH-DB-002 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-013::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-001** |
+| Carril documental | **ACTIVO — AUTH-DB-002** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-013::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete |
-| Tarea actual | `AUTH-DB-001` — Corregir tablas sin RLS identificadas en SUPA-AUD — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-002` — Endurecer políticas RLS demasiado amplias aprobadas para corrección |
+| Última aprobada | `AUTH-DB-001` — Corregir tablas sin RLS identificadas en SUPA-AUD |
+| Tarea actual | `AUTH-DB-002` — Endurecer políticas RLS demasiado amplias aprobadas para corrección — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 4 DE 51 APROBADAS — ACTUAL AUTH-DB-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 5 DE 51 APROBADAS — ACTUAL AUTH-DB-002** |
 | Implementación física | **SHELL-CON-013::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
-        ↓
-TAREA ACTUAL
 AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 4 de 51 tareas aprobadas
+BLOQUE R — 5 de 51 tareas aprobadas
 ```
