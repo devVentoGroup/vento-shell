@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1003** |
+| Aprobadas | **1004** |
 | En propuesta | **0** |
-| No iniciadas | **591** |
+| No iniciadas | **590** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **62.92% (1003/1594)** |
+| Porcentaje de completamiento | **62.99% (1004/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-028` — Establecer baseline y control de drift entre local, staging y producción | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-028` — Establecer baseline y control de drift entre local, staging y producción | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-001` — Corregir tablas sin RLS identificadas en SUPA-AUD | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1213,7 +1213,7 @@
 | ⬜ NO INICIADA | `AUTH-SIM-014` | Probar en todas las aplicaciones | `bloques/Q_SIMULACION/03_VALIDACION_INTEGRAL_DE_SIMULACION.md` |
 | ✅ APROBADA | `AUTH-DB-015` | Documentar y versionar todas las migraciones en vento-shell | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ✅ APROBADA | `AUTH-DB-027` | Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-028` | Establecer baseline y control de drift entre local, staging y producción | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
+| ✅ APROBADA | `AUTH-DB-028` | Establecer baseline y control de drift entre local, staging y producción | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-029` | Validar respaldo, restauración y rollback antes del primer paquete | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-001` | Corregir tablas sin RLS identificadas en SUPA-AUD | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-002` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |

@@ -1062,7 +1062,750 @@ La tarea materializa infraestructura de ejecución para reglas de prueba ya regi
 `AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción`
 
 
-### [ ] AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción
+### ✅ AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones
+**Tarea siguiente:** AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md`
+**Estado físico resultante:** Contrato documental cerrado; futura instancia global `AUTH-DB-028::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-028` establece una única fundación global para construir baselines verificables y detectar drift entre el estado esperado por `vento-shell` y los ambientes local, staging y producción, sin convertir la comparación en una autorización implícita para reparar, promover o modificar ningún ambiente.
+
+La tarea materializa documentalmente esta frontera:
+
+```text
+ESTADO ESPERADO VERSIONADO
++
+IDENTIDAD INEQUÍVOCA DEL AMBIENTE
++
+ESTADO OBSERVADO READ-ONLY
+↓
+BASELINE + COMPARACIÓN
+↓
+SIN DIFERENCIAS
+o
+EXPECTED_OVERLAY
+o
+TEMPORARY_EXCEPTION
+o
+UNAUTHORIZED_DRIFT
+o
+INSUFFICIENT_EVIDENCE
+```
+
+La regla central es:
+
+```text
+DRIFT CONTROLADO
+≠ IGUALDAD BYTE-A-BYTE ENTRE AMBIENTES
+
+DRIFT CONTROLADO
+= ninguna diferencia no autorizada
++ toda diferencia deliberada tipada, aprobada y trazable
++ evidencia suficiente de las superficies aplicables
+```
+
+---
+
+#### 2. Resultado canónico
+
+Queda aprobado el siguiente modelo:
+
+```text
+AUTH-DB-015
+→ define e inventaría las migraciones canónicas
+
+AUTH-DB-027
+→ demuestra que una reconstrucción limpia y los contratos de base son ejecutables
+
+AUTH-DB-028
+→ fija la referencia esperada
+→ identifica cada ambiente
+→ observa sus superficies
+→ compara expected vs observed
+→ clasifica drift
+→ produce evidencia reproducible
+
+AUTH-DB-029
+→ consume candidato + ambiente + baseline
+→ valida backup, restore y rollback
+```
+
+`AUTH-DB-028` no crea otra fuente de verdad de schema. El estado esperado se deriva de los artefactos versionados de `vento-shell` y el estado observado se utiliza únicamente como evidencia de comparación.
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente de R0 establece:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-028::GLOBAL
+```
+
+Interpretación:
+
+1. el contrato se define documentalmente una sola vez;
+2. la futura instancia `AUTH-DB-028::GLOBAL` materializa una única infraestructura reusable de baseline y drift;
+3. los paquetes posteriores reutilizan esa infraestructura y producen evidencia de sus candidatos y ambientes;
+4. no se crea una nueva instancia `AUTH-DB-028::<package_id>`;
+5. la aprobación documental no autoriza `AUTH-DB-028::GLOBAL`;
+6. `PRE_E5_FOUNDATION` permite materializar la fundación antes de E5, pero no constituye despliegue de ningún paquete.
+
+---
+
+#### 4. Fuentes vinculantes
+
+| Fuente                                               | Uso vinculante                                                                          |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`         | continuidad, separación documental/física y aprobación explícita                        |
+| `docs/plan-canonico/modular/delivery-contract.json`  | formato validable de la tarea                                                           |
+| `docs/plan-canonico/modular/active-sequence.json`    | `AUTH-DB-027` como anterior y `AUTH-DB-028` como actual                                 |
+| `docs/plan-canonico/modular/task-work-topology.json` | `GLOBAL_ENABLE_ONCE` + `PRE_E5_FOUNDATION`                                              |
+| `AUTH-DB-015`                                        | migraciones canónicas, manifiesto e inmutabilidad del historial                         |
+| `AUTH-DB-027`                                        | harness reusable y reconstrucción limpia                                                |
+| `SUPA-TRANS-013`                                     | contrato ambiental, candidate manifest, fingerprints, overlays, excepciones y evidencia |
+| `SUPA-TRANS-016`                                     | R0 y orden `015 → 027 → 028 → 029`                                                      |
+| `supabase/config.toml`                               | configuración local versionada                                                          |
+| `supabase/migrations/`                               | fuente ejecutable del historial                                                         |
+| Registro Canónico de Requisitos de Prueba            | regla vigente de drift y reproducibilidad                                               |
+
+`SUPA-TRANS-013` conserva autoridad sobre el significado de paridad ambiental. `AUTH-DB-028` lo convierte en una fundación reusable de R0 sin duplicar sus 970 unidades históricas de transición.
+
+---
+
+#### 5. Línea base física observada
+
+En el corte de preparación de esta tarea:
+
+| Superficie                                   | Estado observado                   | Disposición                                                                        |
+| -------------------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------------- |
+| proyecto local                               | `project_id = vento-shell`         | identidad local versionada                                                         |
+| PostgreSQL local                             | major `17`                         | debe coincidir en major con el remoto objetivo                                     |
+| migraciones                                  | habilitadas                        | fuente de reconstrucción                                                           |
+| seed global                                  | deshabilitado                      | no forma parte del baseline de datos                                               |
+| `supabase/migrations/`                       | existente                          | fuente ejecutable canónica                                                         |
+| `supabase/MIGRATION_MANIFEST.md`             | todavía no materializado en `main` | será consumido cuando `AUTH-DB-015::GLOBAL` quede verificada                       |
+| harness físico de `AUTH-DB-027`              | todavía no materializado en `main` | será consumido cuando `AUTH-DB-027::GLOBAL` quede verificada                       |
+| `supabase/public_schema_check.sql`           | existente                          | evidencia auxiliar; no fuente canónica del baseline                                |
+| `supabase/schema/remote-schema.sql`          | archivo de cero bytes              | no puede utilizarse como baseline                                                  |
+| proyecto Supabase alojado de Vento observado | `vento-os-dev`, activo             | ambiente hosted actual; no se reclasifica por inferencia como staging o producción |
+| branches Supabase observados                 | ninguno                            | no existe evidencia actual de un branch separado de staging                        |
+| staging separado                             | no verificado                      | no puede certificarse hasta tener identidad explícita                              |
+| producción separada                          | no verificada                      | no puede certificarse hasta tener identidad explícita                              |
+
+La ausencia actual de staging o producción identificables no invalida el contrato global. Impide únicamente afirmar certificación para un ambiente cuya identidad todavía no existe o no está registrada.
+
+---
+
+#### 6. Autoridad del baseline
+
+El baseline esperado de un candidato se deriva únicamente de fuentes versionadas y trazables.
+
+Debe incluir, cuando corresponda:
+
+1. commit SHA exacto;
+2. árbol Git limpio del candidato;
+3. conjunto ordenado de migraciones;
+4. SHA-256 de cada migración mediante el manifiesto de `AUTH-DB-015`;
+5. digest del manifiesto de migraciones;
+6. digest de `supabase/config.toml`;
+7. versión exacta de Supabase CLI usada en la evidencia;
+8. versión de PostgreSQL esperada;
+9. artefactos de Edge Functions y sus digests cuando pertenezcan al candidato;
+10. configuración contractual no secreta;
+11. conjunto nominal de secretos requeridos, sin valores;
+12. contratos, suites y validaciones aplicables;
+13. referencia del paquete o candidato que se esté evaluando.
+
+No son fuentes de verdad del baseline:
+
+- un dump remoto aceptado sin reconciliación;
+- `supabase/public_schema_check.sql`;
+- `supabase/schema/remote-schema.sql`;
+- una captura de Studio;
+- una lista de tablas obtenida manualmente;
+- el resultado previo de otro ambiente;
+- un archivo generado fuera del commit evaluado.
+
+---
+
+#### 7. Identidad obligatoria de ambiente
+
+Ninguna comparación es válida si el ambiente no está inequívocamente identificado.
+
+Cada evidencia ambiental debe registrar como mínimo:
+
+| Campo              | Regla                                            |
+| ------------------ | ------------------------------------------------ |
+| rol ambiental      | local, staging o producción                      |
+| identidad técnica  | run id local o project/branch ref remoto         |
+| región             | cuando aplique                                   |
+| PostgreSQL         | versión efectiva observada                       |
+| Supabase CLI       | versión exacta utilizada para la comprobación    |
+| commit             | SHA del candidato                                |
+| candidate identity | misma identidad a través de la promoción         |
+| configuración      | digest versionado + overlay ambiental            |
+| momento            | timestamp UTC                                    |
+| owner              | responsable del ambiente                         |
+| modo de prueba     | destructivo permitido o read-only según ambiente |
+
+Una etiqueta como `staging`, `prod`, `dev` o un nombre de proyecto no sustituye la identidad técnica.
+
+Un ambiente sin identidad suficiente produce:
+
+```text
+INSUFFICIENT_EVIDENCE
+```
+
+y no puede declararse equivalente.
+
+---
+
+#### 8. Modelo de baseline por ambiente
+
+Para cada ambiente existen dos referencias distintas:
+
+##### 8.1. Expected baseline
+
+Estado que debería existir según el candidato versionado.
+
+##### 8.2. Observed baseline
+
+Estado realmente observado en el ambiente identificado.
+
+La comparación siempre se ancla así:
+
+```text
+EXPECTED(candidate)
+vs.
+OBSERVED(environment)
+```
+
+Las comparaciones:
+
+```text
+LOCAL vs STAGING
+STAGING vs PRODUCTION
+LOCAL vs PRODUCTION
+```
+
+son evidencia auxiliar, pero no sustituyen el ancla canónica.
+
+Dos ambientes igualmente incorrectos no producen paridad por coincidir entre sí.
+
+---
+
+#### 9. Superficies obligatorias de comparación
+
+La comprobación no se limita al schema `public`.
+
+Debe cubrir, según aplicabilidad:
+
+| Superficie                  | Evidencia mínima                                                           |
+| --------------------------- | -------------------------------------------------------------------------- |
+| historial de migraciones    | versiones, orden, presencia y reconciliación con manifiesto                |
+| relaciones                  | columnas, tipos, defaults, constraints, índices y ownership contractual    |
+| vistas                      | definición, seguridad y exposición                                         |
+| funciones / RPC             | firma, retorno, cuerpo, volatilidad, security mode, search path y EXECUTE  |
+| triggers                    | padre, timing, eventos, función y condición                                |
+| RLS                         | habilitación, policies, roles, `USING`, `WITH CHECK` y grants relacionados |
+| Data API                    | schemas expuestos y grants intencionales                                   |
+| extensiones                 | conjunto requerido y versiones efectivas                                   |
+| Realtime                    | publications y configuración aplicable                                     |
+| Storage                     | buckets, privacidad, límites, MIME y políticas aplicables                  |
+| Edge Functions              | código/bundle, runtime, `verify_jwt`, configuración y nombres de secretos  |
+| Auth                        | providers, redirects, hooks y configuración contractual no secreta         |
+| cron / jobs / webhooks      | definición, schedule, command digest, retry y ownership                    |
+| configuración de plataforma | región, capacidades y parámetros contractualmente relevantes               |
+| datos                       | únicamente invariantes y comparaciones semánticas autorizadas              |
+
+Una superficie aplicable sin evidencia produce paridad incompleta aunque el diff SQL sea vacío.
+
+---
+
+#### 10. Uso de Supabase CLI y límites de herramienta
+
+La futura infraestructura puede utilizar capacidades soportadas de Supabase CLI como señales independientes, pero ninguna herramienta aislada constituye certificado integral.
+
+Reglas:
+
+1. `migration list` compara historial local/remoto principalmente por versión; no demuestra igualdad de contenido;
+2. los hashes del manifiesto de `AUTH-DB-015` complementan el ledger migratorio;
+3. `db diff` compara schema contra las migraciones mediante una base shadow, pero no cubre de forma suficiente todas las superficies hosted;
+4. las limitaciones conocidas de `db diff` incluyen publications, buckets de Storage y determinados atributos de views;
+5. `db dump` excluye por defecto schemas administrados por Supabase y no incluye datos ni roles salvo opciones explícitas;
+6. un dump limpio no demuestra Auth, Storage, Realtime, Edge Functions, cron, secretos ni configuración de plataforma;
+7. las superficies hosted deben verificarse mediante interfaces soportadas;
+8. toda versión de CLI utilizada en evidencia debe registrarse porque las capacidades y resultados pueden variar entre versiones.
+
+`AUTH-DB-028` no adopta el workflow declarativo experimental de Supabase como segunda fuente de verdad. `supabase/migrations/` permanece como fuente ejecutable canónica mientras otra tarea no cambie expresamente esa decisión.
+
+---
+
+#### 11. Fingerprints
+
+Un fingerprint debe preservar diferencias semánticas y ordenar únicamente colecciones cuyo orden no tenga significado contractual.
+
+Como mínimo:
+
+| Clase         | Componentes bloqueantes                                                                |
+| ------------- | -------------------------------------------------------------------------------------- |
+| migración     | versión, filename, SHA-256 y estado observado                                          |
+| relación      | definición, columnas, tipos, defaults, constraints, índices, grants, RLS y publication |
+| función/RPC   | firma, retorno, cuerpo, volatilidad, security mode, search path, owner y EXECUTE       |
+| trigger       | padre, timing, eventos, nivel, condición y función                                     |
+| Edge Function | source/bundle digest, runtime, verify_jwt, route y secret-name set                     |
+| Storage       | configuración de bucket, privacidad, límites, MIME y policies                          |
+| Auth          | configuración contractual redactada, providers, redirects y hooks                      |
+| Realtime      | publication, tablas/canales y autorización                                             |
+| cron/job      | schedule, timezone, command digest, owner, retry y locking                             |
+| plataforma    | capacidades contractualmente requeridas y configuración relevante                      |
+
+Queda prohibido convertir conteos iguales en equivalencia.
+
+---
+
+#### 12. Drift permitido y drift bloqueante
+
+Toda diferencia debe terminar en una clasificación explícita.
+
+##### `EXPECTED_OVERLAY`
+
+Diferencia deliberada entre ambientes requerida por su función, por ejemplo:
+
+- project ref;
+- URL;
+- dominio;
+- credenciales;
+- secreto;
+- callback;
+- región o capacidad aprobada;
+- datos sintéticos frente a datos reales.
+
+Requiere owner, razón y evidencia.
+
+##### `TEMPORARY_EXCEPTION`
+
+Diferencia no deseada, aceptada temporalmente.
+
+Requiere:
+
+- `drift_id`;
+- superficie exacta;
+- ambiente;
+- razón;
+- riesgo;
+- owner;
+- aprobador;
+- expiración;
+- tratamiento;
+- evidencia.
+
+Una excepción vencida bloquea.
+
+##### `UNAUTHORIZED_DRIFT`
+
+Diferencia sin autorización válida.
+
+Bloquea promoción, certificación o cierre aplicable.
+
+##### `INSUFFICIENT_EVIDENCE`
+
+No existe evidencia suficiente para demostrar equivalencia o clasificar la diferencia.
+
+También bloquea.
+
+Sin diferencias aplicables, no se inventa un registro de excepción.
+
+---
+
+#### 13. Contrato de allowlist
+
+La allowlist no puede ser una colección de regex amplios ni texto libre sin owner.
+
+Cada entrada debe contener:
+
+| Campo                   | Regla                                      |
+| ----------------------- | ------------------------------------------ |
+| `drift_id`              | estable y único                            |
+| superficie              | exacta                                     |
+| identidad afectada      | exacta                                     |
+| ambiente origen/destino | explícito                                  |
+| expected                | redactado cuando sea sensible              |
+| observed                | redactado cuando sea sensible              |
+| clasificación           | `EXPECTED_OVERLAY` o `TEMPORARY_EXCEPTION` |
+| razón                   | concreta                                   |
+| riesgo                  | explícito                                  |
+| owner                   | obligatorio                                |
+| aprobador               | obligatorio cuando corresponda             |
+| expiración              | obligatoria para `TEMPORARY_EXCEPTION`     |
+| evidencia               | reproducible                               |
+| tratamiento             | corrección o permanencia intencional       |
+
+Una entrada no puede ocultar objetos nuevos desconocidos mediante comodines generales.
+
+---
+
+#### 14. Reglas específicas por ambiente
+
+##### Local
+
+- puede reconstruirse desde cero;
+- usa datos sintéticos;
+- puede ejecutar pruebas destructivas del harness;
+- no contiene secretos productivos;
+- debe demostrar reproducibilidad desde las migraciones;
+- cualquier gap de plataforma hosted queda explícitamente diferido a staging.
+
+##### Staging
+
+- debe tener identidad técnica separada;
+- recibe exactamente el candidato aprobado;
+- usa credenciales, callbacks y secretos propios;
+- puede ejecutar integración, seguridad y pruebas controladas;
+- no usa datos productivos salvo dataset sanitizado expresamente autorizado;
+- cubre las superficies hosted ausentes localmente.
+
+##### Producción
+
+- requiere identidad técnica separada y registrada;
+- el baseline previo es read-only;
+- no ejecuta seed;
+- no ejecuta reset;
+- no ejecuta pruebas destructivas;
+- no utiliza datos ficticios persistentes;
+- la comprobación posterior conserva candidate identity;
+- cualquier drift no autorizado bloquea cierre o exige rollback/forward-fix bajo la tarea propietaria.
+
+---
+
+#### 15. Control de cambios manuales
+
+Un cambio realizado en Dashboard, SQL Editor, consola, API administrativa o cualquier interfaz remota fuera del historial versionado se considera drift hasta demostrar lo contrario.
+
+La detección:
+
+```text
+NO AUTORIZA
+db pull
+migration repair
+db push
+db reset --linked
+DDL
+DML
+cambio de policy
+cambio de grant
+cambio de Auth
+cambio de Storage
+redeploy de Edge Function
+```
+
+El controlador de drift es read-only respecto del ambiente evaluado salvo que otra tarea y autorización física concedan expresamente una mutación.
+
+Una reparación debe:
+
+1. identificar la tarea o paquete propietario;
+2. preservar evidencia del drift;
+3. decidir si el estado remoto debe capturarse, revertirse o reproducirse mediante una migración/artefacto versionado;
+4. reejecutar baseline y comparación después de la corrección;
+5. no reescribir el resultado anterior como si nunca hubiera existido.
+
+---
+
+#### 16. Drift de historial migratorio
+
+La comprobación de migraciones exige simultáneamente:
+
+1. mismo universo versionado esperado;
+2. versiones remotas reconciliadas;
+3. archivos físicos presentes;
+4. SHA-256 esperado por archivo;
+5. ausencia de archivo remoto/manual sin representación canónica;
+6. ausencia de entrada de manifiesto sin archivo;
+7. ausencia de migration history reparada sin evidencia propietaria;
+8. preservación de excepciones legacy ya documentadas.
+
+Una coincidencia de timestamps en el ledger no sustituye la validación de contenido.
+
+Un `migration repair` previo debe aparecer como hecho auditado; no se considera automáticamente corrupción ni automáticamente conformidad.
+
+---
+
+#### 17. Drift de datos
+
+`AUTH-DB-028` no exige que staging y producción tengan las mismas filas.
+
+La paridad de datos se evalúa semánticamente mediante invariantes como:
+
+- huérfanos;
+- duplicados;
+- nulos prohibidos;
+- dominios;
+- relaciones;
+- estados;
+- rangos;
+- agregados críticos;
+- idempotencia;
+- outcomes;
+- fronteras de actor/sede/tenant cuando apliquen.
+
+Resultados heredados:
+
+```text
+SEMANTIC_PASS
+EXPECTED_DATA_DIFFERENCE
+EXPLAINED_EXCEPTION
+UNEXPLAINED_MISMATCH
+INSUFFICIENT_EVIDENCE
+```
+
+`UNEXPLAINED_MISMATCH` e `INSUFFICIENT_EVIDENCE` bloquean.
+
+---
+
+#### 18. Evidencia y cadena de custodia
+
+Cada ejecución futura debe conservar como mínimo:
+
+1. environment identity;
+2. candidate identity;
+3. commit SHA;
+4. timestamp UTC;
+5. versiones de herramientas;
+6. migration manifest digest;
+7. config digest;
+8. fingerprints expected;
+9. fingerprints observed;
+10. resultados por superficie;
+11. drift encontrado;
+12. allowlist aplicada;
+13. excepciones y expiraciones;
+14. actor/owner/aprobador;
+15. logs o referencias a evidencia no sensible;
+16. resultado global;
+17. digest del bundle de evidencia.
+
+La evidencia:
+
+- es append-only;
+- no contiene valores de secretos;
+- no contiene connection strings completas;
+- no reemplaza un FAIL anterior;
+- conserva el vínculo con el candidato exacto.
+
+---
+
+#### 19. Gates
+
+La fundación global debe permitir estas decisiones:
+
+```text
+LOCAL_CERTIFIED
+STAGING_CERTIFIED
+PRODUCTION_CERTIFIED
+```
+
+pero `AUTH-DB-028` no afirma que esos gates estén actualmente superados.
+
+Reglas:
+
+1. `LOCAL_CERTIFIED` requiere baseline reproducible y harness aplicable;
+2. `STAGING_CERTIFIED` requiere identidad de staging real y evidencia hosted suficiente;
+3. `PRODUCTION_CERTIFIED` requiere identidad productiva real, precheck y postcheck no destructivos;
+4. no se certifica un ambiente inexistente;
+5. no se certifica un ambiente cuya identidad sea inferida;
+6. no se promueve un candidato con `UNAUTHORIZED_DRIFT`;
+7. no se promueve con `INSUFFICIENT_EVIDENCE`;
+8. un overlay deliberado no bloquea si está correctamente tipado y aprobado;
+9. una excepción temporal bloquea al expirar;
+10. el resultado de un ambiente no se copia como evidencia de otro.
+
+---
+
+#### 20. Relación con `AUTH-DB-029`
+
+`AUTH-DB-028` entrega a `AUTH-DB-029`:
+
+```text
+candidate identity
++
+environment identity
++
+expected baseline
++
+observed baseline
++
+drift classification
++
+evidence bundle
+```
+
+`AUTH-DB-029` es propietario de:
+
+- backup;
+- recovery point;
+- restore;
+- rollback;
+- RPO/RTO aplicable;
+- ensayo de recuperación;
+- validación posterior a restauración.
+
+`AUTH-DB-028` no ejecuta ni certifica esas operaciones.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+
+La tarea operacionaliza una regla ya protegida por el Registro Canónico de Requisitos de Prueba y no introduce una obligación nueva de comportamiento.
+
+---
+
+#### 22. Cobertura de prueba vigente reutilizada
+
+`TREQ-SUPABASE-008` ya exige que toda migración supere reconstrucción limpia, upgrade, datos, constraints, RLS, RPC, tipos, rendimiento, backup, restauración y rollback, y establece expresamente que el drift entre local, staging y producción debe ser nulo o aprobado sin omitir objetos manuales de la evidencia.
+
+`TREQ-SUPABASE-010` y la cobertura reconciliada por `SUPA-TRANS-013` complementan las superficies hosted y la paridad de automatizaciones cuando resulten aplicables.
+
+Esta tarea reutiliza esas obligaciones sin modificar ninguna fila del registro 04A.
+
+---
+
+#### 23. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                         |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | pendiente de materialización local del artefacto documental en su rama                            |
+| LOCAL     | NOT_EXECUTED   | pendiente de preflight, formato, quality y validadores documentales del checkout                  |
+| REMOTA    | NOT_EXECUTED   | el estado hosted observado se utilizó como línea base de lectura, no como certificación ambiental |
+| OPERATIVA | NOT_APPLICABLE | esta tarea documental no ejecuta promoción, reparación ni comparación destructiva                 |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-028::GLOBAL` permanece separada y sin autorización                                       |
+
+---
+
+#### 24. Decisiones vinculantes
+
+1. `AUTH-DB-028` materializa documentalmente una fundación global reusable.
+2. Su futura instancia física es `AUTH-DB-028::GLOBAL`.
+3. La topología es `GLOBAL_ENABLE_ONCE`.
+4. El gate es `PRE_E5_FOUNDATION`.
+5. Los paquetes posteriores reutilizan la fundación; no reabren esta tarea como instancia por paquete.
+6. El estado esperado se deriva de `vento-shell`, no del remoto.
+7. El remoto observado nunca se convierte automáticamente en la nueva fuente de verdad.
+8. Cada comparación se ancla en `EXPECTED(candidate) vs OBSERVED(environment)`.
+9. Dos ambientes igualmente incorrectos no constituyen paridad.
+10. Drift controlado significa cero drift no autorizado, no igualdad byte-a-byte.
+11. `EXPECTED_OVERLAY` representa diferencias deliberadas y trazables.
+12. `TEMPORARY_EXCEPTION` requiere expiración.
+13. `UNAUTHORIZED_DRIFT` bloquea.
+14. `INSUFFICIENT_EVIDENCE` bloquea.
+15. El baseline conserva commit, candidate, migraciones, hashes y configuración.
+16. Cada ambiente requiere identidad técnica inequívoca.
+17. Un ambiente inexistente o no identificado no puede certificarse.
+18. `migration list` no demuestra igualdad de contenido.
+19. `db diff` no certifica por sí solo todas las superficies de Supabase.
+20. `db dump` no certifica por sí solo la plataforma hosted.
+21. Las superficies no SQL forman parte del control de drift cuando son aplicables.
+22. Los secretos se comparan por metadata permitida, nunca por valor en evidencia.
+23. El controlador de drift no repara automáticamente.
+24. Detectar drift no autoriza `db pull`, `migration repair`, `db push` ni `db reset --linked`.
+25. Producción se compara mediante operaciones no destructivas.
+26. `AUTH-DB-029` conserva propiedad exclusiva de backup, restore y rollback.
+27. Esta tarea no modifica SQL, datos, Supabase, configuración, migraciones ni ambientes.
+28. Esta tarea no crea ni modifica requisitos de prueba.
+29. La aprobación documental no autoriza `AUTH-DB-028::GLOBAL`.
+
+---
+
+#### 25. Criterios de aceptación
+
+`AUTH-DB-028` queda documentalmente completa cuando:
+
+- exista una autoridad única del estado esperado;
+- expected y observed estén separados;
+- cada ambiente requiera identidad inequívoca;
+- el candidate conserve la misma identidad a través de la promoción;
+- migraciones, schema, RLS, RPC y superficies hosted tengan reglas de fingerprint;
+- el historial migratorio no dependa únicamente de timestamps;
+- `db diff` y `db dump` estén reconocidos como señales parciales;
+- las diferencias ambientales deliberadas usen overlay explícito;
+- las excepciones temporales tengan owner, aprobador y expiración;
+- drift no autorizado e insuficiencia de evidencia bloqueen;
+- la detección permanezca read-only;
+- ninguna reparación se ejecute por inferencia;
+- producción prohíba reset, seed y pruebas destructivas;
+- los datos se comparen por invariantes y no por igualdad de filas;
+- la evidencia conserve candidate, environment, herramientas, fingerprints y digest;
+- el estado actual no finja staging ni producción si no existe identidad verificable;
+- quede preservada la frontera con `AUTH-DB-029`;
+- `AUTH-DB-028::GLOBAL` permanezca sin autorización física implícita;
+- se reutilice la cobertura TREQ vigente sin modificar 04A.
+
+---
+
+#### 26. Límites
+
+`AUTH-DB-028` no:
+
+- materializa scripts de drift;
+- crea archivos de baseline físicos;
+- ejecuta Supabase CLI;
+- ejecuta consultas de mutación;
+- ejecuta `db pull`;
+- ejecuta `migration repair`;
+- ejecuta `db push`;
+- ejecuta `db reset --linked`;
+- crea staging;
+- crea producción;
+- crea branches;
+- aplica migraciones;
+- modifica historial migratorio;
+- corrige drift;
+- cambia Auth;
+- cambia RLS;
+- cambia grants;
+- cambia Storage;
+- despliega Edge Functions;
+- cambia cron o webhooks;
+- copia datos productivos;
+- realiza backup;
+- ejecuta restore;
+- ejecuta rollback;
+- autoriza `AUTH-DB-028::GLOBAL`;
+- modifica `AUTH-DB-029`;
+- crea un requisito de prueba duplicado.
+
+---
+
+#### 27. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete`
+
+
 ### [ ] AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
 ### [ ] AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
 ### [ ] AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección

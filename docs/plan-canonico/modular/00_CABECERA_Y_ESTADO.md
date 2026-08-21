@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1003** |
+| Tareas aprobadas | **1004** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **591** |
+| Tareas no iniciadas | **590** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **62.92% (1003/1594)** |
+| Porcentaje de completamiento | **62.99% (1004/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones** |
-| Tarea actual | **AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción** |
+| Última tarea aprobada | **AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción** |
+| Tarea actual | **AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete** |
+| Siguiente tarea | **AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 2 de 51 aprobadas; AUTH-DB-028 pendiente** |
+| Progreso del bloque | **BLOQUE R: 3 de 51 aprobadas; AUTH-DB-029 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-010::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-028** |
+| Carril documental | **ACTIVO — AUTH-DB-029** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-010::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones |
-| Tarea actual | `AUTH-DB-028` — Establecer baseline y control de drift entre local, staging y producción — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete |
+| Última aprobada | `AUTH-DB-028` — Establecer baseline y control de drift entre local, staging y producción |
+| Tarea actual | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-001` — Corregir tablas sin RLS identificadas en SUPA-AUD |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 2 DE 51 APROBADAS — ACTUAL AUTH-DB-028** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 3 DE 51 APROBADAS — ACTUAL AUTH-DB-029** |
 | Implementación física | **SHELL-CON-010::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones
-        ↓
-TAREA ACTUAL
 AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 2 de 51 tareas aprobadas
+BLOQUE R — 3 de 51 tareas aprobadas
 ```
