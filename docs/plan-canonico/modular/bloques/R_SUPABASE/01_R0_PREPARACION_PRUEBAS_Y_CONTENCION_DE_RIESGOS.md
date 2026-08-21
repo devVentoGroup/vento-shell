@@ -3004,7 +3004,683 @@ Esta tarea no autoriza ni ejecuta:
 `AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`
 
 
-### [ ] AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
+### ✅ AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
+**Tarea siguiente:** AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md`
+**Estado físico resultante:** Contrato de endurecimiento RLS cerrado; futura instancia global `AUTH-DB-002::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-002` define el contrato de contención para las políticas Row Level Security que las auditorías canónicas ya clasificaron como demasiado amplias y aprobaron para corrección.
+
+La tarea no convierte en defecto cualquier policy que use `authenticated`, `PERMISSIVE`, `USING (true)` o una función helper. La inclusión exige simultáneamente:
+
+```text
+HALLAZGO CANÓNICO CONFIRMADO
++
+POLICY O COMPOSICIÓN RLS OBSERVABLE
++
+ACCESO MÁS AMPLIO QUE EL CONTRATO EMPRESARIAL
++
+PROPIETARIO DE CORRECCIÓN IDENTIFICADO
+```
+
+La frontera queda:
+
+```text
+AUTH-DB-001
+→ habilita RLS donde sigue deshabilitado
+
+AUTH-DB-002
+→ elimina o restringe policies existentes que amplían autorización
+
+AUTH-DB-003
+→ endurece funciones SECURITY DEFINER
+
+AUTH-DB-004
+→ reduce grants innecesarios de authenticated
+
+AUTH-DB-005
+→ revoca grants innecesarios de anon
+```
+
+---
+
+#### 2. Resultado canónico
+
+La corrección RLS objetivo obedece:
+
+```text
+AUTENTICADO
+≠ AUTORIZADO
+
+TRABAJADOR ACTIVO
+≠ AUTORIZADO PARA TODA FILA
+
+MISMA SEDE
+≠ AUTORIZADO PARA TODO RECURSO
+
+ROL GERENTE
+≠ ADMINISTRACIÓN GLOBAL
+
+POLICY PERMISSIVE A
++
+POLICY PERMISSIVE B
+=
+A OR B
+```
+
+Por tanto, una policy general no puede anular por composición `OR` una policy más específica que ya limite permiso, sede, recurso, estado o actor.
+
+La futura materialización deberá producir una migración versionada y verificable que cierre únicamente las superficies aprobadas en esta tarea.
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente de R0 establece:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-002::GLOBAL
+```
+
+Consecuencias:
+
+1. existe una única materialización física global de esta fundación;
+2. no se crea una instancia por paquete;
+3. la infraestructura de `AUTH-DB-015`, `AUTH-DB-027`, `AUTH-DB-028`, `AUTH-DB-029` y la contención de `AUTH-DB-001` constituyen el handoff físico anterior;
+4. `PRE_E5_FOUNDATION` permite cerrar esta contención antes de los paquetes E5;
+5. esta aprobación documental no autoriza ninguna migración ni modificación remota.
+
+---
+
+#### 4. Fuentes vinculantes
+
+La tarea reconcilia:
+
+- `SUPA-AUD-009`, como inventario y auditoría de policies, grants y privilegios;
+- `CODE-AUD-017`, como fuente de hallazgos de autorización confirmados y sus destinos;
+- `SUPA-ARC-015`, como política canónica objetivo de exposición, grants y RLS;
+- `AUTH-DB-001`, como frontera anterior de habilitación RLS;
+- los contratos `AUTH-SRV-*`, `PULSO-AUTH-*`, `ORIGO-AUTH-*`, `VISO-AUTH-*`, `PASS-INT-*` y `EVID-ARC-*` ya aprobados que poseen la semántica empresarial;
+- el Registro Canónico de Requisitos de Prueba vigente;
+- el estado remoto observable de `vento-os-dev`, utilizado únicamente como evidencia de línea base y no como autoridad normativa.
+
+Precedencia:
+
+```text
+REGLA EMPRESARIAL APROBADA
+→ define quién debe poder hacer qué
+
+CONTRATO RLS CANÓNICO
+→ define cómo expresar la frontera de filas
+
+ESTADO REMOTO
+→ demuestra qué existe hoy
+
+AUTH-DB-002
+→ decide qué policy amplia se retira o restringe
+→ no inventa capacidades nuevas
+```
+
+---
+
+#### 5. Regla de inclusión y exclusión
+
+Una policy entra en `AUTH-DB-002` cuando una fuente canónica ya demostró que concede acceso lateral, mutación excesiva o bypass lógico por composición.
+
+Una policy no entra únicamente porque:
+
+- sea `PERMISSIVE`;
+- use `TO authenticated`;
+- tenga `USING (true)` sobre un catálogo deliberadamente global;
+- conceda acceso a `service_role`;
+- su nombre parezca administrativo;
+- exista una alternativa más estricta teóricamente posible.
+
+Toda ampliación del universo de corrección exige evidencia canónica equivalente a la utilizada en esta tarea.
+
+---
+
+#### 6. Línea base reconciliada de `public.users`
+
+El estado observado conserva estas policies relevantes:
+
+| Policy                        | Operación | Estado observado                                           | Hallazgo                                                                |
+| ----------------------------- | --------- | ---------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `users_update_self`           | `UPDATE`  | limita fila por `id = auth.uid()`, pero no limita columnas | un cliente puede intentar modificar campos protegidos de su propia fila |
+| `staff_select_all_users`      | `SELECT`  | permite todas las filas a cualquier trabajador activo      | lectura masiva de datos de cliente                                      |
+| `users_select_cashier`        | `SELECT`  | autoriza por rol laboral general sin territorio de fila    | lectura directa más amplia que la proyección operacional mínima         |
+| `users_select_cashier_for_qr` | `SELECT`  | replica la misma concesión amplia                          | segunda vía directa equivalente                                         |
+
+Decisión:
+
+```text
+users_update_self
+→ NO puede permanecer como frontera suficiente para una fila mixta
+→ la autoadministración debe limitarse a campos aprobados mediante contrato de servidor, proyección o grants mínimos
+→ AUTH-DB-004 conserva la propiedad de los grants
+
+staff_select_all_users
+→ RETIRAR COMO VÍA GENERAL
+
+users_select_cashier
+users_select_cashier_for_qr
+→ NO pueden autorizar lectura completa de public.users como sustituto de una proyección mínima
+→ el flujo de caja consume una frontera controlada y limitada
+```
+
+El acceso `users_select_self` permanece conceptualmente válido para la propia fila únicamente en la medida en que la proyección resultante no exponga campos que otra capa deba ocultar.
+
+---
+
+#### 7. Línea base reconciliada de fidelización
+
+##### 7.1. Ledger de puntos
+
+Estado observado:
+
+```text
+pass.loyalty_transactions
+policy = "Users can insert their own transactions"
+operation = INSERT
+predicate = auth.uid() = user_id
+```
+
+El predicado demuestra ownership de la fila, pero no demuestra autorización para crear un hecho económico de fidelización.
+
+Decisión:
+
+```text
+CLIENTE AUTENTICADO
+→ NO INSERTA DIRECTAMENTE EL LEDGER
+
+ACUMULACIÓN / GASTO / AJUSTE / REVERSIÓN
+→ CONTRATO DE SERVIDOR AUTORIZADO
+→ OPERACIÓN ATÓMICA E IDEMPOTENTE
+```
+
+La policy de inserción cliente debe desaparecer como capacidad directa antes de considerar cerrado el hallazgo.
+
+##### 7.2. Redenciones
+
+Conviven policies específicas de caja y sede con:
+
+```text
+staff_select_all_redemptions
+staff_validate_redemptions
+```
+
+Las dos policies generales usan `is_active_staff()` y se componen de manera permisiva con las específicas.
+
+Decisión:
+
+| Policy amplia                  | Resultado                                                                                     |
+| ------------------------------ | --------------------------------------------------------------------------------------------- |
+| `staff_select_all_redemptions` | retirar; no puede ampliar la lectura más allá del contrato específico de actor/sede           |
+| `staff_validate_redemptions`   | retirar; no puede ampliar la validación más allá del contrato específico de actor/sede/estado |
+
+Las policies específicas existentes tampoco se convierten por esta tarea en autoridad definitiva. Permanecen sujetas al contrato de permiso, sede, actor y operación atómica aprobado para PULSO/PASS.
+
+---
+
+#### 8. Línea base reconciliada de documentos
+
+`CODE-AUD-017` confirmó que pertenecer a una sede permite actualmente una lectura documental más amplia que el contrato de privacidad.
+
+La policy observada:
+
+```text
+public.documents
+documents_select_self_or_permission
+```
+
+incluye una rama que permite leer por mera pertenencia activa a la misma sede.
+
+Decisión:
+
+```text
+MISMA SEDE
+→ NO ES CONDICIÓN SUFICIENTE
+
+LECTURA DOCUMENTAL
+→ propio documento
+OR
+→ sujeto autorizado
+OR
+→ permiso explícito aplicable al recurso
+```
+
+La rama de pertenencia desnuda a sede debe retirarse.
+
+La policy de Storage:
+
+```text
+storage.objects
+documents_select_visible
+```
+
+reproduce el mismo principio mediante metadata documental y también debe excluir la pertenencia desnuda a sede como criterio suficiente.
+
+Esta tarea no cambia:
+
+- la bandera pública/privada del bucket;
+- URLs firmadas;
+- expiración;
+- ciclos de vida;
+- grants de Storage.
+
+Esas responsabilidades permanecen en sus contratos propietarios.
+
+---
+
+#### 9. Línea base reconciliada de órdenes de compra
+
+Estado observado:
+
+```text
+public.purchase_orders
+employees_crud_purchase_orders
+FOR ALL
+criterio principal = existe una fila de employee para auth.uid()
+```
+
+El contrato canónico exige permiso, sede o centro de costo, estado y columnas.
+
+Decisión:
+
+1. `employees_crud_purchase_orders` no puede sobrevivir como concesión genérica;
+2. `FOR ALL` se descompone por operación cuando existan operaciones directas permitidas;
+3. ninguna escritura se concede únicamente por existir como trabajador;
+4. una operación sin predicate canónico completo queda denegada hasta que su acción propietaria exista;
+5. `AUTH-DB-004` conserva la reducción de grants;
+6. los contratos ORIGO conservan la semántica de consulta, aprobación y alcance.
+
+La ausencia temporal de una ruta directa permitida se resuelve fail-closed; no se reintroduce `is_employee()` como permiso empresarial.
+
+---
+
+#### 10. Línea base reconciliada de pedidos y líneas
+
+Las policies observadas relevantes incluyen:
+
+```text
+public.orders
+orders_update_staff
+
+public.order_items
+order_items_update_staff
+```
+
+Ambas permiten `UPDATE` usando esencialmente:
+
+```text
+trabajador
++
+acceso a sede
+```
+
+Eso permite mutar una fila completa sin demostrar acción nombrada, transición ni columnas permitidas.
+
+Decisión:
+
+```text
+UPDATE DIRECTO GENERICO
+→ NO AUTORIZADO
+
+MUTACION DE PEDIDO O LINEA
+→ ACCION NOMBRADA
+→ PERMISO
+→ SEDE
+→ ESTADO DE ORIGEN
+→ TRANSICION
+→ COLUMNAS PERMITIDAS
+→ AUDITORIA
+```
+
+`order_item_options_update_staff` pertenece al mismo agregado técnico, pero no se incorpora automáticamente a la corrección por semejanza. Su modificación física exige demostrar que la acción propietaria y el hallazgo canónico la incluyen.
+
+---
+
+#### 11. Línea base reconciliada de configuración administrativa
+
+El hallazgo `H-CODE-017-014` prohíbe que `gerente` equivalga a administración global.
+
+El estado remoto contiene policies administrativas con la forma:
+
+```text
+owner
+OR global_manager
+OR role = gerente
+```
+
+sin una restricción territorial o una capacidad administrativa explícita suficiente.
+
+Entre las superficies observadas se encuentran:
+
+```text
+public.document_types
+document_types_write_admin
+
+public.required_document_rules
+required_document_rules_insert
+required_document_rules_update
+required_document_rules_delete
+```
+
+Decisión:
+
+1. `gerente` por sí solo deja de ser una autorización suficiente;
+2. owner y gerencia global conservan únicamente las facultades aprobadas por sus contratos;
+3. una regla territorial usa el recurso territorial real cuando exista;
+4. un catálogo verdaderamente global exige una capacidad administrativa global explícita;
+5. si no existe aún un permiso canónico exacto para una mutación, la operación queda fail-closed hasta su tarea propietaria;
+6. esta tarea no inventa nombres de permisos.
+
+---
+
+#### 12. Composición de policies
+
+La materialización futura deberá validar el resultado efectivo por tabla, rol y operación, no cada policy de forma aislada.
+
+Regla:
+
+```text
+PERMISSIVE(A)
++
+PERMISSIVE(B)
+→ A OR B
+```
+
+Por tanto:
+
+1. una policy amplia no permanece al lado de otra específica con la expectativa de que la específica la limite;
+2. para una misma audiencia y operación, cualquier rama que conceda acceso fuera del contrato bloquea;
+3. una policy `RESTRICTIVE` solo se introduce cuando la arquitectura aprobada lo exija y existan pruebas de composición;
+4. no se usa una policy restrictiva como parche opaco para conservar indefinidamente una policy permisiva defectuosa;
+5. el resultado efectivo debe ser legible, reproducible y testeable.
+
+---
+
+#### 13. Forma canónica de las policies corregidas
+
+Toda policy nueva o reemplazada dentro de la futura materialización cumple:
+
+1. audiencia explícita mediante `TO`;
+2. cero uso nuevo de `PUBLIC` para estas superficies protegidas;
+3. operación específica `SELECT`, `INSERT`, `UPDATE` o `DELETE`;
+4. `FOR ALL` únicamente cuando la misma guarda sea correcta para todas las operaciones y exista evidencia explícita;
+5. `TO authenticated` no constituye autorización empresarial;
+6. `USING` limita filas existentes;
+7. `WITH CHECK` valida la fila resultante o insertada;
+8. `UPDATE` comprueba estado anterior y estado posterior cuando el contrato incluya transición;
+9. permiso, recurso, territorio, estado y actor se incluyen cuando sean parte del contrato;
+10. metadata autoadministrable no se usa como autoridad;
+11. las funciones helper utilizadas deben pertenecer al contrato canónico y no ampliar silenciosamente la decisión.
+
+---
+
+#### 14. Matriz de decisiones de endurecimiento
+
+| Superficie                   | Policy / familia                                              | Decisión `AUTH-DB-002`                                             | Propietario complementario         |
+| ---------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------- |
+| `public.users`               | `users_update_self`                                           | cerrar actualización directa de fila mixta como control suficiente | `AUTH-DB-004`, contratos PASS/AUTH |
+| `public.users`               | `staff_select_all_users`                                      | retirar lectura general por trabajador activo                      | contratos PULSO/PASS               |
+| `public.users`               | `users_select_cashier`                                        | sustituir lectura de fila completa por frontera mínima autorizada  | PULSO/PASS                         |
+| `public.users`               | `users_select_cashier_for_qr`                                 | sustituir lectura de fila completa por frontera mínima autorizada  | PULSO/PASS                         |
+| `pass.loyalty_transactions`  | inserción directa de cliente                                  | retirar                                                            | PASS/PULSO server contracts        |
+| `pass.loyalty_redemptions`   | `staff_select_all_redemptions`                                | retirar policy que amplía por OR                                   | PULSO/PASS                         |
+| `pass.loyalty_redemptions`   | `staff_validate_redemptions`                                  | retirar policy que amplía por OR                                   | PULSO/PASS                         |
+| `public.documents`           | `documents_select_self_or_permission`                         | eliminar pertenencia desnuda a sede como vía de lectura            | EVID / ANIMA                       |
+| `storage.objects`            | `documents_select_visible`                                    | eliminar pertenencia desnuda a sede como vía de lectura            | EVID / Storage                     |
+| `public.purchase_orders`     | `employees_crud_purchase_orders`                              | retirar autorización genérica `FOR ALL` de trabajador              | ORIGO                              |
+| `public.orders`              | `orders_update_staff`                                         | cerrar UPDATE genérico de fila completa                            | PULSO                              |
+| `public.order_items`         | `order_items_update_staff`                                    | cerrar UPDATE genérico de línea completa                           | PULSO                              |
+| configuración administrativa | policies que autorizan por `gerente` sin capacidad/territorio | sustituir rol desnudo por contrato administrativo explícito        | VISO / AUTH                        |
+| otras policies amplias       | no incluidas expresamente                                     | no modificar por analogía                                          | tarea propietaria correspondiente  |
+
+La tabla define decisiones contractuales. No contiene SQL ejecutable ni autoriza la materialización.
+
+---
+
+#### 15. Hallazgos relacionados que no quedan cerrados por esta tarea
+
+`AUTH-DB-002` participa en defensa en profundidad, pero no reclama cierre total de:
+
+| Hallazgo                                     | Propietario fuera de `AUTH-DB-002`            |
+| -------------------------------------------- | --------------------------------------------- |
+| rol/sede enviados al aceptar invitación      | acciones y funciones de servidor `AUTH-SRV-*` |
+| grants directos excesivos de `authenticated` | `AUTH-DB-004`                                 |
+| grants o exposición de `anon`                | `AUTH-DB-005`                                 |
+| funciones `SECURITY DEFINER`                 | `AUTH-DB-003`                                 |
+| vistas sin `security_invoker`                | arquitectura de vistas + grants               |
+| bucket público y URL temporal                | EVID / Storage                                |
+| RPC anónimas                                 | `AUTH-DB-003` + `AUTH-DB-005`                 |
+| atomicidad de redención                      | contratos PASS/PULSO y servidor               |
+| mutaciones de pedido por acción nombrada     | PULSO + servidor                              |
+| autorización completa de compras             | ORIGO + servidor                              |
+
+Un PASS físico de `AUTH-DB-002::GLOBAL` significa que las policies amplias incluidas fueron contenidas; no significa que esos hallazgos transversales estén totalmente cerrados.
+
+---
+
+#### 16. Pruebas negativas obligatorias
+
+La futura materialización debe incorporar al harness de `AUTH-DB-027` casos que demuestren, como mínimo:
+
+1. usuario cliente no modifica saldo, rol ni estado protegido;
+2. trabajador activo sin necesidad operacional no enumera clientes;
+3. cajero fuera del territorio permitido no obtiene la proyección de otro territorio;
+4. cliente no inserta directamente el ledger de puntos;
+5. trabajador no cajero no lee todas las redenciones;
+6. trabajador fuera de sede no valida una redención;
+7. pertenecer a una sede no concede por sí solo metadata documental de otro trabajador;
+8. conocer una ruta de Storage no concede lectura;
+9. empleado sin permiso ORIGO no crea, modifica, aprueba ni elimina una orden de compra;
+10. trabajador con acceso a sede no modifica libremente pago, precio, fidelización, inventario o estado de un pedido;
+11. gerente de una sede no administra configuración global ni filas de otra sede;
+12. actor autorizado conserva el caso positivo mínimo necesario.
+
+Una policy que deniega todos los casos, incluidos los legítimos, no constituye corrección suficiente.
+
+---
+
+#### 17. Materialización física posterior
+
+La futura instancia:
+
+```text
+AUTH-DB-002::GLOBAL
+```
+
+deberá:
+
+1. partir de los contratos y baselines físicos ya verificados de R0;
+2. reconciliar nuevamente el estado real de cada policy incluida;
+3. fallar si una policy desapareció, cambió de semántica o fue sustituida sin trazabilidad;
+4. crear una migración forward versionada;
+5. no reescribir migraciones históricas;
+6. aplicar únicamente las decisiones de esta tarea;
+7. ejecutar pruebas positivas y negativas;
+8. demostrar ausencia de ampliación por composición `OR`;
+9. demostrar drift permitido únicamente conforme a `AUTH-DB-028`;
+10. preservar evidencia de recovery conforme a `AUTH-DB-029`.
+
+La aprobación documental no autoriza esa instancia.
+
+---
+
+#### 18. Rollback seguro
+
+Una reversión no puede restaurar silenciosamente una policy que ya fue clasificada como vulnerabilidad confirmada.
+
+Orden de respuesta ante fallo posterior a la corrección:
+
+```text
+CORREGIR FORWARD
+o
+DESHABILITAR TEMPORALMENTE LA CAPACIDAD AFECTADA
+o
+RESTAURAR UNA POLICY PREVIA SOLO SI SIGUE CUMPLIENDO EL CONTRATO DE SEGURIDAD
+```
+
+El rollback físico deberá preservar:
+
+- historial de migraciones;
+- evidencia del estado anterior;
+- motivo;
+- actor;
+- recovery point;
+- validación posterior.
+
+`AUTH-DB-029` conserva la autoridad del mecanismo de recuperación.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA NUEVOS
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** los hallazgos de autorización, privacidad, fidelización, compras, pedidos, documentos y territorio ya están protegidos por requisitos canónicos existentes. `AUTH-DB-002` define la corrección RLS de esas reglas sin alterar su comportamiento protegido.
+
+---
+
+#### 20. Cobertura de prueba vigente reutilizada
+
+La trazabilidad existente que cubre esta tarea incluye:
+
+- `TREQ-AUTH-005`;
+- `TREQ-AUTH-006`;
+- `TREQ-AUTH-007`;
+- `TREQ-PASS-008`;
+- `TREQ-ORIGO-002`;
+- `TREQ-PULSO-004`;
+- `TREQ-SUPABASE-004`;
+- `TREQ-SUPABASE-007`;
+- `TREQ-SUPABASE-008`.
+
+Estos identificadores se reutilizan únicamente como cobertura vigente. Esta tarea no modifica sus filas ni su estado.
+
+---
+
+#### 21. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                              |
+| --------- | -------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | pendiente de materialización documental en el checkout de la tarea                                                     |
+| LOCAL     | NOT_EXECUTED   | pendiente de preflight, quality, delivery y validadores del repositorio                                                |
+| REMOTA    | PASS           | estado RLS actual contrastado en modo read-only sobre `vento-os-dev`; confirma las policies utilizadas como línea base |
+| OPERATIVA | NOT_APPLICABLE | la tarea documental no modifica flujos de usuario ni ejecuta correcciones físicas                                      |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-002::GLOBAL` permanece separada y sin autorización física                                                     |
+
+---
+
+#### 22. Decisiones vinculantes
+
+1. `AUTH-DB-002` corrige policies aprobadas para endurecimiento; no ejecuta una limpieza global por patrón sintáctico.
+2. La futura instancia física es `AUTH-DB-002::GLOBAL`.
+3. Su modo es `GLOBAL_ENABLE_ONCE`.
+4. Su gate es `PRE_E5_FOUNDATION`.
+5. `authenticated` representa autenticación técnica, no autorización empresarial.
+6. Una policy permisiva amplia no puede convivir con una específica si la amplia anula su restricción por `OR`.
+7. `public.users` no expone lectura completa a cualquier trabajador activo.
+8. `public.users` no usa ownership de fila como autorización suficiente para modificar campos protegidos.
+9. el cliente no inserta directamente el ledger de fidelización.
+10. las policies generales de redención que amplían las específicas se retiran.
+11. pertenencia a sede no concede por sí sola acceso documental.
+12. una orden de compra no admite CRUD total por la sola existencia de un trabajador.
+13. pedidos y líneas no admiten UPDATE completo por `is_employee() + can_access_site()`.
+14. `gerente` no equivale a capacidad administrativa global.
+15. las policies nuevas o reemplazadas usan audiencia y operación explícitas.
+16. no se inventan permisos ausentes; la falta de contrato suficiente produce deny hasta su tarea propietaria.
+17. `AUTH-DB-004` conserva los grants de `authenticated`.
+18. `AUTH-DB-005` conserva los grants de `anon`.
+19. `AUTH-DB-003` conserva `SECURITY DEFINER`.
+20. el estado público/privado de buckets no se modifica aquí.
+21. los consumidores no se reescriben en esta tarea documental.
+22. la materialización posterior usa migración forward.
+23. un rollback no puede reabrir silenciosamente una vulnerabilidad confirmada.
+24. no se crea ni modifica ningún requisito de prueba.
+25. la aprobación documental no autoriza ninguna modificación de Supabase.
+
+---
+
+#### 23. Criterios de aceptación
+
+`AUTH-DB-002` queda documentalmente completa cuando:
+
+- el universo de corrección se base en hallazgos confirmados y no en heurísticas;
+- las policies amplias de `public.users` tengan destino explícito;
+- la inserción cliente del ledger tenga destino explícito;
+- las policies generales de redención tengan destino explícito;
+- la lectura documental por mera sede quede prohibida;
+- la policy genérica de órdenes de compra quede rechazada como contrato válido;
+- el UPDATE genérico de pedidos y líneas quede rechazado;
+- la administración por rol `gerente` sin capacidad o territorio quede rechazada;
+- la composición permisiva `OR` quede contemplada;
+- exista una decisión para sintaxis, audiencia, operación, `USING` y `WITH CHECK`;
+- los hallazgos reservados a DB-003, DB-004 y DB-005 permanezcan separados;
+- existan casos positivos y negativos mínimos;
+- la futura instancia quede identificada como `AUTH-DB-002::GLOBAL`;
+- no exista autorización física implícita;
+- se reutilice la cobertura vigente sin modificar 04A.
+
+---
+
+#### 24. Límites
+
+`AUTH-DB-002` no:
+
+- ejecuta SQL;
+- crea migraciones;
+- modifica policies remotas;
+- modifica grants;
+- cambia funciones `SECURITY DEFINER`;
+- cambia `search_path`;
+- cambia privilegios `EXECUTE`;
+- cambia buckets;
+- genera URLs firmadas;
+- cambia Edge Functions;
+- modifica consumidores;
+- crea acciones de servidor;
+- crea nombres nuevos de permisos;
+- cambia el modelo de autorización;
+- aplica `FORCE ROW LEVEL SECURITY`;
+- modifica datos;
+- modifica 04A;
+- autoriza `AUTH-DB-002::GLOBAL`;
+- desarrolla `AUTH-DB-003`.
+
+---
+
+#### 25. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`
+
+
 ### [ ] AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
 ### [ ] AUTH-DB-004 — Reducir grants innecesarios de authenticated
 ### [ ] AUTH-DB-005 — Revocar grants innecesarios de anon
