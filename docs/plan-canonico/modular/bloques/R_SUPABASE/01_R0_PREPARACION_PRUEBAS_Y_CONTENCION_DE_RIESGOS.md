@@ -5138,7 +5138,1007 @@ Estos identificadores se registran únicamente como trazabilidad de cobertura pr
 `AUTH-DB-005 — Revocar grants innecesarios de anon`
 
 
-### [ ] AUTH-DB-005 — Revocar grants innecesarios de anon
+### ✅ AUTH-DB-005 — Revocar grants innecesarios de anon
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-004 — Reducir grants innecesarios de authenticated
+**Tarea siguiente:** AUTH-DB-016 — Crear esquemas empresariales aprobados
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md`
+**Estado físico resultante:** Contrato de reducción de privilegios de `anon` cerrado; futura instancia global `AUTH-DB-005::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-005` define el contrato único de contención, clasificación y reducción de privilegios PostgreSQL concedidos al rol técnico `anon` dentro de las superficies gobernadas por Vento OS.
+
+La tarea separa conceptos que no pueden confundirse:
+
+```text
+anon EN POSTGRES
+= solicitud no autenticada
+≠ usuario de Auth anónimo
+≠ cliente público aprobado por negocio
+≠ autorización empresarial
+
+GRANT DE OBJETO
+≠ POLICY RLS
+≠ CONTRATO PÚBLICO
+≠ CONTROL DE ABUSO
+
+OBJETO LEGACY ACCESIBLE
+≠ CONTRATO ANON_PUBLIC APROBADO
+```
+
+Un usuario creado mediante autenticación anónima de Supabase continúa utilizando el rol `authenticated`; `anon` queda reservado para solicitudes que no han autenticado un principal.
+
+El objetivo no es ejecutar una revocación masiva. El objetivo es que `anon` alcance únicamente contratos públicos deliberados, mínimos, observables y gobernados, sin conservar privilegios por herencia, defaults, compatibilidad histórica o apariencia nominal del objeto.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el siguiente modelo:
+
+```text
+SUPA-ARC-015
+→ autoridad normativa de exposición, grants, default privileges y RLS
+
+SUPA-ARC-016
+→ autoridad de contratos READ_VIEW, QUERY_RPC y COMMAND_RPC
+
+AUTH-DB-002
+→ endurecimiento de policies RLS
+
+AUTH-DB-003
+→ endurecimiento de SECURITY DEFINER
+
+AUTH-DB-004
+→ reducción de privilegios de authenticated
+
+AUTH-DB-005
+→ reducción de privilegios de anon
+
+AUTH-DB-005::GLOBAL
+→ única futura materialización física de esta contención
+```
+
+`AUTH-DB-005` no redefine la arquitectura de exposición. La convierte en un contrato ejecutable de mínimo privilegio para la audiencia no autenticada.
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente de R0 establece:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-005::GLOBAL
+```
+
+Consecuencias:
+
+1. existe una sola instancia física global;
+2. no se crea una instancia por paquete;
+3. la contención debe existir antes de paquetes E5 que dependan de la superficie pública de Supabase;
+4. la aprobación documental no autoriza la instancia física;
+5. cualquier cambio físico exige autorización humana explícita, migración forward, pruebas y rollback;
+6. la materialización no puede invadir la fundación física de R1 ni crear contratos `api` por inferencia.
+
+---
+
+#### 4. Fuentes vinculantes y precedencia
+
+La definición consume y preserva:
+
+- `SUPA-AUD-003`, para exposición Data API observada;
+- `SUPA-AUD-006` y `SUPA-AUD-007`, para funciones, modos de seguridad y ejecución efectiva;
+- `SUPA-AUD-009`, para grants, RLS, policies y privilegios efectivos;
+- `SUPA-ARC-014`, para excepciones y endurecimiento `SECURITY DEFINER`;
+- `SUPA-ARC-015`, para exposición, grants, default privileges, RLS y roles de ejecución;
+- `SUPA-ARC-016`, para `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC`;
+- `SUPA-TRANS-*`, para consumidores, compatibilidad, movimiento, retiro y drift;
+- `AUTH-DB-004`, como handoff de la clasificación de audiencia autenticada;
+- el Registro Canónico de Requisitos de Prueba vigente;
+- el estado remoto verificable, exclusivamente como línea base física;
+- el comportamiento soportado vigente de Supabase respecto de `anon`, grants, RLS, funciones y Data API.
+
+Precedencia:
+
+```text
+CONTRATO OBJETIVO
+→ define qué puede ser público
+
+CONSUMIDORES Y COMPATIBILIDAD
+→ determinan qué acceso legacy todavía necesita transición
+
+ESTADO REMOTO
+→ demuestra privilegio actual
+
+AUTH-DB-005
+→ clasifica y contiene sin inventar contratos públicos
+```
+
+La existencia histórica de un privilegio no lo convierte en contrato `ANON_PUBLIC`.
+
+---
+
+#### 5. Semántica exacta de `anon`
+
+Para Vento OS, `anon` es una audiencia técnica de PostgreSQL utilizada por solicitudes sin principal autenticado.
+
+Reglas:
+
+1. `anon` no representa un cliente registrado;
+2. `anon` no representa un usuario de Supabase Auth autenticado de forma anónima;
+3. `anon` no representa un rol empresarial;
+4. `anon` no porta por sí mismo sede, área, vínculo laboral, permiso, scope o actor empresarial;
+5. un contrato público puede aceptar `anon` únicamente cuando su audiencia canónica sea `ANON_PUBLIC`;
+6. un objeto accesible a `anon` sin contrato `ANON_PUBLIC` queda en estado de transición, retiro o bloqueo según evidencia;
+7. la clave publicable o legacy anon utilizada para conectar un cliente no constituye autorización de datos;
+8. autenticación, grants, RLS, finalidad pública y protección contra abuso permanecen controles separados.
+
+---
+
+#### 6. Definición de grant innecesario
+
+Para esta tarea, un privilegio efectivo de `anon` es innecesario cuando se cumple al menos una de estas condiciones:
+
+1. no existe contrato `ANON_PUBLIC` aprobado que requiera esa operación;
+2. el objeto es privado, técnico, autoritativo o sensible y no debe ser alcanzado directamente por una solicitud no autenticada;
+3. el grant permite más operaciones que las necesarias para la finalidad pública;
+4. el grant expone más columnas o datos que los requeridos;
+5. existe DML directo sobre una tabla autoritativa;
+6. `EXECUTE` está disponible sin audiencia pública aprobada para la firma exacta;
+7. el acceso existe únicamente por default privilege, grant histórico, pertenencia indirecta o compatibilidad no gobernada;
+8. una vista pública permite alcanzar fuentes o columnas no declaradas;
+9. la capacidad debería residir en un contrato `api` y el acceso actual es solo legacy;
+10. no existen owner, consumidor, finalidad, sensibilidad, límites, protección de enumeración, política de errores o condición de salida suficientes;
+11. una policy dirigida a `anon` o `PUBLIC` se está interpretando como justificación automática del grant;
+12. un nombre aparentemente público se está utilizando como evidencia de publicación.
+
+La ausencia de una referencia encontrada no demuestra que un privilegio pueda retirarse. Ante evidencia insuficiente, la disposición es `BLOCKED_PENDING_EVIDENCE`.
+
+---
+
+#### 7. Línea base remota vigente
+
+La observación read-only vigente del proyecto Vento OS registra, dentro de las superficies Vento incluidas en esta tarea:
+
+```text
+objetos relación/vista observados = 325
+anon con algún acceso efectivo = 39
+anon con SELECT efectivo = 39
+anon con INSERT efectivo = 4
+anon con UPDATE efectivo = 4
+anon con DELETE efectivo = 4
+
+funciones observadas = 301
+anon con EXECUTE efectivo = 91
+SECURITY DEFINER ejecutables por anon = 43
+
+secuencias observadas = 2
+anon con USAGE = 0
+anon con SELECT = 0
+anon con UPDATE = 0
+
+api_schema_exists = false
+```
+
+Estos conteos describen el estado remoto actual. No convierten ningún privilegio en contrato aprobado y deberán recalcularse antes de cualquier materialización.
+
+---
+
+#### 8. Reconciliación por schema físico vigente
+
+La línea base de relaciones y vistas Vento OS queda resumida así:
+
+| Schema        | Objetos relación/vista | `SELECT` de `anon` | `INSERT` | `UPDATE` | `DELETE` | Objetos con algún acceso `anon` |
+| ------------- | ---------------------: | -----------------: | -------: | -------: | -------: | ------------------------------: |
+| `app_private` |                      1 |                  0 |        0 |        0 |        0 |                               0 |
+| `club`        |                     11 |                  0 |        0 |        0 |        0 |                               0 |
+| `pass`        |                     27 |                 20 |        4 |        4 |        4 |                              20 |
+| `payments`    |                      2 |                  0 |        0 |        0 |        0 |                               0 |
+| `pos`         |                     13 |                  0 |        0 |        0 |        0 |                               0 |
+| `public`      |                    246 |                 18 |        0 |        0 |        0 |                              18 |
+| `talento`     |                     13 |                  1 |        0 |        0 |        0 |                               1 |
+| `viso`        |                     12 |                  0 |        0 |        0 |        0 |                               0 |
+| **Total**     |                **325** |             **39** |    **4** |    **4** |    **4** |                          **39** |
+
+La tabla es un universo de reconciliación, no una allowlist pública.
+
+---
+
+#### 9. Superficie DML anónima prioritaria
+
+La observación vigente identifica cuatro tablas con `SELECT`, `INSERT`, `UPDATE` y `DELETE` efectivos para `anon`:
+
+```text
+pass.loyalty_redemptions
+pass.loyalty_transactions
+pass.pass_satellites
+pass.user_favorites
+```
+
+Reglas:
+
+1. las cuatro identidades requieren disposición individual;
+2. su DML actual no se declara conforme por existir RLS;
+3. la futura materialización no ejecutará una revocación hasta identificar consumidores y sucesor seguro;
+4. el objetivo contractual es cero DML directo de `anon` sobre tablas autoritativas;
+5. cualquier mutación pública legítima deberá existir mediante contrato expuesto aprobado, con invariantes, autorización aplicable, idempotencia y auditoría según su semántica;
+6. el nombre de la tabla no determina si su operación debe ser pública, autenticada o privada.
+
+---
+
+#### 10. Superficie de lectura anónima
+
+Los treinta y nueve objetos accesibles a `anon` se distribuyen así:
+
+```text
+pass   = 20
+public = 18
+talento = 1
+```
+
+Dentro de `pass`, dieciséis objetos son de solo lectura efectiva para `anon` y cuatro conservan además DML.
+
+Dentro de `public`, dieciocho objetos conservan `SELECT` efectivo y cero DML observado.
+
+Dentro de `talento`, `talento.vacancies` conserva `SELECT` efectivo y cero DML observado.
+
+Reglas:
+
+1. una lectura pública solo se conserva como estado objetivo si existe un contrato `ANON_PUBLIC` explícito;
+2. catálogos, colecciones, tarifas, vacantes, configuración o datos de operación no se clasifican por su nombre;
+3. `SELECT` sobre una tabla autoritativa no se mantiene por conveniencia cuando el contrato objetivo exige proyección o consulta;
+4. una vista no se declara segura por ocultar físicamente la tabla subyacente;
+5. cualquier superficie legacy permitida temporalmente queda congelada y sin expansión.
+
+---
+
+#### 11. Policies y evidencia de RLS sobre la superficie accesible
+
+La misma observación registra sobre los objetos alcanzables por `anon`:
+
+```text
+policies observadas = 114
+policies con rol anon explícito = 15
+policies con rol PUBLIC = 8
+objetos alcanzables con alguna policy = 26
+vistas public alcanzables sin policy propia = 13
+```
+
+Las trece vistas de `public` sin policy propia son:
+
+```text
+public.catalog_item_customization_template_assignments
+public.catalog_item_customization_template_groups
+public.catalog_item_customization_templates
+public.catalog_item_option_consumption_rules
+public.catalog_item_option_groups
+public.catalog_item_option_recipe_effects
+public.catalog_item_options
+public.catalog_item_presentation
+public.catalog_option_visual_assets
+public.commercial_categories
+public.commercial_collection_categories
+public.commercial_collections
+public.pass_delivery_distance_rates
+```
+
+Reglas:
+
+1. una vista sin policy propia no queda automáticamente desprotegida ni protegida; se revisan modo de seguridad, owner, fuentes, grants y RLS de dependencias;
+2. una policy dirigida a `PUBLIC` puede alcanzar `anon`, pero no crea por sí sola un contrato público;
+3. una policy dirigida a `anon` no justifica privilegios de objeto mayores que los aprobados;
+4. `AUTH-DB-002` conserva propiedad sobre predicates, roles y endurecimiento de policies;
+5. `AUTH-DB-005` utiliza esa evidencia exclusivamente para decidir la audiencia efectiva del grant.
+
+---
+
+#### 12. Funciones y `EXECUTE`
+
+La observación vigente registra:
+
+| Schema        | Funciones | `EXECUTE` de `anon` | `SECURITY DEFINER` ejecutables por `anon` |
+| ------------- | --------: | ------------------: | ----------------------------------------: |
+| `app_private` |         1 |                   0 |                                         0 |
+| `club`        |         7 |                   5 |                                         0 |
+| `pass`        |        30 |                   5 |                                         2 |
+| `public`      |       247 |                  73 |                                        37 |
+| `talento`     |        16 |                   8 |                                         4 |
+| **Total**     |   **301** |              **91** |                                    **43** |
+
+Reglas:
+
+1. `AUTH-DB-005` decide únicamente si `anon` debe conservar `EXECUTE` sobre una firma exacta;
+2. `AUTH-DB-003` conserva autoridad sobre `SECURITY DEFINER`, owner, `search_path`, autorización interna y elevación;
+3. una función `SECURITY DEFINER` no queda ejecutable por `anon` por necesitar elevación internamente;
+4. una función `SECURITY INVOKER` tampoco recibe `EXECUTE` por defecto;
+5. una función trigger no necesita privilegio cliente solo por existir un trigger;
+6. funciones públicas legítimas requieren contrato, finalidad, parámetros, retorno, límites, errores y protección contra abuso explícitos;
+7. cualquier firma no clasificada permanece `BLOCKED_PENDING_EVIDENCE`.
+
+---
+
+#### 13. Privilegios de schema
+
+La observación vigente registra:
+
+| Schema        | `USAGE` de `anon` | `CREATE` de `anon` |
+| ------------- | ----------------- | ------------------ |
+| `app_private` | no                | no                 |
+| `club`        | no                | no                 |
+| `pass`        | sí                | no                 |
+| `payments`    | no                | no                 |
+| `pos`         | sí                | no                 |
+| `public`      | sí                | no                 |
+| `talento`     | sí                | no                 |
+| `viso`        | no                | no                 |
+
+Invariantes:
+
+1. `CREATE` de `anon` sobre schemas Vento permanece en cero;
+2. `USAGE` no concede por sí solo acceso a objetos;
+3. `pos` demuestra físicamente esa separación: existe `USAGE` de schema y cero relaciones/vistas alcanzables por `anon` dentro de la superficie observada;
+4. `USAGE` sobre un owner schema solo puede mantenerse durante transición cuando sea requisito técnico demostrado de una compatibilidad activa;
+5. el objetivo es que la exposición empresarial pública converja en `api`, no en owner schemas.
+
+---
+
+#### 14. Secuencias
+
+Existen dos secuencias Vento OS observadas en `public` y `anon` conserva sobre ellas:
+
+```text
+USAGE = 0
+SELECT = 0
+UPDATE = 0
+```
+
+Ese estado constituye la referencia objetivo para roles cliente.
+
+Reglas:
+
+1. `anon` no recibe acceso a secuencias empresariales;
+2. identidad, consecutivos y numeración se resuelven en la frontera server-side correspondiente;
+3. una migración o default privilege que conceda acceso a secuencias constituye drift bloqueante;
+4. la materialización preservará el cero actual y no introducirá grants compensatorios.
+
+---
+
+#### 15. Default privileges y roles administrados
+
+La línea base remota muestra defaults en `public` creados por `supabase_admin` que mencionan `anon` para relaciones, funciones y secuencias.
+
+También se observan relaciones de roles propias de la arquitectura de plataforma, incluida la capacidad de `authenticator` para asumir la audiencia determinada por la solicitud.
+
+Reglas:
+
+1. un default privilege amplio puede reintroducir acceso aunque los objetos existentes se endurezcan individualmente;
+2. los roles creadores gobernados por Vento deberán usar defaults explícitos y restrictivos;
+3. ningún objeto Vento nuevo dependerá de concesiones automáticas a `anon`;
+4. defaults originados en roles administrados por Supabase se clasifican por separado y no se modifican por inferencia;
+5. memberships de plataforma no se alteran para resolver un problema de ACL empresarial;
+6. la política Vento seguirá siendo explícita aunque la plataforma cambie sus defaults en versiones futuras;
+7. cualquier grant necesario se declarará por contrato, no por expectativa del default de plataforma.
+
+---
+
+#### 16. Frontera VITAL
+
+VITAL permanece como producto y frontera separada.
+
+`AUTH-DB-005::GLOBAL` no modifica privilegios de VITAL ni incorpora sus objetos a la cardinalidad Vento OS de esta tarea.
+
+La convivencia en un mismo proyecto físico no transfiere ownership ni autorización. Cualquier reducción sobre VITAL requiere su autoridad propietaria correspondiente.
+
+---
+
+#### 17. Frontera con superficies administradas por Supabase
+
+Los schemas y servicios administrados por Supabase o PostgreSQL no se convierten en objetos empresariales Vento por compartir roles técnicos.
+
+Por tanto:
+
+1. `auth`, `storage`, `realtime`, `graphql`, `graphql_public`, `extensions`, `net`, `cron`, `vault` y demás superficies administradas conservan sus contratos soportados;
+2. esta tarea no revoca privilegios de plataforma por inferencia;
+3. Auth público, Storage público, webhooks o capacidades administradas se gobiernan por sus contratos propietarios, no por una revocación global de objetos internos;
+4. una operación soportada de plataforma puede ser pública sin convertir internals administrados en Data API empresarial;
+5. ningún permiso administrado sirve como precedente para exponer owner schemas Vento.
+
+---
+
+#### 18. Topología objetivo de acceso de `anon`
+
+El estado objetivo es:
+
+```text
+anon
+  ↓
+schema api
+  ↓
+USAGE explícito
+  ↓
+contrato con audiencia ANON_PUBLIC
+  ↓
+READ_VIEW  → SELECT explícito
+QUERY_RPC  → EXECUTE explícito
+COMMAND_RPC → EXECUTE explícito solo cuando la semántica pública esté aprobada
+  ↓
+finalidad + minimización + límites + RLS/autorización aplicable + control de abuso
+  ↓
+owner schemas privados
+```
+
+Invariantes:
+
+1. `api` será la única superficie Data API empresarial objetivo;
+2. `api` no existe físicamente en la línea base vigente;
+3. `anon` no tendrá DML directo sobre tablas autoritativas;
+4. `anon` no tendrá acceso a secuencias empresariales;
+5. `anon` no tendrá `CREATE` sobre schemas Vento;
+6. owner schemas no serán una superficie pública objetivo;
+7. `public` permanecerá solo como compatibilidad transitoria congelada;
+8. una capacidad anónima existe por contrato `ANON_PUBLIC`, no porque una tabla, vista o función sea alcanzable hoy.
+
+La ausencia física actual de `api` impide usar esta tarea como autorización para un corte destructivo de consumidores legacy.
+
+---
+
+#### 19. Contrato `ANON_PUBLIC`
+
+Todo acceso objetivo de `anon` deberá declarar de forma explícita, como mínimo:
+
+```text
+contract_id
+contract_version
+contract_kind
+audience = ANON_PUBLIC
+public_purpose
+business_owner
+technical_owner
+consumer_or_channel
+allowed_operation
+allowed_columns_or_return_shape
+row_or_resource_scope
+sensitivity
+volume_and_pagination_policy
+abuse_protection_policy
+error_disclosure_policy
+enumeration_resistance
+rls_or_authorization_dependencies
+function_security_mode_if_applicable
+dependency_grants
+telemetry
+compatibility_state
+review_or_exit_gate
+definition_hash
+rollback
+evidence
+```
+
+Reglas:
+
+1. no se inventan límites numéricos en esta tarea; cada contrato propietario los define y prueba;
+2. los errores públicos minimizan información y no revelan existencia de recursos protegidos;
+3. la finalidad pública no autoriza campos adicionales por conveniencia;
+4. el contrato distingue lectura pública de mutación pública;
+5. una mutación pública exige la frontera transaccional aprobada y nunca DML directo sobre tabla;
+6. la audiencia no se expande de `ANON_PUBLIC` a otros roles por herencia narrativa;
+7. toda compatibilidad legacy conserva sucesor o condición de salida verificable.
+
+---
+
+#### 20. DML directo sobre tablas autoritativas
+
+El objetivo para `anon` es:
+
+```text
+INSERT directo = 0
+UPDATE directo = 0
+DELETE directo = 0
+```
+
+Consecuencias:
+
+1. las cuatro tablas `pass` actualmente mutables por `anon` requieren transición individual;
+2. RLS no convierte DML directo en arquitectura objetivo;
+3. una policy permisiva o restrictiva no sustituye invariantes de comando;
+4. creación, actualización o eliminación públicas que sean legítimas deberán atravesar `COMMAND_RPC` o una superficie administrada propietaria aprobada;
+5. la futura reducción no retirará una capacidad activa antes de disponer de sucesor o decisión explícita de retiro;
+6. ningún rollback podrá restaurar DML global por conveniencia.
+
+---
+
+#### 21. Lecturas públicas y minimización
+
+Una lectura anónima puede permanecer únicamente si existe finalidad pública deliberada.
+
+Para cada lectura se demuestra:
+
+1. owner empresarial;
+2. consumidor o canal público;
+3. finalidad;
+4. conjunto explícito de columnas o shape;
+5. criterio de filas o recursos;
+6. sensibilidad;
+7. límites y paginación;
+8. protección contra enumeración;
+9. manejo de errores;
+10. telemetría y abuso;
+11. contrato sucesor cuando la identidad actual sea legacy;
+12. rollback y condición de salida.
+
+Una tabla de configuración, una sede, un turno, una vacante, un catálogo o una tarifa no recibe clasificación por semántica inferida desde su nombre.
+
+---
+
+#### 22. Protección frente a enumeración, abuso y errores
+
+La exposición anónima exige controles adicionales porque la audiencia no aporta una identidad empresarial autenticada.
+
+Reglas:
+
+1. recursos no públicos no podrán distinguirse mediante diferencias de error, status, timing contractual o shape cuando esa diferencia revele existencia sensible;
+2. búsquedas y listados públicos deberán declarar límites, paginación y alcance;
+3. endpoints o RPC públicos deberán declarar mecanismo de protección contra abuso apropiado a su contrato;
+4. ningún rate limit se presume suficiente para corregir un grant indebido;
+5. datos sensibles no se publican mediante truncado superficial, nombre opaco o UUID;
+6. respuestas públicas no incluirán metadatos administrativos sin finalidad;
+7. telemetría de abuso no registrará secretos o payloads sensibles innecesarios;
+8. una mitigación de abuso no sustituye RLS, grants o autorización.
+
+---
+
+#### 23. Frontera con RLS
+
+`AUTH-DB-002` y `AUTH-DB-005` resuelven controles diferentes:
+
+```text
+AUTH-DB-002
+→ quién puede alcanzar qué filas y bajo qué predicate
+
+AUTH-DB-005
+→ qué privilegio PostgreSQL posee anon sobre schema/objeto/firma
+```
+
+Por tanto:
+
+1. RLS no crea un `GRANT`;
+2. un `GRANT` no sustituye RLS;
+3. una policy `TO anon` no crea un contrato `ANON_PUBLIC`;
+4. una policy `TO public` exige revisar explícitamente su alcance sobre `anon`;
+5. retirar un grant no corrige una policy defectuosa;
+6. esta tarea no reescribe policies para hacer cuadrar una reducción de ACL;
+7. las pruebas deberán identificar si una denegación procede de schema, objeto, RLS, contrato o protección de abuso.
+
+---
+
+#### 24. Frontera con `SECURITY DEFINER`
+
+`AUTH-DB-003` conserva autoridad sobre necesidad de elevación, owner técnico, `search_path`, autorización interna y modo de seguridad.
+
+`AUTH-DB-005` decide únicamente si `anon` debe tener `EXECUTE` sobre una firma.
+
+Consecuencias:
+
+1. las 43 funciones `SECURITY DEFINER` actualmente ejecutables por `anon` requieren clasificación de audiencia;
+2. su existencia no autoriza conservar `EXECUTE`;
+3. retirar `EXECUTE` no modifica cuerpo, owner o modo de seguridad;
+4. conservar `EXECUTE` requiere `ANON_PUBLIC` y evidencia completa;
+5. una función de trigger no recibe audiencia pública por ser privilegiada;
+6. pruebas adversariales de elevación permanecen bajo el contrato de `AUTH-DB-003` y su cobertura vigente.
+
+---
+
+#### 25. Ocho disposiciones obligatorias
+
+Cada privilegio actual de `anon` dentro del universo Vento OS deberá terminar exactamente en una de estas disposiciones canónicas:
+
+| Disposición                     | Resultado                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------- |
+| `KEEP_AND_HARDEN`               | se conserva únicamente el mínimo exigido por un contrato `ANON_PUBLIC`    |
+| `MOVE_TO_API`                   | la capacidad migra a un contrato expuesto en `api`                        |
+| `NARROW_PRIVILEGES`             | el objeto permanece temporalmente, pero se reducen operaciones o columnas |
+| `REPLACE_WITH_COMMAND_OR_QUERY` | el acceso directo se sustituye por RPC o contrato de consulta             |
+| `PRIVATE_ONLY`                  | el objeto queda fuera de `anon`                                           |
+| `TRANSITIONAL_COMPATIBILITY`    | el grant legacy permanece temporalmente con sucesor y salida              |
+| `RETIRE`                        | el grant se elimina después de demostrar ausencia de consumo válido       |
+| `BLOCKED_PENDING_EVIDENCE`      | no puede mantenerse, ampliar ni retirar hasta resolver evidencia faltante |
+
+No existe una disposición implícita `KEEP_BECAUSE_PUBLIC_NAME` ni `KEEP_BECAUSE_CURRENTLY_WORKS`.
+
+---
+
+#### 26. Reglas de clasificación por superficie
+
+| Superficie actual                        | Regla de clasificación                                                                                        |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `app_private` y `viso` sin acceso `anon` | conservar acceso directo en cero                                                                              |
+| owner schema con acceso directo          | `MOVE_TO_API`, `NARROW_PRIVILEGES`, `TRANSITIONAL_COMPATIBILITY`, `PRIVATE_ONLY` o `BLOCKED_PENDING_EVIDENCE` |
+| tabla autoritativa con DML `anon`        | `REPLACE_WITH_COMMAND_OR_QUERY`, transición o bloqueo; DML directo objetivo cero                              |
+| tabla con `SELECT` `anon`                | conservar solo con `ANON_PUBLIC`; en otro caso mover, estrechar, privatizar, retirar o transicionar           |
+| `public`                                 | congelar expansión y decidir por identidad; pertenecer a `public` no demuestra audiencia pública              |
+| vista                                    | revisar modo de seguridad, fuentes, RLS, columnas y dependency grants antes de conservar                      |
+| función                                  | `EXECUTE` únicamente por firma y audiencia `ANON_PUBLIC` aprobadas                                            |
+| secuencia                                | `PRIVATE_ONLY`; acceso cliente objetivo cero                                                                  |
+| schema con `USAGE` sin objetos públicos  | revisar necesidad; `USAGE` aislado no se conserva por costumbre                                               |
+| objeto sin owner, consumidor o finalidad | `BLOCKED_PENDING_EVIDENCE`                                                                                    |
+| superficie administrada por plataforma   | clasificar como administrada y no mutar por inferencia                                                        |
+| VITAL                                    | fuera del alcance físico de esta tarea                                                                        |
+
+La clasificación utiliza identidad calificada y firma exacta cuando aplique.
+
+---
+
+#### 27. Compatibilidad y protección contra ruptura
+
+Como `api` todavía no existe físicamente, la reducción debe proteger consumidores vigentes sin convertir la transición en permanencia.
+
+Un grant legacy solo puede conservarse como `TRANSITIONAL_COMPATIBILITY` cuando registra:
+
+- objeto y privilegio exactos;
+- consumidor;
+- finalidad;
+- owner;
+- sensibilidad;
+- contrato sucesor;
+- telemetría;
+- versión o cohorte;
+- revisión o condición de salida;
+- rollback.
+
+Reglas:
+
+1. no se amplían operaciones durante la transición;
+2. no se incorporan consumidores nuevos;
+3. no se agregan columnas por conveniencia;
+4. no se interpreta una búsqueda de código sin resultados como cero consumo;
+5. una compatibilidad sin sucesor, revisión o evidencia permanece bloqueada;
+6. la falta física de `api` no autoriza conservar indefinidamente grants amplios;
+7. la materialización de R1 deberá preceder al cutover cuando el sucesor dependa de la nueva frontera.
+
+---
+
+#### 28. Manifiesto obligatorio de la futura instancia
+
+Antes de modificar un privilegio, `AUTH-DB-005::GLOBAL` deberá derivar un inventario completo por identidad con, como mínimo:
+
+```text
+qualified_object_identity
+object_kind
+product_boundary
+schema_exposure_state
+object_owner
+current_schema_privileges
+current_object_privileges
+current_column_privileges
+current_effective_privileges
+privilege_origin
+default_privilege_origin
+role_membership_origin
+rls_protection_class
+policy_audiences
+consumer_repositories
+consumer_applications
+contract_kind
+audience_contract
+public_purpose
+business_owner
+technical_owner
+sensitivity
+row_or_resource_scope
+column_or_return_scope
+volume_and_pagination_policy
+abuse_protection_policy
+error_disclosure_policy
+canonical_disposition
+target_schema
+target_operations
+dependency_grants
+successor_contract
+compatibility_state
+review_or_exit_gate
+migration_reference
+definition_or_acl_hash
+rollback
+evidence
+```
+
+Reglas de completitud:
+
+1. toda identidad alcanzable por `anon` aparece exactamente una vez;
+2. todo privilegio efectivo tiene origen explicable;
+3. se distinguen grants directos, defaults, memberships y dependencias;
+4. toda firma ejecutable aparece individualmente;
+5. toda vista conserva fuentes y modo de seguridad;
+6. VITAL queda marcado y excluido del cambio;
+7. superficies administradas quedan marcadas y fuera de cambios inferidos;
+8. ninguna fila queda sin disposición;
+9. las cardinalidades se recalculan inmediatamente antes de materializar.
+
+---
+
+#### 29. Estrategia de materialización física posterior
+
+La futura instancia global seguirá una transición por seguridad:
+
+```text
+1. RECONCILIAR ESTADO REAL
+2. CLASIFICAR TODA IDENTIDAD Y FIRMA
+3. SEPARAR DEFAULTS Y MEMBERSHIPS VENTO DE PLATAFORMA
+4. IDENTIFICAR CONTRATOS ANON_PUBLIC VÁLIDOS
+5. MATERIALIZAR SUCESORES SEGUROS CUANDO CORRESPONDA
+6. PRESERVAR COMPATIBILIDAD ACTIVA SIN AMPLIARLA
+7. REVOCAR SOLO PRIVILEGIOS CON DISPOSICIÓN EJECUTABLE
+8. CONCEDER ÚNICAMENTE MÍNIMOS EXPLÍCITOS
+9. EJECUTAR PRUEBAS POSITIVAS, NEGATIVAS Y DE ABUSO
+10. RECONCILIAR DRIFT Y PARIDAD
+```
+
+La materialización:
+
+- usa migración forward versionada;
+- no reescribe migraciones históricas;
+- no crea `api` por inferencia;
+- no modifica policies RLS fuera de su tarea propietaria;
+- no cambia modo, owner o cuerpo de funciones fuera de `AUTH-DB-003`;
+- no corta un consumidor antes de disponer de sucesor o retiro aprobado;
+- no toca VITAL;
+- no altera internals o defaults administrados sin contrato soportado;
+- falla cerrado ante drift o identidad no clasificados.
+
+---
+
+#### 30. Pruebas positivas y negativas
+
+La futura instancia deberá demostrar, según aplique:
+
+1. un contrato `ANON_PUBLIC` aprobado funciona sin privilegios adicionales;
+2. un objeto sin contrato público no es alcanzable por `anon`;
+3. DML directo sobre tablas autoritativas queda denegado;
+4. columnas sensibles o administrativas quedan fuera de la respuesta pública;
+5. filas o recursos fuera del scope público no son enumerables;
+6. identificadores manipulados no revelan recursos protegidos;
+7. errores no filtran datos internos ni diferencias sensibles innecesarias;
+8. límites y paginación del contrato se respetan;
+9. controles de abuso definidos por el contrato se aplican y observan;
+10. `app_private` y `viso` no adquieren acceso directo;
+11. secuencias permanecen inaccesibles;
+12. `CREATE` por `anon` falla en schemas Vento;
+13. una función sin audiencia pública aprobada no conserva `EXECUTE`;
+14. una función `SECURITY DEFINER` pública satisface también las pruebas propietarias de elevación;
+15. una vista pública no revela columnas o filas fuera de su contrato mediante dependencias;
+16. una policy `PUBLIC` no amplía la superficie más allá del grant y contrato aprobados;
+17. un default privilege no concede acceso a un objeto Vento nuevo;
+18. una membership no reintroduce un privilegio retirado;
+19. compatibilidades funcionan solo dentro de su contrato y ventana;
+20. la ausencia física de `api` no provoca un cutover destructivo;
+21. rollback no reabre grants amplios ni DML directo.
+
+---
+
+#### 31. Rollback seguro
+
+El rollback no significa restaurar todos los ACL históricos.
+
+Orden preferente:
+
+```text
+CORRECCIÓN FORWARD
+→ RESTAURAR ÚNICAMENTE EL CONTRATO ANON_PUBLIC MÍNIMO
+→ REACTIVAR COMPATIBILIDAD ACOTADA SI YA EXISTÍA
+→ DESHABILITAR TEMPORALMENTE LA CAPACIDAD
+→ NUNCA REABRIR GRANTS GLOBALES O DML DIRECTO POR CONVENIENCIA
+```
+
+Toda reversión conservará:
+
+- identidad;
+- privilegio exacto;
+- consumidor;
+- finalidad;
+- motivo;
+- duración;
+- owner;
+- migración;
+- evidencia;
+- prueba posterior.
+
+Si recuperar una capacidad exige volver a un privilegio no autorizado, el rollback falla cerrado y la capacidad permanece bloqueada hasta una corrección segura.
+
+---
+
+#### 32. Drift y control recurrente
+
+El control recurrente comparará:
+
+```text
+schemas configurados
++ USAGE y CREATE
++ ACL de objetos
++ column grants
++ secuencias
++ EXECUTE por firma
++ default privileges
++ memberships
++ RLS y policy audiences
++ contratos ANON_PUBLIC
++ consumidores
++ disposiciones
++ hashes
++ migraciones
++ paridad ambiental
+```
+
+Generan drift bloqueante:
+
+- nuevo grant de `anon` sin contrato;
+- nuevo `USAGE` sobre schema Vento sin necesidad clasificada;
+- cualquier `CREATE` de `anon`;
+- nuevo default privilege que exponga objetos Vento;
+- nueva secuencia accesible;
+- nuevo DML directo sobre tabla autoritativa;
+- nuevo `EXECUTE` no registrado;
+- ampliación de columnas o filas públicas;
+- nueva vista pública con dependencias no clasificadas;
+- policy `anon` o `PUBLIC` incompatible con el contrato efectivo;
+- membership nueva que reintroduzca acceso;
+- compatibilidad expirada;
+- contrato `ANON_PUBLIC` sin manifiesto o evidencia;
+- diferencia no explicada entre documentación, migraciones y remoto.
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la arquitectura canónica ya protege mínimo privilegio, exposición Data API, `ANON_PUBLIC`, default privileges, `CREATE`, DML directo, secuencias, funciones, RLS, contratos `api`, compatibilidad, rollback, paridad y drift. `AUTH-DB-005` materializa documentalmente esas reglas para la audiencia `anon` sin introducir una regla observable nueva.
+
+---
+
+#### 34. Cobertura de prueba vigente reutilizada
+
+Se reutiliza, sin modificarla, la cobertura canónica existente, especialmente:
+
+- `TREQ-SUPABASE-005`;
+- `TREQ-SUPABASE-008`;
+- `TREQ-SUPABASE-1047`;
+- `TREQ-SUPABASE-1048`;
+- `TREQ-SUPABASE-1050`;
+- `TREQ-SUPABASE-1052` a `TREQ-SUPABASE-1056`;
+- `TREQ-SUPABASE-1059` a `TREQ-SUPABASE-1064`;
+- `TREQ-SUPABASE-1095`;
+- `TREQ-SUPABASE-1096`;
+- `TREQ-SUPABASE-1101`;
+- `TREQ-SUPABASE-1140`;
+- `TREQ-SUPABASE-1671`.
+
+Estos identificadores se registran únicamente como trazabilidad de cobertura preexistente.
+
+---
+
+#### 35. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                         |
+| --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | la definición documental no materializa código ni migraciones                                                                                                     |
+| LOCAL     | NOT_EXECUTED   | pendiente del lifecycle documental y validadores del checkout de la tarea                                                                                         |
+| REMOTA    | PASS           | línea base read-only reconciliada para relaciones, vistas, funciones, secuencias, privilegios de schema, default ACL, memberships y policies relevantes de `anon` |
+| OPERATIVA | NOT_APPLICABLE | no se alteran consumidores, permisos efectivos, datos ni flujos operativos                                                                                        |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-005::GLOBAL` permanece sin autorización física                                                                                                           |
+
+---
+
+#### 36. Decisiones vinculantes
+
+1. `anon` representa solicitudes no autenticadas y no autorización empresarial.
+2. Un usuario de Supabase Auth autenticado de forma anónima usa `authenticated`, no `anon`.
+3. El único estado objetivo público de Vento es un contrato con audiencia `ANON_PUBLIC` explícita.
+4. La futura instancia física es `AUTH-DB-005::GLOBAL`.
+5. Su modo es `GLOBAL_ENABLE_ONCE`.
+6. Su gate es `PRE_E5_FOUNDATION`.
+7. La aprobación documental no autoriza la instancia física.
+8. `api` es la única superficie Data API empresarial objetivo.
+9. `api` no existe físicamente en la línea base remota vigente.
+10. La ausencia de `api` impide un corte masivo que rompa consumidores legacy.
+11. El universo Vento OS observado contiene 325 objetos relación/vista.
+12. `anon` alcanza 39 de esos objetos.
+13. Los 39 se distribuyen en 20 objetos `pass`, 18 `public` y 1 `talento`.
+14. `anon` tiene `SELECT` efectivo sobre los 39.
+15. `anon` tiene `INSERT`, `UPDATE` y `DELETE` efectivos sobre cuatro tablas `pass`.
+16. Las cuatro tablas con DML son `loyalty_redemptions`, `loyalty_transactions`, `pass_satellites` y `user_favorites` dentro de `pass`.
+17. DML directo de `anon` sobre tablas autoritativas tiene objetivo cero.
+18. El universo observado contiene 301 funciones Vento OS.
+19. `anon` tiene `EXECUTE` efectivo sobre 91 funciones.
+20. De ellas, 43 son `SECURITY DEFINER`.
+21. `AUTH-DB-003` conserva autoridad sobre modo y endurecimiento de `SECURITY DEFINER`.
+22. `AUTH-DB-005` conserva autoridad sobre `EXECUTE` de `anon`.
+23. Las dos secuencias Vento observadas conservan cero privilegios para `anon` y ese estado debe preservarse.
+24. `anon` conserva `USAGE` sobre `pass`, `pos`, `public` y `talento` y cero `CREATE` sobre los ocho schemas Vento observados.
+25. `USAGE` de schema no equivale a acceso de objeto.
+26. Los default ACL administrados observados se clasifican por separado y no se modifican por inferencia.
+27. Los roles y memberships administrados por plataforma no se usan como palanca de limpieza empresarial.
+28. La superficie accesible registra 114 policies relacionadas, 15 dirigidas explícitamente a `anon` y 8 a `PUBLIC`.
+29. Trece vistas `public` accesibles no tienen policy propia y exigen revisar sus fuentes y modo de seguridad.
+30. Una policy no sustituye un grant y un grant no sustituye una policy.
+31. `public` permanece compatibilidad transitoria congelada, no arquitectura objetivo.
+32. VITAL queda fuera del alcance físico de esta tarea.
+33. Los schemas y servicios administrados por Supabase quedan fuera de cambios inferidos.
+34. Cada privilegio actual recibe una de ocho disposiciones canónicas.
+35. La falta de evidencia produce `BLOCKED_PENDING_EVIDENCE`.
+36. `KEEP_AND_HARDEN` para `anon` exige contrato `ANON_PUBLIC` completo.
+37. Toda reducción física usa migración forward.
+38. El rollback no restaura privilegios amplios por defecto.
+39. No se crean ni modifican requisitos de prueba.
+40. El Registro Canónico de Requisitos de Prueba permanece sin cambios.
+
+---
+
+#### 37. Criterios de aceptación
+
+`AUTH-DB-005` queda documentalmente completa cuando:
+
+- `anon` queda definido de forma inequívoca como audiencia no autenticada;
+- se separa `anon` de usuarios Auth anónimos que utilizan `authenticated`;
+- `ANON_PUBLIC` queda establecido como condición obligatoria de acceso público objetivo;
+- la topología `GLOBAL_ENABLE_ONCE`, `PRE_E5_FOUNDATION` y `AUTH-DB-005::GLOBAL` queda preservada;
+- la línea base remota de objetos, funciones, secuencias, schemas, defaults, memberships y policies queda reconciliada;
+- las cuatro tablas con DML anónimo quedan identificadas sin declarar una revocación automática;
+- `api` ausente queda tratado como restricción de transición;
+- se preserva cero acceso de secuencias y cero `CREATE`;
+- `EXECUTE` de funciones queda separado del endurecimiento `SECURITY DEFINER`;
+- las vistas públicas exigen clasificación de dependencias y no se consideran seguras por su forma;
+- VITAL y superficies administradas quedan fuera de cambios inferidos;
+- las ocho disposiciones canónicas quedan preservadas;
+- toda identidad futura exige manifiesto, audiencia, origen de privilegio y disposición;
+- se define compatibilidad sin ampliación;
+- se definen pruebas positivas, negativas, de abuso y drift;
+- se define rollback seguro;
+- no existe autorización física implícita;
+- no existe cambio 04A;
+- la continuidad avanza a `AUTH-DB-016` únicamente después de aprobación explícita.
+
+---
+
+#### 38. Límites
+
+`AUTH-DB-005` no:
+
+- ejecuta SQL mutante;
+- crea migraciones;
+- crea el schema `api`;
+- revoca grants remotos;
+- concede grants nuevos;
+- modifica RLS;
+- modifica policies;
+- cambia funciones;
+- cambia `SECURITY DEFINER` o `SECURITY INVOKER`;
+- modifica owners;
+- crea roles;
+- altera memberships administradas;
+- modifica default privileges de plataforma por inferencia;
+- modifica VITAL;
+- modifica Auth, Storage, Realtime, cron, GraphQL o internals administrados;
+- retira consumidores;
+- ejecuta cutover;
+- cambia aplicaciones cliente;
+- modifica el Registro Canónico de Requisitos de Prueba;
+- autoriza `AUTH-DB-005::GLOBAL`;
+- desarrolla `AUTH-DB-016`.
 
 No comenzar sin baseline, drift, entorno reproducible, pruebas negativas, respaldo, restauración, rollback y migración versionada.
 
@@ -5149,3 +6149,16 @@ No comenzar sin baseline, drift, entorno reproducible, pruebas negativas, respal
 - 028: detectar drift y aplicación directa.
 - 029: rollback del trigger/función con protección temporal.
 - 003: owner, grants, search path y mensajes.
+
+---
+
+#### 39. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-004 — Reducir grants innecesarios de authenticated`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-005 — Revocar grants innecesarios de anon`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-016 — Crear esquemas empresariales aprobados`

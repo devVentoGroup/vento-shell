@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1009** |
+| Aprobadas | **1010** |
 | En propuesta | **0** |
-| No iniciadas | **585** |
+| No iniciadas | **584** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **63.30% (1009/1594)** |
+| Porcentaje de completamiento | **63.36% (1010/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-004` — Reducir grants innecesarios de authenticated | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-005` — Revocar grants innecesarios de anon | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-016` — Crear esquemas empresariales aprobados | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-005` — Revocar grants innecesarios de anon | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-016` — Crear esquemas empresariales aprobados | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-018` — Separar vistas y RPC expuestas de helpers internos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1219,7 +1219,7 @@
 | ✅ APROBADA | `AUTH-DB-002` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ✅ APROBADA | `AUTH-DB-003` | Endurecer funciones SECURITY DEFINER aprobadas | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ✅ APROBADA | `AUTH-DB-004` | Reducir grants innecesarios de authenticated | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-005` | Revocar grants innecesarios de anon | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
+| ✅ APROBADA | `AUTH-DB-005` | Revocar grants innecesarios de anon | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-016` | Crear esquemas empresariales aprobados | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-018` | Separar vistas y RPC expuestas de helpers internos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-017` | Configurar esquemas expuestos y privilegios de Data API | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
