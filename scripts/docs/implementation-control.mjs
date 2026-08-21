@@ -383,7 +383,8 @@ export function deriveImplementationControl({
     taskId: preflight.task.id,
     taskTitle: preflight.task.title,
     actionType: 'DOCUMENTAR_TAREA',
-    state: selected ? 'PAUSADO_POR_ACCION_FISICA_PRIORITARIA' : 'ACTIVO',
+    state: 'ACTIVO',
+    parallelWithPhysical: Boolean(selected),
     owner: preflight.task.owner,
   };
   const primaryAction = selected ? {
@@ -434,6 +435,15 @@ export function deriveImplementationControl({
     },
     implementationAuthorized: authorized.length > 0,
     primaryAction,
+    coordination: {
+      mode: 'CONTROLLED_DUAL_LANE',
+      documentaryConcurrency: 'ONE_ACTIVE_TASK',
+      physicalConcurrency: 'ONE_ACTIVE_INSTANCE',
+      separateCheckoutsRequired: Boolean(selected),
+      mergePolicy: 'SERIALIZED_CLOSE',
+      latestMainReconciliationRequired: Boolean(selected),
+      physicalContractFreeze: 'SOURCE_CONTRACT_SHA256',
+    },
     documentary,
     physical: {
       active: selected,
@@ -492,6 +502,7 @@ export function renderCurrentWorkDirective(control) {
 - **Estado:** ${control.documentary.state}
 - **Tarea:** \`${control.documentary.taskId}\` — ${control.documentary.taskTitle}
 - **Archivo propietario:** \`${control.documentary.owner}\`
+- **Paralelismo con carril físico:** ${control.documentary.parallelWithPhysical ? 'ACTIVO — usar checkout independiente' : 'NO NECESARIO'}
 
 ## Carril físico
 
@@ -499,9 +510,19 @@ export function renderCurrentWorkDirective(control) {
 | --- | --- | --- | --- |
 ${physicalRows}
 
+## Coordinación de carriles
+
+- **Modo:** \`${control.coordination.mode}\`
+- **Documentación:** máximo una tarea activa
+- **Implementación física:** máximo una instancia activa
+- **Checkouts separados cuando ambos carriles están activos:** ${control.coordination.separateCheckoutsRequired ? 'SÍ' : 'NO NECESARIO'}
+- **Cierre:** serializado; solo un carril mergea a la vez
+- **Segundo carril en cerrar:** debe reconciliar el \`main\` más reciente antes de su validación y cierre final
+- **Contrato físico en vuelo:** congelado por \`source_contract_sha256\`
+
 ## Regla operativa
 
-1. Solo la acción principal puede iniciarse.
+1. El carril documental y el carril físico pueden avanzar en paralelo; cada carril conserva como máximo una unidad activa y usa un checkout independiente cuando ambos están activos.
 2. Aprobar un marcador documental crea elegibilidad, nunca autorización física automática.
 3. Código, migraciones, Supabase, despliegues o cambios remotos requieren una instancia explícitamente \`AUTHORIZED\`.
 4. \`AUTHORIZED\` habilita el trabajo físico, pero no concede al asistente permiso para escribirlo.
@@ -509,7 +530,8 @@ ${physicalRows}
 6. Un preflight estricto con código de salida 0 no crea un gate conversacional. Un fallo sí detiene el lote y exige evidencia antes de continuar.
 7. Después de materializar todos los cambios, se usa una sola transacción final fail-fast. Si toda la evidencia exigida es local, PASS permite consolidar evidence y pasar a VERIFIED. Si el contrato exige evidencia remota sobre código publicado, la instancia permanece IMPLEMENTED mientras se realiza el commit/push de materialización y se valida el SHA remoto; solo con PASS remoto puede pasar a VERIFIED.
 8. La siguiente instancia global espera la verificación de la anterior; no se concilia trabajo duplicado al final.
-9. “Haz la acción principal” inicia la guía manual continua; nunca autoriza escrituras automáticas.
+9. Los cierres y merges de los dos carriles se serializan. El segundo carril debe incorporar el \`main\` resultante del primero y repetir las validaciones finales sobre esa base.
+10. “Haz la acción principal” inicia la guía manual continua del carril correspondiente; nunca autoriza escrituras automáticas ni suspende el otro carril.
 `;
 }
 

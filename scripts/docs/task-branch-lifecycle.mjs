@@ -392,6 +392,11 @@ export function classifyInfraPath(filePath) {
     || normalized === 'package-lock.json'
     || normalized === 'packages/contracts/README.md'
     || normalized === 'packages/contracts/authorization/README.md'
+    || normalized === 'docs/plan-canonico/modular/chatgpt-work-starter-template.txt'
+    || normalized === 'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md'
+    || normalized === 'docs/plan-canonico/modular/active-sequence.json'
+    || normalized === 'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md'
+    || normalized === 'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md'
     || normalized.startsWith('scripts/docs/')
     || normalized.startsWith('scripts/quality/')
     || normalized.startsWith('quality/')

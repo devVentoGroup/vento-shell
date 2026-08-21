@@ -11,7 +11,7 @@
 - **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
 - **Objetivo exacto:** `SHELL-CON-008::GLOBAL` — Centralizar códigos de error
 - **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CON-008::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
-- **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `AUTH-DB-015`
+- **Carril documental:** ACTIVO — `AUTH-DB-015`
 - **Implementación física autorizada:** **NINGUNA**
 
 > Esta instrucción prevalece sobre la simple posición de una tarea en la lista pendiente. Aprobar documentación no autoriza código y una instancia física no puede saltar su predecesora global.
