@@ -92,4 +92,14 @@ Cada `ScreenId` aporta una identidad `::PRIMARY` y cuatro identidades `::SECONDA
 
 Familias, efectos, clases secundarias, relaciones, disponibilidad, ubicación y confirmación continúan gobernados por E2; no se convierten en una segunda autoridad dentro del módulo de identidad.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no concede autorización, no toca Supabase y no materializa eventos empresariales reservados a `SHELL-CON-013`.
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no concede autorización y no toca Supabase. La identidad de eventos empresariales se materializa separadamente en el módulo hermano `packages/contracts/events`.
+
+## Módulo de eventos empresariales
+
+`SHELL-CON-013::GLOBAL` materializa internamente `packages/contracts/events` como proyección estática de identidad de eventos empresariales para el subpath lógico `@vento/contracts/events`.
+
+La materialización contiene exactamente 395 definiciones normales derivadas de `PROC-CAT-017` sobre los 69 `ProcessId` vigentes. Conserva `BusinessEventId`, el `event_type` semántico versionado, la clase y la sensibilidad aprobadas, sin copiar el hecho fuente ni la descripción del hecho confirmado como nueva autoridad.
+
+Las ocho familias condicionales se proyectan por separado como plantillas canónicas y permanecen fuera del inventario normal de 395. Sintaxis y pertenencia de `BusinessEventId` se validan de manera separada.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta productores o consumidores, no implementa infraestructura runtime de eventos, no toca Supabase y no materializa traspasos entre aplicaciones reservados a `SHELL-CON-014`.
