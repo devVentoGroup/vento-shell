@@ -1,10 +1,40 @@
 {
   "instance_id": "SHELL-CON-007::GLOBAL",
   "task_id": "SHELL-CON-007",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/authorization/scripts/generate-response-contracts.mjs para verificar las fuentes canonicas AUTH-CTX-001, AUTH-CTX-002, AUTH-CTX-003 corregida, AUTH-CTX-004 y SHELL-CON-007 y generar deterministamente la proyeccion TypeScript interna de vento.authorization.response-contracts@1.0.0 sin cambiar su contract_version, schema_version, perfil de serializacion ni huella de release.",
+    "Crear packages/contracts/authorization/scripts/validate-response-contracts.mjs para validar la familia contractual, la frescura de los artefactos generados, los diez AppCode, los ocho BaseRoleCode, los doce OperationalRoleCode, la separacion entre contexto real y simulacion, las formas estrictas corregidas de SimulatedLaneResult y SimulationMatch, la frontera legacy de @vento/os-context y la ausencia de exports publicos.",
+    "Materializar exclusivamente mediante el generador packages/contracts/authorization/generated/response-contracts/versions/1.0.0/contract-metadata.types.ts, access-context.types.ts, simulation-context.types.ts e index.ts. AccessContextV1 debe reutilizar BaseRoleCode, OperationalRoleCode y AppCode; SimulationContextV1 debe permanecer separado del contexto real y SimulatedAuthorizationDecisionV1 debe permanecer una decision hipotetica no ejecutable.",
+    "Actualizar packages/contracts/authorization/README.md para registrar la materializacion interna prepublicacion de response-contracts@1.0.0, AccessContextV1, SimulationContextV1 y SimulatedAuthorizationDecisionV1, sus dependencias tipadas y sus limites.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-007__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar 04A/TREQ, implementation-control.json, @vento/os-context, consumidores, Supabase, RLS, RPC, migraciones, datos, catalogos de razones de SHELL-CON-008, AuthorizationDecisionV1 completo, evaluadores runtime, parsers runtime, exports publicos, version del package, catalog/current.json, manifest publicado, checksums globales, changelog de publicacion, registry, tags, releases, despliegues, secretos ni ninguna responsabilidad de tareas posteriores."
+  ],
+  "validation_commands": [
+    "node packages/contracts/authorization/scripts/generate-response-contracts.mjs --check",
+    "node packages/contracts/authorization/scripts/validate-response-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T00:03:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-007::GLOBAL en vento-group-sas/vento-shell para materializar internamente la familia vento.authorization.response-contracts@1.0.0 mediante ContractMetadata, AccessContextV1, SimulationContextV1 y la decision hipotetica SimulatedAuthorizationDecisionV1 necesaria para la forma publicada de simulacion; reutilizar los AppCode, BaseRoleCode y OperationalRoleCode ya materializados; generar y validar deterministicamente esos tipos; y documentar esta porcion estatica prepublicacion. No autorizo modificar 04A/TREQ, @vento/os-context, consumidores, Supabase, RLS, RPC, migraciones, datos, AuthorizationDecisionV1 completo, catalogos de razones reservados a SHELL-CON-008, parsers o evaluadores runtime, exports publicos, version del package, catalog/current.json, manifest publicado, checksums globales, changelog de publicacion, registry, tags, releases, despliegues, secretos ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "63450829623c0d1fcc490b7417d70f71b61a2c160b029437412bc01b82de40f8"
+  },
+  "evidence": [
+    "MATERIALIZATION AccessContextV1, SimulationContextV1, ContractMetadata and SimulatedAuthorizationDecisionV1 internal response-contract TypeScript artifacts created",
+    "VALIDATION generate-response-contracts --check PASS",
+    "VALIDATION response-contracts family=vento.authorization.response-contracts@1.0.0 contract_version=1.0.0 schema_version=1.0.0 release_hash=sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd",
+    "VALIDATION shared catalogs AppCode=10 BaseRoleCode=8 OperationalRoleCode=12",
+    "VALIDATION AccessContextV1 excludes EffectiveContext authority, bypass_applied, can_operate and real/simulated context mixing",
+    "VALIDATION corrected SimulatedLaneResult and SimulationMatch strict shapes PASS",
+    "VALIDATION @vento/contracts remains private with no public exports",
+    "VALIDATION legacy @vento/os-context boundary preserved",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-007::GLOBAL VERIFIED"
+  ]
 }

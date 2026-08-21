@@ -48,18 +48,18 @@ El universo vigente contiene exactamente diez `AppCode`:
 Distribución contractual:
 
 | Aplicación | Permisos activos |
-| --- | ---: |
-| `shell` | 1 |
-| `anima` | 10 |
-| `aura` | 1 |
-| `fogo` | 6 |
-| `nexo` | 67 |
-| `numera` | 6 |
-| `origo` | 6 |
-| `pass` | 1 |
-| `pulso` | 11 |
-| `viso` | 31 |
-| **Total** | **140** |
+| ---------- | ---------------: |
+| `shell`    |                1 |
+| `anima`    |               10 |
+| `aura`     |                1 |
+| `fogo`     |                6 |
+| `nexo`     |               67 |
+| `numera`   |                6 |
+| `origo`    |                6 |
+| `pass`     |                1 |
+| `pulso`    |               11 |
+| `viso`     |               31 |
+| **Total**  |          **140** |
 
 Cada fila materializada por `SHELL-CON-003::GLOBAL` conserva únicamente la porción de identidad que pertenece a esta instancia:
 
@@ -226,3 +226,39 @@ Esta instancia no modifica:
 - registry, tags o releases.
 
 La materialización sigue siendo interna y prepublicación. La adopción y certificación por consumidores conservan sus tareas y gates propios.
+
+## Contratos de contexto canónicos
+
+`SHELL-CON-007::GLOBAL` materializa exclusivamente la proyección TypeScript interna de `vento.authorization.response-contracts@1.0.0`.
+
+La superficie generada se encuentra bajo:
+
+`generated/response-contracts/versions/1.0.0/`
+
+e incorpora:
+
+- `ContractMetadata` y los cuatro nombres de contrato de la familia;
+- `AccessContextV1` y todos sus nodos contextuales publicados;
+- `SimulationContextV1` como contrato hipotético separado;
+- `SimulatedAuthorizationDecisionV1` como decisión hipotética no ejecutable requerida por `SimulationContextV1`;
+- `SimulatedLaneResult` y `SimulationMatch` con las formas estrictas corregidas de `AUTH-CTX-003`.
+
+`AccessContextV1` reutiliza directamente:
+
+- `AppCode` de diez aplicaciones;
+- `BaseRoleCode` de ocho roles;
+- `OperationalRoleCode` de doce roles.
+
+La materialización preserva:
+
+- `contract_family = vento.authorization.response-contracts`;
+- `contract_family_version = 1.0.0`;
+- `contract_version = 1.0.0`;
+- `schema_version = 1.0.0`;
+- `release_hash = sha256:782a216c4bbfdc3b3cec1bbd7239c05d93edd7fa34b4ce62cad48c1e6b9941cd`.
+
+`LaneReadiness.reason_codes` continúa como `string[]` y `StructuralIssue.issue_code` continúa como `string`; sus vocabularios cerrados permanecen reservados a `SHELL-CON-008`.
+
+Esta instancia no modifica `@vento/os-context`. `EffectiveContext` y `ContextSimulationInput` permanecen superficies legacy de compatibilidad y no son fuentes contractuales.
+
+Esta instancia tampoco crea parsers runtime, evaluadores, consumers, RPC, RLS, migraciones, exports públicos, publicación de package, registry, tags ni releases.
