@@ -140,3 +140,89 @@ La existencia documental de esas categorías se conserva sin convertirlas en `Pe
 Esas responsabilidades permanecen en sus tareas e instancias propietarias.
 
 Hasta que exista publicación y adopción autorizadas, ningún consumidor debe importar rutas internas de este directorio.
+
+## Scopes canónicos
+
+`SHELL-CON-006::GLOBAL` materializa exclusivamente el vocabulario estático de alcance aprobado por `SHELL-CON-006`:
+
+- fuente versionada: `catalog/scopes/versions/1.0.0/scopes.json`;
+- generación determinista: `scripts/generate-permission-scope-contracts.mjs`;
+- validación contractual: `scripts/validate-permission-scope-contracts.mjs`;
+- tipos, valores, categorías y predicados internos bajo `generated/scopes/versions/1.0.0/`.
+
+La fuente contiene exactamente trece `PermissionScopeCode`, en orden normativo:
+
+```text
+NT
+ORG
+G
+AS
+SS
+AST
+TST
+AA
+SA
+AAT
+ATW
+CTX
+OWN
+```
+
+La clasificación derivada utilizada por la proyección es:
+
+- no territoriales: `NT`, `ORG`;
+- territoriales: `G`, `AS`, `SS`, `AST`, `TST`, `AA`, `SA`, `AAT`, `ATW`;
+- contexto operativo: `CTX`;
+- propiedad: `OWN`.
+
+La proyección TypeScript interna incorpora:
+
+- `PermissionScopeCode`;
+- `PermissionScopeCategory`;
+- `AllowedScopeSet`;
+- `MaximumScope`;
+- `TerritorialScope`;
+- `NonTerritorialScope`;
+- `OperationalContextScope`;
+- `OwnershipScope`;
+- `PermissionScopeDefinition`;
+- `PermissionScopeByCode`;
+- colecciones derivadas por categoría;
+- `isPermissionScopeCode()`;
+- `isAllowedScopeSet()`;
+- `isMaximumScope()`.
+
+Las categorías derivadas no crean códigos adicionales. Los nombres descriptivos como `NT-APP`, `G-FUNC`, `SITE-READ`, `SITE-WRITE`, `INTERSECT` o equivalentes continúan siendo perfiles o expresiones de política y no miembros de `PermissionScopeCode`.
+
+Reglas preservadas:
+
+- `G` limita el permiso exacto al ámbito organizacional ordinario y no es un wildcard universal;
+- `TST` exige concesión explícita y nunca se infiere desde `AST`;
+- `ATW` conserva siempre un límite superior autorizado de sedes;
+- `CTX` no aporta por sí mismo turno, check-in, área activa ni permiso;
+- `OWN` restringe un recurso propio, pero no amplía territorio ni capacidad;
+- un valor externo solo se vuelve canónico después de validar membresía exacta;
+- un código desconocido falla cerrado.
+
+`AllowedScopeSet` y `MaximumScope` quedan disponibles como contratos derivados, pero esta instancia no asigna ni modifica esos valores para ninguno de los 140 permisos. La metadata completa por permiso permanece bajo la materialización propietaria del catálogo completo.
+
+## Límites de `SHELL-CON-006::GLOBAL`
+
+Esta instancia no modifica:
+
+- `permissions.json` ni sus 140 identidades activas;
+- roles base u operativos;
+- datasets de concesiones;
+- modalidades o carriles de autorización;
+- tipos de contexto;
+- contratos de recurso;
+- evaluadores runtime;
+- consumidores;
+- `@vento/os-context`;
+- Supabase, RLS, RPC o migraciones;
+- `catalog/current.json`, manifest, checksums o changelog de publicación;
+- exports públicos;
+- versión del package;
+- registry, tags o releases.
+
+La materialización sigue siendo interna y prepublicación. La adopción y certificación por consumidores conservan sus tareas y gates propios.

@@ -62,6 +62,9 @@ test('cambio transversal usa infra/<change-id> y bloquea archivos canonicos de t
   assert.equal(classifyInfraPath('scripts/quality/lint-ratchet.mjs'), 'ALLOWED');
   assert.equal(classifyInfraPath('.github/workflows/vento-required-gate.yml'), 'ALLOWED');
   assert.equal(classifyInfraPath('package.json'), 'ALLOWED');
+  assert.equal(classifyInfraPath('packages/contracts/README.md'), 'ALLOWED');
+  assert.equal(classifyInfraPath('packages/contracts/authorization/README.md'), 'ALLOWED');
+  assert.equal(classifyInfraPath('packages/contracts/package.json'), 'OTHER');
   assert.equal(
     classifyInfraPath('docs/plan-canonico/modular/bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md'),
     'OTHER',
