@@ -4350,7 +4350,794 @@ Estos identificadores se reutilizan como trazabilidad. Esta tarea no modifica su
 `AUTH-DB-004 — Reducir grants innecesarios de authenticated`
 
 
-### [ ] AUTH-DB-004 — Reducir grants innecesarios de authenticated
+### ✅ AUTH-DB-004 — Reducir grants innecesarios de authenticated
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
+**Tarea siguiente:** AUTH-DB-005 — Revocar grants innecesarios de anon
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md`
+**Estado físico resultante:** Contrato de reducción de privilegios de `authenticated` cerrado; futura instancia global `AUTH-DB-004::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-004` define el contrato único de contención y reducción de privilegios PostgreSQL concedidos al rol técnico `authenticated` dentro de las superficies gobernadas por Vento OS.
+
+La tarea separa cuatro conceptos que no pueden confundirse:
+
+```text
+AUTENTICADO EN SUPABASE
+≠
+AUTORIZADO EMPRESARIALMENTE
+
+PRIVILEGIO DE SCHEMA
+≠
+PRIVILEGIO DE OBJETO
+
+PRIVILEGIO DE OBJETO
+≠
+AUTORIZACIÓN DE FILA O RECURSO
+
+ESTADO LEGACY FUNCIONAL
+≠
+CONTRATO OBJETIVO APROBADO
+```
+
+El objetivo no es ejecutar un `REVOKE` indiscriminado. El objetivo es impedir que `authenticated` conserve o herede privilegios superiores a los estrictamente necesarios para contratos aprobados, sin romper consumidores vigentes por inferencia y sin sustituir RLS, autorización empresarial, compatibilidad o transición.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el siguiente modelo:
+
+```text
+SUPA-ARC-015
+→ autoridad normativa de exposición, grants y RLS
+
+SUPA-ARC-016
+→ autoridad de contratos READ_VIEW, QUERY_RPC y COMMAND_RPC
+
+AUTH-DB-002
+→ endurecimiento de policies RLS
+
+AUTH-DB-003
+→ endurecimiento de SECURITY DEFINER
+
+AUTH-DB-004
+→ reducción de privilegios de authenticated
+
+AUTH-DB-005
+→ reducción de privilegios de anon
+
+AUTH-DB-004::GLOBAL
+→ única futura materialización física de esta contención
+```
+
+La tarea protege mínimo privilegio sin convertir `authenticated` en una representación de empleado, rol operativo, sede, área, permiso o capacidad empresarial.
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente de R0 establece:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-004::GLOBAL
+```
+
+Consecuencias:
+
+1. existe una sola instancia física global;
+2. no se crea una instancia por paquete;
+3. la contención debe estar disponible antes de paquetes E5 que modifiquen Supabase;
+4. la aprobación documental no autoriza la instancia física;
+5. cualquier cambio físico exige autorización humana explícita, migración forward, pruebas y rollback;
+6. la materialización no puede invadir trabajo reservado a `AUTH-DB-005` ni a paquetes E5.
+
+---
+
+#### 4. Fuentes vinculantes y precedencia
+
+La definición consume y preserva:
+
+- `SUPA-AUD-003`, para exposición Data API observada;
+- `SUPA-AUD-006` y `SUPA-AUD-007`, para funciones, modos de seguridad y ejecución efectiva;
+- `SUPA-AUD-009`, para grants, RLS, policies y privilegios efectivos;
+- `SUPA-ARC-014`, para excepciones `SECURITY DEFINER`;
+- `SUPA-ARC-015`, para exposición, grants, default privileges, RLS y roles de ejecución;
+- `SUPA-ARC-016`, para `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC`;
+- `SUPA-TRANS-*`, para consumidores, compatibilidad, movimiento, retiro y drift;
+- el Registro Canónico de Requisitos de Prueba vigente;
+- el estado remoto verificable, exclusivamente como línea base física.
+
+Precedencia:
+
+```text
+CONTRATO OBJETIVO
+→ define el mínimo permitido
+
+CONSUMIDORES Y COMPATIBILIDAD
+→ determinan qué puede reducirse sin ruptura
+
+ESTADO REMOTO
+→ demuestra privilegio actual
+
+AUTH-DB-004
+→ contiene y reduce sin inventar autorización ni destino
+```
+
+La existencia histórica de un grant no lo convierte en contrato objetivo.
+
+---
+
+#### 5. Definición de grant innecesario
+
+Para esta tarea, un privilegio de `authenticated` es innecesario cuando se cumple al menos una de estas condiciones:
+
+1. no existe contrato aprobado que requiera esa operación;
+2. el objeto es privado, técnico o autoritativo y no debe ser alcanzado directamente por cliente;
+3. el grant permite más operaciones que las requeridas;
+4. el grant expone más columnas que las necesarias;
+5. el acceso debe realizarse mediante `READ_VIEW`, `QUERY_RPC` o `COMMAND_RPC`;
+6. el privilegio existe únicamente por default privilege amplio;
+7. la misma capacidad puede satisfacerse mediante un contrato más estrecho ya aprobado;
+8. el objeto carece de owner, consumidor, finalidad, sensibilidad o compatibilidad suficientes para justificar exposición;
+9. la audiencia `authenticated` se está usando como sustituto de permiso empresarial;
+10. el grant de dependencia excede lo estrictamente requerido por una vista `security_invoker`.
+
+La ausencia de una referencia encontrada no demuestra por sí sola que un privilegio pueda retirarse. Ante evidencia incompleta, la disposición es `BLOCKED_PENDING_EVIDENCE`.
+
+---
+
+#### 6. Línea base remota vigente
+
+La observación read-only vigente del proyecto muestra que el schema objetivo `api` todavía no está materializado físicamente.
+
+Para las superficies Vento OS actualmente presentes y separando VITAL como frontera independiente:
+
+```text
+api_schema_exists = false
+
+objetos relación/vista observados = 325
+authenticated con SELECT efectivo = 303
+authenticated con INSERT efectivo = 280
+authenticated con UPDATE efectivo = 277
+authenticated con DELETE efectivo = 275
+
+funciones observadas = 301
+authenticated con EXECUTE efectivo = 209
+
+secuencias observadas = 2
+authenticated con USAGE efectivo = 2
+authenticated con SELECT efectivo = 2
+authenticated con UPDATE efectivo = 2
+```
+
+Estos conteos describen el estado remoto actual. No significan que todas las operaciones sean utilizables, necesarias, seguras o aprobadas.
+
+---
+
+#### 7. Reconciliación por schema físico vigente
+
+La línea base Vento OS observada queda resumida así:
+
+| Schema        | Objetos relación/vista | `SELECT` | `INSERT` | `UPDATE` | `DELETE` | Decisión objetivo de frontera                            |
+| ------------- | ---------------------: | -------: | -------: | -------: | -------: | -------------------------------------------------------- |
+| `app_private` |                      1 |        0 |        0 |        0 |        0 | conservar acceso cliente directo en cero                 |
+| `club`        |                     11 |        8 |        0 |        0 |        0 | owner schema no expuesto directamente                    |
+| `pass`        |                     27 |       23 |       21 |       21 |       21 | retirar DML directo objetivo; transición por contrato    |
+| `payments`    |                      2 |        1 |        0 |        0 |        0 | owner schema no expuesto directamente                    |
+| `pos`         |                     13 |       13 |       13 |       13 |       13 | retirar DML directo objetivo; transición por contrato    |
+| `public`      |                    246 |      245 |      242 |      241 |      241 | compatibilidad legacy congelada y clasificada por objeto |
+| `talento`     |                     13 |       13 |        4 |        2 |        0 | owner schema no expuesto directamente                    |
+| `viso`        |                     12 |        0 |        0 |        0 |        0 | conservar acceso cliente directo en cero                 |
+| **Total**     |                **325** |  **303** |  **280** |  **277** |  **275** | reducción individual y fail-closed                       |
+
+La tabla no asigna automáticamente una disposición de retiro a cada objeto. El privilegio efectivo observado es el universo de reconciliación, no una lista de grants aprobados.
+
+---
+
+#### 8. Funciones y secuencias
+
+La misma observación física registra:
+
+| Schema        | Funciones | `EXECUTE` efectivo de `authenticated` |
+| ------------- | --------: | ------------------------------------: |
+| `app_private` |         1 |                                     0 |
+| `club`        |         7 |                                     7 |
+| `pass`        |        30 |                                    13 |
+| `public`      |       247 |                                   174 |
+| `talento`     |        16 |                                    15 |
+| `payments`    |         0 |                                     0 |
+| `pos`         |         0 |                                     0 |
+| `viso`        |         0 |                                     0 |
+| **Total**     |   **301** |                               **209** |
+
+Además, existen dos secuencias Vento OS observadas en `public`; `authenticated` conserva sobre ambas `USAGE`, `SELECT` y `UPDATE` efectivos.
+
+Reglas:
+
+1. `EXECUTE` pertenece a esta tarea solo como grant de audiencia;
+2. el modo `SECURITY DEFINER` o `SECURITY INVOKER` pertenece a `AUTH-DB-003`;
+3. una función no se conserva ejecutable por `authenticated` solo porque sea invocable hoy;
+4. una secuencia no se expone a roles cliente en el objetivo;
+5. un contrato que necesite numeración o identidad deberá ocultar la secuencia detrás de la frontera propietaria correspondiente.
+
+---
+
+#### 9. Frontera VITAL
+
+VITAL permanece como producto y frontera separada.
+
+La observación remota registra para `vital`:
+
+```text
+54 objetos relación/vista
+54 con SELECT efectivo para authenticated
+54 con INSERT efectivo
+54 con UPDATE efectivo
+54 con DELETE efectivo
+
+47 funciones
+46 con EXECUTE efectivo para authenticated
+```
+
+`AUTH-DB-004::GLOBAL` no modifica esos privilegios.
+
+La presencia de VITAL en el mismo proyecto físico no transfiere su gobierno a Vento OS. Cualquier reducción sobre esa frontera requiere su autoridad propietaria correspondiente.
+
+---
+
+#### 10. Frontera con schemas administrados
+
+Los schemas administrados por Supabase, PostgreSQL o extensiones no se convierten en objetos Vento por compartir roles técnicos.
+
+Por tanto:
+
+1. `auth`, `storage`, `realtime`, `graphql`, `graphql_public`, `extensions`, `net`, `cron`, `vault` y demás superficies administradas conservan sus contratos soportados;
+2. esta tarea no revoca privilegios de plataforma por inferencia;
+3. defaults creados por roles administrados no se alteran sin demostrar que la modificación es soportada y propiedad de Vento;
+4. el endurecimiento de `public` separará defaults y grants gobernados por Vento de defaults que pertenezcan a la plataforma;
+5. una configuración administrada amplia no se copia como patrón empresarial.
+
+---
+
+#### 11. Topología objetivo de acceso de `authenticated`
+
+El estado objetivo es:
+
+```text
+authenticated
+        ↓
+schema api
+        ↓
+USAGE explícito
+        ↓
+READ_VIEW      → SELECT explícito
+QUERY_RPC      → EXECUTE explícito
+COMMAND_RPC    → EXECUTE explícito
+        ↓
+RLS / autorización / dependencias mínimas
+        ↓
+owner schemas privados
+```
+
+Invariantes:
+
+1. `api` será la única superficie Data API empresarial objetivo;
+2. `authenticated` no tendrá `CREATE` sobre schemas empresariales;
+3. los owner schemas no serán exposición directa;
+4. `app_private` y `audit` permanecerán sin acceso cliente directo;
+5. `public` continuará únicamente como compatibilidad transitoria congelada;
+6. autenticarse no concede permiso empresarial;
+7. toda capacidad resolverá principal, sesión, identidad, actor, permiso, scope, territorio, recurso y precondiciones.
+
+La ausencia física actual de `api` impide interpretar este objetivo como autorización para revocar masivamente los contratos legacy todavía consumidos.
+
+---
+
+#### 12. DML directo sobre tablas autoritativas
+
+El objetivo para `authenticated` es:
+
+```text
+INSERT directo en tablas autoritativas = 0
+UPDATE directo en tablas autoritativas = 0
+DELETE directo en tablas autoritativas = 0
+```
+
+Las mutaciones empresariales cliente convergerán en `COMMAND_RPC`.
+
+Consecuencias:
+
+1. un grant DML actual debe recibir disposición individual;
+2. un grant no se conserva por comodidad del SDK;
+3. una policy RLS correcta no justifica DML directo cuando el contrato objetivo es comando;
+4. una mutación que deba atravesar invariantes, idempotencia, auditoría o coordinación no queda expuesta como tabla;
+5. una tabla legacy con consumidores vigentes puede permanecer temporalmente accesible solo bajo compatibilidad registrada, congelada y con salida definida.
+
+---
+
+#### 13. Lecturas y grants de dependencia
+
+`authenticated` no obtiene `SELECT` directo sobre owner tables como regla general.
+
+Una excepción de dependencia para una `READ_VIEW security_invoker` solo puede existir cuando simultáneamente:
+
+1. el owner schema permanece fuera de Data API;
+2. RLS está habilitado y probado en las tablas alcanzables;
+3. `USAGE` de schema y `SELECT` se limitan a lo estrictamente necesario;
+4. se prefieren grants de columnas cuando la proyección no necesita la fila completa;
+5. no se concede DML;
+6. no se concede acceso a secuencias;
+7. la vista enumera columnas explícitas;
+8. la vista aplica filtros contractuales;
+9. sensibilidad, inferencia y enumeración lateral están probadas;
+10. se evaluó si un `QUERY_RPC` o puente privilegiado sería una frontera más segura.
+
+Si cualquiera de esas condiciones falta, el grant de dependencia no queda aprobado.
+
+---
+
+#### 14. Default privileges
+
+La línea base remota muestra defaults amplios aplicables a `authenticated`, incluido el rol creador `postgres` dentro de `public` para relaciones, funciones y secuencias.
+
+Eso constituye una fuente de reintroducción automática de privilegios aunque los objetos existentes se endurezcan uno por uno.
+
+La política queda cerrada así:
+
+1. los roles creadores gobernados por Vento tendrán default privileges explícitos y restrictivos;
+2. ningún objeto Vento nuevo heredará acceso de `authenticated` por default;
+3. tablas y vistas nuevas nacerán sin privilegio runtime;
+4. funciones nuevas nacerán sin `EXECUTE` de `authenticated`;
+5. secuencias nuevas nacerán sin `USAGE`, `SELECT` ni `UPDATE` de `authenticated`;
+6. el acceso se concede después de aprobar el contrato específico;
+7. defaults administrados por plataforma se clasifican por separado y no se modifican por inferencia;
+8. cualquier default privilege que reintroduzca acceso constituye drift bloqueante.
+
+La futura materialización deberá contener primero la creación de exposición nueva antes de intentar una limpieza amplia del inventario histórico.
+
+---
+
+#### 15. Ocho disposiciones obligatorias
+
+Cada privilegio actual de `authenticated` dentro del universo Vento OS deberá terminar exactamente en una de estas disposiciones canónicas:
+
+| Disposición                     | Resultado                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------- |
+| `KEEP_AND_HARDEN`               | se conserva únicamente el mínimo exigido por un contrato válido           |
+| `MOVE_TO_API`                   | la capacidad migra a un contrato expuesto en `api`                        |
+| `NARROW_PRIVILEGES`             | el objeto permanece, pero se reducen operaciones, columnas o dependencias |
+| `REPLACE_WITH_COMMAND_OR_QUERY` | el acceso directo se sustituye por RPC o contrato de consulta             |
+| `PRIVATE_ONLY`                  | el objeto queda fuera de roles cliente                                    |
+| `TRANSITIONAL_COMPATIBILITY`    | el grant legacy permanece temporalmente con sucesor y salida              |
+| `RETIRE`                        | el grant se elimina después de demostrar que ya no existe consumo válido  |
+| `BLOCKED_PENDING_EVIDENCE`      | no puede mantenerse, ampliar ni retirar hasta resolver evidencia faltante |
+
+No existe una disposición implícita `KEEP_BECAUSE_IT_WORKS`.
+
+---
+
+#### 16. Reglas de clasificación por superficie
+
+La decisión individual seguirá estas reglas:
+
+| Superficie actual                          | Regla de clasificación                                                                                                                |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `app_private`                              | `PRIVATE_ONLY`; cualquier grant cliente nuevo bloquea                                                                                 |
+| `viso` sin grants cliente actuales         | conservar cero acceso directo                                                                                                         |
+| owner schemas con DML cliente              | `MOVE_TO_API`, `REPLACE_WITH_COMMAND_OR_QUERY`, `TRANSITIONAL_COMPATIBILITY` o `BLOCKED_PENDING_EVIDENCE`; nunca DML directo objetivo |
+| owner schemas con lectura cliente          | evaluar dependencia estrecha, `MOVE_TO_API`, `NARROW_PRIVILEGES`, `PRIVATE_ONLY` o transición                                         |
+| `public`                                   | congelar expansión y decidir por objeto; no preservar por pertenecer al schema                                                        |
+| funciones                                  | conservar `EXECUTE` solo para contrato y audiencia aprobados                                                                          |
+| secuencias                                 | acceso cliente objetivo cero                                                                                                          |
+| schemas privados                           | `USAGE` cliente objetivo cero salvo dependencia estricta aprobada                                                                     |
+| objetos sin owner o consumidor demostrable | `BLOCKED_PENDING_EVIDENCE`                                                                                                            |
+
+La clasificación usa identidad calificada de objeto y no solo nombre simple.
+
+---
+
+#### 17. Compatibilidad y protección contra ruptura
+
+Como `api` todavía no existe físicamente, la reducción debe preservar consumidores vigentes hasta disponer de sucesor seguro.
+
+Un grant legacy solo puede conservarse como `TRANSITIONAL_COMPATIBILITY` cuando registra:
+
+- objeto y privilegio exactos;
+- consumidor;
+- finalidad;
+- owner;
+- sensibilidad;
+- contrato sucesor;
+- telemetría;
+- versión o cohorte;
+- fecha o condición de revisión;
+- condición de salida;
+- rollback.
+
+Reglas:
+
+1. no se amplían operaciones durante la transición;
+2. no se incorporan consumidores nuevos;
+3. no se agregan columnas por conveniencia;
+4. no se interpreta una búsqueda de código sin resultados como cero consumo;
+5. la reducción no se ejecuta hasta que el reemplazo esté disponible cuando exista dependencia activa;
+6. una compatibilidad sin sucesor o evidencia permanece bloqueada.
+
+---
+
+#### 18. Frontera con RLS
+
+`AUTH-DB-002` y `AUTH-DB-004` resuelven controles diferentes.
+
+```text
+AUTH-DB-002
+→ quién puede alcanzar qué filas y bajo qué predicate
+
+AUTH-DB-004
+→ qué privilegio PostgreSQL posee authenticated sobre schema/objeto
+```
+
+Por tanto:
+
+1. RLS no crea un `GRANT`;
+2. un `GRANT` no desactiva RLS;
+3. una policy restrictiva no justifica un privilegio de objeto innecesario;
+4. retirar un grant no corrige una policy defectuosa;
+5. las pruebas deben identificar si la denegación procede de schema, objeto, RLS o autorización empresarial;
+6. esta tarea no reescribe policies para hacer cuadrar una reducción de ACL.
+
+---
+
+#### 19. Frontera con `SECURITY DEFINER`
+
+`AUTH-DB-003` conserva la autoridad sobre necesidad de elevación, owner técnico, `search_path`, autorización interna y modo de seguridad.
+
+`AUTH-DB-004` decide únicamente si `authenticated` debe tener `EXECUTE`.
+
+Consecuencias:
+
+1. una función `SECURITY DEFINER` aprobada no queda automáticamente ejecutable por `authenticated`;
+2. una función `SECURITY INVOKER` tampoco recibe `EXECUTE` por defecto;
+3. `EXECUTE` se concede por contrato y audiencia;
+4. una función de trigger no necesita `EXECUTE` cliente por ser consumida por un trigger;
+5. la reducción de `EXECUTE` no puede cambiar el cuerpo o modo de seguridad como efecto lateral.
+
+---
+
+#### 20. Frontera con `anon`
+
+`AUTH-DB-005` es propietaria de la reducción de grants innecesarios de `anon`.
+
+Esta tarea:
+
+- no usa cambios sobre `anon` para hacer pasar validaciones de `authenticated`;
+- no revoca grants de `anon`;
+- no modifica policies dirigidas a `anon`;
+- no altera contratos públicos;
+- sí registra dependencias cuando un mismo objeto tiene audiencias múltiples para evitar decisiones contradictorias posteriores.
+
+El cierre de `AUTH-DB-004` entrega a `AUTH-DB-005` una superficie `authenticated` clasificada sin anticipar su decisión.
+
+---
+
+#### 21. Manifiesto obligatorio de la futura instancia
+
+Antes de modificar un privilegio, `AUTH-DB-004::GLOBAL` deberá derivar un inventario completo por identidad con, como mínimo:
+
+```text
+qualified_object_identity
+object_kind
+product_boundary
+schema_exposure_state
+object_owner
+current_schema_privileges
+current_object_privileges
+current_column_privileges
+current_effective_privileges
+privilege_origin
+default_privilege_origin
+role_membership_origin
+rls_protection_class
+consumer_repositories
+consumer_applications
+contract_kind
+business_owner
+technical_owner
+sensitivity
+canonical_disposition
+target_schema
+target_operations
+target_columns
+dependency_grants
+successor_contract
+compatibility_state
+review_or_exit_gate
+migration_reference
+definition_or_acl_hash
+rollback
+evidence
+```
+
+Reglas de completitud:
+
+1. toda identidad alcanzable por `authenticated` aparece exactamente una vez;
+2. todo privilegio efectivo tiene origen explicable;
+3. se distinguen grants directos, membresías, defaults y dependencias;
+4. VITAL queda marcado y excluido del cambio;
+5. superficies administradas quedan marcadas y fuera de cambios inferidos;
+6. ninguna fila queda sin disposición;
+7. las cardinalidades se recalculan inmediatamente antes de materializar.
+
+---
+
+#### 22. Estrategia de materialización física posterior
+
+La futura instancia global seguirá una transición por seguridad, no por cantidad:
+
+```text
+1. RECONCILIAR ESTADO REAL
+2. CLASIFICAR TODA IDENTIDAD
+3. CONTENER DEFAULT PRIVILEGES VENTO
+4. PRESERVAR COMPATIBILIDADES ACTIVAS SIN AMPLIARLAS
+5. REVOCAR SOLO PRIVILEGIOS CON DISPOSICIÓN EJECUTABLE
+6. CONCEDER ÚNICAMENTE MÍNIMOS EXPLÍCITOS
+7. PROBAR CAPACIDADES POSITIVAS Y DENEGACIONES
+8. RECONCILIAR DRIFT
+```
+
+La materialización:
+
+- usa migración forward versionada;
+- no reescribe migraciones históricas;
+- no crea el schema `api` por inferencia si su creación pertenece a otra unidad;
+- no corta un consumidor antes de disponer de sucesor;
+- no mantiene un grant amplio para evitar diseñar autorización;
+- no toca VITAL;
+- no altera defaults de plataforma sin contrato soportado;
+- falla cerrado ante drift no clasificado.
+
+---
+
+#### 23. Pruebas positivas y negativas
+
+La futura instancia deberá demostrar, según aplique:
+
+1. un actor válido conserva el contrato mínimo que necesita;
+2. `authenticated` sin autorización empresarial no obtiene acceso por estar autenticado;
+3. DML directo sobre tabla autoritativa queda denegado en el estado objetivo;
+4. lectura directa de owner table queda denegada salvo dependencia explícita aprobada;
+5. columnas sensibles fuera del contrato no son accesibles;
+6. acceso cruzado entre actor, sede, área o recurso falla cerrado;
+7. `app_private` permanece inaccesible directamente;
+8. `viso` no adquiere grants cliente por drift;
+9. secuencias no son utilizables por cliente;
+10. una función no aprobada no conserva `EXECUTE`;
+11. una membership no reintroduce un privilegio retirado;
+12. un default privilege no concede acceso a un objeto nuevo;
+13. una compatibilidad solo funciona dentro de su ventana y contrato;
+14. un objeto nuevo sin manifiesto bloquea;
+15. el rollback no reabre privilegios amplios;
+16. la ausencia física de `api` no provoca una revocación destructiva de consumidores legacy.
+
+---
+
+#### 24. Rollback seguro
+
+El rollback no significa restaurar todos los ACL históricos.
+
+Orden preferente:
+
+```text
+CORRECCIÓN FORWARD
+→ RESTAURAR ÚNICAMENTE EL PRIVILEGIO MÍNIMO CONTRACTUAL
+→ REACTIVAR COMPATIBILIDAD ACOTADA SI EXISTÍA
+→ DESHABILITAR TEMPORALMENTE LA CAPACIDAD
+→ NUNCA REABRIR GRANTS GLOBALES POR CONVENIENCIA
+```
+
+Toda reversión conservará:
+
+- objeto;
+- privilegio exacto;
+- consumidor;
+- motivo;
+- duración;
+- owner;
+- migración;
+- evidencia;
+- prueba posterior.
+
+Si recuperar una capacidad exige volver a un grant no autorizado, el rollback falla cerrado y la capacidad permanece bloqueada hasta una corrección segura.
+
+---
+
+#### 25. Drift y control recurrente
+
+El control recurrente comparará:
+
+```text
+schemas configurados
++ USAGE y CREATE
++ ACL de objetos
++ column grants
++ secuencias
++ EXECUTE
++ default privileges
++ memberships
++ RLS y clase de protección
++ contrato expuesto
++ consumidores
++ disposición
++ hashes
++ paridad ambiental
+```
+
+Generan drift bloqueante:
+
+- nuevo grant de `authenticated` sin contrato;
+- nuevo default privilege amplio;
+- nueva secuencia accesible;
+- nuevo DML directo en owner table;
+- `CREATE` runtime;
+- `USAGE` sobre schema privado sin dependencia;
+- `EXECUTE` nuevo no registrado;
+- ampliación de columnas;
+- membership que reintroduce acceso;
+- compatibilidad expirada;
+- diferencia entre manifiesto, migraciones y remoto.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la arquitectura canónica de exposición, grants, default privileges, RLS, contratos `api`, acceso directo, secuencias, funciones, compatibilidad y drift ya tiene cobertura específica vigente. Esta tarea convierte esa política en contrato de contención para `authenticated` sin introducir una regla observable nueva.
+
+---
+
+#### 27. Cobertura de prueba vigente reutilizada
+
+Se reutiliza, sin modificarla, la cobertura canónica existente, especialmente:
+
+- `TREQ-SUPABASE-1047` a `TREQ-SUPABASE-1090`;
+- `TREQ-SUPABASE-1095`;
+- `TREQ-SUPABASE-1096`;
+- `TREQ-SUPABASE-1101`;
+- `TREQ-SUPABASE-1108`;
+- `TREQ-SUPABASE-1140`;
+- `TREQ-SUPABASE-1671`.
+
+Estos identificadores se registran únicamente como trazabilidad de cobertura preexistente.
+
+---
+
+#### 28. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                           |
+| --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | la definición documental no materializa código ni migraciones                                                                       |
+| LOCAL     | NOT_EXECUTED   | pendiente del lifecycle documental y validadores del checkout de la tarea                                                           |
+| REMOTA    | PASS           | línea base read-only reconciliada para schemas, objetos, funciones, secuencias, default privileges y memberships de `authenticated` |
+| OPERATIVA | NOT_APPLICABLE | no se alteran consumidores, permisos efectivos ni flujos operativos                                                                 |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-004::GLOBAL` permanece sin autorización física                                                                             |
+
+---
+
+#### 29. Decisiones vinculantes
+
+1. `authenticated` es audiencia técnica y no autorización empresarial.
+2. La futura instancia es `AUTH-DB-004::GLOBAL`.
+3. Su modo es `GLOBAL_ENABLE_ONCE`.
+4. Su gate es `PRE_E5_FOUNDATION`.
+5. `api` es la única superficie Data API empresarial objetivo.
+6. `api` no existe físicamente en la línea base remota vigente.
+7. La ausencia de `api` impide una revocación masiva que rompa consumidores legacy.
+8. El universo Vento OS observado contiene 325 objetos relación/vista para reconciliación.
+9. `authenticated` tiene `SELECT` efectivo sobre 303 de ellos.
+10. Tiene `INSERT` efectivo sobre 280, `UPDATE` sobre 277 y `DELETE` sobre 275.
+11. El universo observado contiene 301 funciones Vento OS.
+12. `authenticated` tiene `EXECUTE` efectivo sobre 209.
+13. Las dos secuencias Vento OS observadas conservan `USAGE`, `SELECT` y `UPDATE` para `authenticated`.
+14. VITAL queda fuera del alcance físico.
+15. Los schemas administrados quedan fuera de cambios inferidos.
+16. DML cliente directo sobre tablas autoritativas tiene objetivo cero.
+17. Acceso cliente a secuencias tiene objetivo cero.
+18. `CREATE` runtime sobre schemas empresariales tiene objetivo cero.
+19. Los grants de dependencia de vistas invoker son excepciones estrechas y demostradas.
+20. Los default privileges de roles creadores Vento deben dejar de conceder acceso automático.
+21. Los defaults administrados por plataforma no se cambian por inferencia.
+22. Cada privilegio actual recibe una de ocho disposiciones canónicas.
+23. La falta de evidencia produce `BLOCKED_PENDING_EVIDENCE`.
+24. `public` permanece compatibilidad transitoria congelada, no arquitectura objetivo.
+25. `AUTH-DB-002` conserva la autoridad sobre RLS.
+26. `AUTH-DB-003` conserva la autoridad sobre modo y endurecimiento `SECURITY DEFINER`.
+27. `AUTH-DB-005` conserva la autoridad sobre grants de `anon`.
+28. Toda reducción física usa migración forward.
+29. El rollback no restaura privilegios globales por defecto.
+30. No se crean ni modifican requisitos de prueba.
+31. La aprobación documental no autoriza cambios en Supabase.
+
+---
+
+#### 30. Criterios de aceptación
+
+`AUTH-DB-004` queda documentalmente completa cuando:
+
+- `authenticated` queda definido como audiencia técnica y no como autoridad empresarial;
+- la topología `GLOBAL_ENABLE_ONCE` y `PRE_E5_FOUNDATION` queda preservada;
+- la línea base remota de privilegios queda reconciliada;
+- la ausencia física de `api` queda tratada como restricción de transición y no como excusa para mantener grants amplios;
+- VITAL y schemas administrados quedan fuera de alcance;
+- DML directo, secuencias, `CREATE`, `EXECUTE`, schema `USAGE` y default privileges tienen reglas explícitas;
+- las ocho disposiciones canónicas quedan preservadas;
+- toda identidad futura exige manifiesto y origen de privilegio;
+- se separan RLS, `SECURITY DEFINER` y `anon`;
+- se define compatibilidad sin ampliación;
+- se define rollback seguro;
+- se definen pruebas positivas, negativas y drift;
+- `AUTH-DB-004::GLOBAL` queda identificada sin quedar autorizada;
+- el Registro Canónico de Requisitos de Prueba permanece sin cambios;
+- `AUTH-DB-005` permanece reservada.
+
+---
+
+#### 31. Límites
+
+`AUTH-DB-004` no:
+
+- ejecuta SQL;
+- crea migraciones;
+- crea el schema `api`;
+- revoca grants remotos;
+- concede grants nuevos;
+- modifica RLS;
+- modifica policies;
+- cambia funciones;
+- cambia `SECURITY DEFINER` o `SECURITY INVOKER`;
+- modifica owners;
+- crea roles;
+- altera memberships administradas;
+- modifica default privileges de plataforma por inferencia;
+- modifica VITAL;
+- modifica Storage, Auth, Realtime, cron o GraphQL administrados;
+- retira consumidores;
+- ejecuta cutover;
+- cambia aplicaciones cliente;
+- modifica el registro 04A;
+- autoriza `AUTH-DB-004::GLOBAL`;
+- desarrolla `AUTH-DB-005`.
+
+---
+
+#### 32. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-004 — Reducir grants innecesarios de authenticated`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-005 — Revocar grants innecesarios de anon`
+
+
 ### [ ] AUTH-DB-005 — Revocar grants innecesarios de anon
 
 No comenzar sin baseline, drift, entorno reproducible, pruebas negativas, respaldo, restauración, rollback y migración versionada.
