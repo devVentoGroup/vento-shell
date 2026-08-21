@@ -1,10 +1,41 @@
 {
   "instance_id": "SHELL-CON-009::GLOBAL",
   "task_id": "SHELL-CON-009",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/contracts/processes/README.md para documentar la materializacion interna prepublicacion de la identidad canonica de procesos, su fuente PROC-CANONICAL-ID-REGISTRY-001, el conjunto VPROC-0001..VPROC-0069, VPROC-0070 como siguiente identificador no asignado, la validacion por formato y pertenencia y los limites de SHELL-CON-009.",
+    "Crear packages/contracts/processes/scripts/generate-process-id-contracts.mjs para leer PROC-CAT-003, PROC-CAT-020 y SHELL-CON-009, extraer y reconciliar deterministicamente las 69 identidades asignadas, verificar la secuencia VPROC-0001..VPROC-0069, los conteos de estado CANONICAL=69 y MERGED_ALIAS=SPLIT_PARENT=RETIRED=VOID=0, preservar VPROC-0070 como siguiente identificador disponible no asignado y generar la proyeccion TypeScript interna.",
+    "Crear packages/contracts/processes/scripts/validate-process-id-contracts.mjs para validar fuente, conteos, orden, unicidad, formato, pertenencia, exclusion de VPROC-0000 y VPROC-0070, derivacion de ProcessId desde PROCESS_IDS, metadata de procedencia, limites del modulo, package privado y ausencia de exports publicos.",
+    "Materializar exclusivamente mediante el generador packages/contracts/processes/generated/process-id.contract.ts e index.ts con PROCESS_IDS, ProcessId, PROCESS_ID_PATTERN_SOURCE, PROCESS_ID_PATTERN, PROCESS_ID_REGISTRY_METADATA, ProcessIdRegistryMetadata, isProcessIdFormat e isProcessId, sin estados de proceso ni identidades de ejecucion.",
+    "Actualizar packages/contracts/README.md exclusivamente para registrar packages/contracts/processes como materializacion interna de SHELL-CON-009::GLOBAL y dejar explicito que no existe publicacion, adopcion de consumidores, cambio de version ni exports publicos.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-CON-009__GLOBAL.json para conservar autorizacion, estados y evidencia de esta instancia. No modificar 04A/TREQ, implementation-control.json, authorization, os-context, consumidores, Supabase, RLS, RPC, migraciones, datos, estados de proceso reservados a SHELL-CON-010, aliases como identidades publicas, process_instance_id, pasos, pantallas, acciones, eventos, comandos, evaluadores runtime, exports publicos, version del package, manifests de publicacion, checksums de release, changelog de publicacion, registry, tags, releases, despliegues, secretos ni responsabilidades de tareas posteriores."
+  ],
+  "validation_commands": [
+    "node packages/contracts/processes/scripts/generate-process-id-contracts.mjs --check",
+    "node packages/contracts/processes/scripts/validate-process-id-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T10:49:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente SHELL-CON-009::GLOBAL en vento-group-sas/vento-shell para materializar internamente la identidad canonica de procesos derivada de PROC-CANONICAL-ID-REGISTRY-001: exactamente VPROC-0001 a VPROC-0069 como ProcessId asignados, con VPROC-0070 fuera del conjunto como siguiente identificador disponible, VPROC-0000 invalido, validacion cerrada por formato y pertenencia, metadata de procedencia y reconciliacion CANONICAL=69 sin aliases, splits, retiros ni VOID; crear el modulo interno packages/contracts/processes, sus generadores, validadores, artefactos TypeScript derivados y documentacion interna. No autorizo modificar 04A/TREQ, implementation-control.json, authorization, os-context, consumidores, Supabase, RLS, RPC, migraciones, datos, estados de proceso reservados a SHELL-CON-010, aliases como identidades publicas, process_instance_id, pasos, pantallas, acciones, eventos, comandos, evaluadores runtime, exports publicos, version del package, manifests de publicacion, checksums de release, changelog de publicacion, registry, tags, releases, despliegues, secretos ni ninguna ampliacion inferida.",
+    "source_contract_sha256": "4a0c268805ba01f732e942703641b11cf9836a2e6c585dc5ea315328be229bd5"
+  },
+  "evidence": [
+    "MATERIALIZATION internal ProcessId contract for VPROC-0001..VPROC-0069 created",
+    "VALIDATION generate-process-id-contracts --check PASS",
+    "VALIDATION ProcessId count=69 first=VPROC-0001 last=VPROC-0069 next_available=VPROC-0070",
+    "VALIDATION registry status CANONICAL=69 MERGED_ALIAS=0 SPLIT_PARENT=0 RETIRED=0 VOID=0",
+    "VALIDATION VPROC-0000 invalid and VPROC-0070 excluded from PROCESS_IDS",
+    "VALIDATION ProcessId derives from PROCESS_IDS and membership validation PASS",
+    "VALIDATION validate-process-id-contracts PASS after case-sensitive README marker correction",
+    "VALIDATION @vento/contracts remains private with no public exports and no process states materialized",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-009::GLOBAL VERIFIED"
+  ]
 }

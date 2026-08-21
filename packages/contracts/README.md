@@ -55,3 +55,11 @@ Esta instancia crea únicamente:
 No materializa las responsabilidades reservadas a `SHELL-CON-002` a `SHELL-CON-016`.
 
 No publica exports públicos adicionales antes de que su tarea propietaria los materialice.
+
+## Módulo de procesos
+
+`SHELL-CON-009::GLOBAL` materializa internamente `packages/contracts/processes` como proyección estática de identidad de procesos para el subpath lógico `@vento/contracts/processes`.
+
+La materialización contiene exactamente 69 identidades derivadas de `PROC-CANONICAL-ID-REGISTRY-001`, desde `VPROC-0001` hasta `VPROC-0069`, junto con validación de formato y pertenencia.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores y no incorpora estados de proceso reservados a `SHELL-CON-010`.
