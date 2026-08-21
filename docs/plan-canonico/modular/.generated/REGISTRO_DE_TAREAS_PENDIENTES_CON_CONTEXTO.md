@@ -9,8 +9,8 @@
 ## Qué toca hacer ahora
 
 - **Acción principal obligatoria:** `AUTORIZAR_IMPLEMENTACION`
-- **Objetivo exacto:** `SHELL-CON-007::GLOBAL` — Centralizar tipos de contexto
-- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CON-007::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
+- **Objetivo exacto:** `SHELL-CON-008::GLOBAL` — Centralizar códigos de error
+- **Instrucción:** Definir y aprobar el alcance físico exacto de SHELL-CON-008::GLOBAL; la misma entrega puede dejar preparado el lote físico condicionado a guardar primero la autorización.
 - **Carril documental:** PAUSADO_POR_ACCION_FISICA_PRIORITARIA — `AUTH-DB-015`
 - **Implementación física autorizada:** **NINGUNA**
 

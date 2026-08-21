@@ -35,9 +35,9 @@
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
 | Progreso del bloque | **BLOQUE R: 0 de 51 aprobadas; AUTH-DB-015 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-007::GLOBAL** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-008::GLOBAL** |
 | Carril documental | **PAUSADO_POR_ACCION_FISICA_PRIORITARIA — AUTH-DB-015** |
-| Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-007::GLOBAL** |
+| Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-008::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE R: 0 DE 51 APROBADAS — ACTUAL AUTH-DB-015** |
-| Implementación física | **SHELL-CON-007::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **SHELL-CON-008::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 
