@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1007** |
+| Tareas aprobadas | **1008** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **587** |
+| Tareas no iniciadas | **586** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **63.17% (1007/1594)** |
+| Porcentaje de completamiento | **63.24% (1008/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección** |
-| Tarea actual | **AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas** |
+| Última tarea aprobada | **AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas** |
+| Tarea actual | **AUTH-DB-004 — Reducir grants innecesarios de authenticated** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-004 — Reducir grants innecesarios de authenticated** |
+| Siguiente tarea | **AUTH-DB-005 — Revocar grants innecesarios de anon** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 6 de 51 aprobadas; AUTH-DB-003 pendiente** |
+| Progreso del bloque | **BLOQUE R: 7 de 51 aprobadas; AUTH-DB-004 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-014::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-003** |
+| Carril documental | **ACTIVO — AUTH-DB-004** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-014::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-002` — Endurecer políticas RLS demasiado amplias aprobadas para corrección |
-| Tarea actual | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-004` — Reducir grants innecesarios de authenticated |
+| Última aprobada | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas |
+| Tarea actual | `AUTH-DB-004` — Reducir grants innecesarios de authenticated — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-005` — Revocar grants innecesarios de anon |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 6 DE 51 APROBADAS — ACTUAL AUTH-DB-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 7 DE 51 APROBADAS — ACTUAL AUTH-DB-004** |
 | Implementación física | **SHELL-CON-014::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
-        ↓
-TAREA ACTUAL
 AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-004 — Reducir grants innecesarios de authenticated
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-005 — Revocar grants innecesarios de anon
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 6 de 51 tareas aprobadas
+BLOQUE R — 7 de 51 tareas aprobadas
 ```
