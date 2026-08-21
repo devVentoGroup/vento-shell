@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1002** |
+| Tareas aprobadas | **1003** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **592** |
+| Tareas no iniciadas | **591** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **62.86% (1002/1594)** |
+| Porcentaje de completamiento | **62.92% (1003/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell** |
-| Tarea actual | **AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones** |
+| Última tarea aprobada | **AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones** |
+| Tarea actual | **AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción** |
+| Siguiente tarea | **AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 1 de 51 aprobadas; AUTH-DB-027 pendiente** |
+| Progreso del bloque | **BLOQUE R: 2 de 51 aprobadas; AUTH-DB-028 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-009::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-027** |
+| Carril documental | **ACTIVO — AUTH-DB-028** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-009::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-015` — Documentar y versionar todas las migraciones en vento-shell |
-| Tarea actual | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-028` — Establecer baseline y control de drift entre local, staging y producción |
+| Última aprobada | `AUTH-DB-027` — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones |
+| Tarea actual | `AUTH-DB-028` — Establecer baseline y control de drift entre local, staging y producción — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 1 DE 51 APROBADAS — ACTUAL AUTH-DB-027** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 2 DE 51 APROBADAS — ACTUAL AUTH-DB-028** |
 | Implementación física | **SHELL-CON-009::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-015 — Documentar y versionar todas las migraciones en vento-shell
-        ↓
-TAREA ACTUAL
 AUTH-DB-027 — Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-028 — Establecer baseline y control de drift entre local, staging y producción
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 1 de 51 tareas aprobadas
+BLOQUE R — 2 de 51 tareas aprobadas
 ```
