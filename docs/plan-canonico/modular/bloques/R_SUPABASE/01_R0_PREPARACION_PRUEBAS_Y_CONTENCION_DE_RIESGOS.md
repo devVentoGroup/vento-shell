@@ -2570,7 +2570,440 @@ El Registro Canónico de Requisitos de Prueba permanece sin cambios.
 `AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD`
 
 
-### [ ] AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
+### ✅ AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete
+**Tarea siguiente:** AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md`
+**Estado físico resultante:** Definición documental cerrada; contención RLS global posterior pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-001` cierra documentalmente el alcance exacto de la primera contención RLS de R0 para las tablas Vento que continúan con `relrowsecurity = false`, reconciliando el hallazgo de `SUPA-AUD-009` contra el estado remoto vigente antes de definir cualquier cambio físico.
+
+La tarea separa de forma obligatoria:
+
+```text
+TABLA SIN RLS
+!=
+TABLA ABIERTA A CLIENTES
+
+HABILITAR RLS
+!=
+CREAR POLÍTICAS RLS
+!=
+CAMBIAR GRANTS
+!=
+FORZAR RLS AL OWNER
+```
+
+La corrección de esta tarea es una capa de contención. No redefine permisos empresariales, no endurece políticas existentes, no revoca grants y no convierte `service_role` en un actor sujeto a RLS.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el contrato de `AUTH-DB-001::GLOBAL`:
+
+```text
+UNIVERSO ACTUAL CON RLS OFF
+= 12 tablas Vento
+
+OBJETIVO DE ESTA TAREA
+= RLS ENABLED en 12/12
+
+POLÍTICAS NUEVAS
+= 0
+
+CAMBIOS DE GRANTS
+= 0
+
+FORCE RLS
+= 0 activaciones
+
+TABLAS YA CORREGIDAS
+= no se vuelven a modificar por esta tarea
+```
+
+La futura materialización deberá producir una sola migración versionada en `vento-shell` que habilite RLS exclusivamente sobre las doce tablas pendientes verificadas en esta tarea y preserve el resto de su contrato físico.
+
+---
+
+#### 3. Fuentes y precedencia
+
+La definición conserva y reconcilia:
+
+| Fuente                                               | Uso vinculante                                                                 |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`         | continuidad, aprobación explícita, trazabilidad y separación documental/física |
+| `docs/plan-canonico/modular/delivery-contract.json`  | estructura validable de entrega y coordinación con 04A                         |
+| `docs/plan-canonico/modular/active-sequence.json`    | `AUTH-DB-001` como tarea documental actual                                     |
+| `docs/plan-canonico/modular/task-work-topology.json` | `GLOBAL_ENABLE_ONCE` y gate `PRE_E5_FOUNDATION`                                |
+| `SUPA-AUD-009`                                       | hallazgo original de relaciones Vento sin RLS, grants y políticas observadas   |
+| `SUPA-ARC-015`                                       | política canónica que separa exposición, grants, RLS y `FORCE RLS`             |
+| `SUPA-TRANS-007`                                     | consumidores y fronteras de adaptación vigentes                                |
+| `SUPA-TRANS-011`                                     | recuperación, rollback y evidencia por cambio                                  |
+| `AUTH-DB-027`                                        | harness propietario de pruebas de RLS y migraciones                            |
+| `AUTH-DB-028`                                        | baseline y control de drift por ambiente                                       |
+| `AUTH-DB-029`                                        | backup, restore, recovery point y rollback                                     |
+| estado remoto read-only de `vento-os-dev`            | reconciliación material del conjunto que continúa pendiente                    |
+
+La reconciliación topológica vigente prevalece sobre referencias históricas que situaban estas correcciones únicamente después de E5:
+
+```text
+AUTH-DB-001
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-001::GLOBAL
+```
+
+La aprobación documental de esta tarea no autoriza la instancia física.
+
+---
+
+#### 4. Reconciliación del hallazgo de `SUPA-AUD`
+
+`SUPA-AUD-009` registró tablas Vento con RLS deshabilitado dentro de `app_private` y `viso`. Antes de congelar el alcance de R0 se volvió a observar el estado remoto.
+
+La reconciliación detecta un cambio ya materializado fuera de esta tarea:
+
+| Relación auditada              | Estado remoto vigente | Políticas vigentes | Decisión de `AUTH-DB-001` |
+| ------------------------------ | --------------------- | -----------------: | ------------------------- |
+| `viso.role_concurrency_limits` | `RLS_ENABLED`         |                  1 | `YA_CORREGIDA_NO_TOCAR`   |
+
+La política remota observada para esa tabla es `no_client_access_role_concurrency_limits`, dirigida a `anon, authenticated`, con `USING false` y `WITH CHECK false`. `AUTH-DB-001` no la recrea, modifica, renombra ni usa como plantilla para las demás tablas.
+
+El conjunto material pendiente se deriva del estado remoto actual, no de copiar de forma ciega el corte histórico.
+
+---
+
+#### 5. Universo exacto pendiente
+
+El universo actual pendiente queda cerrado en **12 tablas**:
+
+|    # | Relación                                | Owner      | RLS actual | FORCE actual | Políticas | Grants `anon` | Grants `authenticated` | Grants `service_role` | RLS objetivo | Decisión FORCE                          | Decisión          |
+| ---: | --------------------------------------- | ---------- | ---------- | ------------ | --------: | ------------: | ---------------------: | --------------------: | ------------ | --------------------------------------- | ----------------- |
+|    1 | `app_private.delivery_pin_secrets`      | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     0 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|    2 | `viso.demand_forecasts`                 | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|    3 | `viso.demand_history_hourly`            | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|    4 | `viso.employee_availability`            | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|    5 | `viso.employee_planning_limits`         | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|    6 | `viso.employee_shift_preferences`       | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|    7 | `viso.shift_generation_candidate_items` | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|    8 | `viso.shift_generation_candidates`      | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|    9 | `viso.shift_generation_runs`            | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|   10 | `viso.site_operational_roles`           | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|   11 | `viso.site_planning_rules`              | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+|   12 | `viso.site_staffing_requirements`       | `postgres` | `OFF`      | `OFF`        |         0 |             0 |                      0 |                     7 | `ON`         | `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` | `ENABLE_RLS_ONLY` |
+
+Reconciliación:
+
+```text
+TABLAS PENDIENTES ESPERADAS = 12
+TABLAS PENDIENTES MATERIALIZADAS = 12
+FALTANTES = 0
+DUPLICADOS = 0
+TABLAS CON RLS YA HABILITADO DENTRO DEL ALCANCE = 0
+```
+
+---
+
+#### 6. Regla de contención RLS
+
+Para cada una de las doce tablas pendientes, el estado objetivo de esta tarea es exclusivamente:
+
+```text
+relrowsecurity = true
+```
+
+La materialización deberá preservar simultáneamente:
+
+- nombre y esquema de la tabla;
+- owner PostgreSQL;
+- columnas y tipos;
+- claves, constraints e índices;
+- triggers;
+- datos existentes;
+- grants existentes;
+- políticas existentes, que actualmente son cero en las doce tablas;
+- consumidores y autoridad empresarial;
+- comportamiento server-side permitido por roles privilegiados existentes.
+
+`AUTH-DB-001` no usa la habilitación de RLS para alterar ninguna otra dimensión.
+
+---
+
+#### 7. Default deny sin fabricar autorización
+
+Habilitar RLS sin crear policies establece un estado de denegación por defecto para roles sujetos a RLS. En el corte remoto actual, las doce tablas pendientes ya presentan:
+
+```text
+anon table grants = 0
+authenticated table grants = 0
+```
+
+Por tanto, la corrección añade defensa en profundidad sin conceder una ruta de acceso nueva.
+
+No se crea una policy `USING true`, una policy temporal, una policy de compatibilidad ni una policy copiada de otra tabla para “mantener funcionando” clientes. Si un consumidor requiere acceso directo futuro, su autorización deberá quedar definida por la tarea propietaria correspondiente antes de concederlo.
+
+---
+
+#### 8. Frontera de `service_role` y backend privilegiado
+
+Las once tablas `viso.*` pendientes conservan grants observados para `service_role`; `app_private.delivery_pin_secrets` no presenta grants directos para `service_role` en el corte consultado.
+
+`service_role` y cualquier rol con `BYPASSRLS` no se convierten en roles restringidos por esta tarea. La habilitación de RLS no se presentará como sustituto de:
+
+- mínimo privilegio;
+- revisión de funciones `SECURITY DEFINER`;
+- control de secretos;
+- autorización empresarial interna;
+- hardening de grants;
+- separación de runtime, migración y mantenimiento.
+
+Esas responsabilidades permanecen en sus tareas canónicas.
+
+---
+
+#### 9. Decisión explícita sobre `FORCE ROW LEVEL SECURITY`
+
+Las doce tablas reciben la misma decisión explícita:
+
+```text
+FORCE_NOT_REQUIRED_WITH_JUSTIFICATION
+```
+
+Justificación acumulada:
+
+1. el owner observado es `postgres`, usado como autoridad administrativa y de migración, no como rol cliente ordinario;
+2. `anon` y `authenticated` no tienen grants directos sobre las doce tablas;
+3. `FORCE RLS` no corrige un rol con `BYPASSRLS`;
+4. `SUPA-ARC-015` prohíbe activar `FORCE RLS` masivamente para compensar grants, owners o funciones privilegiadas mal diseñados;
+5. cualquier cambio futuro de owner, grants, exposición o rol de runtime obliga a reevaluar esta decisión antes de considerarla vigente.
+
+`AUTH-DB-001::GLOBAL` no ejecutará `FORCE ROW LEVEL SECURITY` sobre ninguna tabla.
+
+---
+
+#### 10. Frontera con políticas RLS
+
+Esta tarea no diseña ni modifica políticas.
+
+```text
+AUTH-DB-001
+= habilitar RLS donde sigue OFF
+
+AUTH-DB-002
+= endurecer políticas RLS demasiado amplias aprobadas para corrección
+```
+
+Las doce tablas pendientes tienen actualmente cero policies. Ese hecho se preserva durante esta contención para evitar inventar semántica de acceso sin owner, actor, operación, scope y pruebas negativas aprobadas.
+
+La policy ya existente en `viso.role_concurrency_limits` queda fuera del cambio porque la tabla ya no pertenece al conjunto pendiente de `AUTH-DB-001`.
+
+---
+
+#### 11. Frontera con grants
+
+Esta tarea tampoco concede ni revoca privilegios PostgreSQL.
+
+```text
+AUTH-DB-004
+= reducir grants innecesarios de authenticated
+
+AUTH-DB-005
+= revocar grants innecesarios de anon
+```
+
+Los conteos observados de grants se utilizan solo como evidencia para demostrar que habilitar RLS no está fabricando una nueva autorización cliente.
+
+La presencia de grants de `service_role` en VISO se conserva como hecho del runtime privilegiado y no se normaliza en `AUTH-DB-001`.
+
+---
+
+#### 12. Handoff de materialización física
+
+La topología de la tarea es:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-001::GLOBAL
+```
+
+La futura instancia física deberá materializar, como mínimo:
+
+1. una migración nueva, versionada e inmutable bajo la fuente canónica de migraciones de `vento-shell`;
+2. precondición fail-closed de que las doce identidades esperadas existen como tablas y continúan siendo las únicas pendientes del alcance autorizado;
+3. `ENABLE ROW LEVEL SECURITY` para cada una de las doce tablas;
+4. cero `CREATE POLICY`, `ALTER POLICY` o `DROP POLICY`;
+5. cero `GRANT` o `REVOKE`;
+6. cero `FORCE ROW LEVEL SECURITY`;
+7. cero cambios de owner, columnas, constraints, índices, triggers o datos;
+8. evidencia de que `relrowsecurity = true` en 12/12 después del cambio;
+9. evidencia de que los conteos de policies y grants no se ampliaron por la migración;
+10. validación mediante el harness de `AUTH-DB-027` y contra el baseline/drift gobernado por `AUTH-DB-028`.
+
+La instancia no queda autorizada por esta tarea documental.
+
+---
+
+#### 13. Precondiciones fail-closed
+
+La futura materialización se detiene antes de mutar si ocurre cualquiera de estas condiciones:
+
+1. falta alguna de las doce tablas autorizadas;
+2. aparece una identidad adicional con RLS deshabilitado dentro del universo gobernado por esta corrección y no ha sido reconciliada;
+3. una tabla cambió de tipo de relación;
+4. una tabla fue movida, retirada o renombrada por una decisión canónica posterior;
+5. cambió el owner de forma no conciliada;
+6. aparecieron policies no contempladas en una de las doce tablas;
+7. aparecieron grants cliente no conciliados;
+8. el baseline o drift de `AUTH-DB-028` no permite identificar el entorno con certeza;
+9. no existe recovery point válido conforme a `AUTH-DB-029`;
+10. la instancia física no tiene autorización explícita vigente.
+
+No se sustituye una identidad faltante por otra tabla “equivalente” por nombre o intención.
+
+---
+
+#### 14. Recuperación y rollback
+
+La habilitación de RLS es una corrección de seguridad. Su estrategia normal de recuperación será:
+
+```text
+PREFERENCIA = FORWARD_FIX
+```
+
+Reglas:
+
+1. el recovery point debe capturar al menos `relrowsecurity`, `relforcerowsecurity`, policies y grants previos de las doce tablas;
+2. un fallo funcional se corrige identificando el consumidor, grant o policy faltante en su tarea propietaria, no desactivando RLS de forma automática;
+3. `DISABLE ROW LEVEL SECURITY` no constituye rollback rutinario permitido para esta corrección;
+4. reabrir temporalmente una tabla solo podría ocurrir como acción extraordinaria de recuperación, con autorización explícita, blast radius conocido y evidencia de que no introduce acceso cliente no autorizado;
+5. cualquier recuperación preserva datos, constraints, autoridad empresarial y evidencia histórica;
+6. el resultado posterior debe volver a ejecutar las comprobaciones RLS del harness y reconciliar drift.
+
+---
+
+#### 15. Handoff a tareas posteriores de R0
+
+`AUTH-DB-001` no absorbe:
+
+| Tarea         | Responsabilidad reservada                          |
+| ------------- | -------------------------------------------------- |
+| `AUTH-DB-002` | revisar y endurecer policies RLS demasiado amplias |
+| `AUTH-DB-003` | endurecer funciones `SECURITY DEFINER` aprobadas   |
+| `AUTH-DB-004` | reducir grants innecesarios de `authenticated`     |
+| `AUTH-DB-005` | revocar grants innecesarios de `anon`              |
+
+Una discrepancia encontrada durante la futura materialización se asigna a la tarea propietaria correspondiente; no se corrige lateralmente dentro de `AUTH-DB-001`.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA NI MODIFICA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+Justificación: la tarea materializa el alcance exacto de una contención RLS ya exigida por la arquitectura de seguridad y por el contrato de validación de migraciones. No crea una regla empresarial nueva, no define permisos nuevos, no concede acceso, no modifica la semántica de policies ni cambia la obligación de validar RLS, drift y rollback.
+
+---
+
+#### 17. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza, sin modificar el Registro Canónico de Requisitos de Prueba:
+
+- `TREQ-SUPABASE-007`, para equivalencia y pruebas negativas entre autorización, RPC y RLS cuando exista una superficie autorizada;
+- `TREQ-SUPABASE-008`, para reconstrucción, validación de RLS, drift, backup, restauración y rollback de migraciones.
+
+Esta trazabilidad no crea ni modifica esas filas.
+
+---
+
+#### 18. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                           |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | pendiente de materialización local del artefacto documental y validación del plan                                                                                   |
+| LOCAL     | NOT_EXECUTED   | pendiente de preflight, formato, quality, delivery y validadores documentales del checkout                                                                          |
+| REMOTA    | PASS           | consulta read-only de catálogos PostgreSQL confirmó 12 tablas pendientes con RLS OFF; `viso.role_concurrency_limits` ya aparece con RLS ON y una policy deny-client |
+| OPERATIVA | NOT_APPLICABLE | esta tarea documental no cambia disponibilidad, tráfico, procesos ni consumidores                                                                                   |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-001::GLOBAL` permanece separada, pendiente y sin autorización física                                                                                       |
+
+---
+
+#### 19. Criterios de aceptación
+
+- [x] `AUTH-DB-001` se confirma como tarea documental actual de R0.
+- [x] La topología se confirma como `GLOBAL_ENABLE_ONCE` con gate `PRE_E5_FOUNDATION`.
+- [x] Se reconcilia el hallazgo histórico contra el estado remoto vigente.
+- [x] `viso.role_concurrency_limits` se reconoce como ya corregida y queda fuera del cambio.
+- [x] Se materializan exactamente 12 tablas pendientes, sin faltantes ni duplicados.
+- [x] Las 12 tienen `RLS OFF`, `FORCE RLS OFF` y cero policies en el corte observado.
+- [x] Las 12 carecen de grants directos para `anon` y `authenticated`.
+- [x] Se define `ENABLE_RLS_ONLY` para 12/12.
+- [x] Se definen cero policies nuevas.
+- [x] Se definen cero cambios de grants.
+- [x] Se definen cero activaciones de `FORCE RLS` y una justificación explícita por tabla.
+- [x] Se preserva la frontera de `service_role` y `BYPASSRLS` sin confundirla con autorización empresarial.
+- [x] Se define materialización física fail-closed y una sola instancia `AUTH-DB-001::GLOBAL`.
+- [x] Se define recuperación preferente mediante `FORWARD_FIX` y se prohíbe desactivar RLS como rollback rutinario.
+- [x] Se preservan las responsabilidades de `AUTH-DB-002` a `AUTH-DB-005`.
+- [x] Se declaran cero cambios TREQ con cobertura heredada explícita fuera de la sección de requisitos derivados.
+- [x] No se ejecuta DDL, DML, migración, policy, grant, revoke ni cambio remoto.
+
+---
+
+#### 20. Límites
+
+Esta tarea no autoriza ni ejecuta:
+
+- migraciones SQL;
+- `ENABLE ROW LEVEL SECURITY` en el proyecto remoto;
+- `FORCE ROW LEVEL SECURITY`;
+- creación, modificación o retiro de policies;
+- `GRANT` o `REVOKE`;
+- cambios de owner;
+- cambios de esquemas, tablas, columnas, constraints, índices o triggers;
+- cambios de datos;
+- exposición de schemas mediante Data API;
+- cambios de Auth, Storage, Realtime, Edge Functions, cron o secretos;
+- cambios en repositorios consumidores;
+- implementación de `AUTH-DB-002`, `AUTH-DB-003`, `AUTH-DB-004` o `AUTH-DB-005`;
+- autorización de `AUTH-DB-001::GLOBAL`.
+
+**ÚLTIMA TAREA APROBADA:** `AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete`
+
+**TAREA ACTUAL APROBADA:** `AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD`
+
+**SIGUIENTE TAREA RESERVADA:** `AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`
+
+---
+
+#### 21. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-029 — Validar respaldo, restauración y rollback antes del primer paquete`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-001 — Corregir tablas sin RLS identificadas en SUPA-AUD`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección`
+
+
 ### [ ] AUTH-DB-002 — Endurecer políticas RLS demasiado amplias aprobadas para corrección
 ### [ ] AUTH-DB-003 — Endurecer funciones SECURITY DEFINER aprobadas
 ### [ ] AUTH-DB-004 — Reducir grants innecesarios de authenticated

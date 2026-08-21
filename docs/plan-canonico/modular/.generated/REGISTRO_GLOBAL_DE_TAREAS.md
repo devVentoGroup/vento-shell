@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1005** |
+| Aprobadas | **1006** |
 | En propuesta | **0** |
-| No iniciadas | **589** |
+| No iniciadas | **588** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **63.05% (1005/1594)** |
+| Porcentaje de completamiento | **63.11% (1006/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-029` — Validar respaldo, restauración y rollback antes del primer paquete | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-001` — Corregir tablas sin RLS identificadas en SUPA-AUD | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-002` — Endurecer políticas RLS demasiado amplias aprobadas para corrección | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-001` — Corregir tablas sin RLS identificadas en SUPA-AUD | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-002` — Endurecer políticas RLS demasiado amplias aprobadas para corrección | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-003` — Endurecer funciones SECURITY DEFINER aprobadas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1215,7 +1215,7 @@
 | ✅ APROBADA | `AUTH-DB-027` | Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ✅ APROBADA | `AUTH-DB-028` | Establecer baseline y control de drift entre local, staging y producción | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ✅ APROBADA | `AUTH-DB-029` | Validar respaldo, restauración y rollback antes del primer paquete | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
-| ⬜ NO INICIADA | `AUTH-DB-001` | Corregir tablas sin RLS identificadas en SUPA-AUD | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
+| ✅ APROBADA | `AUTH-DB-001` | Corregir tablas sin RLS identificadas en SUPA-AUD | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-002` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-003` | Endurecer funciones SECURITY DEFINER aprobadas | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-004` | Reducir grants innecesarios de authenticated | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
