@@ -12,7 +12,9 @@ Materialización estática interna de la superficie lógica `@vento/contracts/in
 - `SHELL-CON-019::GLOBAL` materializa `ExternalReceivedEvent<TNormalizedAssertion>` como contrato estático de recepción externa previo a cualquier efecto empresarial.
 - `INT-DB-001` conserva el registro físico posterior de sistemas, bindings y principales.
 - `INT-DB-002` conserva la persistencia física posterior de referencias de credenciales sin secretos.
-- `SHELL-CON-020` conserva en exclusiva el contrato canónico de venta.
+- `INT-POS-005` e `INT-SALES-001` conservan la semántica empresarial propietaria de venta individual y registro durable.
+- `SHELL-CON-020::GLOBAL` materializa `CanonicalSaleId` y `CanonicalSale<TSaleLine>` como contrato estático de venta canónica.
+- `SHELL-CON-021` conserva en exclusiva la identidad y forma compartida de línea de venta.
 - `SHELL-CON-022`, `SHELL-CON-023` y `SHELL-CON-024` conservan respectivamente mapping compartido, idempotencia/conciliación y disposición de rechazo/cuarentena.
 
 ## Principal técnico de integración
@@ -108,9 +110,42 @@ Esta materialización crea 0 eventos runtime, 0 endpoints, 0 registros físicos 
 
 Source contract SHA-256 `SHELL-CON-019`: `0faeb8d65edcf9b5806c6c962aefb76ab9cfd13e434d43cb549d559cd5cbaed1`.
 
+## Venta canónica
+
+`SHELL-CON-020::GLOBAL` materializa `CanonicalSaleId` y `CanonicalSale<TSaleLine>` dentro de `@vento/contracts/integrations` sin convertir el package en fuente empresarial, almacenamiento operacional ni ejecutor de efectos.
+
+La forma física conserva exactamente 22 campos de nivel superior: identidad y versión contractual, fuente e identidad de origen, contexto de sede/terminal/caja, temporalidad y estado comercial, referencias independientes a cliente/pedido/documento fiscal/pagos, `monetary_snapshot`, líneas, procedencia, correlación y atribución de registro.
+
+`monetary_snapshot` conserva exactamente 6 componentes del `monetary_snapshot`: `currency_ref`, subtotal, descuento total, impuesto total, propina total y total. La representación escalar, precisión decimal, redondeo y moneda por defecto permanecen `UNSPECIFIED`; el contrato no inventa una representación monetaria que la tarea documental no fijó.
+
+Una venta canónica completa exige al menos una línea. `TSaleLine` permanece abstracto y se materializa como una tupla no vacía `readonly [TSaleLine, ...TSaleLine[]]`; `SHELL-CON-020` no define `line_id`, producto, presentación, cantidad, unidad, precio de línea ni forma pública de la línea. Esa responsabilidad permanece exclusivamente en `SHELL-CON-021`.
+
+La fuente empresarial se conserva de manera explícita:
+
+- una venta histórica Makos mantiene Makos en `source_system` aunque sea recibida, importada o almacenada posteriormente en PULSO;
+- PULSO aparece como `source_system` únicamente dentro del alcance donde tenga autoridad aprobada;
+- `source_sale_id` permanece separado de `CanonicalSaleId`;
+- `source_revision` permanece separada de `contract_version` y no se fabrica cuando la fuente no la acredita;
+- transporte, adaptador, Excel, API, webhook, staging o sincronización no sustituyen la fuente empresarial real.
+
+`occurred_at` representa el hecho comercial y permanece separado de `recorded_at`. `commercial_state` permanece ortogonal a pago, caja, fiscalidad, inventario, fidelización, economía y entrega.
+
+La frontera con `ExternalReceivedEvent<TNormalizedAssertion>` permanece explícita: una recepción externa puede aportar procedencia, pero no se eleva a venta solo por haber sido recibida o autenticada. `external_event_id`, `receipt_id`, payment ID, order ID y fiscal ID no sustituyen `CanonicalSaleId`.
+
+La materialización conserva las responsabilidades posteriores sin adelantarlas:
+
+- `SHELL-CON-021`: línea de venta compartida;
+- `SHELL-CON-022`: mapping compartido;
+- `SHELL-CON-023`: idempotencia y conciliación;
+- `SHELL-CON-024`: rechazo, cuarentena y compensación.
+
+Esta instancia crea 0 ventas operativas, 0 persistencia, 0 eventos empresariales emitidos, 0 consumidores migrados, 0 efectos downstream, 0 secretos y 0 cambios Supabase.
+
+Source contract SHA-256 `SHELL-CON-020`: `5495541814c4bf5387462d98e638c9f25dbd128dc94706e7bbba7317a7f75182`.
+
 ## Límite físico
 
-Las tres instancias son fundaciones estáticas `PRE_E5_FOUNDATION` con modalidad `GLOBAL_ENABLE_ONCE`.
+Las cuatro instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-020::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION` con modalidad `GLOBAL_ENABLE_ONCE`.
 
 Esta materialización no:
 
@@ -126,9 +161,10 @@ Esta materialización no:
 - crea valores físicos de `IntegrationPrincipalId` o `ExternalCredentialId`;
 - accede a secret stores;
 - crea cuentas, bindings, colas o workers runtime;
+- crea ventas operativas, persistencia de ventas, eventos de venta ni efectos downstream;
 - crea tablas, migraciones, RLS, RPC o cambios Supabase;
 - modifica 04A/TREQ;
-- materializa `SHELL-CON-020..024`;
+- materializa `SHELL-CON-021..024`;
 - materializa `INT-DB-001` ni `INT-DB-002`.
 
 La reconciliación topológica del archivo propietario permite materializar esta forma estática antes de E5; la adopción por paquetes y la ejecución real de integraciones conservan sus gates propietarios.
@@ -143,3 +179,7 @@ La reconciliación topológica del archivo propietario permite materializar esta
 - `generated/index.ts`.
 
 `scripts/validate-integration-principal-contracts.mjs` valida frescura, forma contractual, cobertura 21/21, Wompi/RevenueCat, fronteras de seguridad, frontera del package, READMEs y ausencia de runtime, secretos o persistencia.
+
+`scripts/generate-canonical-sale-contract.mjs` valida `SHELL-CON-020` y mantiene `generated/canonical-sale.contract.ts`.
+
+`scripts/validate-canonical-sale-contract.mjs` valida la forma exacta de 22 campos de `CanonicalSale<TSaleLine>`, los 6 componentes monetarios, la cardinalidad no vacía de líneas, las fronteras Makos/PULSO, seguridad, READMEs y ausencia de runtime, persistencia, consumidores, eventos o Supabase.
