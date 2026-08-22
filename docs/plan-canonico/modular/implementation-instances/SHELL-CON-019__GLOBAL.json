@@ -1,10 +1,58 @@
 {
   "instance_id": "SHELL-CON-019::GLOBAL",
   "task_id": "SHELL-CON-019",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-CON-019::GLOBAL como ampliacion estatica interna de packages/contracts/integrations sobre las fundaciones ya verificadas de SHELL-CON-017::GLOBAL y SHELL-CON-018::GLOBAL.",
+    "Modificar packages/contracts/integrations/scripts/generate-integration-principal-contracts.mjs para congelar y proyectar SHELL-CON-019 sin alterar las salidas vigentes de IntegrationPrincipal ni ExternalCredentialRef, validar las fuentes INT-EXT-003..017, preservar la matriz 21/21 y generar external-received-event.contract.ts e index.ts combinado.",
+    "Modificar packages/contracts/integrations/scripts/validate-integration-principal-contracts.mjs para validar conjuntamente principal tecnico, referencia de credencial, ExternalReceivedEvent, cobertura 21/21, Wompi y RevenueCat como las dos superficies inbound acreditadas, frontera del package, READMEs y ausencia de runtime, secretos o persistencia.",
+    "Crear packages/contracts/integrations/generated/external-received-event.contract.ts con ExternalReceivedEvent<TNormalizedAssertion>, referencias a IntegrationPrincipalId y ExternalCredentialId, ambiente VENTO, versiones de contrato, identidades external_event_id y receipt_id, temporalidad, autenticidad referenciada, evidencia fuente, huella, afirmacion normalizada y referencias de mapping, idempotencia, correlacion y owner_contract_ref.",
+    "Modificar packages/contracts/integrations/generated/index.ts para exponer internamente los simbolos estaticos de SHELL-CON-017, SHELL-CON-018 y SHELL-CON-019 sin publicar exports del package.",
+    "Modificar packages/contracts/integrations/README.md y exclusivamente la seccion de integraciones de packages/contracts/README.md para registrar SHELL-CON-019::GLOBAL y reservar SHELL-CON-020, SHELL-CON-022, SHELL-CON-023 y SHELL-CON-024 en sus responsabilidades propietarias.",
+    "Preservar exactamente las 21 decisiones de aplicabilidad de SHELL-CON-019: 2 APLICA_EVENTO_INBOUND_ACREDITADO correspondientes a Wompi y RevenueCat y 19 identidades sin evento externo recibido acreditado en el corte; preservar estados fisicos 2 DEFINIDO_NO_MATERIALIZADO, 9 NO_APLICA, 8 NO_APLICA_ACTUAL y 2 BLOQUEADO.",
+    "Preservar la separacion entre afirmacion externa y hecho empresarial, proveedor externo y productor empresarial interno, external_event_id y receipt_id, evidencia fuente y normalized_assertion, autenticidad tecnica y autorizacion empresarial, y mantener mapping, idempotencia y correlacion como referencias hacia sus contratos propietarios.",
+    "Ejecutar una sola vez el PRE_REPAIR_GATE npm run quality:repair despues de materializar el lote y antes de IMPLEMENTED; se autorizan unicamente sus reparaciones deterministas dentro del alcance tocado y la regeneracion de generated bajo packages/contracts/integrations.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-CON-019__GLOBAL.json exclusivamente para conservar autorizacion, estados y evidencia de esta instancia.",
+    "No modificar packages/contracts/package.json, exports, version, releases, consumidores, runtime, endpoints o webhooks reales, tablas inbox, persistencia de receipts, buckets o payload stores, secret stores, valores de credenciales, cuentas, Supabase, RLS, RPC, migraciones, datos, 04A/TREQ, implementation-control.json, el contrato documental SHELL-CON-019, SHELL-CON-020..024, INT-DB-001 ni INT-DB-002."
+  ],
+  "validation_commands": [
+    "node packages/contracts/integrations/scripts/generate-integration-principal-contracts.mjs --check",
+    "node packages/contracts/integrations/scripts/validate-integration-principal-contracts.mjs",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-22T12:21:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la materializacion estatica interna de SHELL-CON-019::GLOBAL en vento-group-sas/vento-shell: ampliar packages/contracts/integrations con ExternalReceivedEvent<TNormalizedAssertion>, preservar las materializaciones verificadas de SHELL-CON-017 y SHELL-CON-018, materializar exactamente 21 decisiones de aplicabilidad con Wompi y RevenueCat como las dos superficies inbound acreditadas y 19 identidades sin evento externo recibido acreditado, mantener separadas afirmacion externa, autenticidad, evidencia, receipt, mapping, idempotencia, correlacion y hecho empresarial, y actualizar solo generador, validador, generated e informacion README indicada. Autorizo una sola ejecucion del PRE_REPAIR_GATE npm run quality:repair para reparaciones deterministas dentro del alcance y exclusivamente las validation_commands enumeradas como bateria final. No autorizo exports publicos, cambio de version, releases, consumidores, runtime, endpoints o webhooks reales, persistencia de receipts o payloads, secret stores, valores de credenciales, Supabase, migraciones, RLS, RPC, datos, 04A/TREQ, cambios al contrato documental SHELL-CON-019 ni materializacion de SHELL-CON-020..024, INT-DB-001 o INT-DB-002.",
+    "source_contract_sha256": "0faeb8d65edcf9b5806c6c962aefb76ab9cfd13e434d43cb549d559cd5cbaed1"
+  },
+  "evidence": [
+    "MATERIALIZATION static ExternalReceivedEvent contract generated",
+    "MATERIALIZATION integrations generated index extended without public package exports",
+    "MATERIALIZATION integrations and contracts README boundaries updated",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "COVERAGE SHELL-CON-019 decisions=21 accredited_inbound=2 no_aplica_en_corte=18 no_aplica_al_evento_en_corte=1 without_accredited_inbound=19",
+    "COVERAGE physical defined_not_materialized=2 no_aplica=9 no_aplica_actual=8 bloqueado=2",
+    "MATERIALIZATION runtime events=0 endpoints=0 persisted receipts=0 secrets=0 credentials=0 Supabase changes=0",
+    "SOURCE CONTRACT SHA256 0faeb8d65edcf9b5806c6c962aefb76ab9cfd13e434d43cb549d559cd5cbaed1",
+    "VALIDATION integration contracts generator freshness PASS",
+    "VALIDATION integration contracts validator PASS",
+    "VALIDATION ExternalReceivedEvent exact logical fields=21",
+    "VALIDATION decisions accredited_inbound=2 no_aplica_en_corte=18 no_aplica_al_evento_en_corte=1 without_accredited_inbound=19",
+    "VALIDATION Wompi and RevenueCat accredited inbound surfaces PASS",
+    "VALIDATION Apple PassKit NO_APLICA_AL_EVENTO_EN_CORTE preserved",
+    "VALIDATION @vento/contracts package boundary PASS",
+    "VALIDATION README boundary PASS",
+    "VALIDATION runtime secret persistence boundary PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-019::GLOBAL VERIFIED"
+  ]
 }

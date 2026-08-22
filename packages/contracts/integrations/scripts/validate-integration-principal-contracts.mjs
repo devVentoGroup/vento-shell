@@ -21,6 +21,11 @@ const credentialContractPath = path.join(
   'generated',
   'external-credential-ref.contract.ts',
 );
+const externalReceivedEventContractPath = path.join(
+  integrationsRoot,
+  'generated',
+  'external-received-event.contract.ts',
+);
 const indexPath = path.join(
   integrationsRoot,
   'generated',
@@ -302,6 +307,205 @@ function validateGeneratedCredentialContract(contractSource) {
   validateNoRuntimeSurface(contractSource, 'external credential reference contract');
 }
 
+function validateGeneratedExternalReceivedEventContract(contractSource) {
+  const requiredMarkers = [
+    'Semantic owners: INT-EXT-009..017',
+    'Contract task: SHELL-CON-019',
+    'Principal contract task: SHELL-CON-017',
+    'Credential contract task: SHELL-CON-018',
+    'export interface ExternalReceivedEvent<TNormalizedAssertion>',
+    'readonly external_system_id: string;',
+    'readonly external_instance_id: string | null;',
+    'readonly integration_principal_id: IntegrationPrincipalId | null;',
+    'readonly external_credential_id: ExternalCredentialId | null;',
+    'readonly environment: VentoCredentialEnvironment;',
+    'readonly vento_contract_version: string;',
+    'readonly provider_contract_version: string | null;',
+    'readonly input_contract_ref: string;',
+    'readonly transport_ref: string;',
+    'readonly external_event_id: string | null;',
+    'readonly receipt_id: string | null;',
+    'readonly received_at: string;',
+    'readonly provider_occurred_at: string | null;',
+    'readonly authenticity_result_ref: string | null;',
+    'readonly source_evidence_ref: string;',
+    'readonly source_payload_digest: string | null;',
+    'readonly normalized_assertion: TNormalizedAssertion | null;',
+    'readonly mapping_refs: readonly string[];',
+    'readonly idempotency_ref: string | null;',
+    'readonly correlation_refs: readonly string[];',
+    'readonly owner_contract_ref: string;',
+    'external_assertion_is_canonical_business_fact: false',
+    'external_provider_is_internal_business_producer: false',
+    'receipt_ack_callback_webhook_confirms_business_effect: false',
+    'authenticity_implies_business_correctness: false',
+    'durable_receipt_required_without_stable_external_event_id: true',
+    'payload_digest_replaces_event_or_receipt_identity: false',
+    'raw_payload_transported_by_default: false',
+    'normalized_assertion_is_business_fact: false',
+    'universal_record_string_unknown_api: false',
+    'mapping_by_reference: true',
+    'idempotency_by_reference: true',
+    'correlation_by_reference: true',
+    'owner_contract_ref_grants_authority: false',
+    'external_system_decision_count: 21',
+    'accredited_inbound_event_count: 2',
+    'without_accredited_inbound_event_count: 19',
+    'not_applicable_in_cut_count: 18',
+    'not_applicable_to_event_in_cut_count: 1',
+    'defined_not_materialized_count: 2',
+    'not_applicable_physical_count: 9',
+    'not_applicable_current_physical_count: 8',
+    'blocked_physical_count: 2',
+    'materialized_runtime_event_count: 0',
+    'created_endpoint_count: 0',
+    'created_receipt_record_count: 0',
+    'created_secret_count: 0',
+    'supabase_change_count: 0',
+    'logical_namespace: "@vento/contracts/integrations"',
+    'mapping_contract_task_id: "SHELL-CON-022"',
+    'idempotency_contract_task_id: "SHELL-CON-023"',
+    'disposition_contract_task_id: "SHELL-CON-024"',
+    'next_contract_task_id: "SHELL-CON-020"',
+    'execution_gate: "PRE_E5_FOUNDATION"',
+    'physical_mode: "GLOBAL_ENABLE_ONCE"',
+    'public_export_published: false',
+    'runtime_endpoint_materialized: false',
+    'receipt_persistence_materialized: false',
+    'source_payload_storage_materialized: false',
+    'secret_materialized: false',
+    'supabase_changed: false',
+  ];
+
+  for (const marker of requiredMarkers) {
+    assertIncludes(contractSource, marker, 'external received event contract');
+  }
+
+  const interfaceMatch = contractSource.match(
+    /export interface ExternalReceivedEvent<TNormalizedAssertion> \{([\s\S]*?)\n\}/u,
+  );
+  if (!interfaceMatch) {
+    fail('external received event contract interface not found.');
+  }
+
+  const expectedFields = [
+    'external_system_id',
+    'external_instance_id',
+    'integration_principal_id',
+    'external_credential_id',
+    'environment',
+    'vento_contract_version',
+    'provider_contract_version',
+    'input_contract_ref',
+    'transport_ref',
+    'external_event_id',
+    'receipt_id',
+    'received_at',
+    'provider_occurred_at',
+    'authenticity_result_ref',
+    'source_evidence_ref',
+    'source_payload_digest',
+    'normalized_assertion',
+    'mapping_refs',
+    'idempotency_ref',
+    'correlation_refs',
+    'owner_contract_ref',
+  ];
+  const actualFields = [
+    ...interfaceMatch[1].matchAll(/^\s+readonly ([a-z_]+):/gmu),
+  ].map((match) => match[1]);
+
+  if (JSON.stringify(actualFields) !== JSON.stringify(expectedFields)) {
+    fail(
+      `ExternalReceivedEvent fields must remain exact 21-field logical shape; `
+      + `received ${JSON.stringify(actualFields)}.`,
+    );
+  }
+
+  for (let index = 1; index <= 21; index += 1) {
+    assertIncludes(
+      contractSource,
+      JSON.stringify(`EXT-SYS-${String(index).padStart(3, '0')}`),
+      'external received event applicability coverage',
+    );
+  }
+
+  const decisionOccurrences = (decision) => (
+    contractSource.match(new RegExp(`decision: ${JSON.stringify(decision)}`, 'gu')) ?? []
+  ).length;
+  const physicalStatusOccurrences = (status) => (
+    contractSource.match(
+      new RegExp(`physical_status: ${JSON.stringify(status)}`, 'gu'),
+    ) ?? []
+  ).length;
+
+  if (decisionOccurrences('APLICA_EVENTO_INBOUND_ACREDITADO') !== 2) {
+    fail('external received event applicability must contain 2 accredited inbound rows.');
+  }
+  if (decisionOccurrences('NO_APLICA_EN_CORTE') !== 18) {
+    fail('external received event applicability must contain 18 NO_APLICA_EN_CORTE rows.');
+  }
+  if (decisionOccurrences('NO_APLICA_AL_EVENTO_EN_CORTE') !== 1) {
+    fail(
+      'external received event applicability must contain '
+      + '1 NO_APLICA_AL_EVENTO_EN_CORTE row.',
+    );
+  }
+  if (physicalStatusOccurrences('DEFINIDO_NO_MATERIALIZADO') !== 2) {
+    fail('external received event physical coverage must contain 2 defined rows.');
+  }
+  if (physicalStatusOccurrences('NO_APLICA') !== 9) {
+    fail('external received event physical coverage must contain 9 NO_APLICA rows.');
+  }
+  if (physicalStatusOccurrences('NO_APLICA_ACTUAL') !== 8) {
+    fail(
+      'external received event physical coverage must contain '
+      + '8 NO_APLICA_ACTUAL rows.',
+    );
+  }
+  if (physicalStatusOccurrences('BLOQUEADO') !== 2) {
+    fail('external received event physical coverage must contain 2 BLOQUEADO rows.');
+  }
+
+  const accreditedRows = [
+    ['EXT-SYS-002', 'Wompi'],
+    ['EXT-SYS-003', 'RevenueCat'],
+  ];
+  for (const [externalSystemId, system] of accreditedRows) {
+    const rowPattern = new RegExp(
+      `external_system_id: ${JSON.stringify(externalSystemId)},`
+      + `[\\s\\S]*?system: ${JSON.stringify(system)},`
+      + `[\\s\\S]*?decision: "APLICA_EVENTO_INBOUND_ACREDITADO",`,
+      'u',
+    );
+    if (!rowPattern.test(contractSource)) {
+      fail(`${externalSystemId} ${system} must remain an accredited inbound surface.`);
+    }
+  }
+
+  const interfaceBody = interfaceMatch[1];
+  const forbiddenFields = [
+    /\braw_payload\s*:/u,
+    /\bpayload\s*:/u,
+    /\bsecret\s*:/u,
+    /\btoken\s*:/u,
+    /\bsignature\s*:/u,
+    /\bpassword\s*:/u,
+    /\bapi_key\s*:/u,
+    /\bservice_role\s*:/u,
+  ];
+  for (const pattern of forbiddenFields) {
+    assertDoesNotMatch(
+      interfaceBody,
+      pattern,
+      'ExternalReceivedEvent interface',
+      pattern.source,
+    );
+  }
+
+  validateNoRuntimeSurface(contractSource, 'external received event contract');
+}
+
 function validateNoRuntimeSurface(source, label) {
   const forbiddenRuntime = [
     [/\bcreateClient\s*\(/u, 'createClient('],
@@ -348,6 +552,23 @@ function validateGeneratedIndex(indexSource) {
     'ExternalCredentialRef',
     'VentoCredentialEnvironment',
     'from "./external-credential-ref.contract.js";',
+    'EXTERNAL_RECEIVED_EVENT_APPLICABILITY',
+    'EXTERNAL_RECEIVED_EVENT_APPLICABILITY_DECISIONS',
+    'EXTERNAL_RECEIVED_EVENT_AUTHENTICITY_POLICY',
+    'EXTERNAL_RECEIVED_EVENT_BOUNDARY_POLICY',
+    'EXTERNAL_RECEIVED_EVENT_CONTRACT_METADATA',
+    'EXTERNAL_RECEIVED_EVENT_COVERAGE',
+    'EXTERNAL_RECEIVED_EVENT_EVIDENCE_POLICY',
+    'EXTERNAL_RECEIVED_EVENT_FORBIDDEN_MATERIAL',
+    'EXTERNAL_RECEIVED_EVENT_IDENTITY_POLICY',
+    'EXTERNAL_RECEIVED_EVENT_NORMALIZATION_POLICY',
+    'EXTERNAL_RECEIVED_EVENT_PHYSICAL_STATUSES',
+    'EXTERNAL_RECEIVED_EVENT_REFERENCE_POLICY',
+    'EXTERNAL_RECEIVED_EVENT_TEMPORAL_POLICY',
+    'ExternalReceivedEvent',
+    'ExternalReceivedEventApplicabilityDecision',
+    'ExternalReceivedEventPhysicalStatus',
+    'from "./external-received-event.contract.js";',
   ];
 
   for (const marker of requiredMarkers) {
@@ -364,13 +585,13 @@ function validatePackageBoundary() {
     fail('@vento/contracts package name changed.');
   }
   if (packageJson.version !== '1.0.0-alpha.1') {
-    fail('@vento/contracts version changed during SHELL-CON-018.');
+    fail('@vento/contracts version changed during SHELL-CON-019.');
   }
   if (packageJson.private !== true) {
     fail('@vento/contracts must remain private.');
   }
   if (Object.hasOwn(packageJson, 'exports')) {
-    fail('@vento/contracts must not add public exports in SHELL-CON-018.');
+    fail('@vento/contracts must not add public exports in SHELL-CON-019.');
   }
 }
 
@@ -397,8 +618,15 @@ function validateReadmes() {
     '0 valores físicos de `ExternalCredentialId`',
     'INT-EXT-003..008',
     'INT-DB-002',
-    'SHELL-CON-019',
+    'SHELL-CON-019::GLOBAL',
+    'ExternalReceivedEvent',
+    '2 `APLICA_EVENTO_INBOUND_ACREDITADO`',
+    '19 sin evento externo recibido acreditado',
+    'Wompi',
+    'RevenueCat',
+    'SHELL-CON-020',
     'PRE_E5_FOUNDATION',
+    '0faeb8d65edcf9b5806c6c962aefb76ab9cfd13e434d43cb549d559cd5cbaed1',
   ];
 
   for (const marker of moduleMarkers) {
@@ -418,7 +646,11 @@ function validateReadmes() {
     '2 `NO_APLICA`',
     '10 `NO_APLICA_ACTUAL`',
     '0 valores físicos de `ExternalCredentialId`',
-    '`SHELL-CON-019`',
+    '`SHELL-CON-019::GLOBAL`',
+    '`ExternalReceivedEvent`',
+    '2 `APLICA_EVENTO_INBOUND_ACREDITADO`',
+    '19 sin evento externo recibido acreditado',
+    '`SHELL-CON-020`',
   ];
 
   for (const marker of rootMarkers) {
@@ -430,6 +662,12 @@ function validateReadmes() {
     + 'de referencia de credencial externa sin secreto.',
   )) {
     fail('@vento/contracts README still declares SHELL-CON-018 as reserved.');
+  }
+  if (rootReadme.includes(
+    '`SHELL-CON-019` permanece como responsabilidad separada '
+    + 'del contrato de evento externo recibido.',
+  )) {
+    fail('@vento/contracts README still declares SHELL-CON-019 as reserved.');
   }
 }
 
@@ -444,10 +682,15 @@ export function validateIntegrationPrincipalContracts() {
     credentialContractPath,
     'external credential reference contract',
   );
+  const externalReceivedEventContractSource = readText(
+    externalReceivedEventContractPath,
+    'external received event contract',
+  );
   const indexSource = readText(indexPath, 'integrations generated index');
 
   validateGeneratedPrincipalContract(principalContractSource);
   validateGeneratedCredentialContract(credentialContractSource);
+  validateGeneratedExternalReceivedEventContract(externalReceivedEventContractSource);
   validateGeneratedIndex(indexSource);
   validatePackageBoundary();
   validateReadmes();
@@ -459,6 +702,15 @@ export function validateIntegrationPrincipalContracts() {
     credentialNotApplicable: freshness.credentialNotApplicable,
     credentialNotApplicableCurrent: freshness.credentialNotApplicableCurrent,
     materializedCredentialIds: freshness.materializedCredentialIds,
+    eventDecisions: freshness.eventDecisions,
+    eventAccreditedInbound: freshness.eventAccreditedInbound,
+    eventWithoutAccreditedInbound: freshness.eventWithoutAccreditedInbound,
+    eventNotApplicableInCut: freshness.eventNotApplicableInCut,
+    eventNotApplicableToEventInCut: freshness.eventNotApplicableToEventInCut,
+    eventDefinedNotMaterialized: freshness.eventDefinedNotMaterialized,
+    eventNotApplicablePhysical: freshness.eventNotApplicablePhysical,
+    eventNotApplicableCurrentPhysical: freshness.eventNotApplicableCurrentPhysical,
+    eventBlockedPhysical: freshness.eventBlockedPhysical,
   };
 }
 
@@ -485,6 +737,15 @@ function runCli() {
       `[VENTO CONTRACTS] MATERIALIZED_CREDENTIAL_IDS `
       + `${result.materializedCredentialIds}`,
     );
+    console.log(`[VENTO CONTRACTS] EVENT_DECISIONS ${result.eventDecisions}`);
+    console.log(
+      `[VENTO CONTRACTS] EVENT_ACCREDITED_INBOUND `
+      + `${result.eventAccreditedInbound}`,
+    );
+    console.log(
+      `[VENTO CONTRACTS] EVENT_WITHOUT_ACCREDITED_INBOUND `
+      + `${result.eventWithoutAccreditedInbound}`,
+    );
     console.log('');
     console.log('=== RESULTADO PARA CHATGPT ===');
     console.log('ESTADO: PASS');
@@ -498,6 +759,27 @@ function runCli() {
       + `${result.credentialNotApplicableCurrent}`,
     );
     console.log(`MATERIALIZED_CREDENTIAL_IDS: ${result.materializedCredentialIds}`);
+    console.log(`EVENT_DECISIONS: ${result.eventDecisions}`);
+    console.log(`EVENT_ACCREDITED_INBOUND: ${result.eventAccreditedInbound}`);
+    console.log(
+      `EVENT_WITHOUT_ACCREDITED_INBOUND: ${result.eventWithoutAccreditedInbound}`,
+    );
+    console.log(`EVENT_NOT_APPLICABLE_IN_CUT: ${result.eventNotApplicableInCut}`);
+    console.log(
+      `EVENT_NOT_APPLICABLE_TO_EVENT_IN_CUT: `
+      + `${result.eventNotApplicableToEventInCut}`,
+    );
+    console.log(
+      `EVENT_DEFINED_NOT_MATERIALIZED: ${result.eventDefinedNotMaterialized}`,
+    );
+    console.log(
+      `EVENT_NOT_APPLICABLE_PHYSICAL: ${result.eventNotApplicablePhysical}`,
+    );
+    console.log(
+      `EVENT_NOT_APPLICABLE_CURRENT_PHYSICAL: `
+      + `${result.eventNotApplicableCurrentPhysical}`,
+    );
+    console.log(`EVENT_BLOCKED_PHYSICAL: ${result.eventBlockedPhysical}`);
     console.log('PACKAGE_BOUNDARY: PASS');
     console.log('README_BOUNDARY: PASS');
     console.log('RUNTIME_SECRET_BOUNDARY: PASS');
