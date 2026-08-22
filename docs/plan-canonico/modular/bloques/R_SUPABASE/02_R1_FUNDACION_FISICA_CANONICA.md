@@ -1662,7 +1662,905 @@ No se modifica ninguna fila del registro de requisitos.
 `AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API`
 
 
-### [ ] AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
+### ✅ AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos
+**Tarea siguiente:** AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato de exposición de Data API, grants explícitos y default privileges cerrado; futura instancia global `AUTH-DB-017::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-017` define el contrato único para configurar qué schemas Vento pueden quedar expuestos por la Data API de Supabase y qué privilegios mínimos reciben los roles runtime sobre esa superficie, sin convertir la exposición de un schema en autorización empresarial y sin reabrir la clasificación de objetos cerrada por `AUTH-DB-018`.
+
+La regla central es:
+
+```text
+SUPERFICIE EMPRESARIAL VENTO EXPUESTA
+=
+api
+
+OWNER SCHEMAS
+app_private
+audit
+schemas legacy
+=
+NO SON SUPERFICIE OBJETIVO DE DATA API
+```
+
+La exposición de `api` no concede acceso automático a sus objetos. El acceso efectivo exige, de forma acumulativa y cuando aplique:
+
+```text
+SCHEMA EXPUESTO
++
+USAGE DEL SCHEMA
++
+PRIVILEGIO EXPLÍCITO DEL OBJETO
++
+CONTRATO DE AUTORIZACIÓN
++
+RLS / SEGURIDAD DEL OBJETO APLICABLE
+=
+ACCESO EFECTIVO
+```
+
+`AUTH-DB-017` cierra la capa de exposición y privilegios; no modifica las reglas empresariales de autorización ni las policies RLS propietarias de otras tareas.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el siguiente resultado documental:
+
+```text
+AUTH-DB-017
+→ contrato documental de exposición y grants de Data API
+
+AUTH-DB-017::GLOBAL
+→ única futura instancia física global
+
+resultado físico esperado de esa instancia
+→ api es la única superficie empresarial Vento expuesta
+→ public deja de ser superficie empresarial objetivo
+→ owner schemas permanecen no expuestos
+→ app_private permanece no expuesto
+→ audit permanece no expuesto
+→ graphql_public se trata únicamente como superficie administrada por plataforma cuando aplique
+→ anon y authenticated reciben únicamente grants explícitos necesarios
+→ PUBLIC no conserva EXECUTE genérico sobre rutinas empresariales Vento
+→ default privileges quedan endurecidos para impedir exposición accidental futura
+→ service_role no se convierte en contrato de cliente
+→ grants y exposición quedan verificables por inventario y drift
+```
+
+La tarea no ejecuta todavía ninguna revocación ni modificación de `supabase/config.toml`.
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente de R1 establece para `AUTH-DB-017`:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-017::GLOBAL
+prerequisite = R0 aplicable verificado
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no se crea una instancia por `package_id`;
+3. la fundación puede materializarse antes de E5 porque gobierna una frontera transversal reutilizable;
+4. la aprobación documental no autoriza la instancia física;
+5. la instancia no puede migrar tablas ni datos de dominio;
+6. la instancia no puede declarar aprobado ningún paquete consumidor;
+7. cualquier materialización conserva autorización humana explícita, migraciones versionadas, pruebas, drift y recuperación.
+
+---
+
+#### 4. Fuentes vinculantes y precedencia
+
+La tarea consume y preserva:
+
+- `AUTH-DB-016`, para los 29 schemas objetivo gobernados por Vento;
+- `AUTH-DB-018`, para la separación entre contratos `api`, lógica interna de owner, `app_private`, `audit`, compatibilidad y plataforma;
+- `SUPA-ARC-004`, para retirar `public` de la autoridad empresarial objetivo;
+- `SUPA-ARC-005`, para `api` como única capa empresarial Vento de contratos expuestos;
+- `SUPA-ARC-006`, para `app_private` como capa técnica privada;
+- `SUPA-ARC-007`, para `audit` como capa transversal no propietaria;
+- `SUPA-ARC-015`, para exposición, grants, RLS, vistas, funciones, roles runtime y default privileges;
+- `SUPA-ARC-025`, para gobierno, evidencia y drift;
+- `AUTH-DB-001..005`, para RLS, policies, funciones privilegiadas y contención previa de grants;
+- `AUTH-DB-027`, para harness de esquema, integridad, RLS, RPC y migraciones;
+- `AUTH-DB-028`, para baseline y drift;
+- `AUTH-DB-029`, para recuperación y rollback.
+
+Precedencia:
+
+```text
+ARQUITECTURA E3
+→ define superficie objetivo y principios de seguridad
+
+AUTH-DB-016
+→ define namespaces objetivo
+
+AUTH-DB-018
+→ define qué objetos son contratos y qué objetos permanecen internos
+
+AUTH-DB-017
+→ define exposición efectiva y privilegios de Data API
+
+AUTH-DB-019 Y POSTERIORES
+→ continúan la fundación de identidad y autorización
+```
+
+`AUTH-DB-017` no puede publicar un objeto que `AUTH-DB-018` haya clasificado como interno, bloqueado, legacy sin salida resuelta o administrado por plataforma.
+
+---
+
+#### 5. Clasificación recomputada frente al trabajo proyectado
+
+La clasificación independiente desde las fuentes canónicas es:
+
+```text
+TAREA = AUTH-DB-017
+NATURALEZA = DOCUMENTAL
+MODO = GLOBAL_ENABLE_ONCE
+INSTANCIA FÍSICA FUTURA = AUTH-DB-017::GLOBAL
+GATE = PRE_E5_FOUNDATION
+CARRIL ACTUAL = DOCUMENTAL
+SIGUIENTE DOCUMENTAL = AUTH-DB-019
+```
+
+Comparación:
+
+```text
+CLASIFICACIÓN RECOMPUTADA DESDE FUENTES CANÓNICAS
+vs.
+CURRENT-WORK DEL INICIADOR, QUE PRIORIZA SHELL-CON-017::GLOBAL EN EL CARRIL FÍSICO
+
+RESULTADO = COINCIDE EN EL MODELO DE DOS CARRILES
+
+La prioridad física de SHELL-CON-017::GLOBAL no suspende AUTH-DB-017.
+La instrucción explícita del usuario selecciona el carril documental.
+```
+
+No existe contradicción que bloquee el desarrollo documental de `AUTH-DB-017`.
+
+---
+
+#### 6. Superficie objetivo de Data API
+
+La configuración objetivo distingue dos categorías.
+
+##### 6.1. Superficie empresarial Vento
+
+La única superficie empresarial Vento expuesta es:
+
+```text
+api
+```
+
+Reglas:
+
+1. `api` es contrato, no dominio;
+2. `api` no aloja tablas autoritativas;
+3. `api` no aloja secuencias autoritativas;
+4. `api` no aloja trigger functions;
+5. `api` solo publica objetos previamente aprobados como `READ_VIEW`, `QUERY_RPC` o `COMMAND_RPC`;
+6. exponer `api` no concede por sí solo privilegios sobre sus objetos;
+7. ningún owner schema se añade al conjunto objetivo de schemas empresariales expuestos.
+
+##### 6.2. Superficies administradas por plataforma
+
+`graphql_public`, cuando exista y sea requerido por la configuración de plataforma, se trata como superficie administrada por Supabase y no como contrato empresarial Vento.
+
+Reglas:
+
+1. no recibe autoridad empresarial;
+2. no sustituye a `api`;
+3. no autoriza exponer owner schemas;
+4. su permanencia o retiro debe seguir la necesidad real de plataforma y no una inferencia desde esta tarea;
+5. cualquier consumidor GraphQL deberá continuar respetando los contratos y privilegios de la superficie autorizada.
+
+---
+
+#### 7. Schemas que no pueden quedar expuestos como superficie empresarial
+
+El estado objetivo prohíbe exposición directa de:
+
+- los 26 owner schemas `VSCHEMA-001..026`;
+- `app_private`;
+- `audit`;
+- `public` como superficie empresarial objetivo;
+- schemas legacy de aplicación o transición;
+- schemas de extensiones o administración interna que no formen parte del contrato de plataforma.
+
+La no exposición es una propiedad independiente de RLS.
+
+Un schema privado no debe confiar únicamente en RLS para compensar una exposición innecesaria.
+
+---
+
+#### 8. Transición de `public`
+
+La configuración local vigente todavía declara:
+
+```toml
+[api]
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+```
+
+Este estado es legacy respecto de la arquitectura objetivo.
+
+La transición debe ser no destructiva:
+
+```text
+1. MATERIALIZAR Y VALIDAR CONTRATOS api
+2. CONSERVAR COMPATIBILIDAD LEGACY NECESARIA
+3. MIGRAR CONSUMIDORES
+4. EJECUTAR PRUEBAS POSITIVAS Y NEGATIVAS
+5. DEMOSTRAR QUE NINGÚN CONSUMIDOR AUTORIZADO DEPENDE DE public COMO API EMPRESARIAL
+6. RETIRAR public DEL CONJUNTO OBJETIVO EXPUESTO
+7. REVALIDAR DRIFT Y ACCESO NEGATIVO
+```
+
+Queda prohibido retirar `public` de forma anticipada si todavía existen consumidores aprobados cuya migración no haya sido demostrada.
+
+La compatibilidad temporal no convierte `public` en destino canónico.
+
+---
+
+#### 9. `extra_search_path`
+
+El `extra_search_path` no se usa para volver visibles schemas propietarios ni para eludir referencias calificadas.
+
+Reglas objetivo:
+
+1. `api` debe resolver contratos mediante referencias explícitas y gobernadas;
+2. owner schemas no se añaden a `extra_search_path` para facilitar consultas de clientes;
+3. `app_private` no se añade para hacer accesibles helpers internos;
+4. `audit` no se añade como atajo de consulta;
+5. `extensions` solo permanece cuando sea una dependencia técnica aprobada;
+6. cualquier permanencia de `public` en `extra_search_path` debe justificarse por dependencia técnica real y no por compatibilidad empresarial indefinida;
+7. una función privilegiada debe usar `search_path` endurecido conforme a su contrato específico y no depender del `extra_search_path` general de Data API.
+
+---
+
+#### 10. Modelo de roles runtime
+
+`AUTH-DB-017` distingue:
+
+```text
+anon
+authenticated
+service_role
+PUBLIC
+```
+
+y prohíbe tratarlos como equivalentes.
+
+##### 10.1. `anon`
+
+`anon` recibe únicamente el acceso necesario para contratos expresamente públicos.
+
+No recibe por defecto:
+
+- acceso a owner schemas;
+- acceso a `app_private`;
+- acceso a `audit`;
+- DML directo sobre tablas empresariales;
+- `EXECUTE` genérico sobre funciones;
+- privilegios heredados por conveniencia histórica.
+
+##### 10.2. `authenticated`
+
+`authenticated` recibe únicamente los contratos `api` aplicables a usuarios autenticados.
+
+No recibe por defecto:
+
+- acceso directo a owner schemas;
+- acceso directo a `app_private`;
+- acceso directo a `audit`;
+- DML directo general sobre tablas empresariales;
+- ejecución de helpers internos;
+- privilegios por el solo hecho de estar autenticado.
+
+##### 10.3. `service_role`
+
+`service_role` es una credencial privilegiada de infraestructura y no un contrato público de cliente.
+
+Reglas:
+
+1. nunca se expone en frontend;
+2. su capacidad no se usa como sustituto de autorización empresarial;
+3. su acceso físico se gobierna como infraestructura privilegiada;
+4. una RPC cliente no se vuelve legítima porque `service_role` pueda ejecutarla;
+5. su presencia no cambia el principio de least privilege para `anon` y `authenticated`.
+
+##### 10.4. `PUBLIC`
+
+`PUBLIC` no se usa como mecanismo de concesión implícita para rutinas empresariales Vento.
+
+Toda ejecución cliente debe provenir de un grant deliberado al rol aplicable, no de un `EXECUTE` genérico heredado.
+
+---
+
+#### 11. Privilegio de schema `USAGE`
+
+`USAGE` se trata como requisito de acceso al namespace, no como autorización sobre datos u operaciones.
+
+Reglas:
+
+1. `anon` recibe `USAGE` sobre `api` únicamente cuando exista al menos un contrato `api` aprobado para acceso anónimo;
+2. `authenticated` recibe `USAGE` sobre `api` cuando exista superficie contractual autenticada;
+3. `USAGE` no concede `SELECT`, `INSERT`, `UPDATE`, `DELETE` ni `EXECUTE`;
+4. no se concede `USAGE` cliente sobre owner schemas;
+5. no se concede `USAGE` cliente sobre `app_private`;
+6. no se concede `USAGE` cliente sobre `audit`;
+7. cualquier excepción debe estar definida por una tarea propietaria y pruebas negativas.
+
+---
+
+#### 12. Grants sobre `READ_VIEW`
+
+Una vista publicada como `READ_VIEW` recibe únicamente el `SELECT` requerido por su audiencia contractual.
+
+Reglas:
+
+1. `anon` obtiene `SELECT` solo cuando el contrato sea expresamente público;
+2. `authenticated` obtiene `SELECT` solo cuando el contrato sea aplicable a usuarios autenticados;
+3. no existe `SELECT ON ALL TABLES IN SCHEMA api` como sustituto de inventario contractual;
+4. una vista no publicada no recibe grant cliente;
+5. una vista `BLOCKED` por `AUTH-DB-018` no recibe grant;
+6. las vistas expuestas usan `security_invoker=true` por defecto;
+7. el privilegio del objeto no sustituye RLS ni autorización en sus fuentes.
+
+---
+
+#### 13. Grants sobre `QUERY_RPC` y `COMMAND_RPC`
+
+Una rutina publicada recibe `EXECUTE` únicamente para los roles autorizados por su contrato.
+
+Reglas:
+
+1. no se usa `GRANT EXECUTE ON ALL FUNCTIONS` como política de exposición cliente;
+2. `anon` solo ejecuta RPC expresamente públicas;
+3. `authenticated` solo ejecuta RPC expresamente aprobadas para su audiencia;
+4. helpers internos no reciben `EXECUTE` cliente;
+5. rutinas `BLOCKED` no reciben grants;
+6. las sobrecargas se conceden por firma exacta, no por nombre ambiguo;
+7. `COMMAND_RPC` conserva autorización empresarial en el owner;
+8. `QUERY_RPC` conserva límites de lectura y contexto;
+9. la existencia de `EXECUTE` no demuestra por sí sola autorización.
+
+---
+
+#### 14. Tratamiento de `SECURITY DEFINER`
+
+`AUTH-DB-018` fijó como objetivo:
+
+```text
+api_default_security_definer_rpc = 0
+```
+
+`AUTH-DB-017` aplica esa frontera a los privilegios:
+
+1. una rutina `SECURITY DEFINER` no recibe grant cliente por herencia histórica;
+2. una rutina privilegiada no se publica sin excepción canónica explícita;
+3. una excepción futura debe demostrar autorización interna, `search_path` endurecido, referencias calificadas, errores, observabilidad y pruebas negativas;
+4. `PUBLIC EXECUTE` sobre una rutina privilegiada es incompatible con el estado objetivo;
+5. una rutina privilegiada interna permanece fuera de la superficie `api` salvo decisión específica posterior.
+
+---
+
+#### 15. Default privileges
+
+La futura instancia debe endurecer privilegios predeterminados para impedir que objetos nuevos queden accesibles sin decisión explícita.
+
+Principios:
+
+```text
+NUEVO OBJETO
+≠
+NUEVO ENDPOINT AUTORIZADO
+```
+
+Reglas:
+
+1. los default privileges se configuran por rol creador/owner y schema aplicable;
+2. no se asume que un `ALTER DEFAULT PRIVILEGES` global cubra objetos creados por otros owners;
+3. nuevas rutinas Vento no heredan `EXECUTE` de `PUBLIC` como contrato cliente;
+4. nuevas relaciones no reciben privilegios cliente generales por defecto;
+5. `api` exige grants objeto por objeto o por manifiesto explícitamente generado desde contratos aprobados;
+6. owner schemas, `app_private` y `audit` permanecen cerrados a roles cliente;
+7. el harness debe crear objetos de prueba y demostrar que el default efectivo permanece cerrado;
+8. cualquier cambio de owner exige revalidar default ACL.
+
+---
+
+#### 16. Estado remoto observado de privilegios
+
+La auditoría read-only actual demuestra que la superficie heredada todavía es materialmente amplia.
+
+##### 16.1. Relaciones observadas
+
+Se observaron **325** relaciones o vistas relevantes en los schemas auditados.
+
+Casos representativos:
+
+| Schema    | Objetos | `anon` SELECT | `authenticated` SELECT | `authenticated` INSERT | `authenticated` UPDATE | `authenticated` DELETE |
+| --------- | ------: | ------------: | ---------------------: | ---------------------: | ---------------------: | ---------------------: |
+| `public`  |     246 |            18 |                    245 |                    242 |                    241 |                    241 |
+| `pass`    |      27 |            20 |                     23 |                     21 |                     21 |                     21 |
+| `pos`     |      13 |             0 |                     13 |                     13 |                     13 |                     13 |
+| `club`    |      11 |             0 |                      8 |                      0 |                      0 |                      0 |
+| `talento` |      13 |             1 |                     13 |                      4 |                      2 |                      0 |
+| `viso`    |      12 |             0 |                      0 |                      0 |                      0 |                      0 |
+
+La tabla es evidencia del AS-IS, no una orden de revocar en bloque sin reconciliar consumidores.
+
+##### 16.2. Rutinas directas observadas
+
+La auditoría de privilegios observó **224** rutinas Vento directas no administradas por extensión y no clasificadas como trigger-returning en el corte actual.
+
+| Schema        | Rutinas directas | `PUBLIC EXECUTE` | `anon EXECUTE` | `authenticated EXECUTE` | `service_role EXECUTE` |
+| ------------- | ---------------: | ---------------: | -------------: | ----------------------: | ---------------------: |
+| `app_private` |                1 |                0 |              0 |                       0 |                      0 |
+| `club`        |                7 |                5 |              5 |                       7 |                      7 |
+| `pass`        |               19 |                5 |              5 |                      12 |                     19 |
+| `public`      |              182 |               59 |             59 |                     160 |                    182 |
+| `talento`     |               15 |                8 |              8 |                      15 |                     14 |
+| **TOTAL**     |          **224** |           **77** |         **77** |                 **194** |                **222** |
+
+Además, dentro de esas ejecuciones observadas existen rutinas `SECURITY DEFINER` accesibles por roles cliente.
+
+Este baseline confirma que la transición de grants debe ser explícita y verificable.
+
+---
+
+#### 17. Drift respecto de la línea base anterior
+
+`AUTH-DB-018` registró previamente un universo de **226** rutinas Vento directas para su clasificación.
+
+La auditoría de privilegios de `AUTH-DB-017` observa actualmente **224** rutinas directas bajo el filtro aplicado a la superficie de grants.
+
+La diferencia no se corrige ni se reescribe silenciosamente.
+
+Reglas:
+
+1. el baseline histórico de `AUTH-DB-018` permanece inmutable;
+2. antes de materializar `AUTH-DB-017::GLOBAL` se regeneran ambos inventarios con consultas versionadas;
+3. las dos identidades de diferencia deben clasificarse como drift real o diferencia de criterio de inventario;
+4. ningún grant o revoke se ejecuta hasta reconciliar esa diferencia;
+5. la evidencia debe registrar consulta, timestamp, entorno y resultado;
+6. una identidad nueva o desaparecida obliga a revisar su disposición de `AUTH-DB-018` antes de cambiar privilegios.
+
+---
+
+#### 18. Configuración local observada
+
+`supabase/config.toml` mantiene actualmente:
+
+```toml
+[api]
+enabled = true
+schemas = ["public", "graphql_public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+```
+
+El objetivo de `AUTH-DB-017` no consiste en editar este archivo documentalmente, sino en cerrar el contrato que gobernará su futura modificación.
+
+La futura instancia debe demostrar paridad entre:
+
+- configuración versionada;
+- configuración efectiva del entorno;
+- catálogo de schemas;
+- grants;
+- default privileges;
+- contratos publicados.
+
+Una diferencia entre configuración local y efectiva se trata como drift y no como motivo para elegir silenciosamente una de las dos.
+
+---
+
+#### 19. Separación entre grants y RLS
+
+Los grants y RLS resuelven problemas distintos.
+
+```text
+GRANT
+→ puede permitir llegar al objeto
+
+RLS / AUTORIZACIÓN
+→ decide qué filas o efectos son legítimos
+```
+
+Por tanto:
+
+1. RLS no sustituye un grant mínimo;
+2. un grant no sustituye RLS;
+3. `TO authenticated` no equivale a autorización por recurso;
+4. una tabla no debe exponerse directamente para “aprovechar” una policy existente si el contrato objetivo es una vista o RPC;
+5. `AUTH-DB-001..005` conservan ownership sobre las correcciones RLS/policies/grants legacy que les pertenecen;
+6. `AUTH-DB-017` gobierna la frontera final de Data API y privilegios de contratos `api`.
+
+---
+
+#### 20. Matriz objetivo de exposición
+
+| Superficie                      | Expuesta por Data API objetivo | `anon`                             | `authenticated`                       | Observación                        |
+| ------------------------------- | ------------------------------ | ---------------------------------- | ------------------------------------- | ---------------------------------- |
+| `api`                           | SÍ                             | solo contratos públicos aprobados  | solo contratos autenticados aprobados | única superficie empresarial Vento |
+| owner schemas                   | NO                             | NO                                 | NO                                    | autoridad permanece interna        |
+| `app_private`                   | NO                             | NO                                 | NO                                    | helpers técnicos privados          |
+| `audit`                         | NO                             | NO                                 | NO                                    | evidencia transversal interna      |
+| `public`                        | NO como objetivo empresarial   | compatibilidad temporal únicamente | compatibilidad temporal únicamente    | retiro condicionado a consumidores |
+| `graphql_public`                | solo si plataforma lo requiere | según plataforma                   | según plataforma                      | no es contrato empresarial Vento   |
+| schemas de plataforma/extensión | según plataforma               | no gobernado por esta tarea        | no gobernado por esta tarea           | excluir del contrato empresarial   |
+
+---
+
+#### 21. Matriz objetivo de privilegios en `api`
+
+| Clase de objeto        | Privilegio cliente permitido             | Regla                                                 |
+| ---------------------- | ---------------------------------------- | ----------------------------------------------------- |
+| `READ_VIEW`            | `SELECT`                                 | solo audiencia contractual                            |
+| `QUERY_RPC`            | `EXECUTE`                                | solo audiencia contractual                            |
+| `COMMAND_RPC`          | `EXECUTE`                                | solo audiencia contractual y autorización propietaria |
+| tabla autoritativa     | ninguno                                  | prohibida en `api`                                    |
+| secuencia autoritativa | ninguno                                  | prohibida en `api`                                    |
+| trigger function       | ninguno                                  | prohibida en `api`                                    |
+| helper interno         | ninguno                                  | debe permanecer fuera de `api`                        |
+| objeto `BLOCKED`       | ninguno                                  | requiere condición de salida                          |
+| compatibilidad legacy  | no crea grant nuevo en `api` por sí sola | transición gobernada                                  |
+
+---
+
+#### 22. Manifiesto mínimo de grants
+
+Antes de cualquier modificación física debe existir un manifiesto reproducible con, como mínimo:
+
+```text
+physical_identity
+contract_type
+source_disposition
+target_schema
+audience
+schema_usage_required
+object_privilege
+security_mode
+rls_dependency
+legacy_privilege_before
+target_privilege_after
+compatibility_requirement
+blocking_reason
+exit_condition
+migration_reference
+environment
+evidence
+```
+
+Integridad:
+
+1. cada objeto `PUBLISH_API` aparece exactamente una vez;
+2. ningún objeto interno aparece como contrato cliente;
+3. toda sobrecarga usa firma exacta;
+4. todo grant tiene audiencia explícita;
+5. todo revoke legacy tiene evidencia de consumidor y salida;
+6. ningún `BLOCKED` obtiene privilegio;
+7. todo default privilege queda asociado a owner/creator real;
+8. el manifiesto permite comparar before/after sin inferencia.
+
+---
+
+#### 23. Orden de futura materialización
+
+La futura instancia deberá seguir:
+
+```text
+1. REGENERAR INVENTARIO DE SCHEMAS, OBJETOS Y ACL
+2. RECONCILIAR DRIFT CON AUTH-DB-018
+3. CONSTRUIR MANIFIESTO DE GRANTS
+4. VALIDAR CONSUMIDORES LEGACY
+5. MATERIALIZAR CONFIGURACIÓN OBJETIVO DE api
+6. ENDURECER USAGE Y PRIVILEGIOS DE OBJETO
+7. ENDURECER PUBLIC EXECUTE Y DEFAULT PRIVILEGES
+8. CONSERVAR COMPATIBILIDAD QUE TODAVÍA TENGA CONSUMIDORES
+9. EJECUTAR PRUEBAS POSITIVAS
+10. EJECUTAR PRUEBAS NEGATIVAS
+11. VALIDAR PARIDAD CONFIGURACIÓN/CATÁLOGO
+12. VALIDAR DRIFT
+13. CONSERVAR ROLLBACK Y EVIDENCIA
+```
+
+No se permite revocar primero y descubrir consumidores después.
+
+---
+
+#### 24. Compatibilidad y cutover
+
+Todo acceso legacy se clasifica antes de retirarse.
+
+Para cada privilegio heredado:
+
+```text
+PRIVILEGIO LEGACY
+→ CONSUMIDOR IDENTIFICADO
+→ CONTRATO OBJETIVO
+→ MIGRACIÓN DEL CONSUMIDOR
+→ PRUEBA POSITIVA DEL DESTINO
+→ PRUEBA NEGATIVA DEL ORIGEN
+→ REVOCACIÓN
+```
+
+Reglas:
+
+1. una revocación no se aprueba solo porque el target architecture sea más restrictivo;
+2. un acceso legacy sin consumidor identificado queda `BLOCKED`, no `RETIRE`;
+3. retirar `public` de Data API exige demostrar migración de consumidores;
+4. un rollback puede restaurar temporalmente la compatibilidad previa sin convertirla en estado objetivo;
+5. la ventana de compatibilidad debe tener owner y condición de salida.
+
+---
+
+#### 25. Rollback
+
+La futura instancia debe disponer de rollback probado.
+
+El rollback debe poder restaurar, cuando sea necesario:
+
+- la configuración de schemas expuestos anterior;
+- `USAGE` requerido por consumidores todavía aprobados;
+- grants de objeto retirados durante el cutover;
+- default privileges modificados;
+- compatibilidad legacy temporal.
+
+Reglas:
+
+1. rollback no restaura permisos más amplios que el baseline capturado;
+2. no se usa `GRANT ALL` como mecanismo genérico de recuperación;
+3. la restauración se basa en manifiesto y snapshot de ACL;
+4. una corrección posterior se realiza mediante migración forward versionada;
+5. rollback no altera datos empresariales.
+
+---
+
+#### 26. Observabilidad y evidencia
+
+La materialización deberá registrar:
+
+- proyecto y ambiente;
+- SHA del contrato;
+- configuración `api` before/after;
+- schemas expuestos before/after;
+- `extra_search_path` before/after;
+- grants de schema;
+- grants de vistas;
+- grants de funciones por firma;
+- `PUBLIC EXECUTE` before/after;
+- default ACL before/after por owner;
+- objetos bloqueados;
+- consumidores legacy;
+- pruebas positivas;
+- pruebas negativas;
+- drift final;
+- referencia de migración;
+- resultado de rollback ensayado.
+
+No es suficiente registrar únicamente que una migración terminó con código cero.
+
+---
+
+#### 27. Pruebas positivas
+
+La futura instancia deberá demostrar, como mínimo:
+
+1. `api` responde únicamente para objetos contractuales aprobados;
+2. un `READ_VIEW` autorizado puede consultarse por su audiencia;
+3. una `QUERY_RPC` autorizada puede ejecutarse por su audiencia;
+4. una `COMMAND_RPC` autorizada llega a la lógica propietaria sin transferir autoridad a `api`;
+5. `authenticated` conserva solo los contratos necesarios;
+6. `anon` conserva únicamente contratos expresamente públicos;
+7. la configuración versionada coincide con la efectiva;
+8. el default de un objeto nuevo de prueba permanece cerrado hasta grant explícito;
+9. las firmas sobrecargadas conservan privilegios independientes;
+10. compatibilidad aprobada continúa funcionando durante su ventana.
+
+---
+
+#### 28. Pruebas negativas
+
+La futura instancia deberá demostrar, como mínimo:
+
+1. `anon` no puede consultar owner schemas;
+2. `authenticated` no puede consultar owner schemas directamente;
+3. `anon` no puede usar `app_private`;
+4. `authenticated` no puede usar `app_private`;
+5. roles cliente no acceden directamente a `audit`;
+6. un helper interno no puede ejecutarse como RPC cliente;
+7. una vista `BLOCKED` no es accesible;
+8. una rutina `BLOCKED` no es ejecutable;
+9. una rutina no autorizada no obtiene acceso por `PUBLIC`;
+10. una nueva función no queda ejecutable por `PUBLIC` por default accidental;
+11. una nueva relación no obtiene grants cliente por default accidental;
+12. `public` no queda como superficie empresarial objetivo después del cutover;
+13. una RPC `SECURITY DEFINER` no obtiene acceso cliente sin excepción canónica;
+14. un rol autenticado no obtiene privilegios adicionales solo por pertenecer a `authenticated`;
+15. una sobrecarga no autorizada permanece inaccesible aunque otra firma del mismo nombre esté publicada.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la exposición de `api`, el cierre de schemas privados, grants mínimos, default privileges, seguridad de vistas y RPC, separación frente a RLS, compatibilidad y drift ya están protegidos por la arquitectura E3 y su Registro Canónico de Requisitos de Prueba. `AUTH-DB-017` convierte esa cobertura en un contrato documental de materialización sin introducir una capacidad nueva.
+
+---
+
+#### 30. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificación la cobertura vigente asociada a la capa contractual `api`, la capa privada `app_private`, exposición, grants, vistas, RPC, seguridad, compatibilidad y drift.
+
+La trazabilidad vigente incluye especialmente los rangos ya reconciliados por las tareas precedentes:
+
+- `TREQ-SUPABASE-651..686`;
+- `TREQ-SUPABASE-687..718`;
+- `TREQ-SUPABASE-1047..1090`.
+
+No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 31. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | la tarea documental no materializa código ni migraciones                                                                                                                                                                                                 |
+| LOCAL     | NOT_EXECUTED   | pendiente del lifecycle documental y validadores del checkout de la tarea                                                                                                                                                                                |
+| REMOTA    | PASS           | fuentes canónicas, `supabase/config.toml` y catálogo read-only de `vento-os-dev` auditados; `api` todavía no existe remotamente, la configuración local expone `public` y `graphql_public`, y persisten grants legacy amplios sobre relaciones y rutinas |
+| OPERATIVA | NOT_APPLICABLE | no se modifican consumidores ni comportamiento runtime durante el desarrollo documental                                                                                                                                                                  |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-017::GLOBAL` permanece sin autorización y no se ejecutó ninguna mutación Supabase                                                                                                                                                               |
+
+---
+
+#### 32. Decisiones vinculantes
+
+1. `AUTH-DB-017` define una sola vez el contrato de exposición y grants.
+2. Su futura instancia es `AUTH-DB-017::GLOBAL`.
+3. Su modo es `GLOBAL_ENABLE_ONCE`.
+4. Su gate es `PRE_E5_FOUNDATION`.
+5. `api` es la única superficie empresarial Vento objetivo de Data API.
+6. `graphql_public`, cuando aplique, es plataforma y no contrato empresarial Vento.
+7. Los 26 owner schemas permanecen no expuestos a roles cliente.
+8. `app_private` permanece no expuesto a roles cliente.
+9. `audit` permanece no expuesto a roles cliente.
+10. `public` no es superficie empresarial objetivo y su retiro se condiciona a migración de consumidores.
+11. `extra_search_path` no se usa para exponer owner schemas.
+12. `USAGE` sobre `api` no implica privilegios de objeto.
+13. `anon` recibe únicamente contratos expresamente públicos.
+14. `authenticated` recibe únicamente contratos expresamente aprobados para usuarios autenticados.
+15. `service_role` es infraestructura privilegiada y no contrato cliente.
+16. `PUBLIC` no se usa como mecanismo de exposición de rutinas empresariales.
+17. `READ_VIEW` recibe únicamente `SELECT` de su audiencia contractual.
+18. `QUERY_RPC` recibe únicamente `EXECUTE` de su audiencia contractual.
+19. `COMMAND_RPC` recibe únicamente `EXECUTE` de su audiencia y conserva autorización en el owner.
+20. No se usan grants generales sobre todas las funciones como sustituto de inventario contractual.
+21. Ningún objeto `BLOCKED` recibe privilegios.
+22. Las sobrecargas se gobiernan por firma exacta.
+23. Las vistas expuestas usan `security_invoker=true` por defecto.
+24. `api` conserva objetivo de cero RPC `SECURITY DEFINER` por defecto.
+25. Default privileges se endurecen por owner/creator y schema.
+26. Un objeto nuevo no se vuelve endpoint autorizado automáticamente.
+27. Grants y RLS son capas distintas.
+28. `AUTH-DB-001..005` conservan ownership de RLS, policies y contención que les corresponde.
+29. La transición desde grants legacy es consumer-aware y fail-closed.
+30. La materialización captura ACL before/after y permite rollback.
+31. El drift de 226 a 224 rutinas observadas se reconcilia antes de cualquier revoke/grant.
+32. La configuración local legacy no se modifica durante esta tarea documental.
+33. Toda futura modificación Supabase se versiona desde `vento-shell`.
+34. Esta tarea no crea ni modifica requisitos de prueba.
+35. La aprobación documental no autoriza ninguna modificación física.
+
+---
+
+#### 33. Criterios de aceptación
+
+`AUTH-DB-017` queda documentalmente completa cuando:
+
+1. `api` queda definido como única superficie empresarial Vento objetivo de Data API;
+2. se separa explícitamente `graphql_public` como plataforma;
+3. se prohíbe exposición directa de owner schemas, `app_private` y `audit`;
+4. se define la salida controlada de `public` como superficie empresarial;
+5. se gobierna `extra_search_path`;
+6. se separan `anon`, `authenticated`, `service_role` y `PUBLIC`;
+7. se define `USAGE` como privilegio de namespace y no como autorización;
+8. `READ_VIEW` recibe solo `SELECT` explícito;
+9. `QUERY_RPC` y `COMMAND_RPC` reciben solo `EXECUTE` explícito;
+10. las sobrecargas se gobiernan por firma;
+11. `PUBLIC EXECUTE` deja de ser mecanismo de exposición;
+12. default privileges quedan definidos fail-closed;
+13. se conserva `security_invoker=true` para vistas expuestas;
+14. se conserva objetivo de cero `SECURITY DEFINER` en `api` por defecto;
+15. se separan grants y RLS;
+16. se documenta el baseline legacy actual;
+17. se registra el drift observado respecto de `AUTH-DB-018`;
+18. se exige manifiesto de grants;
+19. se define cutover consumer-aware;
+20. se define rollback;
+21. se definen pruebas positivas y negativas;
+22. se declaran cero cambios TREQ;
+23. `AUTH-DB-019` queda como única continuidad reservada.
+
+---
+
+#### 34. Límites
+
+`AUTH-DB-017` no:
+
+- ejecuta SQL de mutación;
+- crea migraciones;
+- modifica `supabase/config.toml`;
+- modifica la configuración remota de Data API;
+- crea el schema `api`;
+- mueve vistas;
+- mueve funciones;
+- mueve tablas;
+- cambia datos;
+- cambia columnas;
+- ejecuta backfills;
+- modifica RLS;
+- modifica policies;
+- cambia Supabase Auth;
+- cambia sesiones;
+- cambia Storage;
+- cambia Realtime;
+- cambia Edge Functions;
+- cambia cron;
+- cambia secretos;
+- concede o revoca físicamente `USAGE`;
+- concede o revoca físicamente `SELECT`;
+- concede o revoca físicamente `EXECUTE`;
+- cambia físicamente default privileges;
+- retira físicamente `public`;
+- modifica consumidores;
+- reabre la clasificación de `AUTH-DB-018`;
+- modifica VITAL;
+- modifica el registro 04A;
+- autoriza `AUTH-DB-017::GLOBAL`;
+- desarrolla `AUTH-DB-019`.
+
+---
+
+#### 35. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales`
+
+
 ### [ ] AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
 
 ### [ ] AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura

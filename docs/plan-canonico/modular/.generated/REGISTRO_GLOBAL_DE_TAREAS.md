@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1012** |
+| Aprobadas | **1013** |
 | En propuesta | **0** |
-| No iniciadas | **582** |
+| No iniciadas | **581** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **63.49% (1012/1594)** |
+| Porcentaje de completamiento | **63.55% (1013/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-018` — Separar vistas y RPC expuestas de helpers internos | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-017` — Configurar esquemas expuestos y privilegios de Data API | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-019` — Implementar vínculos canónicos entre Auth e identidades empresariales | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-017` — Configurar esquemas expuestos y privilegios de Data API | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-019` — Implementar vínculos canónicos entre Auth e identidades empresariales | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-033` — Implementar get_access_context canónico, sus resolvers privados y su proyección segura | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1222,7 +1222,7 @@
 | ✅ APROBADA | `AUTH-DB-005` | Revocar grants innecesarios de anon | `bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md` |
 | ✅ APROBADA | `AUTH-DB-016` | Crear esquemas empresariales aprobados | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-018` | Separar vistas y RPC expuestas de helpers internos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
-| ⬜ NO INICIADA | `AUTH-DB-017` | Configurar esquemas expuestos y privilegios de Data API | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
+| ✅ APROBADA | `AUTH-DB-017` | Configurar esquemas expuestos y privilegios de Data API | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-019` | Implementar vínculos canónicos entre Auth e identidades empresariales | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-033` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-035` | Implementar token transaccional de frescura e invalidación del contexto | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
