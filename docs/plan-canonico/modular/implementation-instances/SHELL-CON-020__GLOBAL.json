@@ -1,10 +1,61 @@
 {
   "instance_id": "SHELL-CON-020::GLOBAL",
   "task_id": "SHELL-CON-020",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-CON-020::GLOBAL como contrato estatico interno de venta canonica dentro de packages/contracts/integrations, preservando inmutables las materializaciones verificadas de SHELL-CON-017::GLOBAL, SHELL-CON-018::GLOBAL y SHELL-CON-019::GLOBAL.",
+    "Crear packages/contracts/integrations/scripts/generate-canonical-sale-contract.mjs como generador propietario de SHELL-CON-020 y packages/contracts/integrations/generated/canonical-sale.contract.ts, sin modificar el generador existente de SHELL-CON-017..019.",
+    "Crear packages/contracts/integrations/scripts/validate-canonical-sale-contract.mjs para validar frescura, forma exacta de CanonicalSaleId y CanonicalSale<TSaleLine>, 22 campos de nivel superior, 6 componentes monetarios, linea no vacia, fronteras Makos/PULSO, seguridad, package y READMEs.",
+    "Materializar CanonicalSaleId como identidad estable, opaca y no secreta sin formato serial fisico, parser, registro runtime ni derivacion heuristica desde fuente, importe, tiempo, cliente, terminal, producto, archivo, evento, receipt, pago, pedido o documento fiscal.",
+    "Materializar CanonicalSale<TSaleLine> con sale_id, contract_version, fuente e identidad de origen, contexto de sede/terminal/caja, temporalidad y estado comercial, referencias independientes, snapshot monetario, lineas no vacias, procedencia, correlacion y atribucion, manteniendo TSaleLine abstracto hasta SHELL-CON-021.",
+    "Representar subtotal, descuento, impuesto, propina y total con tipo unknown dentro del contrato estatico para no inventar el tipo escalar, precision decimal, redondeo o moneda por defecto que SHELL-CON-020 deja expresamente sin fijar.",
+    "Preservar source_system real: Makos historico permanece Makos y PULSO solo es fuente bajo autoridad aprobada; source_sale_id y source_revision permanecen separados de CanonicalSaleId y contract_version.",
+    "Preservar la separacion entre venta, pedido, pago, caja, documento fiscal, inventario, fidelizacion, hecho economico, entrega, evento de integracion y payload de proveedor; una recepcion externa no se eleva a venta sin validacion propietaria.",
+    "Actualizar packages/contracts/integrations/README.md y exclusivamente la seccion de integraciones externas de packages/contracts/README.md para registrar SHELL-CON-020::GLOBAL y reservar SHELL-CON-021 como continuidad.",
+    "Ejecutar una sola vez npm run quality:repair despues de materializar el lote y antes de IMPLEMENTED; se autorizan solo reparaciones deterministas del alcance y generacion bajo packages/contracts/integrations/generated.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-CON-020__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar packages/contracts/package.json, generated/index.ts, los contratos o scripts propietarios de SHELL-CON-017..019, exports publicos, version, releases, consumidores, runtime, ventas operativas, persistencia, endpoints, webhooks, eventos empresariales, Supabase, RLS, RPC, migraciones, datos, 04A/TREQ, SHELL-CON-021..024 ni tareas INT propietarias."
+  ],
+  "validation_commands": [
+    "node packages/contracts/integrations/scripts/generate-canonical-sale-contract.mjs --check",
+    "node packages/contracts/integrations/scripts/validate-canonical-sale-contract.mjs",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-22T18:25:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "PERFECTO, SIGAMOS",
+    "source_contract_sha256": "5495541814c4bf5387462d98e638c9f25dbd128dc94706e7bbba7317a7f75182"
+  },
+  "evidence": [
+    "MATERIALIZATION canonical sale generator created without modifying SHELL-CON-017..019 generator",
+    "MATERIALIZATION canonical sale validator created",
+    "MATERIALIZATION canonical-sale.contract.ts generated with CanonicalSaleId and CanonicalSale<TSaleLine>",
+    "MATERIALIZATION CanonicalSale top-level logical fields=22 monetary_snapshot fields=6 minimum_lines=1",
+    "MATERIALIZATION TSaleLine remains abstract and SHELL-CON-021 line fields are not materialized",
+    "MATERIALIZATION package root index not extended and public exports unchanged",
+    "MATERIALIZATION runtime sales=0 persistence=0 business events=0 consumer migrations=0 Supabase changes=0",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 5495541814c4bf5387462d98e638c9f25dbd128dc94706e7bbba7317a7f75182",
+    "VALIDATION canonical sale generator freshness PASS",
+    "VALIDATION canonical sale contract validator PASS",
+    "VALIDATION CanonicalSale exact top-level fields=22 PASS",
+    "VALIDATION monetary_snapshot exact fields=6 PASS",
+    "VALIDATION non-empty TSaleLine collection PASS",
+    "VALIDATION Makos/PULSO source boundary PASS",
+    "VALIDATION package boundary PASS",
+    "VALIDATION README boundary PASS",
+    "VALIDATION runtime boundary PASS",
+    "VALIDATION SHELL-CON-021 line contract not advanced PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-020::GLOBAL VERIFIED"
+  ]
 }
