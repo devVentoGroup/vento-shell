@@ -89,6 +89,13 @@ test('genera dos iniciadores separados por intención y un selector legacy míni
     assert.match(result.implementationSource, /FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA/u);
     assert.match(result.implementationSource, /READY_TO_RESTART_WATCHER: SI/u);
     assert.match(result.implementationSource, /RESULTADO PARA CHATGPT/u);
+    assert.match(result.implementationSource, /CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY/u);
+    assert.match(result.implementationSource, /CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY/u);
+    assert.match(result.implementationSource, /FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE/u);
+    assert.match(result.implementationSource, /REGLA CRITICA DE CONTINUIDAD CONVERSACIONAL/u);
+    assert.match(result.implementationSource, /La mera existencia futura de una comprobacion PASS\/FAIL NO constituye un gate conversacional/u);
+    assert.match(result.implementationSource, /Si un GATE LOCAL produce PASS, el usuario continua inmediatamente/u);
+    assert.match(result.implementationSource, /Si un GATE LOCAL produce FAIL, el usuario detiene solamente la secuencia local/u);
     assert.doesNotMatch(result.implementationSource, /FORMATO DE TAREAS DOCUMENTALES/u);
     assert.doesNotMatch(result.implementationSource, /La fuente física canónica actual del registro/u);
     assert.doesNotMatch(result.implementationSource, /docs:task:quality/u);
@@ -157,6 +164,12 @@ test('el contrato físico conserva lifecycle, reparación y autorización explí
   assert.match(source, /FORMATO_ENTREGA_VENTO_V1/u);
   assert.match(source, /usuario humano/u);
   assert.match(source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
+  assert.match(source, /CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY/u);
+  assert.match(source, /CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY/u);
+  assert.match(source, /FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE/u);
+  assert.match(source, /GATE LOCAL PASS\/FAIL no constituye un gate conversacional/u);
+  assert.match(source, /GATE LOCAL produce PASS, continúa inmediatamente/u);
+  assert.match(source, /GATE LOCAL produce FAIL, detén únicamente la secuencia local/u);
   assert.match(source, /docs:implementation:start -- --instance-id SHELL-CI-001::GLOBAL/u);
   assert.match(source, /quality:repair/u);
   assert.match(source, /READY_FOR_VALIDATION: SI/u);

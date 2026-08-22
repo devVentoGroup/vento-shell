@@ -188,6 +188,12 @@ export function actionResponseContract(control, sourceContractHash) {
     'No escribas archivos, no ejecutes validaciones, no hagas commit, push, PR, merge, despliegues ni mutaciones remotas.',
     'Solo AUTORIZO EJECUCION ASISTIDA DEL PASO N autoriza ese único paso numerado.',
     'No uses micro-gates ni pauses por rutina; pausa solo ante FAIL, contradicción real, decisión humana, permiso o credencial no resuelta.',
+    'CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY',
+    'CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY',
+    'FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE',
+    'La mera existencia futura de un GATE LOCAL PASS/FAIL no constituye un gate conversacional cuando el tramo posterior para PASS ya puede determinarse.',
+    'Si un GATE LOCAL produce PASS, continúa inmediatamente con el siguiente paso numerado del mismo runbook sin volver al chat.',
+    'Si un GATE LOCAL produce FAIL, detén únicamente la secuencia local, conserva la terminal abierta y devuelve RESULTADO PARA CHATGPT.',
     'Cuando necesites evidencia, el comando debe imprimir un bloque === RESULTADO PARA CHATGPT === ... === FIN RESULTADO PARA CHATGPT === y el usuario devuelve únicamente ese bloque salvo insuficiencia diagnóstica.',
     'Todo bloque manual debe dejar la terminal abierta, usar PowerShell parser-safe y salida operativa ASCII segura.',
     'No repitas lifecycles, validaciones o pasos ya demostrados como PASS.',
@@ -234,6 +240,9 @@ function renderImplementationWork({ control, workTopology, templateHash, reposit
     return `INTENT_LOCK: PHYSICAL_IMPLEMENTATION
 CONVERSATION_LANE: PHYSICAL
 DO_NOT_SWITCH_LANES: TRUE
+CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY
+CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY
+FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE
 
 ESTADO
 
@@ -268,6 +277,20 @@ TRAZABILIDAD DEL INICIADOR
   return `INTENT_LOCK: PHYSICAL_IMPLEMENTATION
 CONVERSATION_LANE: PHYSICAL
 DO_NOT_SWITCH_LANES: TRUE
+CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY
+CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY
+FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE
+
+REGLA CRITICA DE CONTINUIDAD CONVERSACIONAL
+
+- Un GATE LOCAL es una comprobacion PASS/FAIL que puede resolverse dentro del runbook ya preparado, como sincronizacion 0/0, readiness, preflight, quality:repair, validation_commands o docs:implementation:finish.
+- La mera existencia futura de una comprobacion PASS/FAIL NO constituye un gate conversacional si los pasos posteriores del caso PASS ya son deterministas.
+- Si un GATE LOCAL produce PASS, el usuario continua inmediatamente con el siguiente paso numerado del mismo runbook sin responder al chat.
+- Si un GATE LOCAL produce FAIL, el usuario detiene solamente la secuencia local, conserva la terminal abierta y devuelve a ChatGPT el bloque RESULTADO PARA CHATGPT.
+- Nunca pidas RESULTADO DEL PASO N despues de un PASS cuando el siguiente paso ya era determinable antes de ejecutar ese gate.
+- Un GATE CONVERSACIONAL solo existe cuando ocurre realmente un FAIL, falta evidencia para diagnosticarlo, aparece una contradiccion material, o falta una decision humana, credencial, permiso o autorizacion sensible necesaria para construir el siguiente paso.
+- Despues de que el usuario autorice el alcance, la siguiente entrega material debe contener EN UN SOLO MENSAJE todo el runbook determinista disponible hasta el cierre fisico mas lejano que pueda prepararse, incluidos los pasos posteriores condicionados a PASS.
+- Esta regla prevalece sobre cualquier frase posterior que pudiera interpretarse como una obligacion de pausar antes de ejecutar un GATE LOCAL cuyo tramo PASS ya esta determinado.
 
 REGLA CRÍTICA DE ESTA CONVERSACIÓN
 
