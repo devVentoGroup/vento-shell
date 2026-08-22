@@ -48,23 +48,12 @@ function countByStatus(rows, status) {
   return rows.filter((entry) => entry.status === status).length;
 }
 
-function sourceContext(task, workTopology, includePrevious) {
-  const blocks = [
+function sourceContext(task) {
+  return [
     'CONTENIDO CANÓNICO DE LA TAREA OBJETIVO',
     '',
     task.block.trim(),
-  ];
-  if (!includePrevious) return blocks.join('\n');
-  const index = workTopology.ordered.findIndex(({ id }) => id === task.id);
-  const previous = index > 0 ? workTopology.ordered[index - 1] : null;
-  if (!previous) return blocks.join('\n');
-  blocks.push(
-    '',
-    'CONTEXTO CANÓNICO INMEDIATO — TAREA ANTERIOR APROBADA',
-    '',
-    previous.block.trim(),
-  );
-  return blocks.join('\n');
+  ].join('\n');
 }
 
 function renderSelector(control) {
@@ -101,7 +90,6 @@ function renderDocumentationWork({ control, workTopology, templateHash, reposito
   if (!lifecycle || !dependencies) throw new Error(`no se resolvió la topología de ${task.id}.`);
 
   const physical = control.physical.active;
-  const emptyDraft = task.block.match(/^####\s+/gmu) === null;
   const sourceContractHash = sha256(task.block.replace(/\r\n?/gu, '\n'));
 
   return `INTENT_LOCK: DOCUMENTATION
@@ -179,7 +167,7 @@ TRAZABILIDAD DEL INICIADOR
 - Fuente de continuidad: task-work-topology + preflight documental
 - Fuente de control físico resumido: docs/plan-canonico/modular/implementation-control.json
 
-${sourceContext(task, workTopology, emptyDraft)}
+${sourceContext(task)}
 `;
 }
 
