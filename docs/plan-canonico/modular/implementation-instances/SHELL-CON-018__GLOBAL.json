@@ -1,10 +1,55 @@
 {
   "instance_id": "SHELL-CON-018::GLOBAL",
   "task_id": "SHELL-CON-018",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-CON-018::GLOBAL como ampliacion estatica interna de packages/contracts/integrations sobre la fundacion ya verificada de SHELL-CON-017::GLOBAL.",
+    "Modificar packages/contracts/integrations/scripts/generate-integration-principal-contracts.mjs para congelar y proyectar SHELL-CON-018 sin alterar la salida vigente de IntegrationPrincipal y para generar external-credential-ref.contract.ts e index.ts combinado.",
+    "Modificar packages/contracts/integrations/scripts/validate-integration-principal-contracts.mjs para validar conjuntamente principal tecnico, referencia de credencial, cobertura 21/21, frontera del package, READMEs y ausencia de runtime o material secreto.",
+    "Crear packages/contracts/integrations/generated/external-credential-ref.contract.ts con ExternalCredentialId, ExternalCredentialRef, ambiente VENTO, metadata no sensible, politicas de identidad, cardinalidad, rotacion y fallo cerrado, sin valores fisicos de credencial.",
+    "Modificar packages/contracts/integrations/generated/index.ts para exponer internamente los simbolos estaticos de SHELL-CON-017 y SHELL-CON-018 sin publicar exports del package.",
+    "Modificar packages/contracts/integrations/README.md y exclusivamente la seccion de integraciones de packages/contracts/README.md para registrar SHELL-CON-018::GLOBAL y reservar SHELL-CON-019.",
+    "Preservar exactamente las 21 decisiones de aplicabilidad de SHELL-CON-018: 9 PENDIENTE_DE_EVIDENCIA, 2 NO_APLICA, 10 NO_APLICA_ACTUAL y 0 valores fisicos de ExternalCredentialId.",
+    "Ejecutar una sola vez el PRE_REPAIR_GATE npm run quality:repair despues de materializar el lote y antes de IMPLEMENTED; se autorizan unicamente sus reparaciones deterministas dentro del alcance tocado y la regeneracion de generated bajo packages/contracts/integrations.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-CON-018__GLOBAL.json exclusivamente para conservar autorizacion, estados y evidencia de esta instancia.",
+    "No modificar packages/contracts/package.json, exports, version, releases, consumidores, runtime, secret stores, valores de credenciales, cuentas, endpoints, Supabase, RLS, RPC, migraciones, datos, 04A/TREQ, implementation-control.json, el contrato documental SHELL-CON-018, SHELL-CON-019..024 ni INT-DB-002."
+  ],
+  "validation_commands": [
+    "node packages/contracts/integrations/scripts/generate-integration-principal-contracts.mjs --check",
+    "node packages/contracts/integrations/scripts/validate-integration-principal-contracts.mjs",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T23:15:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la materializacion estatica interna de SHELL-CON-018::GLOBAL en vento-group-sas/vento-shell: ampliar packages/contracts/integrations con ExternalCredentialId y ExternalCredentialRef no sensibles, preservar la salida vigente de SHELL-CON-017, materializar 21/21 decisiones de aplicabilidad de SHELL-CON-018 con distribucion 9 PENDIENTE_DE_EVIDENCIA, 2 NO_APLICA y 10 NO_APLICA_ACTUAL, mantener 0 valores fisicos de ExternalCredentialId y actualizar solo generador, validador, generated e informacion README indicada. Autorizo una sola ejecucion del PRE_REPAIR_GATE npm run quality:repair para reparaciones deterministas dentro del alcance y exclusivamente las validation_commands enumeradas como bateria final. No autorizo exports publicos, cambio de version, releases, consumidores, runtime, secret stores, valores de credenciales, cuentas, endpoints, Supabase, migraciones, RLS, RPC, datos, 04A/TREQ, cambios al contrato documental SHELL-CON-018 ni materializacion de SHELL-CON-019..024 o INT-DB-002.",
+    "source_contract_sha256": "b22094113048ee52d8ea8abe961af7fcb8be2b1924eabe69d0eb048d928bbb69"
+  },
+  "evidence": [
+    "MATERIALIZATION static ExternalCredentialId and ExternalCredentialRef contract created",
+    "MATERIALIZATION integrations generated index extended without public package exports",
+    "MATERIALIZATION integrations and contracts README boundaries updated",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "COVERAGE SHELL-CON-018 decisions=21 pending_evidence=9 no_aplica=2 no_aplica_actual=10",
+    "MATERIALIZATION ExternalCredentialId values=0 persisted ExternalCredentialRef values=0 secrets=0",
+    "SOURCE CONTRACT SHA256 b22094113048ee52d8ea8abe961af7fcb8be2b1924eabe69d0eb048d928bbb69",
+    "VALIDATION integration contracts generator freshness PASS",
+    "VALIDATION integration contracts validator PASS",
+    "VALIDATION principal decisions=21",
+    "VALIDATION credential decisions=21 pending_evidence=9 no_aplica=2 no_aplica_actual=10",
+    "VALIDATION materialized ExternalCredentialId values=0",
+    "VALIDATION @vento/contracts package boundary PASS",
+    "VALIDATION README boundary PASS",
+    "VALIDATION runtime and secret boundary PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-018::GLOBAL VERIFIED"
+  ]
 }
