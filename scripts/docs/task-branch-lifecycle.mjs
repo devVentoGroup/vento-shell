@@ -387,7 +387,9 @@ export function classifyInfraPath(filePath) {
   const normalized = String(filePath ?? '').replaceAll('\\', '/').replace(/^\.\//u, '');
   if (!normalized) return 'OTHER';
   if (
-    normalized === 'AGENTS.md'
+    normalized === '.gitattributes'
+    || normalized === '.editorconfig'
+    || normalized === 'AGENTS.md'
     || normalized === 'package.json'
     || normalized === 'package-lock.json'
     || normalized === 'packages/contracts/README.md'

@@ -35,7 +35,9 @@ export function classifyCommitPath(filePath) {
   if (DERIVED_PLAN_PROJECTIONS.has(normalized)) return 'PROJECTION';
   if (/^docs\/[^/]+\.md$/u.test(normalized)) return 'OPERATIONS_DOC';
   if (
-    normalized === 'AGENTS.md'
+    normalized === '.gitattributes'
+    || normalized === '.editorconfig'
+    || normalized === 'AGENTS.md'
     || normalized === 'package.json'
     || normalized === 'package-lock.json'
     || normalized.startsWith('scripts/docs/')

@@ -1,3 +1,6 @@
+.gitattributes text eol=lf
+.editorconfig text eol=lf
+.vscode/*.json text eol=lf
 # Mantener estable el formato de las fuentes y herramientas del plan canónico.
 docs/plan-canonico/modular/** text eol=lf
 # El compilado replica saltos Markdown significativos de las fuentes; no tratar
