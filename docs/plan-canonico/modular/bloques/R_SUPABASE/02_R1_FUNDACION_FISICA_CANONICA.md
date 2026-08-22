@@ -16933,7 +16933,3908 @@ No modifica esas filas.
 `AUTH-DB-012 — Implementar auditoría de cambios de permisos`
 
 
-### [ ] AUTH-DB-012 — Implementar auditoría de cambios de permisos
+### ✅ AUTH-DB-012 — Implementar auditoría de cambios de permisos
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
+**Tarea siguiente:** AUTH-DB-013 — Implementar auditoría de simulación
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato global de auditoría inmutable y transaccional de cambios de autoridad cerrado; futura instancia `AUTH-DB-012::GLOBAL` pendiente de autorización explícita y de la capa transversal `audit`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-012` define el mecanismo canónico para conservar evidencia durable de cada cambio que altere la autoridad concedida o denegada por el sistema de permisos de Vento OS.
+
+La regla raíz es:
+
+```text
+MUTACIÓN AUTORIZATIVA VÁLIDA
++
+IDENTIDAD REAL DEL ACTOR Y DEL PRINCIPAL TÉCNICO
++
+DECISIÓN DE AUTORIZACIÓN PERSISTIDA CUANDO APLIQUE
++
+ESTADO ANTERIOR Y POSTERIOR MINIMIZADOS
++
+CAUSA, APROBACIÓN, VERSIÓN Y HUELLA
++
+ANCLA AUDITABLE EN LA MISMA FRONTERA TRANSACCIONAL
+=
+CAMBIO DE PERMISO RECONSTRUIBLE
+```
+
+Esta tarea no vuelve a evaluar permisos, no convierte la auditoría en fuente de autoridad y no sustituye la persistencia de decisiones de `AUTH-DB-032`.
+
+---
+
+#### 2. Resultado canónico
+
+La futura instancia global podrá materializar una única infraestructura compartida:
+
+```text
+audit.authorization_permission_change_sets
+audit.authorization_permission_changes
+audit.authorization_permission_change_attempts
+audit.authorization_permission_change_links
+```
+
+y las primitivas privadas:
+
+```text
+audit.append_authorization_permission_change(jsonb)
+audit.append_authorization_permission_change_attempt(jsonb)
+audit.get_authorization_permission_change(text)
+audit.search_authorization_permission_changes(jsonb)
+audit.list_authorization_permission_change_items(text)
+audit.reject_authorization_permission_audit_mutation()
+app_private.canonicalize_authorization_permission_change(jsonb)
+app_private.fingerprint_authorization_permission_change(jsonb)
+```
+
+La infraestructura es transversal. Ninguna aplicación recibe una tabla de auditoría propia.
+
+---
+
+#### 3. Topología y gate
+
+La clasificación vigente es:
+
+```text
+task_id = AUTH-DB-012
+mode = GLOBAL_ENABLE_ONCE
+instance = AUTH-DB-012::GLOBAL
+execution_gate = PRE_E5_FOUNDATION
+canonical_work = DEFINE_CONTRACT_ONCE
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no existe `AUTH-DB-012` por aplicación;
+3. no existe `AUTH-DB-012` por `package_id`;
+4. la infraestructura puede existir antes de adopciones verticales;
+5. la cobertura de cada writer se completa después en su unidad propietaria;
+6. la aprobación documental no autoriza la instancia física;
+7. toda materialización conserva autorización explícita, migration versionada, pruebas, rollback y evidencia.
+
+---
+
+#### 4. Precondición transversal obligatoria
+
+`AUTH-DB-012::GLOBAL` requiere que exista físicamente la capa transversal aprobada por `SUPA-ARC-007`:
+
+```text
+audit
+```
+
+Si `audit` no existe:
+
+```text
+AUTH-DB-012::GLOBAL
+→ BLOCKED
+```
+
+012 no crea una tabla de auditoría alternativa en `public`, `identity_access`, una aplicación o un dominio para evadir esta precondición.
+
+---
+
+#### 5. Fuentes vinculantes
+
+La definición consume y preserva:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-018`, para composición de carriles;
+- `AUTH-MOD-019`, para denegación explícita;
+- `AUTH-CAT-011`, para alcances permitidos;
+- `AUTH-RBAC-020`, para concesiones individuales base;
+- `AUTH-RBAC-021`, para concesiones individuales operativas;
+- `AUTH-RBAC-022`, para denegaciones individuales y transversales;
+- `AUTH-RBAC-024`, para `vento.authorization.base-role-grants@1.0.0`;
+- `AUTH-RBAC-025`, para la matriz operativa canónica;
+- `AUTH-RBAC-026`, para overrides canónicos;
+- `AUTH-CTX-024`, para evidencia de autorización;
+- `AUTH-DB-032`, para persistencia de decisiones y vínculo decisión–ejecución;
+- `SUPA-ARC-007`, para `audit`, inmutabilidad y clases de compromiso;
+- `SUPA-ARC-011`, para nombres físicos;
+- `SUPA-ARC-012`, para claves, constraints, estados y tiempo;
+- `SUPA-ARC-013`, para funciones y triggers;
+- `SUPA-ARC-014`, para funciones privilegiadas;
+- `SUPA-ARC-015`, para grants, RLS y ACL;
+- `SUPA-ARC-021`, para índices y crecimiento;
+- `SUPA-ARC-022`, para retención, legal hold, archivo, backup y restore;
+- `SUPA-TRANS-016`, para el orden R1/R2;
+- `vento.canonical-json@1.0.0`.
+
+---
+
+#### 6. Precedencia
+
+La precedencia material es:
+
+```text
+MODELO Y CATÁLOGO AUTH
+→ definen qué significa grant, deny, lane, scope y vigencia
+
+SUPA-ARC-007
+→ define la capa audit
+
+AUTH-DB-032
+→ persiste la decisión que autorizó o denegó la administración
+
+AUTH-DB-012
+→ persiste el cambio de autoridad o el intento administrativo
+
+AUTH-DB-013
+→ audita simulación
+
+AUTH-DB-014
+→ audita dispositivos
+
+AUTH-DB-020
+→ adopta los contratos en objetos migrados por dominio
+```
+
+012 no absorbe el trabajo de las tareas posteriores.
+
+---
+
+#### 7. Distinción fundamental
+
+Se preservan tres hechos diferentes:
+
+```text
+DECISIÓN DE AUTORIZACIÓN
+→ ¿podía el actor intentar el comando?
+
+CAMBIO DE PERMISO
+→ ¿qué autoridad se creó, restringió, suspendió, revocó o sustituyó?
+
+EFECTO EMPRESARIAL POSTERIOR
+→ ¿qué operación ejecutó después el beneficiario?
+```
+
+Cada hecho conserva identidad y evidencia propias.
+
+---
+
+#### 8. Frontera con `AUTH-DB-032`
+
+`AUTH-DB-032` persiste:
+
+```text
+AuthorizationDecision@1.0.0
+```
+
+012 persiste:
+
+```text
+MUTACIÓN DE CONFIGURACIÓN AUTORIZATIVA
+```
+
+Cuando una decisión autorizó el cambio:
+
+```text
+authorization_decision_id
+→ referencia a la decisión persistida
+```
+
+El cambio no copia todo el payload de la decisión.
+
+---
+
+#### 9. Frontera con `AUTH-DB-013`
+
+Una decisión simulada:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+```
+
+no crea un cambio de permisos real.
+
+La simulación y su historial pertenecen a `AUTH-DB-013`.
+
+012 solo registra cambios en autoridad real.
+
+---
+
+#### 10. Frontera con `AUTH-DB-014`
+
+Alta, activación, suspensión, revocación, rotación y retiro de dispositivos pertenecen a `AUTH-DB-014`.
+
+012 puede conservar `device_id` como contexto del actor que administró permisos.
+
+No convierte un cambio de dispositivo en un cambio de permiso.
+
+---
+
+#### 11. Frontera con `AUTH-DB-020`
+
+012 crea una infraestructura global reutilizable.
+
+`AUTH-DB-020` debe integrar cada fuente autorizativa que migre para que sus writers:
+
+```text
+MUTEN LA FUENTE
++
+REGISTREN EL CAMBIO
+```
+
+en la misma frontera transaccional.
+
+012 no mueve objetos de `public` a `identity_access` ni ejecuta backfills de permisos.
+
+---
+
+#### 12. Fuentes autorizativas cubiertas conceptualmente
+
+El audit debe poder representar cambios provenientes de:
+
+```text
+PERMISSION_CATALOG_RELEASE
+BASE_ROLE_GRANT
+OPERATIONAL_ROLE_GRANT
+INDIVIDUAL_OVERRIDE
+EXPLICIT_DENIAL
+```
+
+Estas clases son lógicas y no equivalen a nombres de tablas legacy.
+
+---
+
+#### 13. `PERMISSION_CATALOG_RELEASE`
+
+Cubre únicamente cambios de catálogo que alteren semántica de autorización, por ejemplo:
+
+- alta de una clave nueva;
+- activación;
+- desactivación;
+- cambio incompatible de modalidad;
+- cambio incompatible de alcance máximo;
+- cambio contractual de sensibilidad o prerrequisito cuando afecte evaluación;
+- supersesión de una versión.
+
+No convierte 012 en propietaria del catálogo.
+
+El catálogo continúa versionándose mediante su contrato propio.
+
+---
+
+#### 14. Cambios de presentación del catálogo
+
+Un cambio exclusivamente de:
+
+- etiqueta humana;
+- descripción humana;
+- orden visual;
+- agrupación visual;
+
+no se presenta como cambio de autoridad si no modifica el contrato efectivo.
+
+Puede conservar auditoría administrativa por otra finalidad, pero no se contabiliza como `authorization_permission_change` por inferencia.
+
+---
+
+#### 15. `BASE_ROLE_GRANT`
+
+Representa una decisión material sobre la matriz base:
+
+```text
+role_code
++
+permission_key
++
+BASE
++
+scope
++
+condiciones
+```
+
+La identidad lógica consume el dataset base canónico y no el nombre de una tabla legacy.
+
+---
+
+#### 16. `OPERATIONAL_ROLE_GRANT`
+
+Representa una decisión material sobre la matriz operativa:
+
+```text
+operational_role_code
++
+permission_key
++
+OPERATIONAL
++
+scope operativo
++
+condiciones
+```
+
+No puede producir autoridad global por ausencia de contexto.
+
+---
+
+#### 17. `INDIVIDUAL_OVERRIDE`
+
+Representa una concesión individual positiva o una excepción compatible con el modelo aprobado.
+
+Debe conservar:
+
+- trabajador exacto;
+- permiso exacto;
+- carril;
+- alcance;
+- vigencia;
+- estado;
+- motivo normalizado;
+- solicitante;
+- aprobador;
+- fuente o expediente de origen.
+
+No se convierte en un segundo rol.
+
+---
+
+#### 18. `EXPLICIT_DENIAL`
+
+Representa denegaciones explícitas reales:
+
+```text
+BASE_DENY
+OPERATIONAL_DENY
+ACTOR_WIDE_DENY
+```
+
+La ausencia de un grant no crea una fila de esta clase.
+
+---
+
+#### 19. Default deny no es explicit deny
+
+Se conserva:
+
+```text
+SIN ALLOW
+→ DEFAULT_DENY
+```
+
+separado de:
+
+```text
+DENEGACIÓN ADMINISTRATIVA EXPRESA
+→ EXPLICIT_DENY
+```
+
+012 nunca fabrica una denegación explícita para explicar una ausencia de concesión.
+
+---
+
+#### 20. Cambio actual no reescribe historia
+
+Una denegación creada hoy:
+
+```text
+NO convierte ALLOW históricos válidos
+EN acciones retrospectivamente inválidas
+```
+
+La auditoría histórica conserva la política, versión y huellas vigentes en el instante del hecho.
+
+---
+
+#### 21. Línea base física remota observada
+
+La auditoría read-only del proyecto `vento-os-dev` identificó como superficies físicas actuales relacionadas con permisos:
+
+```text
+public.app_permissions
+public.role_permissions
+public.employee_permissions
+public.operational_role_permissions
+public.role_capabilities
+```
+
+Conteos observados:
+
+```text
+app_permissions = 179
+role_permissions = 613
+employee_permissions = 17
+operational_role_permissions = 32
+role_capabilities = 26
+```
+
+El snapshot es evidencia AS-IS, no el dataset objetivo.
+
+---
+
+#### 22. Denegaciones físicas observadas
+
+En el mismo corte:
+
+```text
+role_permissions deny = 0
+employee_permissions deny = 0
+operational_role_permissions deny = 0
+```
+
+La ausencia actual de filas `DENY` no elimina el contrato de auditoría de denegaciones.
+
+El modelo canónico ya las define y la infraestructura debe estar preparada antes de su materialización.
+
+---
+
+#### 23. Triggers observados
+
+Entre las superficies anteriores se observó únicamente:
+
+```text
+operational_role_permissions_touch_updated_at
+```
+
+como trigger relacionado, y su finalidad es actualizar `updated_at`.
+
+No se observó un trigger canónico que registre de forma completa actor, decisión, causa, before/after, versión y vínculo transaccional de cambios de permisos.
+
+---
+
+#### 24. RLS actual observado
+
+Las cinco relaciones auditadas tienen RLS habilitado en el corte observado.
+
+No tienen `FORCE ROW LEVEL SECURITY`.
+
+012 no interpreta este hecho como cobertura suficiente de auditoría.
+
+---
+
+#### 25. Grants actuales observados
+
+Las superficies legacy mantienen privilegios relacionales amplios para roles como `authenticated` y `service_role`, incluyendo operaciones de mutación en varias tablas.
+
+Ese estado:
+
+```text
+NO es el modelo objetivo
+NO prueba atribución suficiente
+NO prueba cobertura de audit
+```
+
+La reducción de privilegios y adopción canónica conservan sus tareas propietarias.
+
+---
+
+#### 26. Ausencia del schema `audit`
+
+En el snapshot remoto utilizado para esta tarea:
+
+```text
+audit = AUSENTE
+```
+
+Por ello, el estado físico actual de 012 es:
+
+```text
+NOT_IMPLEMENTED
+```
+
+No se crea una excepción local dentro de `public`.
+
+---
+
+#### 27. Registro de change set
+
+Se congela:
+
+```text
+audit.authorization_permission_change_sets
+```
+
+Clase lógica:
+
+```text
+AUDIT_ENTRY
+```
+
+Cada fila representa una operación administrativa que intentó modificar uno o más elementos de autoridad y terminó con cambios confirmados.
+
+---
+
+#### 28. Identidad del change set
+
+Identidad:
+
+```text
+change_set_id
+```
+
+Reglas:
+
+- generada en servidor;
+- única;
+- estable;
+- no derivada del actor;
+- no derivada del permiso;
+- no reutilizada;
+- no expuesta como token de autoridad.
+
+---
+
+#### 29. Campos mínimos del change set
+
+Debe poder conservar:
+
+```text
+change_set_id
+audit_schema_version
+occurred_at
+recorded_at
+principal_id
+effective_actor_id
+technical_principal_id
+session_id
+device_id
+app_code
+request_source
+command_id
+authorization_decision_id
+correlation_id
+causation_id
+reason_code
+justification_reference
+source_reference
+approval_reference
+source_dataset_versions
+source_dataset_hashes
+change_count
+result_code
+sensitivity_class
+retention_class
+change_set_fingerprint
+```
+
+No se añaden nombres humanos por conveniencia.
+
+---
+
+#### 30. `occurred_at` y `recorded_at`
+
+```text
+occurred_at
+→ instante empresarial/técnico del commit autorizativo
+
+recorded_at
+→ instante en que audit persistió el ancla
+```
+
+Para `AUDIT_ATOMIC_REQUIRED`, ambos pertenecen a la misma frontera de commit.
+
+---
+
+#### 31. Principal, actor y principal técnico
+
+La auditoría conserva por separado:
+
+```text
+principal_id
+effective_actor_id
+technical_principal_id
+```
+
+No se derivan entre sí.
+
+Un servicio técnico no sustituye al actor humano cuando la operación fue iniciada por una persona.
+
+---
+
+#### 32. `device_id`
+
+`device_id` se conserva cuando el contexto de autorización lo proporcionó.
+
+No se deriva de:
+
+- User-Agent;
+- IP;
+- hostname;
+- nombre de navegador.
+
+La vida del dispositivo continúa siendo responsabilidad de `AUTH-DB-014`.
+
+---
+
+#### 33. `authorization_decision_id`
+
+Cuando una mutación administrativa fue autorizada mediante el evaluador canónico:
+
+```text
+authorization_decision_id
+```
+
+debe resolver al `decision_id` persistido por 032.
+
+No se copia una decisión completa dentro del change set.
+
+---
+
+#### 34. Cambio ejecutado por sistema
+
+Un cambio legítimo `SYSTEM` debe conservar:
+
+- principal técnico;
+- proceso o automatismo propietario;
+- permiso técnico/empresarial aplicable;
+- source reference;
+- correlation;
+- razón canónica.
+
+`service_role` por sí solo no es explicación suficiente.
+
+---
+
+#### 35. `reason_code`
+
+Todo cambio de autoridad exige una causa normalizada.
+
+`reason_code` no es texto libre.
+
+Debe permitir diferenciar, como mínimo, familias tales como:
+
+- responsabilidad aprobada;
+- cobertura temporal;
+- cambio organizacional;
+- suspensión;
+- segregación de funciones;
+- seguridad;
+- corrección de configuración;
+- expiración;
+- migración controlada.
+
+La taxonomía final se gobierna por el contrato administrativo propietario.
+
+---
+
+#### 36. `justification_reference`
+
+La explicación humana extensa no se duplica en el audit por defecto.
+
+Se conserva una referencia a:
+
+- solicitud;
+- acta;
+- caso;
+- incidente;
+- aprobación;
+- expediente;
+- cambio versionado.
+
+El contenido sensible permanece en su owner.
+
+---
+
+#### 37. `approval_reference`
+
+Cuando el contrato requiera aprobación reforzada o dual, la evidencia enlaza el expediente o resultado de aprobación.
+
+No basta:
+
+```text
+approved = true
+```
+
+sin identidad y procedencia verificables.
+
+---
+
+#### 38. Registro de items
+
+Se congela:
+
+```text
+audit.authorization_permission_changes
+```
+
+Cada fila representa exactamente un elemento de autoridad cuyo estado efectivo cambió dentro de un `change_set_id`.
+
+---
+
+#### 39. Identidad del item
+
+Se congela:
+
+```text
+permission_change_id
+```
+
+Es diferente de:
+
+- change_set_id;
+- decision_id;
+- grant_id;
+- deny_id;
+- permission_id;
+- employee_id.
+
+---
+
+#### 40. Campos mínimos del item
+
+```text
+permission_change_id
+change_set_id
+change_ordinal
+source_kind
+authorization_record_reference
+subject_kind
+subject_reference
+permission_key
+lane
+effect
+change_kind
+changed_fields
+before_state
+after_state
+before_fingerprint
+after_fingerprint
+source_dataset_id
+source_dataset_version
+source_dataset_hash
+item_reason_code
+occurred_at
+recorded_at
+item_fingerprint
+```
+
+---
+
+#### 41. `source_kind`
+
+Vocabulario cerrado inicial:
+
+```text
+PERMISSION_CATALOG_RELEASE
+BASE_ROLE_GRANT
+OPERATIONAL_ROLE_GRANT
+INDIVIDUAL_OVERRIDE
+EXPLICIT_DENIAL
+```
+
+No se usa el nombre físico de una tabla como semántica primaria.
+
+---
+
+#### 42. `subject_kind`
+
+Vocabulario cerrado inicial:
+
+```text
+BASE_ROLE
+OPERATIONAL_ROLE
+EMPLOYEE
+CATALOG
+```
+
+No se admite:
+
+```text
+UNKNOWN
+GENERIC
+ANY
+```
+
+como sujeto de una mutación exitosa.
+
+---
+
+#### 43. `subject_reference`
+
+Debe ser la identidad canónica mínima del sujeto:
+
+- role code;
+- operational role code;
+- employee ID;
+- catalog release ID.
+
+No contiene nombre humano, correo ni documento.
+
+---
+
+#### 44. `permission_key`
+
+Toda fila de autoridad sobre una capacidad exacta conserva el `permission_key` canónico.
+
+Reglas:
+
+- coincidencia exacta;
+- sin wildcard;
+- sin prefijo como permiso;
+- sin label humana;
+- sin alias legacy como identidad nueva.
+
+---
+
+#### 45. `lane`
+
+Valores aplicables:
+
+```text
+BASE
+OPERATIONAL
+ALL_COMPATIBLE
+NOT_APPLICABLE
+```
+
+`ALL_COMPATIBLE` solo corresponde a una denegación transversal aprobada.
+
+`NOT_APPLICABLE` puede usarse en un release de catálogo.
+
+---
+
+#### 46. `effect`
+
+Valores de autoridad:
+
+```text
+ALLOW
+DENY
+NOT_APPLICABLE
+```
+
+`NOT_APPLICABLE` solo se admite cuando el item describe un cambio de release de catálogo y no una asignación.
+
+---
+
+#### 47. Efecto no cambia in-place
+
+Una asignación real no cambia silenciosamente:
+
+```text
+ALLOW → DENY
+```
+
+o:
+
+```text
+DENY → ALLOW
+```
+
+como simple edición de un mismo hecho.
+
+La transición se representa mediante retiro/supersesión del registro anterior y creación del nuevo hecho dentro del mismo change set cuando corresponda.
+
+---
+
+#### 48. Lane no cambia in-place
+
+```text
+BASE → OPERATIONAL
+```
+
+no se trata como una edición inocua.
+
+Cambia la identidad semántica de la autoridad y exige sustitución explícita.
+
+---
+
+#### 49. Permission key no cambia in-place
+
+Renombrar una fila de autoridad de una clave a otra está prohibido como actualización.
+
+Debe existir:
+
+```text
+retiro del vínculo anterior
++
+creación del vínculo nuevo
++
+referencia a transición contractual
+```
+
+---
+
+#### 50. Subject no cambia in-place
+
+Una concesión a un trabajador no puede convertirse por UPDATE en concesión a otro trabajador.
+
+La misma regla aplica a roles base y operativos.
+
+---
+
+#### 51. Vocabulario de `change_kind`
+
+Se congela:
+
+```text
+CREATE
+ACTIVATE
+CHANGE_SCOPE
+CHANGE_VALIDITY
+SUSPEND
+REVOKE
+EXPIRE
+REJECT
+SUPERSEDE
+MIGRATE
+CORRECT_METADATA
+CATALOG_RELEASE_ACTIVATED
+```
+
+Cualquier clase nueva exige evolución contractual.
+
+---
+
+#### 52. `CREATE`
+
+Requiere:
+
+```text
+before_state = null
+after_state != null
+```
+
+No significa que la autoridad esté activa si el `after_state` es `SCHEDULED` o `PENDING_APPROVAL`.
+
+---
+
+#### 53. `ACTIVATE`
+
+Conserva el mismo registro autorizativo y cambia su lifecycle a un estado efectivo autorizado por contrato.
+
+No puede adelantar `effective_from` por inferencia.
+
+---
+
+#### 54. `CHANGE_SCOPE`
+
+Registra únicamente una modificación de alcance permitida por el permiso.
+
+Debe conservar:
+
+```text
+scope_before
+scope_after
+```
+
+y sus fingerprints.
+
+Un scope nuevo no puede superar el máximo contractual.
+
+---
+
+#### 55. `CHANGE_VALIDITY`
+
+Conserva cambios de:
+
+```text
+effective_from
+effective_until
+```
+
+No se usa para renovar silenciosamente una concesión temporal.
+
+Cuando el contrato exija nueva decisión administrativa, se crea el registro correspondiente y el audit lo refleja.
+
+---
+
+#### 56. `SUSPEND`
+
+Suspender conserva el registro histórico pero impide su participación efectiva mientras la suspensión sea aplicable.
+
+No equivale a borrar.
+
+---
+
+#### 57. `REVOKE`
+
+Revocar:
+
+- deja el hecho anterior disponible para historia;
+- registra actor y causa;
+- registra momento;
+- invalida uso futuro según el contrato;
+- no borra decisiones históricas.
+
+---
+
+#### 58. `EXPIRE`
+
+Expiración automática o administrada conserva:
+
+- regla de origen;
+- instante efectivo;
+- proceso técnico que cerró la vigencia;
+- estado anterior/posterior.
+
+Una expiración no se registra como acción humana si no lo fue.
+
+---
+
+#### 59. `REJECT`
+
+Una solicitud rechazada que nunca produjo autoridad pertenece normalmente al registro de intentos.
+
+`REJECT` como item solo aplica cuando existe un registro de lifecycle que cambia de `PENDING_APPROVAL` a `REJECTED` y ese registro forma parte de la fuente canónica.
+
+---
+
+#### 60. `SUPERSEDE`
+
+Se utiliza cuando una versión nueva sustituye una autoridad o release anterior sin borrar historia.
+
+Debe enlazar la referencia reemplazada.
+
+---
+
+#### 61. `MIGRATE`
+
+`MIGRATE` identifica una transición controlada desde una fuente legacy hacia una fuente canónica.
+
+No autoriza:
+
+- inventar actor humano;
+- inventar motivo;
+- reescribir fechas históricas;
+- convertir ausencia de evidencia en certeza.
+
+---
+
+#### 62. `CORRECT_METADATA`
+
+Solo corrige metadata auditada que no cambia autoridad efectiva.
+
+Si cambia autoridad:
+
+```text
+CORRECT_METADATA
+→ prohibido
+```
+
+y debe usarse una operación autorizativa real.
+
+---
+
+#### 63. `CATALOG_RELEASE_ACTIVATED`
+
+Registra la activación de un release contractual del catálogo.
+
+El payload de 012 conserva referencia, versión y hash.
+
+No duplica todas las descripciones humanas del catálogo.
+
+---
+
+#### 64. `changed_fields`
+
+Es una lista ordenada, deduplicada y cerrada de campos semánticos realmente modificados.
+
+No se calcula comparando JSON arbitrario sin esquema.
+
+No incluye metadata técnica como `recorded_at`.
+
+---
+
+#### 65. `before_state`
+
+Es una proyección canónica mínima del estado autorizativo anterior.
+
+Puede contener:
+
+```text
+subject_reference
+permission_key
+lane
+effect
+scope
+resource_constraint
+effective_from
+effective_until
+lifecycle_status
+reason_code
+source_reference
+```
+
+según aplique.
+
+---
+
+#### 66. `after_state`
+
+Usa exactamente la misma forma lógica que `before_state`.
+
+La comparación entre ambas formas debe ser determinista.
+
+No incorpora campos visuales ni datos personales innecesarios.
+
+---
+
+#### 67. Prohibición de snapshots completos
+
+No se persiste por defecto:
+
+- fila SQL completa;
+- perfil completo del trabajador;
+- nombre del rol;
+- catálogo entero;
+- payload de formulario;
+- JWT;
+- metadata de Auth;
+- response completa del frontend.
+
+Se conserva la proyección mínima necesaria para reconstrucción.
+
+---
+
+#### 68. Fingerprints de estado
+
+Se conservan:
+
+```text
+before_fingerprint
+after_fingerprint
+```
+
+Formato:
+
+```text
+sha256:
++
+64 caracteres hexadecimales minúsculos
+```
+
+`null` es válido únicamente cuando no existe ese lado del cambio.
+
+---
+
+#### 69. `item_fingerprint`
+
+Representa el item auditado completo canonicalizado.
+
+No concede autoridad.
+
+Sirve para:
+
+- integridad;
+- idempotencia;
+- restore;
+- archive;
+- detección de mutación.
+
+---
+
+#### 70. `change_set_fingerprint`
+
+Representa el change set y la colección ordenada de items.
+
+No depende de:
+
+- ubicación física;
+- partición;
+- nodo;
+- métrica;
+- timestamp de backup.
+
+---
+
+#### 71. Canonicalización
+
+Todos los fingerprints usan:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+Queda expresamente insuficiente:
+
+```text
+jsonb::text
+```
+
+como contrato de serialización canónica.
+
+---
+
+#### 72. Dataset identity
+
+Cada item conserva cuando aplique:
+
+```text
+source_dataset_id
+source_dataset_version
+source_dataset_hash
+```
+
+Esto permite interpretar el cambio contra la matriz o catálogo vigente en ese instante.
+
+---
+
+#### 73. Revisión histórica
+
+Una investigación futura utiliza la versión histórica registrada.
+
+No sustituye:
+
+```text
+hash histórico
+```
+
+por:
+
+```text
+hash actual
+```
+
+para reinterpretar un cambio antiguo.
+
+---
+
+#### 74. Registro de attempts
+
+Se congela:
+
+```text
+audit.authorization_permission_change_attempts
+```
+
+Clase lógica:
+
+```text
+AUDIT_ENTRY
+```
+
+Registra operaciones administrativas que no produjeron un cambio confirmado.
+
+---
+
+#### 75. Identidad del attempt
+
+```text
+change_attempt_id
+```
+
+Es distinta de:
+
+- change_set_id;
+- decision_id;
+- evaluation_attempt_id de evaluación técnica;
+- command_id.
+
+---
+
+#### 76. Resultados de attempt
+
+Vocabulario cerrado inicial:
+
+```text
+DENIED
+INVALID
+CONFLICT
+TECHNICAL_FAILURE
+NO_CHANGE
+ROLLED_BACK
+```
+
+Un attempt nunca se inserta como cambio confirmado.
+
+---
+
+#### 77. `DENIED`
+
+Se usa cuando una decisión válida `DENY` bloqueó la administración.
+
+Conserva referencia a `decision_id` cuando exista.
+
+No contiene after_state efectivo.
+
+---
+
+#### 78. `INVALID`
+
+Se usa cuando la solicitud administrativa no supera contrato, formato, lifecycle o invariantes antes de mutar.
+
+No se transforma automáticamente en `DENIED`.
+
+---
+
+#### 79. `CONFLICT`
+
+Se usa para:
+
+- versión stale;
+- cambio concurrente;
+- contradicción de asignación;
+- duplicado incompatible;
+- precondición administrativa que cambió.
+
+No aplica last-write-wins.
+
+---
+
+#### 80. `TECHNICAL_FAILURE`
+
+Se usa cuando una dependencia técnica impide completar la operación y se conoce que no se comprometió el cambio.
+
+No se inventa una denegación.
+
+---
+
+#### 81. `NO_CHANGE`
+
+Registra una solicitud válida que no alteró autoridad porque el resultado ya era semánticamente equivalente.
+
+No crea un item de cambio ficticio.
+
+---
+
+#### 82. `ROLLED_BACK`
+
+Solo se usa cuando puede demostrarse que la transacción autorizativa fue revertida completamente.
+
+Si el resultado es incierto:
+
+```text
+ROLLED_BACK
+→ prohibido
+```
+
+y se deriva a incidente/reconciliación.
+
+---
+
+#### 83. Campos mínimos del attempt
+
+```text
+change_attempt_id
+occurred_at
+recorded_at
+principal_id
+effective_actor_id
+technical_principal_id
+device_id
+app_code
+request_source
+command_id
+authorization_decision_id
+correlation_id
+permission_key
+source_kind
+subject_kind
+subject_reference
+requested_change_kind
+attempt_result
+reason_code
+error_class
+result_reference
+request_fingerprint
+sensitivity_class
+retention_class
+attempt_fingerprint
+```
+
+---
+
+#### 84. Denegación auditada sin duplicar decisión
+
+El attempt conserva:
+
+```text
+authorization_decision_id
+```
+
+pero no copia:
+
+- matched grants;
+- matched denies;
+- AccessContext completo;
+- AuthorizationDecision completa.
+
+032 continúa siendo la fuente de esa evidencia.
+
+---
+
+#### 85. Retry administrativo
+
+Un retry no reescribe el attempt anterior.
+
+Cada solicitud efectiva conserva su identidad propia y la idempotency key del comando evita duplicar el cambio.
+
+---
+
+#### 86. Fallo del audit store
+
+Si el audit requerido para un cambio de autoridad está indisponible:
+
+```text
+NO COMMIT DE AUTORIDAD
+NO ACK DE ÉXITO
+```
+
+La dependencia es obligatoria.
+
+Si el propio store no puede escribir su indisponibilidad, la observabilidad externa conserva la señal técnica disponible.
+
+---
+
+#### 87. Clase de compromiso
+
+Todo cambio real de autoridad utiliza:
+
+```text
+AUDIT_ATOMIC_REQUIRED
+```
+
+Regla:
+
+```text
+CAMBIO DE AUTORIDAD
++
+AUDIT CHANGE SET
++
+AUDIT ITEMS
+=
+MISMO COMMIT
+```
+
+---
+
+#### 88. Prohibición de audit después del commit
+
+Queda prohibido el patrón:
+
+```text
+UPDATE PERMISO
+COMMIT
+LUEGO INSERT AUDIT
+```
+
+porque permite autoridad activa sin evidencia obligatoria.
+
+---
+
+#### 89. Prohibición de éxito sin audit
+
+Una API, RPC, Server Action o worker no puede presentar:
+
+```text
+CAMBIO APLICADO
+```
+
+si el audit obligatorio no quedó durable.
+
+---
+
+#### 90. No usar trigger como única atribución
+
+Un trigger genérico de `before/after` no puede por sí solo reconstruir de forma fiable:
+
+- actor efectivo;
+- principal técnico;
+- autorización;
+- razón;
+- aprobación;
+- expediente;
+- command ID;
+- correlación.
+
+Por tanto, un trigger SQL no será la única fuente de contexto administrativo.
+
+---
+
+#### 91. Patrón objetivo de writer
+
+Todo writer canónico de autoridad deberá ejecutar conceptualmente:
+
+```text
+BEGIN
+  resolver contexto
+  evaluar permiso administrativo
+  persistir AuthorizationDecision
+  validar request y expected version
+  aplicar mutación autorizativa
+  append authorization permission change
+COMMIT
+```
+
+El rollback revierte mutación y audit del change set juntos.
+
+---
+
+#### 92. Direct writes después de adopción
+
+Cuando una fuente autorizativa sea adoptada canónicamente:
+
+```text
+DIRECT INSERT/UPDATE/DELETE DE CLIENTE
+→ PROHIBIDO
+```
+
+Los cambios pasan por comandos propietarios que cumplen la frontera transaccional.
+
+---
+
+#### 93. Legacy durante transición
+
+Las tablas legacy actuales no reciben por 012 una falsa certificación de cobertura completa.
+
+Durante `AUTH-DB-020` cada writer debe clasificarse:
+
+```text
+CANONICAL_AUDITED
+TRANSITIONAL_ADAPTER
+BLOCKED_FOR_MIGRATION
+RETIRED
+```
+
+No existe `UNTRACKED_BUT_ALLOWED` como estado objetivo.
+
+---
+
+#### 94. Backfill de historia
+
+012 no fabrica eventos históricos para cambios antiguos que no tuvieron audit canónico.
+
+Un backfill puede conservar:
+
+- snapshot conocido;
+- procedencia;
+- ventana;
+- nivel de certeza;
+- referencia a fuente legacy.
+
+Pero no inventa actor, decisión o hora exacta.
+
+---
+
+#### 95. Historia previa al cutover
+
+La ausencia de audit canónico anterior al cutover se registra como una limitación de evidencia.
+
+No se oculta mediante timestamps actuales presentados como históricos.
+
+---
+
+#### 96. Registro de links
+
+Se congela:
+
+```text
+audit.authorization_permission_change_links
+```
+
+Clase lógica:
+
+```text
+AUDIT_LINK
+```
+
+Relaciona change sets o items con artefactos durables externos sin duplicarlos.
+
+---
+
+#### 97. Link kinds
+
+Vocabulario cerrado inicial:
+
+```text
+AUTHORIZATION_DECISION
+APPROVAL
+SOURCE_EVIDENCE
+INCIDENT
+CORRECTION
+MIGRATION
+AUDIT_ENTRY
+```
+
+No se acepta un tipo libre.
+
+---
+
+#### 98. Campos mínimos del link
+
+```text
+permission_change_link_id
+change_set_id
+permission_change_id
+link_kind
+reference_type
+reference_id
+correlation_id
+causation_id
+occurred_at
+recorded_at
+link_fingerprint
+```
+
+`permission_change_id` puede ser `null` si el vínculo aplica al change set completo.
+
+---
+
+#### 99. Link no concede autoridad
+
+Un vínculo a una aprobación o decisión:
+
+```text
+NO autoriza una operación futura
+NO reabre una concesión expirada
+NO evita revalidación
+```
+
+Solo conserva causalidad y evidencia.
+
+---
+
+#### 100. Append principal
+
+Se congela:
+
+```text
+audit.append_authorization_permission_change(jsonb) → jsonb
+```
+
+Recibe un envelope completo del cambio confirmado y materializa atómicamente:
+
+- change set;
+- items;
+- links obligatorios.
+
+---
+
+#### 101. Argumento del append principal
+
+La identidad lógica del único parámetro es:
+
+```text
+change
+```
+
+El caller no suministra como autoridad:
+
+- recorded_at;
+- fingerprints finales;
+- retention class libre;
+- sensitivity class libre;
+- audit schema version libre;
+- actor override.
+
+---
+
+#### 102. Validaciones del append principal
+
+Antes de insertar debe validar:
+
+1. forma contractual;
+2. identidad de change set;
+3. actor/principal;
+4. decision reference cuando aplique;
+5. correlation;
+6. source kind;
+7. subject kind;
+8. permission key exacta;
+9. lane;
+10. effect;
+11. change kind;
+12. before/after shape;
+13. changed fields;
+14. dataset version/hash;
+15. reason/source/approval requeridos;
+16. cardinalidad de items;
+17. orden determinista;
+18. canonicalización;
+19. fingerprints;
+20. idempotencia.
+
+---
+
+#### 103. Seguridad del append principal
+
+La futura función es candidata a:
+
+```text
+VOLATILE
+SECURITY DEFINER
+AUDIT_APPEND_FUNCTION
+```
+
+solo porque debe escribir una capa privada que los callers no pueden modificar directamente.
+
+Requiere la excepción individual de `SUPA-ARC-014` antes de materializarse.
+
+---
+
+#### 104. Reglas `SECURITY DEFINER`
+
+Si se materializa como `SECURITY DEFINER`:
+
+- owner no interactivo;
+- `search_path` fijo y mínimo;
+- referencias totalmente calificadas;
+- `PUBLIC EXECUTE` revocado;
+- `anon` sin execute;
+- `authenticated` sin execute;
+- grants exactos a callers técnicos aprobados;
+- validación interna de inputs;
+- cero SQL dinámico abierto.
+
+---
+
+#### 105. Append de attempts
+
+Se congela:
+
+```text
+audit.append_authorization_permission_change_attempt(jsonb) → text
+```
+
+No puede insertar un change set exitoso.
+
+No puede declarar un efecto comprometido si no existe evidencia.
+
+---
+
+#### 106. Función de inmutabilidad
+
+Se congela:
+
+```text
+audit.reject_authorization_permission_audit_mutation()
+```
+
+Clase:
+
+```text
+TRIGGER_FUNCTION
+```
+
+Rechaza `UPDATE` y `DELETE` ordinarios sobre las relaciones append-only de 012.
+
+---
+
+#### 107. No UPDATE del audit
+
+Queda prohibido corregir historia con:
+
+```text
+UPDATE audit.authorization_permission_changes
+```
+
+Una corrección utiliza el mecanismo `AUDIT_CORRECTION` de la capa transversal y un link `CORRECTION`.
+
+---
+
+#### 108. No DELETE del audit
+
+Aplicaciones, administradores funcionales y servicios ordinarios no eliminan evidencia.
+
+La disposición por retención pertenece al mecanismo gobernado por `SUPA-ARC-022`.
+
+---
+
+#### 109. Idempotencia del change set
+
+Mismo `change_set_id` y mismo fingerprint:
+
+```text
+→ retorno idempotente
+```
+
+Mismo `change_set_id` con fingerprint diferente:
+
+```text
+→ INTEGRITY_CONFLICT
+→ fail closed
+```
+
+---
+
+#### 110. Idempotencia de item
+
+Mismo `permission_change_id` y mismo fingerprint:
+
+```text
+→ idempotente
+```
+
+Mismo ID con otra semántica:
+
+```text
+→ conflicto
+```
+
+No se crea un ID con sufijo para ocultar la colisión.
+
+---
+
+#### 111. Orden de items
+
+Los items de un change set usan:
+
+```text
+change_ordinal
+```
+
+contiguo, único y determinista.
+
+El orden no sustituye causalidad entre comandos distintos.
+
+---
+
+#### 112. Cardinalidad declarada
+
+Debe cumplirse:
+
+```text
+change_count
+=
+COUNT(items del change_set)
+```
+
+Un cambio exitoso con `change_count = 0` es inválido.
+
+Un no-op pertenece a attempts.
+
+---
+
+#### 113. Change set bulk
+
+Una operación bulk válida puede contener varios items cuando comparte:
+
+- comando;
+- autorización aplicable;
+- causa;
+- frontera transaccional;
+- aprobación;
+- resultado.
+
+No se usa bulk para mezclar causas o autoridades incompatibles.
+
+---
+
+#### 114. Bulk parcial prohibido
+
+Si el comando es contractualmente atómico:
+
+```text
+item 1 aplicado
+item 2 falla
+→ rollback completo
+```
+
+No se confirma un change set parcial.
+
+Si un proceso permite parcialidad por contrato, cada subresultado requiere identidad y evidencia propias.
+
+---
+
+#### 115. Reautorización ante cambio concurrente
+
+Si una precondición autorizativa cambia entre evaluación y commit:
+
+```text
+DECISIÓN STALE
+→ NO MUTACIÓN
+→ nuevo request
+→ nueva evaluación
+```
+
+No se reutiliza el `decision_id` anterior.
+
+---
+
+#### 116. Scope widening
+
+Un cambio que amplía alcance se trata como operación sensible.
+
+Debe validar el máximo de `AUTH-CAT-011` y la cobertura administrativa del actor.
+
+No se deriva globalidad desde `null`.
+
+---
+
+#### 117. Scope narrowing
+
+Reducir alcance también es un cambio de autoridad y se audita.
+
+No se omite por ser una reducción de privilegio.
+
+Puede afectar operación pendiente y requiere invalidación conforme a los contratos de frescura.
+
+---
+
+#### 118. Grant creation
+
+Crear un grant registra:
+
+- sujeto;
+- permiso;
+- lane;
+- scope;
+- vigencia;
+- motivo;
+- aprobaciones;
+- dataset/version;
+- decisión autorizante;
+- after fingerprint.
+
+---
+
+#### 119. Grant revocation
+
+Revocar un grant registra:
+
+- referencia original;
+- before state;
+- estado de revocación;
+- actor;
+- causa;
+- instante;
+- decisión;
+- invalidación requerida por contrato.
+
+No borra la fila histórica ordinariamente.
+
+---
+
+#### 120. Deny creation
+
+Crear un deny registra explícitamente:
+
+- clase de deny;
+- sujeto;
+- permiso exacto;
+- lane;
+- scope;
+- vigencia;
+- razón;
+- aprobación;
+- fuente.
+
+No se genera por simple ausencia de grant.
+
+---
+
+#### 121. Deny revocation
+
+Retirar un deny es un cambio sensible independiente.
+
+No se corrige agregando un grant contrario.
+
+El audit debe poder demostrar quién retiró la restricción y con qué autorización.
+
+---
+
+#### 122. Actor-wide deny
+
+Un `ACTOR_WIDE_DENY` registra:
+
+```text
+subject_kind = EMPLOYEE
+lane = ALL_COMPATIBLE
+effect = DENY
+```
+
+Nunca se origina desde un rol, dispositivo o sede seleccionada.
+
+---
+
+#### 123. Expiración automática
+
+Una expiración ejecutada por job conserva:
+
+```text
+technical_principal_id
+process reference
+source rule
+previous state
+new state
+```
+
+No inventa `effective_actor_id` humano.
+
+---
+
+#### 124. Autoaprobación
+
+El audit debe permitir probar que:
+
+```text
+beneficiario
+solicitante
+aprobador
+```
+
+cumplieron la segregación exigida.
+
+012 no define quién puede aprobar; conserva la evidencia para comprobarlo.
+
+---
+
+#### 125. Doble aprobación
+
+Cuando el permiso o alcance exija doble aprobación, el audit enlaza la evidencia correspondiente.
+
+No degrada dos aprobadores a un booleano.
+
+---
+
+#### 126. Administrador local
+
+Un actor con autoridad territorial limitada solo puede cambiar permisos dentro de esa cobertura.
+
+El audit conserva suficiente referencia territorial para demostrarlo sin duplicar el perfil completo del actor.
+
+---
+
+#### 127. Self-service prohibido
+
+Un trabajador ordinario no puede modificar sus propios grants/denies porque pueda leer su registro.
+
+Lectura y administración permanecen capacidades diferentes.
+
+---
+
+#### 128. Cambio de rol no pertenece a 012
+
+Asignar a un trabajador otro rol base es un hecho laboral/identitario propietario.
+
+012 no duplica ese lifecycle como permission change.
+
+Puede existir un link si el cambio de rol provoca una reconciliación de permisos, pero la fuente original permanece fuera de 012.
+
+---
+
+#### 129. Cambio de turno no pertenece a 012
+
+Turno, check-in y rol operativo efectivo forman parte de contexto laboral.
+
+No se auditan como cambios de permisos dentro de 012.
+
+---
+
+#### 130. Cambio de dispositivo no pertenece a 012
+
+La activación o revocación de un dispositivo permanece en 014.
+
+Que el dispositivo limite capacidades no lo convierte en una matriz de permisos.
+
+---
+
+#### 131. Query por ID
+
+Se congela:
+
+```text
+audit.get_authorization_permission_change(text) → jsonb
+```
+
+Entrada:
+
+```text
+change_set_id
+```
+
+Devuelve una proyección privada del change set y sus items para un caller técnico autorizado.
+
+---
+
+#### 132. Search privada
+
+Se congela:
+
+```text
+audit.search_authorization_permission_changes(jsonb) → jsonb
+```
+
+No acepta SQL libre.
+
+No es una RPC Data API para `authenticated`.
+
+---
+
+#### 133. Filtros permitidos
+
+La búsqueda puede acotar por:
+
+```text
+change_set_id
+permission_change_id
+authorization_decision_id
+correlation_id
+effective_actor_id
+principal_id
+subject_kind
+subject_reference
+permission_key
+lane
+effect
+source_kind
+change_kind
+occurred_from
+occurred_to
+limit
+cursor
+```
+
+Los filtros reducen resultados; no conceden acceso.
+
+---
+
+#### 134. Paginación
+
+La búsqueda usa cursor estable basado en:
+
+```text
+occurred_at
++
+change_set_id
+```
+
+o identidad equivalente con orden total.
+
+No usa `OFFSET` profundo como estrategia canónica de historiales grandes.
+
+---
+
+#### 135. Limit obligatorio
+
+Toda búsqueda aplica límite máximo.
+
+El valor físico exacto se fija en implementación y benchmark según `SUPA-ARC-021`.
+
+No existe búsqueda ilimitada por omisión.
+
+---
+
+#### 136. Search por actor
+
+La búsqueda por actor es sensible.
+
+No expone automáticamente:
+
+- todos los permisos de la organización;
+- motivos disciplinarios;
+- investigaciones;
+- identidades de terceros.
+
+---
+
+#### 137. Search por permission key
+
+Debe poder reconstruirse:
+
+```text
+permission_key
++
+rango temporal
+→ historial de cambios autorizado
+```
+
+sin depender de scans de payload JSON.
+
+---
+
+#### 138. Search por sujeto
+
+Debe poder investigarse:
+
+```text
+BASE_ROLE + role_code
+OPERATIONAL_ROLE + role_code
+EMPLOYEE + employee_id
+```
+
+respetando finalidad y alcance del investigador.
+
+---
+
+#### 139. Search por decisión
+
+Debe poder seguirse:
+
+```text
+decision_id
+→ change set
+→ items
+```
+
+para demostrar qué cambio administrativo fue autorizado por esa decisión.
+
+---
+
+#### 140. Search por correlación
+
+Debe poder reconstruirse:
+
+```text
+request
+→ AuthorizationDecision
+→ permission change
+→ invalidación/efectos posteriores
+```
+
+sin usar timestamp como única causalidad.
+
+---
+
+#### 141. API pública genérica prohibida
+
+012 no crea:
+
+```text
+api.search_all_permission_audit
+```
+
+o equivalente genérico para roles cliente.
+
+Una UI administrativa futura deberá exponer una proyección mínima con permiso, finalidad, territorio, filtros y límites explícitos.
+
+---
+
+#### 142. Acceso directo al schema `audit`
+
+Objetivo:
+
+```text
+PUBLIC = 0
+anon = 0
+authenticated = 0
+```
+
+para acceso directo a tablas y primitivas privadas de 012.
+
+---
+
+#### 143. `service_role`
+
+`service_role` no recibe privilegios globales de auditoría por defecto.
+
+Los servicios aprobados usan grants nominales sobre firmas exactas.
+
+`service_role` no es autoridad empresarial.
+
+---
+
+#### 144. RLS como defensa en profundidad
+
+Las relaciones futuras habilitan RLS conforme al contrato de `SUPA-ARC-015`.
+
+No se crean policies cliente de lectura o escritura directa.
+
+La protección se evalúa además junto a ACL, owner y funciones privilegiadas.
+
+---
+
+#### 145. `FORCE ROW LEVEL SECURITY`
+
+La futura implementación verifica explícitamente:
+
+- owner;
+- `BYPASSRLS`;
+- `ENABLE RLS`;
+- `FORCE ROW LEVEL SECURITY` cuando aplique;
+- ejecución de funciones `SECURITY DEFINER`.
+
+No se asume que RLS habilitado es suficiente para el owner.
+
+---
+
+#### 146. Default privileges
+
+La migration debe comprobar que nuevos objetos no hereden:
+
+```text
+PUBLIC EXECUTE
+```
+
+o grants cliente accidentales.
+
+Se captura ACL antes y después.
+
+---
+
+#### 147. `search_path`
+
+Las funciones privilegiadas usan `search_path` fijo y mínimo.
+
+Referencia objetivo:
+
+```text
+pg_catalog, audit, app_private
+```
+
+Las dependencias continúan calificadas.
+
+---
+
+#### 148. SQL dinámico
+
+No existe necesidad de SQL dinámico abierto para el contrato principal.
+
+Quedan prohibidos nombres de:
+
+- schema;
+- tabla;
+- columna;
+- función;
+- order clause;
+- predicate;
+
+suministrados libremente por callers.
+
+---
+
+#### 149. Integridad referencial con 032
+
+Cuando `authorization_decision_id` exista, debe resolver a una decisión persistida válida.
+
+Un change set no crea un decision ID huérfano para aparentar autorización.
+
+---
+
+#### 150. Cambios de sistema sin decisión humana
+
+Cuando una transición automática legítima no requiera una nueva decisión humana, el audit conserva:
+
+- regla que la habilita;
+- principal técnico;
+- source record;
+- versión contractual;
+- causation;
+- evento o job aplicable.
+
+No fabrica un actor humano.
+
+---
+
+#### 151. Seguridad de motivos
+
+Razones de investigación, disciplina, seguridad o conflicto de interés pueden ser sensibles.
+
+El audit conserva código y referencia mínima.
+
+No copia el expediente completo.
+
+---
+
+#### 152. PII
+
+No almacenar por defecto:
+
+- nombre;
+- correo;
+- teléfono;
+- documento;
+- dirección;
+- foto;
+- datos médicos;
+- texto disciplinario completo.
+
+Los IDs y referencias bastan para atribución técnica.
+
+---
+
+#### 153. Secretos
+
+Queda prohibido persistir:
+
+- JWT;
+- refresh token;
+- API key;
+- PIN;
+- password;
+- credential secret;
+- private key;
+- raw session token.
+
+---
+
+#### 154. Logs
+
+Logs técnicos pueden incluir:
+
+- change_set_id protegido;
+- correlation_id protegido;
+- operation;
+- item count;
+- source kind;
+- latency;
+- result.
+
+No incluyen before/after completos.
+
+---
+
+#### 155. Métricas
+
+Métricas mínimas:
+
+```text
+authorization_permission_changes_total
+authorization_permission_change_attempts_total
+authorization_permission_change_denied_total
+authorization_permission_change_conflict_total
+authorization_permission_audit_write_error_total
+authorization_permission_audit_query_total
+authorization_permission_audit_query_denied_total
+authorization_permission_audit_query_latency
+```
+
+---
+
+#### 156. Dimensiones de métricas
+
+Se permiten dimensiones de baja cardinalidad como:
+
+- source kind;
+- change kind;
+- lane;
+- effect;
+- result;
+- app code cuando aplique.
+
+No usar como labels:
+
+- change_set_id;
+- employee_id;
+- decision_id;
+- correlation_id;
+- permission_change_id.
+
+---
+
+#### 157. Retención
+
+Cada registro declara:
+
+```text
+retention_class
+```
+
+012 no inventa periodos en días.
+
+El periodo y disposición pertenecen a `SUPA-ARC-022`.
+
+---
+
+#### 158. Legal hold
+
+Un legal hold:
+
+- impide disposición destructiva;
+- no cambia el hecho;
+- no cambia fingerprints;
+- no concede lectura;
+- no reactiva un permiso;
+- no suspende reglas de autorización.
+
+---
+
+#### 159. Archivado
+
+El archivo debe preservar:
+
+- change set;
+- items;
+- links;
+- attempts;
+- fingerprints;
+- versiones;
+- correlación;
+- identidad mínima;
+- capacidad de búsqueda investigativa autorizada.
+
+---
+
+#### 160. Restore
+
+Después de restore se valida:
+
+```text
+conteos
+unicidad
+FKs aplicables
+fingerprints
+item cardinality
+links
+attempts
+RLS
+ACL
+funciones
+búsquedas
+```
+
+No se regeneran cambios históricos desde el estado actual.
+
+---
+
+#### 161. Backup
+
+`AUTH-DB-029` debe incluir en su inventario futuro:
+
+- tablas de 012;
+- funciones;
+- trigger de inmutabilidad;
+- constraints;
+- indexes;
+- ACL;
+- RLS;
+- políticas de retención;
+- evidencia de restore.
+
+---
+
+#### 162. Crecimiento
+
+Las relaciones se diseñan para crecimiento append-only y potencial partición temporal.
+
+012 no fija un intervalo de partición independiente de `SUPA-ARC-021` y `SUPA-ARC-022`.
+
+---
+
+#### 163. Query patterns obligatorios
+
+La futura estrategia física debe soportar:
+
+```text
+change_set_id
+decision_id + time
+correlation_id + time
+actor + time
+subject + time
+permission_key + time
+source_kind + time
+change_kind + time
+attempt result + time
+```
+
+---
+
+#### 164. Índices
+
+La futura migration debe justificar con planes, al menos:
+
+- PK de change sets;
+- PK de items;
+- PK de attempts;
+- unique fingerprints donde aplique;
+- lookup por decision;
+- lookup por correlation;
+- lookup por actor;
+- lookup por permission;
+- lookup por subject;
+- lookup temporal;
+- lookup de attempts.
+
+No se crean índices redundantes por intuición.
+
+---
+
+#### 165. Planes de ejecución
+
+Se captura evidencia de `EXPLAIN` o equivalente para búsquedas críticas.
+
+Un índice existente no se considera prueba de rendimiento por sí solo.
+
+---
+
+#### 166. Integridad change set/items
+
+Debe cumplirse:
+
+```text
+change_count = COUNT(items)
+```
+
+además de:
+
+```text
+change_ordinal único dentro del set
+```
+
+No existen items huérfanos.
+
+---
+
+#### 167. Integridad before/after
+
+Reglas:
+
+```text
+CREATE
+→ before null
+
+operación sobre registro existente
+→ before no null
+
+cambio efectivo
+→ before_fingerprint != after_fingerprint
+```
+
+salvo operaciones de metadata que explícitamente no cambien autoridad.
+
+---
+
+#### 168. No-op
+
+Si before y after son semánticamente iguales:
+
+```text
+NO_CHANGE attempt
+```
+
+No se crea un cambio de autoridad ficticio.
+
+---
+
+#### 169. Concurrencia
+
+Todo writer sensible usa versión esperada o mecanismo equivalente para evitar overwrite silencioso.
+
+Un conflicto produce:
+
+```text
+CONFLICT attempt
+```
+
+y nueva solicitud después de refrescar estado.
+
+---
+
+#### 170. Idempotency key
+
+La clave de idempotencia pertenece al comando administrativo.
+
+El audit conserva una referencia o fingerprint, no el payload sensible completo.
+
+Una clave fallida no se marca como cambio exitoso.
+
+---
+
+#### 171. Cambio y frescura
+
+Un cambio de grant/deny que altere autoridad debe disparar la invalidación definida por `AUTH-DB-035`.
+
+La auditoría conserva referencia al cambio; no implementa otro sistema de cache invalidation.
+
+---
+
+#### 172. Invalidación no es audit
+
+```text
+OUTBOX DE INVALIDACIÓN
+≠
+AUDIT DE CAMBIO
+```
+
+Ambos pueden compartir correlación, pero tienen responsabilidades distintas.
+
+---
+
+#### 173. Cambio masivo de matriz
+
+Una publicación versionada de matriz puede afectar múltiples filas.
+
+El audit registra:
+
+- release/dataset anterior;
+- release/dataset nuevo;
+- hash anterior;
+- hash nuevo;
+- conteo de items;
+- items realmente cambiados;
+- source reference.
+
+No duplica filas sin cambio para inflar evidencia.
+
+---
+
+#### 174. Diff de dataset
+
+Para cambios de matriz, la evidencia distingue:
+
+```text
+ADDED
+REMOVED
+SCOPE_CHANGED
+VALIDITY_CHANGED
+STATUS_CHANGED
+```
+
+como resultado derivado del diff, sin crear un segundo catálogo de permisos.
+
+---
+
+#### 175. `REMOVED` en dataset
+
+Retirar una fila de un release nuevo no borra el release histórico anterior.
+
+El audit conserva el diff y ambos hashes.
+
+---
+
+#### 176. Drift
+
+Si el estado físico difiere del dataset publicado sin un change set correspondiente:
+
+```text
+DRIFT AUTORIZATIVO
+→ FAIL
+→ incidente
+```
+
+No se fabrica retrospectivamente un audit para esconderlo.
+
+---
+
+#### 177. Reconciliación de drift
+
+La corrección de drift:
+
+- identifica estado esperado;
+- identifica estado observado;
+- identifica origen conocido/desconocido;
+- requiere autorización;
+- aplica migration/comando forward;
+- genera change set nuevo;
+- conserva incidente previo.
+
+---
+
+#### 178. Cambios manuales de Dashboard
+
+Una mutación manual de permisos mediante Dashboard no es workflow objetivo.
+
+Si ocurre como intervención excepcional autorizada, debe quedar:
+
+- registrada como incidente/mantenimiento;
+- reconciliada en `vento-shell`;
+- auditada con procedencia;
+- seguida por drift check.
+
+No se convierte en fuente canónica.
+
+---
+
+#### 179. Migration de permisos
+
+Una migration que materialice un dataset inicial o corrija autoridad debe declarar:
+
+- source contract;
+- hash;
+- identidad técnica;
+- motivo de migración;
+- conteos;
+- baseline;
+- resultado;
+- rollback;
+- relación con audit.
+
+No se atribuye a un humano inexistente.
+
+---
+
+#### 180. Seed inicial
+
+La carga inicial de un dataset canónico no se presenta como cientos de decisiones humanas individuales si proviene de un release aprobado.
+
+Puede representarse mediante un change set de clase migración/release con items deterministas y referencia al artefacto aprobado.
+
+---
+
+#### 181. Auditoría de catálogos immutable
+
+Una versión publicada no se modifica in-place.
+
+Un cambio produce:
+
+```text
+nueva versión
++
+nuevo hash
++
+diff auditado
+```
+
+La historia de versiones permanece reproducible.
+
+---
+
+#### 182. Funciones de query son read-only
+
+`get`, `search` y `list`:
+
+- no ejecutan DML;
+- no cambian sesión;
+- no generan audit recursivo por cada fila leída;
+- no abren acceso por estar dentro de `audit`.
+
+La auditoría de consultas sensibles puede registrarse en una frontera administrativa separada aprobada.
+
+---
+
+#### 183. Query de audit sensible
+
+Consultar historial de denegaciones o cambios individuales puede revelar información sensible de seguridad y empleo.
+
+Una futura proyección cliente requiere permiso específico y minimización.
+
+012 no inventa ese permiso.
+
+---
+
+#### 184. Anti-enumeración
+
+La superficie pública futura no distinguirá innecesariamente:
+
+- registro inexistente;
+- registro existente pero fuera de alcance;
+- trabajador ajeno;
+- permiso sensible ajeno.
+
+La query privada puede diferenciar internamente para soporte autorizado.
+
+---
+
+#### 185. Correcciones
+
+Una corrección de audit utiliza una entrada enlazada.
+
+Nunca cambia:
+
+- before original;
+- after original;
+- actor original;
+- timestamp original;
+- fingerprint original.
+
+---
+
+#### 186. Rollback de código
+
+Un rollback de deployment no borra cambios de permisos que realmente ocurrieron.
+
+Debe conservar:
+
+- change sets;
+- items;
+- attempts;
+- links;
+- incidentes;
+- compensaciones administrativas.
+
+---
+
+#### 187. Reversión de un permiso
+
+Revertir una concesión o deny es una nueva operación autorizativa.
+
+Genera:
+
+```text
+nuevo change_set_id
+```
+
+No elimina el cambio anterior.
+
+---
+
+#### 188. Rollback antes de adopción
+
+Si 012 se materializa pero ningún writer fue adoptado:
+
+```text
+1. verificar cero consumidores
+2. revocar execute de funciones 012
+3. retirar funciones mediante migration forward
+4. retirar relaciones vacías si el plan lo permite
+5. conservar audit transversal ajeno
+6. validar ACL/RLS/drift
+```
+
+No se usa `DROP CASCADE`.
+
+---
+
+#### 189. Rollback con datos
+
+Si existen change sets reales:
+
+```text
+NO DROP DE EVIDENCIA
+```
+
+El rollback:
+
+- detiene nuevas escrituras;
+- revierte adopción de writers;
+- conserva audit;
+- registra incidente;
+- mantiene capacidad de investigación.
+
+---
+
+#### 190. Restore rehearsal
+
+La futura instancia debe demostrar en ambiente aislado:
+
+1. backup identificable;
+2. restore;
+3. conteos;
+4. unicidad;
+5. change_count;
+6. item order;
+7. fingerprints;
+8. links;
+9. attempts;
+10. RLS;
+11. ACL;
+12. funciones;
+13. búsquedas;
+14. no reinterpretación histórica.
+
+---
+
+#### 191. Dependencias físicas de `AUTH-DB-012::GLOBAL`
+
+Antes de autorizar la instancia debe existir evidencia compatible de:
+
+```text
+AUTH-DB-016::GLOBAL
+AUTH-DB-018::GLOBAL
+AUTH-DB-019::GLOBAL
+AUTH-DB-033::GLOBAL
+AUTH-DB-035::GLOBAL
+AUTH-DB-034::GLOBAL
+AUTH-DB-032::GLOBAL
+AUTH-DB-027
+AUTH-DB-028
+AUTH-DB-029
+SUPA-ARC-007 vigente
+SUPA-ARC-015 vigente
+SUPA-ARC-021 vigente
+SUPA-ARC-022 vigente
+```
+
+La ausencia de una dependencia bloquea solo la materialización física, no el cierre documental.
+
+---
+
+#### 192. Manifiesto de implementación
+
+La futura evidencia debe registrar:
+
+```text
+instance_id
+project_ref
+environment
+migration_files
+source_contract_sha256
+audit_contract_version
+permission_catalog_version
+base_role_dataset_version
+operational_role_dataset_version
+override_dataset_version
+table_inventory
+function_inventory
+trigger_inventory
+constraint_inventory
+index_inventory
+rls_snapshot
+acl_snapshot_before
+acl_snapshot_after
+legacy_source_inventory
+writer_inventory
+coverage_matrix
+query_plan_evidence
+rollback_plan
+restore_evidence
+validation_commands
+```
+
+---
+
+#### 193. Matriz de cobertura de writers
+
+Cada writer que pueda alterar autoridad deberá declarar:
+
+```text
+writer_id
+owner_schema
+source_kind
+command_identity
+current_location
+target_location
+audit_mode
+transaction_mode
+idempotency_mode
+authorization_mode
+adoption_status
+package_id cuando aplique
+```
+
+No se certifica 100% de cobertura por contar tablas.
+
+---
+
+#### 194. Estados de adopción
+
+Vocabulario:
+
+```text
+NOT_ADOPTED
+TRANSITIONAL_ADAPTER
+CANONICAL_AUDITED
+BLOCKED
+RETIRED
+```
+
+La infraestructura global puede estar instalada mientras algunos writers continúan `NOT_ADOPTED`; ese hecho debe permanecer visible hasta R2.
+
+---
+
+#### 195. Criterio de cobertura completa
+
+La cobertura global de cambios de permisos solo puede declararse completa cuando:
+
+```text
+writers relevantes identificados = writers relevantes cubiertos
++
+cero writer activo sin audit obligatorio
++
+cero direct write cliente
++
+cero drift no explicado
+```
+
+012 no declara anticipadamente ese estado durante su desarrollo documental.
+
+---
+
+#### 196. Orden físico de materialización futura
+
+```text
+1. verificar dependencias R1
+2. capturar baseline de permisos y audit
+3. verificar existencia de audit
+4. crear change_sets
+5. crear change_items
+6. crear attempts
+7. crear links
+8. crear constraints
+9. crear indexes mínimos
+10. crear canonicalizer/fingerprint helpers
+11. crear append functions
+12. crear query functions
+13. crear inmutability trigger
+14. aplicar RLS/ACL/default privileges
+15. registrar contract/version metadata
+16. probar append atomicity
+17. probar idempotency
+18. probar security
+19. probar privacy
+20. probar queries y plans
+21. probar backup/restore
+22. registrar writer coverage inicial
+23. validar que legacy no fue marcado como cubierto por inferencia
+24. ejecutar drift final
+25. registrar evidencia
+```
+
+No hay ejecución física en esta tarea documental.
+
+---
+
+#### 197. Pruebas — identidad y forma
+
+La futura instancia debe demostrar:
+
+1. `change_set_id` único;
+2. `permission_change_id` único;
+3. `change_attempt_id` único;
+4. `permission_change_link_id` único;
+5. change set con schema version válida;
+6. actor/principal separados;
+7. technical principal separado;
+8. decision reference válida;
+9. correlation preservada;
+10. causation preservada;
+11. reason code válido;
+12. source reference mínima;
+13. approval reference cuando aplica;
+14. sensitivity class;
+15. retention class.
+
+---
+
+#### 198. Pruebas — source kinds
+
+16. catalog release válido;
+17. base role grant válido;
+18. operational role grant válido;
+19. individual override válido;
+20. explicit denial válido;
+21. source kind desconocido falla;
+22. tabla física no sustituye source kind;
+23. dataset id/version/hash consistentes.
+
+---
+
+#### 199. Pruebas — subjects
+
+24. base role subject;
+25. operational role subject;
+26. employee subject;
+27. catalog subject;
+28. subject desconocido falla;
+29. employee ID no se reemplaza por auth user ID por inferencia;
+30. subject no cambia in-place.
+
+---
+
+#### 200. Pruebas — permiso, lane y effect
+
+31. permission key exacta;
+32. wildcard rechazado;
+33. alias legacy rechazado como identidad nueva;
+34. BASE válido;
+35. OPERATIONAL válido;
+36. ALL_COMPATIBLE solo para deny transversal;
+37. ALLOW válido;
+38. DENY válido;
+39. effect flip in-place rechazado;
+40. lane flip in-place rechazado;
+41. permission key rename in-place rechazado.
+
+---
+
+#### 201. Pruebas — change kinds
+
+42. CREATE;
+43. ACTIVATE;
+44. CHANGE_SCOPE;
+45. CHANGE_VALIDITY;
+46. SUSPEND;
+47. REVOKE;
+48. EXPIRE;
+49. REJECT;
+50. SUPERSEDE;
+51. MIGRATE;
+52. CORRECT_METADATA;
+53. CATALOG_RELEASE_ACTIVATED;
+54. change kind desconocido falla.
+
+---
+
+#### 202. Pruebas — before/after
+
+55. CREATE before null;
+56. CREATE after presente;
+57. existing mutation before presente;
+58. scope diff real;
+59. validity diff real;
+60. fingerprints distintos ante cambio efectivo;
+61. no-op no crea item;
+62. snapshots minimizados;
+63. nombres humanos ausentes;
+64. JWT ausente;
+65. secrets ausentes.
+
+---
+
+#### 203. Pruebas — denegaciones
+
+66. explicit deny se audita;
+67. default deny no fabrica change;
+68. BASE_DENY conserva lane;
+69. OPERATIONAL_DENY conserva lane;
+70. ACTOR_WIDE_DENY conserva ALL_COMPATIBLE;
+71. deny creation registra causa;
+72. deny revocation registra causa;
+73. grant contrario no borra deny histórico;
+74. deny nuevo no reescribe decisiones históricas.
+
+---
+
+#### 204. Pruebas — concesiones
+
+75. base grant creation;
+76. operational grant creation;
+77. individual grant creation;
+78. scope widening auditado;
+79. scope narrowing auditado;
+80. validity change auditado;
+81. suspend auditado;
+82. revoke auditado;
+83. expire auditado;
+84. supersede auditado;
+85. no silent renewal.
+
+---
+
+#### 205. Pruebas — atomicidad
+
+86. source mutation + change set mismo commit;
+87. item failure revierte source mutation;
+88. audit failure revierte source mutation;
+89. source mutation failure no confirma change set;
+90. success no se responde antes del audit;
+91. bulk atomic rollback;
+92. no audit-after-commit;
+93. no trigger-only attribution.
+
+---
+
+#### 206. Pruebas — idempotencia y concurrencia
+
+94. same change set + same fingerprint idempotente;
+95. same change set + different fingerprint falla;
+96. same item + same fingerprint idempotente;
+97. same item + different fingerprint falla;
+98. stale version produce conflict;
+99. conflict no aplica last-write-wins;
+100. retry no duplica autoridad;
+101. failed idempotency key no se marca success.
+
+---
+
+#### 207. Pruebas — attempts
+
+102. DENIED attempt;
+103. INVALID attempt;
+104. CONFLICT attempt;
+105. TECHNICAL_FAILURE attempt;
+106. NO_CHANGE attempt;
+107. ROLLED_BACK solo con prueba;
+108. attempt no crea change item;
+109. denied attempt referencia decision;
+110. technical failure no fabrica deny;
+111. unknown outcome no fabrica rolled back.
+
+---
+
+#### 208. Pruebas — links
+
+112. AUTHORIZATION_DECISION link;
+113. APPROVAL link;
+114. SOURCE_EVIDENCE link;
+115. INCIDENT link;
+116. CORRECTION link;
+117. MIGRATION link;
+118. AUDIT_ENTRY link;
+119. link kind desconocido falla;
+120. link no concede autoridad;
+121. item link opcional válido;
+122. set-level link válido.
+
+---
+
+#### 209. Pruebas — inmutabilidad
+
+123. UPDATE change set rechazado;
+124. DELETE change set rechazado;
+125. UPDATE item rechazado;
+126. DELETE item rechazado;
+127. UPDATE attempt rechazado;
+128. DELETE attempt rechazado;
+129. corrección usa entrada enlazada;
+130. reversión usa nuevo change set;
+131. rollback de código conserva historia.
+
+---
+
+#### 210. Pruebas — seguridad
+
+132. audit fuera de Data API;
+133. PUBLIC sin acceso;
+134. anon sin acceso;
+135. authenticated sin acceso directo;
+136. service role sin acceso global por defecto;
+137. grants nominales;
+138. fixed search path;
+139. search-path poisoning falla;
+140. homonym table no se resuelve;
+141. homonym function no se resuelve;
+142. SQL injection falla;
+143. relation-name injection falla;
+144. order-clause injection falla.
+
+---
+
+#### 211. Pruebas — privacidad
+
+145. no JWT;
+146. no refresh token;
+147. no PIN;
+148. no credentials;
+149. no documento personal;
+150. no correo innecesario;
+151. no nombre humano innecesario;
+152. justificación extensa por referencia;
+153. motivo sensible minimizado;
+154. logs sin before/after completo.
+
+---
+
+#### 212. Pruebas — búsqueda
+
+155. get por change set;
+156. search por decision;
+157. search por correlation;
+158. search por actor;
+159. search por subject;
+160. search por permission;
+161. search por source kind;
+162. search por change kind;
+163. time bounds;
+164. cursor estable;
+165. limit obligatorio;
+166. no arbitrary SQL;
+167. no wildcard de subject sensible;
+168. no total global no autorizado.
+
+---
+
+#### 213. Pruebas — datasets y drift
+
+169. base dataset version/hash;
+170. operational dataset version/hash;
+171. override dataset version/hash;
+172. release diff determinista;
+173. added item;
+174. removed item;
+175. scope changed item;
+176. status changed item;
+177. unchanged row no genera item;
+178. drift sin audit falla;
+179. reconciliación de drift genera nuevo change set;
+180. no backfill de actor inventado.
+
+---
+
+#### 214. Pruebas — restore y crecimiento
+
+181. backup incluye objetos 012;
+182. restore conserva change sets;
+183. restore conserva items;
+184. restore conserva attempts;
+185. restore conserva links;
+186. restore conserva fingerprints;
+187. restore conserva versions;
+188. RLS tras restore;
+189. ACL tras restore;
+190. query plan por permission;
+191. query plan por actor;
+192. query plan por correlation;
+193. query plan por subject;
+194. métricas sin high-cardinality IDs;
+195. partition readiness compatible.
+
+---
+
+#### 215. Pruebas — fronteras
+
+196. 032 no absorbida;
+197. 013 no absorbida;
+198. 014 no absorbida;
+199. 020 conserva migración por dominio;
+200. role assignment no duplicado;
+201. shift/check-in no duplicados;
+202. device lifecycle no duplicado;
+203. catalog ownership no transferido;
+204. audit no se vuelve autoridad;
+205. historic ALLOW no se vuelve token;
+206. current deny no reescribe historia;
+207. no per-app audit tables;
+208. audit schema ausente bloquea instancia física.
+
+---
+
+#### 216. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la obligación de auditar de forma correlacionable decisiones, operaciones administrativas, denegaciones, reintentos y rollback ya está registrada en el inventario canónico de pruebas y asigna expresamente responsabilidad a esta familia de tareas. `AUTH-DB-012` materializa esa obligación para cambios de autoridad sin introducir una capacidad empresarial, una regla de autorización, una taxonomía funcional o una semántica de prueba nueva.
+
+---
+
+#### 217. Cobertura de prueba vigente reutilizada
+
+La cobertura heredada incluye `TREQ-AUTH-015`, que exige evidencia correlacionable para decisiones y acciones protegidas y asigna responsabilidad a `AUTH-DB-012` a `AUTH-DB-014` junto con la persistencia de decisiones y la certificación posterior.
+
+También se reutilizan los requisitos vigentes de seguridad, segregación, frescura, denegaciones, integración y auditoría ya enlazados por los contratos consumidos.
+
+Esta sección es únicamente trazabilidad.
+
+No modifica el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 218. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | el desarrollo documental no creó migrations, tablas, funciones, triggers, indexes, policies, código runtime ni artefactos de build                                                                                                                                                                                                                                                                                                           |
+| LOCAL     | NOT_EXECUTED   | pendiente de insertar `AUTH-DB-012` en su rama documental, ejecutar el formateo canónico y correr los validadores reales del checkout actualizado                                                                                                                                                                                                                                                                                            |
+| REMOTA    | PASS           | `main` confirma `AUTH-DB-032` cerrada y `AUTH-DB-012` como siguiente marcador; topología `GLOBAL_ENABLE_ONCE` con gate `PRE_E5_FOUNDATION`; 04A ya asigna cobertura a `AUTH-DB-012..014`; auditoría read-only de `vento-os-dev` observó 179 permisos, 613 grants base físicos, 17 permisos individuales, 32 grants operativos, cero denies en las tres fuentes con `is_allowed`, ningún audit trigger canónico y ausencia del schema `audit` |
+| OPERATIVA | NOT_APPLICABLE | no se modificaron UI, permisos de trabajadores, matrices, sesiones, turnos, dispositivos, RPC, RLS, consumidores ni comportamiento operativo                                                                                                                                                                                                                                                                                                 |
+| FÍSICA    | NOT_APPLICABLE | no se ejecutó SQL mutante, no se creó migration, no se alteró Supabase y `AUTH-DB-012::GLOBAL` no fue autorizada                                                                                                                                                                                                                                                                                                                             |
+
+---
+
+#### 219. Decisiones vinculantes
+
+1. La futura instancia es `AUTH-DB-012::GLOBAL`.
+2. Su modo es `GLOBAL_ENABLE_ONCE`.
+3. Su gate es `PRE_E5_FOUNDATION`.
+4. Requiere el schema transversal `audit`.
+5. No crea auditoría por aplicación.
+6. No crea auditoría por dominio.
+7. `audit` no gana autoridad empresarial.
+8. La decisión de autorización permanece en 032.
+9. El cambio de autoridad permanece en 012.
+10. La simulación permanece en 013.
+11. El dispositivo permanece en 014.
+12. La migración de writers permanece en 020.
+13. Se auditan releases autorizativos relevantes.
+14. Se auditan grants base.
+15. Se auditan grants operativos.
+16. Se auditan overrides individuales.
+17. Se auditan denies explícitos.
+18. Default deny no es explicit deny.
+19. Cambio actual no reescribe historia.
+20. El baseline legacy no se adopta como target.
+21. Cero denies actuales no elimina el contrato.
+22. RLS actual no sustituye audit.
+23. Broad grants actuales no sustituyen audit.
+24. Se crea change set lógico.
+25. Se crea item lógico.
+26. Se crea attempt lógico.
+27. Se crea link lógico.
+28. Change set ID es servidor-side.
+29. Permission change ID es distinto.
+30. Attempt ID es distinto.
+31. Principal y actor permanecen separados.
+32. Technical principal permanece separado.
+33. Device es contexto, no actor.
+34. Decision ID se referencia, no se duplica.
+35. SYSTEM requiere identidad técnica real.
+36. Reason code es normalizado.
+37. Justificación extensa usa referencia.
+38. Approval usa referencia verificable.
+39. Source kind es vocabulario cerrado.
+40. Subject kind es vocabulario cerrado.
+41. Permission key es exacta.
+42. Wildcards están prohibidos.
+43. Lane es explícito.
+44. Effect es explícito.
+45. Effect no cambia in-place.
+46. Lane no cambia in-place.
+47. Permission key no cambia in-place.
+48. Subject no cambia in-place.
+49. Change kind es cerrado.
+50. CREATE exige before null.
+51. Scope change conserva before/after.
+52. Validity change se audita.
+53. Suspend se audita.
+54. Revoke se audita.
+55. Expire se audita.
+56. Supersede se audita.
+57. Migrate preserva incertidumbre.
+58. Metadata correction no cambia autoridad.
+59. Release activation conserva hash.
+60. Changed fields es determinista.
+61. Before/after son minimizados.
+62. No se guardan snapshots completos.
+63. Se calculan fingerprints separados.
+64. Canonical JSON es obligatorio.
+65. Se conservan dataset versions/hashes.
+66. Historia usa su versión original.
+67. Attempts no son cambios.
+68. DENIED attempt referencia decisión.
+69. INVALID no es DENY.
+70. CONFLICT no usa last-write-wins.
+71. TECHNICAL_FAILURE no fabrica deny.
+72. NO_CHANGE no fabrica item.
+73. ROLLED_BACK requiere certeza.
+74. Retry no reescribe attempt.
+75. Audit store es dependencia obligatoria.
+76. Cambios reales usan AUDIT_ATOMIC_REQUIRED.
+77. Audit-after-commit está prohibido.
+78. Éxito sin audit está prohibido.
+79. Trigger-only attribution es insuficiente.
+80. Writer target usa misma transacción.
+81. Direct writes cliente se retiran al adoptar.
+82. Legacy mantiene estado de adopción explícito.
+83. No se fabrica historia antigua.
+84. Gaps previos se declaran.
+85. Links son tipados.
+86. Links no conceden autoridad.
+87. Append principal crea set/items/links.
+88. Caller no controla fingerprints.
+89. Caller no controla retention libremente.
+90. SECURITY DEFINER requiere excepción.
+91. PUBLIC EXECUTE se revoca.
+92. `authenticated` no ejecuta primitives raw.
+93. Inmutability trigger rechaza update/delete.
+94. Corrección usa nueva evidencia.
+95. Duplicado exacto es idempotente.
+96. Duplicado incompatible falla.
+97. Item order es determinista.
+98. change_count coincide con items.
+99. Bulk no mezcla causas incompatibles.
+100. Bulk atómico revierte completo.
+101. Concurrencia stale exige nueva evaluación.
+102. Scope widening es sensible.
+103. Scope narrowing también se audita.
+104. Grant create conserva after.
+105. Grant revoke conserva before.
+106. Deny create conserva clase y causa.
+107. Deny revoke es cambio sensible.
+108. Actor-wide deny usa ALL_COMPATIBLE.
+109. Expiración automática no inventa humano.
+110. Segregación de aprobación es verificable.
+111. Administrador local conserva territorio.
+112. Self-service no concede administración.
+113. Cambio de rol no se duplica.
+114. Cambio de turno no se duplica.
+115. Cambio de device no se duplica.
+116. Query get es privada.
+117. Search es estructurada.
+118. Search no acepta SQL libre.
+119. Search usa cursor estable.
+120. Limit es obligatorio.
+121. Search por actor es sensible.
+122. Search por permission es posible.
+123. Search por subject es posible.
+124. Search por decision es posible.
+125. Search por correlation es posible.
+126. No se crea API pública genérica.
+127. PUBLIC direct access es cero.
+128. anon direct access es cero.
+129. authenticated direct access es cero.
+130. service role no es autoridad.
+131. RLS es defensa en profundidad.
+132. FORCE RLS se verifica explícitamente.
+133. ACL defaults se verifican.
+134. Fixed search path es obligatorio.
+135. SQL dinámico abierto está prohibido.
+136. Decision FK/ref no es huérfana.
+137. System automation conserva regla y proceso.
+138. Motivos sensibles se minimizan.
+139. PII innecesaria está prohibida.
+140. Secretos están prohibidos.
+141. Logs no contienen payload completo.
+142. Métricas separan resultados.
+143. High-cardinality IDs no son labels.
+144. Retention class es obligatoria.
+145. Periodos exactos pertenecen a 022.
+146. Legal hold no cambia autoridad.
+147. Archive conserva trazabilidad.
+148. Restore conserva fingerprints.
+149. Backup incluye objetos 012.
+150. Crecimiento se diseña append-only.
+151. Query patterns quedan fijados.
+152. Índices requieren planes.
+153. Change set/items mantienen integridad.
+154. No-op no crea cambio.
+155. Concurrencia usa precondición.
+156. Idempotency no duplica autoridad.
+157. Cambios disparan invalidación de 035.
+158. Invalidación no sustituye audit.
+159. Bulk matrix release conserva diff.
+160. Unchanged rows no se auditan como cambios.
+161. Drift sin audit es incidente.
+162. Reconciliación no fabrica pasado.
+163. Dashboard manual no es fuente canónica.
+164. Migrations conservan atribución técnica.
+165. Seed inicial referencia release aprobado.
+166. Catálogo publicado es inmutable.
+167. Query functions son read-only.
+168. Audit sensible requiere autorización propia.
+169. Anti-enumeración es obligatoria.
+170. Corrección no modifica original.
+171. Rollback de código conserva historia.
+172. Reversión genera nuevo change set.
+173. Rollback sin adopción no usa cascade.
+174. Rollback con datos no borra evidencia.
+175. Restore rehearsal es obligatorio.
+176. Dependencias físicas son explícitas.
+177. Manifiesto físico es obligatorio.
+178. Writer coverage matrix es obligatoria.
+179. Adoption status es cerrado.
+180. Cobertura completa exige cero writer activo sin audit.
+181. Orden físico futuro está definido.
+182. Se especifican 208 comprobaciones mínimas.
+183. No se crean TREQ nuevos.
+184. No se modifica 04A.
+185. La siguiente tarea es AUTH-DB-013.
+
+---
+
+#### 220. Criterios de aceptación
+
+`AUTH-DB-012` queda documentalmente completa cuando:
+
+1. fija topología, instancia y gate;
+2. exige `audit` como precondición;
+3. preserva la precedencia R1;
+4. separa decisión y cambio;
+5. separa simulación;
+6. separa dispositivos;
+7. separa migración de writers;
+8. define source kinds;
+9. define cambios de catálogo relevantes;
+10. define base grants;
+11. define operational grants;
+12. define overrides;
+13. define explicit denies;
+14. separa default deny;
+15. preserva historia;
+16. registra baseline remoto;
+17. registra cero denies observados;
+18. registra ausencia de audit trigger;
+19. registra RLS actual;
+20. registra broad grants actuales;
+21. registra ausencia de audit schema;
+22. define change set table;
+23. define change set identity;
+24. define campos mínimos;
+25. define tiempo;
+26. separa principal/actor/technical principal;
+27. define device context;
+28. define decision link;
+29. define system changes;
+30. define reason code;
+31. define justification reference;
+32. define approval reference;
+33. define item table;
+34. define item identity;
+35. define item shape;
+36. define source kind;
+37. define subject kind;
+38. define subject reference;
+39. define exact permission key;
+40. define lane;
+41. define effect;
+42. prohíbe effect flip;
+43. prohíbe lane flip;
+44. prohíbe permission rename;
+45. prohíbe subject swap;
+46. define change kind;
+47. define create;
+48. define activate;
+49. define change scope;
+50. define change validity;
+51. define suspend;
+52. define revoke;
+53. define expire;
+54. define reject;
+55. define supersede;
+56. define migrate;
+57. define metadata correction;
+58. define catalog release activation;
+59. define changed fields;
+60. define before state;
+61. define after state;
+62. prohíbe full snapshots;
+63. define state fingerprints;
+64. define item fingerprint;
+65. define set fingerprint;
+66. define canonicalization;
+67. define dataset identity;
+68. define historical versioning;
+69. define attempts table;
+70. define attempt identity;
+71. define attempt results;
+72. define denied;
+73. define invalid;
+74. define conflict;
+75. define technical failure;
+76. define no change;
+77. define rolled back;
+78. define attempt shape;
+79. evita duplicar decision payload;
+80. define retry;
+81. define audit-store failure;
+82. fija audit atomic required;
+83. prohíbe audit after commit;
+84. prohíbe success without audit;
+85. prohíbe trigger-only attribution;
+86. define writer target pattern;
+87. define direct writes after adoption;
+88. define legacy transition;
+89. define no fabricated history;
+90. define pre-cutover gaps;
+91. define links table;
+92. define link kinds;
+93. define link shape;
+94. define no authority by link;
+95. define append principal;
+96. define append argument;
+97. define append validations;
+98. define append security;
+99. define security-definer conditions;
+100. define append attempt;
+101. define immutability trigger;
+102. prohíbe audit update;
+103. prohíbe audit delete;
+104. define set idempotency;
+105. define item idempotency;
+106. define item order;
+107. define cardinality;
+108. define bulk;
+109. define bulk rollback;
+110. define stale reauthorization;
+111. define scope widening;
+112. define scope narrowing;
+113. define grant creation;
+114. define grant revocation;
+115. define deny creation;
+116. define deny revocation;
+117. define actor-wide deny;
+118. define automatic expiration;
+119. define self-approval evidence;
+120. define dual approval evidence;
+121. define local-admin territory;
+122. define no self-service administration;
+123. separates role assignment;
+124. separates shift;
+125. separates device;
+126. define get query;
+127. define search query;
+128. define filters;
+129. define pagination;
+130. define limit;
+131. define actor search;
+132. define permission search;
+133. define subject search;
+134. define decision search;
+135. define correlation search;
+136. prohibits generic public API;
+137. fixes zero direct client access;
+138. limits service role;
+139. defines RLS defense;
+140. defines FORCE RLS review;
+141. defines default privileges;
+142. defines search path;
+143. prohibits dynamic SQL;
+144. defines 032 referential integrity;
+145. defines system transitions;
+146. defines sensitive reasons;
+147. minimizes PII;
+148. prohibits secrets;
+149. defines logs;
+150. defines metrics;
+151. defines metric dimensions;
+152. defines retention;
+153. defines legal hold;
+154. defines archive;
+155. defines restore;
+156. defines backup;
+157. defines growth;
+158. defines query patterns;
+159. defines indexes by evidence;
+160. defines change-set integrity;
+161. defines before/after integrity;
+162. defines no-op;
+163. defines concurrency;
+164. defines idempotency reference;
+165. links invalidation;
+166. separates invalidation;
+167. defines bulk matrix changes;
+168. defines dataset diff;
+169. defines removed rows;
+170. defines drift;
+171. defines drift reconciliation;
+172. defines Dashboard exception;
+173. defines migration audit;
+174. defines initial seed audit;
+175. defines immutable catalog release;
+176. keeps query functions read-only;
+177. protects sensitive audit queries;
+178. defines anti-enumeration;
+179. defines corrections;
+180. defines code rollback;
+181. defines permission reversal;
+182. defines rollback before adoption;
+183. defines rollback with data;
+184. defines restore rehearsal;
+185. fixes physical dependencies;
+186. fixes implementation manifest;
+187. fixes writer coverage matrix;
+188. fixes adoption states;
+189. fixes completeness criterion;
+190. fixes materialization order;
+191. defines 208 physical checks;
+192. reuses current TREQ coverage;
+193. reports five evidence classes;
+194. declares zero physical changes now;
+195. preserves exact continuity to AUTH-DB-013.
+
+---
+
+#### 221. Límites
+
+`AUTH-DB-012` no:
+
+- ejecuta `AUTH-DB-012::GLOBAL`;
+- crea migrations en el carril documental;
+- ejecuta SQL mutante;
+- crea el schema `audit` por sí sola si 016 no lo materializó;
+- modifica las 613 filas legacy de `role_permissions`;
+- modifica los 17 registros actuales de `employee_permissions`;
+- modifica las 32 filas actuales de `operational_role_permissions`;
+- crea denegaciones físicas para poblar un escenario vacío;
+- cambia el catálogo canónico;
+- decide qué rol recibe un permiso;
+- decide qué trabajador recibe una excepción;
+- decide quién puede aprobar cada capacidad;
+- implementa la UI administrativa;
+- implementa Server Actions administrativas;
+- migra objetos por dominio;
+- ejecuta backfills de permisos;
+- implementa RLS canónico por dominio;
+- implementa `AUTH-DB-013`;
+- implementa `AUTH-DB-014`;
+- reemplaza `AUTH-DB-032`;
+- reemplaza `AUTH-DB-035`;
+- crea un event store general;
+- crea outbox general;
+- crea Realtime;
+- crea Edge Functions;
+- crea cron;
+- crea otra taxonomía global de audit;
+- expone audit directamente a roles cliente;
+- fija periodos de retención fuera de `SUPA-ARC-022`;
+- inventa historial anterior al cutover;
+- edita 04A;
+- crea requisitos de prueba nuevos;
+- desarrolla la siguiente tarea.
+
+---
+
+#### 222. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-012 — Implementar auditoría de cambios de permisos`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-013 — Implementar auditoría de simulación`
+
+
 ### [ ] AUTH-DB-013 — Implementar auditoría de simulación
 ### [ ] AUTH-DB-014 — Implementar auditoría de dispositivos
 
