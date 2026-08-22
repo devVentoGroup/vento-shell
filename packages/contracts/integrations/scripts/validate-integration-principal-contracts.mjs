@@ -11,10 +11,15 @@ const scriptDirectory = path.dirname(currentFile);
 const integrationsRoot = path.resolve(scriptDirectory, '..');
 const contractsRoot = path.resolve(integrationsRoot, '..');
 
-const contractPath = path.join(
+const principalContractPath = path.join(
   integrationsRoot,
   'generated',
   'integration-principal.contract.ts',
+);
+const credentialContractPath = path.join(
+  integrationsRoot,
+  'generated',
+  'external-credential-ref.contract.ts',
 );
 const indexPath = path.join(
   integrationsRoot,
@@ -30,7 +35,9 @@ function fail(message) {
 }
 
 function normalizeEol(value) {
-  return String(value).replace(/\r\n?/gu, '\n');
+  return String(value)
+    .replace(/^\uFEFF/u, '')
+    .replace(/\r\n?/gu, '\n');
 }
 
 function readText(filePath, label) {
@@ -53,7 +60,7 @@ function assertDoesNotMatch(source, pattern, label, forbiddenLabel) {
   }
 }
 
-function validateGeneratedContract(contractSource) {
+function validateGeneratedPrincipalContract(contractSource) {
   const requiredMarkers = [
     'Semantic owner: INT-EXT-002',
     'Contract task: SHELL-CON-017',
@@ -104,11 +111,7 @@ function validateGeneratedContract(contractSource) {
   ];
 
   for (const marker of requiredMarkers) {
-    assertIncludes(
-      contractSource,
-      marker,
-      'integration principal contract',
-    );
+    assertIncludes(contractSource, marker, 'integration principal contract');
   }
 
   const separatedIdentities = [
@@ -133,29 +136,9 @@ function validateGeneratedContract(contractSource) {
     );
   }
 
-  const conceptualDimensions = [
-    'integration_principal_id',
-    'external_system_id',
-    'external_instance_id',
-    'business_owner_ref',
-    'technical_owner_ref',
-    'finalidad técnica',
-    'ambiente',
-    'vigencia',
-    'correlación',
-  ];
-
-  for (const value of conceptualDimensions) {
-    assertIncludes(
-      contractSource,
-      JSON.stringify(value),
-      'integration principal conceptual dimensions',
-    );
-  }
-
   const forbiddenSymbols = [
     [/\bINTEGRATION_PRINCIPAL_IDS\b/u, 'INTEGRATION_PRINCIPAL_IDS'],
-    [/\bINTEGRATION_PRINCIPAL_ID_PATTERN\b/u, 'ID pattern'],
+    [/\bINTEGRATION_PRINCIPAL_ID_PATTERN\b/u, 'principal ID pattern'],
     [/\bisIntegrationPrincipalId\s*\(/u, 'isIntegrationPrincipalId('],
     [/\bassertIntegrationPrincipalId\s*\(/u, 'assertIntegrationPrincipalId('],
     [/\basIntegrationPrincipalId\s*\(/u, 'asIntegrationPrincipalId('],
@@ -171,26 +154,167 @@ function validateGeneratedContract(contractSource) {
     );
   }
 
-  const forbiddenRuntime = [
-    [/\bcreateClient\s*\(/u, 'createClient('],
-    [/\bfetch\s*\(/u, 'fetch('],
-    [/\bfrom\s+["']@supabase\//u, '@supabase import'],
-    [/\bfrom\s+["'](?:pg|postgres|drizzle|prisma)/u, 'database import'],
-    [/\bprocess\.env\b/u, 'environment secret access'],
-    [/\bAPI_KEY\b/u, 'API_KEY'],
-    [/\bACCESS_TOKEN\b/u, 'ACCESS_TOKEN'],
-    [/\bREFRESH_TOKEN\b/u, 'REFRESH_TOKEN'],
-    [/\bCLIENT_SECRET\b/u, 'CLIENT_SECRET'],
-    [/\bSERVICE_ROLE\b/u, 'SERVICE_ROLE'],
+  validateNoRuntimeSurface(contractSource, 'integration principal contract');
+}
+
+function validateGeneratedCredentialContract(contractSource) {
+  const requiredMarkers = [
+    'Semantic owners: INT-EXT-003..008',
+    'Contract task: SHELL-CON-018',
+    'Principal contract task: SHELL-CON-017',
+    'export type ExternalCredentialId',
+    'export interface ExternalCredentialRef',
+    'readonly external_credential_id: ExternalCredentialId;',
+    'readonly external_system_id: string;',
+    'readonly integration_principal_id: IntegrationPrincipalId;',
+    'readonly credential_surface: string;',
+    'readonly environment: VentoCredentialEnvironment;',
+    'readonly minimum_scope?: readonly string[];',
+    'readonly scope_ceiling?: readonly string[];',
+    'readonly predecessor_external_credential_id?: ExternalCredentialId;',
+    'readonly successor_external_credential_id?: ExternalCredentialId;',
+    '"DEVELOPMENT"',
+    '"STAGING"',
+    '"PRODUCTION"',
+    'semantics: "STABLE_OPAQUE_NON_SECRET_CREDENTIAL_IDENTITY"',
+    'serialization: "UNSPECIFIED"',
+    'syntax_pattern: null',
+    'static_registry: false',
+    'materialized_id_count: 0',
+    'derive_from_secret_value: false',
+    'derive_from_integration_principal_id: false',
+    'derive_from_external_system_id: false',
+    'derive_from_provider_account_ref: false',
+    'derive_from_endpoint: false',
+    'derive_from_environment_variable_name: false',
+    'authentication_mechanism: false',
+    'knowledge_grants_secret_resolution: false',
+    'material_class: "CREDENTIAL_REFERENCE"',
+    'contains_authentication_material: false',
+    'contains_secret_store_path: false',
+    'contains_runtime_secret_locator: false',
+    'runtime_secret_resolution_api: false',
+    'business_authority_implied: false',
+    'permission_key_implied: false',
+    'fallback_to_global_credential: false',
+    'fallback_to_legacy_credential: false',
+    'fallback_to_other_environment: false',
+    'environment_cardinality: "EXACTLY_ONE"',
+    'cardinality_basis: "CREDENTIAL_SURFACE_AND_ENVIRONMENT"',
+    'independent_successor_requires_new_external_credential_id: true',
+    'ordinary_rotation_changes_integration_principal_id: false',
+    'predecessor_successor_history_preserved: true',
+    'wrong_environment: "FAIL_CLOSED"',
+    'requested_scope_above_ceiling: "FAIL_CLOSED"',
+    'inference_required_to_complete_reference: "FAIL_CLOSED"',
+    'external_system_decision_count: 21',
+    'pending_evidence_count: 9',
+    'not_applicable_count: 2',
+    'not_applicable_current_count: 10',
+    'materialized_external_credential_id_count: 0',
+    'persisted_external_credential_ref_count: 0',
+    'created_or_moved_secret_count: 0',
+    'logical_namespace: "@vento/contracts/integrations"',
+    'physical_reference_registry_owner_task_id: "INT-DB-002"',
+    'next_contract_task_id: "SHELL-CON-019"',
+    'execution_gate: "PRE_E5_FOUNDATION"',
+    'physical_mode: "GLOBAL_ENABLE_ONCE"',
+    'public_export_published: false',
+    'runtime_secret_resolution_materialized: false',
+    'external_credential_values_materialized: false',
+    'secret_materialized: false',
+    'supabase_changed: false',
   ];
 
-  for (const [pattern, label] of forbiddenRuntime) {
+  for (const marker of requiredMarkers) {
+    assertIncludes(contractSource, marker, 'external credential reference contract');
+  }
+
+  const conceptualDimensions = [
+    'external_credential_id',
+    'external_system_id',
+    'external_instance_id',
+    'integration_principal_id',
+    'provider_account_ref',
+    'credential_surface',
+    'provenance',
+    'mechanism',
+    'minimum_scope',
+    'scope_ceiling',
+    'environment',
+    'material_class',
+    'functional_owner_ref',
+    'technical_custodian_ref',
+    'lifecycle_state',
+    'predecessor_successor_refs',
+    'known_dates',
+    'authorized_consumers',
+  ];
+
+  for (const value of conceptualDimensions) {
+    assertIncludes(
+      contractSource,
+      JSON.stringify(value),
+      'external credential conceptual dimensions',
+    );
+  }
+
+  for (let index = 1; index <= 21; index += 1) {
+    assertIncludes(
+      contractSource,
+      JSON.stringify(`EXT-SYS-${String(index).padStart(3, '0')}`),
+      'external credential applicability coverage',
+    );
+  }
+
+  const statusOccurrences = (status) => (
+    contractSource.match(new RegExp(`status: ${JSON.stringify(status)}`, 'gu')) ?? []
+  ).length;
+
+  if (statusOccurrences('PENDIENTE_DE_EVIDENCIA') !== 9) {
+    fail('external credential applicability must contain 9 PENDIENTE_DE_EVIDENCIA rows.');
+  }
+  if (statusOccurrences('NO_APLICA') !== 2) {
+    fail('external credential applicability must contain 2 NO_APLICA rows.');
+  }
+  if (statusOccurrences('NO_APLICA_ACTUAL') !== 10) {
+    fail('external credential applicability must contain 10 NO_APLICA_ACTUAL rows.');
+  }
+
+  const forbiddenMaterializedValues = [
+    [/\bEXTERNAL_CREDENTIAL_IDS\b/u, 'EXTERNAL_CREDENTIAL_IDS'],
+    [/\bEXTERNAL_CREDENTIAL_ID_PATTERN\b/u, 'credential ID pattern'],
+    [/\bisExternalCredentialId\s*\(/u, 'isExternalCredentialId('],
+    [/\bassertExternalCredentialId\s*\(/u, 'assertExternalCredentialId('],
+    [/\basExternalCredentialId\s*\(/u, 'asExternalCredentialId('],
+    [/external_credential_id:\s*["'][^"']+["']/u, 'materialized external_credential_id'],
+  ];
+
+  for (const [pattern, label] of forbiddenMaterializedValues) {
     assertDoesNotMatch(
       contractSource,
       pattern,
-      'integration principal contract',
+      'external credential reference contract',
       label,
     );
+  }
+
+  validateNoRuntimeSurface(contractSource, 'external credential reference contract');
+}
+
+function validateNoRuntimeSurface(source, label) {
+  const forbiddenRuntime = [
+    [/\bcreateClient\s*\(/u, 'createClient('],
+    [/\bfetch\s*\(/u, 'fetch('],
+    [/\bprocess\.env\b/u, 'environment access'],
+    [/\bfrom\s+["']@supabase\//u, '@supabase import'],
+    [/\bfrom\s+["'](?:pg|postgres|drizzle|prisma)/u, 'database import'],
+    [/\bDeno\.env\b/u, 'Deno environment access'],
+    [/\bBun\.env\b/u, 'Bun environment access'],
+  ];
+
+  for (const [pattern, forbiddenLabel] of forbiddenRuntime) {
+    assertDoesNotMatch(source, pattern, label, forbiddenLabel);
   }
 }
 
@@ -205,25 +329,29 @@ function validateGeneratedIndex(indexSource) {
     'INTEGRATION_PRINCIPAL_REFERENCE_ADOPTION',
     'INTEGRATION_PRINCIPAL_SEPARATED_IDENTITIES',
     'IntegrationPrincipal',
-    'IntegrationPrincipalCardinalityPolicy',
-    'IntegrationPrincipalConceptualDimension',
-    'IntegrationPrincipalContextPolicy',
-    'IntegrationPrincipalContractMetadata',
-    'IntegrationPrincipalFailurePolicy',
     'IntegrationPrincipalId',
-    'IntegrationPrincipalIdentityPolicy',
     'IntegrationPrincipalRef',
-    'IntegrationPrincipalReferenceAdoption',
-    'IntegrationPrincipalSeparatedIdentity',
     'from "./integration-principal.contract.js";',
+    'EXTERNAL_CREDENTIAL_APPLICABILITY_STATUSES',
+    'EXTERNAL_CREDENTIAL_CONCEPTUAL_DIMENSIONS',
+    'EXTERNAL_CREDENTIAL_CONTRACT_METADATA',
+    'EXTERNAL_CREDENTIAL_FAILURE_POLICY',
+    'EXTERNAL_CREDENTIAL_IDENTITY_POLICY',
+    'EXTERNAL_CREDENTIAL_REFERENCE_APPLICABILITY',
+    'EXTERNAL_CREDENTIAL_REFERENCE_COVERAGE',
+    'EXTERNAL_CREDENTIAL_REFERENCE_FORBIDDEN_MATERIAL',
+    'EXTERNAL_CREDENTIAL_REFERENCE_POLICY',
+    'EXTERNAL_CREDENTIAL_ROTATION_POLICY',
+    'VENTO_CREDENTIAL_ENVIRONMENTS',
+    'ExternalCredentialApplicabilityStatus',
+    'ExternalCredentialId',
+    'ExternalCredentialRef',
+    'VentoCredentialEnvironment',
+    'from "./external-credential-ref.contract.js";',
   ];
 
   for (const marker of requiredMarkers) {
-    assertIncludes(
-      indexSource,
-      marker,
-      'integration principal generated index',
-    );
+    assertIncludes(indexSource, marker, 'integrations generated index');
   }
 }
 
@@ -235,17 +363,14 @@ function validatePackageBoundary() {
   if (packageJson.name !== '@vento/contracts') {
     fail('@vento/contracts package name changed.');
   }
-
   if (packageJson.version !== '1.0.0-alpha.1') {
-    fail('@vento/contracts version changed during SHELL-CON-017.');
+    fail('@vento/contracts version changed during SHELL-CON-018.');
   }
-
   if (packageJson.private !== true) {
     fail('@vento/contracts must remain private.');
   }
-
   if (Object.hasOwn(packageJson, 'exports')) {
-    fail('@vento/contracts must not add public exports in SHELL-CON-017.');
+    fail('@vento/contracts must not add public exports in SHELL-CON-018.');
   }
 }
 
@@ -261,14 +386,18 @@ function validateReadmes() {
 
   const moduleMarkers = [
     'SHELL-CON-017::GLOBAL',
+    'SHELL-CON-018::GLOBAL',
     '@vento/contracts/integrations',
     'IntegrationPrincipalId',
-    '21 decisiones documentales `ESPECIFICADO`',
-    '11 materializaciones `PENDIENTE_DE_EVIDENCIA`',
-    '10 materializaciones `NO_APLICA`',
-    '0 valores físicos',
-    'SHELL-CON-018',
-    'INT-DB-001',
+    'ExternalCredentialId',
+    'ExternalCredentialRef',
+    '9 `PENDIENTE_DE_EVIDENCIA`',
+    '2 `NO_APLICA`',
+    '10 `NO_APLICA_ACTUAL`',
+    '0 valores físicos de `ExternalCredentialId`',
+    'INT-EXT-003..008',
+    'INT-DB-002',
+    'SHELL-CON-019',
     'PRE_E5_FOUNDATION',
   ];
 
@@ -277,15 +406,19 @@ function validateReadmes() {
   }
 
   const rootMarkers = [
-    '## Módulo de principal técnico de integración',
+    '## Módulo de integraciones externas',
     '`SHELL-CON-017::GLOBAL`',
+    '`SHELL-CON-018::GLOBAL`',
     '`packages/contracts/integrations`',
     '`@vento/contracts/integrations`',
-    '21 decisiones',
-    '11 `PENDIENTE_DE_EVIDENCIA`',
-    '10 `NO_APLICA`',
-    '0 valores físicos de `IntegrationPrincipalId`',
-    '`SHELL-CON-018`',
+    '`IntegrationPrincipalId`',
+    '`ExternalCredentialId`',
+    '`ExternalCredentialRef`',
+    '9 `PENDIENTE_DE_EVIDENCIA`',
+    '2 `NO_APLICA`',
+    '10 `NO_APLICA_ACTUAL`',
+    '0 valores físicos de `ExternalCredentialId`',
+    '`SHELL-CON-019`',
   ];
 
   for (const marker of rootMarkers) {
@@ -293,39 +426,39 @@ function validateReadmes() {
   }
 
   if (rootReadme.includes(
-    '`SHELL-CON-017` permanece reservado para el contrato '
-    + 'de principal técnico de integración.',
+    '`SHELL-CON-018` permanece como responsabilidad separada '
+    + 'de referencia de credencial externa sin secreto.',
   )) {
-    fail(
-      '@vento/contracts README still declares SHELL-CON-017 as reserved.',
-    );
+    fail('@vento/contracts README still declares SHELL-CON-018 as reserved.');
   }
 }
 
 export function validateIntegrationPrincipalContracts() {
-  const freshness =
-    generateIntegrationPrincipalContracts({ checkOnly: true });
+  const freshness = generateIntegrationPrincipalContracts({ checkOnly: true });
 
-  const contractSource = readText(
-    contractPath,
+  const principalContractSource = readText(
+    principalContractPath,
     'integration principal contract',
   );
-  const indexSource = readText(
-    indexPath,
-    'integration principal generated index',
+  const credentialContractSource = readText(
+    credentialContractPath,
+    'external credential reference contract',
   );
+  const indexSource = readText(indexPath, 'integrations generated index');
 
-  validateGeneratedContract(contractSource);
+  validateGeneratedPrincipalContract(principalContractSource);
+  validateGeneratedCredentialContract(credentialContractSource);
   validateGeneratedIndex(indexSource);
   validatePackageBoundary();
   validateReadmes();
 
   return {
-    decisions: freshness.decisions,
-    documentarySpecified: freshness.documentarySpecified,
-    pendingPhysical: freshness.pendingPhysical,
-    notApplicable: freshness.notApplicable,
-    materializedPrincipalIds: freshness.materializedPrincipalIds,
+    principalDecisions: freshness.principalDecisions,
+    credentialDecisions: freshness.credentialDecisions,
+    credentialPendingEvidence: freshness.credentialPendingEvidence,
+    credentialNotApplicable: freshness.credentialNotApplicable,
+    credentialNotApplicableCurrent: freshness.credentialNotApplicableCurrent,
+    materializedCredentialIds: freshness.materializedCredentialIds,
   };
 }
 
@@ -333,48 +466,51 @@ function runCli() {
   try {
     const result = validateIntegrationPrincipalContracts();
 
-    console.log('[VENTO CONTRACTS] INTEGRATION_PRINCIPAL VALIDATION PASS');
-    console.log(`[VENTO CONTRACTS] DECISIONS ${result.decisions}`);
+    console.log('[VENTO CONTRACTS] INTEGRATIONS VALIDATION PASS');
+    console.log(`[VENTO CONTRACTS] PRINCIPAL_DECISIONS ${result.principalDecisions}`);
+    console.log(`[VENTO CONTRACTS] CREDENTIAL_DECISIONS ${result.credentialDecisions}`);
     console.log(
-      `[VENTO CONTRACTS] DOCUMENTARY_SPECIFIED `
-      + `${result.documentarySpecified}`,
+      `[VENTO CONTRACTS] CREDENTIAL_PENDING_EVIDENCE `
+      + `${result.credentialPendingEvidence}`,
     );
     console.log(
-      `[VENTO CONTRACTS] PENDING_PHYSICAL ${result.pendingPhysical}`,
+      `[VENTO CONTRACTS] CREDENTIAL_NOT_APPLICABLE `
+      + `${result.credentialNotApplicable}`,
     );
     console.log(
-      `[VENTO CONTRACTS] NOT_APPLICABLE ${result.notApplicable}`,
+      `[VENTO CONTRACTS] CREDENTIAL_NOT_APPLICABLE_CURRENT `
+      + `${result.credentialNotApplicableCurrent}`,
     );
     console.log(
-      `[VENTO CONTRACTS] MATERIALIZED_PRINCIPAL_IDS `
-      + `${result.materializedPrincipalIds}`,
+      `[VENTO CONTRACTS] MATERIALIZED_CREDENTIAL_IDS `
+      + `${result.materializedCredentialIds}`,
     );
     console.log('');
     console.log('=== RESULTADO PARA CHATGPT ===');
     console.log('ESTADO: PASS');
-    console.log('OPERACION: INTEGRATION_PRINCIPAL_VALIDATE');
-    console.log(`DECISIONS: ${result.decisions}`);
+    console.log('OPERACION: INTEGRATION_CONTRACTS_VALIDATE');
+    console.log(`PRINCIPAL_DECISIONS: ${result.principalDecisions}`);
+    console.log(`CREDENTIAL_DECISIONS: ${result.credentialDecisions}`);
+    console.log(`CREDENTIAL_PENDING_EVIDENCE: ${result.credentialPendingEvidence}`);
+    console.log(`CREDENTIAL_NOT_APPLICABLE: ${result.credentialNotApplicable}`);
     console.log(
-      `DOCUMENTARY_SPECIFIED: ${result.documentarySpecified}`,
+      `CREDENTIAL_NOT_APPLICABLE_CURRENT: `
+      + `${result.credentialNotApplicableCurrent}`,
     );
-    console.log(`PENDING_PHYSICAL: ${result.pendingPhysical}`);
-    console.log(`NOT_APPLICABLE: ${result.notApplicable}`);
-    console.log(
-      `MATERIALIZED_PRINCIPAL_IDS: ${result.materializedPrincipalIds}`,
-    );
+    console.log(`MATERIALIZED_CREDENTIAL_IDS: ${result.materializedCredentialIds}`);
     console.log('PACKAGE_BOUNDARY: PASS');
     console.log('README_BOUNDARY: PASS');
+    console.log('RUNTIME_SECRET_BOUNDARY: PASS');
     console.log('=== FIN RESULTADO PARA CHATGPT ===');
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : String(error);
+    const message = error instanceof Error ? error.message : String(error);
 
-    console.error('[VENTO CONTRACTS] INTEGRATION_PRINCIPAL VALIDATION FAIL');
+    console.error('[VENTO CONTRACTS] INTEGRATIONS VALIDATION FAIL');
     console.error(message);
     console.error('');
     console.error('=== RESULTADO PARA CHATGPT ===');
     console.error('ESTADO: FAIL');
-    console.error('OPERACION: INTEGRATION_PRINCIPAL_VALIDATE');
+    console.error('OPERACION: INTEGRATION_CONTRACTS_VALIDATE');
     console.error(`ERROR: ${message}`);
     console.error('=== FIN RESULTADO PARA CHATGPT ===');
     process.exitCode = 1;

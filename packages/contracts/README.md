@@ -143,12 +143,14 @@ El caso `public.employee_shifts` se conserva como deuda AS-IS preexistente docum
 
 La materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no reasigna propiedad, no implementa escritura cross-app, persistencia, autorización, consumidores, APIs, UI, Supabase, RLS, migraciones ni datos. `SHELL-CON-017` materializa separadamente el contrato de principal técnico de integración en el módulo hermano `packages/contracts/integrations`.
 
-## Módulo de principal técnico de integración
+## Módulo de integraciones externas
 
-`SHELL-CON-017::GLOBAL` materializa internamente `packages/contracts/integrations` como contrato estático de la semántica lógica `@vento/contracts/integrations`.
+`SHELL-CON-017::GLOBAL` materializa internamente `packages/contracts/integrations` como contrato estático de principal técnico para la semántica lógica `@vento/contracts/integrations`.
 
-La superficie materializa `IntegrationPrincipalId`, `IntegrationPrincipal` e `IntegrationPrincipalRef` sin definir formato serial físico, parser, cast ni registro runtime. `IntegrationPrincipalId` permanece estable, opaco y no secreto, separado de `PrincipalContext`, actor humano, `PermissionKey`, cuenta de proveedor, credencial, secreto, endpoint, dispositivo, `external_system_id` y `AppCode`.
+La superficie conserva `IntegrationPrincipalId`, `IntegrationPrincipal` e `IntegrationPrincipalRef` sin definir formato serial físico, parser, cast ni registro runtime. Adopta por referencia las 21 decisiones de `INT-EXT-002`: 21 `ESPECIFICADO`, 11 `PENDIENTE_DE_EVIDENCIA`, 10 `NO_APLICA` y 0 valores físicos de `IntegrationPrincipalId`.
 
-La materialización adopta por referencia las 21 decisiones de `INT-EXT-002` sin duplicar su matriz editable: conserva 21 decisiones `ESPECIFICADO`, 11 `PENDIENTE_DE_EVIDENCIA`, 10 `NO_APLICA` y crea 0 valores físicos de `IntegrationPrincipalId`.
+`SHELL-CON-018::GLOBAL` amplía el mismo módulo con `ExternalCredentialId` y `ExternalCredentialRef` como referencia contractual no sensible de credencial externa. La referencia conserva separación frente al valor autenticador, principal técnico, sistema externo, cuenta de proveedor, superficie y ambiente; no contiene ni resuelve secretos y no concede autoridad empresarial.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no ejecuta integraciones, no crea credenciales, secretos, endpoints, bindings runtime, persistencia, Supabase, RLS, migraciones ni datos. `SHELL-CON-018` permanece como responsabilidad separada de referencia de credencial externa sin secreto.
+La cobertura de `SHELL-CON-018` conserva exactamente 21 decisiones de aplicabilidad: 9 `PENDIENTE_DE_EVIDENCIA`, 2 `NO_APLICA` y 10 `NO_APLICA_ACTUAL`. Se crean 0 valores físicos de `ExternalCredentialId`, 0 referencias persistidas y 0 secretos.
+
+Estas materializaciones son fundaciones estáticas `PRE_E5_FOUNDATION`; no añaden `exports` públicos, no modifican la versión de `@vento/contracts`, no publican el subpath, no adoptan consumidores, no ejecutan integraciones, no crean o persisten credenciales, no acceden a secret stores y no tocan Supabase, RLS, migraciones ni datos. `SHELL-CON-019` permanece como responsabilidad separada del contrato de evento externo recibido.
