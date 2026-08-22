@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1017** |
+| Tareas aprobadas | **1018** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **577** |
+| Tareas no iniciadas | **576** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **63.80% (1017/1594)** |
+| Porcentaje de completamiento | **63.86% (1018/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras** |
-| Tarea actual | **AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización** |
+| Última tarea aprobada | **AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización** |
+| Tarea actual | **AUTH-DB-012 — Implementar auditoría de cambios de permisos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-012 — Implementar auditoría de cambios de permisos** |
+| Siguiente tarea | **AUTH-DB-013 — Implementar auditoría de simulación** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 16 de 51 aprobadas; AUTH-DB-032 pendiente** |
+| Progreso del bloque | **BLOQUE R: 17 de 51 aprobadas; AUTH-DB-012 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-019::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-032** |
+| Carril documental | **ACTIVO — AUTH-DB-012** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-019::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-034` — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras |
-| Tarea actual | `AUTH-DB-032` — Implementar persistencia canónica y vinculación de decisiones de autorización — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-012` — Implementar auditoría de cambios de permisos |
+| Última aprobada | `AUTH-DB-032` — Implementar persistencia canónica y vinculación de decisiones de autorización |
+| Tarea actual | `AUTH-DB-012` — Implementar auditoría de cambios de permisos — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-013` — Implementar auditoría de simulación |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 16 DE 51 APROBADAS — ACTUAL AUTH-DB-032** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 17 DE 51 APROBADAS — ACTUAL AUTH-DB-012** |
 | Implementación física | **SHELL-CON-019::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
-        ↓
-TAREA ACTUAL
 AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-012 — Implementar auditoría de cambios de permisos
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-013 — Implementar auditoría de simulación
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 16 de 51 tareas aprobadas
+BLOQUE R — 17 de 51 tareas aprobadas
 ```

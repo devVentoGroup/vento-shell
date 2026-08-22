@@ -12893,7 +12893,4045 @@ El Registro Canónico de Requisitos de Prueba no se modifica.
 `AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización`
 
 
-### [ ] AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
+### ✅ AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
+**Tarea siguiente:** AUTH-DB-012 — Implementar auditoría de cambios de permisos
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato de persistencia durable de `AuthorizationDecision@1.0.0`, separación de fallos técnicos, vínculos decisión–ejecución, consultas auditables, integridad, minimización, retención y rollback cerrado; futura instancia global `AUTH-DB-032::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-032` define el contrato físico único para persistir y vincular las decisiones reales de autorización de Vento OS sin convertir la auditoría en una segunda fuente de verdad, sin convertir `decision_id` en un token de capacidad y sin mezclar un fallo técnico con una denegación.
+
+La regla raíz es:
+
+```text
+AuthorizationDecision@1.0.0 COMPLETA
++
+AuthorizationAuditContext CONSISTENTE
++
+PERSISTENCIA DURABLE SEGÚN CLASE DE AUDITORÍA
++
+VÍNCULO EXPLÍCITO CON COMANDO, EJECUCIÓN, EVENTO, ERROR O COMPENSACIÓN
+=
+EVIDENCIA RECONSTRUIBLE, INMUTABLE Y AUDITABLE
+```
+
+Para una operación que puede producir un efecto empresarial:
+
+```text
+RESOLVER
+→ EVALUAR
+→ PERSISTIR ANCLA DE DECISIÓN
+→ VALIDAR CONCURRENCIA
+→ EJECUTAR
+→ VINCULAR RESULTADO
+```
+
+en una única frontera transaccional o mediante un protocolo explícito de revalidación, idempotencia y conciliación.
+
+---
+
+#### 2. Resultado canónico
+
+La futura materialización establece:
+
+```text
+audit.authorization_decisions
+audit.authorization_decision_resources
+audit.authorization_decision_links
+audit.authorization_evaluation_failures
+audit.authorization_evaluation_failure_attempts
+audit.authorization_decision_persistence_policies
+```
+
+y las primitivas privadas:
+
+```text
+audit.append_authorization_decision(jsonb)
+audit.append_authorization_decision_link(jsonb)
+audit.append_authorization_evaluation_failure(jsonb)
+audit.append_authorization_evaluation_failure_attempt(jsonb)
+audit.get_authorization_decision(text)
+audit.search_authorization_decisions(jsonb)
+audit.list_authorization_decision_links(text)
+audit.reject_authorization_record_mutation()
+app_private.resolve_authorization_persistence_profile(jsonb)
+app_private.evaluate_and_record_authorization(jsonb)
+```
+
+La firma ya definida:
+
+```text
+api.get_safe_authorization_decision(jsonb)
+```
+
+conserva su contrato externo y, después de la futura materialización de 032, deberá atravesar la ruta persistente de decisión antes de devolver la proyección segura.
+
+---
+
+#### 3. Topología y gate
+
+La clasificación canónica vigente es:
+
+```text
+task_id = AUTH-DB-032
+mode = GLOBAL_ENABLE_ONCE
+instance = AUTH-DB-032::GLOBAL
+execution_gate = PRE_E5_FOUNDATION
+canonical_work = DEFINE_CONTRACT_ONCE
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no se crea una instancia por aplicación;
+3. no se crea una instancia por `package_id`;
+4. puede materializarse antes de E5 únicamente cuando sus dependencias físicas estén verificadas;
+5. requiere autorización física explícita;
+6. su aprobación documental no autoriza SQL, migrations ni cambios remotos;
+7. la adopción vertical posterior conserva gates y propietarios propios.
+
+---
+
+#### 4. Fuentes vinculantes
+
+La futura instancia debe preservar, como mínimo:
+
+- `ADR-AUTH-001`;
+- `AUTH-CTX-002`, para `AuthorizationDecision`;
+- `AUTH-CTX-024`, para `AuthorizationAuditContext` y la cadena de evidencia;
+- `AUTH-CTX-026`, para implementación canónica de evaluación;
+- `AUTH-CTX-029`, para frescura e invalidación;
+- `AUTH-ERR-019`, para separación `DECIDED | TECHNICAL_FAILURE`;
+- `AUTH-ERR-020`, para reason codes y presentación segura;
+- `AUTH-DB-033`, para `AccessContext@1.0.0`;
+- `AUTH-DB-035`, para frescura;
+- `AUTH-DB-034`, para evaluación real;
+- `SUPA-ARC-006`, para fronteras de `app_private`;
+- `SUPA-ARC-007`, para schema `audit`, clases transversales, atomicidad, inmutabilidad y minimización;
+- `SUPA-ARC-011`, para nombres físicos;
+- `SUPA-ARC-012`, para claves, constraints, estados y tiempo;
+- `SUPA-ARC-013`, para funciones y triggers;
+- `SUPA-ARC-014`, para excepciones privilegiadas;
+- `SUPA-ARC-015`, para grants, RLS y ACL;
+- `SUPA-ARC-021`, para rendimiento y crecimiento;
+- `SUPA-ARC-022`, para retención, legal hold, archivado, backup y restore;
+- `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001@1.0.0`;
+- `vento.canonical-json@1.0.0`.
+
+---
+
+#### 5. Precedencia
+
+La precedencia aplicable es:
+
+```text
+CONTRATOS AUTH
+→ significado de decisión y auditoría
+
+SUPA-ARC-007
+→ frontera transversal audit
+
+AUTH-DB-016
+→ schemas físicos requeridos
+
+AUTH-DB-033
+→ contexto
+
+AUTH-DB-035
+→ frescura
+
+AUTH-DB-034
+→ decisión
+
+AUTH-DB-032
+→ persistencia y vínculo
+
+AUTH-DB-012
+→ auditoría de cambios de permisos
+
+AUTH-DB-013
+→ auditoría de simulación
+
+AUTH-DB-014
+→ auditoría de dispositivos
+
+AUTH-DB-006..010 / AUTH-DB-021
+→ adopción en RPC y RLS
+```
+
+032 no absorbe las responsabilidades posteriores.
+
+---
+
+#### 6. Frontera con `SUPA-ARC-007`
+
+`SUPA-ARC-007` fija:
+
+```text
+schema transversal = audit
+business_domain_authority = NONE
+direct_client_access_target = 0
+```
+
+y clasifica como append-only o inmutables:
+
+- `AUDIT_ENTRY`;
+- `AUDIT_LINK`;
+- `BUSINESS_EVENT_RECORD`;
+- intentos;
+- efectos confirmados;
+- correcciones enlazadas.
+
+032 materializa únicamente el subconjunto especializado necesario para autorización.
+
+No crea el sistema genérico completo de:
+
+- eventos empresariales;
+- outbox;
+- emisión;
+- delivery;
+- inbox;
+- efectos consumidores;
+- reconciliación transversal.
+
+---
+
+#### 7. Clase de compromiso de la decisión
+
+Toda decisión real de autorización utiliza:
+
+```text
+AUDIT_ATOMIC_REQUIRED
+```
+
+La ancla durable no puede considerarse telemetría opcional.
+
+Para una operación con efecto:
+
+```text
+DECISIÓN VÁLIDA
++
+ANCLA DURABLE
+```
+
+deben existir antes del efecto o dentro de la misma transacción que lo ejecutará.
+
+Si la ancla obligatoria no puede persistirse:
+
+```text
+NO SE LIBERA LA DECISIÓN COMO EJECUTABLE
+NO SE INICIA EL EFECTO
+```
+
+---
+
+#### 8. Diferencia entre contrato emitido y persistencia
+
+Toda `AuthorizationDecision@1.0.0` válida contiene `audit`.
+
+032 distingue:
+
+```text
+CONTRATO EMITIDO
+→ forma completa de la decisión
+
+REGISTRO DURABLE
+→ representación privada, indexable e inmutable
+
+PROYECCIÓN SEGURA
+→ representación mínima para consumidor autorizado
+```
+
+No son el mismo objeto.
+
+La persistencia no modifica el contrato emitido.
+
+---
+
+#### 9. Línea base física remota observada
+
+La auditoría read-only del proyecto:
+
+```text
+vento-os-dev
+project_ref = clzdpinthhtknkmefsxx
+status = ACTIVE_HEALTHY
+PostgreSQL = 17.6.1.054
+```
+
+confirma que, en el corte observado:
+
+```text
+app_private = EXISTE
+audit = NO EXISTE
+api = NO EXISTE
+identity_access = NO EXISTE
+```
+
+Por tanto, 032 no puede asumir que el schema `audit` ya está desplegado.
+
+---
+
+#### 10. Objetos legacy o ajenos observados
+
+Existen objetos con nombres relacionados con auditoría o decisiones, entre ellos:
+
+```text
+auth.audit_log_entries
+auth.oauth_authorizations
+club.audit_events
+vital.adaptive_decision_logs
+vital.ai_decision_logs
+```
+
+y funciones `vital.*` de logging de decisiones.
+
+Ninguno se adopta como persistencia canónica de `AuthorizationDecision@1.0.0`.
+
+Razones:
+
+- `auth.*` pertenece a la plataforma administrada;
+- `club.*` pertenece a un dominio legacy distinto;
+- `vital.*` permanece fuera de la autoridad de Vento OS;
+- ninguno implementa el contrato completo de AUTH-CTX-024.
+
+---
+
+#### 11. Ausencia física de persistencia canónica
+
+En el corte remoto no existe una relación canónica que materialice:
+
+```text
+AuthorizationDecision@1.0.0
++
+AuthorizationAuditContext
++
+decision_id
++
+context_fingerprint
++
+resource_fingerprint
++
+catalog_hash
++
+dataset_hashes
++
+decision–execution linkage
+```
+
+Tampoco se observó una instancia:
+
+```text
+AUTH-DB-032::GLOBAL
+```
+
+materializada.
+
+---
+
+#### 12. Principio de autoridad
+
+El schema `audit`:
+
+```text
+CONSERVA EVIDENCIA
+```
+
+pero nunca:
+
+```text
+REDEFINE EL HECHO
+REDEFINE EL ACTOR
+REDEFINE EL PERMISO
+REDEFINE EL RECURSO
+REDEFINE EL RESULTADO EMPRESARIAL
+```
+
+El owner schema del recurso continúa siendo fuente de verdad.
+
+---
+
+#### 13. Identidad del registro principal
+
+Se congela:
+
+```text
+audit.authorization_decisions
+```
+
+Clase:
+
+```text
+AUDIT_ENTRY
+```
+
+Responsabilidad:
+
+> conservar una representación durable, privada, indexable e inmutable de cada `AuthorizationDecision@1.0.0` que alcance la frontera persistente canónica.
+
+---
+
+#### 14. Clave de `authorization_decisions`
+
+La clave lógica es:
+
+```text
+decision_id
+```
+
+Reglas:
+
+1. no se genera otra identidad empresarial para sustituirla;
+2. no se deriva de actor;
+3. no se deriva de recurso;
+4. no se deriva de permiso;
+5. no se reutiliza;
+6. no es bearer token;
+7. la PK física conserva el valor exacto emitido por la decisión.
+
+---
+
+#### 15. Columnas mínimas de `authorization_decisions`
+
+La relación debe poder materializar, como mínimo:
+
+```text
+decision_id
+decision_contract_version
+decision_schema_version
+decision_record_fingerprint
+decided_at
+recorded_at
+correlation_id
+context_id
+principal_id
+actor_id
+device_id
+app_code
+permission_key
+operation_kind
+request_source
+resource_type
+resource_ids
+outcome
+authorizing_lanes
+authorization_reason_codes
+context_fingerprint
+resource_fingerprint
+catalog_hash
+dataset_hashes
+evaluator_name
+evaluator_version
+evidence_storage_mode
+decision_payload
+sensitivity_class
+retention_class
+source_contract_sha256
+```
+
+Los nombres finales permanecen en inglés, ASCII y `lower_snake_case`.
+
+---
+
+#### 16. `recorded_at`
+
+`recorded_at` representa:
+
+```text
+momento en que audit persistió el registro
+```
+
+No reemplaza:
+
+```text
+decided_at
+```
+
+Debe cumplirse:
+
+```text
+recorded_at >= decided_at
+```
+
+salvo una tolerancia técnica explícitamente aprobada por el contrato temporal.
+
+---
+
+#### 17. Igualdad obligatoria de `decision_id`
+
+Se valida:
+
+```text
+AuthorizationDecision.decision_id
+=
+AuthorizationDecision.audit.decision_id
+=
+authorization_decisions.decision_id
+```
+
+Una discrepancia es corrupción contractual.
+
+No se corrige escogiendo uno de los valores.
+
+---
+
+#### 18. Igualdad de `correlation_id`
+
+Cuando exista:
+
+```text
+root correlation_id
+=
+audit correlation_id
+=
+persisted correlation_id
+```
+
+`null` conserva el significado aprobado.
+
+No se inventa retrospectivamente una correlación distinta.
+
+---
+
+#### 19. Identidad de actor
+
+La fila persistida conserva las identidades exactas del audit context:
+
+```text
+principal_id
+actor_id
+device_id
+```
+
+Reglas:
+
+- `actor_id` no se deriva de `principal_id`;
+- `device_id` no se deriva de User-Agent;
+- un dispositivo no sustituye al humano;
+- `null` conserva significado contractual;
+- una discrepancia con `access_context_ref` bloquea inserción.
+
+---
+
+#### 20. Aplicación y permiso
+
+Debe cumplirse:
+
+```text
+persisted app_code
+=
+AuthorizationDecision.request.app_code
+=
+AuthorizationDecision.audit.app_code
+```
+
+y:
+
+```text
+persisted permission_key
+=
+AuthorizationDecision.request.permission_key
+=
+AuthorizationDecision.audit.permission_key
+```
+
+No se normaliza una contradicción.
+
+---
+
+#### 21. Recurso
+
+La relación principal conserva:
+
+```text
+resource_type
+resource_ids
+resource_fingerprint
+```
+
+`resource_ids`:
+
+- se deduplica;
+- se ordena determinísticamente;
+- puede ser vacío cuando el contrato lo permite;
+- no se rellena con IDs inferidos;
+- nunca se usa como autorización posterior.
+
+---
+
+#### 22. Outcome
+
+Solo se persiste como decisión real:
+
+```text
+ALLOW
+DENY
+```
+
+Queda prohibido almacenar en `authorization_decisions.outcome`:
+
+```text
+TECHNICAL_FAILURE
+UNKNOWN
+MAYBE
+INDETERMINATE
+WOULD_ALLOW
+WOULD_DENY
+```
+
+---
+
+#### 23. Authorizing lanes
+
+Se conserva:
+
+```text
+authorizing_lanes
+```
+
+Invariantes:
+
+```text
+ALLOW
+→ al menos una lane autorizante válida
+
+DENY
+→ authorizing_lanes = []
+```
+
+El valor persistido debe ser idéntico al audit context.
+
+---
+
+#### 24. Reason codes
+
+Se conserva la colección de razones aplicables a la decisión.
+
+Reglas:
+
+- orden determinista;
+- códigos del catálogo vigente;
+- sin texto SQL;
+- sin stacktrace;
+- sin nombres privados de tablas;
+- sin copy humano como fuente de identidad;
+- sin códigos inventados por persistencia.
+
+---
+
+#### 25. Hashes y fingerprints
+
+La fila conserva:
+
+```text
+context_fingerprint
+resource_fingerprint
+catalog_hash
+dataset_hashes
+decision_record_fingerprint
+```
+
+Cada identidad conserva preimagen y significado separados.
+
+No se reutiliza un hash para representar otro objeto.
+
+---
+
+#### 26. `decision_record_fingerprint`
+
+Se define como fingerprint técnico de la representación persistida.
+
+Formato:
+
+```text
+sha256:
++
+64 caracteres hexadecimales minúsculos
+```
+
+No forma parte de `AuthorizationDecision@1.0.0`.
+
+No se expone como autoridad.
+
+Su finalidad es:
+
+- detectar corrupción;
+- validar reintentos idempotentes;
+- detectar mutación indebida;
+- validar restore;
+- validar archive.
+
+---
+
+#### 27. Preimagen de `decision_record_fingerprint`
+
+Incluye la representación persistida canonicalizada de:
+
+- identidad contractual;
+- decision_id;
+- decided_at;
+- correlation;
+- audit context;
+- request identity;
+- outcome;
+- reasons;
+- hashes;
+- evidence storage mode;
+- payload persistido cuando exista.
+
+Excluye:
+
+- `recorded_at`;
+- ubicación física;
+- partición;
+- métricas;
+- nodo;
+- timestamps de backup;
+- metadata de delivery.
+
+---
+
+#### 28. Canonicalización
+
+La preimagen utiliza:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+No se considera suficiente:
+
+```text
+jsonb::text
+```
+
+La persistencia reutiliza la primitiva canónica ya gobernada por AUTH.
+
+---
+
+#### 29. `decision_payload`
+
+`decision_payload` es privado.
+
+Puede contener la `AuthorizationDecision@1.0.0` completa cuando el perfil de evidencia lo exige.
+
+No cruza directamente:
+
+```text
+api
+frontend
+Data API
+cliente móvil
+```
+
+No se usa como prueba de autorización futura.
+
+---
+
+#### 30. Modos de evidencia persistida
+
+Se congelan dos modos físicos:
+
+```text
+AUDIT_ANCHOR
+FULL_DECISION
+```
+
+`AUDIT_ANCHOR`:
+
+- persiste todos los campos mínimos de auditoría y búsqueda;
+- conserva hashes y referencias;
+- no conserva necesariamente el árbol completo de matched evidence.
+
+`FULL_DECISION`:
+
+- conserva además `decision_payload` completo;
+- permanece privado;
+- aplica minimización y retención.
+
+---
+
+#### 31. Política inicial por categoría
+
+La persistencia distingue las categorías ya previstas por AUTH-CTX-024:
+
+| Categoría         | Modo mínimo     |
+| ----------------- | --------------- |
+| navegación        | `AUDIT_ANCHOR`  |
+| UI guard          | `AUDIT_ANCHOR`  |
+| lectura ordinaria | `AUDIT_ANCHOR`  |
+| agregado          | `AUDIT_ANCHOR`  |
+| lectura sensible  | `FULL_DECISION` |
+| exportación       | `FULL_DECISION` |
+| soporte           | `FULL_DECISION` |
+| mutación          | `FULL_DECISION` |
+
+Una política posterior puede escalar `AUDIT_ANCHOR` a `FULL_DECISION`.
+
+Nunca puede reducir una categoría obligatoria sin nueva decisión contractual.
+
+---
+
+#### 32. Clasificación server-side
+
+El caller no declara libremente:
+
+```text
+evidence_storage_mode
+retention_class
+sensitivity_class
+persistence_category
+```
+
+La clasificación se resuelve server-side usando:
+
+- `operation_kind`;
+- `request_source`;
+- modo de recurso;
+- sensibilidad del permiso;
+- sensibilidad del recurso;
+- contrato de consumidor cuando aplique;
+- política de auditoría activa.
+
+---
+
+#### 33. Registro de política de persistencia
+
+Se congela:
+
+```text
+audit.authorization_decision_persistence_policies
+```
+
+Responsabilidad:
+
+> materializar la política versionada de clasificación y profundidad de evidencia sin convertirla en autorización empresarial.
+
+Campos mínimos:
+
+```text
+policy_version
+category
+evidence_storage_mode
+sensitivity_floor
+retention_class
+source_contract_fingerprint
+status
+activated_at
+superseded_at
+```
+
+---
+
+#### 34. Estados de policy
+
+Se permiten:
+
+```text
+INSTALLED
+ACTIVE
+SUPERSEDED
+BLOCKED
+```
+
+Debe existir exactamente una policy `ACTIVE` aplicable.
+
+Una policy ausente o ambigua bloquea la persistencia que dependa de ella.
+
+---
+
+#### 35. `retention_class`
+
+Todo registro durable declara:
+
+```text
+retention_class
+```
+
+032 no inventa periodos en días.
+
+Los periodos exactos, legal hold, partición, archivo y disposición se consumen desde `SUPA-ARC-022`.
+
+---
+
+#### 36. Legal hold
+
+Un legal hold:
+
+- impide disposición destructiva;
+- no cambia outcome;
+- no cambia decision_id;
+- no cambia el contenido histórico;
+- no autoriza lectura;
+- no convierte audit en fuente empresarial.
+
+La gestión física del hold pertenece a la capa transversal de retención.
+
+---
+
+#### 37. Inmutabilidad
+
+`authorization_decisions` es append-only.
+
+Queda prohibido para runtime:
+
+```text
+UPDATE
+DELETE
+UPSERT que cambie contenido
+```
+
+Una corrección de realidad produce:
+
+```text
+nueva evaluación
++
+nuevo decision_id
+```
+
+No edita la decisión anterior.
+
+---
+
+#### 38. Reintento idempotente de persistencia
+
+Si se intenta persistir nuevamente el mismo `decision_id`:
+
+```text
+mismo decision_record_fingerprint
+→ retorno idempotente del registro existente
+
+fingerprint diferente
+→ INTEGRITY_CONFLICT
+→ fail closed
+```
+
+No se aplica last-write-wins.
+
+---
+
+#### 39. Relación de recursos
+
+Se congela:
+
+```text
+audit.authorization_decision_resources
+```
+
+Clase:
+
+```text
+AUDIT_LINK
+```
+
+Finalidad:
+
+- indexar recursos de forma relacional;
+- soportar búsqueda por resource;
+- evitar depender de scan de arrays;
+- conservar orden y deduplicación.
+
+---
+
+#### 40. Columnas mínimas de resource link
+
+```text
+decision_id
+resource_ordinal
+resource_type
+resource_id
+resource_fingerprint
+decided_at
+recorded_at
+link_fingerprint
+```
+
+La colección de filas debe ser exactamente equivalente al `resource_ids` persistido en la decisión.
+
+---
+
+#### 41. Resource draft sin ID
+
+Cuando un draft legítimo aún no tenga `resource_id`:
+
+```text
+resource_ids = []
+```
+
+puede ser válido.
+
+La evidencia continúa mediante:
+
+```text
+resource_type
+resource_fingerprint
+decision_id
+```
+
+No se inventa un UUID temporal para aparentar persistencia empresarial.
+
+---
+
+#### 42. Dedupe de recursos
+
+Dentro de una misma decisión:
+
+```text
+resource_type + resource_id
+```
+
+no se duplica.
+
+El ordinal conserva el orden determinista del contrato.
+
+---
+
+#### 43. Vínculo decisión–ejecución
+
+Se congela:
+
+```text
+audit.authorization_decision_links
+```
+
+Clase:
+
+```text
+AUDIT_LINK
+```
+
+Responsabilidad:
+
+> enlazar una decisión ya persistida con las identidades durables que demuestran qué comando, resultado, evento, error, compensación, reconciliación o audit entry siguió a esa decisión.
+
+---
+
+#### 44. Link kinds
+
+Se congela el vocabulario:
+
+```text
+COMMAND
+EXECUTION_RESULT
+BUSINESS_EVENT
+ERROR
+COMPENSATION
+RECONCILIATION
+AUDIT_ENTRY
+```
+
+No se usa un `link_kind` libre.
+
+Un nuevo tipo exige evolución contractual.
+
+---
+
+#### 45. Columnas mínimas del vínculo
+
+```text
+decision_link_id
+decision_id
+link_kind
+reference_type
+reference_id
+process_id
+process_instance_id
+correlation_id
+causation_id
+occurred_at
+recorded_at
+result_code
+result_reference
+error_class
+expected_resource_version
+observed_resource_version
+idempotency_key_reference
+link_fingerprint
+```
+
+Los campos no aplicables permanecen `null` de forma explícita según shape físico.
+
+---
+
+#### 46. `decision_link_id`
+
+`decision_link_id` identifica únicamente el vínculo.
+
+No sustituye:
+
+- decision_id;
+- command_id;
+- event_id;
+- effect_id;
+- process_instance_id.
+
+Puede generarse como UUID técnico del servidor.
+
+---
+
+#### 47. Link no crea el hecho
+
+Un link:
+
+```text
+decision_id
+→ BUSINESS_EVENT
+```
+
+afirma que existe una relación auditada.
+
+No afirma por sí solo que:
+
+- el evento sea válido;
+- el efecto haya ocurrido;
+- el recurso tenga un nuevo estado;
+- la operación deba repetirse.
+
+El owner del hecho continúa siendo la fuente.
+
+---
+
+#### 48. Vínculo previo a efecto
+
+Antes de iniciar una mutación sensible debe existir:
+
+```text
+AuthorizationDecision persistida
++
+referencia al command o execution intent cuando el proceso la tenga
+```
+
+La falta de persistencia obligatoria bloquea el efecto.
+
+---
+
+#### 49. Vínculo posterior a efecto
+
+Después de un efecto confirmado se agrega un vínculo nuevo hacia:
+
+- resultado;
+- business event;
+- audit entry;
+- effect record;
+
+según corresponda.
+
+No se actualiza el link previo.
+
+---
+
+#### 50. Concurrencia
+
+Cuando una ejecución valida una versión:
+
+```text
+expected_resource_version
+observed_resource_version
+```
+
+se conservan en el vínculo aplicable o en la evidencia propietaria enlazada.
+
+Un conflicto de concurrencia no reutiliza la decisión para un segundo intento.
+
+---
+
+#### 51. Stale antes de ejecutar
+
+Si el contexto o recurso cambia antes del efecto:
+
+```text
+decisión histórica
+→ permanece
+
+ejecución
+→ rechazada
+
+retry
+→ nueva evaluación
+→ nuevo decision_id
+```
+
+No se edita la decisión anterior para convertirla en DENY.
+
+---
+
+#### 52. Idempotencia de ejecución
+
+`idempotency_key_reference`:
+
+- es una referencia;
+- no contiene el secreto o payload original;
+- no sustituye decision_id;
+- no permite reusar una decisión stale;
+- no convierte fallo técnico en éxito.
+
+---
+
+#### 53. Resultado desconocido
+
+Si una falla ocurre después de que un efecto pudo empezar y la atomicidad no puede demostrarse:
+
+```text
+NO afirmar effects_committed = false
+NO crear TECHNICAL_FAILURE pre-efecto falso
+→ ERROR / RECONCILIATION link
+→ proceso propietario
+```
+
+La conciliación no altera la decisión original.
+
+---
+
+#### 54. Separación de fallos técnicos
+
+Un fallo técnico previo a producir una decisión válida no se inserta en:
+
+```text
+audit.authorization_decisions
+```
+
+No obtiene:
+
+```text
+decision_id
+outcome = DENY
+authorizing_lanes
+matched evidence
+```
+
+Utiliza la familia de `AUTH-ERR-019`.
+
+---
+
+#### 55. Relación de fallos técnicos
+
+Se congela:
+
+```text
+audit.authorization_evaluation_failures
+```
+
+Clase:
+
+```text
+AUDIT_ENTRY
+```
+
+Identidad:
+
+```text
+evaluation_attempt_id
+```
+
+No contiene columna autoritativa `decision_id`.
+
+---
+
+#### 56. Forma mínima de technical failure
+
+La fila debe poder conservar:
+
+```text
+evaluation_attempt_id
+correlation_id
+support_code
+request_source
+consumer_id
+app_code
+permission_key
+operation_kind
+failure_stage
+private_failure_family
+sanitized_provider_code
+source_status
+retry_count
+retry_budget
+duration_ms
+source_versions
+source_fingerprints
+session_preserved
+effects_committed
+occurred_at
+recorded_at
+failure_fingerprint
+sensitivity_class
+retention_class
+```
+
+---
+
+#### 57. Invariantes del technical failure
+
+Debe cumplirse:
+
+```text
+source_status = UNAVAILABLE
+session_preserved = true
+effects_committed = false
+```
+
+para el fallo técnico pre-efecto gobernado por esta tabla.
+
+No incrementa métricas de DENY.
+
+No se presenta como falta de permiso.
+
+---
+
+#### 58. `permission_key` privada en fallo técnico
+
+La evidencia privada puede conservar el permiso exacto cuando sea necesario para diagnóstico.
+
+La proyección humana no lo expone por defecto.
+
+No se usa para construir un decision_id retroactivo.
+
+---
+
+#### 59. Intentos técnicos
+
+Se congela:
+
+```text
+audit.authorization_evaluation_failure_attempts
+```
+
+Clase:
+
+```text
+AUDIT_ENTRY
+```
+
+Finalidad:
+
+> conservar cada intento interno perteneciente al mismo `evaluation_attempt_id` sin convertir cada retry en una decisión.
+
+---
+
+#### 60. Clave de failure attempt
+
+Clave lógica:
+
+```text
+evaluation_attempt_id
++
+attempt_ordinal
+```
+
+`attempt_ordinal`:
+
+- empieza en 1;
+- aumenta monotónicamente;
+- no se reutiliza;
+- no puede superar el presupuesto observado sin marcar inconsistencia.
+
+---
+
+#### 61. Campos mínimos del intento
+
+```text
+evaluation_attempt_id
+attempt_ordinal
+source_key
+started_at
+completed_at
+duration_ms
+sanitized_provider_code
+retryable
+retry_after_seconds
+attempt_result
+attempt_fingerprint
+```
+
+No contiene secrets ni raw provider payload.
+
+---
+
+#### 62. Retry
+
+Un retry técnico:
+
+```text
+mismo evaluation_attempt_id
++
+otro attempt_ordinal
+```
+
+Una nueva solicitud del usuario:
+
+```text
+nuevo evaluation_attempt_id
+```
+
+No se mezclan.
+
+---
+
+#### 63. Fallo del propio audit store
+
+Si la dependencia de persistencia obligatoria no está disponible:
+
+```text
+NO SE PUEDE REGISTRAR UNA DECISIÓN DURABLE
+→ NO SE LIBERA LA DECISIÓN COMO EJECUTABLE
+→ NO SE INICIA EFECTO
+```
+
+Si el propio store de auditoría está caído, no se exige que la misma base registre mágicamente su propia indisponibilidad.
+
+La evidencia de infraestructura utiliza observabilidad externa y correlation/support code cuando esté disponible.
+
+---
+
+#### 64. Primitive de append de decisión
+
+Se congela:
+
+```text
+audit.append_authorization_decision(jsonb) → text
+```
+
+Argumento lógico:
+
+```text
+decision
+```
+
+No acepta:
+
+- actor override;
+- retention override;
+- evidence mode override;
+- outcome override;
+- decided_at override;
+- fingerprint suministrado como autoridad.
+
+---
+
+#### 65. Validaciones de append
+
+Antes de insertar:
+
+1. valida contract family;
+2. valida version;
+3. valida schema version;
+4. valida outcome;
+5. valida audit no nulo;
+6. valida decision_id;
+7. valida correlation;
+8. valida actor/principal/device;
+9. valida app y permission;
+10. valida resource;
+11. valida authorizing lanes;
+12. valida fingerprints;
+13. valida evaluator;
+14. resuelve persistence profile;
+15. canonicaliza;
+16. calcula record fingerprint;
+17. inserta decisión;
+18. inserta resource links;
+19. comprueba equivalencia.
+
+Todo ocurre atómicamente.
+
+---
+
+#### 66. Seguridad de append
+
+`audit.append_authorization_decision(jsonb)` es:
+
+```text
+VOLATILE
+SECURITY DEFINER
+```
+
+por tratarse de una frontera privada de escritura sin grants directos a tablas.
+
+Requiere:
+
+- owner técnico no interactivo;
+- `search_path` fijo;
+- objetos totalmente calificados;
+- `PUBLIC EXECUTE` revocado;
+- `anon` sin execute;
+- `authenticated` sin execute;
+- grant exacto solo a llamadores técnicos aprobados;
+- cero SQL dinámico abierto.
+
+---
+
+#### 67. Primitive de link
+
+Se congela:
+
+```text
+audit.append_authorization_decision_link(jsonb) → text
+```
+
+Argumento lógico:
+
+```text
+link
+```
+
+Valida:
+
+- decision existente;
+- correlation compatible;
+- link kind válido;
+- referencia no vacía;
+- timestamps;
+- idempotency reference;
+- versiones cuando apliquen;
+- link fingerprint;
+- duplicado idempotente.
+
+---
+
+#### 68. Primitive de technical failure
+
+Se congela:
+
+```text
+audit.append_authorization_evaluation_failure(jsonb) → text
+```
+
+Acepta exclusivamente una evidencia técnica compatible con:
+
+```text
+AUTHORIZATION-TECHNICAL-UNAVAILABILITY-CONTRACT-001@1.0.0
+```
+
+No acepta `AuthorizationDecision`.
+
+---
+
+#### 69. Primitive de failure attempt
+
+Se congela:
+
+```text
+audit.append_authorization_evaluation_failure_attempt(jsonb) → text
+```
+
+No finaliza por sí solo el evaluation attempt.
+
+Solo registra un intento técnico.
+
+---
+
+#### 70. Trigger de inmutabilidad
+
+Se congela:
+
+```text
+audit.reject_authorization_record_mutation()
+```
+
+Clase:
+
+```text
+TRIGGER_FUNCTION
+```
+
+Se aplica a las relaciones append-only de 032 para rechazar:
+
+```text
+UPDATE
+DELETE
+```
+
+por interfaces ordinarias.
+
+---
+
+#### 71. Retención no usa UPDATE histórico
+
+La expiración por política no modifica el contenido de una decisión.
+
+Archivado y disposición utilizan la estrategia de `SUPA-ARC-022`, incluyendo particiones cuando corresponda.
+
+No se crea:
+
+```text
+is_deleted = true
+```
+
+como sustituto universal de retención.
+
+---
+
+#### 72. Resolver de persistence profile
+
+Se congela:
+
+```text
+app_private.resolve_authorization_persistence_profile(jsonb) → jsonb
+```
+
+Entrada:
+
+```text
+AuthorizationDecision completa
+```
+
+Salida mínima:
+
+```text
+policy_version
+category
+evidence_storage_mode
+sensitivity_class
+retention_class
+audit_commit_class
+```
+
+`audit_commit_class` para la ancla de decisión es:
+
+```text
+AUDIT_ATOMIC_REQUIRED
+```
+
+---
+
+#### 73. Coordinador persistente
+
+Se congela:
+
+```text
+app_private.evaluate_and_record_authorization(jsonb) → jsonb
+```
+
+Responsabilidad:
+
+```text
+1. invocar app_private.evaluate_authorization exactamente una vez;
+2. validar una AuthorizationDecision completa;
+3. persistirla mediante audit.append_authorization_decision;
+4. devolver la misma decisión completa al llamador interno;
+5. no ejecutar el efecto empresarial.
+```
+
+No evalúa simulación.
+
+---
+
+#### 74. Naturaleza del coordinador
+
+`app_private.evaluate_and_record_authorization(jsonb)` es:
+
+```text
+VOLATILE
+SECURITY DEFINER
+INTERNAL_COORDINATOR
+```
+
+No recibe grants cliente.
+
+No sustituye al evaluator.
+
+No duplica su lógica.
+
+---
+
+#### 75. Regla de no escape
+
+Si:
+
+```text
+evaluate_authorization
+→ produce decisión válida
+```
+
+pero:
+
+```text
+append_authorization_decision
+→ falla
+```
+
+entonces:
+
+```text
+evaluate_and_record_authorization
+→ falla
+→ la decisión no se devuelve como ejecutable
+```
+
+Esta es la aplicación directa de `AUDIT_ATOMIC_REQUIRED`.
+
+---
+
+#### 76. Wrapper seguro existente
+
+La firma pública segura permanece:
+
+```text
+api.get_safe_authorization_decision(jsonb) → jsonb
+```
+
+032 no cambia su request ni su response.
+
+Su ruta interna objetivo pasa a ser:
+
+```text
+evaluate_and_record_authorization
+→ project_safe_authorization_decision
+→ response
+```
+
+en lugar de:
+
+```text
+evaluate_authorization
+→ project
+```
+
+sin ancla durable.
+
+---
+
+#### 77. Decisión segura no reutilizable
+
+Aunque el wrapper seguro devuelva:
+
+```text
+outcome = ALLOW
+```
+
+el cliente no puede enviarlo después como:
+
+```text
+authorization_proof
+decision_token
+capability_token
+```
+
+La mutación reevalúa dentro de su frontera.
+
+---
+
+#### 78. RLS y side effects
+
+Queda prohibido insertar auditoría desde una policy RLS por cada fila.
+
+El predicado RLS:
+
+```text
+app_private.authorization_policy_allows(jsonb)
+```
+
+permanece side-effect free.
+
+---
+
+#### 79. Preflight para operaciones RLS auditables
+
+Cuando una operación mediante Data API/RLS requiera evidencia de decisión:
+
+```text
+preflight autoritativo
+→ persistir decisión una vez
+→ ejecutar consulta o mutación
+→ RLS verifica paridad
+```
+
+La policy no se convierte en writer.
+
+Una superficie que no pueda cumplir esta frontera permanece sin migración canónica hasta que `AUTH-DB-021` y su consumidor propietario resuelvan el patrón.
+
+---
+
+#### 80. Adopción RPC
+
+Una RPC sensible futura usa:
+
+```text
+evaluate_and_record_authorization
+→ ALLOW
+→ concurrency/idempotency
+→ efecto
+→ append_authorization_decision_link
+```
+
+La adopción concreta pertenece a `AUTH-DB-006` a `AUTH-DB-010`.
+
+---
+
+#### 81. Consulta por `decision_id`
+
+Se congela:
+
+```text
+audit.get_authorization_decision(text) → jsonb
+```
+
+Argumento:
+
+```text
+decision_id
+```
+
+Devuelve una proyección privada para un llamador técnico autorizado.
+
+No es Data API pública.
+
+---
+
+#### 82. Búsqueda privada
+
+Se congela:
+
+```text
+audit.search_authorization_decisions(jsonb)
+```
+
+La búsqueda admite exclusivamente filtros estructurados cerrados.
+
+No acepta SQL, predicate, order expression ni nombre de columna libres.
+
+---
+
+#### 83. Filtros de búsqueda permitidos
+
+La request de búsqueda puede expresar:
+
+```text
+decision_id
+correlation_id
+actor_id
+principal_id
+device_id
+app_code
+permission_key
+resource_type
+resource_id
+outcome
+decided_from
+decided_to
+limit
+cursor
+```
+
+Los filtros pueden reducir el conjunto.
+
+No amplían la autorización del llamador.
+
+---
+
+#### 84. Límites de búsqueda
+
+Toda búsqueda:
+
+- exige límite;
+- usa paginación por cursor estable;
+- tiene orden determinista;
+- impone ventana temporal cuando el volumen lo exija;
+- no permite scan ilimitado por cliente;
+- no admite wildcard sobre IDs sensibles;
+- no devuelve decision_payload por defecto.
+
+---
+
+#### 85. Búsqueda por correlación
+
+Debe poder resolverse:
+
+```text
+correlation_id
+→ decisiones
+→ links
+→ errores
+→ eventos
+→ resultados
+```
+
+La correlación no concede derecho a ver esos registros.
+
+---
+
+#### 86. Búsqueda por actor
+
+Las búsquedas por:
+
+```text
+actor_id
+principal_id
+device_id
+```
+
+son sensibles.
+
+Solo se ejecutan dentro de una finalidad autorizada.
+
+No se exponen a un trabajador como mecanismo de enumeración.
+
+---
+
+#### 87. Búsqueda por permiso
+
+Debe soportarse:
+
+```text
+app_code
++
+permission_key
++
+rango temporal
+```
+
+para investigación y paridad.
+
+No se expone el catálogo completo por consecuencia.
+
+---
+
+#### 88. Búsqueda por recurso
+
+`authorization_decision_resources` soporta:
+
+```text
+resource_type
++
+resource_id
++
+rango temporal
+```
+
+sin scan del `decision_payload`.
+
+---
+
+#### 89. Consulta de links
+
+Se congela:
+
+```text
+audit.list_authorization_decision_links(text)
+```
+
+Retorna los vínculos autorizados de un `decision_id`.
+
+No sigue recursivamente referencias hacia owner schemas sin otro contrato de consulta.
+
+---
+
+#### 90. Exposición mediante `api`
+
+032 no crea una RPC de búsqueda de auditoría ejecutable por `authenticated`.
+
+Motivo:
+
+- el permiso exacto de una superficie administrativa debe pertenecer a su contrato consumidor;
+- la finalidad y territorio deben ser explícitos;
+- una función genérica de auditoría sería una superficie de enumeración.
+
+La infraestructura privada queda lista para que la tarea consumidora cree una proyección `api` mínima y autorizada.
+
+---
+
+#### 91. Acceso directo cliente
+
+Objetivo:
+
+```text
+PUBLIC → 0
+anon → 0
+authenticated → 0
+```
+
+sobre:
+
+- tablas;
+- sequences;
+- functions privadas de audit;
+- raw decision payloads.
+
+---
+
+#### 92. `service_role`
+
+`service_role` no recibe:
+
+```text
+SELECT ALL
+INSERT ALL
+UPDATE ALL
+DELETE ALL
+EXECUTE ALL
+```
+
+por defecto.
+
+Cualquier acceso técnico se concede por firma y finalidad exactas.
+
+No crea autoridad empresarial.
+
+---
+
+#### 93. Owner técnico
+
+El owner físico:
+
+- es no interactivo;
+- no es una cuenta humana;
+- se resuelve desde la política de roles aprobada al materializar;
+- no se inventa si el inventario no ofrece uno compatible.
+
+La ausencia de owner válido bloquea la migration.
+
+---
+
+#### 94. `search_path`
+
+Funciones privilegiadas de 032 usan un `search_path` fijo y mínimo.
+
+Referencia objetivo:
+
+```text
+pg_catalog, audit, app_private
+```
+
+Las dependencias empresariales y técnicas continúan totalmente calificadas.
+
+No se confía en resolución incidental por orden de schemas.
+
+---
+
+#### 95. SQL dinámico
+
+032 no necesita SQL dinámico abierto.
+
+Queda prohibido construir:
+
+- relation names;
+- column names;
+- order clauses;
+- predicates;
+- function names;
+
+desde strings del caller.
+
+---
+
+#### 96. RLS de defensa en profundidad
+
+Las tablas de 032 habilitan RLS conforme a la política objetivo.
+
+No existen policies que concedan acceso directo a:
+
+```text
+anon
+authenticated
+```
+
+La escritura ocurre mediante funciones privadas controladas.
+
+---
+
+#### 97. FORCE RLS y owners
+
+La migration debe comprobar explícitamente:
+
+- owner PostgreSQL;
+- `BYPASSRLS`;
+- `FORCE ROW LEVEL SECURITY` cuando aplique;
+- comportamiento de funciones `SECURITY DEFINER`;
+- privilegios de mantenimiento.
+
+No se asume que `ENABLE RLS` por sí solo controla al owner.
+
+---
+
+#### 98. ACL por defecto
+
+La materialización debe verificar que la creación de funciones nuevas no reintroduzca:
+
+```text
+PUBLIC EXECUTE
+```
+
+y que nuevas tablas no reciban grants cliente por defaults históricos.
+
+La evidencia registra ACL antes y después.
+
+---
+
+#### 99. Persistencia y Data API
+
+El schema `audit` no se agrega a:
+
+```text
+api.schemas
+extra_search_path
+```
+
+como efecto de 032.
+
+Las consultas futuras atraviesan contratos `api` específicos.
+
+---
+
+#### 100. Integridad de `decision_payload`
+
+Cuando `evidence_storage_mode = FULL_DECISION`:
+
+1. `decision_payload` no es null;
+2. pasa el schema contractual;
+3. decision_id coincide;
+4. outcome coincide;
+5. audit coincide;
+6. hashes coinciden;
+7. evaluator coincide;
+8. canonical fingerprint coincide.
+
+---
+
+#### 101. Integridad de `AUDIT_ANCHOR`
+
+Cuando:
+
+```text
+evidence_storage_mode = AUDIT_ANCHOR
+```
+
+se exige:
+
+- `decision_payload` no requerido;
+- audit context completo;
+- root identity/version;
+- request identity;
+- final outcome;
+- reason codes;
+- hashes;
+- evaluator;
+- resource links;
+- record fingerprint.
+
+No se degrada a un log textual.
+
+---
+
+#### 102. Dataset hashes
+
+`dataset_hashes` conserva exactamente los datasets materialmente consultados.
+
+Incluye dataset válido con:
+
+```text
+matches = []
+```
+
+si fue consultado.
+
+No incluye dataset `NOT_APPLICABLE`.
+
+---
+
+#### 103. Historial y versiones
+
+Una decisión histórica se interpreta contra:
+
+```text
+decision_contract_version
+decision_schema_version
+catalog_hash
+dataset_hashes
+evaluator_name
+evaluator_version
+source_contract_sha256
+```
+
+Nunca se reinterpreta con el catálogo actual como si hubiera sido evaluada hoy.
+
+---
+
+#### 104. Corrección de una decisión
+
+Una nueva realidad o corrección de datos produce:
+
+```text
+nueva evaluación
++
+nuevo decision_id
+```
+
+La relación histórica anterior permanece intacta.
+
+Si se requiere documentar una brecha del registro:
+
+```text
+AUDIT_CORRECTION
+```
+
+de la capa transversal enlaza la evidencia sin modificar el original.
+
+---
+
+#### 105. Simulación
+
+Una simulación no se inserta como decisión real en:
+
+```text
+audit.authorization_decisions
+```
+
+`AUTH-DB-013` conserva su auditoría propia.
+
+Queda prohibido:
+
+```text
+WOULD_ALLOW → ALLOW
+WOULD_DENY → DENY
+```
+
+durante persistencia.
+
+---
+
+#### 106. Cambio de permisos
+
+La auditoría de crear, modificar o retirar grants/denies pertenece a:
+
+```text
+AUTH-DB-012
+```
+
+032 puede vincular una decisión que autorizó ese cambio.
+
+No reemplaza el audit trail del cambio de configuración.
+
+---
+
+#### 107. Auditoría de dispositivos
+
+El ciclo de vida del dispositivo pertenece a:
+
+```text
+AUTH-DB-014
+```
+
+032 conserva `device_id` cuando participó en la decisión.
+
+No registra altas, revocaciones o rotaciones como si fueran decisiones.
+
+---
+
+#### 108. SYSTEM
+
+Una decisión `SYSTEM` persistida conserva:
+
+- principal técnico;
+- actor de sistema;
+- app;
+- permiso;
+- recurso;
+- delegación o proceso aplicable;
+- hashes;
+- evaluator.
+
+`service_role` por sí solo no satisface esas identidades.
+
+---
+
+#### 109. Denegaciones
+
+Una `DENY` válida:
+
+- se persiste como decisión;
+- tiene decision_id;
+- tiene audit context;
+- conserva razones;
+- no tiene authorizing lanes;
+- no inicia efecto.
+
+No se confunde con error técnico.
+
+---
+
+#### 110. Technical failure
+
+Un `TECHNICAL_FAILURE`:
+
+- usa evaluation_attempt_id;
+- no usa decision_id;
+- preserva sesión;
+- no inicia efecto;
+- puede tener retries internos;
+- genera evidencia técnica separada;
+- no incrementa deny rate.
+
+---
+
+#### 111. Métricas separadas
+
+Mínimo:
+
+```text
+authorization_decisions_persisted_total
+authorization_decision_persistence_error_total
+authorization_decision_links_total
+authorization_decision_integrity_conflict_total
+authorization_evaluation_failures_persisted_total
+authorization_evaluation_failure_attempts_total
+authorization_audit_query_total
+authorization_audit_query_denied_total
+authorization_audit_query_latency
+authorization_decision_payload_bytes
+```
+
+Se separan métricas ALLOW, DENY y TECHNICAL_FAILURE.
+
+---
+
+#### 112. Dimensiones de métricas
+
+Pueden utilizarse:
+
+- app;
+- operation kind;
+- request source;
+- outcome;
+- evidence mode;
+- persistence category;
+- evaluator version;
+- contract version.
+
+No usar como label de alta cardinalidad:
+
+- decision_id;
+- actor_id;
+- resource_id;
+- correlation_id.
+
+---
+
+#### 113. Logs
+
+Logs técnicos pueden registrar:
+
+```text
+correlation_id
+decision_id protegido
+evaluation_attempt_id protegido
+operation
+outcome o technical failure
+persistence mode
+latency
+record fingerprint prefix
+```
+
+No registran payload completo.
+
+---
+
+#### 114. Datos prohibidos en logs
+
+No incluir:
+
+- JWT;
+- refresh token;
+- password;
+- PIN;
+- raw credential;
+- decision_payload;
+- matched grants completos;
+- matched denies completos;
+- datos personales innecesarios;
+- documentos;
+- SQL sensible;
+- stack traces expuestos a cliente.
+
+---
+
+#### 115. Sensibilidad
+
+Todo registro declara `sensitivity_class`.
+
+La sensibilidad:
+
+- controla lectura;
+- controla proyección;
+- influye en evidencia;
+- influye en retención;
+- no cambia outcome;
+- no concede autoridad.
+
+---
+
+#### 116. Redacción
+
+La persistencia privada conserva únicamente datos necesarios para reconstrucción.
+
+Campos descriptivos de personas o recursos se sustituyen por:
+
+- IDs;
+- referencias;
+- hashes;
+- códigos canónicos.
+
+No se almacenan nombres humanos por conveniencia.
+
+---
+
+#### 117. `before` y `after`
+
+032 no persiste snapshots genéricos completos `before`/`after`.
+
+Cuando el vínculo de ejecución necesite evidencia de versión, utiliza:
+
+```text
+expected_resource_version
+observed_resource_version
+result_reference
+```
+
+El owner schema conserva el hecho.
+
+---
+
+#### 118. Eventos transversales
+
+Una decisión puede vincularse a:
+
+```text
+BUSINESS_EVENT
+```
+
+pero 032 no crea el `BUSINESS_EVENT_RECORD` genérico.
+
+Cuando el evento exista:
+
+```text
+decision link
+→ event_id
+```
+
+y el evento conserva su propio contrato.
+
+---
+
+#### 119. Outbox
+
+032 no crea:
+
+- outbox;
+- emission attempts;
+- delivery attempts;
+- inbox;
+- consumer effects.
+
+Si una operación produce un business event, la atomicidad del outbox pertenece al contrato transversal correspondiente.
+
+---
+
+#### 120. Correlation chain
+
+Debe poder reconstruirse:
+
+```text
+request
+→ context
+→ decision
+→ command
+→ execution result
+→ business event
+→ error o compensation
+```
+
+mediante:
+
+- correlation_id;
+- causation_id;
+- typed links;
+- referencias propietarias.
+
+---
+
+#### 121. Causalidad
+
+`correlation_id` agrupa.
+
+`causation_id` identifica causa inmediata.
+
+No se usa timestamp como única prueba de causalidad.
+
+---
+
+#### 122. Tiempo
+
+Persistencia usa UTC para instantes técnicos.
+
+Cuando la zona local sea material, se conserva mediante la evidencia propietaria correspondiente.
+
+No se convierte `America/Bogota` en universal de todos los dominios.
+
+---
+
+#### 123. Retención
+
+032 almacena `retention_class`.
+
+No fija días.
+
+No ejecuta borrado por antigüedad.
+
+La disposición consume el contrato de `SUPA-ARC-022`.
+
+---
+
+#### 124. Archivado
+
+El archivado debe preservar:
+
+- decision_id;
+- correlation;
+- actor/principal/device refs;
+- resource refs;
+- hashes;
+- links;
+- integrity fingerprint;
+- versión contractual;
+- búsqueda investigativa autorizada.
+
+No rompe FKs o referencias sin estrategia.
+
+---
+
+#### 125. Restore
+
+Después de restore se valida:
+
+```text
+record counts
+decision_id uniqueness
+fingerprints
+resource-link equality
+decision-link integrity
+technical-failure separation
+policy version
+ACL
+RLS
+search results
+```
+
+No se reevalúan decisiones históricas para “regenerarlas”.
+
+---
+
+#### 126. Backup
+
+`AUTH-DB-029` cubre el backup/restore físico aplicable.
+
+032 añade a su inventario:
+
+- relaciones de decisión;
+- relaciones de fallos;
+- policy de persistencia;
+- funciones;
+- triggers;
+- constraints;
+- indexes;
+- ACL;
+- RLS;
+- fingerprints.
+
+---
+
+#### 127. Partition readiness
+
+Las relaciones de alto crecimiento se diseñan para permitir partición temporal según `SUPA-ARC-021` y `SUPA-ARC-022`.
+
+032 no inventa un intervalo de partición independiente.
+
+La migration física consume el intervalo aprobado vigente.
+
+---
+
+#### 128. Query patterns obligatorios
+
+La estrategia física debe soportar de forma eficiente:
+
+```text
+decision_id
+correlation_id + time
+actor_id + time
+principal_id + time
+device_id + time
+app_code + permission_key + time
+resource_type + resource_id + time
+outcome + time
+evaluation_attempt_id
+technical failure stage + time
+```
+
+---
+
+#### 129. Índices
+
+Los índices exactos se seleccionan según `SUPA-ARC-021` y evidencia de planes.
+
+Obligaciones:
+
+- PK por decision_id;
+- unicidad de failure identity;
+- acceso por correlation;
+- acceso por actor/principal/device;
+- acceso por permission;
+- acceso por resource child relation;
+- acceso temporal;
+- acceso por technical failure;
+- evitar índices redundantes.
+
+---
+
+#### 130. Planes de ejecución
+
+La futura instancia captura `EXPLAIN` o evidencia equivalente para las búsquedas críticas.
+
+No se certifica rendimiento únicamente porque exista un índice.
+
+---
+
+#### 131. Límites
+
+La búsqueda privada aplica un máximo de resultados por página.
+
+El valor físico exacto se fija en la implementación conforme a la política vigente y benchmark.
+
+No existe búsqueda ilimitada por omisión.
+
+---
+
+#### 132. Paginación
+
+La paginación usa cursor estable derivado de:
+
+```text
+decided_at
++
+decision_id
+```
+
+o una clave equivalente que preserve orden total.
+
+No usa `OFFSET` profundo como estrategia canónica para grandes historiales.
+
+---
+
+#### 133. Atomicidad de append principal
+
+La inserción de:
+
+```text
+authorization_decisions
++
+authorization_decision_resources
+```
+
+ocurre en una sola transacción.
+
+No puede existir resource link sin decisión.
+
+No puede declararse éxito si faltan resource links obligatorios.
+
+---
+
+#### 134. Atomicidad de mutación protegida
+
+Para un comando sensible:
+
+```text
+BEGIN
+  evaluate_and_record_authorization
+  if DENY → rollback effect / no effect
+  validate expected resource version
+  execute owner command
+  append decision link
+  owner event/outbox when applicable
+COMMIT
+```
+
+La decisión no ejecuta el comando por sí sola.
+
+---
+
+#### 135. Lectura sensible
+
+Para una lectura que exige evidencia durable antes de responder:
+
+```text
+evaluate_and_record_authorization
+→ persist FULL_DECISION
+→ ejecutar consulta
+→ devolver proyección autorizada
+```
+
+Si audit persistence falla:
+
+```text
+NO RESPUESTA EXITOSA
+```
+
+cuando la clase de compromiso así lo exige.
+
+---
+
+#### 136. Navegación y UI guard
+
+Estas decisiones siguen produciendo audit context y ancla durable.
+
+El modo inicial mínimo puede ser:
+
+```text
+AUDIT_ANCHOR
+```
+
+No se usa la ausencia de full payload para omitir la decisión.
+
+---
+
+#### 137. Agregados
+
+Una decisión sobre agregado conserva:
+
+- aggregate/resource fingerprint;
+- filtros autorizados;
+- resource type;
+- decision identity;
+- audit evidence.
+
+No guarda como audit payload toda la colección subyacente.
+
+---
+
+#### 138. Exportación
+
+Exportación usa como mínimo:
+
+```text
+FULL_DECISION
+```
+
+y exige vínculo con el resultado/export artifact cuando se materialice.
+
+El archivo exportado no se almacena dentro del decision payload.
+
+---
+
+#### 139. Soporte
+
+Una operación de soporte sensible:
+
+- usa FULL_DECISION;
+- conserva finalidad;
+- conserva actor real;
+- conserva recurso;
+- conserva correlation;
+- no obtiene privilegio por ser soporte.
+
+---
+
+#### 140. Mutaciones
+
+CREATE, UPDATE, DELETE, EXECUTE y TRANSITION que produzcan efectos utilizan:
+
+```text
+FULL_DECISION
+```
+
+como modo mínimo inicial.
+
+No se reduce a anchor-only durante la ventana de ejecución.
+
+---
+
+#### 141. Query authorization
+
+Las funciones privadas de búsqueda no deciden por sí mismas si el usuario final puede consultar auditoría.
+
+La autorización se resuelve antes mediante el evaluator canónico.
+
+La función recibe una solicitud ya acotada desde un llamador técnico autorizado.
+
+---
+
+#### 142. Anti-enumeración
+
+Una búsqueda no autorizada no distingue públicamente:
+
+- decisión inexistente;
+- decisión existente sin acceso;
+- actor ajeno;
+- recurso ajeno.
+
+La proyección pública futura usa error seguro.
+
+---
+
+#### 143. Row leakage
+
+Las queries:
+
+- filtran antes de paginar;
+- no recuperan dataset amplio para filtrar en frontend;
+- no revelan total global sin autorización;
+- no revelan payload de filas fuera de scope.
+
+---
+
+#### 144. Consumer access
+
+Una aplicación no obtiene acceso a audit por ser la aplicación evaluada.
+
+Debe existir un permiso y finalidad de consulta propios.
+
+---
+
+#### 145. Corrección histórica
+
+Un bug de evaluator corregido hoy no reescribe decisiones históricas.
+
+Se puede:
+
+```text
+marcar incidente
++
+crear decisión nueva para nueva solicitud
++
+vincular evidencia de corrección
+```
+
+sin mutar el registro anterior.
+
+---
+
+#### 146. Delete prohibido por aplicación
+
+Ninguna aplicación Vento puede borrar una decisión para ocultar:
+
+- DENY;
+- ALLOW;
+- error;
+- actividad administrativa;
+- intento fallido.
+
+La disposición solo ocurre por retención autorizada.
+
+---
+
+#### 147. Cambio de retention class
+
+Una modificación de política de retención no reescribe silenciosamente historia.
+
+Se aplica conforme a `SUPA-ARC-022`, preservando legal hold y evidencia de cambio.
+
+---
+
+#### 148. Migration forward
+
+Todo cambio físico se crea en una nueva migration de `vento-shell`.
+
+No se edita una migration ya aplicada.
+
+No se usa Dashboard como fuente final.
+
+---
+
+#### 149. Idempotencia de migration
+
+Una segunda aplicación segura no:
+
+- duplica tablas;
+- duplica policies;
+- duplica triggers;
+- duplica policy rows;
+- amplía grants;
+- reescribe decisiones;
+- resetea fingerprints.
+
+Un drift incompatible exige migration forward.
+
+---
+
+#### 150. Dependencias físicas de `AUTH-DB-032::GLOBAL`
+
+Antes de autorizar la instancia debe existir evidencia compatible de:
+
+```text
+AUTH-DB-016::GLOBAL
+AUTH-DB-017::GLOBAL cuando api sea requerido
+AUTH-DB-018::GLOBAL
+AUTH-DB-019::GLOBAL
+AUTH-DB-033::GLOBAL
+AUTH-DB-035::GLOBAL
+AUTH-DB-034::GLOBAL
+AUTH-DB-027
+AUTH-DB-028
+AUTH-DB-029
+SUPA-ARC-007 vigente
+SUPA-ARC-021 vigente
+SUPA-ARC-022 vigente
+```
+
+En particular:
+
+```text
+audit schema ausente
+→ 032 no crea un bypass de AUTH-DB-016
+
+evaluator canónico ausente
+→ 032 no fabrica decisiones propias
+```
+
+---
+
+#### 151. Estado físico actual frente a dependencias
+
+La auditoría remota actual confirma:
+
+```text
+audit schema = AUSENTE
+canonical decision persistence = AUSENTE
+```
+
+Por tanto, el desarrollo documental de 032 no constituye readiness física.
+
+La futura instancia deberá ejecutar su propio preflight de dependencias.
+
+---
+
+#### 152. Manifiesto de implementación
+
+La futura evidencia debe registrar:
+
+```text
+instance_id
+project_ref
+environment
+migration_files
+source_contract_sha256
+authorization_decision_contract_version
+audit_context_contract_version
+technical_failure_contract_version
+audit_policy_version
+retention_policy_version
+table_inventory
+function_inventory
+trigger_inventory
+constraint_inventory
+index_inventory
+rls_snapshot
+acl_snapshot_before
+acl_snapshot_after
+decision_count_before
+decision_count_after
+technical_failure_count_before
+technical_failure_count_after
+query_plan_evidence
+rollback_plan
+restore_evidence
+validation_commands
+```
+
+---
+
+#### 153. Orden físico de materialización
+
+Secuencia:
+
+```text
+1. verificar dependencias
+2. capturar baseline
+3. verificar audit schema
+4. crear persistence policy
+5. crear authorization_decisions
+6. crear authorization_decision_resources
+7. crear authorization_decision_links
+8. crear authorization_evaluation_failures
+9. crear authorization_evaluation_failure_attempts
+10. crear constraints
+11. crear indexes
+12. crear append functions
+13. crear query functions
+14. crear mutation-rejection trigger
+15. aplicar RLS/ACL
+16. crear persistence profile resolver
+17. crear evaluate-and-record coordinator
+18. integrar safe decision wrapper sin cambiar contrato externo
+19. ejecutar contract tests
+20. ejecutar integrity tests
+21. ejecutar security tests
+22. ejecutar transaction tests
+23. ejecutar query-plan tests
+24. ejecutar technical-failure tests
+25. ejecutar concurrency tests
+26. ejecutar rollback rehearsal
+27. ejecutar restore rehearsal
+28. ejecutar drift final
+29. registrar evidencia
+```
+
+---
+
+#### 154. Relación con `AUTH-DB-012`
+
+032 crea el soporte durable para decisiones.
+
+012 implementará la auditoría de:
+
+- creación de grants;
+- modificación de grants;
+- retiro de grants;
+- cambios de denies;
+- cambios de matrices o configuración de permisos según su contrato.
+
+Una decisión que autorice ese cambio puede enlazarse, pero no reemplaza el audit entry del cambio.
+
+---
+
+#### 155. Relación con `AUTH-DB-013`
+
+013 conserva:
+
+```text
+SimulationContext
++
+simulated decisions
++
+entrada/salida de simulación
+```
+
+separadas de la autoridad real.
+
+No escribe `WOULD_ALLOW` en `authorization_decisions`.
+
+---
+
+#### 156. Relación con `AUTH-DB-014`
+
+014 conserva eventos y evidencia del ciclo de dispositivos.
+
+032 únicamente conserva `device_id` y vínculos relevantes cuando el dispositivo participó en una decisión.
+
+---
+
+#### 157. Relación con `AUTH-DB-021`
+
+021 migrará RLS.
+
+032 no reescribe policies actuales.
+
+El audit de una operación protegida por RLS se diseña sin side effects dentro del predicate.
+
+---
+
+#### 158. Relación con `AUTH-DB-030`
+
+030 retira funciones y políticas legacy después de:
+
+- adopción;
+- paridad;
+- telemetría;
+- ausencia de consumidores;
+- rollback probado.
+
+032 no retira nada legacy.
+
+---
+
+#### 159. No dependencia de logs
+
+Se considera inválido:
+
+```text
+console log
+postgres log
+edge log
+provider log
+```
+
+como sustituto de:
+
+```text
+authorization_decisions
+```
+
+para evidencia empresarial canónica.
+
+---
+
+#### 160. No dependencia de métricas
+
+Un contador de ALLOW/DENY no permite reconstruir una decisión.
+
+Métricas complementan.
+
+No reemplazan persistencia.
+
+---
+
+#### 161. No autoridad por persistencia
+
+La existencia de una fila:
+
+```text
+decision_id = X
+outcome = ALLOW
+```
+
+no permite ejecutar una operación futura.
+
+La fila es evidencia histórica.
+
+No es capacidad.
+
+---
+
+#### 162. No replay
+
+Queda prohibido:
+
+```text
+leer ALLOW histórico
+→ ejecutar efecto hoy
+```
+
+Toda nueva operación requiere nueva evaluación.
+
+---
+
+#### 163. Duplicado con mismo ID
+
+Un duplicado byte/semánticamente equivalente se trata idempotentemente.
+
+Un duplicado incompatible produce incidente de integridad.
+
+No crea otro registro con sufijo.
+
+---
+
+#### 164. FK y referencias
+
+Las FKs físicas se aplican cuando ambos lados pertenecen a una frontera estable y la arquitectura las permite.
+
+No se crea una FK hacia:
+
+- tabla legacy;
+- objeto administrado inestable;
+- recurso polimórfico genérico;
+- event store todavía no materializado;
+
+solo para simular integridad.
+
+Los vínculos tipados conservan referencia y fingerprint hasta que una FK canónica exista.
+
+---
+
+#### 165. Resource references
+
+`authorization_decision_resources` no intenta FK polimórfica a todas las tablas de negocio.
+
+La integridad del recurso se prueba mediante:
+
+- resource resolver;
+- resource fingerprint;
+- typed reference;
+- owner schema;
+- evidencia de decisión.
+
+---
+
+#### 166. Principal references
+
+La persistencia no crea un nuevo maestro de principal.
+
+Conserva el ID histórico emitido.
+
+La fuente vigente permanece en `identity_access`.
+
+---
+
+#### 167. Device references
+
+La persistencia no crea un nuevo maestro de device.
+
+Conserva referencia histórica y fingerprint/context aplicable.
+
+---
+
+#### 168. Hash drift
+
+Una decisión ya persistida no cambia porque el catálogo actual tenga otro hash.
+
+El drift solo afecta nuevas evaluaciones y la validación de historial.
+
+---
+
+#### 169. Archive drift
+
+Después de archivar y restaurar:
+
+```text
+decision_record_fingerprint
+```
+
+debe permanecer idéntico.
+
+Una diferencia es corrupción.
+
+---
+
+#### 170. Query de historial
+
+La consulta privada puede diferenciar:
+
+```text
+ACTIVE_STORAGE
+ARCHIVED_STORAGE
+```
+
+como ubicación técnica.
+
+No cambia el significado de la decisión.
+
+La estrategia exacta de federación/restore pertenece a retención.
+
+---
+
+#### 171. Consistencia de resource child rows
+
+Se prueba:
+
+```text
+set(authorization_decision_resources.resource_id)
+=
+set(authorization_decisions.resource_ids)
+```
+
+para cada decisión con IDs.
+
+No existen filas huérfanas.
+
+---
+
+#### 172. Consistencia de links
+
+Todo `authorization_decision_links.decision_id` debe resolver a una decisión persistida.
+
+Un technical failure no se enlaza fingiendo decision_id.
+
+---
+
+#### 173. Consistencia de failure attempts
+
+Todo failure attempt resuelve a un `evaluation_attempt_id` reconocido por su caso técnico.
+
+La secuencia de intentos es monotónica.
+
+---
+
+#### 174. Technical failure final
+
+El registro final conserva:
+
+```text
+retry_count
+retry_budget
+duration_ms
+final sanitized failure
+```
+
+sin reinterpretar cada retry como DENY.
+
+---
+
+#### 175. Post-effect failure
+
+Un fallo posterior a iniciar un efecto no se clasifica en la tabla pre-efecto si:
+
+```text
+effects_committed
+```
+
+es desconocido.
+
+Se crea evidencia de error/reconciliación en la capa correspondiente y se enlaza a la decisión si existe.
+
+---
+
+#### 176. Rollback antes de adopción
+
+Si 032 se materializa pero ningún consumidor fue adoptado:
+
+```text
+1. comprobar cero consumidores
+2. restaurar cuerpo anterior del safe wrapper mediante migration forward
+3. revocar grants de funciones 032
+4. retirar coordinador
+5. retirar query/append functions
+6. retirar triggers
+7. retirar tablas vacías o conservarlas según rollback plan
+8. no tocar legacy
+9. validar drift
+```
+
+No se usa `DROP CASCADE`.
+
+---
+
+#### 177. Rollback después de datos
+
+Si existen decisiones persistidas:
+
+```text
+NO DROP de evidencia histórica
+```
+
+El rollback de código:
+
+- detiene nuevas escrituras;
+- revierte caller adoption;
+- conserva tablas;
+- conserva decisiones;
+- conserva links;
+- conserva failures;
+- registra incidente;
+- usa migration forward.
+
+---
+
+#### 178. Rollback después de efectos
+
+Un rollback de software no borra:
+
+- decisión;
+- comando;
+- evento;
+- efecto;
+- error;
+- compensación.
+
+La historia permanece.
+
+---
+
+#### 179. Restore rehearsal
+
+El rehearsal debe demostrar:
+
+1. backup identificable;
+2. restore aislado;
+3. conteos;
+4. PKs;
+5. FKs;
+6. hashes;
+7. resource links;
+8. execution links;
+9. failures;
+10. failure attempts;
+11. policy activa;
+12. RLS;
+13. ACL;
+14. funciones;
+15. queries;
+16. no reinterpretación histórica.
+
+---
+
+#### 180. Pruebas — decisiones válidas
+
+La futura instancia debe demostrar:
+
+1. persistir ALLOW;
+2. persistir DENY;
+3. decision_id único;
+4. audit decision_id igual;
+5. decided_at conservado;
+6. recorded_at válido;
+7. correlation null legítima;
+8. correlation presente;
+9. actor/principal/device consistentes;
+10. app consistente;
+11. permission consistente;
+12. outcome consistente;
+13. lanes consistentes;
+14. reason codes válidos;
+15. context fingerprint;
+16. resource fingerprint;
+17. catalog hash;
+18. dataset hashes;
+19. evaluator identity;
+20. record fingerprint.
+
+---
+
+#### 181. Pruebas — modos de evidencia
+
+21. navigation → anchor;
+22. UI guard → anchor;
+23. ordinary read → anchor;
+24. aggregate → anchor;
+25. sensitive read → full;
+26. export → full;
+27. support → full;
+28. mutation → full;
+29. escalation anchor→full permitida por policy;
+30. downgrade obligatorio→anchor bloqueado;
+31. caller no controla evidence mode;
+32. caller no controla retention class.
+
+---
+
+#### 182. Pruebas — idempotencia e inmutabilidad
+
+33. mismo ID + mismo fingerprint idempotente;
+34. mismo ID + fingerprint distinto falla;
+35. UPDATE rechazado;
+36. DELETE rechazado;
+37. correction no modifica original;
+38. nueva realidad usa nuevo decision_id;
+39. record fingerprint reproducible;
+40. archive/restore conserva fingerprint.
+
+---
+
+#### 183. Pruebas — recursos
+
+41. resource_ids deduplicados;
+42. orden determinista;
+43. child rows equivalentes;
+44. draft vacío válido;
+45. resource mismatch bloquea;
+46. resource child huérfano imposible;
+47. resource search exacta;
+48. resource fingerprint no cambia en persistencia.
+
+---
+
+#### 184. Pruebas — links
+
+49. COMMAND link;
+50. EXECUTION_RESULT link;
+51. BUSINESS_EVENT link;
+52. ERROR link;
+53. COMPENSATION link;
+54. RECONCILIATION link;
+55. AUDIT_ENTRY link;
+56. duplicate exacto idempotente;
+57. duplicate incompatible falla;
+58. decision inexistente falla;
+59. correlation incompatible falla;
+60. expected/observed version preservadas;
+61. idempotency reference minimizada.
+
+---
+
+#### 185. Pruebas — technical failure
+
+62. technical failure no crea decision row;
+63. no decision_id;
+64. evaluation_attempt_id único;
+65. source_status UNAVAILABLE;
+66. session_preserved true;
+67. effects_committed false;
+68. retry_count;
+69. retry_budget;
+70. duration;
+71. source versions conocidas;
+72. source fingerprints conocidas;
+73. support code;
+74. provider code sanitizado;
+75. permission privada no se expone;
+76. deny metrics no incrementan.
+
+---
+
+#### 186. Pruebas — failure attempts
+
+77. ordinal 1;
+78. retry ordinal 2;
+79. misma evaluation identity;
+80. request nueva usa otra identity;
+81. budget respetado;
+82. duration no negativa;
+83. payload proveedor no persistido;
+84. secrets ausentes;
+85. retry_after preservado.
+
+---
+
+#### 187. Pruebas — coordinador
+
+86. evaluator invocado una vez;
+87. append invocado una vez;
+88. append fail impide retorno ejecutable;
+89. DENY se persiste;
+90. ALLOW se persiste;
+91. no ejecuta dominio;
+92. no evalúa simulación;
+93. no acepta actor override;
+94. no acepta evidence mode override.
+
+---
+
+#### 188. Pruebas — safe wrapper
+
+95. firma externa sin cambio;
+96. response segura sin cambio semántico;
+97. decision se persiste antes de response;
+98. full payload no cruza;
+99. audit raw no cruza;
+100. failure de audit bloquea éxito cuando aplique;
+101. authenticated sigue sin acceso a audit raw.
+
+---
+
+#### 189. Pruebas — RLS
+
+102. policy predicate no escribe audit;
+103. SELECT RLS no genera inserts por fila;
+104. preflight persistente usa una decisión;
+105. predicate produce misma semántica;
+106. operation sin preflight requerido permanece bloqueada;
+107. 032 no reescribe policies legacy.
+
+---
+
+#### 190. Pruebas — consultas
+
+108. get por decision_id;
+109. correlation search;
+110. actor search;
+111. principal search;
+112. device search;
+113. app+permission search;
+114. resource search;
+115. outcome search;
+116. time bounds;
+117. cursor estable;
+118. limit obligatorio;
+119. no arbitrary order;
+120. no arbitrary SQL;
+121. decision_payload excluido por defecto.
+
+---
+
+#### 191. Pruebas — seguridad
+
+122. audit fuera de Data API;
+123. PUBLIC sin acceso;
+124. anon sin acceso;
+125. authenticated sin acceso raw;
+126. service_role sin acceso global;
+127. append function con grant mínimo;
+128. query function con grant mínimo;
+129. fixed search_path;
+130. homonym table test;
+131. homonym function test;
+132. search_path poisoning;
+133. SQL injection;
+134. function-name injection;
+135. relation-name injection.
+
+---
+
+#### 192. Pruebas — privacidad
+
+136. no JWT;
+137. no refresh token;
+138. no PIN;
+139. no secret;
+140. no raw credential;
+141. no nombres personales innecesarios;
+142. no provider payload completo;
+143. reason codes sin copy libre;
+144. logs sin full payload.
+
+---
+
+#### 193. Pruebas — transacción
+
+145. decision anchor antes de mutación;
+146. persistence failure → cero efecto;
+147. DENY → cero efecto;
+148. concurrency conflict → decisión no reutilizada;
+149. stale context → nueva evaluación;
+150. post-effect unknown → reconciliation;
+151. event link conserva causalidad;
+152. rollback no borra historia.
+
+---
+
+#### 194. Pruebas — restore y crecimiento
+
+153. backup incluye tablas;
+154. backup incluye functions;
+155. backup incluye ACL/RLS;
+156. restore conserva hashes;
+157. restore conserva links;
+158. restore conserva failures;
+159. retention class preservada;
+160. legal hold respetado;
+161. query plan decision_id;
+162. query plan correlation;
+163. query plan actor;
+164. query plan resource;
+165. query plan permission;
+166. p50 registrado;
+167. p95 registrado;
+168. segunda migration execution idempotente;
+169. drift final.
+
+---
+
+#### 195. Pruebas — fronteras
+
+170. 012 no absorbida;
+171. 013 no absorbida;
+172. 014 no absorbida;
+173. 021 no absorbida;
+174. 030 no absorbida;
+175. no business event store genérico;
+176. no outbox genérico;
+177. no consumer inbox;
+178. no direct client audit API;
+179. no authority from historical ALLOW;
+180. no technical failure as DENY.
+
+---
+
+#### 196. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** `AUTH-DB-032` materializa responsabilidades de auditoría, evidencia, separación de fallos técnicos, transacción, inmutabilidad, seguridad, retención y vínculo decisión–ejecución que ya están cubiertas por contratos y requisitos aprobados. La tarea no crea una capacidad empresarial nueva, un permiso nuevo, una regla de autorización nueva ni una semántica de prueba que requiera otra identidad en el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 197. Cobertura de prueba vigente reutilizada
+
+La trazabilidad existente que ya asigna responsabilidad material a 032 incluye, entre otros:
+
+- `TREQ-AUTH-015`, evidencia correlacionable de decisiones y acciones;
+- `TREQ-AUTH-311`, cero efectos ante fallo técnico pre-efecto y reconciliación post-efecto;
+- `TREQ-AUTH-316`, `evaluation_attempt_id` y auditoría técnica separada;
+- `TREQ-AUTH-317`, dependencia durable obligatoria antes de efecto;
+- `TREQ-AUTH-318`, reconciliación física multicanal;
+- los requisitos de `SUPA-ARC-007` sobre `audit`, atomicidad, inmutabilidad, outbox, causalidad, seguridad, minimización, retención e integridad.
+
+Esta sección es trazabilidad heredada.
+
+No modifica esas filas.
+
+---
+
+#### 198. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | el desarrollo documental no creó migrations, relaciones, funciones, triggers, indexes, policies ni código runtime                                                                                                                                                                                                                                                                                                                                                                                                         |
+| LOCAL     | NOT_EXECUTED   | pendiente de insertar el bloque en la rama documental `task/auth-db-032`, normalizarlo con `docs:task:format --write` y ejecutar los validadores reales del checkout                                                                                                                                                                                                                                                                                                                                                      |
+| REMOTA    | PASS           | auditoría read-only 2026-08-22: continuidad remota `AUTH-DB-034 → AUTH-DB-032 → AUTH-DB-012`; topología `GLOBAL_ENABLE_ONCE` con gate `PRE_E5_FOUNDATION`; `SUPA-ARC-007` confirma `audit` y `AUDIT_ATOMIC_REQUIRED` para decisiones de autorización; AUTH-CTX-024 asigna a 032 persistencia inmutable y vínculo decisión–ejecución; AUTH-ERR-019 separa `evaluation_attempt_id` de `decision_id`; `vento-os-dev` está `ACTIVE_HEALTHY`, `audit` no existe y no se observó persistencia canónica de AuthorizationDecision |
+| OPERATIVA | NOT_APPLICABLE | no se modificaron consumidores, RPC, RLS, navegación, UI, procesos ni aplicaciones                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| FÍSICA    | NOT_APPLICABLE | no se ejecutó SQL mutante, no se creó migration y `AUTH-DB-032::GLOBAL` no fue autorizada                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+
+---
+
+#### 199. Decisiones vinculantes
+
+1. La futura instancia es `AUTH-DB-032::GLOBAL`.
+2. El modo es `GLOBAL_ENABLE_ONCE`.
+3. El gate es `PRE_E5_FOUNDATION`.
+4. El schema objetivo es `audit`.
+5. `audit` no tiene autoridad empresarial.
+6. La decisión real usa `decision_id`.
+7. El fallo técnico usa `evaluation_attempt_id`.
+8. No se mezclan ambas identidades.
+9. ALLOW se persiste.
+10. DENY se persiste.
+11. TECHNICAL_FAILURE no se persiste como decisión.
+12. Toda decisión persistida conserva audit context.
+13. La ancla usa `AUDIT_ATOMIC_REQUIRED`.
+14. Persistencia obligatoria falla cerrada.
+15. La decisión no escapa como ejecutable si falla su ancla.
+16. Se crea `authorization_decisions`.
+17. Se crea `authorization_decision_resources`.
+18. Se crea `authorization_decision_links`.
+19. Se crea `authorization_evaluation_failures`.
+20. Se crea `authorization_evaluation_failure_attempts`.
+21. Se crea `authorization_decision_persistence_policies`.
+22. Las relaciones son privadas.
+23. No se exponen por Data API.
+24. No hay acceso directo cliente.
+25. `service_role` no tiene acceso global por defecto.
+26. Se usa owner no interactivo.
+27. Se usa fixed search_path.
+28. No hay SQL dinámico abierto.
+29. Se define `AUDIT_ANCHOR`.
+30. Se define `FULL_DECISION`.
+31. Navegación usa anchor mínimo.
+32. UI guard usa anchor mínimo.
+33. Lectura ordinaria usa anchor mínimo.
+34. Agregado usa anchor mínimo.
+35. Lectura sensible usa full.
+36. Exportación usa full.
+37. Soporte usa full.
+38. Mutación usa full.
+39. Caller no controla persistence profile.
+40. Caller no controla retention class.
+41. Retención consume SUPA-ARC-022.
+42. No se fijan días localmente.
+43. Legal hold prevalece sobre disposición.
+44. `decision_payload` es privado.
+45. `decision_record_fingerprint` no es autoridad.
+46. Reintento exacto es idempotente.
+47. Mismo ID con distinto fingerprint falla.
+48. UPDATE runtime está prohibido.
+49. DELETE runtime está prohibido.
+50. Corrección produce nueva decisión.
+51. Resource IDs se normalizan en child rows.
+52. Resource draft puede tener array vacío.
+53. Resource child rows deben ser equivalentes.
+54. Links son append-only.
+55. Link no crea el hecho.
+56. Vínculo previo puede apuntar a command.
+57. Vínculo posterior puede apuntar a result/event.
+58. Concurrency conflict no reutiliza decisión.
+59. Stale no reescribe decisión.
+60. Post-effect unknown va a reconciliación.
+61. Technical failure pre-efecto exige effects_committed=false.
+62. Technical failure preserva sesión.
+63. Retry técnico conserva evaluation attempt.
+64. Nueva solicitud usa nuevo attempt ID.
+65. Failure attempts son append-only.
+66. Se define append function de decisión.
+67. Se define append function de link.
+68. Se define append function de technical failure.
+69. Se define append function de failure attempt.
+70. Se define trigger de inmutabilidad.
+71. Se define persistence profile resolver.
+72. Se define evaluate-and-record coordinator.
+73. El coordinator no duplica evaluator.
+74. El coordinator no ejecuta efecto.
+75. Safe wrapper conserva firma.
+76. Safe wrapper pasa por persistencia.
+77. Safe outcome no es bearer token.
+78. RLS predicate permanece side-effect free.
+79. No se inserta audit por fila desde RLS.
+80. Data API auditable requiere preflight cuando corresponda.
+81. RPC sensible futura usa evaluate-and-record.
+82. Se define get por decision_id.
+83. Se define search estructurado.
+84. Search no acepta SQL libre.
+85. Search exige limit.
+86. Search usa cursor estable.
+87. Search puede filtrar correlation.
+88. Search puede filtrar actor.
+89. Search puede filtrar principal.
+90. Search puede filtrar device.
+91. Search puede filtrar app/permission.
+92. Search puede filtrar resource.
+93. Search por actor es sensible.
+94. 032 no crea API genérica de auditoría cliente.
+95. Anti-enumeration es obligatoria.
+96. Historial conserva versiones.
+97. Historial no se reinterpreta con catálogo actual.
+98. Simulación permanece fuera.
+99. 012 conserva cambios de permisos.
+100. 013 conserva simulación.
+101. 014 conserva ciclo de dispositivo.
+102. 021 conserva migración RLS.
+103. 030 conserva retiro legacy.
+104. Logs no sustituyen audit.
+105. Métricas no sustituyen audit.
+106. Persisted ALLOW no autoriza replay.
+107. No existe replay desde decision histórica.
+108. FKs polimórficas falsas están prohibidas.
+109. Principal master no se duplica.
+110. Device master no se duplica.
+111. Archive conserva fingerprint.
+112. Restore no reevalúa historia.
+113. Query patterns obligatorios quedan fijados.
+114. Índices se prueban con planes.
+115. Partición consume 021/022.
+116. Backup consume 029.
+117. Mutation usa frontera transaccional.
+118. Sensitive read respeta durable-before-response cuando aplique.
+119. Export vincula resultado.
+120. Soporte no obtiene autoridad implícita.
+121. SYSTEM conserva principal técnico.
+122. `audit` actualmente ausente es dependencia física.
+123. 032 no crea bypass de 016.
+124. 032 no fabrica evaluator si 034 no está materializada.
+125. Migration es forward-only.
+126. Rollback no usa DROP CASCADE.
+127. Rollback con datos conserva evidencia.
+128. No se modifican requisitos de prueba.
+129. Se especifican 180 comprobaciones físicas mínimas.
+130. La siguiente tarea documental es AUTH-DB-012.
+
+---
+
+#### 200. Criterios de aceptación
+
+`AUTH-DB-032` queda documentalmente completa cuando:
+
+1. fija instancia, modo y gate;
+2. consume audit como schema transversal;
+3. separa autoridad y evidencia;
+4. fija atomicidad de decisión;
+5. define baseline física;
+6. descarta logs ajenos como autoridad;
+7. define tabla principal;
+8. define identidad;
+9. define columnas mínimas;
+10. define tiempos;
+11. define igualdad de IDs;
+12. define correlation;
+13. define actor/principal/device;
+14. define app/permission;
+15. define resource;
+16. define outcome;
+17. define lanes;
+18. define reasons;
+19. define fingerprints;
+20. define record fingerprint;
+21. define canonical JSON;
+22. define decision payload;
+23. define evidence modes;
+24. define policy inicial;
+25. impide caller-controlled policy;
+26. define policy registry;
+27. define retention;
+28. define legal hold;
+29. define immutability;
+30. define idempotent duplicate;
+31. define resource table;
+32. define resource equality;
+33. define link table;
+34. define link kinds;
+35. define link columns;
+36. define link identity;
+37. define pre-effect link;
+38. define post-effect link;
+39. define concurrency;
+40. define stale behavior;
+41. define idempotency reference;
+42. define unknown outcome;
+43. separa technical failure;
+44. define failure table;
+45. define failure shape;
+46. define failure invariants;
+47. define retry-attempt table;
+48. define retry identity;
+49. define retry behavior;
+50. define audit-store failure;
+51. define append decision;
+52. define append validation;
+53. define append security;
+54. define append link;
+55. define append failure;
+56. define append failure attempt;
+57. define mutation trigger;
+58. define no historical update;
+59. define profile resolver;
+60. define coordinator;
+61. define coordinator security;
+62. define no-escape rule;
+63. integra safe wrapper;
+64. prohíbe bearer decision;
+65. mantiene RLS side-effect free;
+66. define preflight RLS;
+67. conserva adopción RPC;
+68. define get;
+69. define search;
+70. define filtros;
+71. define límites;
+72. define correlation search;
+73. define actor search;
+74. define permission search;
+75. define resource search;
+76. define links query;
+77. no crea API cliente genérica;
+78. fija cero direct access;
+79. limita service role;
+80. define owner;
+81. fija search path;
+82. prohíbe SQL dinámico;
+83. define RLS defensiva;
+84. verifica FORCE RLS;
+85. verifica ACL defaults;
+86. mantiene audit fuera de Data API;
+87. valida full payload;
+88. valida anchor;
+89. conserva dataset hashes;
+90. preserva historial/versiones;
+91. define correction;
+92. excluye simulación;
+93. preserva 012;
+94. preserva 013;
+95. preserva 014;
+96. define SYSTEM;
+97. persiste DENY;
+98. separa technical failure;
+99. separa métricas;
+100. define logs;
+101. define privacidad;
+102. define sensibilidad;
+103. define redacción;
+104. evita before/after genérico;
+105. define event links;
+106. excluye outbox genérico;
+107. define correlation chain;
+108. define causalidad;
+109. define tiempo;
+110. define retención;
+111. define archivado;
+112. define restore;
+113. define backup;
+114. define partition readiness;
+115. define query patterns;
+116. define índices por planes;
+117. define limits;
+118. define cursor;
+119. define atomic append;
+120. define atomic mutation;
+121. define sensitive read;
+122. define navigation;
+123. define aggregate;
+124. define export;
+125. define support;
+126. define mutation;
+127. define query authorization;
+128. define anti-enumeration;
+129. define row leakage;
+130. define consumer access;
+131. define historical correction;
+132. prohíbe app delete;
+133. gobierna retention changes;
+134. exige migration forward;
+135. exige idempotent migration;
+136. fija physical dependencies;
+137. registra estado actual;
+138. define implementation manifest;
+139. define materialization order;
+140. delimita 012;
+141. delimita 013;
+142. delimita 014;
+143. delimita 021;
+144. delimita 030;
+145. separa logs;
+146. separa metrics;
+147. niega authority by persistence;
+148. niega replay;
+149. define incompatible duplicate;
+150. define referencias;
+151. define resource refs;
+152. no duplica principal;
+153. no duplica device;
+154. conserva hash drift;
+155. conserva archive integrity;
+156. define history query;
+157. valida resource children;
+158. valida links;
+159. valida failure attempts;
+160. define final technical failure;
+161. define post-effect handling;
+162. define rollback sin adopción;
+163. define rollback con datos;
+164. define rollback con efectos;
+165. define restore rehearsal;
+166. define pruebas de decisión;
+167. define pruebas de evidencia;
+168. define pruebas de idempotencia;
+169. define pruebas de recursos;
+170. define pruebas de links;
+171. define pruebas de technical failure;
+172. define pruebas de retries;
+173. define pruebas de coordinator;
+174. define pruebas de safe wrapper;
+175. define pruebas RLS;
+176. define pruebas de queries;
+177. define pruebas de seguridad;
+178. define pruebas de privacidad;
+179. define pruebas transaccionales;
+180. define pruebas de restore;
+181. declara cero TREQ nuevos;
+182. registra evidencia remota;
+183. conserva límites;
+184. reserva AUTH-DB-012 sin desarrollarla.
+
+---
+
+#### 201. Límites
+
+`AUTH-DB-032` no:
+
+- ejecuta SQL durante su desarrollo documental;
+- crea migrations durante su desarrollo documental;
+- autoriza `AUTH-DB-032::GLOBAL`;
+- crea el schema `audit` saltándose `AUTH-DB-016`;
+- implementa `AUTH-DB-034`;
+- cambia la semántica de `AuthorizationDecision`;
+- cambia la semántica de `AuthorizationAuditContext`;
+- cambia `AuthorizationTechnicalFailure`;
+- convierte technical failure en DENY;
+- convierte DENY en fallo técnico;
+- convierte decision_id en token;
+- ejecuta efectos empresariales;
+- crea fuente de verdad de recursos;
+- duplica principal;
+- duplica device;
+- implementa simulación;
+- implementa auditoría de cambios de permisos;
+- implementa auditoría de simulación;
+- implementa auditoría del ciclo de dispositivos;
+- crea el event store transversal completo;
+- crea outbox genérico;
+- crea inbox genérico;
+- crea workers;
+- habilita Realtime;
+- crea Edge Functions;
+- crea webhooks;
+- crea cron;
+- migra las policies RLS actuales;
+- migra RPC sensibles;
+- retira helpers legacy;
+- fija periodos de retención fuera de SUPA-ARC-022;
+- expone audit a Data API;
+- concede acceso directo a clientes;
+- modifica 04A;
+- desarrolla `AUTH-DB-012`.
+
+---
+
+#### 202. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-012 — Implementar auditoría de cambios de permisos`
+
 
 ### [ ] AUTH-DB-012 — Implementar auditoría de cambios de permisos
 ### [ ] AUTH-DB-013 — Implementar auditoría de simulación
