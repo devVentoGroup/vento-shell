@@ -1,10 +1,67 @@
 {
   "instance_id": "SHELL-CON-016::GLOBAL",
   "task_id": "SHELL-CON-016",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar el contrato estatico interno de propiedad funcional de SHELL-CON-016::GLOBAL en packages/contracts/ownership.",
+    "Conservar 69 asignaciones de propietaria de proceso, universo canonico de 10 AppCode y 9 AppCode efectivamente usados como propietaria porque shell tiene 0 procesos.",
+    "Cubrir las 217 decisiones de fuente de CAP-MAP-008 mediante el modelo canonico familia mas excepcion, con 18 familias y 5 estados de fuente.",
+    "Conservar documentado el caso AS-IS public.employee_shifts sin remediarlo.",
+    "Crear y validar generator, validator, generated contract, generated index y README interno de ownership.",
+    "Modificar packages/contracts/README.md exclusivamente para registrar el modulo interno de ownership y preservar compatibilidad con contratos predecesores.",
+    "Incorporar la correccion documental ya comprometida de PROC-CAT-005 y SHELL-CON-016 que distingue 10 AppCode canonicos de 9 AppCode efectivamente utilizados como propietaria de proceso.",
+    "Modificar SHELL-CON-016__GLOBAL.json exclusivamente para conservar autorizacion, estado y evidencia de esta instancia.",
+    "No modificar 04A/TREQ, implementation-control.json, packages/contracts/package.json, Supabase, RLS, RPC, migraciones, datos, consumidores, UI, endpoints, permisos, infraestructura runtime, releases, secretos ni SHELL-CON-017."
+  ],
+  "validation_commands": [
+    "node packages/contracts/ownership/scripts/generate-functional-ownership-contracts.mjs --check",
+    "node packages/contracts/ownership/scripts/validate-functional-ownership-contracts.mjs",
+    "node packages/contracts/processes/scripts/validate-process-id-contracts.mjs",
+    "node packages/contracts/authorization/scripts/validate-authorization-catalog.mjs",
+    "node packages/contracts/actions/scripts/validate-functional-action-contracts.mjs",
+    "node packages/contracts/events/scripts/validate-business-event-contracts.mjs",
+    "node packages/contracts/handoffs/scripts/validate-handoff-contracts.mjs",
+    "node packages/contracts/work-items/scripts/validate-work-item-contracts.mjs",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T19:02:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo continuar SHELL-CON-016::GLOBAL con la reconciliacion canonica detectada durante la implementacion: existen 10 AppCode canonicos y 9 AppCode efectivamente utilizados como propietaria de los 69 procesos porque shell tiene 0 procesos asignados. Se preservan las 69 asignaciones. Autorizo la correccion documental ya comprometida de PROC-CAT-005 y SHELL-CON-016 y la materializacion estatica de packages/contracts/ownership. No se modifican 04A/TREQ, Supabase, datos, runtime, consumidores ni responsabilidades posteriores.",
+    "source_contract_sha256": "2c25fe22efaae43ace4f90d029d320bc60265760b6217378fa71b48f72e965b3"
+  },
+  "evidence": [
+    "MATERIALIZATION internal functional ownership static contract created",
+    "VALIDATION functional ownership generator PASS",
+    "VALIDATION functional ownership freshness PASS",
+    "VALIDATION functional ownership contracts PASS",
+    "VALIDATION process ownership assignments=69",
+    "VALIDATION canonical AppCode universe=10",
+    "VALIDATION distinct AppCode values assigned as process owner=9",
+    "VALIDATION shell process assignments=0",
+    "VALIDATION subcapacity source decisions covered=217",
+    "VALIDATION capability family projections=18",
+    "VALIDATION source target statuses=5",
+    "VALIDATION representation classes=5",
+    "VALIDATION competing ownership cases=1",
+    "VALIDATION ownership_id absent",
+    "VALIDATION flat 217-row subcapacity registry absent",
+    "VALIDATION ProcessId predecessor content matched after EOL/BOM normalization",
+    "VALIDATION ProcessId predecessor validated under transient generated representation and restored byte-exact",
+    "VALIDATION ProcessId dependency PASS",
+    "VALIDATION AppCode authorization catalog dependency PASS",
+    "VALIDATION FunctionalActionId predecessor compatibility PASS",
+    "VALIDATION BusinessEventId predecessor compatibility PASS",
+    "VALIDATION ApplicationHandoffRelation predecessor compatibility PASS",
+    "VALIDATION work-item predecessor compatibility PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "DOCUMENTARY CORRECTION COMMIT be82a1c90d22f3ff5b1313e1f0d48db88adc6a93",
+    "SOURCE CONTRACT SHA256 2c25fe22efaae43ace4f90d029d320bc60265760b6217378fa71b48f72e965b3",
+    "RESULT SHELL-CON-016::GLOBAL VERIFIED"
+  ]
 }

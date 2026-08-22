@@ -481,16 +481,20 @@ No se inicia `PROC-CAT-005` hasta la aprobación expresa de `PROC-CAT-004`.
 
 ### ✅ PROC-CAT-005 — Definir aplicación propietaria de cada proceso
 
-**Estado:** APROBADA 
-**Bloque:** BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal  
-**Dependencias obligatorias:** `E1-GATE-001` — APROBADA; `PROC-CAT-001` — APROBADA; `PROC-CAT-002` — APROBADA; `PROC-CAT-003` — APROBADA; `PROC-CAT-004` — APROBADA  
-**Línea base recibida:** `PROC-ASIS-CATALOG-001`, `PROC-TOBE-DESIGN-001`, `PROC-CANONICAL-ID-REGISTRY-001` y `PROC-BUSINESS-PURPOSE-REGISTRY-001`  
-**Naturaleza:** decisión funcional de propiedad empresarial por proceso, sin implementación  
-**Artefacto producido:** `PROC-APPLICATION-OWNERSHIP-REGISTRY-001`  
-**Procesos cubiertos:** **69**  
-**Rango cubierto:** `VPROC-0001` a `VPROC-0069`  
-**Aplicaciones propietarias utilizadas:** **10**  
-**Cambios en código, migraciones o Supabase:** no autorizados  
+**Estado:** APROBADA
+**Tarea anterior:** `PROC-CAT-004 — Definir propósito empresarial de cada proceso`
+**Tarea siguiente:** `PROC-CAT-006 — Definir aplicaciones consumidoras de cada proceso`
+**Tipo de tarea:** Documental
+**Bloque:** BLOQUE E2 — Arquitectura funcional, procesos y experiencia transversal
+**Dependencias obligatorias:** `E1-GATE-001` — APROBADA; `PROC-CAT-001` — APROBADA; `PROC-CAT-002` — APROBADA; `PROC-CAT-003` — APROBADA; `PROC-CAT-004` — APROBADA
+**Línea base recibida:** `PROC-ASIS-CATALOG-001`, `PROC-TOBE-DESIGN-001`, `PROC-CANONICAL-ID-REGISTRY-001` y `PROC-BUSINESS-PURPOSE-REGISTRY-001`
+**Naturaleza:** decisión funcional de propiedad empresarial por proceso, sin implementación
+**Artefacto producido:** `PROC-APPLICATION-OWNERSHIP-REGISTRY-001`
+**Procesos cubiertos:** **69**
+**Rango cubierto:** `VPROC-0001` a `VPROC-0069`
+**Aplicaciones canónicas del catálogo:** **10**
+**Aplicaciones efectivamente utilizadas como propietarias:** **9**
+**Cambios en código, migraciones o Supabase:** no autorizados
 **Siguiente tarea reservada:** `PROC-CAT-006 — Definir aplicaciones consumidoras de cada proceso`
 
 ---
@@ -582,18 +586,18 @@ Una respuesta negativa material obliga a elegir otra propietaria o a revisar la 
 
 #### 5. Catálogo permitido
 
-| Código    | Aplicación | Responsabilidad relevante                                                                                      |
-| --------- | ---------- | -------------------------------------------------------------------------------------------------------------- |
-| `shell`   | SHELL      | Entrada, navegación y coordinación del ecosistema; no hereda la propiedad de procesos de otras aplicaciones.   |
-| `anima`   | ANIMA      | Experiencia del trabajador, asistencia, marcación e interacción personal operativa.                            |
-| `viso`    | VISO       | Gobierno administrativo de organización, trabajadores, seguridad, cumplimiento, soporte y casos transversales. |
-| `nexo`    | NEXO       | Inventario, ubicaciones, movimientos, activos, instalaciones, custodia y logística interna.                    |
-| `fogo`    | FOGO       | Recetas, planificación, órdenes, lotes, ejecución, calidad y cierre productivo.                                |
-| `origo`   | ORIGO      | Necesidad de compra, proveedores, evaluación, orden y aceptación comercial de recepción.                       |
-| `pulso`   | PULSO      | Oferta vendible, pedidos, servicio, ventas, pagos, caja y entrega al cliente.                                  |
-| `numera`  | NUMERA     | Obligaciones, presupuesto, registros económicos, conciliación, costos y análisis financiero.                   |
-| `aura`    | AURA       | Contenido, campañas, audiencias, oportunidades, reputación y análisis de mercadeo; implementación diferida.    |
-| `pass`    | PASS       | Identidad, fidelización y autoservicio personal del cliente; puede iniciar y presentar pedidos sin apropiarse de la transacción comercial.                       |
+| Código   | Aplicación | Responsabilidad relevante                                                                                                                  |
+| -------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `shell`  | SHELL      | Entrada, navegación y coordinación del ecosistema; no hereda la propiedad de procesos de otras aplicaciones.                               |
+| `anima`  | ANIMA      | Experiencia del trabajador, asistencia, marcación e interacción personal operativa.                                                        |
+| `viso`   | VISO       | Gobierno administrativo de organización, trabajadores, seguridad, cumplimiento, soporte y casos transversales.                             |
+| `nexo`   | NEXO       | Inventario, ubicaciones, movimientos, activos, instalaciones, custodia y logística interna.                                                |
+| `fogo`   | FOGO       | Recetas, planificación, órdenes, lotes, ejecución, calidad y cierre productivo.                                                            |
+| `origo`  | ORIGO      | Necesidad de compra, proveedores, evaluación, orden y aceptación comercial de recepción.                                                   |
+| `pulso`  | PULSO      | Oferta vendible, pedidos, servicio, ventas, pagos, caja y entrega al cliente.                                                              |
+| `numera` | NUMERA     | Obligaciones, presupuesto, registros económicos, conciliación, costos y análisis financiero.                                               |
+| `aura`   | AURA       | Contenido, campañas, audiencias, oportunidades, reputación y análisis de mercadeo; implementación diferida.                                |
+| `pass`   | PASS       | Identidad, fidelización y autoservicio personal del cliente; puede iniciar y presentar pedidos sin apropiarse de la transacción comercial. |
 
 No se asignan como propietarias:
 
@@ -603,6 +607,8 @@ No se asignan como propietarias:
 - Rappi, Shopify, ManyChat, WhatsApp, bancos, proveedores o autoridades, porque son sistemas o actores externos;
 - papel, Excel, documentos o chats, porque son soportes;
 - una sede, área, rol o dispositivo, porque son contexto y no aplicaciones.
+
+El catálogo contiene diez `AppCode` canónicos. Esa cardinalidad no implica que los diez deban aparecer con al menos un proceso asignado en el registro vigente.
 
 ---
 
@@ -648,15 +654,15 @@ Ningún estado representa implementación, disponibilidad, permiso, despliegue o
 
 ##### 8.2. Personas y trabajo
 
-| Proceso      | Alias          | Proceso TO-BE                                                                                      | Propietaria | Estado                            | Razón de propiedad                                                                                                      | Frontera obligatoria                                                                                                                  |
-| ------------ | -------------- | -------------------------------------------------------------------------------------------------- | ----------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `VPROC-0005` | `ASIS-SRC-005` | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo | `viso`      | `ASIGNADA_CON_FRONTERA`           | VISO gobierna necesidad, vacante, evaluación, decisión y traspaso; un portal futuro de TALENTO solo podrá actuar como canal del candidato. | El canal candidato no crea vínculo laboral, no concede permisos y no mantiene un expediente canónico competidor.                     |
-| `VPROC-0006` | `ASIS-SRC-006` | Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona | `viso`      | `ASIGNADA_CON_FRONTERA`           | VISO gobierna el registro administrativo, la autoridad, el seguimiento y la corrección del resultado transversal.       | Recibe el traspaso aprobado de `VPROC-0005`, incluso si un canal candidato futuro participó; ANIMA no gobierna el alta laboral.       |
-| `VPROC-0007` | `ASIS-SRC-007` | Administrar asignaciones laborales y programación publicada con historial y revisión controlada    | `viso`      | `ASIGNADA_CON_FRONTERA`           | VISO gobierna el registro administrativo, la autoridad, el seguimiento y la corrección del resultado transversal.       | VISO publica asignaciones y turnos; ANIMA los presenta y registra la ejecución, sin mantener una programación paralela.               |
-| `VPROC-0008` | `ASIS-SRC-008` | Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables             | `anima`     | `ASIGNADA`                        | ANIMA gobierna el hecho personal y operativo de asistencia realizado por el trabajador.                                 | VISO puede corregir o supervisar con autoridad; no mantiene una asistencia competidora.                                               |
-| `VPROC-0009` | `ASIS-SRC-009` | Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos               | `viso`      | `ASIGNADA_CON_FRONTERA`           | VISO gobierna el registro administrativo, la autoridad, el seguimiento y la corrección del resultado transversal.       | ANIMA puede iniciar solicitudes personales; VISO gobierna aprobación, reemplazo y efecto sobre la programación.                       |
-| `VPROC-0010` | `ASIS-SRC-010` | Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales                     | `numera`    | `ASIGNADA_CON_FRONTERA`           | NUMERA gobierna el registro, conciliación, planificación o análisis económico sin recrear el hecho operativo de origen. | VISO aporta vínculo, tiempo y novedades; bancos o terceros ejecutan pagos, pero NUMERA conserva paquete, obligación y conciliación.   |
-| `VPROC-0011` | `ASIS-SRC-011` | Orquestar retiro laboral, devolución, revocación de accesos y cierre documental                    | `viso`      | `ASIGNADA_CON_FRONTERA`           | VISO gobierna el registro administrativo, la autoridad, el seguimiento y la corrección del resultado transversal.       | Cada aplicación revoca sus accesos por contrato; VISO gobierna el caso laboral y verifica el cierre integral.                         |
+| Proceso      | Alias          | Proceso TO-BE                                                                                      | Propietaria | Estado                  | Razón de propiedad                                                                                                                         | Frontera obligatoria                                                                                                                |
+| ------------ | -------------- | -------------------------------------------------------------------------------------------------- | ----------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0005` | `ASIS-SRC-005` | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo | `viso`      | `ASIGNADA_CON_FRONTERA` | VISO gobierna necesidad, vacante, evaluación, decisión y traspaso; un portal futuro de TALENTO solo podrá actuar como canal del candidato. | El canal candidato no crea vínculo laboral, no concede permisos y no mantiene un expediente canónico competidor.                    |
+| `VPROC-0006` | `ASIS-SRC-006` | Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona | `viso`      | `ASIGNADA_CON_FRONTERA` | VISO gobierna el registro administrativo, la autoridad, el seguimiento y la corrección del resultado transversal.                          | Recibe el traspaso aprobado de `VPROC-0005`, incluso si un canal candidato futuro participó; ANIMA no gobierna el alta laboral.     |
+| `VPROC-0007` | `ASIS-SRC-007` | Administrar asignaciones laborales y programación publicada con historial y revisión controlada    | `viso`      | `ASIGNADA_CON_FRONTERA` | VISO gobierna el registro administrativo, la autoridad, el seguimiento y la corrección del resultado transversal.                          | VISO publica asignaciones y turnos; ANIMA los presenta y registra la ejecución, sin mantener una programación paralela.             |
+| `VPROC-0008` | `ASIS-SRC-008` | Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables             | `anima`     | `ASIGNADA`              | ANIMA gobierna el hecho personal y operativo de asistencia realizado por el trabajador.                                                    | VISO puede corregir o supervisar con autoridad; no mantiene una asistencia competidora.                                             |
+| `VPROC-0009` | `ASIS-SRC-009` | Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos               | `viso`      | `ASIGNADA_CON_FRONTERA` | VISO gobierna el registro administrativo, la autoridad, el seguimiento y la corrección del resultado transversal.                          | ANIMA puede iniciar solicitudes personales; VISO gobierna aprobación, reemplazo y efecto sobre la programación.                     |
+| `VPROC-0010` | `ASIS-SRC-010` | Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales                     | `numera`    | `ASIGNADA_CON_FRONTERA` | NUMERA gobierna el registro, conciliación, planificación o análisis económico sin recrear el hecho operativo de origen.                    | VISO aporta vínculo, tiempo y novedades; bancos o terceros ejecutan pagos, pero NUMERA conserva paquete, obligación y conciliación. |
+| `VPROC-0011` | `ASIS-SRC-011` | Orquestar retiro laboral, devolución, revocación de accesos y cierre documental                    | `viso`      | `ASIGNADA_CON_FRONTERA` | VISO gobierna el registro administrativo, la autoridad, el seguimiento y la corrección del resultado transversal.                          | Cada aplicación revoca sus accesos por contrato; VISO gobierna el caso laboral y verifica el cierre integral.                       |
 
 ##### 8.3. Seguridad, higiene y cumplimiento
 
@@ -795,30 +801,34 @@ Ningún estado representa implementación, disponibilidad, permiso, despliegue o
 
 #### 10. Distribución de propiedad
 
-| Aplicación | Procesos asignados | Observación                                                                                    |
-| ---------- | -----------------: | ---------------------------------------------------------------------------------------------- |
-| `shell`    |              **0** | No recibe procesos de este catálogo; conserva hub, acceso y coordinación.                      |
-| `anima`    |              **1** | Asistencia y tiempo trabajado.                                                                 |
+| Aplicación | Procesos asignados | Observación                                                                                               |
+| ---------- | -----------------: | --------------------------------------------------------------------------------------------------------- |
+| `shell`    |              **0** | No recibe procesos de este catálogo; conserva hub, acceso y coordinación.                                 |
+| `anima`    |              **1** | Asistencia y tiempo trabajado.                                                                            |
 | `viso`     |             **20** | Gobierno, selección, personas vinculadas, SST, soporte, información, continuidad y riesgos transversales. |
-| `nexo`     |             **16** | Producto maestro, inventario, activos, instalaciones y logística interna.                      |
-| `fogo`     |              **6** | Recetas y ciclo productivo.                                                                    |
-| `origo`    |              **4** | Ciclo de abastecimiento y recepción comercial.                                                 |
-| `pulso`    |             **12** | Oferta, ventas, servicio, pagos, caja, reclamos, reservas y entrega al cliente.                |
-| `numera`   |              **7** | Pagos laborales, hechos económicos, obligaciones, cartera, costos, mejora y presupuesto.       |
-| `aura`     |              **2** | Contenido y oportunidades; aplicación diferida.                                                |
-| `pass`     |              **1** | Identidad y fidelización del cliente.                                                          |
+| `nexo`     |             **16** | Producto maestro, inventario, activos, instalaciones y logística interna.                                 |
+| `fogo`     |              **6** | Recetas y ciclo productivo.                                                                               |
+| `origo`    |              **4** | Ciclo de abastecimiento y recepción comercial.                                                            |
+| `pulso`    |             **12** | Oferta, ventas, servicio, pagos, caja, reclamos, reservas y entrega al cliente.                           |
+| `numera`   |              **7** | Pagos laborales, hechos económicos, obligaciones, cartera, costos, mejora y presupuesto.                  |
+| `aura`     |              **2** | Contenido y oportunidades; aplicación diferida.                                                           |
+| `pass`     |              **1** | Identidad y fidelización del cliente.                                                                     |
 
 **Total reconciliado:** **69 de 69 procesos**.
 
 ```text
-PROCESOS CON UNA PROPIETARIA     69
-PROCESOS SIN PROPIETARIA          0
-PROPIEDADES MÚLTIPLES             0
-PROPIETARIAS EXTERNAS             0
-PROCESOS ASIGNADOS A SHELL        0
+UNIVERSO CANÓNICO DE AppCode                  10
+APLICACIONES EFECTIVAMENTE USADAS COMO OWNER   9
+PROCESOS CON UNA PROPIETARIA                  69
+PROCESOS SIN PROPIETARIA                       0
+PROPIEDADES MÚLTIPLES                          0
+PROPIETARIAS EXTERNAS                          0
+PROCESOS ASIGNADOS A SHELL                     0
 ```
 
 Que SHELL tenga cero procesos no significa que carezca de responsabilidades. Su responsabilidad canónica permanece en autenticación, entrada, navegación, selección contextual, disponibilidad y coordinación entre aplicaciones, sin apropiarse de los procesos empresariales enumerados.
+
+La reconciliación distingue expresamente el catálogo de identidad de aplicaciones del subconjunto efectivamente utilizado como propietaria: los 10 `AppCode` siguen vigentes, pero únicamente 9 aparecen con al menos un proceso asignado en `PROC-APPLICATION-OWNERSHIP-REGISTRY-001`.
 
 ---
 
@@ -867,17 +877,19 @@ Un cambio material requerirá:
 
 #### 13. Reconciliación y pendientes
 
-| Elemento                              | Resolución                                                                                                                 |
-| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| `VPROC-0001` a `VPROC-0069`           | Todos reciben exactamente una aplicación propietaria.                                                                      |
-| `aura`                                | Conserva propiedad objetivo de dos procesos, pero permanece diferida; no habilita implementación ni navegación.            |
+| Elemento                              | Resolución                                                                                                                  |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0001` a `VPROC-0069`           | Todos reciben exactamente una aplicación propietaria.                                                                       |
+| universo de `AppCode`                 | Se conservan exactamente 10 identidades canónicas.                                                                          |
+| propietarias efectivamente utilizadas | Se utilizan exactamente 9 `AppCode`; `shell` conserva 0 procesos asignados.                                                 |
+| `aura`                                | Conserva propiedad objetivo de dos procesos, pero permanece diferida; no habilita implementación ni navegación.             |
 | producto futuro `vento-talento`       | Se trata como canal candidato futuro de `VPROC-0005`; no es aplicación propietaria ni consumidora hasta aprobar `app_code`. |
-| `shell`                               | Permanece como hub y coordinador, sin procesos asignados en este catálogo.                                                 |
-| servicios compartidos                 | Impresión, notificaciones, colas, auditoría y almacenamiento no adquieren propiedad del proceso.                           |
-| aplicaciones externas                 | Se mantienen como canales o ejecutores externos mediante adaptadores.                                                      |
-| aplicaciones consumidoras             | Reservadas para `PROC-CAT-006`.                                                                                            |
-| propiedad física de tablas y esquemas | Reservada para BLOQUE E3; no cambia la propiedad funcional.                                                                |
-| cierre de brechas `GAP-OWN-*`         | Decisión funcional definida; implementación y evidencia quedan vinculadas a E3, E4, E5 y tareas de integración aplicables. |
+| `shell`                               | Permanece como hub y coordinador, sin procesos asignados en este catálogo.                                                  |
+| servicios compartidos                 | Impresión, notificaciones, colas, auditoría y almacenamiento no adquieren propiedad del proceso.                            |
+| aplicaciones externas                 | Se mantienen como canales o ejecutores externos mediante adaptadores.                                                       |
+| aplicaciones consumidoras             | Reservadas para `PROC-CAT-006`.                                                                                             |
+| propiedad física de tablas y esquemas | Reservada para BLOQUE E3; no cambia la propiedad funcional.                                                                 |
+| cierre de brechas `GAP-OWN-*`         | Decisión funcional definida; implementación y evidencia quedan vinculadas a E3, E4, E5 y tareas de integración aplicables.  |
 
 **Resultado:** no se deja una decisión de propiedad sin aplicación ni destino documental.
 
@@ -907,15 +919,17 @@ Un cambio material requerirá:
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-| ID              | Regla protegida                                                                                                                                                                               | Riesgo evitado                                                                 | Tipo                                     | Prioridad | Momento de implementación                                                | Destino                                                                       |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ---------------------------------------- | --------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
-| `TREQ-PROC-018` | Cada proceso activo deberá resolver exactamente a una propietaria del catálogo canónico; no se admitirán valores nulos, listas, propietarios externos, repositorios, plataformas o soportes.  | procesos sin autoridad, propiedad múltiple y fuentes de verdad competidoras    | contrato + CI                            | crítica   | consolidación documental y materialización física del registro           | Registro Canónico; `SHELL-CI-017`; BLOQUE E3                                  |
-| `TREQ-PROC-019` | La propietaria deberá gobernar registro principal, reglas, estado, corrección y cierre; una consumidora no podrá mantener una copia mutable e independiente del resultado.                    | divergencia entre aplicaciones, doble cierre y correcciones incompatibles      | contrato + integración + regresión       | crítica   | `PROC-CAT-006` a `PROC-CAT-018` y paquetes E5                            | Registro Canónico; E2, E3, E5, T y U                                          |
-| `TREQ-PROC-020` | Un cambio de propietaria deberá conservar `VPROC-*`, historial, consumidores, compatibilidad, datos, eventos, pruebas y rollback mediante una transición versionada.                          | pérdida de linaje, migración destructiva y consumidores huérfanos              | migración + contrato + regresión         | crítica   | toda transferencia futura de propiedad                                   | Registro Canónico; `PROC-CAT-020`; BLOQUES E3, R y T                          |
-| `TREQ-PROC-021` | Las fronteras de `GAP-OWN-001` a `GAP-OWN-006` deberán impedir duplicar recetario, impresión, incidentes, recepción, entrega y fidelización entre sus aplicaciones participantes.             | propiedad ambigua, autorización incorrecta y efectos duplicados entre dominios | contractual + integración + E2E          | crítica   | contratos detallados, implementación y pilotos de los procesos afectados | Registro Canónico; `PROC-CAT-006`; `PROC-CAT-017`; `PROC-CAT-018`; E4, E5 y U |
+| ID              | Regla protegida                                                                                                                                                                                | Riesgo evitado                                                                       | Tipo                                     | Prioridad | Momento de implementación                                                | Destino                                                                       |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ---------------------------------------- | --------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `TREQ-PROC-018` | Cada proceso activo deberá resolver exactamente a una propietaria del catálogo canónico; no se admitirán valores nulos, listas, propietarios externos, repositorios, plataformas o soportes.   | procesos sin autoridad, propiedad múltiple y fuentes de verdad competidoras          | contrato + CI                            | crítica   | consolidación documental y materialización física del registro           | Registro Canónico; `SHELL-CI-017`; BLOQUE E3                                  |
+| `TREQ-PROC-019` | La propietaria deberá gobernar registro principal, reglas, estado, corrección y cierre; una consumidora no podrá mantener una copia mutable e independiente del resultado.                     | divergencia entre aplicaciones, doble cierre y correcciones incompatibles            | contrato + integración + regresión       | crítica   | `PROC-CAT-006` a `PROC-CAT-018` y paquetes E5                            | Registro Canónico; E2, E3, E5, T y U                                          |
+| `TREQ-PROC-020` | Un cambio de propietaria deberá conservar `VPROC-*`, historial, consumidores, compatibilidad, datos, eventos, pruebas y rollback mediante una transición versionada.                           | pérdida de linaje, migración destructiva y consumidores huérfanos                    | migración + contrato + regresión         | crítica   | toda transferencia futura de propiedad                                   | Registro Canónico; `PROC-CAT-020`; BLOQUES E3, R y T                          |
+| `TREQ-PROC-021` | Las fronteras de `GAP-OWN-001` a `GAP-OWN-006` deberán impedir duplicar recetario, impresión, incidentes, recepción, entrega y fidelización entre sus aplicaciones participantes.              | propiedad ambigua, autorización incorrecta y efectos duplicados entre dominios       | contractual + integración + E2E          | crítica   | contratos detallados, implementación y pilotos de los procesos afectados | Registro Canónico; `PROC-CAT-006`; `PROC-CAT-017`; `PROC-CAT-018`; E4, E5 y U |
 | `TREQ-PROC-022` | Una propietaria asignada en aplicación diferida o un canal futuro no podrá convertir el proceso en disponible, navegable u operativo sin cobertura, readiness, despliegue y pruebas aprobadas. | falsa disponibilidad y activación prematura de AURA, TALENTO u otros módulos futuros | contrato + interfaz + regresión negativa | alta      | navegación, paquetes E5 y puertas de readiness                           | Registro Canónico; `PROC-COVER-007`; `READY-GATE-005`; BLOQUES I, T y U       |
 
 Los requisitos `TREQ-PROC-018` a `TREQ-PROC-022` deberán incorporarse al Registro Canónico de Requisitos de Prueba mediante regeneración completa del archivo.
+
+La presente corrección no crea ni modifica esos requisitos: corrige únicamente la cardinalidad descriptiva de aplicaciones efectivamente utilizadas como propietarias, manteniendo intactas las 69 asignaciones y todas las reglas protegidas.
 
 ---
 
@@ -925,7 +939,8 @@ Los requisitos `TREQ-PROC-018` a `TREQ-PROC-022` deberán incorporarse al Regist
 - [ ] Existe un único `PROC-APPLICATION-OWNERSHIP-REGISTRY-001`.
 - [ ] Se asignaron exactamente 69 propietarias para `VPROC-0001` a `VPROC-0069`.
 - [ ] Cada proceso aparece una sola vez.
-- [ ] Todas las propietarias pertenecen al catálogo canónico.
+- [ ] Todas las propietarias pertenecen al catálogo canónico de 10 `AppCode`.
+- [ ] Exactamente 9 `AppCode` aparecen con al menos un proceso asignado; `shell` conserva 0 procesos.
 - [ ] No existen valores nulos, propietarios conjuntos ni aplicaciones externas propietarias.
 - [ ] La propiedad corresponde al propósito empresarial y no a la implementación actual.
 - [ ] `VPROC-0005` pertenece a VISO; un portal futuro de TALENTO solo podrá actuar como canal candidato sin crear vínculo ni permisos.
@@ -938,7 +953,7 @@ Los requisitos `TREQ-PROC-018` a `TREQ-PROC-022` deberán incorporarse al Regist
 - [ ] SHELL no recibe propiedad falsa sobre procesos empresariales.
 - [ ] Impresión, colas, notificaciones, documentos y Supabase no adquieren propiedad por ser servicios técnicos.
 - [ ] Las brechas `GAP-OWN-001` a `GAP-OWN-006` tienen decisión y frontera explícitas.
-- [ ] Se generaron y vincularon `TREQ-PROC-018` a `TREQ-PROC-022`.
+- [ ] Se conservan `TREQ-PROC-018` a `TREQ-PROC-022` sin modificación por esta corrección.
 - [ ] No se modificó código, Supabase, RLS, RPC, Storage, Realtime, migraciones ni operación.
 - [ ] Toda futura migración de Supabase queda reservada para `vento-shell`.
 - [ ] El marcador de `PROC-CAT-006` permanece sin iniciar.
@@ -952,6 +967,20 @@ APROBADA
 ```
 
 No se inicia `PROC-CAT-006` hasta la aprobación expresa de `PROC-CAT-005`.
+
+#### 18. Continuidad
+
+##### ÚLTIMA TAREA APROBADA
+
+PROC-CAT-004 — Definir propósito empresarial de cada proceso
+
+##### TAREA ACTUAL APROBADA
+
+PROC-CAT-005 — Definir aplicación propietaria de cada proceso
+
+##### SIGUIENTE TAREA RESERVADA
+
+PROC-CAT-006 — Definir aplicaciones consumidoras de cada proceso
 
 
 ### ✅ PROC-CAT-006 — Definir aplicaciones consumidoras de cada proceso
@@ -1068,18 +1097,18 @@ Estas modalidades son funcionales. `PROC-CAT-015` a `PROC-CAT-017` y los bloques
 
 #### 6. Catálogo permitido de aplicaciones consumidoras
 
-| Código    | Alcance de consumo                                                                       |
-| --------- | ---------------------------------------------------------------------------------------- |
-| `shell`   | Disponibilidad, contexto, acceso y continuidad del ecosistema.                           |
-| `anima`   | Presentación al trabajador, solicitudes personales, asistencia y confirmaciones.         |
-| `viso`    | Gobierno administrativo, laboral, seguridad, riesgo, cumplimiento y soporte.             |
-| `nexo`    | Producto maestro, inventario, ubicación, custodia, activos, logística y efectos físicos. |
-| `fogo`    | Receta, planificación, ejecución, lote, calidad y efectos productivos.                   |
-| `origo`   | Necesidad, proveedor, compra y aceptación comercial de recepción.                        |
-| `pulso`   | Oferta, pedido, servicio, venta, pago, caja y entrega comercial.                         |
-| `numera`  | Hecho económico, conciliación, presupuesto, costo y análisis.                            |
-| `aura`    | Campaña, audiencia, oportunidad, reputación y atribución de mercadeo.                    |
-| `pass`    | Identidad, consentimiento, fidelización y autoservicio del cliente mediante comandos y proyecciones de procesos propietarios. |
+| Código   | Alcance de consumo                                                                                                            |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `shell`  | Disponibilidad, contexto, acceso y continuidad del ecosistema.                                                                |
+| `anima`  | Presentación al trabajador, solicitudes personales, asistencia y confirmaciones.                                              |
+| `viso`   | Gobierno administrativo, laboral, seguridad, riesgo, cumplimiento y soporte.                                                  |
+| `nexo`   | Producto maestro, inventario, ubicación, custodia, activos, logística y efectos físicos.                                      |
+| `fogo`   | Receta, planificación, ejecución, lote, calidad y efectos productivos.                                                        |
+| `origo`  | Necesidad, proveedor, compra y aceptación comercial de recepción.                                                             |
+| `pulso`  | Oferta, pedido, servicio, venta, pago, caja y entrega comercial.                                                              |
+| `numera` | Hecho económico, conciliación, presupuesto, costo y análisis.                                                                 |
+| `aura`   | Campaña, audiencia, oportunidad, reputación y atribución de mercadeo.                                                         |
+| `pass`   | Identidad, consentimiento, fidelización y autoservicio del cliente mediante comandos y proyecciones de procesos propietarios. |
 
 ---
 
@@ -1104,27 +1133,27 @@ La condición específica se cerrará mediante estados, actores, entradas, salid
 
 ##### 8.1. Gobierno y estructura
 
-| Proceso      | Propietaria | Consumidoras directas                                                                   | Consumidoras condicionales                                                     | Modalidad dominante   | Frontera conservada                                                                                                      |
-| ------------ | ----------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `VPROC-0001` | `viso`      | —                                                                                       | `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | `PROYECCION_Y_EVENTO` | La decisión sigue siendo humana; VISO conserva contexto, autoridad, compromisos y seguimiento, no sustituye a Dirección. |
-| `VPROC-0002` | `viso`      | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                              | `REFERENCIA_CANONICA` | No convierte marcas, sedes o áreas en entidades jurídicas por inferencia ni concede acceso por la sola estructura.       |
-| `VPROC-0003` | `viso`      | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                              | `REFERENCIA_CANONICA` | No sustituye la decisión normativa humana ni la ejecución de controles dentro de cada aplicación.                        |
-| `VPROC-0004` | `viso`      | —                                                                                       | `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | `PROYECCION_Y_EVENTO` | No absorbe el trabajo de las aplicaciones participantes; conserva compromiso, responsable, plazo y cierre transversal.   |
+| Proceso      | Propietaria | Consumidoras directas                                                        | Consumidoras condicionales                                          | Modalidad dominante   | Frontera conservada                                                                                                      |
+| ------------ | ----------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `VPROC-0001` | `viso`      | —                                                                            | `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | `PROYECCION_Y_EVENTO` | La decisión sigue siendo humana; VISO conserva contexto, autoridad, compromisos y seguimiento, no sustituye a Dirección. |
+| `VPROC-0002` | `viso`      | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                   | `REFERENCIA_CANONICA` | No convierte marcas, sedes o áreas en entidades jurídicas por inferencia ni concede acceso por la sola estructura.       |
+| `VPROC-0003` | `viso`      | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                                                                   | `REFERENCIA_CANONICA` | No sustituye la decisión normativa humana ni la ejecución de controles dentro de cada aplicación.                        |
+| `VPROC-0004` | `viso`      | —                                                                            | `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | `PROYECCION_Y_EVENTO` | No absorbe el trabajo de las aplicaciones participantes; conserva compromiso, responsable, plazo y cierre transversal.   |
 
 ##### 8.2. Personas y trabajo
 
-| Proceso      | Propietaria | Consumidoras directas                                                           | Consumidoras condicionales                                    | Modalidad dominante          | Frontera conservada                                                                                                                   |
-| ------------ | ----------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `VPROC-0005` | `viso`      | —                                                                               | `anima`, `numera`                                             | `SOLICITUD_HANDOFF_Y_EVENTO` | VISO gobierna selección y traspaso; el portal candidato futuro será canal externo controlado hasta obtener `app_code`.               |
-| `VPROC-0006` | `viso`      | `anima`, `shell`                                                                | `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura` | `SOLICITUD_HANDOFF_Y_EVENTO` | Recibe el traspaso aprobado de `VPROC-0005`; ANIMA presenta información al trabajador, pero no gobierna el alta laboral.               |
-| `VPROC-0007` | `viso`      | `anima`, `shell`                                                                | `nexo`, `fogo`, `origo`, `pulso`, `numera`                    | `SOLICITUD_HANDOFF_Y_EVENTO` | VISO publica asignaciones y turnos; ANIMA los presenta y registra la ejecución, sin mantener una programación paralela.               |
-| `VPROC-0008` | `anima`     | `viso`, `numera`, `shell`                                                       | `nexo`, `fogo`, `origo`, `pulso`                              | `HECHO_Y_PROYECCION`         | VISO puede corregir o supervisar con autoridad; no mantiene una asistencia competidora.                                               |
-| `VPROC-0009` | `viso`      | `anima`, `shell`                                                                | `nexo`, `fogo`, `origo`, `pulso`, `numera`                    | `SOLICITUD_HANDOFF_Y_EVENTO` | ANIMA puede iniciar solicitudes personales; VISO gobierna aprobación, reemplazo y efecto sobre la programación.                       |
-| `VPROC-0010` | `numera`    | `viso`, `anima`                                                                 | —                                                             | `HECHO_Y_PROYECCION`         | VISO aporta vínculo, tiempo y novedades; bancos o terceros ejecutan pagos, pero NUMERA conserva paquete, obligación y conciliación.   |
-| `VPROC-0011` | `viso`      | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura` | —                                                             | `SOLICITUD_HANDOFF_Y_EVENTO` | Cada aplicación revoca sus accesos por contrato; VISO gobierna el caso laboral y verifica el cierre integral.                         |
-| `VPROC-0012` | `viso`      | `anima`, `nexo`, `fogo`, `origo`, `pulso`                                       | `numera`                                                      | `PROYECCION_Y_EVENTO`        | Las inspecciones físicas pueden ejecutarse en NEXO o FOGO; VISO conserva el caso SST, el riesgo y el plan de acción.                  |
-| `VPROC-0013` | `viso`      | `anima`, `nexo`, `fogo`, `origo`, `pulso`                                       | `numera`                                                      | `PROYECCION_Y_EVENTO`        | La respuesta operativa puede involucrar múltiples aplicaciones y autoridades; VISO conserva expediente, investigación y seguimiento.  |
-| `VPROC-0014` | `viso`      | `nexo`, `fogo`, `origo`, `pulso`, `anima`                                       | —                                                             | `PROYECCION_Y_EVENTO`        | FOGO, NEXO y PULSO aplican controles en su operación; VISO gobierna obligaciones, hallazgos y acciones de cumplimiento.               |
+| Proceso      | Propietaria | Consumidoras directas                                                | Consumidoras condicionales                         | Modalidad dominante          | Frontera conservada                                                                                                                  |
+| ------------ | ----------- | -------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `VPROC-0005` | `viso`      | —                                                                    | `anima`, `numera`                                  | `SOLICITUD_HANDOFF_Y_EVENTO` | VISO gobierna selección y traspaso; el portal candidato futuro será canal externo controlado hasta obtener `app_code`.               |
+| `VPROC-0006` | `viso`      | `anima`, `shell`                                                     | `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura` | `SOLICITUD_HANDOFF_Y_EVENTO` | Recibe el traspaso aprobado de `VPROC-0005`; ANIMA presenta información al trabajador, pero no gobierna el alta laboral.             |
+| `VPROC-0007` | `viso`      | `anima`, `shell`                                                     | `nexo`, `fogo`, `origo`, `pulso`, `numera`         | `SOLICITUD_HANDOFF_Y_EVENTO` | VISO publica asignaciones y turnos; ANIMA los presenta y registra la ejecución, sin mantener una programación paralela.              |
+| `VPROC-0008` | `anima`     | `viso`, `numera`, `shell`                                            | `nexo`, `fogo`, `origo`, `pulso`                   | `HECHO_Y_PROYECCION`         | VISO puede corregir o supervisar con autoridad; no mantiene una asistencia competidora.                                              |
+| `VPROC-0009` | `viso`      | `anima`, `shell`                                                     | `nexo`, `fogo`, `origo`, `pulso`, `numera`         | `SOLICITUD_HANDOFF_Y_EVENTO` | ANIMA puede iniciar solicitudes personales; VISO gobierna aprobación, reemplazo y efecto sobre la programación.                      |
+| `VPROC-0010` | `numera`    | `viso`, `anima`                                                      | —                                                  | `HECHO_Y_PROYECCION`         | VISO aporta vínculo, tiempo y novedades; bancos o terceros ejecutan pagos, pero NUMERA conserva paquete, obligación y conciliación.  |
+| `VPROC-0011` | `viso`      | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura` | —                                                  | `SOLICITUD_HANDOFF_Y_EVENTO` | Cada aplicación revoca sus accesos por contrato; VISO gobierna el caso laboral y verifica el cierre integral.                        |
+| `VPROC-0012` | `viso`      | `anima`, `nexo`, `fogo`, `origo`, `pulso`                            | `numera`                                           | `PROYECCION_Y_EVENTO`        | Las inspecciones físicas pueden ejecutarse en NEXO o FOGO; VISO conserva el caso SST, el riesgo y el plan de acción.                 |
+| `VPROC-0013` | `viso`      | `anima`, `nexo`, `fogo`, `origo`, `pulso`                            | `numera`                                           | `PROYECCION_Y_EVENTO`        | La respuesta operativa puede involucrar múltiples aplicaciones y autoridades; VISO conserva expediente, investigación y seguimiento. |
+| `VPROC-0014` | `viso`      | `nexo`, `fogo`, `origo`, `pulso`, `anima`                            | —                                                  | `PROYECCION_Y_EVENTO`        | FOGO, NEXO y PULSO aplican controles en su operación; VISO gobierna obligaciones, hallazgos y acciones de cumplimiento.              |
 
 ##### 8.3. Producto, receta y oferta
 
@@ -1204,20 +1233,20 @@ La condición específica se cerrará mediante estados, actores, entradas, salid
 
 ##### 8.11. Finanzas y análisis
 
-| Proceso      | Propietaria | Consumidoras directas                                       | Consumidoras condicionales         | Modalidad dominante                | Frontera conservada                                                                                                  |
-| ------------ | ----------- | ----------------------------------------------------------- | ---------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `VPROC-0051` | `numera`    | `viso`, `nexo`, `fogo`, `origo`, `pulso`                    | `anima`, `aura`, `pass` | `EVENTO_CONCILIACION_Y_PROYECCION` | Cada aplicación propietaria emite el hecho; NUMERA lo clasifica y concilia sin crear una versión operativa paralela. |
-| `VPROC-0052` | `numera`    | `origo`                                                     | `viso`                             | `EVENTO_CONCILIACION_Y_PROYECCION` | ORIGO conserva compra y recepción; NUMERA gobierna obligación, aprobación financiera, pago y conciliación.           |
-| `VPROC-0053` | `numera`    | `pulso`                                                     | `viso`, `aura`                     | `EVENTO_CONCILIACION_Y_PROYECCION` | PULSO u otra propietaria conserva la venta o cuenta origen; NUMERA gobierna cartera, recaudo, aplicación y saldo.    |
-| `VPROC-0054` | `numera`    | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `aura` | —                                  | `EVENTO_CONCILIACION_Y_PROYECCION` | Los hechos permanecen en sus aplicaciones; NUMERA conserva asignación, cálculo, cierre y análisis económico.         |
+| Proceso      | Propietaria | Consumidoras directas                            | Consumidoras condicionales | Modalidad dominante                | Frontera conservada                                                                                                  |
+| ------------ | ----------- | ------------------------------------------------ | -------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0051` | `numera`    | `viso`, `nexo`, `fogo`, `origo`, `pulso`         | `anima`, `aura`, `pass`    | `EVENTO_CONCILIACION_Y_PROYECCION` | Cada aplicación propietaria emite el hecho; NUMERA lo clasifica y concilia sin crear una versión operativa paralela. |
+| `VPROC-0052` | `numera`    | `origo`                                          | `viso`                     | `EVENTO_CONCILIACION_Y_PROYECCION` | ORIGO conserva compra y recepción; NUMERA gobierna obligación, aprobación financiera, pago y conciliación.           |
+| `VPROC-0053` | `numera`    | `pulso`                                          | `viso`, `aura`             | `EVENTO_CONCILIACION_Y_PROYECCION` | PULSO u otra propietaria conserva la venta o cuenta origen; NUMERA gobierna cartera, recaudo, aplicación y saldo.    |
+| `VPROC-0054` | `numera`    | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `aura` | —                          | `EVENTO_CONCILIACION_Y_PROYECCION` | Los hechos permanecen en sus aplicaciones; NUMERA conserva asignación, cálculo, cierre y análisis económico.         |
 
 ##### 8.12. Instalaciones, mercadeo, tecnología y continuidad
 
-| Proceso      | Propietaria | Consumidoras directas                                                                   | Consumidoras condicionales | Modalidad dominante            | Frontera conservada                                                                                                                                                           |
-| ------------ | ----------- | --------------------------------------------------------------------------------------- | -------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VPROC-0055` | `nexo`      | `viso`, `anima`, `fogo`, `origo`, `pulso`, `numera`                                     | —                          | `SOLICITUD_EFECTO_Y_EVENTO`    | Los activos específicos permanecen en NEXO y las obligaciones SST en VISO; este proceso gobierna la condición de la instalación y su cierre.                                  |
-| `VPROC-0056` | `aura`      | `pulso`, `pass`, `viso`, `numera`                                                       | —                          | `PROYECCION_EVENTO_Y_ANALISIS` | PULSO aplica promociones en la venta y PASS expone beneficios al cliente; AURA conserva intención, pieza, calendario, aprobación y publicación.                               |
-| `VPROC-0057` | `aura`      | `pulso`, `pass`, `viso`, `numera`                                                       | —                          | `PROYECCION_EVENTO_Y_ANALISIS` | PULSO conserva pedidos y clientes operativos; AURA conserva interacción, oportunidad, etapa de seguimiento y atribución comercial.                                            |
+| Proceso      | Propietaria | Consumidoras directas                                                        | Consumidoras condicionales | Modalidad dominante            | Frontera conservada                                                                                                                                                           |
+| ------------ | ----------- | ---------------------------------------------------------------------------- | -------------------------- | ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0055` | `nexo`      | `viso`, `anima`, `fogo`, `origo`, `pulso`, `numera`                          | —                          | `SOLICITUD_EFECTO_Y_EVENTO`    | Los activos específicos permanecen en NEXO y las obligaciones SST en VISO; este proceso gobierna la condición de la instalación y su cierre.                                  |
+| `VPROC-0056` | `aura`      | `pulso`, `pass`, `viso`, `numera`                                            | —                          | `PROYECCION_EVENTO_Y_ANALISIS` | PULSO aplica promociones en la venta y PASS expone beneficios al cliente; AURA conserva intención, pieza, calendario, aprobación y publicación.                               |
+| `VPROC-0057` | `aura`      | `pulso`, `pass`, `viso`, `numera`                                            | —                          | `PROYECCION_EVENTO_Y_ANALISIS` | PULSO conserva pedidos y clientes operativos; AURA conserva interacción, oportunidad, etapa de seguimiento y atribución comercial.                                            |
 | `VPROC-0058` | `viso`      | `anima`, `shell`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                          | `PROYECCION_Y_EVENTO`          | ANIMA puede reportar y consultar; NEXO aporta el elemento físico. VISO conserva solicitud, incidente, problema, cambio, SLA y cierre.                                         |
 | `VPROC-0059` | `viso`      | `shell`, `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | —                          | `SOLICITUD_HANDOFF_Y_EVENTO`   | SHELL aplica navegación y cada aplicación sus controles; VISO conserva solicitud, aprobación, vigencia y revocación de autoridad laboral.                                     |
 | `VPROC-0060` | `viso`      | `anima`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass`          | —                          | `PROYECCION_Y_EVENTO`          | Cada aplicación conserva el hecho respaldado; VISO gobierna clasificación, retención, acceso, legal hold, disposición y caso transversal.                                     |
@@ -1226,15 +1255,15 @@ La condición específica se cerrará mediante estados, actores, entradas, salid
 
 ##### 8.13. Procesos adicionales
 
-| Proceso      | Propietaria | Consumidoras directas                                                          | Consumidoras condicionales                                                     | Modalidad dominante            | Frontera conservada                                                                                                                                                 |
-| ------------ | ----------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `VPROC-0063` | `viso`      | `numera`, `nexo`, `fogo`, `origo`, `pulso`, `aura`, `pass`, `anima` | —                                                                              | `PROYECCION_Y_EVENTO`          | Los riesgos operativos especializados permanecen en sus dominios; VISO conserva el registro empresarial, tratamiento, aceptación y seguimiento.                     |
-| `VPROC-0064` | `viso`      | —                                                                              | `numera`, `nexo`, `fogo`, `origo`, `pulso`, `aura`, `pass`, `anima` | `PROYECCION_Y_EVENTO`          | La autoridad o asesor externo no se vuelve propietario; VISO conserva obligación, vencimiento, responsable, entrega y evidencia interna.                            |
-| `VPROC-0065` | `viso`      | `anima`, `numera`                                                   | —                                                                              | `SOLICITUD_HANDOFF_Y_EVENTO`   | VISO separa selección previa, objetivos, evaluación y desarrollo; ANIMA solo presenta la experiencia personal autorizada.                                            |
-| `VPROC-0066` | `viso`      | `anima`, `nexo`                                                                | `fogo`, `origo`, `pulso`, `shell`                                              | `SOLICITUD_HANDOFF_Y_EVENTO`   | NEXO conserva existencias y movimientos de EPP; VISO gobierna necesidad, asignación a persona, vigencia, devolución y cumplimiento SST.                             |
-| `VPROC-0067` | `nexo`      | `fogo`, `pulso`, `origo`, `numera`, `viso`                                     | —                                                                              | `SOLICITUD_EFECTO_Y_EVENTO`    | No confunde kit con activo, LPN o stock; NEXO conserva definición, componentes, armado, custodia y completitud.                                                     |
-| `VPROC-0068` | `pulso`     | `pass`, `aura`, `viso`, `numera`                                               | —                                                                              | `PROYECCION_EVENTO_Y_ANALISIS` | PASS puede capturar respuesta del cliente y AURA consumir tendencias; PULSO gobierna la medición vinculada al servicio y evita mezclarla con reclamos o incentivos. |
-| `VPROC-0069` | `numera`    | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `aura`                    | —                                                                              | `PROYECCION_Y_ANALISIS`        | Los hechos y compromisos provienen de NUMERA y aplicaciones operativas; el presupuesto no crea gasto ni asiento por sí solo.                                        |
+| Proceso      | Propietaria | Consumidoras directas                                               | Consumidoras condicionales                                          | Modalidad dominante            | Frontera conservada                                                                                                                                                 |
+| ------------ | ----------- | ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0063` | `viso`      | `numera`, `nexo`, `fogo`, `origo`, `pulso`, `aura`, `pass`, `anima` | —                                                                   | `PROYECCION_Y_EVENTO`          | Los riesgos operativos especializados permanecen en sus dominios; VISO conserva el registro empresarial, tratamiento, aceptación y seguimiento.                     |
+| `VPROC-0064` | `viso`      | —                                                                   | `numera`, `nexo`, `fogo`, `origo`, `pulso`, `aura`, `pass`, `anima` | `PROYECCION_Y_EVENTO`          | La autoridad o asesor externo no se vuelve propietario; VISO conserva obligación, vencimiento, responsable, entrega y evidencia interna.                            |
+| `VPROC-0065` | `viso`      | `anima`, `numera`                                                   | —                                                                   | `SOLICITUD_HANDOFF_Y_EVENTO`   | VISO separa selección previa, objetivos, evaluación y desarrollo; ANIMA solo presenta la experiencia personal autorizada.                                           |
+| `VPROC-0066` | `viso`      | `anima`, `nexo`                                                     | `fogo`, `origo`, `pulso`, `shell`                                   | `SOLICITUD_HANDOFF_Y_EVENTO`   | NEXO conserva existencias y movimientos de EPP; VISO gobierna necesidad, asignación a persona, vigencia, devolución y cumplimiento SST.                             |
+| `VPROC-0067` | `nexo`      | `fogo`, `pulso`, `origo`, `numera`, `viso`                          | —                                                                   | `SOLICITUD_EFECTO_Y_EVENTO`    | No confunde kit con activo, LPN o stock; NEXO conserva definición, componentes, armado, custodia y completitud.                                                     |
+| `VPROC-0068` | `pulso`     | `pass`, `aura`, `viso`, `numera`                                    | —                                                                   | `PROYECCION_EVENTO_Y_ANALISIS` | PASS puede capturar respuesta del cliente y AURA consumir tendencias; PULSO gobierna la medición vinculada al servicio y evita mezclarla con reclamos o incentivos. |
+| `VPROC-0069` | `numera`    | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `aura`                    | —                                                                   | `PROYECCION_Y_ANALISIS`        | Los hechos y compromisos provienen de NUMERA y aplicaciones operativas; el presupuesto no crea gasto ni asiento por sí solo.                                        |
 
 ---
 
@@ -1532,7 +1561,7 @@ FORMALIZACIÓN
 
 | Proceso      | Propietaria | Nombre objetivo                                                                                    | Iniciador primario               | Iniciadores alternos                                           | Tipo             | Condición canónica de inicio                                                                                       | Regla de formalización                                                                                                        |
 | ------------ | ----------- | -------------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------------- | ---------------- | ------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `VPROC-0005` | `viso`      | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo | `GERENCIA_O_SUPERVISION_DE_SEDE` | `GERENCIA_GENERAL`; `COORDINACION_DE_OPERACIONES`; `CANDIDATO` | `MIXTO`          | Existe una necesidad de dotación autorizada o una candidatura admitida a un banco de talento vigente.              | VISO distingue necesidad, vacante y candidatura; el canal de postulación no crea vínculo ni obliga a contratar.                |
+| `VPROC-0005` | `viso`      | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo | `GERENCIA_O_SUPERVISION_DE_SEDE` | `GERENCIA_GENERAL`; `COORDINACION_DE_OPERACIONES`; `CANDIDATO` | `MIXTO`          | Existe una necesidad de dotación autorizada o una candidatura admitida a un banco de talento vigente.              | VISO distingue necesidad, vacante y candidatura; el canal de postulación no crea vínculo ni obliga a contratar.               |
 | `VPROC-0006` | `viso`      | Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona | `RESPONSABLE_DE_PERSONAS`        | `GERENCIA_GENERAL`; `EVENTO_CANONICO_DE_PROCESO`               | `MIXTO`          | Existe una decisión de vinculación aprobada y una identidad candidata validada para iniciar el expediente laboral. | VISO recibe un traspaso correlacionado desde TALENTO o una decisión autorizada; no acepta altas por datos libres del cliente. |
 | `VPROC-0007` | `viso`      | Administrar asignaciones laborales y programación publicada con historial y revisión controlada    | `GERENCIA_O_SUPERVISION_DE_SEDE` | `COORDINACION_DE_OPERACIONES`; `GERENCIA_GENERAL`              | `HUMANO_INTERNO` | Existe una necesidad válida de asignar o modificar sede, área, función o programación de una persona vinculada.    | VISO abre una propuesta de asignación o turno; el cambio solo entra en vigor mediante publicación o aprobación posterior.     |
 | `VPROC-0008` | `anima`     | Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables             | `TRABAJADOR`                     | `SISTEMA_DE_ORIGEN`                                            | `MIXTO`          | El trabajador ejecuta una marcación válida o un sistema autorizado captura un hecho de asistencia verificable.     | ANIMA conserva actor, dispositivo, sede, tiempo y evento idempotente; una corrección no reemplaza el hecho original.          |
@@ -1918,7 +1947,7 @@ EXTERNOS / TÉCNICOS
 
 | Proceso      | Propietaria | Nombre objetivo                                                                                    | Continuadores principales                                                  | Apoyos                                                                                                                   | Control o aceptación                  | Externos o técnicos                                                 | Frontera de continuidad                                                                                                                                      |
 | ------------ | ----------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `VPROC-0005` | `viso`   | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo | `RESPONSABLE_DE_SELECCION_Y_VINCULACION`; `GERENCIA_O_SUPERVISION_DE_SEDE` | `RESPONSABLE_DE_PERSONAS`                                                                                                | `GERENCIA_GENERAL`                    | `CANDIDATO`                                                         | El candidato aporta información y participa en evaluaciones, pero la comparación, decisión y cierre pertenecen a actores internos autorizados.               |
+| `VPROC-0005` | `viso`      | Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo | `RESPONSABLE_DE_SELECCION_Y_VINCULACION`; `GERENCIA_O_SUPERVISION_DE_SEDE` | `RESPONSABLE_DE_PERSONAS`                                                                                                | `GERENCIA_GENERAL`                    | `CANDIDATO`                                                         | El candidato aporta información y participa en evaluaciones, pero la comparación, decisión y cierre pertenecen a actores internos autorizados.               |
 | `VPROC-0006` | `viso`      | Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona | `RESPONSABLE_DE_PERSONAS`; `RESPONSABLE_DE_SELECCION_Y_VINCULACION`        | `GERENCIA_O_SUPERVISION_DE_SEDE`; `RESPONSABLE_TECNOLOGICO`; `RESPONSABLE_SST_Y_CUMPLIMIENTO`; `BODEGA_Y_ABASTECIMIENTO` | `GERENCIA_GENERAL`                    | `TRABAJADOR`                                                        | Cada dominio completa su habilitación sin asumir que la creación de identidad, entrega de elementos o acceso tecnológico equivale a incorporación terminada. |
 | `VPROC-0007` | `viso`      | Administrar asignaciones laborales y programación publicada con historial y revisión controlada    | `RESPONSABLE_DE_PROGRAMACION_LABORAL`; `GERENCIA_O_SUPERVISION_DE_SEDE`    | `RESPONSABLE_DE_PERSONAS`; `TRABAJADOR`                                                                                  | `COORDINACION_DE_OPERACIONES`         | `AUTOMATIZACION_ASISTIVA`                                           | Proponer, publicar, aceptar, cambiar y cubrir un turno son acciones distintas; la automatización solo asiste validaciones y avisos.                          |
 | `VPROC-0008` | `anima`     | Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables             | `TRABAJADOR`; `GERENCIA_O_SUPERVISION_DE_SEDE`                             | `RESPONSABLE_DE_PERSONAS`                                                                                                | `RESPONSABLE_DE_PROGRAMACION_LABORAL` | `AUTOMATIZACION_ASISTIVA`                                           | El trabajador registra hechos y la supervisión gestiona excepciones; ninguna corrección sobrescribe la marcación original.                                   |
