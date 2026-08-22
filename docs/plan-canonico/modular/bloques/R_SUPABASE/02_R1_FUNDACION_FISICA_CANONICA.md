@@ -5572,7 +5572,3084 @@ No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
 `AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto`
 
 
-### [ ] AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+### ✅ AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+**Tarea siguiente:** AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato de materialización del token transaccional de frescura, generaciones, bindings de invalidación y outbox cerrado; futura instancia global `AUTH-DB-035::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-035` define el contrato físico único para materializar la infraestructura de frescura e invalidación exigida por `ContextFreshnessToken@1.0.0`, sin habilitar todavía una caché compartida y sin convertir el token en autoridad empresarial.
+
+La futura instancia debe garantizar que:
+
+```text
+CAMBIO RELEVANTE DE CONTEXTO
++
+GENERACIÓN AFECTADA
++
+EVENTO OUTBOX
+=
+UNA MISMA TRANSACCIÓN
+```
+
+y que:
+
+```text
+CACHE HIT FUTURO
+→ SOLO PUEDE EXISTIR
+→ DESPUÉS DE VALIDAR UN TOKEN AUTORITATIVO ACTUAL
+```
+
+Esta tarea materializa la barrera de corrección necesaria para que `SHELL-CTX-006` pueda implementar posteriormente una caché compartida validada.
+
+No implementa la caché L1.
+
+No implementa `AuthorizationDecision`.
+
+No expone el token al cliente.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el siguiente resultado:
+
+```text
+AUTH-DB-035
+→ contrato documental único
+
+AUTH-DB-035::GLOBAL
+→ futura instancia física global reutilizable
+
+app_private.context_freshness_generations
+→ generaciones monotónicas privadas
+
+app_private.context_freshness_bindings
+→ registro técnico de fuentes obligadas a invalidar
+
+app_private.get_context_freshness_token(text)
+→ lectura autoritativa del token
+
+app_private.bump_context_freshness(...)
+→ incremento transaccional privado
+
+audit.context_invalidation_outbox
+→ evento durable de invalidación
+
+resultado de esta tarea
+→ infraestructura lista para ser consumida por SHELL-CTX-006
+→ L1 continúa deshabilitada
+→ cache_status no se convierte todavía en HIT o MISS
+```
+
+---
+
+#### 3. Topología y gate
+
+La clasificación canónica aplicable es:
+
+```text
+task_id = AUTH-DB-035
+mode = GLOBAL_ENABLE_ONCE
+instance = AUTH-DB-035::GLOBAL
+execution_gate = PRE_E5_FOUNDATION
+canonical_work = DEFINE_CONTRACT_ONCE
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global reutilizable;
+2. no se crea una instancia por package_id;
+3. puede materializarse antes de E5 cuando sus dependencias técnicas estén satisfechas;
+4. no constituye migración vertical de una aplicación;
+5. la aprobación documental no autoriza `AUTH-DB-035::GLOBAL`;
+6. toda materialización futura requiere autorización humana explícita;
+7. `SHELL-CTX-006` permanece separado y no se absorbe en esta instancia.
+
+---
+
+#### 4. Precedencia contractual
+
+La implementación física futura deberá respetar, en este orden:
+
+```text
+AUTH-CTX-029
+→ define semántica de frescura, generaciones y caché
+
+AUTH-CTX-030
+→ define pruebas contractuales
+
+AUTH-DB-019
+→ principal y vínculos empresariales
+
+AUTH-DB-033
+→ AccessContext, source versions, source fingerprints y proyección segura
+
+AUTH-DB-035
+→ generaciones transaccionales y token
+
+AUTH-DB-034
+→ evaluación de autorización
+
+AUTH-DB-032
+→ persistencia durable de decisiones
+
+SHELL-CTX-006
+→ caché compartida, single-flight y validación de frescura
+```
+
+`AUTH-DB-035` no puede redefinir contratos cerrados por las tareas anteriores.
+
+---
+
+#### 5. Fuentes vinculantes
+
+Esta tarea consume y preserva:
+
+- `ADR-AUTH-001`;
+- `AUTH-CTX-025`, para `get_access_context(text) → jsonb`;
+- `AUTH-CTX-029`, para L0, L1, L2, generaciones, token, outbox, TTL y límites temporales;
+- `AUTH-CTX-030`, para pruebas de concurrencia, tiempo, caché e invalidación;
+- `AUTH-DB-019`, para principal, vínculo empresarial e identidad efectiva;
+- `AUTH-DB-033`, para el resolver, helpers privados, fingerprints y proyección segura;
+- `AUTH-DB-027`, para el harness físico;
+- `AUTH-DB-028`, para baseline y drift;
+- `AUTH-DB-029`, para backup, restore y rollback;
+- `AUTH-DB-016`, para la topología de schemas;
+- `AUTH-DB-018`, para separación entre contratos expuestos y lógica privada;
+- `AUTH-DB-017`, para exposición Data API y grants;
+- `SUPA-ARC-005`, `SUPA-ARC-006` y `SUPA-ARC-007`, para `api`, `app_private` y `audit`;
+- `SUPA-ARC-014` y `SUPA-ARC-015`, para `SECURITY DEFINER`, grants y RLS;
+- el vocabulario de fuentes congelado por `AUTH-DB-033`.
+
+---
+
+#### 6. Principios no negociables
+
+```text
+FRESHNESS TOKEN
+≠ PERMISO
+```
+
+```text
+GENERATION
+≠ AUTORIDAD EMPRESARIAL
+```
+
+```text
+OUTBOX EVENT
+≠ GARANTÍA ÚNICA DE FRESCURA
+```
+
+```text
+TTL
+≠ GARANTÍA ÚNICA DE FRESCURA
+```
+
+```text
+TOKEN VÁLIDO
+≠ AUTHORIZATION ALLOW
+```
+
+```text
+CAMBIO RELEVANTE
+→ NO PUEDE COMMITTEAR
+→ SIN BARRERA DE GENERACIÓN APLICABLE
+```
+
+```text
+EVENTO PERDIDO
+→ NO PUEDE PRODUCIR STALE HIT
+```
+
+---
+
+#### 7. Estado físico observado
+
+La auditoría read-only del proyecto Supabase `vento-os-dev` realizada el 2026-08-22 confirma:
+
+```text
+project_status = ACTIVE_HEALTHY
+postgres_engine = 17
+postgres_version = 17.6.1.054
+```
+
+En los schemas consultados no se observan objetos existentes cuyo nombre represente:
+
+```text
+freshness
+generation
+invalidation
+outbox
+access_context
+```
+
+Los resolvers relacionados observados continúan siendo:
+
+```text
+public.get_operational_context(uuid, uuid, text)
+public.get_effective_context_v1(text)
+```
+
+Ambos son legacy.
+
+Por tanto, la tarea no adopta una infraestructura de frescura preexistente.
+
+---
+
+#### 8. Estado de sesión Supabase observado
+
+`auth.sessions` contiene actualmente, entre otros:
+
+```text
+id
+user_id
+created_at
+updated_at
+aal
+not_after
+refreshed_at
+oauth_client_id
+refresh_token_counter
+scopes
+```
+
+También existen columnas administradas que no deberán copiarse al token ni a logs.
+
+Reglas:
+
+1. `AUTH-DB-035` no crea triggers en `auth.sessions`;
+2. no altera tablas administradas por Supabase Auth;
+3. no duplica refresh tokens;
+4. no copia secretos de sesión;
+5. la existencia y estado actual de la sesión se consulta directamente al construir el token;
+6. una sesión revocada o ausente no puede validarse mediante una generación Vento antigua.
+
+---
+
+#### 9. Decisión de ownership físico
+
+La infraestructura se separa así:
+
+| Objeto                  | Schema        | Clase                       |
+| ----------------------- | ------------- | --------------------------- |
+| generaciones            | `app_private` | estado técnico derivado     |
+| bindings                | `app_private` | registro técnico privado    |
+| funciones de token      | `app_private` | lógica privada              |
+| funciones de incremento | `app_private` | lógica privada privilegiada |
+| helpers de fingerprint  | `app_private` | lógica privada              |
+| outbox de invalidación  | `audit`       | evento durable transversal  |
+
+Las generaciones no se colocan en `identity_access` porque:
+
+1. no son fuente empresarial de identidad;
+2. no sustituyen principal, vínculo, empleado, turno o dispositivo;
+3. son metadata técnica de coherencia;
+4. eliminarlas no elimina hechos empresariales;
+5. `app_private` es la capa aprobada para lógica y estado técnico no expuesto.
+
+---
+
+#### 10. Objeto `app_private.context_freshness_generations`
+
+Se crea conceptualmente:
+
+```text
+app_private.context_freshness_generations
+```
+
+Columnas mínimas:
+
+```text
+organization_id uuid not null
+scope_type text not null
+scope_key text not null
+generation bigint not null
+last_event_id uuid not null
+created_at timestamptz not null
+updated_at timestamptz not null
+schema_version text not null
+```
+
+Clave primaria:
+
+```text
+organization_id
++
+scope_type
++
+scope_key
+```
+
+No se almacena el token completo en esta tabla.
+
+---
+
+#### 11. Vocabulario cerrado de `scope_type`
+
+Se permiten exactamente:
+
+```text
+ACTOR
+EMPLOYEE
+BASE_LANE
+OPERATIONAL_LANE
+DEVICE
+APP_AUTHORIZATION
+GLOBAL_AUTHORIZATION
+SYSTEM_DELEGATION
+```
+
+`SESSION` no se almacena como contador persistente en esta tabla porque Supabase Auth conserva la autoridad sobre la sesión administrada.
+
+La generación de sesión se deriva de la fuente Auth real.
+
+---
+
+#### 12. Semántica de `scope_key`
+
+`scope_key` es un identificador técnico estable dentro del scope correspondiente.
+
+Ejemplos conceptuales:
+
+```text
+ACTOR
+→ principal o actor-session resuelto
+
+EMPLOYEE
+→ employee_id canónico
+
+BASE_LANE
+→ employee_id canónico
+
+OPERATIONAL_LANE
+→ employee_id canónico
+
+DEVICE
+→ device_id canónico
+
+APP_AUTHORIZATION
+→ app_code canónico
+
+GLOBAL_AUTHORIZATION
+→ GLOBAL
+
+SYSTEM_DELEGATION
+→ delegación o proceso técnico canónico
+```
+
+No se usan como `scope_key`:
+
+- nombre;
+- alias;
+- correo;
+- teléfono;
+- documento;
+- rol visible;
+- sede seleccionada;
+- área seleccionada;
+- ruta;
+- permiso;
+- recurso.
+
+---
+
+#### 13. Tipo de generación persistida
+
+`generation` utiliza:
+
+```text
+bigint
+```
+
+Reglas:
+
+1. inicia en `1`;
+2. `0` queda reservado para estado no inicializado y nunca se sirve como token válido;
+3. cada cambio relevante incrementa mediante `generation = generation + 1`;
+4. no se utiliza `nextval()` ni una sequence porque la barrera debe revertirse con la transacción;
+5. no se usa timestamp como sustituto de contador;
+6. no se usa `MAX(generation) + 1`;
+7. el incremento es atómico;
+8. overflow produce fallo cerrado.
+
+---
+
+#### 14. Generaciones expuestas dentro del token
+
+Los contadores persistidos no cruzan el contrato como números crudos.
+
+Cada generación del token se serializa como:
+
+```text
+sha256:
++
+64 caracteres hexadecimales minúsculos
+```
+
+La preimagen contiene:
+
+```text
+contract_version
+organization_id
+scope_type
+scope_key
+generation
+```
+
+Esto uniforma el formato de:
+
+```text
+actor_generation
+employee_generation
+base_lane_generation
+operational_lane_generation
+device_generation
+app_authorization_generation
+global_authorization_generation
+```
+
+y evita convertir el contador interno en API.
+
+---
+
+#### 15. `session_generation`
+
+`session_generation` se deriva directamente de la sesión administrada vigente.
+
+Preimagen mínima:
+
+```text
+session_id
+user_id
+updated_at
+not_after
+aal
+refreshed_at
+oauth_client_id
+refresh_token_counter
+scopes
+```
+
+Reglas:
+
+1. usa solo hechos autoritativos necesarios;
+2. excluye `refresh_token_hmac_key`;
+3. excluye user agent;
+4. excluye IP;
+5. excluye secretos;
+6. excluye el JWT completo;
+7. una sesión ausente invalida la lectura;
+8. una sesión incompatible con el principal invalida la lectura;
+9. la expiración también participa como límite temporal;
+10. el resultado usa formato SHA-256 canónico.
+
+No se modifica el schema `auth`.
+
+---
+
+#### 16. `actor_generation`
+
+`actor_generation` representa cambios de:
+
+- actor efectivo;
+- sesión de actor;
+- atribución;
+- delegación;
+- vínculo que altera el actor;
+- identidad de dominio utilizada por el actor.
+
+Para un actor persistente Vento se obtiene desde `scope_type = ACTOR`.
+
+Para una delegación de sistema se incorpora además `SYSTEM_DELEGATION`.
+
+Para un dispositivo compartido, cambiar la actor session debe cambiar el valor aunque el dispositivo permanezca igual.
+
+---
+
+#### 17. `employee_generation`
+
+`employee_generation` cambia ante:
+
+- creación;
+- activación;
+- inactivación;
+- baja;
+- cambio estructural necesario para autorización;
+- reconciliación de identidad laboral;
+- cambio que modifique la validez del empleado como actor.
+
+No cambia por datos puramente descriptivos sin efecto contextual.
+
+---
+
+#### 18. `base_lane_generation`
+
+`base_lane_generation` cambia ante:
+
+- rol base;
+- asignaciones de sede;
+- asignaciones de área;
+- cobertura administrativa;
+- excepciones base;
+- overrides individuales aplicables;
+- denies base aplicables;
+- cambios de vigencia de esos hechos.
+
+No se incrementa por una selección visual de sede o área.
+
+---
+
+#### 19. `operational_lane_generation`
+
+`operational_lane_generation` cambia ante:
+
+- creación o modificación de turno;
+- publicación;
+- republicación;
+- cancelación;
+- revisión;
+- rol operativo;
+- sede operativa;
+- área operativa;
+- inicio de check-in;
+- cierre de check-in;
+- corrección;
+- invalidación;
+- mapping rol-sede-área;
+- vigencia de actor operativo.
+
+Los cambios temporales sin escritura se controlan adicionalmente mediante `next_temporal_boundary_at`.
+
+---
+
+#### 20. `device_generation`
+
+`device_generation` cambia ante:
+
+- registro;
+- activación;
+- inactivación;
+- revocación;
+- allowlist de aplicaciones;
+- restricciones;
+- cambio de política;
+- cambio de actor session;
+- expiración o reemplazo estructural relevante.
+
+El dispositivo continúa siendo restrictivo.
+
+No concede rol ni permiso.
+
+---
+
+#### 21. `app_authorization_generation`
+
+Existe una fila por:
+
+```text
+organization_id
++
+app_code
+```
+
+Cambia cuando una modificación aplicable a esa aplicación puede alterar:
+
+- catálogo de permisos;
+- requisito de autorización;
+- sensibilidad;
+- política de dispositivo;
+- grants;
+- matriz;
+- override;
+- deny;
+- mapping autorizado.
+
+Cuando el alcance por aplicación no puede determinarse de forma segura, se incrementa `GLOBAL_AUTHORIZATION`.
+
+Nunca se elige un scope menor por optimización.
+
+---
+
+#### 22. `global_authorization_generation`
+
+Existe una fila por organización con:
+
+```text
+scope_type = GLOBAL_AUTHORIZATION
+scope_key = GLOBAL
+```
+
+Cambia cuando una modificación puede afectar transversalmente:
+
+- catálogo global;
+- roles canónicos;
+- matrices transversales;
+- políticas organizacionales;
+- structural issue catalog;
+- versión contractual activa;
+- semántica global de autorización.
+
+Es la barrera segura cuando el impacto no puede reducirse a una app o sujeto.
+
+---
+
+#### 23. Objeto `app_private.context_freshness_bindings`
+
+Se crea conceptualmente:
+
+```text
+app_private.context_freshness_bindings
+```
+
+Finalidad:
+
+> demostrar qué fuentes físicas están obligadas a incrementar qué generaciones y detectar una escritura relevante sin binding.
+
+Campos mínimos:
+
+```text
+binding_id text primary key
+source_schema text not null
+source_relation text not null
+source_kind text not null
+mutation_ops text[] not null
+event_type text not null
+generation_scopes text[] not null
+scope_strategy text not null
+enforcement_state text not null
+owner_task text not null
+source_contract_key text not null
+source_shape_fingerprint text not null
+created_at timestamptz not null
+updated_at timestamptz not null
+```
+
+---
+
+#### 24. Estados de binding
+
+Se permiten:
+
+```text
+BOOTSTRAP
+ENFORCED
+SUPERSEDED
+BLOCKED
+```
+
+Semántica:
+
+| Estado       | Significado                                              |
+| ------------ | -------------------------------------------------------- |
+| `BOOTSTRAP`  | inventariado y todavía no elegible para caché compartida |
+| `ENFORCED`   | toda escritura relevante tiene barrera transaccional     |
+| `SUPERSEDED` | fuente migrada; binding histórico conservado             |
+| `BLOCKED`    | la fuente no puede garantizar invalidación y bloquea L1  |
+
+`VALIDATED_SHARED` exige cero bindings requeridos en `BOOTSTRAP` o `BLOCKED`.
+
+---
+
+#### 25. Relación con el vocabulario de fuentes de AUTH-DB-033
+
+Los bindings deben reconciliar, como mínimo, las fuentes semánticas:
+
+```text
+application_catalog
+principal_registry
+enterprise_identity_links
+domain_identity_policy
+actor_resolution_model
+employment_model
+role_catalog
+site_catalog
+area_catalog
+administrative_coverage_policy
+shift_model
+checkin_model
+device_model
+actor_session_model
+structural_issue_catalog
+```
+
+Regla:
+
+```text
+FUENTE UTILIZADA POR get_access_context
++
+PUEDE CAMBIAR EL CONTEXTO
+→ DEBE TENER ESTRATEGIA DE INVALIDACIÓN
+```
+
+Una fuente sin binding bloquea `VALIDATED_SHARED`.
+
+---
+
+#### 26. Inventario AS-IS de fuentes a reconciliar
+
+La auditoría remota observó, entre otras, las siguientes relaciones legacy o actuales relacionadas con contexto y autorización:
+
+```text
+public.employees
+public.employee_sites
+public.employee_areas
+public.employee_shifts
+public.attendance_shift_events
+public.employee_site_operational_profiles
+public.shared_operational_devices
+public.shared_operational_device_actor_sessions
+public.shared_operational_device_apps
+public.app_permissions
+public.employee_permissions
+public.operational_role_permissions
+public.role_permissions
+public.roles
+public.operational_roles
+public.site_operational_roles
+public.shift_policy
+```
+
+La existencia de una relación no la convierte automáticamente en fuente canónica.
+
+Antes de crear un trigger, la futura instancia compara esta lista con:
+
+- la fuente realmente elegida por `AUTH-DB-033`;
+- el estado después de `AUTH-DB-019`;
+- cualquier owner schema ya materializado;
+- el inventario de consumidores y migraciones.
+
+---
+
+#### 27. Regla de selección del binding físico
+
+Para cada `source_contract_key` debe existir exactamente una de estas situaciones:
+
+```text
+A. fuente autoritativa única
+→ binding ENFORCED
+
+B. transición con fuente anterior y nueva
+→ ambas registradas
+→ una ACTIVE y otra TRANSITIONAL
+→ misma generación semántica
+
+C. fuente no materializada
+→ binding BOOTSTRAP
+→ L1 bloqueada
+
+D. ambigüedad
+→ binding BLOCKED
+→ materialización no habilita L1
+```
+
+No se crean triggers sobre todas las tablas que “parezcan” relacionadas por nombre.
+
+---
+
+#### 28. Regla de scope mínimo seguro
+
+Toda invalidación utiliza el scope más pequeño cuya completitud pueda demostrarse dentro de la misma transacción.
+
+Orden preferido:
+
+```text
+SESSION
+SUBJECT
+DEVICE
+APP
+ORGANIZATION
+GLOBAL
+```
+
+Si el scope preciso no puede demostrarse:
+
+```text
+AMPLIAR SCOPE
+```
+
+Nunca:
+
+```text
+ADIVINAR SCOPE MÁS PEQUEÑO
+```
+
+Una invalidación más amplia puede costar rendimiento.
+
+Una invalidación demasiado estrecha puede producir stale authority y está prohibida.
+
+---
+
+#### 29. Función `app_private.bump_context_freshness`
+
+Se define la identidad física privada:
+
+```text
+app_private.bump_context_freshness(jsonb) → jsonb
+```
+
+El argumento es un sobre interno producido únicamente por funciones y triggers privados.
+
+Contiene de forma validada:
+
+```text
+organization_id
+event_type
+generation_scopes
+scope_ids
+app_code
+subject_key_hash
+producer
+schema_version
+```
+
+No es una API para aplicaciones.
+
+---
+
+#### 30. Seguridad de `bump_context_freshness`
+
+La función será:
+
+```text
+VOLATILE
+SECURITY DEFINER
+```
+
+con:
+
+```text
+search_path = pg_catalog, app_private
+```
+
+y referencias calificadas hacia `audit`.
+
+Reglas:
+
+1. owner técnico no interactivo;
+2. `PUBLIC EXECUTE` revocado;
+3. `anon` sin execute;
+4. `authenticated` sin execute;
+5. cero grant cliente;
+6. no acepta SQL dinámico;
+7. valida catálogo cerrado de event types y scope types;
+8. ordena scopes antes de bloquear filas;
+9. deduplica scopes;
+10. fallo en cualquier incremento aborta toda la escritura caller.
+
+---
+
+#### 31. Algoritmo transaccional de incremento
+
+Dentro de la misma transacción:
+
+```text
+1. validar envelope interno
+2. normalizar y deduplicar scopes
+3. ordenar por organization_id + scope_type + scope_key
+4. bloquear o upsert cada generation row
+5. capturar generation_before
+6. incrementar generation
+7. capturar generation_after
+8. insertar un evento outbox
+9. devolver event_id y resumen técnico
+```
+
+Si cualquier paso falla:
+
+```text
+ROLLBACK
+```
+
+No se confirma el dato empresarial dejando la invalidación pendiente.
+
+---
+
+#### 32. Concurrencia de generaciones
+
+El incremento utiliza operaciones atómicas de fila.
+
+Se prohíbe:
+
+```text
+select generation
+→ calcular en aplicación
+→ update posterior
+```
+
+Se requiere una operación equivalente a:
+
+```text
+generation = generation + 1
+```
+
+bajo el lock de fila de PostgreSQL.
+
+Dos transacciones concurrentes que modifican el mismo scope deben terminar con dos generaciones distintas y ordenadas.
+
+No puede perderse un incremento.
+
+---
+
+#### 33. Orden de locks
+
+Para reducir deadlocks:
+
+```text
+organization_id
+scope_type
+scope_key
+```
+
+se ordenan determinísticamente antes de modificar filas.
+
+Un trigger que afecte varias generaciones no puede bloquearlas en orden dependiente del input.
+
+Los deadlocks todavía se tratan como fallo de transacción, nunca como permiso para omitir invalidación.
+
+---
+
+#### 34. Triggers de invalidación
+
+Los triggers pertenecen a las fuentes que realmente producen hechos contextuales.
+
+Se prefieren:
+
+- triggers `AFTER` dentro de la misma transacción;
+- transición por statement cuando permita deduplicar scopes de una operación masiva;
+- row-level cuando el scope dependa de OLD/NEW individual;
+- funciones finas por familia de fuente;
+- un núcleo común `bump_context_freshness`.
+
+No se crea un único trigger genérico que infiera semántica por nombres de columnas.
+
+---
+
+#### 35. Familias mínimas de trigger
+
+La implementación debe cubrir, según fuentes materializadas:
+
+```text
+identity/principal change
+actor-session change
+employee lifecycle change
+base-role change
+site assignment change
+area assignment change
+administrative coverage change
+shift change
+checkin change
+operational mapping change
+device change
+device app-policy change
+permission catalog change
+grant/matrix change
+individual override change
+deny change
+contract version change
+```
+
+Cada familia tiene mapping explícito de evento y generaciones.
+
+---
+
+#### 36. No triggers sobre Auth administrado
+
+Queda prohibido usar como mecanismo principal:
+
+```text
+trigger custom sobre auth.sessions
+trigger custom sobre auth.users
+```
+
+para mantener el token.
+
+Razones:
+
+1. Supabase administra esas tablas;
+2. su lifecycle puede cambiar con la plataforma;
+3. la frescura de sesión puede verificarse directamente;
+4. el token no necesita duplicar secretos;
+5. una sesión eliminada debe invalidar sin depender de un evento Vento.
+
+Los vínculos empresariales Vento sí invalidan mediante sus propios bindings.
+
+---
+
+#### 37. Outbox `audit.context_invalidation_outbox`
+
+Se crea conceptualmente:
+
+```text
+audit.context_invalidation_outbox
+```
+
+Campos mínimos:
+
+```text
+event_id uuid primary key
+event_type text not null
+scope_type text not null
+scope_ids jsonb not null
+app_code text null
+organization_id uuid not null
+subject_key_hash text null
+generation_before jsonb not null
+generation_after jsonb not null
+occurred_at timestamptz not null
+committed_at timestamptz null
+source_transaction_id text not null
+producer text not null
+schema_version text not null
+delivery_status text not null
+attempt_count integer not null
+last_attempt_at timestamptz null
+last_error_class text null
+delivered_at timestamptz null
+```
+
+No almacena `AccessContext`.
+
+---
+
+#### 38. Catálogo de eventos
+
+Se congela inicialmente:
+
+```text
+AUTH_SESSION_CHANGED
+DOMAIN_IDENTITY_CHANGED
+ACTOR_ASSIGNMENT_CHANGED
+EMPLOYEE_STATUS_CHANGED
+BASE_ROLE_CHANGED
+ASSIGNED_SITE_CHANGED
+ASSIGNED_AREA_CHANGED
+ADMINISTRATIVE_COVERAGE_CHANGED
+SHIFT_CHANGED
+CHECKIN_SESSION_CHANGED
+OPERATIONAL_ROLE_MAPPING_CHANGED
+DEVICE_CHANGED
+DEVICE_ACTOR_SESSION_CHANGED
+SYSTEM_DELEGATION_CHANGED
+APP_AUTHORIZATION_CHANGED
+PERMISSION_CATALOG_CHANGED
+BASE_GRANTS_CHANGED
+OPERATIONAL_GRANTS_CHANGED
+INDIVIDUAL_OVERRIDE_CHANGED
+DENY_CHANGED
+CONTRACT_VERSION_CHANGED
+```
+
+Una nueva causa requiere extensión contractual explícita.
+
+---
+
+#### 39. Catálogo de scope de evento
+
+Se permiten:
+
+```text
+SESSION
+SUBJECT
+DEVICE
+APP
+ORGANIZATION
+GLOBAL
+```
+
+`scope_type` del evento describe el alcance de expulsión.
+
+No es el mismo vocabulario que `scope_type` de la tabla de generaciones.
+
+---
+
+#### 40. Estado de delivery del outbox
+
+Se permiten:
+
+```text
+PENDING
+CLAIMED
+DELIVERED
+FAILED
+DEAD_LETTER
+```
+
+Reglas:
+
+1. la transacción empresarial crea `PENDING`;
+2. la fila solo es visible a consumidores después del commit;
+3. el dispatcher puede marcar `committed_at` al reclamar la fila visible;
+4. fallo de delivery no revierte un commit ya confirmado;
+5. fallo de delivery tampoco permite stale hit porque las generaciones ya cambiaron;
+6. el replay es idempotente por `event_id`.
+
+---
+
+#### 41. `source_transaction_id`
+
+Se captura una identidad de transacción PostgreSQL mediante una fuente equivalente a:
+
+```text
+pg_current_xact_id()
+```
+
+y se serializa como texto.
+
+No se utiliza como ID empresarial.
+
+No se expone a cliente.
+
+Permite correlacionar:
+
+```text
+dato cambiado
+↔ generación
+↔ outbox
+```
+
+---
+
+#### 42. Función `app_private.get_context_freshness_token`
+
+Se define la identidad física:
+
+```text
+app_private.get_context_freshness_token(text) → jsonb
+```
+
+Único parámetro:
+
+```text
+p_app_code text
+```
+
+No acepta:
+
+- user id;
+- employee id;
+- actor id;
+- device id;
+- session id;
+- role;
+- site;
+- area;
+- permiso;
+- recurso;
+- generation proporcionada por el caller.
+
+---
+
+#### 43. Volatilidad y seguridad del token reader
+
+`get_context_freshness_token(text)` será:
+
+```text
+STABLE
+SECURITY DEFINER
+```
+
+con:
+
+```text
+search_path = pg_catalog, app_private
+```
+
+Reglas:
+
+1. usa el mismo snapshot de la invocación;
+2. no escribe;
+3. no crea generation rows;
+4. no corrige bindings;
+5. no hace lazy initialization;
+6. no usa SQL dinámico;
+7. lee únicamente fuentes calificadas;
+8. `PUBLIC` no ejecuta;
+9. `anon` no ejecuta;
+10. `authenticated` no recibe execute directo;
+11. el token completo no se publica mediante `api`.
+
+---
+
+#### 44. Transporte hacia SHELL-CTX-006
+
+`AUTH-DB-035` no inventa un RPC cliente para el token.
+
+La integración futura con `SHELL-CTX-006` deberá utilizar una frontera server-only aprobada.
+
+Hasta que esa frontera exista y sea probada:
+
+```text
+cache_mode = REQUEST_ONLY
+```
+
+Queda prohibido resolver la falta de transporte haciendo:
+
+```text
+GRANT EXECUTE TO authenticated
+```
+
+sobre el token reader.
+
+También queda prohibido exponer el token completo en `api`.
+
+---
+
+#### 45. Resolución del principal para el token
+
+El token reader reutiliza la semántica de resolución aprobada por `AUTH-DB-033`.
+
+Debe resolver:
+
+```text
+p_app_code
+principal técnico
+sesión
+actor efectivo
+empleado cuando aplique
+dispositivo cuando aplique
+organization_id
+```
+
+No reconstruye un segundo modelo de actor.
+
+No acepta identidad del caller como argumento.
+
+---
+
+#### 46. `subject_key`
+
+`subject_key` se calcula mediante serialización canónica de:
+
+```text
+environment
+organization_id
+app_code
+principal_type
+principal_id
+auth_session_id
+actor_session_id
+system_process_id
+effective_actor_identity
+```
+
+solo con dimensiones aplicables.
+
+Se convierte a:
+
+```text
+sha256:
++
+64 hex
+```
+
+No contiene PII humana.
+
+No se registra en logs generales sin protección adicional.
+
+---
+
+#### 47. Identidad de environment
+
+Se crea una fuente técnica privada:
+
+```text
+app_private.context_freshness_runtime
+```
+
+con exactamente una identidad activa por base de datos.
+
+Campos mínimos:
+
+```text
+runtime_key text primary key
+environment_code text not null
+environment_identity text not null
+schema_version text not null
+created_at timestamptz not null
+updated_at timestamptz not null
+```
+
+Regla de cardinalidad:
+
+```text
+runtime_key = ACTIVE
+→ exactamente una fila
+```
+
+`environment_identity` es opaca y única por entorno.
+
+No es nombre de usuario, app o organización.
+
+---
+
+#### 48. Bootstrap de environment
+
+La migration crea la estructura.
+
+La identidad específica del entorno se materializa mediante un procedimiento versionado de bootstrap ejecutado desde `vento-shell` y registrado en la evidencia de la instancia.
+
+Reglas:
+
+1. no se hardcodea `production` en una migration compartida;
+2. no se obtiene environment desde el navegador;
+3. no se confía en un header del cliente;
+4. cada entorno debe tener identidad distinta;
+5. ausencia o duplicado de runtime identity bloquea el token reader;
+6. `AUTH-DB-028` debe capturar drift de esta identidad.
+
+---
+
+#### 49. Resolución de organization
+
+`organization_id` procede de las fuentes organizacionales canónicas.
+
+No se deduce de:
+
+- dominio web;
+- app code;
+- sede;
+- email;
+- rol;
+- una constante “Vento” embebida.
+
+Aunque exista una sola organización activa, el campo permanece explícito.
+
+Si no puede resolverse exactamente una organización aplicable:
+
+```text
+TOKEN READ FAILS CLOSED
+```
+
+---
+
+#### 50. `next_temporal_boundary_at`
+
+El token reader calcula el mínimo aplicable entre:
+
+- expiración de access token;
+- `auth.sessions.not_after`;
+- fin del turno actual;
+- inicio de turno futuro que cambia contexto;
+- cierre o expiración de check-in;
+- expiración de actor session;
+- expiración del dispositivo;
+- expiración de delegación;
+- inicio o fin de asignación;
+- inicio o fin de cobertura;
+- inicio o fin de override;
+- inicio o fin de deny;
+- cambio contractual programado.
+
+El cálculo usa reloj de servidor/base de datos.
+
+Nunca reloj cliente.
+
+---
+
+#### 51. Helper temporal compartido
+
+Para impedir dos algoritmos distintos entre token y L2 se define:
+
+```text
+app_private.resolve_context_temporal_boundary(text) → timestamptz
+```
+
+El parámetro es `p_app_code`.
+
+El helper:
+
+1. resuelve únicamente límites temporales;
+2. no decide permisos;
+3. no devuelve hechos completos;
+4. puede ser consumido por el token reader;
+5. puede ser consumido por la proyección segura de `AUTH-DB-033`;
+6. mantiene el margen contractual de seguridad fuera del dato bruto.
+
+La migración de 035 puede refactorizar internamente el cálculo de `expires_at` de la proyección segura sin cambiar su forma pública.
+
+---
+
+#### 52. Margen de seguridad
+
+La política conserva:
+
+```text
+safety_margin = 1 segundo
+```
+
+El margen se aplica al consumidor de la boundary.
+
+No se modifica el timestamp de la fuente para ocultar su valor.
+
+Regla futura de uso:
+
+```text
+server_now
+<
+next_temporal_boundary_at - 1 segundo
+```
+
+---
+
+#### 53. Forma exacta de `ContextFreshnessToken@1.0.0`
+
+El token materializado contiene:
+
+```text
+contract_name
+contract_version
+environment
+organization_id
+app_code
+subject_key
+session_generation
+actor_generation
+employee_generation
+base_lane_generation
+operational_lane_generation
+device_generation
+app_authorization_generation
+global_authorization_generation
+next_temporal_boundary_at
+issued_at
+token_fingerprint
+```
+
+No se agregan campos de autorización.
+
+---
+
+#### 54. Campos nulos de generaciones
+
+Cuando una dimensión no aplica, se usa una constante semántica estable:
+
+```text
+NOT_APPLICABLE
+```
+
+Ejemplos:
+
+- `employee_generation` para un system service sin empleado;
+- `device_generation` para una sesión humana personal sin dispositivo gobernado;
+- `operational_lane_generation` para un actor que contractualmente no tiene carril operativo.
+
+No se usa `null` para confundir:
+
+```text
+no aplica
+```
+
+con:
+
+```text
+faltó la generación
+```
+
+Una generación requerida ausente es error técnico.
+
+---
+
+#### 55. `issued_at`
+
+`issued_at`:
+
+- se genera en servidor;
+- usa UTC;
+- corresponde a la lectura actual;
+- no es una generación;
+- no prueba frescura por sí solo;
+- no participa en `token_fingerprint`.
+
+Dos lecturas consecutivas sin cambios pueden tener `issued_at` distinto y `token_fingerprint` igual.
+
+---
+
+#### 56. `token_fingerprint`
+
+Se calcula sobre la representación canonicalizada de:
+
+```text
+contract_name
+contract_version
+environment
+organization_id
+app_code
+subject_key
+session_generation
+actor_generation
+employee_generation
+base_lane_generation
+operational_lane_generation
+device_generation
+app_authorization_generation
+global_authorization_generation
+next_temporal_boundary_at
+```
+
+Se excluyen:
+
+```text
+issued_at
+token_fingerprint
+delivery metadata
+correlation_id
+```
+
+Formato:
+
+```text
+sha256:
++
+64 hex minúsculos
+```
+
+---
+
+#### 57. Canonicalización
+
+Se reutiliza:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+No se usa `jsonb::text` como contrato suficiente.
+
+El orden de keys, arrays y valores normalizados debe ser determinista.
+
+La misma semántica produce el mismo fingerprint.
+
+---
+
+#### 58. Lectura de generaciones requeridas
+
+El token reader determina scopes desde el actor real.
+
+Ejemplo humano:
+
+```text
+session
+actor
+employee
+base lane
+operational lane
+app authorization
+global authorization
+```
+
+Ejemplo dispositivo compartido:
+
+```text
+session técnica si aplica
+device
+actor session
+actor humano
+employee
+base lane
+operational lane
+app authorization
+global authorization
+```
+
+Ejemplo SYSTEM:
+
+```text
+system principal
+system delegation
+app authorization
+global authorization
+```
+
+No se rellena una dimensión con datos de otro plano.
+
+---
+
+#### 59. Generación faltante
+
+Antes de habilitar L1:
+
+```text
+GENERACIÓN REQUERIDA AUSENTE
+→ TOKEN NO UTILIZABLE
+→ BYPASS L1
+→ RESOLUCIÓN FRESCA
+→ ALERTA DE DRIFT
+```
+
+Una generación faltante nunca se interpreta como:
+
+```text
+g:0
+```
+
+ni como:
+
+```text
+sin cambios
+```
+
+No se inicializa mediante una lectura.
+
+---
+
+#### 60. Backfill inicial
+
+La futura migration debe sembrar:
+
+- generations de empleados existentes;
+- base lanes aplicables;
+- operational lanes aplicables;
+- devices;
+- actores/delegaciones Vento aplicables;
+- apps activas;
+- generación global por organización;
+- bindings de fuentes.
+
+Valor inicial:
+
+```text
+generation = 1
+```
+
+El backfill debe completarse antes de marcar los bindings como `ENFORCED`.
+
+---
+
+#### 61. Cierre de carrera durante backfill
+
+La estrategia de materialización debe evitar:
+
+```text
+BACKFILL
+→ escritura concurrente no observada
+→ trigger instalado después
+```
+
+La instalación debe ejecutarse mediante una migration transaccional y locks de DDL adecuados.
+
+Orden:
+
+```text
+crear estructuras
+→ registrar bindings BOOTSTRAP
+→ backfill
+→ crear funciones
+→ crear triggers
+→ validar cobertura
+→ cambiar bindings a ENFORCED
+→ commit
+```
+
+Si no puede cerrarse la ventana:
+
+```text
+ROLLBACK
+```
+
+---
+
+#### 62. Rebinding durante migraciones de dominio
+
+Cuando una fuente se mueva desde un schema legacy a su owner schema:
+
+```text
+1. crear binding nuevo
+2. conservar misma generación semántica
+3. instalar invalidación nueva
+4. probar escritura
+5. cambiar lectura canónica
+6. marcar binding anterior SUPERSEDED
+7. retirar trigger anterior
+```
+
+No se reinicia la generación a `1`.
+
+No se habilitan dos fuentes como autoridad simultánea sin transición explícita.
+
+---
+
+#### 63. Regla para writers de dominio
+
+Después de `AUTH-DB-035::GLOBAL`, toda tarea que cree o cambie una fuente capaz de modificar `AccessContext` debe:
+
+1. declarar impacto de frescura;
+2. conservar o crear binding;
+3. incrementar la generación correcta;
+4. producir outbox en la misma transacción;
+5. actualizar drift;
+6. incluir prueba negativa de stale;
+7. preservar rollback.
+
+Esta regla aplica a migraciones posteriores de owner schemas.
+
+---
+
+#### 64. Integración con AUTH-DB-033
+
+`AUTH-DB-035` no cambia:
+
+```text
+app_private.get_access_context(text)
+```
+
+ni:
+
+```text
+api.get_safe_access_context(text)
+```
+
+como contratos públicos ya definidos.
+
+Puede reutilizar:
+
+- principal resolver;
+- actor resolver;
+- canonicalizer;
+- fingerprint helpers;
+- temporal facts.
+
+No puede convertir el freshness token en un nuevo campo de `AccessContext@1.0.0`.
+
+---
+
+#### 65. `cache_status` después de AUTH-DB-035
+
+La sola existencia de generaciones no habilita L1.
+
+Mientras `SHELL-CTX-006` no exista y no active una estrategia compartida:
+
+```text
+cache_status = NOT_IMPLEMENTED
+```
+
+permanece válido.
+
+`AUTH-DB-035` no empieza a devolver `HIT` ni `MISS`.
+
+---
+
+#### 66. Integración con SafeContextProjection
+
+La proyección segura puede conservar:
+
+```text
+context_id
+context_fingerprint
+expires_at
+safe_fields
+```
+
+No puede incluir:
+
+```text
+ContextFreshnessToken
+session_generation
+actor_generation
+employee_generation
+base_lane_generation
+operational_lane_generation
+device_generation
+app_authorization_generation
+global_authorization_generation
+token_fingerprint
+generation counters
+```
+
+La caché L2 no obtiene la barrera interna.
+
+---
+
+#### 67. Integración con AUTH-DB-034
+
+`AUTH-DB-034` podrá consumir un contexto cuya frescura haya sido validada.
+
+No podrá interpretar:
+
+```text
+freshness_token valid
+```
+
+como:
+
+```text
+ALLOW
+```
+
+La evaluación conserva:
+
+- permiso exacto;
+- recurso exacto;
+- requisito de autorización;
+- precedencia;
+- deny;
+- evidencia;
+- fail closed.
+
+---
+
+#### 68. Integración con AUTH-DB-032
+
+`AUTH-DB-032` podrá persistir referencias como:
+
+- context id;
+- context fingerprint;
+- cache status observado;
+- versiones;
+- decisión.
+
+No persiste la tabla de generaciones como historia de decisión.
+
+El outbox de 035 tampoco sustituye la auditoría de autorización.
+
+---
+
+#### 69. Integración con SHELL-CTX-006
+
+`SHELL-CTX-006` será responsable de:
+
+- modos `OFF`, `REQUEST_ONLY`, `SHADOW_SHARED`, `VALIDATED_SHARED`;
+- storage L1;
+- single-flight cross-request;
+- lectura doble T1/T2;
+- comparación de token;
+- TTL;
+- safety margin;
+- purga por eventos;
+- métricas de caché;
+- rollback a `REQUEST_ONLY`.
+
+`AUTH-DB-035` no crea Redis ni otro storage L1.
+
+---
+
+#### 70. Eventos como optimización
+
+El evento outbox permite:
+
+- purga anticipada;
+- refresh de L2;
+- reducción de misses;
+- observabilidad;
+- reconciliación.
+
+Pero:
+
+```text
+EVENTO NO RECIBIDO
+→ SIGUIENTE TOKEN READ VE LA NUEVA GENERACIÓN
+→ ENTRADA ANTERIOR NO ES HIT
+```
+
+La seguridad no depende de delivery en tiempo real.
+
+---
+
+#### 71. Realtime y NOTIFY
+
+Esta tarea no obliga a utilizar Supabase Realtime ni PostgreSQL `NOTIFY`.
+
+Si se añaden después:
+
+- consumen el outbox;
+- no sustituyen generación;
+- no cambian el commit empresarial;
+- no conceden autoridad;
+- no exponen el token al cliente;
+- deben respetar el schema `realtime` administrado.
+
+---
+
+#### 72. RLS y ACL de tablas nuevas
+
+Para:
+
+```text
+app_private.context_freshness_generations
+app_private.context_freshness_bindings
+app_private.context_freshness_runtime
+audit.context_invalidation_outbox
+```
+
+se exige:
+
+1. RLS habilitada como defensa en profundidad;
+2. cero policy de cliente;
+3. `PUBLIC` sin privileges;
+4. `anon` sin privileges;
+5. `authenticated` sin privileges;
+6. ninguna tabla se añade a Data API;
+7. ningún owner schema se expone;
+8. acceso únicamente por owner técnico y funciones privadas aprobadas.
+
+---
+
+#### 73. ACL de funciones nuevas
+
+Estado objetivo:
+
+| Función                                               | PUBLIC | anon | authenticated | Uso                         |
+| ----------------------------------------------------- | -----: | ---: | ------------: | --------------------------- |
+| `app_private.get_context_freshness_token(text)`       |     NO |   NO |            NO | interno server-only         |
+| `app_private.resolve_context_temporal_boundary(text)` |     NO |   NO |            NO | helper privado              |
+| `app_private.bump_context_freshness(jsonb)`           |     NO |   NO |            NO | triggers y writers privados |
+| helpers de fingerprint                                |     NO |   NO |            NO | internos                    |
+
+No se crea una excepción equivalente a `api.get_safe_access_context`.
+
+---
+
+#### 74. Service role
+
+`service_role` continúa siendo una identidad de infraestructura.
+
+No significa:
+
+```text
+employee
+owner
+manager
+authorized actor
+```
+
+Si una llamada técnica carece de principal empresarial o SYSTEM registrado:
+
+```text
+TOKEN READ FAILS CLOSED
+```
+
+No se crea bypass por service role.
+
+---
+
+#### 75. Seguridad de `SECURITY DEFINER`
+
+Toda función privilegiada debe demostrar:
+
+- owner no interactivo;
+- `search_path` fijo;
+- objetos críticos calificados;
+- cero SQL dinámico;
+- cero dependencia de nombres controlados por caller;
+- cero execute cliente;
+- poisoning test;
+- homonym test;
+- ACL test;
+- RLS coexistente;
+- error sin nombres internos.
+
+No se usa `SECURITY DEFINER` solo para evitar un error de permisos.
+
+---
+
+#### 76. Idempotencia
+
+Una segunda ejecución de la migration sobre un ambiente ya materializado debe:
+
+- confirmar objetos;
+- confirmar constraints;
+- confirmar ACL;
+- confirmar bindings;
+- confirmar functions;
+- confirmar triggers;
+- no resetear generations;
+- no duplicar outbox;
+- no volver a `generation = 1`;
+- no crear grants más amplios.
+
+Drift incompatible bloquea.
+
+---
+
+#### 77. Drift de bindings
+
+El harness debe comparar:
+
+```text
+binding registry
+vs
+pg_trigger
+vs
+source registry de get_access_context
+```
+
+Debe detectar:
+
+- fuente sin binding;
+- trigger ausente;
+- trigger duplicado;
+- binding hacia relación inexistente;
+- relación reemplazada sin rebinding;
+- generation scope incorrecto;
+- event type incorrecto;
+- binding BOOTSTRAP inesperado;
+- binding BLOCKED.
+
+Cualquier diferencia que pueda permitir stale authority bloquea `VALIDATED_SHARED`.
+
+---
+
+#### 78. Drift de Auth administrado
+
+El token reader debe validar que las columnas de `auth.sessions` necesarias para su fingerprint siguen disponibles con semántica compatible.
+
+Si Supabase cambia esa estructura:
+
+```text
+DRIFT
+→ token reader incompatible
+→ L1 BYPASS
+→ no stale hit
+```
+
+No se parchea silenciosamente una migration histórica.
+
+Se crea una migration forward.
+
+---
+
+#### 79. Índices
+
+Índices mínimos candidatos:
+
+```text
+context_freshness_generations
+→ PK organization_id, scope_type, scope_key
+
+context_freshness_bindings
+→ PK binding_id
+→ índice por source_schema, source_relation
+→ índice por enforcement_state
+
+context_invalidation_outbox
+→ PK event_id
+→ índice parcial por delivery_status = PENDING
+→ índice por organization_id, occurred_at
+→ índice por app_code, occurred_at cuando app_code no sea null
+```
+
+Los índices definitivos requieren evidencia de plan.
+
+No se agregan índices por rutina sin query real.
+
+---
+
+#### 80. Retención del outbox
+
+El outbox no es auditoría eterna por defecto.
+
+Debe existir política de retención que preserve:
+
+- eventos no entregados;
+- eventos en retry;
+- dead letters;
+- ventana de reconciliación;
+- evidencia requerida por incidentes.
+
+La purga solo elimina filas entregadas y fuera de la ventana aprobada.
+
+La política exacta de retención operativa puede ajustarse sin cambiar la semántica del token.
+
+---
+
+#### 81. Privacidad de métricas y logs
+
+No se registran:
+
+- token completo;
+- generation rows completas;
+- JWT;
+- refresh token;
+- email;
+- teléfono;
+- documento;
+- UUID humano crudo en logs generales;
+- grants completos;
+- denies completos.
+
+Se permiten:
+
+```text
+app_code
+scope_type
+event_type
+cache_mode
+binding_id
+generation_delta
+token_fingerprint_prefix
+subject_key protegido
+correlation_id
+latency
+error_class
+```
+
+---
+
+#### 82. Fallo del token reader
+
+Casos:
+
+| Caso                         | Resultado                                          |
+| ---------------------------- | -------------------------------------------------- |
+| generation requerida ausente | token no utilizable                                |
+| sesión ausente               | error seguro o actor no autenticado según contrato |
+| runtime identity ausente     | error técnico                                      |
+| organization ambigua         | error técnico                                      |
+| binding BLOCKED              | token no elegible para L1                          |
+| temporal source inválida     | error técnico                                      |
+| fingerprint falla            | error técnico                                      |
+
+Ninguno produce una generación anterior por fallback.
+
+---
+
+#### 83. Fallo de generación durante escritura
+
+Si un writer relevante no puede:
+
+- resolver organization;
+- resolver scope;
+- incrementar generation;
+- escribir outbox;
+
+la transacción relevante falla.
+
+No se permite:
+
+```text
+COMMIT EMPRESARIAL
++
+LOG WARNING
++
+CONTINUAR
+```
+
+cuando la escritura está clasificada como contextual.
+
+---
+
+#### 84. Fallo de delivery del outbox
+
+Después del commit:
+
+```text
+delivery falla
+→ generation ya cambió
+→ token nuevo difiere
+→ cache vieja no es HIT
+```
+
+Por tanto el dispatcher puede reintentar sin abrir una ventana de stale authority.
+
+Dead letter genera incidente operativo.
+
+No exige revertir el dato empresarial ya confirmado.
+
+---
+
+#### 85. Transacciones concurrentes
+
+Pruebas obligatorias:
+
+```text
+T1 modifica turno
+T2 modifica turno
+→ dos incrementos observables
+```
+
+```text
+T1 cambia rol
+T2 lee token antes de commit
+→ ve snapshot anterior válido para su transacción
+```
+
+```text
+T2 lee después de commit
+→ ve nueva generation
+```
+
+```text
+transacción abortada
+→ generation y outbox también abortan
+```
+
+---
+
+#### 86. Carreras durante resolución de caché futura
+
+La implementación de 035 debe permitir el algoritmo posterior:
+
+```text
+TOKEN T1
+→ resolver contexto
+→ TOKEN T2
+```
+
+Sin cambios:
+
+```text
+T1.fingerprint = T2.fingerprint
+```
+
+Con cambio concurrente:
+
+```text
+T1.fingerprint != T2.fingerprint
+```
+
+La resolución no se almacena.
+
+035 no implementa el storage ni el retry del consumidor.
+
+---
+
+#### 87. Boundary sin escritura
+
+Debe probarse que una entrada puede quedar obsoleta aunque ninguna generation cambie.
+
+Ejemplo:
+
+```text
+turno termina a las 15:00
+token leído a las 14:59
+generation estable
+15:00 alcanzado
+→ token ya no habilita HIT
+```
+
+El mecanismo es:
+
+```text
+next_temporal_boundary_at
+```
+
+No un trigger ficticio de reloj.
+
+---
+
+#### 88. Denies y vigencias temporales
+
+Un deny con inicio o fin programado participa en:
+
+```text
+next_temporal_boundary_at
+```
+
+Cuando se crea, modifica o elimina:
+
+```text
+generation correspondiente también cambia
+```
+
+Así se cubren:
+
+- cambios por escritura;
+- cambios por paso del tiempo.
+
+---
+
+#### 89. No caché de recursos
+
+Un cambio en un recurso empresarial no obliga a incrementar contexto cuando no modifica hechos del actor.
+
+Ejemplos:
+
+- pedido cambia estado;
+- activo cambia custodio;
+- lote cambia fase;
+- solicitud cambia destino.
+
+Esos cambios pertenecen a:
+
+```text
+resource resolver
++
+AuthorizationDecision nueva
+```
+
+No a `context_freshness_generations`.
+
+---
+
+#### 90. No caché de AuthorizationDecision
+
+035 no crea:
+
+- decision cache table;
+- decision token;
+- decision generation;
+- bearer decision;
+- reusable allow.
+
+La futura evaluación de 034 permanece por solicitud y recurso exacto.
+
+---
+
+#### 91. No stale-while-revalidate
+
+La infraestructura no crea ningún mecanismo que pueda devolver:
+
+```text
+token mismatch
++
+context anterior
+```
+
+No se admite:
+
+```text
+usar stale
+→ refrescar después
+```
+
+para autoridad.
+
+El token mismatch es rechazo inmediato de la entrada.
+
+---
+
+#### 92. Bootstrap y modo inicial
+
+Después de materializar `AUTH-DB-035::GLOBAL`:
+
+```text
+token infrastructure = AVAILABLE
+generations = INITIALIZED
+bindings = ENFORCED o explícitamente BLOCKED
+outbox = AVAILABLE
+cache L1 = DISABLED
+cache mode = REQUEST_ONLY
+```
+
+No se habilita `SHADOW_SHARED` automáticamente.
+
+No se habilita `VALIDATED_SHARED`.
+
+---
+
+#### 93. Puerta hacia SHADOW_SHARED
+
+Antes de `SHADOW_SHARED` se requiere:
+
+1. `AUTH-DB-035::GLOBAL` verificada;
+2. cero binding requerido BLOCKED;
+3. generations inicializadas;
+4. token reader estable;
+5. outbox probado;
+6. runtime identity válida;
+7. organización resuelta;
+8. métricas disponibles;
+9. storage privado de `SHELL-CTX-006`;
+10. feature flag server-side.
+
+Shadow nunca sirve la entrada como autoridad.
+
+---
+
+#### 94. Puerta hacia VALIDATED_SHARED
+
+035 aporta solamente parte de la puerta.
+
+Se mantiene el requisito global:
+
+- 033 implementada;
+- 035 implementada;
+- `SHELL-CTX-006` implementada;
+- `SHELL-AUTH-003` implementada;
+- double-read probado;
+- multiinstancia probada;
+- pérdida de evento probada;
+- cache outage probada;
+- token outage probado;
+- corrupción probada;
+- actor switch probado;
+- logout probado;
+- check-out probado;
+- deny inmediato probado;
+- rollback probado;
+- shadow sin diferencias no explicadas.
+
+035 por sí sola nunca habilita producción compartida.
+
+---
+
+#### 95. Rollback de la infraestructura
+
+Si 035 debe revertirse antes de existir L1:
+
+```text
+1. confirmar cache mode REQUEST_ONLY
+2. detener consumidores del token
+3. retirar triggers mediante migration forward
+4. conservar evidencia outbox requerida
+5. retirar functions solo sin dependencias
+6. retirar tablas solo si no existen consumidores
+7. restaurar ACL desde snapshot
+8. validar drift
+```
+
+No se utiliza `DROP CASCADE`.
+
+---
+
+#### 96. Rollback después de existir L1
+
+Si una versión posterior ya usa L1:
+
+```text
+1. forzar REQUEST_ONLY
+2. comprobar cero reads L1
+3. invalidar namespace compartido
+4. detener consumo del token
+5. aplicar migration forward correctiva
+```
+
+Queda prohibido:
+
+```text
+desactivar generation triggers
+mientras VALIDATED_SHARED sigue activo
+```
+
+---
+
+#### 97. Backup y restore
+
+`AUTH-DB-029` debe cubrir:
+
+- generation tables;
+- binding registry;
+- runtime identity;
+- outbox requerido por ventana;
+- functions y triggers;
+- ACL.
+
+Después de restore:
+
+1. verificar runtime identity;
+2. reconciliar generations contra fuentes;
+3. marcar cache compartida como no confiable;
+4. usar `REQUEST_ONLY`;
+5. reactivar L1 solo después de drift y token checks.
+
+No se asume que una entrada de caché externa restaurada siga válida.
+
+---
+
+#### 98. Reconciliación de generations
+
+Debe existir una operación de verificación que detecte:
+
+- scope esperado sin row;
+- row huérfana;
+- app faltante;
+- global generation faltante;
+- organization desconocida;
+- binding sin scope;
+- actor/device sin generación;
+- source migration no rebindeada.
+
+La reconciliación no reduce counters.
+
+Una corrección crea rows faltantes con una nueva barrera global cuando sea necesario.
+
+---
+
+#### 99. Manifiesto mínimo de futura materialización
+
+La futura instancia debe registrar, como mínimo:
+
+```text
+instance_id = AUTH-DB-035::GLOBAL
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+migration_files
+source_contract_sha256
+environment
+project_ref
+runtime_identity
+generation_table
+binding_table
+outbox_table
+token_reader_signature
+bump_function_signature
+trigger_bindings
+acl_snapshot_before
+acl_snapshot_after
+rls_snapshot
+generation_backfill_counts
+binding_counts
+outbox_test_event_ids
+drift_before
+drift_after
+validation_commands
+rollback_plan
+evidence
+```
+
+No se considera implementada por existir únicamente la migration.
+
+---
+
+#### 100. Dependencias físicas de AUTH-DB-035::GLOBAL
+
+Antes de autorizar físicamente la instancia debe existir evidencia de:
+
+```text
+R0 aplicable verificado
+AUTH-DB-016::GLOBAL materializada cuando los schemas requeridos todavía no existan
+AUTH-DB-018::GLOBAL materializada cuando la separación privada sea prerrequisito
+AUTH-DB-017::GLOBAL coherente con api/app_private no expuesto
+AUTH-DB-019::GLOBAL disponible para principal y vínculos
+AUTH-DB-033::GLOBAL VERIFIED
+AUTH-DB-027 disponible
+AUTH-DB-028 baseline vigente
+AUTH-DB-029 rollback disponible
+```
+
+Si `AUTH-DB-033::GLOBAL` no está `VERIFIED`, 035 no se autoriza físicamente.
+
+---
+
+#### 101. Orden de materialización física
+
+Secuencia esperada:
+
+```text
+1. preflight y baseline
+2. snapshot ACL/RLS/objetos
+3. verificar AUTH-DB-033::GLOBAL
+4. crear migration versionada
+5. crear runtime identity structure
+6. crear generation table
+7. crear binding registry
+8. crear outbox
+9. crear helpers
+10. crear token reader
+11. backfill generations
+12. instalar triggers/bindings
+13. verificar atomicidad
+14. verificar token
+15. verificar boundaries
+16. verificar ACL/RLS
+17. ejecutar pruebas de concurrencia
+18. ejecutar rollback rehearsal
+19. validar drift
+20. registrar evidencia
+```
+
+El procedimiento puede agruparse en migrations coherentes, pero no alterar la precedencia.
+
+---
+
+#### 102. Política de migrations
+
+Toda modificación futura:
+
+- se crea en `vento-shell`;
+- utiliza migration versionada;
+- no se aplica desde Dashboard manualmente;
+- no se ejecuta SQL ad hoc como estado final;
+- no reutiliza una migration histórica;
+- no edita una migration ya aplicada;
+- usa migration forward para correcciones;
+- conserva evidencia del hash aplicado.
+
+El bootstrap específico de environment también debe provenir de un script versionado del repositorio.
+
+---
+
+#### 103. Pruebas físicas obligatorias — estructura
+
+La futura instancia debe demostrar:
+
+1. existen los tres objetos privados previstos;
+2. existe el outbox;
+3. PK de generations exacta;
+4. `generation >= 1`;
+5. scope types cerrados;
+6. binding states cerrados;
+7. event types cerrados;
+8. event scope types cerrados;
+9. runtime identity cardinalidad exacta;
+10. constraints bloquean estados inválidos.
+
+---
+
+#### 104. Pruebas físicas obligatorias — token
+
+11. app válida produce exactamente un token;
+12. app null falla;
+13. app vacía falla;
+14. app desconocida falla de forma cerrada;
+15. no existe overload con actor;
+16. token contract version exacta;
+17. subject key estable;
+18. issued_at cambia entre lecturas;
+19. fingerprint no cambia solo por issued_at;
+20. cambio de generation cambia fingerprint;
+21. boundary cambia fingerprint;
+22. generation requerida ausente no produce token válido;
+23. dimensión no aplicable usa `NOT_APPLICABLE`;
+24. token no contiene secretos.
+
+---
+
+#### 105. Pruebas físicas obligatorias — sesión
+
+25. sesión válida produce session generation;
+26. session id distinto produce generation distinta;
+27. sesión ausente bloquea;
+28. user id de session incompatible bloquea;
+29. cambio de `not_after` cambia session generation o boundary;
+30. cambio relevante de sesión cambia token;
+31. access token expirado no permite token reutilizable;
+32. no se crean triggers en `auth.sessions`;
+33. no se leen secretos de refresh token;
+34. service role no obtiene actor implícito.
+
+---
+
+#### 106. Pruebas físicas obligatorias — transacciones
+
+35. update de empleado incrementa generation aplicable;
+36. cambio de rol base incrementa base lane;
+37. cambio de asignación incrementa base lane;
+38. cambio de turno incrementa operational lane;
+39. check-in incrementa operational lane;
+40. cambio de dispositivo incrementa device generation;
+41. cambio de actor incrementa actor y device cuando aplique;
+42. cambio app incrementa app generation;
+43. cambio global incrementa global generation;
+44. outbox se inserta en misma transacción;
+45. rollback empresarial revierte generation;
+46. rollback empresarial revierte outbox;
+47. fallo de generation revierte escritura;
+48. dos writers concurrentes no pierden incrementos;
+49. scopes múltiples se bloquean en orden determinista.
+
+---
+
+#### 107. Pruebas físicas obligatorias — bindings
+
+50. cada source contract key requerido tiene binding;
+51. no existe binding duplicado activo;
+52. binding apunta a relación real;
+53. trigger real coincide con binding;
+54. source shape fingerprint coincide;
+55. binding BOOTSTRAP bloquea shared;
+56. binding BLOCKED bloquea shared;
+57. source nueva sin binding se detecta;
+58. source superseded no se usa como autoridad;
+59. rebinding conserva generations.
+
+---
+
+#### 108. Pruebas físicas obligatorias — temporalidad
+
+60. fin de turno define boundary;
+61. inicio de turno futuro relevante define boundary;
+62. check-in expirado define boundary;
+63. actor session expira en boundary;
+64. dispositivo expirado define boundary;
+65. deny temporal define boundary;
+66. asignación temporal define boundary;
+67. safety margin de un segundo se respeta;
+68. boundary alcanzada invalida aunque generation no cambie;
+69. reloj cliente no participa.
+
+---
+
+#### 109. Pruebas físicas obligatorias — seguridad
+
+70. `PUBLIC` sin SELECT;
+71. `anon` sin SELECT;
+72. `authenticated` sin SELECT;
+73. `PUBLIC` sin execute token reader;
+74. `anon` sin execute;
+75. `authenticated` sin execute;
+76. bump function inaccesible a cliente;
+77. outbox inaccesible a cliente;
+78. runtime table inaccesible a cliente;
+79. search path poisoning falla;
+80. objeto homónimo no altera resultado;
+81. input manipulado no elige actor;
+82. token no aparece en proyección segura;
+83. no se añade schema a Data API;
+84. RLS permanece habilitada;
+85. service role no concede autoridad empresarial.
+
+---
+
+#### 110. Pruebas físicas obligatorias — outbox y resiliencia
+
+86. event id único;
+87. replay por event id es idempotente;
+88. evento perdido no invalida la barrera de generation;
+89. delivery FAIL conserva generation;
+90. dead letter no produce stale hit;
+91. outbox lag se puede medir;
+92. source transaction id correlaciona;
+93. evento no contiene contexto completo;
+94. evento no contiene token;
+95. evento no contiene secretos.
+
+---
+
+#### 111. Pruebas físicas obligatorias — operación
+
+96. segunda ejecución no resetea generations;
+97. drift final limpio;
+98. plan de índices capturado;
+99. p50/p95 del token reader registrados;
+100. costo de incrementos registrado;
+101. bulk update no crea deadlock reproducible;
+102. rollback rehearsal aprobado;
+103. restore obliga REQUEST_ONLY;
+104. local/staging/ambiente autorizado conservan aislamiento;
+105. dos ambientes no producen misma runtime identity.
+
+---
+
+#### 112. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** `AUTH-DB-035` materializa el contrato de frescura, invalidación, concurrencia, temporalidad y seguridad ya definido por las tareas de contexto y por el plan maestro de pruebas. La tarea concreta objetos físicos, atomicidad, ACL, bindings, backfill, rollback y evidencia sin introducir una capacidad empresarial nueva, un permiso nuevo, una regla de acceso nueva ni una semántica nueva de autorización.
+
+---
+
+#### 113. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificar la cobertura ya aprobada para:
+
+- frescura de contexto;
+- invalidación transaccional;
+- carreras;
+- límites temporales;
+- session lifecycle;
+- actor switch;
+- check-in y turno;
+- dispositivos;
+- cambios de grants y denies;
+- cache outage;
+- token outage;
+- evento perdido;
+- stale rejection;
+- multiinstancia;
+- rollback;
+- drift;
+- seguridad adversarial;
+- proyecciones cliente;
+- no reutilización de decisiones.
+
+No se modifica el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 114. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | el desarrollo documental no creó migrations, tablas, triggers ni código físico                                                                                                                                                                                                                                                                                                                                                                                                |
+| LOCAL     | NOT_EXECUTED   | pendiente de insertar el bloque en `task/auth-db-035`, normalizarlo con `docs:task:format --write` y ejecutar el lifecycle documental                                                                                                                                                                                                                                                                                                                                         |
+| REMOTA    | PASS           | auditoría read-only 2026-08-22 sobre `vento-shell` y `vento-os-dev`: `AUTH-DB-033` está aprobada y reserva 035; no se observaron objetos de freshness/generation/invalidation/outbox en los schemas consultados; persisten los dos resolvers legacy; `auth.sessions` conserva datos suficientes para derivar frescura de sesión sin mutar el schema Auth; se inventariaron relaciones y triggers actuales relacionados con empleado, turno, check-in, permisos y dispositivos |
+| OPERATIVA | NOT_APPLICABLE | no se modificó runtime, cache mode, consumers ni experiencia de usuario                                                                                                                                                                                                                                                                                                                                                                                                       |
+| FÍSICA    | NOT_APPLICABLE | no se ejecutó SQL de mutación, no se creó migration y `AUTH-DB-035::GLOBAL` no fue autorizada                                                                                                                                                                                                                                                                                                                                                                                 |
+
+---
+
+#### 115. Decisiones vinculantes
+
+1. La futura instancia es `AUTH-DB-035::GLOBAL`.
+2. Su modo es `GLOBAL_ENABLE_ONCE`.
+3. Su gate es `PRE_E5_FOUNDATION`.
+4. 035 no implementa L1.
+5. L1 permanece deshabilitada después de 035.
+6. Las generations viven en `app_private`.
+7. Los bindings viven en `app_private`.
+8. El runtime environment vive en `app_private`.
+9. El outbox vive en `audit`.
+10. Ninguno de esos objetos es autoridad empresarial.
+11. Se crea `app_private.context_freshness_generations`.
+12. La PK usa organization, scope type y scope key.
+13. Generation es `bigint`.
+14. Generation inicia en 1.
+15. No se usa sequence.
+16. No se usa timestamp como generación.
+17. Se crea vocabulario cerrado de generation scopes.
+18. Session generation no depende de trigger custom en `auth.sessions`.
+19. Session generation se deriva del estado Auth real.
+20. Secrets de refresh token no participan.
+21. Generations del token usan SHA-256 uniforme.
+22. Se crea `app_private.context_freshness_bindings`.
+23. Todo source contract key contextual tiene estrategia de invalidación.
+24. Un source sin binding bloquea shared cache.
+25. Se usan states BOOTSTRAP, ENFORCED, SUPERSEDED y BLOCKED.
+26. Se usa el scope mínimo seguro.
+27. Ante duda se amplía scope.
+28. Se crea `app_private.bump_context_freshness(jsonb)`.
+29. La función es privada.
+30. La función es `VOLATILE`.
+31. La función es `SECURITY DEFINER` endurecida.
+32. Todo incremento y outbox están en la misma transacción.
+33. Fallo del incremento revierte la escritura.
+34. Los scopes se ordenan antes de locks.
+35. No se pierde incremento concurrente.
+36. Se crean triggers solo sobre fuentes autoritativas confirmadas.
+37. No se infieren triggers por nombre.
+38. No se crean triggers sobre Auth administrado.
+39. Se crea `audit.context_invalidation_outbox`.
+40. Outbox inicia PENDING.
+41. Delivery posterior no es barrera de seguridad.
+42. Evento perdido no permite stale.
+43. Se crea catálogo cerrado de eventos.
+44. Se crea catálogo cerrado de event scopes.
+45. Se captura source transaction id.
+46. Se crea `app_private.get_context_freshness_token(text)`.
+47. Solo acepta app code.
+48. Es `STABLE`.
+49. Es `SECURITY DEFINER` endurecida.
+50. No tiene grant cliente.
+51. No existe wrapper `api` para el token.
+52. SHELL-CTX-006 deberá consumirlo por frontera server-only.
+53. Se reutiliza resolución de principal y actor de 033.
+54. No se crea segundo modelo de identidad.
+55. Subject key es SHA-256 canónico.
+56. Environment es explícito.
+57. Se crea runtime identity privada.
+58. Environment no viene del cliente.
+59. Organization es explícita.
+60. Organization no se deduce de app o sede.
+61. Boundary usa tiempo de servidor.
+62. Se crea helper temporal compartido.
+63. Safety margin permanece un segundo.
+64. Token cumple `ContextFreshnessToken@1.0.0`.
+65. Dimensión no aplicable usa `NOT_APPLICABLE`.
+66. Dimensión requerida ausente es error.
+67. `issued_at` no participa en fingerprint.
+68. Token fingerprint excluye delivery metadata.
+69. Se reutiliza canonical JSON.
+70. No se usa `jsonb::text` como contrato.
+71. Backfill inicial usa generation 1.
+72. No existe lazy initialization en read.
+73. Backfill y triggers cierran carrera en migration.
+74. Rebinding conserva generations.
+75. Migraciones futuras deben declarar impacto de frescura.
+76. 035 no cambia shape de AccessContext.
+77. 035 no cambia shape de SafeContextProjection.
+78. Token completo no cruza L2.
+79. Cache status permanece NOT_IMPLEMENTED hasta cache real.
+80. 034 no trata token como ALLOW.
+81. 032 no usa generations como historia de decisión.
+82. SHELL-CTX-006 conserva ownership de storage y single-flight.
+83. Realtime es opcional.
+84. NOTIFY es opcional.
+85. RLS se habilita como defensa en profundidad.
+86. Cero policies de cliente.
+87. Cero grants cliente.
+88. Data API no se modifica.
+89. Service role no concede autoridad.
+90. Security definer requiere search path fijo.
+91. Segunda ejecución no resetea counters.
+92. Drift compara registry, triggers y fuentes.
+93. Drift de Auth bloquea L1.
+94. Índices requieren evidencia de plan.
+95. Outbox tiene retención controlada.
+96. Logs no contienen PII ni secrets.
+97. Fallo de token no usa token anterior.
+98. Fallo de generation revierte writer.
+99. Fallo de outbox delivery no revierte dato ya committed.
+100. Double-read futuro queda soportado.
+101. Boundary invalida sin escritura.
+102. Recursos no fuerzan invalidación de contexto por defecto.
+103. No existe decision cache.
+104. Stale-while-revalidate está prohibido.
+105. Modo inicial posterior a 035 es REQUEST_ONLY.
+106. 035 no habilita SHADOW_SHARED.
+107. 035 no habilita VALIDATED_SHARED.
+108. Rollback posterior exige REQUEST_ONLY primero.
+109. Restore exige reconciliación.
+110. Toda materialización usa migrations/versioned scripts de vento-shell.
+111. Se definen pruebas positivas, negativas, de concurrencia y seguridad.
+112. No se crean ni modifican requisitos de prueba.
+113. La aprobación documental no autoriza cambios físicos.
+114. La siguiente tarea documental es AUTH-DB-034.
+
+---
+
+#### 116. Criterios de aceptación
+
+`AUTH-DB-035` queda documentalmente completa cuando:
+
+1. se fija la topología global;
+2. se fija el gate PRE_E5;
+3. se separa 035 de SHELL-CTX-006;
+4. se fija `app_private` para generations;
+5. se fija `audit` para outbox;
+6. se define generation table;
+7. se define PK;
+8. se define scope vocabulary;
+9. se define bigint transaccional;
+10. se prohíben sequences;
+11. se define formato SHA-256 del token;
+12. se define session generation;
+13. se prohíben triggers sobre Auth administrado;
+14. se define actor generation;
+15. se define employee generation;
+16. se define base lane generation;
+17. se define operational lane generation;
+18. se define device generation;
+19. se define app generation;
+20. se define global generation;
+21. se define binding registry;
+22. se definen binding states;
+23. se reconcilia source registry de 033;
+24. se documenta AS-IS;
+25. se define selección de fuente autoritativa;
+26. se define scope mínimo seguro;
+27. se define bump function;
+28. se define seguridad del bump;
+29. se define algoritmo transaccional;
+30. se define concurrencia;
+31. se define orden de locks;
+32. se definen triggers por fuente;
+33. se prohíbe trigger genérico heurístico;
+34. se define outbox;
+35. se define event catalog;
+36. se define event scopes;
+37. se define delivery lifecycle;
+38. se define source transaction id;
+39. se define token reader;
+40. se define firma única `(text) → jsonb`;
+41. se define seguridad del token reader;
+42. se niega exposición Data API;
+43. se reserva transporte a server-only;
+44. se reutiliza actor resolver;
+45. se define subject key;
+46. se define runtime identity;
+47. se define bootstrap por entorno;
+48. se define organization source;
+49. se define temporal boundary;
+50. se define helper temporal compartido;
+51. se mantiene safety margin;
+52. se fija shape exacto del token;
+53. se define NOT_APPLICABLE;
+54. se define issued_at;
+55. se define fingerprint preimage;
+56. se reutiliza canonical JSON;
+57. se define lectura de scopes;
+58. se define comportamiento de generation faltante;
+59. se define backfill;
+60. se cierra carrera de backfill;
+61. se define rebinding;
+62. se define obligación para writers futuros;
+63. se preserva contrato de 033;
+64. se mantiene cache status;
+65. se bloquea token en L2;
+66. se preserva frontera de 034;
+67. se preserva frontera de 032;
+68. se preserva frontera de SHELL-CTX-006;
+69. eventos quedan como optimización;
+70. Realtime queda opcional;
+71. se fijan RLS y ACL;
+72. service role no crea bypass;
+73. security definer queda endurecido;
+74. se define idempotencia;
+75. se define drift de bindings;
+76. se define drift Auth;
+77. se define política de índices;
+78. se define retención del outbox;
+79. se define privacidad de logs;
+80. se define fallo del token;
+81. se define fallo de writer;
+82. se define fallo de delivery;
+83. se definen carreras;
+84. se soporta double-read;
+85. se soporta boundary sin escritura;
+86. se soportan denies temporales;
+87. se separan recursos;
+88. no se crea decision cache;
+89. se prohíbe stale-while-revalidate;
+90. se fija bootstrap REQUEST_ONLY;
+91. se fijan puertas de shadow;
+92. se fijan puertas de validated shared;
+93. se define rollback pre-L1;
+94. se define rollback post-L1;
+95. se define restore;
+96. se define reconciliación;
+97. se define manifiesto físico;
+98. se fijan dependencias físicas;
+99. se fija orden de materialización;
+100. se fija política de migrations;
+101. se definen 105 pruebas físicas mínimas;
+102. se declara cero cambio de requisitos;
+103. se registra evidencia remota;
+104. se reserva AUTH-DB-034 sin desarrollarla.
+
+---
+
+#### 117. Límites
+
+`AUTH-DB-035` no:
+
+- ejecuta migrations durante su desarrollo documental;
+- crea tablas durante su desarrollo documental;
+- crea triggers durante su desarrollo documental;
+- modifica Supabase durante su desarrollo documental;
+- modifica `auth.sessions`;
+- modifica `auth.users`;
+- crea cache L1;
+- crea Redis;
+- habilita SHADOW_SHARED;
+- habilita VALIDATED_SHARED;
+- cambia `AccessContext@1.0.0`;
+- agrega token a SafeContextProjection;
+- agrega permissions al contexto;
+- evalúa un permiso;
+- resuelve un recurso;
+- produce AuthorizationDecision;
+- persiste decisiones;
+- implementa simulación;
+- crea decision cache;
+- migra consumidores;
+- retira resolvers legacy;
+- cambia Data API;
+- expone `app_private`;
+- concede grants a roles cliente;
+- modifica 04A;
+- autoriza `AUTH-DB-035::GLOBAL`;
+- desarrolla `AUTH-DB-034`.
+
+---
+
+#### 118. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras`
+
+
 ### [ ] AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
 ### [ ] AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
 
