@@ -37,6 +37,17 @@ test('genera dos iniciadores separados por intención y un selector legacy míni
   assert.doesNotMatch(result.documentationSource, /HISTORIAL FÍSICO RESUMIDO/u);
   assert.doesNotMatch(result.documentationSource, /quality:repair/u);
   assert.doesNotMatch(result.documentationSource, /docs:implementation:start/u);
+  assert.match(result.documentationSource, /ENTREGA DOCUMENTAL AUTOCONTENIDA OBLIGATORIA/u);
+  assert.match(result.documentationSource, /FUENTES OBLIGATORIAS ANTES DE TRABAJAR UNA TAREA/u);
+  assert.match(result.documentationSource, /PREENTREGA OBLIGATORIA Y POWERSHELL SEGURO/u);
+  assert.match(result.documentationSource, /FORMATO DE TAREAS DOCUMENTALES/u);
+  assert.match(result.documentationSource, /REGISTRO 04A/u);
+  assert.match(result.documentationSource, /docs:task:quality/u);
+  assert.match(result.documentationSource, /docs:delivery:check/u);
+  assert.match(result.documentationSource, /docs:plan:build/u);
+  assert.match(result.documentationSource, /docs:task:finish -- --task-id/u);
+  assert.match(result.documentationSource, /NEXT_TASK_ALLOWED: SI/u);
+  assert.doesNotMatch(result.documentationSource, /DOCUMENTATION_ONLY/u);
 
   assert.match(result.implementationSource, /INTENT_LOCK: PHYSICAL_IMPLEMENTATION/u);
   assert.match(result.implementationSource, /CONVERSATION_LANE: PHYSICAL/u);
@@ -53,6 +64,16 @@ test('genera dos iniciadores separados por intención y un selector legacy míni
     assert.match(result.implementationSource, /docs:implementation:start/u);
     assert.match(result.implementationSource, /quality:repair/u);
     assert.match(result.implementationSource, /docs:implementation:finish/u);
+    assert.match(result.implementationSource, /ENTREGA FÍSICA AUTOCONTENIDA OBLIGATORIA/u);
+    assert.match(result.implementationSource, /MODO PREDETERMINADO DE IMPLEMENTACIÓN HUMANA/u);
+    assert.match(result.implementationSource, /FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA/u);
+    assert.match(result.implementationSource, /READY_TO_RESTART_WATCHER: SI/u);
+    assert.match(result.implementationSource, /RESULTADO PARA CHATGPT/u);
+    assert.doesNotMatch(result.implementationSource, /FORMATO DE TAREAS DOCUMENTALES/u);
+    assert.doesNotMatch(result.implementationSource, /La fuente física canónica actual del registro/u);
+    assert.doesNotMatch(result.implementationSource, /docs:task:quality/u);
+    assert.doesNotMatch(result.implementationSource, /docs:delivery:check/u);
+    assert.doesNotMatch(result.implementationSource, /DOCUMENTATION_ONLY/u);
   } else {
     assert.match(result.implementationSource, /NO EXISTE UNA INSTANCIA FÍSICA ACTIVA/u);
     assert.doesNotMatch(result.implementationSource, /REGISTRO ACTIVO EXACTO/u);
@@ -70,6 +91,12 @@ test('la plantilla compartida contiene solo reglas comunes y una ranura', () => 
   assert.match(template, /INTENT_LOCK/u);
   assert.match(template, /Nunca combines ambos payloads/u);
   assert.match(template, /FORMATO_ENTREGA_VENTO_V1/u);
+  assert.match(template, /FUENTES OBLIGATORIAS ANTES DE TRABAJAR UNA TAREA/u);
+  assert.match(template, /PREENTREGA OBLIGATORIA Y POWERSHELL SEGURO/u);
+  assert.match(template, /LECTURA DE ARCHIVOS GRANDES Y RESPUESTAS TRUNCADAS/u);
+  assert.match(template, /REGLA DE SALIDA COMPACTA DE BATERÍAS Y COMPROBACIONES/u);
+  assert.match(template, /REGLA DE SEGURIDAD DE TERMINAL INTERACTIVA/u);
+  assert.match(template, /REGLA DE SALIDA ASCII SEGURA EN TERMINAL/u);
   assert.doesNotMatch(template, /FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA/u);
   assert.doesNotMatch(template, /docs:implementation:start/u);
   assert.doesNotMatch(template, /docs:implementation:finish/u);
