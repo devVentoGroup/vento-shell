@@ -93,12 +93,18 @@ export function renderPlanWatchStatus({
 
 ## QUÉ TOCA HACER AHORA
 
-- **Acción principal obligatoria:** ${display(implementationControl?.primaryAction?.type)}
-- **Objetivo exacto:** ${display(implementationControl?.primaryAction?.target)} — ${display(implementationControl?.primaryAction?.title)}
-- **Instrucción:** ${display(implementationControl?.primaryAction?.instruction)}
+- **Acción física prioritaria:** ${display(implementationControl?.primaryAction?.type)}
+- **Objetivo físico exacto:** ${display(implementationControl?.primaryAction?.target)} — ${display(implementationControl?.primaryAction?.title)}
+- **Instrucción física:** ${display(implementationControl?.primaryAction?.instruction)}
 - **Carril documental:** ${display(implementationControl?.documentary?.state)} — ${display(implementationControl?.documentary?.taskId)}
 - **Implementación física autorizada:** ${implementationControl?.physical?.authorized?.length > 0 ? implementationControl.physical.authorized.map(({ instanceId }) => instanceId).join(', ') : 'NINGUNA'}
-- **Archivo listo para cargar en ChatGPT:** \`INICIADOR_VENTO_ACTUAL.txt\`
+
+## INICIADORES CHATGPT POR INTENCIÓN
+
+- **Documentación:** \`.delivery/INICIADOR_VENTO_DOCUMENTACION.txt\`
+- **Implementación:** \`.delivery/INICIADOR_VENTO_IMPLEMENTACION.txt\`
+- **Selector legacy:** \`INICIADOR_VENTO_ACTUAL.txt\` — no contiene el payload completo.
+- **Regla:** carga únicamente el iniciador correspondiente a la intención de la conversación.
 
 ## Watcher
 

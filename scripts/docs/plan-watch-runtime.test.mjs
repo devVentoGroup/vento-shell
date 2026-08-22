@@ -60,7 +60,7 @@ test('reclama un lock obsoleto y solo su propietario puede liberarlo', () => {
   });
 });
 
-test('renderiza un estado legible sin convertirlo en fuente canónica', () => {
+test('renderiza los dos iniciadores por intención sin convertir el estado en fuente canónica', () => {
   const status = renderPlanWatchStatus({
     state: 'VIGILANDO',
     pid: 123,
@@ -89,11 +89,15 @@ test('renderiza un estado legible sin convertirlo en fuente canónica', () => {
       physical: { authorized: [] },
     },
   });
+
   assert.match(status, /No es una fuente canónica ni aprueba tareas/u);
   assert.match(status, /SHELL-UI-009 — Compartir aviso de rol simulado/u);
   assert.match(status, /\*\*Resultado:\*\* OK/u);
   assert.match(status, /AUTORIZAR_IMPLEMENTACION/u);
   assert.match(status, /SHELL-CI-001::GLOBAL/u);
   assert.match(status, /Implementación física autorizada:\*\* NINGUNA/u);
-  assert.match(status, /INICIADOR_VENTO_ACTUAL\.txt/u);
+  assert.match(status, /INICIADOR_VENTO_DOCUMENTACION\.txt/u);
+  assert.match(status, /INICIADOR_VENTO_IMPLEMENTACION\.txt/u);
+  assert.match(status, /Selector legacy/u);
+  assert.match(status, /carga únicamente el iniciador correspondiente/u);
 });

@@ -88,7 +88,9 @@ try {
     `[PLAN CAN\u00d3NICO] \u279c ACCI\u00d3N PRINCIPAL: ${implementationControl.primaryAction.type} `
     + `${implementationControl.primaryAction.target}`,
   );
-  console.log('[PLAN CAN\u00d3NICO]   Iniciador ChatGPT: INICIADOR_VENTO_ACTUAL.txt');
+  console.log('[PLAN CAN\u00d3NICO]   Iniciador documental: .delivery/INICIADOR_VENTO_DOCUMENTACION.txt');
+  console.log('[PLAN CAN\u00d3NICO]   Iniciador implementaci\u00f3n: .delivery/INICIADOR_VENTO_IMPLEMENTACION.txt');
+  console.log('[PLAN CAN\u00d3NICO]   Selector legacy: INICIADOR_VENTO_ACTUAL.txt');
 } catch (error) {
   console.warn(
     `[PLAN CAN\u00d3NICO] No se pudieron actualizar todos los artefactos locales: ${error instanceof Error ? error.message : String(error)}`,
