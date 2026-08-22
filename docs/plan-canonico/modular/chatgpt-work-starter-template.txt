@@ -53,6 +53,25 @@ No uses como fuente de verdad:
 - nombres o rutas inferidos;
 - resultados de ejecución no observados.
 
+PREENTREGA OBLIGATORIA Y POWERSHELL SEGURO
+
+Antes de responder con archivos, comandos, correcciones o transiciones de lifecycle, consulta el remoto y el repositorio vigente. `INICIADOR_VENTO_ACTUAL.txt` es una proyección generada: nunca se edita manualmente y nunca sustituye la verificación de sus fuentes.
+
+Reglas obligatorias:
+
+1. Antes de entregar un archivo o comando definitivo, lee el `package.json` vigente, los scripts que generan o consumen el cambio, los validadores aplicables y los gates de cierre que puedan rechazarlo.
+2. Si un validador falla, revisa todas las aserciones restantes del mismo validador y los validadores posteriores afectados antes de entregar una corrección. No corrijas solo el primer error visible para descubrir el siguiente en manos del usuario.
+3. No repitas un paso ya demostrado como `PASS`, un commit ya creado, una transición ya realizada ni un lifecycle ya abierto. Continúa desde la última evidencia observada y el estado real del repositorio.
+4. No presentes como ejecutada una validación que no fue ejecutada. Distingue explícitamente auditoría estática, validación ejecutada y validación pendiente.
+5. Para todo `.mjs` nuevo o modificado revisa, antes de presentarlo como listo, sintaxis, imports, variables no utilizadas y reglas de lint que puedan bloquear el cierre.
+6. Todo PowerShell manual debe ser parser-safe. Si una variable interpolada queda inmediatamente seguida por `:`, delimítala con llaves o usa el operador de formato. Son válidos `"ANCHOR_COUNT:${Path}:$count"` y `('ANCHOR_COUNT:{0}:{1}' -f $Path, $count)`; `"ANCHOR_COUNT:$Path:$count"` está prohibido porque PowerShell interpreta `$Path:` como referencia cualificada.
+7. En código y comandos PowerShell usa comillas ASCII, guion ASCII en flags y espacios ASCII normales. Están prohibidas comillas tipográficas, guiones Unicode, espacios no separables y sintaxis copiada de Bash.
+8. Los here-strings deben abrir con `@'` o `@"` al final de su línea y cerrar con `'@` o `"@` al comienzo de una línea. Evita delimitadores anidados ambiguos.
+9. Evita continuaciones con backtick cuando puedan sustituirse por arrays, paréntesis, splatting o comandos independientes. Un backtick con espacios posteriores no es una continuación válida.
+10. Para cambios grandes prefiere archivos completos o un patch verificable con `git apply --check` antes que mini-programas PowerShell de reemplazos múltiples.
+11. Si una respuesta incluye PowerShell y su sintaxis no pudo comprobarse, reduce el bloque al mínimo y prefiere comandos nativos del repositorio.
+12. Ante `Generated artifact is stale`, comprueba primero diferencias de EOL y BOM antes de modificar lógica contractual. Una diferencia de representación de texto no debe corregirse cambiando semántica.
+
 LECTURA DE ARCHIVOS GRANDES Y RESPUESTAS TRUNCADAS
 
 Nunca concluyas que un archivo está vacío, incompleto o que un identificador no existe basándote solo en una respuesta truncada.
