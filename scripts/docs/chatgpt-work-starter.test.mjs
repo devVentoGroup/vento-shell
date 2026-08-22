@@ -45,6 +45,22 @@ test('genera dos iniciadores separados por intención y un selector legacy míni
   assert.match(result.documentationSource, /docs:task:quality/u);
   assert.match(result.documentationSource, /docs:delivery:check/u);
   assert.match(result.documentationSource, /docs:plan:build/u);
+  assert.match(result.documentationSource, /FORMATEO CANÓNICO OBLIGATORIO ANTES DE CHECK/u);
+  assert.match(result.documentationSource, /Formateo canónico obligatorio después del reemplazo:/u);
+  assert.match(result.documentationSource, /Comprobación de formato, solo después del --write:/u);
+  assert.match(result.documentationSource, /FORMAT_WRITE -> FORMAT_CHECK -> TASK_QUALITY -> DELIVERY_CHECK/u);
+  const formatWriteIndex = result.documentationSource.indexOf('Formateo canónico obligatorio después del reemplazo:');
+  const formatCheckIndex = result.documentationSource.indexOf(
+    'Comprobación de formato, solo después del --write:',
+    formatWriteIndex,
+  );
+  const qualityIndex = result.documentationSource.indexOf(
+    'Calidad de tarea: npm run docs:task:quality',
+    formatCheckIndex,
+  );
+  assert.ok(formatWriteIndex >= 0);
+  assert.ok(formatCheckIndex > formatWriteIndex);
+  assert.ok(qualityIndex > formatCheckIndex);
   assert.match(result.documentationSource, /docs:task:finish -- --task-id/u);
   assert.match(result.documentationSource, /NEXT_TASK_ALLOWED: SI/u);
   assert.doesNotMatch(result.documentationSource, /DOCUMENTATION_ONLY/u);
