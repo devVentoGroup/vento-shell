@@ -141,4 +141,14 @@ La propiedad funcional permanece separada de autorización, actor, participació
 
 El caso `public.employee_shifts` se conserva como deuda AS-IS preexistente documentada por `CAP-MAP-013`: VISO y ANIMA pueden editar actualmente, mientras la frontera objetivo mantiene a VISO como propietaria de publicación/corrección y a ANIMA como consumidora. Esta instancia no remedia ese conflicto.
 
-La materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no reasigna propiedad, no implementa escritura cross-app, persistencia, autorización, consumidores, APIs, UI, Supabase, RLS, migraciones ni datos. `SHELL-CON-017` permanece reservado para el contrato de principal técnico de integración.
+La materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no reasigna propiedad, no implementa escritura cross-app, persistencia, autorización, consumidores, APIs, UI, Supabase, RLS, migraciones ni datos. `SHELL-CON-017` materializa separadamente el contrato de principal técnico de integración en el módulo hermano `packages/contracts/integrations`.
+
+## Módulo de principal técnico de integración
+
+`SHELL-CON-017::GLOBAL` materializa internamente `packages/contracts/integrations` como contrato estático de la semántica lógica `@vento/contracts/integrations`.
+
+La superficie materializa `IntegrationPrincipalId`, `IntegrationPrincipal` e `IntegrationPrincipalRef` sin definir formato serial físico, parser, cast ni registro runtime. `IntegrationPrincipalId` permanece estable, opaco y no secreto, separado de `PrincipalContext`, actor humano, `PermissionKey`, cuenta de proveedor, credencial, secreto, endpoint, dispositivo, `external_system_id` y `AppCode`.
+
+La materialización adopta por referencia las 21 decisiones de `INT-EXT-002` sin duplicar su matriz editable: conserva 21 decisiones `ESPECIFICADO`, 11 `PENDIENTE_DE_EVIDENCIA`, 10 `NO_APLICA` y crea 0 valores físicos de `IntegrationPrincipalId`.
+
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no publica el subpath, no adopta consumidores, no ejecuta integraciones, no crea credenciales, secretos, endpoints, bindings runtime, persistencia, Supabase, RLS, migraciones ni datos. `SHELL-CON-018` permanece como responsabilidad separada de referencia de credencial externa sin secreto.

@@ -1,10 +1,48 @@
 {
   "instance_id": "SHELL-CON-017::GLOBAL",
   "task_id": "SHELL-CON-017",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar el contrato estático interno de principal técnico de integración de SHELL-CON-017::GLOBAL en packages/contracts/integrations.",
+    "Crear packages/contracts/integrations/README.md, scripts/generate-integration-principal-contracts.mjs, scripts/validate-integration-principal-contracts.mjs, generated/integration-principal.contract.ts y generated/index.ts.",
+    "Materializar IntegrationPrincipalId, IntegrationPrincipal e IntegrationPrincipalRef sin definir formato serial físico, parser, cast, registry runtime ni valores físicos de IntegrationPrincipalId.",
+    "Adoptar por referencia la cobertura de INT-EXT-002 sin duplicar su matriz editable: 21 decisiones ESPECIFICADO, 11 PENDIENTE_DE_EVIDENCIA, 10 NO_APLICA y 0 IntegrationPrincipalId físicos.",
+    "Conservar separadas identidad técnica, PrincipalContext/SYSTEM_SERVICE, actor humano, PermissionKey, provider_account_ref, external_credential_id, secreto, endpoint, device_id, external_system_id y AppCode.",
+    "Modificar packages/contracts/README.md exclusivamente para registrar el módulo interno de principal técnico de integración y dejar SHELL-CON-018 como responsabilidad separada.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-CON-017__GLOBAL.json exclusivamente para conservar autorización, estado y evidencia de esta instancia.",
+    "No modificar packages/contracts/package.json, exports, versión, releases, consumidores, runtime, 04A/TREQ, implementation-control.json, Supabase, RLS, RPC, migraciones, datos, secretos, credenciales, endpoints, cuentas externas, el contrato documental SHELL-CON-017, SHELL-CON-018..024 ni INT-DB-001."
+  ],
+  "validation_commands": [
+    "node packages/contracts/integrations/scripts/generate-integration-principal-contracts.mjs --check",
+    "node packages/contracts/integrations/scripts/validate-integration-principal-contracts.mjs",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-21T21:56:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Apruebo exclusivamente la materialización estática interna de SHELL-CON-017::GLOBAL en vento-group-sas/vento-shell: crear packages/contracts/integrations con README, generator, validator, generated contract e index para IntegrationPrincipalId, IntegrationPrincipal e IntegrationPrincipalRef; adoptar por referencia la cobertura 21/21 de INT-EXT-002 conservando 11 PENDIENTE_DE_EVIDENCIA, 10 NO_APLICA y 0 valores físicos de IntegrationPrincipalId; y actualizar packages/contracts/README.md solo para registrar el módulo. Autorizo únicamente las validation_commands enumeradas. No autorizo ampliaciones inferidas, exports públicos, cambio de versión, releases, consumidores, runtime, credenciales, secretos, endpoints, Supabase, migraciones, RLS, RPC, datos, 04A/TREQ, cambios al contrato documental SHELL-CON-017 ni materialización de SHELL-CON-018..024 o INT-DB-001.",
+    "source_contract_sha256": "c4ca8bdc55f98113d235107f99355ef6a69dbb59a7f0853a6e087c8fcad14839"
+  },
+  "evidence": [
+    "MATERIALIZATION internal IntegrationPrincipal static contract created",
+    "VALIDATION integration principal generator freshness PASS",
+    "VALIDATION integration principal contracts PASS",
+    "VALIDATION INT-EXT-002 external-system decisions=21",
+    "VALIDATION documentary decisions ESPECIFICADO=21",
+    "VALIDATION physical PENDIENTE_DE_EVIDENCIA=11",
+    "VALIDATION physical NO_APLICA=10",
+    "VALIDATION materialized IntegrationPrincipalId values=0",
+    "VALIDATION @vento/contracts package boundary PASS",
+    "VALIDATION @vento/contracts README boundary PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "SOURCE CONTRACT SHA256 c4ca8bdc55f98113d235107f99355ef6a69dbb59a7f0853a6e087c8fcad14839",
+    "RESULT SHELL-CON-017::GLOBAL VERIFIED"
+  ]
 }
