@@ -37,12 +37,18 @@ const credentialContractPath = path.join(
   generatedDirectory,
   'external-credential-ref.contract.ts',
 );
+const externalReceivedEventContractPath = path.join(
+  generatedDirectory,
+  'external-received-event.contract.ts',
+);
 const indexPath = path.join(generatedDirectory, 'index.ts');
 
 const shellCon017SourceContractSha256 =
   'c4ca8bdc55f98113d235107f99355ef6a69dbb59a7f0853a6e087c8fcad14839';
 const shellCon018SourceContractSha256 =
   'b22094113048ee52d8ea8abe961af7fcb8be2b1924eabe69d0eb048d928bbb69';
+const shellCon019SourceContractSha256 =
+  '0faeb8d65edcf9b5806c6c962aefb76ab9cfd13e434d43cb549d559cd5cbaed1';
 
 const expectedExternalSystemIds = Object.freeze(
   Array.from(
@@ -303,6 +309,27 @@ function validateApprovedSourceTasks(integrationSource) {
   }
 }
 
+function validateApprovedEventSourceTasks(integrationSource) {
+  const sourceTaskIds = [
+    'INT-EXT-009',
+    'INT-EXT-010',
+    'INT-EXT-011',
+    'INT-EXT-012',
+    'INT-EXT-013',
+    'INT-EXT-014',
+    'INT-EXT-015',
+    'INT-EXT-016',
+    'INT-EXT-017',
+  ];
+
+  for (const taskId of sourceTaskIds) {
+    const task = extractTaskSection(integrationSource, taskId);
+    if (!/^\*\*Estado:\*\*\s*APROBADA\b/mu.test(task)) {
+      fail(`${taskId} must remain APROBADA.`);
+    }
+  }
+}
+
 function validateShellCon018(shellSource) {
   const task = extractTaskSection(shellSource, 'SHELL-CON-018');
   const actualSourceHash = sha256(task);
@@ -333,6 +360,47 @@ function validateShellCon018(shellSource) {
   for (const marker of requiredTaskMarkers) {
     if (!task.includes(marker)) {
       fail(`SHELL-CON-018 is missing required content: ${marker}`);
+    }
+  }
+
+  return task;
+}
+
+function validateShellCon019(shellSource) {
+  const task = extractTaskSection(shellSource, 'SHELL-CON-019');
+  const actualSourceHash = sha256(task);
+
+  if (actualSourceHash !== shellCon019SourceContractSha256) {
+    fail(
+      `SHELL-CON-019 source contract SHA256 mismatch: `
+      + `expected ${shellCon019SourceContractSha256}, received ${actualSourceHash}.`,
+    );
+  }
+
+  const requiredTaskMarkers = [
+    '@vento/contracts/integrations',
+    'ExternalReceivedEvent<TNormalizedAssertion>',
+    'external_event_id',
+    'receipt_id',
+    'authenticity_result_ref',
+    'source_evidence_ref',
+    'source_payload_digest',
+    'normalized_assertion',
+    'mapping_refs',
+    'idempotency_ref',
+    'correlation_refs',
+    'owner_contract_ref',
+    '21 IDENTIDADES',
+    '2 APLICA_EVENTO_INBOUND_ACREDITADO',
+    'Wompi',
+    'RevenueCat',
+    'SHELL-CON-020',
+    'NO GENERA REQUISITOS DE PRUEBA',
+  ];
+
+  for (const marker of requiredTaskMarkers) {
+    if (!task.includes(marker)) {
+      fail(`SHELL-CON-019 is missing required content: ${marker}`);
     }
   }
 
@@ -494,6 +562,165 @@ function parseCredentialApplicability(shellCon018Task) {
     pendingEvidence,
     notApplicable,
     notApplicableCurrent,
+  };
+}
+
+function parseExternalReceivedEventApplicability(shellCon019Task) {
+  const matrix = extractNumberedSubsection(shellCon019Task, 14);
+  const rows = [];
+
+  for (const line of matrix.split('\n')) {
+    const cells = splitMarkdownRow(line);
+    if (
+      cells.length >= 6
+      && /^EXT-SYS-\d{3}$/u.test(cells[0] ?? '')
+    ) {
+      rows.push({
+        externalSystemId: cells[0],
+        system: cells[1],
+        inboundSurface: cells[2],
+        applicabilityDecision: cells[3],
+        physicalStatus: cells[4],
+      });
+    }
+  }
+
+  const ids = rows.map((entry) => entry.externalSystemId);
+  const uniqueIds = [...new Set(ids)];
+
+  if (rows.length !== 21 || uniqueIds.length !== 21) {
+    fail(
+      `SHELL-CON-019 matrix must contain 21 unique decisions; `
+      + `received rows=${rows.length}, unique=${uniqueIds.length}.`,
+    );
+  }
+
+  for (let index = 0; index < expectedExternalSystemIds.length; index += 1) {
+    if (uniqueIds[index] !== expectedExternalSystemIds[index]) {
+      fail(
+        `SHELL-CON-019 decision order differs at ${index + 1}: `
+        + `expected ${expectedExternalSystemIds[index]}, `
+        + `received ${uniqueIds[index] ?? 'MISSING'}.`,
+      );
+    }
+  }
+
+  const allowedDecisions = new Set([
+    'APLICA_EVENTO_INBOUND_ACREDITADO',
+    'NO_APLICA_EN_CORTE',
+    'NO_APLICA_AL_EVENTO_EN_CORTE',
+  ]);
+  const allowedPhysicalStatuses = new Set([
+    'DEFINIDO_NO_MATERIALIZADO',
+    'NO_APLICA',
+    'NO_APLICA_ACTUAL',
+    'BLOQUEADO',
+  ]);
+
+  const invalidDecisions = rows.filter(
+    (entry) => !allowedDecisions.has(entry.applicabilityDecision),
+  );
+  if (invalidDecisions.length > 0) {
+    fail(
+      `SHELL-CON-019 has invalid applicability decision: `
+      + invalidDecisions
+        .map((entry) => `${entry.externalSystemId}=${entry.applicabilityDecision}`)
+        .join(', '),
+    );
+  }
+
+  const invalidPhysicalStatuses = rows.filter(
+    (entry) => !allowedPhysicalStatuses.has(entry.physicalStatus),
+  );
+  if (invalidPhysicalStatuses.length > 0) {
+    fail(
+      `SHELL-CON-019 has invalid physical status: `
+      + invalidPhysicalStatuses
+        .map((entry) => `${entry.externalSystemId}=${entry.physicalStatus}`)
+        .join(', '),
+    );
+  }
+
+  const accreditedInbound = rows.filter(
+    (entry) => entry.applicabilityDecision === 'APLICA_EVENTO_INBOUND_ACREDITADO',
+  );
+  const notApplicableInCut = rows.filter(
+    (entry) => entry.applicabilityDecision === 'NO_APLICA_EN_CORTE',
+  ).length;
+  const notApplicableToEventInCut = rows.filter(
+    (entry) => entry.applicabilityDecision === 'NO_APLICA_AL_EVENTO_EN_CORTE',
+  ).length;
+  const definedNotMaterialized = rows.filter(
+    (entry) => entry.physicalStatus === 'DEFINIDO_NO_MATERIALIZADO',
+  ).length;
+  const notApplicablePhysical = rows.filter(
+    (entry) => entry.physicalStatus === 'NO_APLICA',
+  ).length;
+  const notApplicableCurrentPhysical = rows.filter(
+    (entry) => entry.physicalStatus === 'NO_APLICA_ACTUAL',
+  ).length;
+  const blockedPhysical = rows.filter(
+    (entry) => entry.physicalStatus === 'BLOQUEADO',
+  ).length;
+
+  if (
+    accreditedInbound.length !== 2
+    || notApplicableInCut !== 18
+    || notApplicableToEventInCut !== 1
+  ) {
+    fail(
+      `SHELL-CON-019 applicability coverage mismatch: expected 2/18/1, received `
+      + `${accreditedInbound.length}/${notApplicableInCut}/${notApplicableToEventInCut}.`,
+    );
+  }
+
+  if (
+    definedNotMaterialized !== 2
+    || notApplicablePhysical !== 9
+    || notApplicableCurrentPhysical !== 8
+    || blockedPhysical !== 2
+  ) {
+    fail(
+      `SHELL-CON-019 physical coverage mismatch: expected 2/9/8/2, received `
+      + `${definedNotMaterialized}/${notApplicablePhysical}/`
+      + `${notApplicableCurrentPhysical}/${blockedPhysical}.`,
+    );
+  }
+
+  const accreditedIds = accreditedInbound.map((entry) => entry.externalSystemId);
+  if (
+    accreditedIds[0] !== 'EXT-SYS-002'
+    || accreditedIds[1] !== 'EXT-SYS-003'
+    || accreditedInbound[0]?.system !== 'Wompi'
+    || accreditedInbound[1]?.system !== 'RevenueCat'
+  ) {
+    fail(
+      'SHELL-CON-019 accredited inbound surfaces must be '
+      + 'EXT-SYS-002 Wompi and EXT-SYS-003 RevenueCat.',
+    );
+  }
+
+  const applePassKit = rows.find(
+    (entry) => entry.externalSystemId === 'EXT-SYS-009',
+  );
+  if (
+    !applePassKit
+    || applePassKit.applicabilityDecision !== 'NO_APLICA_AL_EVENTO_EN_CORTE'
+  ) {
+    fail('SHELL-CON-019 must preserve Apple PassKit as NO_APLICA_AL_EVENTO_EN_CORTE.');
+  }
+
+  return {
+    rows,
+    decisions: rows.length,
+    accreditedInbound: accreditedInbound.length,
+    withoutAccreditedInbound: rows.length - accreditedInbound.length,
+    notApplicableInCut,
+    notApplicableToEventInCut,
+    definedNotMaterialized,
+    notApplicablePhysical,
+    notApplicableCurrentPhysical,
+    blockedPhysical,
   };
 }
 
@@ -846,11 +1073,251 @@ export type ExternalCredentialContractMetadata =
 `;
 }
 
+function renderExternalReceivedEventApplicabilityRows(rows) {
+  return rows.map((entry) => [
+    '  {',
+    `    external_system_id: ${JSON.stringify(entry.externalSystemId)},`,
+    `    system: ${JSON.stringify(entry.system)},`,
+    `    inbound_surface: ${JSON.stringify(entry.inboundSurface)},`,
+    `    decision: ${JSON.stringify(entry.applicabilityDecision)},`,
+    `    physical_status: ${JSON.stringify(entry.physicalStatus)},`,
+    '  },',
+  ].join('\n')).join('\n');
+}
+
+function renderExternalReceivedEventContract(coverage) {
+  return `// GENERATED FILE. DO NOT EDIT.
+// Semantic owners: INT-EXT-009..017
+// Contract task: SHELL-CON-019
+// Foundation task: SHELL-CON-001
+// Principal contract task: SHELL-CON-017
+// Credential contract task: SHELL-CON-018
+// Source contract SHA256: ${shellCon019SourceContractSha256}
+
+import type {
+  ExternalCredentialId,
+  VentoCredentialEnvironment,
+} from "./external-credential-ref.contract.js";
+import type { IntegrationPrincipalId } from "./integration-principal.contract.js";
+
+export interface ExternalReceivedEvent<TNormalizedAssertion> {
+  readonly external_system_id: string;
+  readonly external_instance_id: string | null;
+  readonly integration_principal_id: IntegrationPrincipalId | null;
+  readonly external_credential_id: ExternalCredentialId | null;
+  readonly environment: VentoCredentialEnvironment;
+  readonly vento_contract_version: string;
+  readonly provider_contract_version: string | null;
+  readonly input_contract_ref: string;
+  readonly transport_ref: string;
+  readonly external_event_id: string | null;
+  readonly receipt_id: string | null;
+  readonly received_at: string;
+  readonly provider_occurred_at: string | null;
+  readonly authenticity_result_ref: string | null;
+  readonly source_evidence_ref: string;
+  readonly source_payload_digest: string | null;
+  readonly normalized_assertion: TNormalizedAssertion | null;
+  readonly mapping_refs: readonly string[];
+  readonly idempotency_ref: string | null;
+  readonly correlation_refs: readonly string[];
+  readonly owner_contract_ref: string;
+}
+
+export const EXTERNAL_RECEIVED_EVENT_BOUNDARY_POLICY = {
+  external_assertion_is_canonical_business_fact: false,
+  external_provider_is_internal_business_producer: false,
+  receipt_ack_callback_webhook_confirms_business_effect: false,
+  provider_payload_is_owner_domain_model: false,
+  adapter_acquires_functional_ownership: false,
+  authenticity_implies_business_correctness: false,
+  business_authority_implied: false,
+  owner_application_produces_business_fact_after_validation: true,
+} as const;
+
+export const EXTERNAL_RECEIVED_EVENT_IDENTITY_POLICY = {
+  external_event_id_semantics: "PROVIDER_ASSERTION_ID_WHEN_STABLE",
+  receipt_id_semantics: "VENTO_TECHNICAL_RECEIPT_ID",
+  external_event_id_equals_receipt_id_by_definition: false,
+  stable_identity_required_before_effect_processing: true,
+  durable_receipt_required_without_stable_external_event_id: true,
+  new_receipt_per_processing_attempt_allowed: false,
+  payload_digest_replaces_event_or_receipt_identity: false,
+  mapping_required_for_canonical_resource_equivalence: true,
+} as const;
+
+export const EXTERNAL_RECEIVED_EVENT_AUTHENTICITY_POLICY = {
+  authenticity_result_by_reference: true,
+  null_authenticity_result_means_valid: false,
+  valid_authenticity_confirms_business_correctness: false,
+  complete_signature_material_embedded: false,
+  credential_reference_equals_authenticity_result: false,
+  failed_or_unresolved_authenticity_may_produce_business_effect: false,
+} as const;
+
+export const EXTERNAL_RECEIVED_EVENT_EVIDENCE_POLICY = {
+  source_evidence_reference_required: true,
+  raw_payload_transported_by_default: false,
+  persistent_signed_url_allowed_as_source_evidence_ref: false,
+  source_payload_digest_is_integrity_or_correlation_only: true,
+  source_evidence_rewritten_on_redelivery: false,
+  source_evidence_rewritten_on_parser_change: false,
+  exact_source_bytes_preserved_when_authenticity_requires_them: true,
+  audit_log_may_become_payload_copy: false,
+} as const;
+
+export const EXTERNAL_RECEIVED_EVENT_NORMALIZATION_POLICY = {
+  normalized_assertion_is_business_fact: false,
+  typed_per_input_contract: true,
+  validated_before_owner_handoff: true,
+  minimized: true,
+  universal_record_string_unknown_api: false,
+  secret_material_allowed: false,
+  may_confirm_business_effect_by_itself: false,
+  nullable_when_processing_cannot_continue: true,
+} as const;
+
+export const EXTERNAL_RECEIVED_EVENT_REFERENCE_POLICY = {
+  authenticity_by_reference: true,
+  mapping_by_reference: true,
+  idempotency_by_reference: true,
+  correlation_by_reference: true,
+  owner_contract_ref_grants_authority: false,
+  timestamp_alone_establishes_correlation_or_causality: false,
+} as const;
+
+export const EXTERNAL_RECEIVED_EVENT_TEMPORAL_POLICY = {
+  received_at_semantics: "VENTO_TECHNICAL_RECEIPT_TIME",
+  provider_occurred_at_semantics: "PROVIDER_CLAIMED_EVENT_TIME",
+  provider_occurred_at_nullable: true,
+  received_at_replaced_by_provider_timestamp: false,
+  business_order_derived_only_from_timestamps: false,
+} as const;
+
+export const EXTERNAL_RECEIVED_EVENT_FORBIDDEN_MATERIAL = [
+  "api_key",
+  "service_role_key",
+  "password",
+  "client_secret",
+  "webhook_secret",
+  "refresh_token",
+  "reusable_access_token",
+  "private_key",
+  "p8_private_material",
+  "p12_private_material",
+  "private_certificate_material",
+  "persistent_signed_url",
+  "session_cookie",
+  "raw_sensitive_payload_by_default",
+  "complete_bank_data",
+  "complete_medical_record",
+  "provider_credential",
+  "checksum_or_hmac_secret",
+] as const;
+
+export type ExternalReceivedEventForbiddenMaterial =
+  (typeof EXTERNAL_RECEIVED_EVENT_FORBIDDEN_MATERIAL)[number];
+
+export const EXTERNAL_RECEIVED_EVENT_APPLICABILITY_DECISIONS = [
+  "APLICA_EVENTO_INBOUND_ACREDITADO",
+  "NO_APLICA_EN_CORTE",
+  "NO_APLICA_AL_EVENTO_EN_CORTE",
+] as const;
+
+export type ExternalReceivedEventApplicabilityDecision =
+  (typeof EXTERNAL_RECEIVED_EVENT_APPLICABILITY_DECISIONS)[number];
+
+export const EXTERNAL_RECEIVED_EVENT_PHYSICAL_STATUSES = [
+  "DEFINIDO_NO_MATERIALIZADO",
+  "NO_APLICA",
+  "NO_APLICA_ACTUAL",
+  "BLOQUEADO",
+] as const;
+
+export type ExternalReceivedEventPhysicalStatus =
+  (typeof EXTERNAL_RECEIVED_EVENT_PHYSICAL_STATUSES)[number];
+
+export const EXTERNAL_RECEIVED_EVENT_APPLICABILITY = [
+${renderExternalReceivedEventApplicabilityRows(coverage.rows)}
+] as const satisfies readonly {
+  readonly external_system_id: string;
+  readonly system: string;
+  readonly inbound_surface: string;
+  readonly decision: ExternalReceivedEventApplicabilityDecision;
+  readonly physical_status: ExternalReceivedEventPhysicalStatus;
+}[];
+
+export const EXTERNAL_RECEIVED_EVENT_COVERAGE = {
+  external_system_decision_count: 21,
+  accredited_inbound_event_count: 2,
+  without_accredited_inbound_event_count: 19,
+  not_applicable_in_cut_count: 18,
+  not_applicable_to_event_in_cut_count: 1,
+  defined_not_materialized_count: 2,
+  not_applicable_physical_count: 9,
+  not_applicable_current_physical_count: 8,
+  blocked_physical_count: 2,
+  materialized_runtime_event_count: 0,
+  created_endpoint_count: 0,
+  created_receipt_record_count: 0,
+  created_secret_count: 0,
+  supabase_change_count: 0,
+} as const;
+
+export const EXTERNAL_RECEIVED_EVENT_CONTRACT_METADATA = {
+  logical_namespace: "@vento/contracts/integrations",
+  contract_task_id: "SHELL-CON-019",
+  principal_contract_task_id: "SHELL-CON-017",
+  credential_reference_task_id: "SHELL-CON-018",
+  mapping_contract_task_id: "SHELL-CON-022",
+  idempotency_contract_task_id: "SHELL-CON-023",
+  disposition_contract_task_id: "SHELL-CON-024",
+  next_contract_task_id: "SHELL-CON-020",
+  execution_gate: "PRE_E5_FOUNDATION",
+  physical_mode: "GLOBAL_ENABLE_ONCE",
+  public_export_published: false,
+  runtime_endpoint_materialized: false,
+  receipt_persistence_materialized: false,
+  source_payload_storage_materialized: false,
+  secret_materialized: false,
+  supabase_changed: false,
+} as const;
+
+export type ExternalReceivedEventBoundaryPolicy =
+  typeof EXTERNAL_RECEIVED_EVENT_BOUNDARY_POLICY;
+
+export type ExternalReceivedEventIdentityPolicy =
+  typeof EXTERNAL_RECEIVED_EVENT_IDENTITY_POLICY;
+
+export type ExternalReceivedEventAuthenticityPolicy =
+  typeof EXTERNAL_RECEIVED_EVENT_AUTHENTICITY_POLICY;
+
+export type ExternalReceivedEventEvidencePolicy =
+  typeof EXTERNAL_RECEIVED_EVENT_EVIDENCE_POLICY;
+
+export type ExternalReceivedEventNormalizationPolicy =
+  typeof EXTERNAL_RECEIVED_EVENT_NORMALIZATION_POLICY;
+
+export type ExternalReceivedEventReferencePolicy =
+  typeof EXTERNAL_RECEIVED_EVENT_REFERENCE_POLICY;
+
+export type ExternalReceivedEventTemporalPolicy =
+  typeof EXTERNAL_RECEIVED_EVENT_TEMPORAL_POLICY;
+
+export type ExternalReceivedEventCoverage =
+  typeof EXTERNAL_RECEIVED_EVENT_COVERAGE;
+
+export type ExternalReceivedEventContractMetadata =
+  typeof EXTERNAL_RECEIVED_EVENT_CONTRACT_METADATA;
+`;
+}
+
 function renderIndex() {
   return `// GENERATED FILE. DO NOT EDIT.
-// Contract tasks: SHELL-CON-017, SHELL-CON-018
+// Contract tasks: SHELL-CON-017, SHELL-CON-018, SHELL-CON-019
 // SHELL-CON-017 source SHA256: ${shellCon017SourceContractSha256}
 // SHELL-CON-018 source SHA256: ${shellCon018SourceContractSha256}
+// SHELL-CON-019 source SHA256: ${shellCon019SourceContractSha256}
 
 export {
   INTEGRATION_PRINCIPAL_CARDINALITY_POLICY,
@@ -905,6 +1372,38 @@ export type {
   ExternalCredentialRotationPolicy,
   VentoCredentialEnvironment,
 } from "./external-credential-ref.contract.js";
+
+export {
+  EXTERNAL_RECEIVED_EVENT_APPLICABILITY,
+  EXTERNAL_RECEIVED_EVENT_APPLICABILITY_DECISIONS,
+  EXTERNAL_RECEIVED_EVENT_AUTHENTICITY_POLICY,
+  EXTERNAL_RECEIVED_EVENT_BOUNDARY_POLICY,
+  EXTERNAL_RECEIVED_EVENT_CONTRACT_METADATA,
+  EXTERNAL_RECEIVED_EVENT_COVERAGE,
+  EXTERNAL_RECEIVED_EVENT_EVIDENCE_POLICY,
+  EXTERNAL_RECEIVED_EVENT_FORBIDDEN_MATERIAL,
+  EXTERNAL_RECEIVED_EVENT_IDENTITY_POLICY,
+  EXTERNAL_RECEIVED_EVENT_NORMALIZATION_POLICY,
+  EXTERNAL_RECEIVED_EVENT_PHYSICAL_STATUSES,
+  EXTERNAL_RECEIVED_EVENT_REFERENCE_POLICY,
+  EXTERNAL_RECEIVED_EVENT_TEMPORAL_POLICY,
+} from "./external-received-event.contract.js";
+
+export type {
+  ExternalReceivedEvent,
+  ExternalReceivedEventApplicabilityDecision,
+  ExternalReceivedEventAuthenticityPolicy,
+  ExternalReceivedEventBoundaryPolicy,
+  ExternalReceivedEventContractMetadata,
+  ExternalReceivedEventCoverage,
+  ExternalReceivedEventEvidencePolicy,
+  ExternalReceivedEventForbiddenMaterial,
+  ExternalReceivedEventIdentityPolicy,
+  ExternalReceivedEventNormalizationPolicy,
+  ExternalReceivedEventPhysicalStatus,
+  ExternalReceivedEventReferencePolicy,
+  ExternalReceivedEventTemporalPolicy,
+} from "./external-received-event.contract.js";
 `;
 }
 
@@ -955,6 +1454,9 @@ export function generateIntegrationPrincipalContracts({
   const principalCoverage = parseIntExtDecisionCoverage(integrationSource);
   const shellCon018Task = validateShellCon018(shellSource);
   const credentialCoverage = parseCredentialApplicability(shellCon018Task);
+  validateApprovedEventSourceTasks(integrationSource);
+  const shellCon019Task = validateShellCon019(shellSource);
+  const eventCoverage = parseExternalReceivedEventApplicability(shellCon019Task);
 
   const principalContractResult = writeOrCheck(
     principalContractPath,
@@ -967,6 +1469,12 @@ export function generateIntegrationPrincipalContracts({
     renderCredentialContract(credentialCoverage),
     checkOnly,
     'external credential reference contract',
+  );
+  const externalReceivedEventContractResult = writeOrCheck(
+    externalReceivedEventContractPath,
+    renderExternalReceivedEventContract(eventCoverage),
+    checkOnly,
+    'external received event contract',
   );
   const indexResult = writeOrCheck(
     indexPath,
@@ -986,8 +1494,18 @@ export function generateIntegrationPrincipalContracts({
     credentialNotApplicable: credentialCoverage.notApplicable,
     credentialNotApplicableCurrent: credentialCoverage.notApplicableCurrent,
     materializedCredentialIds: 0,
+    eventDecisions: eventCoverage.decisions,
+    eventAccreditedInbound: eventCoverage.accreditedInbound,
+    eventWithoutAccreditedInbound: eventCoverage.withoutAccreditedInbound,
+    eventNotApplicableInCut: eventCoverage.notApplicableInCut,
+    eventNotApplicableToEventInCut: eventCoverage.notApplicableToEventInCut,
+    eventDefinedNotMaterialized: eventCoverage.definedNotMaterialized,
+    eventNotApplicablePhysical: eventCoverage.notApplicablePhysical,
+    eventNotApplicableCurrentPhysical: eventCoverage.notApplicableCurrentPhysical,
+    eventBlockedPhysical: eventCoverage.blockedPhysical,
     principalContractResult,
     credentialContractResult,
+    externalReceivedEventContractResult,
     indexResult,
   };
 }
@@ -1027,8 +1545,21 @@ function runCli() {
       `[VENTO CONTRACTS] MATERIALIZED_CREDENTIAL_IDS `
       + `${result.materializedCredentialIds}`,
     );
+    console.log(`[VENTO CONTRACTS] EVENT_DECISIONS ${result.eventDecisions}`);
+    console.log(
+      `[VENTO CONTRACTS] EVENT_ACCREDITED_INBOUND `
+      + `${result.eventAccreditedInbound}`,
+    );
+    console.log(
+      `[VENTO CONTRACTS] EVENT_WITHOUT_ACCREDITED_INBOUND `
+      + `${result.eventWithoutAccreditedInbound}`,
+    );
     console.log(`[VENTO CONTRACTS] PRINCIPAL_CONTRACT ${result.principalContractResult}`);
     console.log(`[VENTO CONTRACTS] CREDENTIAL_CONTRACT ${result.credentialContractResult}`);
+    console.log(
+      `[VENTO CONTRACTS] EXTERNAL_RECEIVED_EVENT_CONTRACT `
+      + `${result.externalReceivedEventContractResult}`,
+    );
     console.log(`[VENTO CONTRACTS] INDEX ${result.indexResult}`);
     console.log('');
     console.log('=== RESULTADO PARA CHATGPT ===');
@@ -1047,8 +1578,33 @@ function runCli() {
       + `${result.credentialNotApplicableCurrent}`,
     );
     console.log(`MATERIALIZED_CREDENTIAL_IDS: ${result.materializedCredentialIds}`);
+    console.log(`EVENT_DECISIONS: ${result.eventDecisions}`);
+    console.log(`EVENT_ACCREDITED_INBOUND: ${result.eventAccreditedInbound}`);
+    console.log(
+      `EVENT_WITHOUT_ACCREDITED_INBOUND: ${result.eventWithoutAccreditedInbound}`,
+    );
+    console.log(`EVENT_NOT_APPLICABLE_IN_CUT: ${result.eventNotApplicableInCut}`);
+    console.log(
+      `EVENT_NOT_APPLICABLE_TO_EVENT_IN_CUT: `
+      + `${result.eventNotApplicableToEventInCut}`,
+    );
+    console.log(
+      `EVENT_DEFINED_NOT_MATERIALIZED: ${result.eventDefinedNotMaterialized}`,
+    );
+    console.log(
+      `EVENT_NOT_APPLICABLE_PHYSICAL: ${result.eventNotApplicablePhysical}`,
+    );
+    console.log(
+      `EVENT_NOT_APPLICABLE_CURRENT_PHYSICAL: `
+      + `${result.eventNotApplicableCurrentPhysical}`,
+    );
+    console.log(`EVENT_BLOCKED_PHYSICAL: ${result.eventBlockedPhysical}`);
     console.log(`PRINCIPAL_CONTRACT: ${result.principalContractResult}`);
     console.log(`CREDENTIAL_CONTRACT: ${result.credentialContractResult}`);
+    console.log(
+      `EXTERNAL_RECEIVED_EVENT_CONTRACT: `
+      + `${result.externalReceivedEventContractResult}`,
+    );
     console.log(`INDEX: ${result.indexResult}`);
     console.log('=== FIN RESULTADO PARA CHATGPT ===');
   } catch (error) {
