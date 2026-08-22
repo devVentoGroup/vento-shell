@@ -126,4 +126,19 @@ La superficie contiene exactamente 29 campos contractuales, 8 clases de ítem de
 
 La materialización reutiliza `AppCode`, `ProcessId`, `ProcessStateId`, `FunctionalActionId`, `BusinessEventId` y `ApplicationHandoffRelation` cuando corresponda, sin copiar sus catálogos ni transportar autoridad.
 
-Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no implementa claims, leases, prioridad runtime, scheduler, workflow engine, persistencia, colas, APIs, navegación, UI, autorización ni Supabase. `SHELL-CON-016` permanece reservado para el contrato de propiedad funcional.
+Esta materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no implementa claims, leases, prioridad runtime, scheduler, workflow engine, persistencia, colas, APIs, navegación, UI, autorización ni Supabase. `SHELL-CON-016` materializa separadamente la proyección estática de propiedad funcional en el módulo hermano `packages/contracts/ownership`.
+
+
+## Módulo de propiedad funcional
+
+`SHELL-CON-016::GLOBAL` materializa internamente `packages/contracts/ownership` como proyección estática del contrato lógico `@vento/contracts/ownership`.
+
+La superficie adopta exactamente 69 asignaciones de propietaria de proceso desde `PROC-CAT-005`, conserva el universo de 10 `AppCode` y distingue que 9 `AppCode` están efectivamente usados como propietaria de proceso en el corte vigente porque `shell` tiene 0 asignaciones.
+
+Las 217 decisiones de fuente objetivo de `CAP-MAP-008` se conservan mediante su modelo canónico familia más excepción. El corte comprende 18 familias; el módulo materializa 18 proyecciones base de familia y los 5 estados de fuente objetivo, pero no fabrica una segunda tabla editable con 217 filas ni crea un `ownership_id`.
+
+La propiedad funcional permanece separada de autorización, actor, participación, consumo, repositorio, Supabase, pantalla, navegación, evento, handoff e ítem de trabajo. Las representaciones `REFERENCE`, `PROJECTION`, `CONTROLLED_CACHE`, `DERIVED_RESULT` y `EVIDENCE_COPY` no adquieren autoridad sobre el original por su sola existencia.
+
+El caso `public.employee_shifts` se conserva como deuda AS-IS preexistente documentada por `CAP-MAP-013`: VISO y ANIMA pueden editar actualmente, mientras la frontera objetivo mantiene a VISO como propietaria de publicación/corrección y a ANIMA como consumidora. Esta instancia no remedia ese conflicto.
+
+La materialización no añade `exports` públicos, no modifica la versión de `@vento/contracts`, no reasigna propiedad, no implementa escritura cross-app, persistencia, autorización, consumidores, APIs, UI, Supabase, RLS, migraciones ni datos. `SHELL-CON-017` permanece reservado para el contrato de principal técnico de integración.
