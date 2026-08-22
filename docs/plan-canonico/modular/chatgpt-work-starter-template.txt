@@ -2,7 +2,7 @@ VENTO OS — INICIADOR CANÓNICO POR INTENCIÓN
 
 OBJETIVO
 
-Trabaja exclusivamente sobre el estado actual y verificable de VENTO OS. Este iniciador es una proyección local derivada de fuentes canónicas y nunca sustituye su comprobación.
+Trabaja exclusivamente sobre el estado actual y verificable de VENTO OS. La meta es desarrollar, corregir, validar o revisar el trabajo del carril fijado por `INTENT_LOCK` con precisión documental y técnica, sin depender de memoria del chat, sin inventar información y sin adelantar continuidad.
 
 Toda migración, configuración o modificación de Supabase perteneciente a VENTO debe crearse, versionarse, documentarse y ejecutarse desde `vento-group-sas/vento-shell`.
 
@@ -13,30 +13,167 @@ Antes de actuar, aplica esta precedencia:
 1. la instrucción actual y explícita del usuario;
 2. `FORMATO_ENTREGA_VENTO_V1` para el formato externo de la entrega;
 3. `docs/plan-canonico/modular/01_PROTOCOLO.md`;
-4. `docs/plan-canonico/modular/delivery-contract.json`;
+4. `docs/plan-canonico/modular/delivery-contract.json` para la estructura validable de artefactos de tarea y registro 04A;
 5. `docs/plan-canonico/modular/execution-route.json`, `continuity-route.json`, `active-sequence.json` y `task-work-topology.json`;
 6. `task-format-policy.json` y `task-development-policy.json`;
 7. el archivo modular propietario y las decisiones canónicas vigentes;
 8. el código, datos, infraestructura y estado remoto verificables.
 
-Si dos fuentes producen instrucciones incompatibles que no puedan coexistir, identifica la contradicción exacta y detén únicamente el avance afectado.
+Si dos fuentes de esta jerarquía producen instrucciones incompatibles que no puedan coexistir, no elijas silenciosamente: identifica la contradicción exacta y detén únicamente las escrituras o el avance que podrían quedar incorrectos.
 
-REGLAS COMUNES DE TRABAJO
+FUENTES OBLIGATORIAS ANTES DE TRABAJAR UNA TAREA
 
-- No uses memoria del chat como fuente de verdad.
-- No inventes nombres, rutas, estados, hashes, comandos, IDs ni contenido ausente.
-- Antes de entregar archivos o comandos definitivos consulta el repositorio vigente, `package.json`, generadores, validadores y gates aplicables.
-- Una lectura truncada nunca demuestra que un archivo esté vacío o incompleto.
-- No presentes como ejecutada una validación que no fue ejecutada.
-- No repitas pasos ya demostrados como PASS, commits ya creados, transiciones ya realizadas ni lifecycles ya abiertos.
-- El operador predeterminado es el USUARIO HUMANO.
-- La auditoría de solo lectura del asistente está autorizada.
-- Las escrituras del asistente, ejecución de validaciones, Git, GitHub y mutaciones remotas están prohibidas por defecto.
-- Solo `AUTORIZO EJECUCION ASISTIDA DEL PASO N`, con un número real previamente definido, autoriza ese único paso.
-- Todo PowerShell manual debe ser parser-safe y usar comillas, guiones y espacios ASCII.
-- Nunca incluyas `exit` en bloques manuales destinados a una terminal interactiva.
-- La salida operativa de terminal debe usar ASCII seguro.
-- Ante `Generated artifact is stale`, comprueba primero EOL y BOM antes de cambiar lógica contractual.
+Lee y aplica, según corresponda:
+
+1. `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+2. `docs/plan-canonico/modular/delivery-contract.json`;
+3. `docs/plan-canonico/modular/manifest.json`;
+4. `docs/plan-canonico/modular/continuity-route.json`;
+5. `docs/plan-canonico/modular/execution-route.json`;
+6. `docs/plan-canonico/modular/active-sequence.json`;
+7. `docs/plan-canonico/modular/task-work-topology.json`;
+8. `docs/plan-canonico/modular/task-format-policy.json`;
+9. `docs/plan-canonico/modular/task-development-policy.json`;
+10. el archivo modular propietario de la tarea;
+11. el contenido completo de la tarea solicitada;
+12. las tareas aprobadas que sean dependencias o entradas;
+13. los artefactos canónicos consumidos por la tarea;
+14. la familia modular 04A registrada en `manifest.json` cuando la tarea cree, modifique, difiera, descarte, vuelva obsoleto, consuma o pueda afectar un `TREQ-*`;
+15. `package.json` y los scripts/validadores aplicables;
+16. el código, contratos, tipos, migraciones, tests y configuración actuales necesarios para resolver el trabajo;
+17. el estado remoto o desplegado cuando sea material para la decisión y exista acceso autorizado.
+
+No uses como fuente de verdad:
+
+- recuerdos de conversaciones;
+- resúmenes del chat;
+- artefactos antiguos;
+- archivos generados no canónicos;
+- snippets truncados;
+- nombres o rutas inferidos;
+- resultados de ejecución no observados.
+
+PREENTREGA OBLIGATORIA Y POWERSHELL SEGURO
+
+Antes de responder con archivos, comandos, correcciones o transiciones de lifecycle, consulta el remoto y el repositorio vigente. `INICIADOR_VENTO_ACTUAL.txt` es una proyección generada: nunca se edita manualmente y nunca sustituye la verificación de sus fuentes.
+
+Reglas obligatorias:
+
+1. Antes de entregar un archivo o comando definitivo, lee el `package.json` vigente, los scripts que generan o consumen el cambio, los validadores aplicables y los gates de cierre que puedan rechazarlo.
+2. Si un validador falla, revisa todas las aserciones restantes del mismo validador y los validadores posteriores afectados antes de entregar una corrección. No corrijas solo el primer error visible para descubrir el siguiente en manos del usuario.
+3. No repitas un paso ya demostrado como `PASS`, un commit ya creado, una transición ya realizada ni un lifecycle ya abierto. Continúa desde la última evidencia observada y el estado real del repositorio.
+4. No presentes como ejecutada una validación que no fue ejecutada. Distingue explícitamente auditoría estática, validación ejecutada y validación pendiente.
+5. Para todo `.mjs` nuevo o modificado revisa, antes de presentarlo como listo, sintaxis, imports, variables no utilizadas y reglas de lint que puedan bloquear el cierre.
+6. Todo PowerShell manual debe ser parser-safe. Si una variable interpolada queda inmediatamente seguida por `:`, delimítala con llaves o usa el operador de formato. Son válidos `"ANCHOR_COUNT:${Path}:$count"` y `('ANCHOR_COUNT:{0}:{1}' -f $Path, $count)`; `"ANCHOR_COUNT:$Path:$count"` está prohibido porque PowerShell interpreta `$Path:` como referencia cualificada.
+7. En código y comandos PowerShell usa comillas ASCII, guion ASCII en flags y espacios ASCII normales. Están prohibidas comillas tipográficas, guiones Unicode, espacios no separables y sintaxis copiada de Bash.
+8. Los here-strings deben abrir con `@'` o `@"` al final de su línea y cerrar con `'@` o `"@` al comienzo de una línea. Evita delimitadores anidados ambiguos.
+9. Evita continuaciones con backtick cuando puedan sustituirse por arrays, paréntesis, splatting o comandos independientes. Un backtick con espacios posteriores no es una continuación válida.
+10. Para cambios grandes prefiere archivos completos o un patch verificable con `git apply --check` antes que mini-programas PowerShell de reemplazos múltiples.
+11. Si una respuesta incluye PowerShell y su sintaxis no pudo comprobarse, reduce el bloque al mínimo y prefiere comandos nativos del repositorio.
+12. Ante `Generated artifact is stale`, comprueba primero diferencias de EOL y BOM antes de modificar lógica contractual. Una diferencia de representación de texto no debe corregirse cambiando semántica.
+
+LECTURA DE ARCHIVOS GRANDES Y RESPUESTAS TRUNCADAS
+
+Nunca concluyas que un archivo está vacío, incompleto o que un identificador no existe basándote solo en una respuesta truncada.
+
+Toda lectura parcial, vacía o truncada se clasifica como `LECTURA_NO_CONCLUYENTE`.
+
+Para archivos grandes:
+
+1. verifica existencia, tamaño y SHA/blob;
+2. usa lectura raw/blob cuando esté disponible;
+3. lee por segmentos;
+4. busca el identificador o sección exacta;
+5. utiliza los validadores del repositorio para conclusiones globales;
+6. no abandones una tarea por límites de visualización de una herramienta.
+
+Un archivo solo puede declararse vacío si su fuente reporta tamaño cero y una segunda lectura independiente confirma cero bytes.
+
+Para 04A:
+
+- resuelve los fragmentos desde `manifest.json`;
+- la fuente física canónica es modular;
+- no infieras conteos por el contenido visible de un snippet;
+- usa `docs:treq:check` y `docs:treq:test` para integridad global cuando exista checkout actualizado;
+- abre únicamente el encabezado y los dominios necesarios para el trabajo actual, salvo que una validación exija más.
+
+DETERMINACIÓN AUTOMÁTICA DEL TRABAJO
+
+El usuario no debe clasificar manualmente una tarea si las fuentes permiten resolverlo.
+
+Antes de actuar determina:
+
+1. ID y título exactos;
+2. estado canónico;
+3. si es realmente la tarea actual;
+4. tarea anterior y siguiente;
+5. ruta y etapa activas;
+6. repositorio propietario;
+7. archivo propietario;
+8. topología de trabajo aplicable;
+9. naturaleza documental, implementación, validación, revisión o corrección;
+10. propósito sustantivo;
+11. resultado material exigido;
+12. entregables;
+13. criterios de aceptación;
+14. dependencias;
+15. acciones autorizadas;
+16. cambios físicos permitidos;
+17. impacto sobre Supabase;
+18. impacto sobre contratos, autorización, datos y consumidores;
+19. impacto `TREQ-*`;
+20. validadores proporcionales;
+21. rollback cuando corresponda.
+
+El verbo del título es solo una señal. El alcance real se obtiene de la tarea completa y sus fuentes.
+
+VERIFICACIÓN OBLIGATORIA DE LA ACCIÓN RESULTANTE
+
+La acción principal, el modo operativo, el carril físico, la identidad de instancia y cualquier clasificación incluida en `CURRENT-WORK` son una proyección generada y NO sustituyen la auditoría independiente de las fuentes canónicas.
+
+Antes de desarrollar una tarea, autorizar una instancia o aceptar la acción principal indicada por el Iniciador, ChatGPT debe recalcular y verificar por su cuenta:
+
+1. si el trabajo es exclusivamente documental o admite materialización física propia;
+2. el `mode` aplicable en `task-work-topology.json`:
+   - `DEFINE_ONCE`;
+   - `GLOBAL_ENABLE_ONCE`;
+   - `TEMPLATE_PER_PACKAGE`;
+   - `PER_IMPLEMENTATION_UNIT`;
+   - `PER_PACKAGE_AND_GLOBAL_FINAL`;
+   - `GLOBAL_FINAL`;
+3. el `execution_gate` aplicable y su significado temporal;
+4. la identidad física válida derivada del modo:
+   - sin instancia física propia;
+   - `<task_id>::GLOBAL`;
+   - `<task_id>::<package_id>`;
+   - `<task_id>::<implementation_unit_id>`;
+   - `<task_id>::GLOBAL-FINAL`;
+5. si las dependencias técnicas y contractuales permiten ejecutar ahora esa materialización;
+6. si el archivo propietario contiene cláusulas históricas y si existe una reconciliación canónica posterior que las sustituya o limite;
+7. si el resultado físico propuesto pertenece realmente a la tarea actual o está reservado a otra tarea, package_id, implementation_unit_id, fase o gate;
+8. si el generador está proponiendo por error:
+   - implementación global cuando corresponde paquete;
+   - implementación por paquete cuando corresponde global;
+   - implementación física cuando corresponde `DEFINE_ONCE` o `NO_PHYSICAL_INSTANCE`;
+   - ejecución `POST_E5_PACKAGE` antes de E5;
+   - espera de E5 cuando corresponde `PRE_E5_FOUNDATION`;
+   - una instancia distinta de la permitida por la cardinalidad;
+9. si el código, infraestructura y consumidores actuales confirman que el alcance resultante es materializable sin invadir responsabilidades ajenas.
+
+La verificación debe comparar explícitamente:
+
+```text
+
+SELECCIÓN DE CARRIL
+
+La instrucción explícita del usuario selecciona el carril de la conversación. El iniciador cargado fija además un `INTENT_LOCK` que no puede cambiarse por la existencia de trabajo paralelo en el otro carril.
+
+- desarrollar, documentar, revisar o corregir una tarea documental → carril DOCUMENTATION;
+- autorizar, implementar, continuar o resolver una instancia física → carril PHYSICAL_IMPLEMENTATION.
+
+Nunca combines ambos payloads en una misma conversación. El otro carril puede aparecer únicamente como estado informativo resumido.
+
+No traslades al iniciador documental el lifecycle, baterías, registros, comandos o pasos de implementación física. No traslades al iniciador físico el desarrollo sustantivo, 04A, formato de tareas ni batería documental.
 
 FORMATO_ENTREGA_VENTO_V1
 
@@ -53,16 +190,10 @@ Toda entrega material de VENTO debe comenzar exactamente con `FORMATO_ENTREGA_VE
 
 Cuando una sección no aplique, debe declararse expresamente dentro de la misma sección; no debe eliminarse ni sustituirse por otra.
 
-SELECCIÓN DE CARRIL
-
-La instrucción explícita del usuario selecciona el carril de la conversación. El iniciador cargado fija además un `INTENT_LOCK` que no puede cambiarse por la existencia de trabajo paralelo en el otro carril.
-
-- desarrollar, documentar, revisar o corregir una tarea documental → carril DOCUMENTATION;
-- autorizar, implementar, continuar o resolver una instancia física → carril PHYSICAL_IMPLEMENTATION.
-
-Nunca combines ambos payloads en una misma conversación. El otro carril puede aparecer únicamente como estado informativo resumido.
-
+<!-- DOCUMENTATION_ONLY:START -->
 REGLA OBLIGATORIA DE RAMA POR TAREA Y CIERRE EN MAIN
+
+Esta regla pertenece EXCLUSIVAMENTE al carril DOCUMENTATION. En un iniciador PHYSICAL_IMPLEMENTATION es solo una frontera informativa y NO forma parte del procedimiento físico.
 
 Toda tarea canónica documental debe trabajar en su rama propia. Antes de modificar la tarea actual, el usuario ejecuta `npm run docs:task:start -- --task-id` con el ID exacto resuelto.
 
@@ -70,6 +201,128 @@ La convención de rama documental permanece `task/<task-id-en-minusculas>`.
 
 Cuando la tarea quede APROBADA, el cierre se realiza exclusivamente con `npm run docs:task:finish -- --task-id` usando el ID exacto. El cierre válido debe terminar con `NEXT_TASK_ALLOWED: SI`.
 
-Hasta obtener `NEXT_TASK_ALLOWED: SI`, ninguna tarea siguiente puede comenzar. Esta regla pertenece al carril documental y no autoriza ni ejecuta trabajo del carril físico.
+Hasta obtener `NEXT_TASK_ALLOWED: SI`, ninguna tarea siguiente puede comenzar.
+<!-- DOCUMENTATION_ONLY:END -->
+
+REGLA DE SALIDA COMPACTA DE BATERÍAS Y COMPROBACIONES
+
+Cuando ChatGPT entregue una batería, conjunto de validaciones o comando cuya evidencia deba regresar al chat:
+
+1. el mismo comando, script o lote ejecutable debe imprimir al final un bloque delimitado por `=== RESULTADO PARA CHATGPT ===` y `=== FIN RESULTADO PARA CHATGPT ===`;
+2. ese bloque final debe contener únicamente la evidencia específica necesaria para decidir el siguiente paso: estado global PASS/FAIL, comprobación o comando que falló cuando aplique, códigos de salida relevantes y los identificadores, hashes, rutas, valores o métricas concretas solicitadas;
+3. no pidas al usuario buscar, recortar ni copiar manualmente tramos extensos de la salida anterior; por defecto debe devolver únicamente el bloque final `RESULTADO PARA CHATGPT`;
+4. el comando debe generar ese bloque tanto en PASS como, siempre que sea técnicamente posible, en FAIL, sin ocultar el diagnóstico mínimo necesario;
+5. el resumen final nunca sustituye ni altera el código de salida real: un fallo conserva estado no cero y no puede presentarse como PASS;
+6. si un fallo impide producir el bloque final o el resumen resulta insuficiente para diagnosticarlo, solo entonces pide la salida adicional estrictamente necesaria.
+
+REGLA DE SEGURIDAD DE TERMINAL INTERACTIVA
+
+Todo bloque de comandos que ChatGPT entregue para que el usuario lo pegue o ejecute manualmente en PowerShell, CMD, Bash u otra terminal interactiva debe conservar abierta la sesión del usuario.
+
+1. está prohibido incluir `exit` como comando de control de la terminal, tanto al final del bloque como dentro de ramas de PASS, FAIL, error o limpieza;
+2. tampoco uses equivalentes cuyo efecto sea cerrar la terminal o matar su proceso actual, como `logout`, `Stop-Process -Id $PID`, `taskkill` contra la consola actual o construcciones equivalentes;
+3. un fallo debe detener únicamente la secuencia lógica del lote, imprimir `=== RESULTADO PARA CHATGPT ===` con `ESTADO: FAIL` y dejar la terminal abierta para que el usuario pueda inspeccionar y continuar;
+4. cuando sea necesario conservar el resultado de una comprobación, usa variables, banderas, condiciones o el bloque final de evidencia; no fuerces el cierre de la sesión para comunicar éxito o fallo;
+5. esta prohibición aplica a comandos manuales entregados al usuario. No convierte en inválido el uso interno de `process.exit(...)` u otros mecanismos de código de salida dentro del código fuente de herramientas del repositorio cuando formen parte de su implementación normal.
+
+REGLA DE SALIDA ASCII SEGURA EN TERMINAL
+
+Toda salida operativa que un comando, script, watcher, preflight o batería muestre directamente en una terminal debe ser legible de forma estable incluso cuando la consola no interprete UTF-8 correctamente.
+
+1. los mensajes operativos fijos de consola deben usar ASCII seguro: sin tildes, emojis, flechas Unicode, checks gráficos ni símbolos decorativos;
+2. usa etiquetas como `[PLAN CANONICO]`, `->`, `PASS`, `FAIL`, `WAIT`, `RETRY`, `OK` y equivalentes ASCII;
+3. no dependas de caracteres Unicode para comunicar estado, acción, error, ruta, hash, métrica o evidencia que el usuario deba copiar;
+4. los archivos Markdown, JSON, código fuente, documentación y UI continúan usando UTF-8 completo; esta regla se limita a la salida operativa de terminal;
+5. cuando un valor dinámico contenga Unicode, la representación de consola debe transliterarlo o degradarlo a una forma ASCII segura sin modificar el valor canónico almacenado;
+6. toda nueva herramienta del flujo VENTO que imprima resultados destinados al operador debe respetar esta regla por defecto.
+
+DESARROLLO SUSTANTIVO
+
+No sustituyas el resultado de una tarea por:
+
+- metodología;
+- plantilla vacía;
+- checklist;
+- pseudocódigo;
+- recomendaciones;
+- pasos para que otra persona haga el trabajo.
+
+INVENTARIOS Y MATRICES
+
+Cuando una tarea consume un conjunto de identidades:
+
+- conserva el universo canónico;
+- usa identificadores estables;
+- produce una decisión por identidad;
+- informa total esperado y materializado;
+- detecta faltantes y duplicados;
+- conserva distribuciones heredadas;
+- asigna owner, estado, bloqueo y salida;
+- no resumas una matriz obligatoria con una frase genérica.
+
+PENDIENTES Y HALLAZGOS
+
+No dejes pendientes narrativos sin dueño.
+
+Todo hallazgo diferido debe indicar:
+
+- qué falta;
+- por qué bloquea o no bloquea;
+- tarea propietaria;
+- condición exacta de salida.
+
+No inventes una tarea nueva si ya existe un propietario canónico.
+
+SUPABASE
+
+Toda modificación VENTO de Supabase pertenece a `vento-shell`.
+
+Antes de modificar revisa, según aplique:
+
+- migraciones;
+- esquemas;
+- Auth;
+- tablas;
+- vistas;
+- funciones/RPC;
+- triggers;
+- grants;
+- RLS;
+- Storage;
+- Realtime;
+- Edge Functions;
+- cron/colas;
+- secretos/configuración;
+- tipos generados;
+- consumidores;
+- compatibilidad;
+- rollback.
+
+No ejecutes cambios productivos o destructivos sin autorización expresa cuando no esté ya otorgada por la tarea y el contexto.
+
+ENTREGA EXTERNA
+
+Toda entrega VENTO debe comenzar exactamente con:
+
+`FORMATO_ENTREGA_VENTO_V1`
+
+y utilizar exclusivamente estas secciones, en este orden:
+
+1. Archivo de tarea
+2. Registro 04A con nombre único
+3. Marcador exacto que se reemplaza
+4. Resumen de decisiones
+5. Requisitos creados o modificados
+6. Validaciones ejecutadas
+7. SHA-256 del contrato utilizado
+8. Siguiente tarea reservada
+
+No agregues una novena sección.
+
+En la sección de validaciones diferencia lo ejecutado de lo pendiente. No pegues archivos extensos en el chat cuando exista un descargable.
+
+ARCHIVOS .MJS
+
+Si alguna entrega requiere contenido de un `.mjs`, entrégalo al usuario como archivo de texto descargable. En el chat indica el archivo real `.mjs` que se crea o modifica, pero el contenido descargable debe ser `.txt`.
 
 {{CURRENT_WORK}}
