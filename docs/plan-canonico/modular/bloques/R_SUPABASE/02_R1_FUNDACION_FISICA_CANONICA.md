@@ -20835,7 +20835,2669 @@ No modifica el Registro Canónico de Requisitos de Prueba.
 `AUTH-DB-013 — Implementar auditoría de simulación`
 
 
-### [ ] AUTH-DB-013 — Implementar auditoría de simulación
+### ✅ AUTH-DB-013 — Implementar auditoría de simulación
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-012 — Implementar auditoría de cambios de permisos
+**Tarea siguiente:** AUTH-DB-014 — Implementar auditoría de dispositivos
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato global de persistencia y auditoría inmutable de simulaciones, escenarios, evaluaciones y lifecycle cerrado; futura instancia `AUTH-DB-013::GLOBAL` pendiente de autorización explícita y de la capa transversal `audit`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma cerrada la futura materialización física de la auditoría de simulación de Vento OS sin convertir una evaluación hipotética en autoridad empresarial, sin mezclar el contexto real con el simulado y sin crear una segunda fuente de verdad para permisos, roles, sedes, áreas, turnos, check-ins, recursos o decisiones reales.
+
+La tarea debe permitir demostrar de manera durable:
+
+```text
+QUIÉN REALMENTE SOLICITÓ
++
+QUÉ ESCENARIO HIPOTÉTICO FUE FIJADO
++
+QUÉ VERSIONES Y FINGERPRINTS SE USARON
++
+QUÉ EVALUACIONES HIPOTÉTICAS SE PRODUJERON
++
+QUÉ RESULTADO WOULD_* SE OBTUVO
++
+CUÁNDO SE ACTIVÓ, REVISÓ, COMPLETÓ, EXPIRÓ O REVOCÓ
++
+QUÉ DECISIÓN REAL AUTORIZÓ LA OPERACIÓN SOBRE EL SIMULADOR
+=
+EVIDENCIA DE SIMULACIÓN REPRODUCIBLE Y NO EJECUTABLE
+```
+
+`AUTH-DB-013` no concede la capacidad de simular y no implementa una mutación empresarial ejecutable. Su responsabilidad es cerrar el contrato físico compartido que conservará la evidencia de las simulaciones autorizadas, denegadas, inválidas y fallidas.
+
+---
+
+#### 2. Resultado canónico
+
+La futura instancia global podrá materializar una única infraestructura compartida:
+
+```text
+audit.authorization_simulations
+audit.authorization_simulation_revisions
+audit.authorization_simulation_evaluations
+audit.authorization_simulation_events
+audit.authorization_simulation_attempts
+audit.authorization_simulation_links
+audit.authorization_simulation_corrections
+```
+
+y helpers privados estrictamente técnicos bajo `app_private`.
+
+El conjunto anterior no es una aplicación, no es un dominio empresarial y no sustituye `SimulationContext@1.0.0`. Es la persistencia durable y auditable de sus identidades, snapshots, lifecycle y resultados.
+
+---
+
+#### 3. Clasificación topológica
+
+La clasificación vigente queda congelada:
+
+```text
+task_id = AUTH-DB-013
+mode = GLOBAL_ENABLE_ONCE
+instance = AUTH-DB-013::GLOBAL
+execution_gate = PRE_E5_FOUNDATION
+canonical_work = DEFINE_CONTRACT_ONCE
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no se repite por `package_id`;
+3. la tarea documental se desarrolla una sola vez;
+4. la aprobación documental no autoriza la instancia física;
+5. la futura materialización se reutiliza por todos los consumidores autorizados;
+6. una corrección física posterior se realiza mediante migración forward versionada;
+7. ningún consumidor puede crear una auditoría local paralela.
+
+---
+
+#### 4. Precondición transversal obligatoria
+
+`AUTH-DB-013::GLOBAL` requiere que exista físicamente la capa transversal aprobada por `SUPA-ARC-007`:
+
+```text
+audit
+```
+
+Si `audit` no existe, la instancia permanece bloqueada.
+
+No se admite como sustituto:
+
+```text
+public.simulation_audit
+viso.simulation_audit
+identity_access.simulation_audit
+una tabla por aplicación
+un log de frontend
+telemetría de consola
+metadata libre dentro de la sesión legacy
+```
+
+---
+
+#### 5. Fuentes normativas vinculantes
+
+La definición conserva, sin reinterpretarlas, las decisiones de:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-012`;
+- `AUTH-CTX-003`;
+- `AUTH-CTX-024`;
+- `AUTH-CTX-029`;
+- `AUTH-SIM-001` a `AUTH-SIM-006`;
+- `AUTH-ERR-016`;
+- `SUPA-ARC-007`;
+- `SUPA-ARC-012`;
+- `SUPA-ARC-014`;
+- `SUPA-ARC-015`;
+- `SUPA-ARC-021`;
+- `SUPA-ARC-022`;
+- `SUPA-ARC-025`;
+- `AUTH-DB-016`;
+- `AUTH-DB-019`;
+- `AUTH-DB-033`;
+- `AUTH-DB-035`;
+- `AUTH-DB-034`;
+- `AUTH-DB-032`;
+- `AUTH-DB-012`.
+
+Las tareas `AUTH-SIM-007..014` continúan siendo propietarias de visibilidad, lifecycle funcional, bloqueo de acciones y certificación del modo simulado; 013 no las adelanta.
+
+---
+
+#### 6. Precedencia entre contratos
+
+La precedencia conceptual es:
+
+```text
+AccessContext real
+→ hechos reales
+
+SimulationContext
+→ escenario hipotético
+
+AuthorizationDecision
+→ decisión real
+
+SimulatedAuthorizationDecision
+→ resultado hipotético no ejecutable
+
+AUTH-DB-032
+→ persistencia de decisión real
+
+AUTH-DB-013
+→ persistencia y auditoría de simulación
+
+AUTH-SRV-015
+→ servicio autoritativo de simulación
+
+AUTH-QA-019
+→ certificación integral
+```
+
+La persistencia no puede invertir esta dirección.
+
+---
+
+#### 7. Frontera con AUTH-DB-012
+
+`AUTH-DB-012` conserva cambios reales de autoridad: altas, modificaciones y retiros de grants o denies.
+
+`AUTH-DB-013` conserva escenarios hipotéticos y sus evaluaciones.
+
+Por tanto:
+
+```text
+SIMULAR QUE UN ROL TENDRÍA UN PERMISO
+≠
+CAMBIAR EL PERMISO REAL
+
+WOULD_ALLOW
+≠
+ALLOW
+
+WOULD_DENY
+≠
+EXPLICIT_DENY
+```
+
+Un escenario de simulación nunca se inserta como cambio de permisos.
+
+---
+
+#### 8. Frontera con AUTH-DB-032
+
+`AUTH-DB-032` conserva `AuthorizationDecision` real.
+
+Cuando una acción real de administración del simulador —iniciar, revisar, completar, revocar o consultar una simulación— requiera autorización, 013 enlaza la decisión real producida por 032.
+
+La evaluación hipotética interna no se almacena como `AuthorizationDecision`. Se conserva en `audit.authorization_simulation_evaluations` con resultado restringido a:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+INDETERMINATE
+```
+
+---
+
+#### 9. Frontera con AUTH-DB-014
+
+`AUTH-DB-014` conserva auditoría del ciclo de dispositivos.
+
+013 puede registrar una referencia mínima al dispositivo real desde el que se solicitó una simulación cuando esa referencia sea necesaria para atribución, pero no registra alta, activación, cambio de actor, expiración, revocación, rotación de credenciales o retiro del dispositivo.
+
+Esos eventos siguen perteneciendo a 014.
+
+---
+
+#### 10. Cuatro planos obligatoriamente separados
+
+La implementación física deberá conservar cuatro planos:
+
+| Plano                     | Contenido                                                      | Puede autorizar efecto real |
+| ------------------------- | -------------------------------------------------------------- | --------------------------: |
+| `REAL_AUTHORITY`          | principal, actor, sesión, contexto y decisión reales           |                          sí |
+| `SIMULATION_SCENARIO`     | sujeto, rol, territorio, turno, check-in y recurso hipotéticos |                          no |
+| `SIMULATION_PRESENTATION` | vista previa y explicación                                     |                          no |
+| `SIMULATION_AUDIT`        | evidencia durable de lo ocurrido                               |                          no |
+
+Ningún campo del plano simulado puede sustituir un hecho del plano real.
+
+---
+
+#### 11. Contrato de identidad raíz
+
+La identidad durable de una simulación utiliza `simulation_id`.
+
+Reglas:
+
+1. se genera en servidor;
+2. es única;
+3. identifica una simulación, no una sesión Auth;
+4. no equivale a `context_id`;
+5. no equivale a `decision_id`;
+6. no equivale a un recurso empresarial;
+7. no se acepta como autorización en endpoints reales;
+8. no se recicla después de completar, expirar, revocar o invalidar;
+9. una nueva simulación crea un nuevo `simulation_id`.
+
+---
+
+#### 12. Contrato de revisión
+
+Cada modificación material del escenario se representa mediante:
+
+```text
+simulation_revision_id
+simulation_id
+revision_number
+scenario_fingerprint
+```
+
+La revisión es append-only.
+
+Cambiar sujeto, rol, sede, área, turno, check-in, permiso, aplicación, recurso, instante hipotético o una condición que altere la evaluación exige una revisión nueva o una simulación nueva según el contrato de `SimulationContext`.
+
+Nunca se actualiza silenciosamente una revisión ya evaluada.
+
+---
+
+#### 13. Contrato de evaluación hipotética
+
+Cada evaluación produce una identidad `simulated_decision_id` y conserva como mínimo:
+
+```text
+simulation_id
+simulation_revision_id
+evaluated_at
+app_code
+permission_key
+resource_scenario_id
+hypothetical_context_id
+outcome
+reason_codes
+executable
+evaluation_fingerprint
+```
+
+`executable` es siempre `false`.
+
+---
+
+#### 14. Resultados permitidos
+
+Los únicos resultados hipotéticos permitidos son:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+INDETERMINATE
+```
+
+Queda prohibido persistir para una evaluación simulada:
+
+```text
+ALLOW
+DENY como AuthorizationDecision real
+can_operate = true
+authorized = true
+token ejecutable
+grant derivado
+sesión operativa
+```
+
+---
+
+#### 15. Estados canónicos de SimulationContext
+
+Se preservan exactamente los estados:
+
+```text
+DRAFT
+ACTIVE
+COMPLETED
+EXPIRED
+REVOKED
+INVALID
+```
+
+La auditoría no inventa estados equivalentes ni aliases.
+
+`ACTIVE` es el único estado que puede producir nuevas evaluaciones hipotéticas.
+
+---
+
+#### 16. Estado derivado y evidencia
+
+El estado actual de una simulación se deriva de:
+
+1. el registro raíz inmutable;
+2. la revisión vigente;
+3. los eventos append-only;
+4. `expires_at`;
+5. la presencia de un evento terminal.
+
+No se requiere reescribir una fila histórica para expresar cambios de lifecycle.
+
+Una proyección privada podrá calcular `effective_status`, pero la evidencia original permanece inmutable.
+
+---
+
+#### 17. Clases de registro de SUPA-ARC-007
+
+La materialización usa clases semánticas del esquema transversal:
+
+| Objeto 013                             | Clase de auditoría |
+| -------------------------------------- | ------------------ |
+| `authorization_simulations`            | `AUDIT_ENTRY`      |
+| `authorization_simulation_revisions`   | `AUDIT_ENTRY`      |
+| `authorization_simulation_evaluations` | `AUDIT_ENTRY`      |
+| `authorization_simulation_events`      | `AUDIT_ENTRY`      |
+| `authorization_simulation_attempts`    | `AUDIT_ENTRY`      |
+| `authorization_simulation_links`       | `AUDIT_LINK`       |
+| `authorization_simulation_corrections` | `AUDIT_CORRECTION` |
+
+No se introduce una clase genérica `log`.
+
+---
+
+#### 18. Registro raíz de simulación
+
+`audit.authorization_simulations` conserva una fila inmutable por `simulation_id`.
+
+Campos lógicos mínimos:
+
+```text
+simulation_id
+contract_name
+contract_version
+schema_version
+created_at
+expires_at
+purpose_code
+real_principal_id
+real_actor_id
+real_employee_id
+real_session_reference
+real_access_context_id
+real_access_context_fingerprint
+requester_authorization_decision_id
+initial_revision_id
+correlation_id
+causation_id
+recorded_at
+source_versions
+source_fingerprints
+root_fingerprint
+```
+
+Los identificadores empresariales se minimizan a los estrictamente necesarios.
+
+---
+
+#### 19. Revisiones de escenario
+
+`audit.authorization_simulation_revisions` conserva una fila por versión material del escenario.
+
+Campos lógicos mínimos:
+
+```text
+simulation_revision_id
+simulation_id
+revision_number
+created_at
+created_by_real_actor_id
+scenario_kind
+simulated_subject
+simulated_role
+simulated_site
+simulated_area
+simulated_shift
+simulated_checkin
+simulated_resource
+simulated_resolved_at
+policy_snapshot
+source_versions
+source_fingerprints
+scenario_fingerprint
+```
+
+Los nodos complejos pueden representarse como `jsonb` tipado únicamente cuando el contrato, validadores y canonicalización impidan payload libre ambiguo.
+
+---
+
+#### 20. Evaluaciones
+
+`audit.authorization_simulation_evaluations` conserva una fila por evaluación hipotética.
+
+Campos mínimos:
+
+```text
+simulated_decision_id
+simulation_id
+simulation_revision_id
+evaluation_request_id
+evaluated_at
+app_code
+permission_key
+resource_scenario_id
+hypothetical_context_id
+outcome
+reason_codes
+executable
+scenario_fingerprint
+authorization_contract_version
+catalog_version
+source_versions
+source_fingerprints
+evaluation_fingerprint
+recorded_at
+```
+
+`executable` debe estar restringido físicamente a `false`.
+
+---
+
+#### 21. Eventos de lifecycle
+
+`audit.authorization_simulation_events` conserva transiciones y hechos de lifecycle.
+
+Vocabulario inicial cerrado:
+
+```text
+SIMULATION_CREATED
+SIMULATION_ACTIVATED
+SIMULATION_REVISED
+SIMULATION_EVALUATED
+SIMULATION_COMPLETED
+SIMULATION_EXPIRED
+SIMULATION_REVOKED
+SIMULATION_INVALIDATED
+SIMULATION_CORRECTION_LINKED
+```
+
+Nuevos códigos requieren evolución contractual; no se aceptan strings libres como semántica principal.
+
+---
+
+#### 22. Intentos no materializados
+
+`audit.authorization_simulation_attempts` registra operaciones que no producen un cambio válido en el lifecycle o no alcanzan a crear una simulación.
+
+Outcomes iniciales:
+
+```text
+DENIED
+INVALID
+CONFLICT
+TECHNICAL_FAILURE
+NO_CHANGE
+ROLLED_BACK
+```
+
+Un intento denegado no crea una simulación ficticia para poder auditarla.
+
+---
+
+#### 23. Vínculos
+
+`audit.authorization_simulation_links` relaciona evidencia sin duplicar payloads.
+
+Tipos iniciales:
+
+```text
+REQUESTER_AUTHORIZATION_DECISION
+REAL_ACCESS_CONTEXT
+REAL_AUTH_SESSION
+DEVICE_CONTEXT
+SIMULATED_EVALUATION
+RESOURCE_REFERENCE
+EVIDENCE_REFERENCE
+CORRECTION
+```
+
+El vínculo no transfiere autoridad desde el objeto relacionado.
+
+---
+
+#### 24. Correcciones
+
+Una corrección de auditoría no modifica la entrada original.
+
+`audit.authorization_simulation_corrections` conserva razón, objetivo, actor real, decisión autorizadora, tiempos y fingerprint de corrección.
+
+Una corrección no puede cambiar retroactivamente `WOULD_DENY` a `WOULD_ALLOW`; solo registra una aclaración o rectificación auditada.
+
+---
+
+#### 25. Inmutabilidad física
+
+Las tablas de evidencia son append-only.
+
+Para los roles de ejecución ordinaria:
+
+```text
+UPDATE = REVOKED
+DELETE = REVOKED
+TRUNCATE = REVOKED
+```
+
+Cuando una operación requiera modificar el escenario, se agrega una revisión.
+Cuando requiera cerrar lifecycle, se agrega un evento.
+Cuando requiera corregir evidencia, se agrega una corrección.
+
+---
+
+#### 26. No soft delete de evidencia
+
+No se usa `deleted_at` para ocultar una simulación, evaluación, evento o intento.
+
+Retención, privacidad y disposición final se gobiernan por la política transversal aplicable y no se convierten en soft delete operativo.
+
+El rollback de código no borra hechos ya registrados.
+
+---
+
+#### 27. Atomicidad requerida
+
+Las operaciones decisorias de simulación usan `AUDIT_ATOMIC_REQUIRED`.
+
+Un inicio aceptado no puede confirmarse si la evidencia raíz y su evento inicial no quedaron durables.
+
+Una evaluación aceptada no puede devolverse como resultado válido si su entrada auditable obligatoria falló.
+
+Un cierre o revocación no se confirma si el evento terminal no quedó durable.
+
+---
+
+#### 28. Transacción de creación
+
+Flujo físico objetivo:
+
+```text
+BEGIN
+  resolver actor y sesión reales
+  evaluar autorización real para iniciar simulación
+  persistir AuthorizationDecision real cuando aplique
+  validar escenario inicial
+  insertar authorization_simulations
+  insertar revision 1
+  insertar SIMULATION_CREATED
+  insertar vínculos mínimos
+COMMIT
+```
+
+Si falla cualquier paso obligatorio, la simulación no se presenta como creada.
+
+---
+
+#### 29. Transacción de activación
+
+Activar una simulación exige:
+
+```text
+BEGIN
+  bloquear identidad de simulation_id
+  comprobar estado derivado
+  comprobar expiración
+  revalidar autoridad real exigida por el contrato
+  insertar SIMULATION_ACTIVATED
+COMMIT
+```
+
+No se actualiza `is_active` en una fila mutable como fuente autoritativa.
+
+---
+
+#### 30. Transacción de evaluación
+
+Toda evaluación hipotética válida sigue:
+
+```text
+BEGIN
+  validar simulation_id
+  validar ACTIVE
+  validar revisión exacta
+  resolver escenario completo
+  evaluar hipotéticamente
+  insertar authorization_simulation_evaluations
+  insertar SIMULATION_EVALUATED
+  enlazar evidencia necesaria
+COMMIT
+```
+
+Un resultado calculado pero no persistido no puede presentarse como evaluación auditada.
+
+---
+
+#### 31. Transacción de revisión
+
+Una revisión aceptada sigue:
+
+```text
+BEGIN
+  validar simulación no terminal
+  obtener revision_number vigente
+  aplicar optimistic concurrency
+  canonicalizar escenario nuevo
+  insertar nueva revisión
+  insertar SIMULATION_REVISED
+COMMIT
+```
+
+Una revisión concurrente con base obsoleta produce `CONFLICT`.
+
+---
+
+#### 32. Transacción de cierre
+
+Completar o revocar sigue:
+
+```text
+BEGIN
+  bloquear simulation_id
+  comprobar que no exista evento terminal incompatible
+  insertar evento terminal
+  insertar vínculos de decisión real cuando corresponda
+COMMIT
+```
+
+El cierre es idempotente únicamente para el mismo outcome terminal y la misma operación causal.
+
+---
+
+#### 33. Expiración
+
+`expires_at` es obligatorio.
+
+Al superar el límite:
+
+- no se aceptan nuevas evaluaciones;
+- el estado efectivo es `EXPIRED`;
+- una materialización explícita del evento `SIMULATION_EXPIRED` puede realizarse de forma determinista;
+- la ausencia de un job no convierte una simulación vencida en activa;
+- la expiración no modifica sesión, rol, turno, check-in o permisos reales.
+
+---
+
+#### 34. No reactivación
+
+Una simulación `COMPLETED`, `EXPIRED`, `REVOKED` o `INVALID` no vuelve a `ACTIVE`.
+
+Para continuar trabajo hipotético se crea una nueva simulación o una nueva instancia permitida por el contrato, con nueva identidad y nueva evidencia.
+
+---
+
+#### 35. Actor real
+
+Toda simulación interactiva conserva el actor humano real que la solicita.
+
+La auditoría separa:
+
+```text
+real_principal_id
+real_actor_id
+real_employee_id
+real_session_reference
+```
+
+de:
+
+```text
+simulated_subject
+simulated_role
+simulated_site
+simulated_area
+```
+
+El sujeto simulado nunca se utiliza como `created_by`.
+
+---
+
+#### 36. Principal técnico
+
+Un principal técnico, `service_role`, dispositivo compartido, integración o cuenta compartida no se presenta como simulador humano.
+
+Si participa técnicamente en transporte o ejecución, su identificador se registra por separado como principal técnico y nunca sustituye al actor humano requerido por el contrato.
+
+---
+
+#### 37. Decisión real del solicitante
+
+La autoridad para iniciar o administrar una simulación se evalúa desde el contexto real.
+
+El vínculo con `AuthorizationDecision` debe demostrar, cuando aplique:
+
+```text
+viso.access
++
+viso.authorization.context_simulations.view
++
+carril real válido
++
+alcance real suficiente
++
+sin deny aplicable
+```
+
+La simulación solicitada no puede satisfacer ninguno de esos requisitos.
+
+---
+
+#### 38. Justificación
+
+La justificación de una simulación se conserva de forma minimizada.
+
+Debe existir un `reason_code` normalizado y, cuando el contrato lo exija, una explicación humana.
+
+No se admiten en la justificación contraseñas, PIN, tokens, JWT, secretos de integración, datos médicos innecesarios ni documentos personales completos.
+
+---
+
+#### 39. Reautenticación fuerte
+
+Cuando el escenario requiera reautenticación fuerte, la evidencia se referencia mediante identidad no reutilizable y vinculada al actor, sesión, solicitud y objetivo.
+
+No se almacena el secreto de autenticación.
+
+La presencia de STRONG no amplía el alcance real del simulador.
+
+---
+
+#### 40. Identidad tipada de rol
+
+Toda referencia de rol simulado conserva:
+
+```text
+role_kind
+role_code
+role_catalog_version
+matrix_version
+```
+
+`BASE/bodeguero` y `OPERATIONAL/bodeguero` son identidades distintas.
+
+Un código bare o ambiguo produce `INVALID` o `INDETERMINATE` conforme al punto del flujo.
+
+---
+
+#### 41. Cobertura de roles
+
+El contrato físico deberá poder reconciliar el universo aprobado:
+
+```text
+8 roles base canónicos
+12 roles operativos canónicos
+20 objetivos canónicos simulables
+10 exclusiones físicas no canónicas
+30 identidades tipadas en el registro consolidado
+```
+
+Los nueve roles base legacy y `OPERATIONAL/propietario_admin` no se convierten por inferencia en objetivos válidos.
+
+---
+
+#### 42. Identidad de sede simulada
+
+Una sede simulada exacta conserva:
+
+```text
+simulated_site_id
+simulated_site_code
+simulated_site_type
+simulated_site_kind
+site_catalog_version
+```
+
+No se resuelve desde una etiqueta, sede primaria, sede seleccionada o `null`.
+
+---
+
+#### 43. Cobertura territorial de sedes
+
+La implementación deberá poder reconciliar la clasificación documental de siete identidades físicas:
+
+```text
+5 sedes ordinarias SIMULABLE_CONDITIONAL
+1 APP-REVIEW ISOLATED_EXPLICIT_ONLY
+1 pickup_camioneta_principal NOT_SIMULABLE_AS_SITE
+```
+
+La auditoría no convierte el punto físico de pickup en sede.
+
+---
+
+#### 44. Identidad de área simulada
+
+Una referencia exacta conserva:
+
+```text
+simulated_site_id
+simulated_area_id
+area_code
+area_class
+area_kind
+area_catalog_version
+```
+
+El área debe pertenecer a la sede aceptada y ser exacta.
+
+Un agregado como `todos` o `GENERAL` no se almacena como área exacta.
+
+---
+
+#### 45. Cobertura de áreas
+
+La reconciliación contractual debe distinguir:
+
+```text
+22 áreas activas observadas en el snapshot de diseño
+18 organizacionales ordinarias
+1 aislada
+3 agregadas no exactas
+```
+
+Las cifras se usan como baseline contractual histórico; la implementación física deberá comparar el inventario vigente y registrar drift antes de aplicar cambios.
+
+---
+
+#### 46. Vínculos rol-sede-área
+
+Los vínculos operativos deben conservarse como identidades exactas.
+
+Un vínculo sin `area_id` no se completa mediante inferencia.
+
+`AREA_BINDING_UNRESOLVED` es una condición explícita y no un wildcard.
+
+---
+
+#### 47. Turno simulado
+
+El escenario de turno conserva uno de los modos aprobados:
+
+- turno exacto versionado;
+- turno hipotético sintético;
+- ausencia positiva `NO_SHIFT`.
+
+Un turno exacto requiere identidad, revisión o snapshot, fingerprint, instante hipotético y zona horaria.
+
+---
+
+#### 48. Estados temporales del turno
+
+Una simulación no presta el turno real.
+
+Para prerrequisitos:
+
+- `N` no depende de turno;
+- `T` exige turno simulado válido;
+- `T+C` exige además check-in hipotético compatible.
+
+Un turno futuro, terminado, cancelado, descanso o no publicado no se vuelve válido por existir en la base.
+
+---
+
+#### 49. Check-in simulado
+
+El check-in hipotético pertenece exclusivamente al escenario.
+
+No se crea una fila real de asistencia.
+No se usa un check-in real para completar el escenario.
+No se usa un check-in hipotético para autorizar una operación real.
+
+---
+
+#### 50. Recurso simulado
+
+Los modos de recurso conservan la semántica aprobada:
+
+```text
+SYNTHETIC_RESOURCE
+MASKED_REAL_RESOURCE
+AUTHORIZED_REAL_REFERENCE
+RESOURCE_DRAFT
+UNRESOLVED
+```
+
+Una referencia real solo puede registrarse cuando el actor real tenía autoridad independiente para conocerla.
+
+---
+
+#### 51. Lectura real y RLS
+
+Toda lectura de datos reales requerida para construir una vista previa se ejecuta bajo la autoridad real del actor.
+
+El contexto simulado nunca amplía filas visibles por RLS.
+
+Una simulación no puede utilizar un recurso real para el que el simulador carece de acceso real.
+
+---
+
+#### 52. Aplicación y permiso
+
+Cada evaluación conserva:
+
+```text
+app_code
+permission_key
+simulation_requirement
+```
+
+La aplicación no se infiere desde una ruta visual ni desde un prefijo desconocido.
+
+El permiso debe existir en el catálogo canónico aplicable a la versión evaluada.
+
+---
+
+#### 53. Clasificación simulation_requirement
+
+La política canónica de simulación usa un vocabulario cerrado:
+
+```text
+FULL_PREVIEW
+DECISION_ONLY
+NOT_ALLOWED
+```
+
+Semántica:
+
+- `FULL_PREVIEW`: puede producir representación hipotética minimizada y controles inertes;
+- `DECISION_ONLY`: produce únicamente la decisión y explicación autorizada;
+- `NOT_ALLOWED`: no se simula.
+
+Un valor ausente o desconocido falla cerrado.
+
+---
+
+#### 54. Distribución contractual de permisos
+
+La implementación debe poder reconciliar el snapshot documental:
+
+```text
+140 permisos evaluados
+85 FULL_PREVIEW
+52 DECISION_ONLY
+3 NOT_ALLOWED
+```
+
+Las tres claves `NOT_ALLOWED` documentadas son:
+
+```text
+aura.access
+pass.access
+viso.authorization.context_simulations.view
+```
+
+No se permite que VISO auto-simule el propio permiso que habilita el simulador.
+
+---
+
+#### 55. Drift físico del catálogo
+
+La línea base remota observada contiene 179 filas activas en `public.app_permissions` y no contiene una columna cuyo nombre represente `simulation_requirement`.
+
+Por tanto:
+
+```text
+179 FÍSICOS
+≠
+140 SNAPSHOT DOCUMENTAL
+```
+
+La futura implementación deberá reconciliar identidad por identidad. Las filas adicionales no reciben `FULL_PREVIEW` por defecto.
+
+---
+
+#### 56. Política para permisos sin clasificación
+
+Una clave física sin clasificación canónica de simulación no es simulable.
+
+El resultado seguro es:
+
+```text
+NOT_ALLOWED_BY_DEFAULT
+```
+
+hasta que el contrato propietario del catálogo publique una decisión.
+
+No se deduce clasificación desde `is_read_only`, nombre, aplicación, sensibilidad o permiso vecino.
+
+---
+
+#### 57. No autoridad desde FULL_PREVIEW
+
+`FULL_PREVIEW` controla únicamente la riqueza de la vista hipotética.
+
+Nunca significa:
+
+```text
+puede ejecutar
+puede leer más datos
+puede ignorar RLS
+puede crear token
+puede invocar mutación
+puede reutilizar idempotency key
+```
+
+---
+
+#### 58. No autoridad desde DECISION_ONLY
+
+`DECISION_ONLY` no permite recuperar el contenido protegido del recurso para simular una pantalla completa.
+
+La evidencia puede conservar identidad mínima del recurso y resultado tipado sin copiar su payload.
+
+---
+
+#### 59. Prohibición de anidamiento
+
+Una simulación activa no puede iniciar, modificar, administrar privilegiadamente ni cerrar otra simulación utilizando autoridad simulada.
+
+El actor debe volver al contexto real y reautorizar la nueva operación.
+
+---
+
+#### 60. No mezcla de contextos
+
+Queda prohibido un resolver que construya:
+
+```text
+effective_context = real_context reemplazado por simulated_context
+```
+
+El contexto real y el contexto simulado usan contratos, namespaces, tipos, cache keys y consumidores separados.
+
+---
+
+#### 61. No mezcla de permisos
+
+Un helper real de permisos no puede retornar un resultado positivo porque el rol simulado lo tendría.
+
+Los evaluadores hipotéticos deben usar una API distinta que produzca `WOULD_*` y `executable=false`.
+
+---
+
+#### 62. No can_operate simulado
+
+`can_operate=true` es incompatible con el contrato simulado.
+
+Toda compatibilidad legacy que exponga `can_operate` durante una simulación debe ser retirada, encapsulada o neutralizada antes de declarar la instancia conforme.
+
+---
+
+#### 63. No booleano ambiguo
+
+Una función de simulación no retorna `boolean` como contrato de autorización.
+
+La forma mínima conserva:
+
+```text
+outcome
+executable
+reason_codes
+simulation_id
+simulation_revision_id
+evaluated_at
+```
+
+Esto evita que `true` se interprete como autoridad ejecutable.
+
+---
+
+#### 64. Provenance obligatoria
+
+Toda salida hipotética conserva procedencia:
+
+```text
+authority_plane = SIMULATION_SCENARIO
+executable = false
+```
+
+Los canales reales deben rechazar cualquier request que intente reutilizar esta procedencia como autoridad.
+
+---
+
+#### 65. Bloqueo de efectos reales
+
+La persistencia de 013 debe soportar la evidencia de bloqueo para:
+
+- Server Actions;
+- Route Handlers;
+- RPC/PostgREST;
+- RLS/Data API;
+- Edge Functions;
+- Realtime;
+- cliente offline;
+- exportación;
+- impresión;
+- notificación;
+- jobs;
+- colas;
+- webhooks;
+- integraciones.
+
+La implementación de cada guard pertenece a sus tareas consumidoras, pero 013 conserva la identidad de simulación y evidencia necesaria para probar el bloqueo.
+
+---
+
+#### 66. Ejecución posterior a la vista previa
+
+Ejecutar una operación real después de una simulación exige:
+
+1. salir o cerrar el modo simulado;
+2. descartar escenario y resultados simulados de la solicitud ejecutable;
+3. emitir una solicitud nueva sin `simulation_id`;
+4. resolver actor, contexto, permiso, alcance y recurso reales;
+5. producir una nueva `AuthorizationDecision`;
+6. usar una idempotency key real distinta cuando corresponda.
+
+No existe `promote simulation to execution`.
+
+---
+
+#### 67. Idempotencia de creación
+
+Una solicitud de creación puede usar una clave idempotente técnica, pero su scope debe incluir al menos:
+
+```text
+real_actor_id
+real_session_reference
+operation_kind
+request_fingerprint
+```
+
+La repetición exacta retorna la misma identidad únicamente cuando el contrato demuestra que representa la misma operación y no un escenario nuevo.
+
+---
+
+#### 68. Idempotencia de evaluación
+
+Una evaluación repetida con:
+
+```text
+misma simulation_revision_id
+misma request canonicalizada
+mismas versiones
+mismos fingerprints de fuentes
+```
+
+puede deduplicarse de forma controlada.
+
+Si cambia una fuente autoritativa material, debe existir una nueva evaluación o una revisión nueva según el contrato.
+
+---
+
+#### 69. Concurrencia
+
+Las transiciones de lifecycle usan locking transaccional por `simulation_id` o mecanismo equivalente.
+
+Condiciones obligatorias:
+
+- dos activaciones concurrentes no crean dos estados efectivos;
+- dos cierres incompatibles no pueden confirmarse;
+- una evaluación no se confirma después de un cierre concurrente;
+- una revisión no se confirma sobre una revisión base obsoleta;
+- la expiración no se ignora por una carrera.
+
+---
+
+#### 70. Orden causal
+
+La auditoría conserva causalidad mediante:
+
+```text
+correlation_id
+causation_id
+simulation_id
+simulation_revision_id
+```
+
+El timestamp no se usa como orden global suficiente.
+
+El orden relevante es por agregado de simulación y por relación causal.
+
+---
+
+#### 71. Snapshot transaccional
+
+Una evaluación debe resolver su escenario, políticas, versiones y fuentes dentro de un snapshot consistente.
+
+No se combina una revisión antigua con un catálogo nuevo sin declarar la diferencia.
+
+Si una fuente cambia durante la evaluación y el contrato no puede demostrar consistencia, el resultado es `INDETERMINATE` o fallo controlado.
+
+---
+
+#### 72. Versiones de fuente
+
+La evidencia conserva versiones explícitas para las fuentes utilizadas, por ejemplo:
+
+```text
+authorization_contract
+permission_catalog
+base_role_matrix
+operational_role_matrix
+individual_overrides
+site_catalog
+area_catalog
+shift_policy
+simulation_policy
+resource_contract
+```
+
+No se utilizan valores ambiguos como `latest`, `current` o `unknown` cuando la reproducibilidad exige una versión concreta.
+
+---
+
+#### 73. Fingerprints de fuente
+
+Cada fuente material utilizada puede registrar un fingerprint `sha256:` seguido por 64 caracteres hexadecimales minúsculos.
+
+El fingerprint identifica el snapshot consumido, no la hora de consulta.
+
+---
+
+#### 74. Canonicalización
+
+La preimagen para fingerprints utiliza:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+`jsonb::text` no se considera por sí solo una especificación suficiente de canonicalización contractual.
+
+La misma semántica debe producir el mismo fingerprint independientemente del orden de claves de entrada.
+
+---
+
+#### 75. Fingerprint del escenario
+
+`scenario_fingerprint` cubre únicamente identidad semántica hipotética.
+
+Incluye, cuando aplique:
+
+- contract/version;
+- simulated subject;
+- typed role;
+- site;
+- area;
+- shift;
+- check-in;
+- hypothetical time;
+- application/permission context;
+- resource scenario;
+- relevant policy versions.
+
+Excluye IDs de entrega, timestamps de persistencia y metadata operativa que no cambie la semántica.
+
+---
+
+#### 76. Fingerprint de evaluación
+
+`evaluation_fingerprint` cubre:
+
+```text
+scenario_fingerprint
++
+request canonicalizada
++
+permission_key
++
+resource scenario
++
+outcome
++
+reason_codes
++
+contract versions
++
+source fingerprints
+```
+
+No convierte el resultado en una autorización real.
+
+---
+
+#### 77. Fingerprint de registro raíz
+
+`root_fingerprint` permite verificar la identidad del registro inicial de la simulación sin depender del orden físico de columnas.
+
+Debe excluir campos cuya única función sea transporte o almacenamiento.
+
+---
+
+#### 78. Timestamps
+
+Los registros append-only usan:
+
+```text
+occurred_at
+recorded_at
+```
+
+cuando ambos conceptos existan.
+
+Además, `SimulationContext` conserva `created_at`, `activated_at`, `expires_at`, `completed_at` y `revoked_at`.
+
+No se reemplazan por un único `updated_at`.
+
+---
+
+#### 79. Zona horaria
+
+Los timestamps se almacenan como `timestamptz` y se comparan como instantes.
+
+Cuando el contrato laboral exija interpretar un turno en `America/Bogota`, esa política se aplica al escenario correspondiente; no se cambia la representación durable del instante.
+
+---
+
+#### 80. Minimización de datos
+
+La auditoría conserva evidencia suficiente para reproducibilidad sin duplicar innecesariamente el contenido del recurso.
+
+Preferencias:
+
+1. IDs estables;
+2. versiones;
+3. fingerprints;
+4. clasificaciones;
+5. snapshots mínimos;
+6. referencias autorizadas.
+
+No se replica una fila empresarial completa solo por conveniencia de auditoría.
+
+---
+
+#### 81. Secretos prohibidos
+
+No se persisten en payloads de simulación o auditoría:
+
+```text
+password
+PIN
+access token
+refresh token
+JWT raw
+service_role key
+secret key
+cookie raw
+authorization header
+secretos de integración
+```
+
+Si una prueba de autenticación debe enlazarse, se usa una referencia segura.
+
+---
+
+#### 82. Datos sensibles
+
+Datos laborales, financieros, médicos, disciplinarios o personales se minimizan.
+
+Una simulación `DECISION_ONLY` no justifica almacenar contenido protegido.
+
+La auditoría conserva identidad, clasificación y fingerprint cuando sean suficientes.
+
+---
+
+#### 83. Metadata
+
+`metadata` no es una vía de extensión sin gobierno.
+
+Cualquier objeto JSON:
+
+- tiene schema_version;
+- valida claves permitidas;
+- tiene tamaño máximo;
+- rechaza secretos;
+- no puede alterar outcome, autoridad o lifecycle;
+- no reemplaza columnas contractuales.
+
+Una clave desconocida que pretenda afectar semántica es inválida.
+
+---
+
+#### 84. Errores de argumento
+
+Una firma privada que reciba argumentos contractualmente inválidos debe fallar de forma tipada.
+
+Errores normales de negocio no se convierten en excepciones SQL libres cuando existe un outcome contractual.
+
+La forma final de códigos se coordina con el catálogo de errores vigente.
+
+---
+
+#### 85. Denegación al iniciar
+
+Cuando el actor real carece de autoridad para iniciar una simulación:
+
+- no se crea `authorization_simulations`;
+- se conserva un intento cuando la política de auditoría lo exige;
+- se enlaza la decisión real de denegación;
+- no se revela qué rol o recurso habría sido simulable;
+- no se crea un escenario parcial.
+
+---
+
+#### 86. Escenario inválido
+
+Cuando rol, sede, área, turno, recurso o versión son inválidos:
+
+- no se completa silenciosamente con datos reales;
+- no se usa fallback;
+- el intento o revisión se registra como `INVALID` cuando corresponda;
+- una simulación ya activa puede recibir un evento `SIMULATION_INVALIDATED` si la inconsistencia afecta su continuidad.
+
+---
+
+#### 87. Conflicto de concurrencia
+
+Un conflicto de revisión o transición produce outcome `CONFLICT`.
+
+No se resuelve mediante last-write-wins.
+
+La respuesta debe permitir al consumidor recargar el estado real y emitir una nueva operación.
+
+---
+
+#### 88. Fallo técnico
+
+Timeout, indisponibilidad de fuente, error de almacenamiento o fallo de red no se clasifica como policy deny.
+
+La evidencia usa `TECHNICAL_FAILURE` y conserva correlación suficiente para diagnóstico sin exponer internals al usuario final.
+
+---
+
+#### 89. Rollback transaccional
+
+Si la transacción que crea o evalúa una simulación hace rollback:
+
+- no queda una entrada de éxito parcial;
+- si existe un canal durable de intento técnicamente independiente aprobado, registra `ROLLED_BACK`;
+- no se inventa una simulación activa;
+- no se modifica la sesión real.
+
+---
+
+#### 90. Acceso directo a audit
+
+El schema `audit` permanece fuera de Data API.
+
+Roles cliente `anon` y `authenticated` no reciben acceso directo a las tablas de 013.
+
+Toda consulta futura usa contratos autorizados, proyecciones o servicios con minimización explícita.
+
+---
+
+#### 91. RLS como defensa adicional
+
+Aunque `audit` no se exponga, la implementación puede usar RLS como defensa en profundidad cuando sea compatible con el owner técnico y el patrón de escritura.
+
+RLS no sustituye revocación de grants, schema no expuesto, funciones privadas ni autorización de negocio.
+
+---
+
+#### 92. Grants
+
+La política objetivo es mínimo privilegio.
+
+Se revoca `PUBLIC` y no se concede a `anon` o `authenticated`:
+
+```text
+SELECT
+INSERT
+UPDATE
+DELETE
+TRUNCATE
+REFERENCES
+TRIGGER
+```
+
+sobre las tablas de auditoría.
+
+Las funciones privadas reciben `EXECUTE` únicamente para roles técnicos exactos que las necesiten.
+
+---
+
+#### 93. SECURITY DEFINER
+
+`SECURITY DEFINER` solo se admite para una frontera que necesite privilegios elevados y tenga justificación.
+
+Toda función de este tipo debe:
+
+- vivir en schema privado o no expuesto;
+- revocar `PUBLIC EXECUTE`;
+- usar `search_path` endurecido;
+- calificar objetos;
+- derivar identidad real desde la sesión/contrato aprobado;
+- no aceptar actor empresarial autoritativo desde el cliente;
+- tener grants exactos.
+
+---
+
+#### 94. search_path
+
+Las nuevas funciones privilegiadas no usarán:
+
+```text
+search_path = public, auth
+```
+
+como frontera abierta.
+
+El patrón objetivo se restringe a namespaces aprobados y objetos calificados, por ejemplo `pg_catalog` más schemas privados exactos requeridos.
+
+---
+
+#### 95. Owner técnico
+
+El owner PostgreSQL es una identidad técnica.
+
+No equivale a actor real, aprobador, propietario empresarial, gerente o `service_role`.
+
+La migración seleccionará un owner técnico compatible con la plataforma y el gobierno de `vento-shell`.
+
+---
+
+#### 96. service_role
+
+`service_role` no es autoridad empresarial.
+
+Si una integración server-side usa capacidades técnicas de `service_role`, todavía debe presentar o resolver la identidad empresarial y la decisión real requerida por el contrato.
+
+No se acepta `service_role → simulation admin`.
+
+---
+
+#### 97. Funciones privadas objetivo
+
+La futura instancia puede materializar helpers como:
+
+```text
+app_private.canonicalize_authorization_simulation(jsonb)
+app_private.fingerprint_authorization_simulation(jsonb)
+app_private.derive_authorization_simulation_status(uuid)
+app_private.append_authorization_simulation(jsonb)
+app_private.append_authorization_simulation_revision(jsonb)
+app_private.append_authorization_simulation_evaluation(jsonb)
+app_private.append_authorization_simulation_event(jsonb)
+app_private.append_authorization_simulation_attempt(jsonb)
+app_private.link_authorization_simulation_evidence(jsonb)
+app_private.correct_authorization_simulation_audit(jsonb)
+```
+
+Los nombres son parte del contrato de esta tarea y deben materializarse de forma consistente o cambiarse mediante decisión documental explícita antes de implementación.
+
+---
+
+#### 98. Superficie pública
+
+013 no crea una API pública de simulación.
+
+`AUTH-SRV-015` continúa siendo propietaria del servicio autoritativo y de las superficies de aplicación.
+
+Si en el futuro se requiere una proyección segura para cumplimiento o soporte, deberá definirse con campos mínimos y autorización propia.
+
+---
+
+#### 99. Índices mínimos
+
+Los índices se diseñarán desde patrones reales de consulta.
+
+Mínimos candidatos:
+
+- `simulation_id`;
+- `(real_actor_id, created_at desc)`;
+- `(simulation_id, revision_number)`;
+- `(simulation_id, evaluated_at desc)`;
+- `(simulation_id, occurred_at)`;
+- `requester_authorization_decision_id`;
+- correlation/causation IDs usados operativamente.
+
+No se indexa cada clave JSON por defecto.
+
+---
+
+#### 100. Unicidad
+
+Restricciones mínimas:
+
+```text
+simulation_id UNIQUE
+(simulation_id, revision_number) UNIQUE
+simulated_decision_id UNIQUE
+event_id UNIQUE
+attempt_id UNIQUE
+correction_id UNIQUE
+```
+
+La identidad idempotente adicional se define con una constraint separada cuando el patrón de reintento esté aprobado.
+
+---
+
+#### 101. Foreign keys y referencias
+
+Las FK solo se crean cuando el ciclo de vida y owner del objeto referenciado son compatibles.
+
+Una referencia a evidencia que deba sobrevivir a la eliminación o transición de la fuente puede requerir identidad lógica y fingerprint en lugar de `ON DELETE CASCADE`.
+
+Está prohibido borrar auditoría porque se elimine un usuario técnico.
+
+---
+
+#### 102. Prohibición de ON DELETE CASCADE sobre evidencia
+
+La auditoría no puede desaparecer por cascada desde:
+
+- `auth.users`;
+- empleado;
+- sesión;
+- dispositivo;
+- turno;
+- recurso;
+- permiso.
+
+Las relaciones físicas deben preservar evidencia incluso cuando la fuente deje de estar activa.
+
+---
+
+#### 103. Particionamiento
+
+El particionamiento no se aplica por anticipación sin evidencia.
+
+`AUTH-DB-025` y las políticas transversales de crecimiento definirán cuándo el volumen justifica particionar.
+
+013 debe dejar claves temporales y de identidad compatibles con esa evolución.
+
+---
+
+#### 104. Retención
+
+013 no fija un periodo arbitrario de retención.
+
+La retención, legal hold, purga y disposición final pertenecen a `SUPA-ARC-022` y tareas posteriores aplicables.
+
+Una implementación no puede sustituir esa política por un DELETE temporal local.
+
+---
+
+#### 105. Restore
+
+El restore debe preservar IDs, revision_number, fingerprints, causalidad, eventos, evaluaciones, intentos, correcciones y vínculos.
+
+Restaurar solo la simulación raíz sin su evidencia asociada es un restore incompleto.
+
+---
+
+#### 106. Integridad
+
+La futura implementación deberá poder detectar:
+
+- UPDATE no autorizado;
+- DELETE no autorizado;
+- gaps de revision_number;
+- evento que referencia simulación inexistente;
+- evaluación que usa revisión inexistente;
+- fingerprint inválido;
+- evento terminal contradictorio;
+- outcome simulado ejecutable;
+- vínculo a decisión real inexistente cuando sea obligatorio.
+
+---
+
+#### 107. Línea base física observada
+
+La auditoría read-only del proyecto de referencia confirma:
+
+```text
+schema audit = AUSENTE
+schema app_private = PRESENTE
+schema api = AUSENTE
+public.context_simulation_sessions = PRESENTE
+filas context_simulation_sessions = 0
+RLS = ENABLED
+FORCE RLS = false
+```
+
+Este estado es evidencia de línea base, no autorización para modificarlo.
+
+---
+
+#### 108. Forma legacy de context_simulation_sessions
+
+La tabla legacy observada contiene:
+
+```text
+id
+user_id
+site_id
+area_id
+operational_role
+administrative_role
+is_active
+expires_at
+ended_at
+created_by
+metadata
+created_at
+updated_at
+```
+
+No representa `SimulationContext@1.0.0` completo y no conserva revisiones, evaluaciones hipotéticas, fingerprints, source versions ni causalidad.
+
+---
+
+#### 109. Restricciones legacy observadas
+
+La tabla legacy tiene PK por `id`, FK a `auth.users` con `ON DELETE CASCADE`, FK a `sites`, FK a `areas`, FK de `created_by` a `employees`, checks temporales y de rol, e índice único de una sesión activa por `user_id`.
+
+Estas reglas no se adoptan automáticamente como diseño objetivo.
+
+---
+
+#### 110. RLS legacy observado
+
+La policy observada permite SELECT propio a `authenticated` cuando:
+
+```text
+user_id = auth.uid()
+and can_manage_context_simulation_v1(auth.uid())
+```
+
+La tabla mantiene grants SQL amplios a `authenticated`, incluidos DML, aunque RLS reduzca filas.
+
+El objetivo no conserva acceso directo de cliente a la nueva auditoría.
+
+---
+
+#### 111. Trigger legacy observado
+
+`trg_validate_context_simulation_session_v1` se ejecuta en INSERT y UPDATE y llama `validate_context_simulation_session_v1()`.
+
+La función valida área y rol operativo, y además muta `updated_at`.
+
+Ese patrón mutable no es la persistencia append-only objetivo.
+
+---
+
+#### 112. Funciones legacy observadas
+
+Se observaron seis funciones `SECURITY DEFINER` relacionadas directamente con simulación/contexto efectivo y concedidas a `authenticated`:
+
+```text
+can_manage_context_simulation_v1
+get_active_context_simulation_v1
+get_effective_context_v1
+has_effective_permission_v1
+start_context_simulation_v1
+stop_context_simulation_v1
+```
+
+Todas usan `search_path` con `public, auth`.
+
+---
+
+#### 113. Brecha can_manage_context_simulation_v1
+
+La función legacy autoriza por:
+
+```text
+employees.role in ('propietario', 'gerente_general')
+```
+
+Esto convierte nombre de rol en autoridad y no aplica el permiso exacto, alcance, deny, sesión real, reautenticación ni `AuthorizationDecision` canónicos.
+
+La función no puede permanecer como fuente de autoridad objetivo.
+
+---
+
+#### 114. Brecha start_context_simulation_v1
+
+La función legacy:
+
+- acepta rol administrativo u operativo desde parámetros;
+- acepta `metadata` libre;
+- cierra por UPDATE la sesión previa;
+- crea una fila mutable;
+- usa duración por defecto de 240 minutos;
+- permite rango hasta 720 minutos;
+- valida permiso de simulación mediante nombre de rol;
+- no persiste `SimulationContext@1.0.0`;
+- no crea una evaluación no ejecutable separada.
+
+013 debe retirar esa autoridad legacy del camino canónico.
+
+---
+
+#### 115. Brecha stop_context_simulation_v1
+
+La función legacy cierra mediante UPDATE de `is_active`, `ended_at` y `updated_at`.
+
+El objetivo usa evidencia append-only de lifecycle y no reescribe el hecho original como única evidencia del cierre.
+
+---
+
+#### 116. Brecha get_active_context_simulation_v1
+
+La función legacy proyecta una sesión mutable desde `public` y depende de `can_manage_context_simulation_v1`.
+
+No fija fingerprints, revisión, versiones ni estado contractual completo.
+
+No puede considerarse una proyección canónica de `SimulationContext@1.0.0`.
+
+---
+
+#### 117. Brecha get_effective_context_v1
+
+La función legacy mezcla contexto simulado con contexto real.
+
+Cuando encuentra simulación:
+
+```text
+source = simulation
+effective_administrative_role = simulated
+effective_operational_role = simulated
+is_simulation = true
+can_operate = true
+blocked_reasons = {}
+```
+
+Este comportamiento contradice la separación de planos y debe dejar de participar en autoridad real.
+
+---
+
+#### 118. Brecha has_effective_permission_v1
+
+La función legacy consume `get_effective_context_v1`.
+
+Si `source = simulation`, evalúa permisos del rol administrativo u operativo simulado y retorna un boolean.
+
+Por tanto puede convertir un escenario hipotético en un resultado indistinguible de permiso efectivo.
+
+La ruta canónica debe eliminar esta ambigüedad.
+
+---
+
+#### 119. Brecha de grants legacy
+
+Las seis funciones observadas tienen `EXECUTE` para `authenticated` y `service_role`.
+
+La transición debe revisar cada grant.
+
+No se preserva un grant porque actualmente no existan filas de simulación.
+
+---
+
+#### 120. Cero sesiones no demuestra conformidad
+
+La tabla legacy tiene cero filas en el corte observado.
+
+Eso demuestra ausencia de uso material en ese instante, no seguridad.
+
+Debe probarse el comportamiento positivo y negativo de las rutas antes de considerar cerrada la brecha.
+
+---
+
+#### 121. Migración desde la tabla legacy
+
+Antes de retiro o compatibilidad se vuelve a contar `public.context_simulation_sessions`.
+
+Si continúa en cero:
+
+- no se inventa backfill;
+- se conserva evidencia del conteo;
+- se migra el contrato sin historial artificial.
+
+Si existen filas:
+
+- se clasifican;
+- se valida reproducibilidad;
+- se evita `ON DELETE CASCADE`;
+- se conserva lineage;
+- las filas no reproducibles se marcan como legacy no reproducible, no como contexto canónico válido.
+
+---
+
+#### 122. No dual-write indefinido
+
+La transición puede requerir una ventana controlada de compatibilidad, pero no deja dos fuentes permanentes —legacy mutable y audit canónico— como autoridades iguales.
+
+Debe existir un writer objetivo y una condición verificable de salida del legacy.
+
+---
+
+#### 123. Compatibilidad de lectura
+
+Una proyección temporal puede leer evidencia canónica y adaptarla para un consumidor legacy únicamente si:
+
+- no añade autoridad;
+- no retorna `can_operate=true` por simulación;
+- no presenta `WOULD_ALLOW` como booleano real;
+- conserva `executable=false`;
+- su retiro tiene tarea propietaria.
+
+---
+
+#### 124. Retiro legacy
+
+El retiro definitivo de objetos legacy se coordina con `AUTH-DB-030` y los consumidores.
+
+013 define qué debe quedar reemplazado, pero no elimina por inferencia una función o tabla todavía consumida.
+
+El orden es inventariar consumidores, migrarlos, probar paridad segura, bloquear autoridad legacy y retirar cuando el gate lo permita.
+
+---
+
+#### 125. Relación con AUTH-DB-035
+
+Frescura e invalidación de contexto real pertenecen a `AUTH-DB-035`.
+
+013 conserva referencias a versiones y fingerprints para demostrar qué se simuló.
+
+No crea un token ejecutable de frescura simulado aceptable por una acción real.
+
+---
+
+#### 126. Relación con AUTH-DB-034
+
+`AUTH-DB-034` implementa el evaluador canónico real.
+
+La evaluación simulada puede reutilizar su núcleo puro o reglas compartidas únicamente si existe una frontera explícita que suministra contexto hipotético tipado, fuerza outcome `WOULD_*`, fuerza `executable=false`, impide persistir una decisión real y no usa RLS como si el actor simulado fuera real.
+
+---
+
+#### 127. Relación con AUTH-SRV-015
+
+`AUTH-SRV-015` será el servicio autoritativo de simulación.
+
+013 le entrega persistencia durable, identidades, lifecycle, fingerprints, intentos, enlaces e invariantes de seguridad.
+
+013 no diseña la UI ni sustituye el servicio.
+
+---
+
+#### 128. Relación con AUTH-SIM-007 a AUTH-SIM-011
+
+Las tareas posteriores del Bloque Q conservan su ownership:
+
+- `AUTH-SIM-007`: aviso persistente;
+- `AUTH-SIM-008`: inicio funcional;
+- `AUTH-SIM-009`: salida;
+- `AUTH-SIM-010`: bloqueo de acciones críticas;
+- `AUTH-SIM-011`: modo solo lectura.
+
+013 aporta evidencia física común, pero no marca ninguna de estas tareas como implementada.
+
+---
+
+#### 129. Relación con AUTH-SIM-012 a AUTH-SIM-014
+
+Las validaciones integrales posteriores conservan ownership de:
+
+- navegación simulada;
+- Server Actions simuladas;
+- prueba de las diez aplicaciones.
+
+013 prepara la evidencia común para correlacionar esos tests, pero no certifica aplicaciones ni consumidores.
+
+---
+
+#### 130. Cobertura por aplicación
+
+La infraestructura es transversal a:
+
+```text
+SHELL
+ANIMA
+AURA
+FOGO
+NEXO
+NUMERA
+ORIGO
+PASS
+PULSO
+VISO
+```
+
+Ninguna aplicación recibe una excepción local para aceptar autoridad simulada.
+
+---
+
+#### 131. AURA y PASS
+
+Las exclusiones aprobadas de simulación permanecen.
+
+La existencia de 013 no habilita AURA ni PASS para simulación.
+
+`aura.access` y `pass.access` permanecen `NOT_ALLOWED` en el snapshot contractual de simulación.
+
+---
+
+#### 132. VISO
+
+VISO presenta la superficie administrativa de simulación, pero `viso.authorization.context_simulations.view` no puede ser un permiso objetivo simulable que autojustifique acceso.
+
+El permiso para administrar el simulador se resuelve siempre desde autoridad real.
+
+---
+
+#### 133. Manifest de migración futuro
+
+La futura migración de `AUTH-DB-013::GLOBAL` deberá registrar al menos:
+
+```text
+task_id
+instance_id
+migration_file
+contract_version
+schema_version
+source_commit
+environment
+preconditions
+created_objects
+altered_objects
+grants_before
+grants_after
+legacy_objects
+rollback_class
+test_ids
+evidence
+```
+
+No se crea una migración desde esta tarea documental.
+
+---
+
+#### 134. Orden de materialización futuro
+
+Orden vinculante salvo evidencia que exija una variación documentada:
+
+1. verificar R0 aplicable;
+2. verificar `audit`;
+3. capturar baseline;
+4. crear tipos/checks necesarios;
+5. crear tablas append-only;
+6. crear constraints;
+7. crear índices;
+8. crear helpers privados;
+9. cerrar grants;
+10. materializar clasificación de simulación donde corresponda;
+11. crear compatibilidad estrictamente necesaria;
+12. ejecutar backfill/reconciliación si existen filas;
+13. ejecutar tests adversariales;
+14. comparar drift;
+15. publicar evidencia.
+
+---
+
+#### 135. Dependencias físicas de AUTH-DB-013::GLOBAL
+
+Antes de autorizar físicamente la instancia debe existir evidencia compatible de:
+
+```text
+R0 aplicable verificado
+AUTH-DB-016::GLOBAL materializada cuando el schema audit todavía no exista
+AUTH-DB-027 disponible
+AUTH-DB-028 baseline vigente
+AUTH-DB-029 estrategia de restore y rollback vigente
+contratos AUTH-SIM-001..006 disponibles
+contratos AUTH-CTX aplicables disponibles
+autorización humana explícita de la instancia
+```
+
+La aprobación documental no satisface estas dependencias.
+
+---
+
+#### 136. Relación física con AUTH-DB-012::GLOBAL
+
+013 y 012 comparten la capa `audit`, pero mantienen tablas y semántica separadas.
+
+Si la materialización de 013 reutiliza helpers genéricos introducidos físicamente por 012, deberá comprobar su versión antes de ejecutar.
+
+Si no los reutiliza, la ausencia de 012 física no autoriza crear un segundo framework incompatible.
+
+---
+
+#### 137. Sin creación de schema alternativa
+
+Si `audit` está ausente durante la ejecución futura, la acción correcta es bloquear y resolver `AUTH-DB-016::GLOBAL`.
+
+Está prohibido crear una tabla de auditoría equivalente en `public`, `app_private`, VISO o cualquier dominio para evadir la dependencia.
+
+---
+
+#### 138. Rollback de DDL
+
+El rollback de una migración sin datos puede retirar objetos nuevos en orden inverso cuando sea seguro.
+
+Una vez exista evidencia real:
+
+- no se usa `DROP CASCADE`;
+- no se borra historial;
+- se desactiva el writer nuevo mediante migración forward si es necesario;
+- se conserva compatibilidad de lectura;
+- se documenta recuperación.
+
+---
+
+#### 139. Rollback funcional
+
+Si el nuevo servicio de simulación debe suspenderse:
+
+1. se bloquea creación de nuevas simulaciones;
+2. se preserva lectura autorizada de evidencia;
+3. se bloquea cualquier fallback que reactive autoridad legacy;
+4. se conservan simulaciones históricas;
+5. se reabre únicamente con una nueva versión aprobada.
+
+---
+
+#### 140. Backup y recuperación
+
+Antes de materializar cambios que puedan afectar objetos legacy se verifica backup/restore conforme a R0.
+
+La evidencia del backup no sustituye pruebas de rollback lógico ni validación de integridad de la auditoría.
+
+---
+
+#### 141. Pruebas de esquema
+
+La suite física deberá comprobar existencia exacta de objetos, owner, tipos, nullability, PK, UNIQUE, CHECK, FK, índices, ausencia de duplicados, grants, RLS cuando aplique, search_path y execute privileges.
+
+---
+
+#### 142. Pruebas de inmutabilidad
+
+Casos mínimos:
+
+1. INSERT autorizado mediante helper;
+2. UPDATE directo rechazado;
+3. DELETE directo rechazado;
+4. TRUNCATE rechazado;
+5. corrección crea nueva entrada;
+6. cierre crea evento;
+7. revisión crea fila nueva;
+8. evidencia histórica permanece idéntica.
+
+---
+
+#### 143. Pruebas de lifecycle
+
+La suite cubre `DRAFT`, `ACTIVE`, `COMPLETED`, `EXPIRED`, `REVOKED` e `INVALID` y comprueba transiciones válidas e inválidas.
+
+No debe existir transición terminal → ACTIVE.
+
+---
+
+#### 144. Pruebas de outcome simulado
+
+Para cada camino se verifica:
+
+```text
+WOULD_ALLOW → executable=false
+WOULD_DENY → executable=false
+INDETERMINATE → executable=false
+```
+
+Se rechaza cualquier intento de persistir `ALLOW`, token o `can_operate=true`.
+
+---
+
+#### 145. Pruebas de separación real/simulado
+
+Se deben intentar, entre otros:
+
+- usar rol simulado en un guard real;
+- usar sede simulada en RLS;
+- usar área simulada en RPC real;
+- usar turno simulado en operación real;
+- usar check-in real para completar escenario;
+- usar check-in simulado en operación real;
+- usar simulation_id como token;
+- usar WOULD_ALLOW como permiso.
+
+Todos deben fallar cerrado.
+
+---
+
+#### 146. Pruebas de actor
+
+Se prueban actor humano autorizado, actor sin permiso, gerente sin grant específico, principal técnico, service role, dispositivo compartido, sesión anónima, sesión expirada, actor inactivo y deny aplicable.
+
+La auditoría debe atribuir correctamente el intento sin convertir un principal técnico en humano.
+
+---
+
+#### 147. Pruebas de roles
+
+Se verifican ocho roles base, doce roles operativos, colisión de códigos, nueve roles base legacy, rol deprecado `OPERATIONAL/propietario_admin`, rol desconocido, rol futuro no aprobado y referencia bare.
+
+El resultado nunca usa inferencia textual.
+
+---
+
+#### 148. Pruebas de sedes
+
+Se prueban las cinco sedes ordinarias, `APP-REVIEW`, `pickup_camioneta_principal`, sede inexistente, sede inactiva, versión incompatible, `null` en acción territorial y sede fuera de alcance real.
+
+---
+
+#### 149. Pruebas de áreas
+
+Se prueban área exacta válida, área de otra sede, área inactiva, agregado `todos`, agregado `GENERAL`, `APP-REVIEW/OPERACION`, vínculo sin `area_id`, área fuera de alcance real y `NO_AREA_NOT_REQUIRED`.
+
+---
+
+#### 150. Pruebas de turno
+
+Se reproducen los quince escenarios aprobados de turno y se verifica revisión/snapshot, fingerprint, instante hipotético, zona horaria, publicación, vigencia, descanso, futuro, terminal, `NO_SHIFT` y legacy no reproducible.
+
+---
+
+#### 151. Pruebas de recurso
+
+Se cubren los cinco modos de recurso y se verifica que una referencia real no autorizada no se revela, un draft no crea recurso real, un synthetic no obtiene ID real, un masked no filtra payload y unresolved no produce WOULD_ALLOW cuando el recurso es obligatorio.
+
+---
+
+#### 152. Pruebas de catálogo de simulación
+
+La suite reconcilia:
+
+```text
+85 FULL_PREVIEW
+52 DECISION_ONLY
+3 NOT_ALLOWED
+140 snapshot contractual
+179 filas físicas observadas en baseline remoto
+```
+
+Toda diferencia produce reporte de drift y decisión explícita; no se autocorrige clasificando claves nuevas.
+
+---
+
+#### 153. Pruebas de seguridad SQL
+
+Se verifica `PUBLIC EXECUTE` revocado, `anon` sin acceso, `authenticated` sin DML directo sobre audit, search_path poisoning, objetos homónimos, llamada directa a helpers privados, spoofing de actor, spoofing de simulation_id e intento de escribir `executable=true`.
+
+---
+
+#### 154. Pruebas de concurrencia
+
+Casos mínimos: dos create con misma idempotency key, dos revisiones desde misma base, evaluación concurrente con revocación, evaluación con expiración, complete vs revoke, dos eventos terminales y retry después de commit desconocido.
+
+El sistema debe producir un resultado determinista y auditable.
+
+---
+
+#### 155. Pruebas de rollback
+
+Se ensaya rollback antes del root insert, después del root insert pero antes del evento inicial, durante evaluación, durante evento terminal, reintento seguro, restauración desde backup y conservación de evidencia previa.
+
+---
+
+#### 156. Pruebas de compatibilidad legacy
+
+La suite debe detectar explícitamente el permiso por nombre de rol de `can_manage_context_simulation_v1`, la mezcla de `get_effective_context_v1`, `can_operate=true` en simulación, el booleano simulado de `has_effective_permission_v1`, start/stop mutables, grants legacy y acceso directo a la tabla legacy.
+
+Ninguna brecha se marca cerrada solo porque row_count sea cero.
+
+---
+
+#### 157. Pruebas de diez aplicaciones
+
+La certificación posterior debe demostrar para cada aplicación que no acepta `simulation_id` como autoridad, no acepta `WOULD_ALLOW`, no amplía RLS, no ejecuta mutación, no dispara efecto externo y preserva la autoridad real del actor.
+
+013 prepara la evidencia común; `AUTH-SIM-014` y tareas consumidoras ejecutan la cobertura integral.
+
+---
+
+#### 158. Pruebas de restauración histórica
+
+Una simulación histórica debe poder reconstruir actor real, decisión real del solicitante, revisión exacta, versiones, fingerprints, evaluación, outcome, reasons, lifecycle y causalidad.
+
+Si una fuente legacy no permite reproducir el escenario, se declara no reproducible en vez de inventar datos.
+
+---
+
+#### 159. Oracle de cero efectos
+
+Para cualquier evaluación simulada se debe poder afirmar:
+
+```text
+business_writes = 0
+business_events = 0
+outbox_business_items = 0
+external_effects = 0
+real_permission_changes = 0
+real_shift_changes = 0
+real_checkin_changes = 0
+```
+
+salvo la propia evidencia de auditoría y métricas técnicas permitidas.
+
+---
+
+#### 160. Observabilidad
+
+Métricas técnicas pueden contar simulaciones creadas, evaluaciones, denegaciones, invalidaciones, expiraciones y fallos técnicos.
+
+No se usan como fuente canónica del historial.
+
+Los logs no sustituyen las tablas append-only.
+
+---
+
+#### 161. Alertas de seguridad
+
+La implementación futura puede emitir alertas ante intento de ejecutar WOULD_ALLOW, modificación directa de audit, simulation_id usado en endpoint real, role spoofing, volumen anómalo, repetidos intentos denegados o corrupción de fingerprint.
+
+La alerta no cambia el outcome de la evidencia original.
+
+---
+
+#### 162. Rendimiento y crecimiento
+
+La auditoría no puede forzar scans completos del historial para cada evaluación.
+
+Las consultas de estado usan índices por `simulation_id` y revisión.
+
+Las consultas administrativas históricas se separan del camino crítico de evaluación.
+
+El crecimiento, particionamiento y retención se gobiernan por las tareas transversales propietarias.
+
+---
+
+#### 163. Presupuesto de payload
+
+Cada payload JSON debe tener límites definidos por la implementación y pruebas de tamaño.
+
+Un recurso grande se referencia; no se copia completo.
+
+Un exceso de payload falla antes de comprometer un registro parcial.
+
+---
+
+#### 164. Reproducibilidad
+
+Una evaluación histórica se considera reproducible cuando existen:
+
+```text
+simulation_revision
+scenario_fingerprint
+contract versions
+catalog versions
+source fingerprints
+evaluation request
+outcome
+reason codes
+evaluation fingerprint
+```
+
+y las identidades mínimas necesarias para interpretar esos valores.
+
+---
+
+#### 165. No reinterpretación histórica
+
+Un cambio posterior de permisos, roles, sedes, áreas, catálogo o política no modifica un resultado simulado histórico.
+
+Puede producir una nueva evaluación bajo una revisión o versión nueva.
+
+El resultado anterior permanece con las versiones originales.
+
+---
+
+#### 166. Evolución de fingerprints
+
+Si evoluciona el algoritmo de fingerprint:
+
+- se publica una versión;
+- se conserva el algoritmo histórico;
+- no se reescriben fingerprints antiguos;
+- una nueva evaluación usa la versión nueva;
+- el verificador selecciona algoritmo por metadata contractual.
+
+---
+
+#### 167. Contrato de consulta de auditoría
+
+Una consulta administrativa futura debe distinguir root, revision, evaluation, event, attempt, link y correction.
+
+No devuelve un blob mezclado que pierda procedencia.
+
+La consulta segura no forma parte de una API cliente general.
+
+---
+
+#### 168. Estado de implementación documental
+
+Esta tarea produce exclusivamente el contrato.
+
+No crea migration, tabla, function, trigger, policy, grant, index, código runtime, schema, backfill ni cambio de configuración.
+
+La futura instancia permanece pendiente de autorización física explícita.
+
+---
+
+#### 169. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Justificación: la cobertura contractual y física necesaria para simulación ya está registrada en el 04A vigente por las tareas canónicas de simulación, errores, contexto y auditoría. Esta tarea materializa el contrato físico que esas pruebas consumirán, sin alterar su regla protegida, prioridad, owner, paquete, ambiente, estado ni relación.
+
+---
+
+#### 170. Cobertura de prueba vigente reutilizada
+
+La trazabilidad existente se reutiliza sin modificar el registro 04A.
+
+Cobertura principal:
+
+```text
+TREQ-AUTH-012
+TREQ-AUTH-015
+TREQ-AUTH-069..128
+TREQ-AUTH-279..288
+```
+
+Dentro de esos rangos ya existen controles de elegibilidad, roles, sedes, áreas, turno, separación de autoridad, fingerprints, cero efectos, bloqueo multicanal y reconciliación física cuya implementación o evidencia incluye `AUTH-DB-013` cuando corresponde.
+
+Esta sección es informativa y no declara requisitos afectados por la entrega.
+
+---
+
+#### 171. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                                                      |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | el desarrollo documental no creó migration, tablas, funciones, triggers, índices, policies, grants ni código runtime                                                                                                                                                                                                                                                                                           |
+| LOCAL     | NOT_EXECUTED   | pendiente de insertar la tarea en la rama documental, ejecutar formateo canónico y validadores reales del checkout actualizado                                                                                                                                                                                                                                                                                 |
+| REMOTA    | PASS           | `main` confirma `AUTH-DB-012` cerrada y `AUTH-DB-013` como tarea actual; la topología es `GLOBAL_ENABLE_ONCE` / `PRE_E5_FOUNDATION`; el 04A vigente ya contiene cobertura de simulación; la auditoría read-only observó `audit` ausente, una tabla legacy de simulación con 0 filas, 179 permisos físicos y seis funciones `SECURITY DEFINER` de simulación/contexto efectivo con EXECUTE para `authenticated` |
+| OPERATIVA | NOT_APPLICABLE | no se modificaron UI, sesiones, permisos, turnos, check-ins, dispositivos, consumidores ni comportamiento operativo                                                                                                                                                                                                                                                                                            |
+| FÍSICA    | NOT_APPLICABLE | no se ejecutó SQL mutante, no se creó migration, no se alteró Supabase y `AUTH-DB-013::GLOBAL` no fue autorizada                                                                                                                                                                                                                                                                                               |
+
+---
+
+#### 172. Validaciones físicas mínimas futuras
+
+Antes de declarar `AUTH-DB-013::GLOBAL` como `VERIFIED` deberán pasar, como mínimo, las familias de esquema, append-only, lifecycle, outcome no ejecutable, actor real, roles, sedes, áreas, turno, check-in, recurso, clasificación de permisos, grants, RLS, funciones privilegiadas, search_path, concurrencia, idempotencia, rollback, restore, drift, compatibilidad legacy, diez aplicaciones, cero efectos reales, minimización e integridad de fingerprints.
+
+---
+
+#### 173. Criterios de aceptación
+
+1. la tarea conserva exactamente el título canónico y ownership del Bloque R.
+2. `AUTH-DB-013` permanece `GLOBAL_ENABLE_ONCE` con instancia futura `AUTH-DB-013::GLOBAL`.
+3. el gate temporal permanece `PRE_E5_FOUNDATION`.
+4. la aprobación documental no autoriza SQL ni migraciones.
+5. el schema transversal objetivo es `audit` y no se crea un sustituto por aplicación.
+6. la auditoría usa registros append-only y correcciones enlazadas.
+7. SimulationContext y AccessContext permanecen separados.
+8. AuthorizationDecision real y evaluación simulada permanecen separados.
+9. los únicos outcomes simulados son WOULD_ALLOW, WOULD_DENY e INDETERMINATE.
+10. toda evaluación simulada conserva executable=false.
+11. ninguna evaluación simulada produce can_operate=true.
+12. ninguna simulación produce token ejecutable.
+13. la autoridad para iniciar simulación proviene del actor real.
+14. la decisión real del solicitante puede enlazarse con evidencia de 032.
+15. el sujeto simulado nunca sustituye al actor real.
+16. los roles simulados son identidades tipadas.
+17. las colisiones de código entre catálogos fallan cerrado.
+18. las sedes simuladas son identidades exactas y versionadas.
+19. APP-REVIEW conserva aislamiento explícito.
+20. pickup_camioneta_principal no se convierte en sede.
+21. las áreas simuladas son exactas y coherentes con su sede.
+22. los agregados de área no se convierten en wildcard.
+23. los vínculos sin area_id permanecen no resueltos.
+24. el turno simulado no presta el turno real.
+25. el check-in simulado no crea asistencia.
+26. un check-in real no completa el escenario.
+27. los recursos reales solo se referencian bajo autoridad real independiente.
+28. FULL_PREVIEW no concede ejecución ni lectura adicional.
+29. DECISION_ONLY no expone payload protegido.
+30. NOT_ALLOWED falla cerrado.
+31. las claves sin clasificación no reciben FULL_PREVIEW implícito.
+32. el snapshot 85/52/3 puede reconciliarse contra el catálogo físico vigente.
+33. el drift 140 documental versus 179 físico se trata explícitamente.
+34. una simulación activa no administra otra usando autoridad simulada.
+35. todo efecto real exige una nueva solicitud real sin simulation_id.
+36. la idempotencia no reutiliza una simulación para un escenario diferente.
+37. la concurrencia no permite dos terminales incompatibles.
+38. la expiración bloquea nuevas evaluaciones aunque no haya job.
+39. una simulación terminal no se reactiva.
+40. una revisión no reescribe revisiones previas.
+41. los fingerprints usan canonicalización versionada.
+42. las fuentes relevantes conservan versiones y fingerprints.
+43. los secretos quedan excluidos.
+44. los datos sensibles se minimizan.
+45. metadata libre no altera semántica.
+46. un deny al iniciar no crea una simulación ficticia.
+47. un fallo técnico no se clasifica como deny.
+48. un conflicto no usa last-write-wins.
+49. el rollback no deja éxito parcial.
+50. `audit` permanece fuera de Data API.
+51. `anon` no recibe acceso directo.
+52. `authenticated` no recibe DML directo sobre audit.
+53. `PUBLIC EXECUTE` se revoca en funciones privilegiadas nuevas.
+54. SECURITY DEFINER se usa solo con frontera justificada.
+55. search_path se endurece y los objetos se califican.
+56. service_role no se convierte en autoridad empresarial.
+57. las referencias auditables no usan ON DELETE CASCADE destructivo.
+58. retención no se inventa dentro de 013.
+59. restore conserva IDs, versiones, causalidad y fingerprints.
+60. la tabla legacy no se presenta como SimulationContext canónico.
+61. cero filas legacy no se presenta como prueba de seguridad.
+62. can_manage_context_simulation_v1 no permanece como autoridad por nombre de rol.
+63. get_effective_context_v1 no puede seguir mezclando simulación como contexto efectivo real.
+64. has_effective_permission_v1 no puede devolver permiso real desde rol simulado.
+65. start/stop legacy no permanecen como lifecycle canónico mutable.
+66. los grants legacy se revisan explícitamente.
+67. la transición no deja dual-write indefinido.
+68. el retiro legacy depende de consumidores y gate propietario.
+69. AUTH-DB-035 conserva propiedad de frescura real.
+70. AUTH-DB-034 conserva propiedad del evaluador real.
+71. AUTH-SRV-015 conserva propiedad del servicio de simulación.
+72. AUTH-SIM-007..014 no se marcan implementadas por esta tarea.
+73. la infraestructura es transversal a las diez aplicaciones.
+74. AURA y PASS no adquieren simulación por la existencia del audit.
+75. VISO no autoautoriza context_simulations.view.
+76. la materialización física exige R0, audit y autorización explícita.
+77. no se crea 04A nuevo porque los requisitos ya existen.
+78. la evidencia documental distingue BUILD, LOCAL, REMOTA, OPERATIVA y FÍSICA.
+
+---
+
+#### 174. Decisiones vinculantes
+
+1. La futura instancia es `AUTH-DB-013::GLOBAL`.
+2. Su modo es `GLOBAL_ENABLE_ONCE`.
+3. Su gate es `PRE_E5_FOUNDATION`.
+4. Requiere la capa transversal `audit`.
+5. La persistencia es append-only.
+6. Las correcciones crean nuevas entradas.
+7. El actor real y el sujeto simulado son identidades distintas.
+8. El contexto real y el escenario hipotético no se fusionan.
+9. `AuthorizationDecision` real y evaluación simulada no comparten tabla ni outcome.
+10. `WOULD_ALLOW` nunca es `ALLOW`.
+11. Toda evaluación simulada declara `executable=false`.
+12. `simulation_id` nunca es un token de autoridad.
+13. Los roles se identifican por kind + code + versiones.
+14. Sede y área se resuelven como identidades exactas.
+15. El turno y check-in simulados no usan hechos reales como fallback.
+16. La clasificación de simulación es `FULL_PREVIEW`, `DECISION_ONLY` o `NOT_ALLOWED`.
+17. Una clasificación ausente falla cerrado.
+18. La auditoría conserva versiones, fingerprints y causalidad.
+19. `audit` queda fuera de Data API.
+20. Los clientes no escriben ni enumeran audit directamente.
+21. Los seis helpers legacy observados requieren reconciliación.
+22. La tabla legacy mutable no es la fuente objetivo.
+23. Cero sesiones actuales no cierra la brecha.
+24. 013 no desarrolla `AUTH-SIM-007..014`.
+25. 013 no desarrolla auditoría de dispositivos.
+26. 013 no desarrolla cambios de permisos.
+27. 013 no ejecuta una implementación física desde el carril documental.
+28. No se crean ni modifican requisitos de prueba.
+29. La siguiente tarea documental es `AUTH-DB-014`.
+
+---
+
+#### 175. Límites
+
+`AUTH-DB-013` no:
+
+- ejecuta `AUTH-DB-013::GLOBAL`;
+- crea migrations desde este carril documental;
+- ejecuta SQL mutante;
+- crea el schema `audit` para evadir `AUTH-DB-016`;
+- modifica permisos de trabajadores;
+- modifica roles reales;
+- crea turnos o check-ins;
+- crea una sesión simulada real en el proyecto;
+- inicia o detiene una simulación existente;
+- desarrolla UI;
+- desarrolla Server Actions;
+- desarrolla `AUTH-SIM-007..014`;
+- certifica las diez aplicaciones;
+- modifica `AUTH-DB-012`;
+- desarrolla `AUTH-DB-014`;
+- fija retención fuera de la política transversal;
+- habilita Data API sobre `audit`;
+- concede acceso directo a clientes;
+- elimina objetos legacy;
+- modifica 04A;
+- crea TREQ nuevos.
+
+---
+
+#### 176. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-012 — Implementar auditoría de cambios de permisos`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-013 — Implementar auditoría de simulación`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-014 — Implementar auditoría de dispositivos`
+
+
 ### [ ] AUTH-DB-014 — Implementar auditoría de dispositivos
 
 Regla de auditoría
