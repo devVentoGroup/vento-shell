@@ -176,6 +176,12 @@ test('las acciones conservan guia humana y prohiben micro-gates', () => {
     assert.match(source, /No incluyas `exit` como comando/u);
     assert.match(source, /terminal abierta/u);
     assert.match(source, /AUTORIZO EJECUCION ASISTIDA DEL PASO N/u);
+    assert.match(source, /consulta el remoto y el repositorio vigente/u);
+    assert.match(source, /revisa todas sus aserciones restantes/u);
+    assert.match(source, /PowerShell manual debe ser parser-safe/u);
+    assert.match(source, /ANCHOR_COUNT:\$\{Path\}:\$count/u);
+    assert.match(source, /ANCHOR_COUNT:\$Path:\$count/u);
+    assert.match(source, /git apply --check/u);
   }
 });
 
@@ -232,6 +238,14 @@ test('la plantilla global desacopla el carril fisico de la continuidad documenta
   assert.match(template, /Push Protection/u);
   assert.match(template, /AUTORIZO EJECUCION ASISTIDA DEL PASO 3/u);
   assert.match(template, /“haz la acción principal” no autorizan escrituras automáticas/u);
+  assert.match(template, /PREENTREGA OBLIGATORIA Y POWERSHELL SEGURO/u);
+  assert.match(template, /INICIADOR_VENTO_ACTUAL\.txt.*proyección generada/u);
+  assert.match(template, /revisa todas las aserciones restantes del mismo validador/u);
+  assert.match(template, /PowerShell manual debe ser parser-safe/u);
+  assert.match(template, /ANCHOR_COUNT:\$\{Path\}:\$count/u);
+  assert.match(template, /comillas tipográficas/u);
+  assert.match(template, /guiones Unicode/u);
+  assert.match(template, /Generated artifact is stale/u);
 });
 
 test('el build mantiene conectado el iniciador y el watcher no lo regenera directamente', () => {
