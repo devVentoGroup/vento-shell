@@ -2561,7 +2561,757 @@ No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
 `AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales`
 
 
-### [ ] AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
+### ✅ AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
+**Tarea siguiente:** AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato de materialización de vínculos canónicos entre Supabase Auth e identidades empresariales cerrado; futura instancia global `AUTH-DB-019::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-019` define el contrato de materialización física futura de los vínculos entre el plano administrado de Supabase Auth y las identidades empresariales de Vento, sin convertir `auth.users`, `auth.identities`, JWT, metadata, correo, teléfono ni una coincidencia histórica de UUID en fuente de verdad empresarial.
+
+La regla central es:
+
+```text
+SUPABASE AUTH
+→ autentica credenciales y mantiene el sujeto técnico
+
+identity_access
+→ gobierna principal y vínculo empresarial
+
+OWNER SCHEMA DE DOMINIO
+→ gobierna EMPLOYEE, CUSTOMER o DEVICE
+
+ACTOR EFECTIVO
+→ se resuelve después del vínculo y antes de autorización
+```
+
+La tarea no crea vínculos, no migra identidades y no modifica Auth. Cierra el diseño verificable que una futura instancia `AUTH-DB-019::GLOBAL` deberá materializar.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el resultado objetivo:
+
+```text
+AUTH-DB-019
+→ contrato documental único
+
+AUTH-DB-019::GLOBAL
+→ futura instancia física global reutilizable
+
+resultado esperado
+→ auth.users conserva identidad técnica de autenticación
+→ identity_access conserva principal y vínculos empresariales
+→ EMPLOYEE permanece en workforce
+→ CUSTOMER permanece en customer_engagement
+→ DEVICE permanece en technology_operations
+→ cada vínculo posee identidad propia y lifecycle auditable
+→ las cardinalidades incompatibles fallan cerradas
+→ ningún vínculo se infiere desde contacto, metadata o coincidencia legacy
+→ la eliminación o sustitución de una cuenta Auth no elimina la identidad empresarial
+```
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente de R1 establece:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-019::GLOBAL
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no se crea una instancia por paquete;
+3. la fundación puede materializarse antes de E5;
+4. la aprobación documental no autoriza la instancia física;
+5. la futura implementación no puede migrar verticales ni considerar aprobado un paquete consumidor;
+6. todo cambio físico deberá ser versionado en `vento-shell`, reversible y validado.
+
+---
+
+#### 4. Fuentes vinculantes y precedencia
+
+La tarea consume y preserva:
+
+- `SUPA-ARC-001`, para separar Auth administrado de identidad empresarial;
+- `SUPA-ARC-003`, para `identity_access` como `VSCHEMA-023`;
+- `SUPA-ARC-008`, para los planos de Auth, principal, identidad y actor;
+- `SUPA-ARC-009`, para cardinalidad, lifecycle, procedencia, conflictos y resolución de vínculos;
+- `SUPA-ARC-010`, para sesión, revocación y desactivación;
+- `SUPA-ARC-011` y `SUPA-ARC-012`, para nombres, claves, constraints, estados y timestamps;
+- `AUTH-DB-016`, para la topología de schemas objetivo;
+- `AUTH-DB-018`, para separación de contratos expuestos e internos;
+- `AUTH-DB-017`, para exposición Data API y privilegios;
+- `AUTH-DB-001..005`, para RLS, policies, funciones privilegiadas y grants;
+- `AUTH-DB-033`, `AUTH-DB-035`, `AUTH-DB-034` y `AUTH-DB-032`, como consumidores posteriores de principal, contexto, evaluación y decisión.
+
+Precedencia:
+
+```text
+SUPA-ARC-008/009
+→ fija semántica y cardinalidades
+
+AUTH-DB-019
+→ fija materialización futura del vínculo
+
+AUTH-DB-033/035/034/032
+→ consume la identidad resuelta; no redefine el vínculo
+```
+
+---
+
+#### 5. Clasificación de la tarea
+
+```text
+TAREA = AUTH-DB-019
+NATURALEZA = DOCUMENTAL
+MODO = GLOBAL_ENABLE_ONCE
+INSTANCIA FUTURA = AUTH-DB-019::GLOBAL
+GATE = PRE_E5_FOUNDATION
+```
+
+La tarea documental puede desarrollarse mientras existe un carril físico independiente. La prioridad física no suspende esta continuidad documental.
+
+---
+
+#### 6. Planos de identidad obligatorios
+
+Se preservan cuatro planos distintos:
+
+| Plano | Autoridad |
+| --- | --- |
+| Auth administrado | `auth.users`, `auth.identities`, credenciales, sesiones y factores |
+| Principal empresarial | `identity_access` |
+| Identidad de dominio | `workforce`, `customer_engagement`, `technology_operations` y actor técnico cuando aplique |
+| Actor efectivo | resolución atribuible usada por contexto, autorización y auditoría |
+
+Ningún plano sustituye a otro.
+
+---
+
+#### 7. Clases de principal autenticado
+
+Se preservan exactamente tres clases:
+
+- `HUMAN_USER`;
+- `SHARED_DEVICE`;
+- `SERVICE`.
+
+Cada sujeto autenticado resuelve exactamente una clase primaria. Una misma cuenta no puede interpretarse simultáneamente como humana y dispositivo compartido.
+
+---
+
+#### 8. Clases de identidad empresarial
+
+Se preservan exactamente cuatro clases:
+
+- `EMPLOYEE`;
+- `CUSTOMER`;
+- `DEVICE`;
+- `SYSTEM_ACTOR`.
+
+`EMPLOYEE`, `CUSTOMER` y `DEVICE` conservan autoridad en sus dominios propietarios. `identity_access` conserva el vínculo y la resolución, no duplica sus perfiles.
+
+---
+
+#### 9. Objeto canónico de vínculo
+
+Todo vínculo Auth ↔ identidad empresarial es un objeto explícito gobernado por `identity_access` y posee identidad propia.
+
+Debe representar, como mínimo:
+
+```text
+enterprise_identity_link_id
+auth_subject_id
+principal_kind
+enterprise_identity_kind
+enterprise_identity_id
+link_state
+link_origin
+assurance_level
+authority_reference
+reason_code
+created_at
+verified_at
+activated_at
+suspended_at
+revoked_at
+superseded_at
+supersedes_link_id
+resolution_case_id
+source_version
+audit_reference
+```
+
+La futura forma SQL deberá respetar esta semántica sin inventar autoridad adicional.
+
+---
+
+#### 10. Independencia de identificadores
+
+1. `auth_subject_id` referencia al sujeto técnico administrado por Supabase;
+2. `employee_id`, `customer_id` y `device_id` permanecen estables en sus owner schemas;
+3. `enterprise_identity_link_id` identifica el vínculo, no la persona ni la cuenta;
+4. reemplazar una cuenta Auth no renumera la identidad empresarial;
+5. la igualdad física legacy entre `employees.id` y `auth.users.id` no es contrato objetivo;
+6. ningún ID se deriva de correo, teléfono, provider, metadata o nombre.
+
+---
+
+#### 11. Cardinalidad desde la cuenta Auth
+
+| Principal | `EMPLOYEE` activo | `CUSTOMER` activo | `DEVICE` activo |
+| --- | ---: | ---: | ---: |
+| `HUMAN_USER` | 0..1 | 0..1 | 0 |
+| `SHARED_DEVICE` | 0 | 0 | 1 cuando el dispositivo requiera autenticación propia |
+| `SERVICE` | 0 | 0 | 0 |
+
+La combinación `EMPLOYEE + CUSTOMER` es la única multiidentidad humana aprobada y conserva dos vínculos independientes.
+
+---
+
+#### 12. Cardinalidad desde la identidad empresarial
+
+| Identidad | Cuentas Auth activas permitidas |
+| --- | ---: |
+| `EMPLOYEE` | 0..1 |
+| `CUSTOMER` | 0..1 |
+| `DEVICE` | 0..1; exactamente 1 cuando el dispositivo habilitado requiera autenticación propia |
+
+Una segunda reclamación activa no reemplaza silenciosamente la primera: exige conflicto o supersesión formal.
+
+---
+
+#### 13. Compatibilidad y exclusiones
+
+```text
+EMPLOYEE + CUSTOMER
+= COMPATIBLE PARA HUMAN_USER
+
+EMPLOYEE + DEVICE
+= PROHIBIDO EN LA MISMA CUENTA
+
+CUSTOMER + DEVICE
+= PROHIBIDO EN LA MISMA CUENTA
+
+HUMAN_USER + SHARED_DEVICE
+= PROHIBIDO COMO CLASIFICACIÓN SIMULTÁNEA
+
+SERVICE + EMPLOYEE/CUSTOMER/DEVICE
+= PROHIBIDO
+```
+
+Las combinaciones incompatibles fallan cerradas.
+
+---
+
+#### 14. Lifecycle del vínculo
+
+Se preserva el vocabulario cerrado de seis estados:
+
+| Estado | Participa en resolución normal |
+| --- | ---: |
+| `PENDING_VERIFICATION` | no |
+| `ACTIVE` | sí, sujeto al estado vigente de la identidad |
+| `SUSPENDED` | no |
+| `REVOKED` | no |
+| `SUPERSEDED` | no |
+| `CONFLICT` | no |
+
+Solo `ACTIVE` puede participar en resolución empresarial normal.
+
+---
+
+#### 15. Origen del vínculo
+
+Se preservan seis clases de origen:
+
+- `STAFF_INVITATION`;
+- `CUSTOMER_SELF_ENROLLMENT`;
+- `ADMIN_DEVICE_PROVISIONING`;
+- `VERIFIED_IDENTITY_CLAIM`;
+- `LEGACY_MIGRATION`;
+- `MANUAL_RECONCILIATION`.
+
+`LEGACY_MIGRATION` no equivale a verificación automática.
+
+---
+
+#### 16. Clases de conflicto
+
+Toda ambigüedad se clasifica mediante una de ocho clases:
+
+- `AUTH_ACCOUNT_DUPLICATE`;
+- `ENTERPRISE_IDENTITY_DUPLICATE`;
+- `IDENTITY_LINK_DUPLICATE`;
+- `CROSS_CLASS_COLLISION`;
+- `CONTACT_MATCH_ONLY`;
+- `ORPHAN_PROFILE`;
+- `LEGACY_SHARED_UUID`;
+- `DEVICE_HUMAN_COLLISION`.
+
+La existencia de conflicto bloquea activación automática.
+
+---
+
+#### 17. Resultados de resolución
+
+Se preservan seis resultados lógicos:
+
+- `LINK_EXISTING_IDENTITY`;
+- `CREATE_NEW_ENTERPRISE_IDENTITY`;
+- `KEEP_UNLINKED`;
+- `SPLIT_PRINCIPAL`;
+- `SUPERSEDE_LINK`;
+- `REJECT_AND_ESCALATE`.
+
+La futura implementación debe producir un resultado inequívoco y auditable.
+
+---
+
+#### 18. Códigos mínimos de denegación
+
+Se preservan, como mínimo:
+
+```text
+identity_link_missing
+identity_link_pending
+identity_link_inactive
+identity_link_ambiguous
+identity_link_conflict
+principal_class_conflict
+enterprise_identity_already_claimed
+device_principal_not_dedicated
+contact_match_requires_reconciliation
+```
+
+Los consumidores no reinterpretan estos códigos como éxito parcial.
+
+---
+
+#### 19. Vínculo laboral
+
+Un vínculo `EMPLOYEE` activo requiere:
+
+```text
+HUMAN_USER
++ EMPLOYEE existente
++ origen autorizado
++ verificación suficiente
++ ausencia de otro vínculo EMPLOYEE activo para la cuenta
++ ausencia de otra cuenta activa para el EMPLOYEE
+= ACTIVE
+```
+
+Una invitación propone o acredita el proceso correspondiente; no convierte por sí sola la cuenta en empleado.
+
+---
+
+#### 20. Vínculo de cliente
+
+Un vínculo `CUSTOMER` activo conserva separación comercial:
+
+1. un perfil puede existir sin Auth;
+2. onboarding distingue creación de reclamación;
+3. contacto coincidente genera candidato o conflicto, no vínculo automático;
+4. una cuenta laboral puede además ser cliente sin modificar el vínculo laboral;
+5. la baja laboral no elimina la identidad de cliente;
+6. saldos, puntos, consentimientos y pedidos permanecen en su owner.
+
+---
+
+#### 21. Vínculo de dispositivo compartido
+
+Un `SHARED_DEVICE`:
+
+1. usa cuenta técnica dedicada;
+2. mantiene como máximo un vínculo `DEVICE` activo;
+3. no conserva `EMPLOYEE` ni `CUSTOMER` activos;
+4. no recibe rol humano por existir una sesión Auth;
+5. para mutaciones empresariales debe resolver una sesión de actor vigente y un `EMPLOYEE` activo;
+6. sin actor solo puede ejecutar capacidades técnicas nominales aprobadas.
+
+---
+
+#### 22. Servicios y actores técnicos
+
+`SERVICE` no usa vínculos `EMPLOYEE`, `CUSTOMER` o `DEVICE`.
+
+Los servicios conservan identidad técnica, proceso, ambiente y operaciones permitidas mediante sus contratos propietarios. `service_role` es credencial privilegiada, no principal empresarial universal ni actor humano.
+
+---
+
+#### 23. Resolución server-side
+
+La resolución confiable sigue:
+
+```text
+credencial válida
+→ auth_subject_id
+→ principal_kind
+→ vínculo ACTIVE requerido
+→ identidad empresarial vigente
+→ actor efectivo cuando aplique
+→ contexto
+→ autorización
+```
+
+El cliente no puede sustituir `employee_id`, `customer_id`, `device_id`, principal, rol o actor mediante parámetros.
+
+---
+
+#### 24. Contactos y metadata no son autoridad
+
+Correo, teléfono, documento, nombre, provider, `raw_user_meta_data`, `raw_app_meta_data` o coincidencia de UUID pueden aportar evidencia de reconciliación, pero no activan un vínculo por sí solos.
+
+Toda ambigüedad produce caso de reconciliación o denegación cerrada.
+
+---
+
+#### 25. Eliminación, reemplazo y supersesión
+
+La eliminación o sustitución de una cuenta Auth:
+
+```text
+CIERRA O SUPERSEDE EL VÍNCULO
+NO ELIMINA EMPLOYEE/CUSTOMER/DEVICE
+NO REESCRIBE HISTORIA
+NO BORRA AUDITORÍA
+```
+
+La corrección de un vínculo crea historia de supersesión; no sobrescribe silenciosamente la relación anterior.
+
+---
+
+#### 26. Línea base remota vigente
+
+La auditoría read-only actual de `vento-os-dev` observa:
+
+```text
+auth.users = 78
+auth.identities = 78
+```
+
+La arquitectura histórica de `SUPA-ARC-009` documentó 73 cuentas e identidades. La diferencia se registra como drift temporal y no reescribe retrospectivamente el baseline aprobado.
+
+En los schemas Vento auditados `app_private`, `club`, `pass`, `payments`, `pos`, `public`, `talento` y `viso` existen actualmente **73 foreign keys** directas hacia `auth.users`:
+
+| Schema | CASCADE | NO ACTION | RESTRICT | SET NULL | Total |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `club` | 7 | 0 | 0 | 1 | 8 |
+| `pass` | 3 | 0 | 1 | 0 | 4 |
+| `payments` | 1 | 0 | 0 | 0 | 1 |
+| `public` | 11 | 24 | 2 | 23 | 60 |
+| **TOTAL** | **22** | **24** | **3** | **24** | **73** |
+
+`public.employees.id → auth.users.id` continúa con `ON DELETE CASCADE`, confirmando que el acoplamiento legacy todavía existe físicamente.
+
+`vital` conserva referencias adicionales a Auth, pero permanece fuera del alcance normal de los 26 owner schemas y no se absorbe en esta tarea.
+
+---
+
+#### 27. Clasificación de referencias Auth actuales
+
+No toda FK hacia `auth.users` se convierte en `enterprise_identity_link`.
+
+La futura instancia deberá clasificar cada referencia como una de estas finalidades:
+
+1. vínculo canónico de identidad;
+2. atribución histórica o auditoría;
+3. referencia de cliente transaccional;
+4. referencia de dispositivo;
+5. referencia de actor o aprobador;
+6. compatibilidad legacy;
+7. referencia técnica administrada permitida;
+8. `BLOCKED` pendiente de owner o transición.
+
+Solo la primera clase se materializa como vínculo canónico en `identity_access`. Las demás conservan su owner y reciben transición propia cuando corresponda.
+
+---
+
+#### 28. Manifiesto mínimo de futura materialización
+
+Antes de cualquier mutación debe existir un manifiesto con, como mínimo:
+
+```text
+source_identity
+source_schema
+source_table
+source_column
+reference_purpose
+principal_kind
+enterprise_identity_kind
+enterprise_identity_id_source
+link_origin
+initial_link_state
+authority_reference
+conflict_class
+consumer_inventory
+compatibility_requirement
+target_identity
+migration_action
+rollback_action
+evidence
+```
+
+Cada referencia aplicable se clasifica exactamente una vez, sin faltantes ni duplicados.
+
+---
+
+#### 29. Frontera con `AUTH-DB-033`, `035`, `034` y `032`
+
+`AUTH-DB-019` produce la base de identidad que consumen las tareas posteriores:
+
+- `AUTH-DB-033` resuelve `get_access_context`;
+- `AUTH-DB-035` gobierna frescura e invalidación del contexto;
+- `AUTH-DB-034` evalúa autorización;
+- `AUTH-DB-032` persiste y vincula decisiones.
+
+Ninguna de esas tareas puede redefinir cardinalidades, lifecycle o ownership del vínculo.
+
+---
+
+#### 30. Frontera con Data API, RLS y Auth
+
+`AUTH-DB-019` no modifica:
+
+- schemas expuestos;
+- grants de Data API;
+- RLS;
+- policies;
+- configuración de Supabase Auth;
+- providers;
+- sesiones;
+- MFA;
+- tokens;
+- metadata Auth;
+- Edge Functions;
+- Storage;
+- Realtime.
+
+La creación del vínculo no concede autorización empresarial por sí sola.
+
+---
+
+#### 31. Estrategia de futura materialización
+
+La futura instancia seguirá una transición no destructiva:
+
+```text
+1. REGENERAR BASELINE REMOTO
+2. INVENTARIAR REFERENCIAS AUTH Y CONSUMIDORES
+3. CLASIFICAR 100 % DEL UNIVERSO
+4. RECONCILIAR CUENTAS MIXTAS Y COLISIONES
+5. CREAR ESTRUCTURAS OBJETIVO SIN RETIRAR LEGACY
+6. MATERIALIZAR VÍNCULOS VERIFICABLES
+7. VALIDAR CARDINALIDADES Y DENEGACIONES
+8. MIGRAR CONSUMIDORES POR LOTES
+9. PROBAR PARIDAD Y AUDITORÍA
+10. RETIRAR ACOPLAMIENTOS LEGACY SOLO CON CERO DEPENDENCIAS
+11. VALIDAR DRIFT Y ROLLBACK
+```
+
+No se permite crear vínculos masivamente a partir de correo, teléfono o igualdad de UUID sin evidencia y clasificación.
+
+---
+
+#### 32. Compatibilidad y rollback
+
+La transición es consumer-aware y reversible.
+
+1. `employees.id = auth.users.id` puede mantenerse temporalmente mientras existan consumidores;
+2. una FK `CASCADE` legacy no se retira antes de demostrar su reemplazo;
+3. perfiles cliente sin Auth no se provisionan automáticamente;
+4. cuentas mixtas dispositivo-persona se separan mediante caso controlado;
+5. rollback restaura compatibilidad previa sin eliminar identidades nuevas válidas ni historia;
+6. ningún rollback usa `GRANT ALL`, recreación masiva de usuarios o borrado de vínculos históricos;
+7. correcciones posteriores usan migraciones forward versionadas.
+
+---
+
+#### 33. Pruebas positivas y negativas
+
+La futura instancia deberá demostrar, como mínimo:
+
+**Positivas**
+
+1. `HUMAN_USER` resuelve un único `EMPLOYEE` activo cuando corresponde;
+2. `HUMAN_USER` puede coexistir con un `CUSTOMER` activo independiente;
+3. `SHARED_DEVICE` resuelve un único `DEVICE` activo;
+4. reemplazar la cuenta Auth conserva IDs empresariales;
+5. supersesión conserva historia;
+6. vínculos migrados conservan origen y evidencia;
+7. `AUTH-DB-033` puede consumir una identidad resuelta inequívoca.
+
+**Negativas**
+
+1. dos vínculos `EMPLOYEE` activos para una cuenta fallan;
+2. dos cuentas activas para un `EMPLOYEE` fallan;
+3. `SHARED_DEVICE + CUSTOMER` falla;
+4. `SHARED_DEVICE + EMPLOYEE` falla;
+5. `SERVICE` reclamando identidad humana falla;
+6. `PENDING_VERIFICATION`, `SUSPENDED`, `REVOKED`, `SUPERSEDED` y `CONFLICT` no autorizan resolución;
+7. un contacto coincidente no activa vínculo;
+8. IDs enviados por cliente no sustituyen la identidad resuelta;
+9. borrar una cuenta Auth no elimina la identidad empresarial;
+10. una referencia Auth no clasificada bloquea cutover.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** el modelo de Auth, principal, vínculos, cardinalidad, lifecycle, colisiones, linking, separación de identificadores, resolución server-side, transición y drift ya posee cobertura canónica vigente derivada de `SUPA-ARC-008` y `SUPA-ARC-009`. Esta tarea convierte esas decisiones en contrato de materialización sin introducir una regla protegida nueva.
+
+---
+
+#### 35. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificación la cobertura existente asociada especialmente a:
+
+- `TREQ-SUPABASE-757..796`, para separación Auth/identidad, principal y actor;
+- `TREQ-SUPABASE-797..836`, para vínculos Auth ↔ identidad empresarial, cardinalidades, lifecycle, conflictos, transición y drift.
+
+Estos identificadores son trazabilidad de requisitos vigentes; no se modifica ninguna fila del registro.
+
+---
+
+#### 36. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | la tarea documental no crea código ni migraciones |
+| LOCAL | NOT_EXECUTED | pendiente del lifecycle documental y validadores del checkout |
+| REMOTA | PASS | fuentes canónicas vigentes y auditoría read-only de `vento-os-dev`: 78 `auth.users`, 78 `auth.identities`, 73 FKs directas hacia `auth.users` en los schemas Vento auditados y `public.employees.id` todavía con `ON DELETE CASCADE` |
+| OPERATIVA | NOT_APPLICABLE | no se alteraron consumidores ni comportamiento runtime |
+| FÍSICA | NOT_APPLICABLE | `AUTH-DB-019::GLOBAL` permanece sin autorización física y no se ejecutó ninguna mutación |
+
+---
+
+#### 37. Decisiones vinculantes
+
+1. La futura instancia es `AUTH-DB-019::GLOBAL`.
+2. Su modo es `GLOBAL_ENABLE_ONCE`.
+3. Su gate es `PRE_E5_FOUNDATION`.
+4. Supabase Auth conserva autoridad sobre credenciales y sesión técnica.
+5. `identity_access` conserva autoridad sobre principal y vínculo empresarial.
+6. Los perfiles de dominio permanecen en sus owner schemas.
+7. Se preservan tres clases de principal autenticado.
+8. Se preservan cuatro clases de identidad empresarial.
+9. Cada vínculo tiene identidad propia.
+10. `auth_subject_id` no es ID empresarial universal.
+11. `EMPLOYEE`, `CUSTOMER` y `DEVICE` conservan IDs estables independientes de Auth.
+12. `HUMAN_USER` admite como máximo un `EMPLOYEE` y un `CUSTOMER` activos.
+13. `SHARED_DEVICE` admite únicamente un `DEVICE` activo cuando requiere autenticación.
+14. `SERVICE` no reclama vínculos humanos o de dispositivo.
+15. `EMPLOYEE + CUSTOMER` es compatible y permanece separado.
+16. `EMPLOYEE + DEVICE` y `CUSTOMER + DEVICE` son incompatibles.
+17. Se preservan seis estados de lifecycle y solo `ACTIVE` participa en resolución normal.
+18. Se preservan seis orígenes de vínculo.
+19. Se preservan ocho clases de conflicto.
+20. Se preservan seis resultados de resolución.
+21. Los códigos de denegación son estables y fail-closed.
+22. Correo, teléfono, documento, provider y metadata no crean vínculos automáticamente.
+23. La igualdad legacy `employees.id = auth.users.id` no es contrato objetivo.
+24. Eliminar o sustituir Auth no elimina la identidad empresarial.
+25. La supersesión conserva historia y auditoría.
+26. No toda FK hacia Auth se convierte en vínculo de identidad.
+27. La línea base actual de Auth es 78/78 y debe regenerarse antes de materializar.
+28. Las 73 FKs auditadas requieren clasificación antes de cutover.
+29. `vital` permanece fuera del alcance normal de esta tarea.
+30. La transición es no destructiva y consumer-aware.
+31. `AUTH-DB-033` consume el resultado sin redefinirlo.
+32. Data API, RLS y Auth config permanecen fuera del alcance.
+33. No se crean ni modifican requisitos de prueba.
+34. La aprobación documental no autoriza cambios físicos.
+
+---
+
+#### 38. Criterios de aceptación
+
+`AUTH-DB-019` queda documentalmente completa cuando:
+
+- queda separada la autoridad de Auth, principal, identidad y actor;
+- se preservan exactamente las clases y cardinalidades de `SUPA-ARC-008/009`;
+- el vínculo posee identidad, campos mínimos, lifecycle, origen y evidencia;
+- las combinaciones incompatibles fallan cerradas;
+- se prohíbe linking automático por contacto o metadata;
+- se preserva independencia de IDs empresariales;
+- se prohíbe cascade conceptual desde Auth a la identidad empresarial;
+- se clasifica el baseline remoto actual sin convertirlo en arquitectura objetivo;
+- se registra el drift 73 → 78 cuentas respecto del baseline histórico;
+- se registran 73 FKs directas en los schemas Vento auditados como universo de reconciliación, no como 73 vínculos canónicos;
+- se define manifiesto completo antes de mutar;
+- se define transición consumer-aware y rollback;
+- se definen pruebas positivas y negativas;
+- se declaran cero cambios TREQ;
+- `AUTH-DB-033` queda como única continuidad reservada.
+
+---
+
+#### 39. Límites
+
+`AUTH-DB-019` no:
+
+- ejecuta SQL de mutación;
+- crea migraciones;
+- crea tablas o constraints;
+- crea vínculos físicos;
+- modifica `auth.users`;
+- modifica `auth.identities`;
+- crea o elimina cuentas;
+- cambia providers;
+- cambia sesiones o tokens;
+- modifica metadata Auth;
+- mueve perfiles de dominio;
+- desacopla todavía `employees.id` de Auth;
+- elimina FKs;
+- ejecuta backfills;
+- modifica datos;
+- modifica RLS;
+- modifica policies;
+- cambia Data API o grants;
+- modifica Storage, Realtime, Edge Functions o cron;
+- modifica VITAL;
+- modifica el registro 04A;
+- autoriza `AUTH-DB-019::GLOBAL`;
+- desarrolla `AUTH-DB-033`.
+
+---
+
+#### 40. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura`
+
 
 ### [ ] AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
 ### [ ] AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto

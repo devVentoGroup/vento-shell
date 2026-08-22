@@ -5,16 +5,11 @@
   "sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION",
   "block_code": "BLOQUE R",
   "block_title": "Fundación física, migraciones por dominio y normalización",
-  "previous_task_id": "AUTH-DB-017",
+  "previous_task_id": "AUTH-DB-019",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "ANIMA-AUTH-001",
   "handoff_sequence_id": "PHASE-04-F-ANIMA",
   "segments": [
-    {
-      "prefix": "AUTH-DB",
-      "from": 19,
-      "to": 19
-    },
     {
       "prefix": "AUTH-DB",
       "from": 33,
@@ -78,12 +73,12 @@
   ],
   "block_progress": {
     "total_tasks": 51,
-    "approved_tasks": 12,
-    "pending_tasks": 39
+    "approved_tasks": 13,
+    "pending_tasks": 38
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 581,
+    "pending_tasks": 580,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 13

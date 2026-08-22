@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1013** |
+| Tareas aprobadas | **1014** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **581** |
+| Tareas no iniciadas | **580** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **63.55% (1013/1594)** |
+| Porcentaje de completamiento | **63.61% (1014/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API** |
-| Tarea actual | **AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales** |
+| Última tarea aprobada | **AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales** |
+| Tarea actual | **AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura** |
+| Siguiente tarea | **AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 12 de 51 aprobadas; AUTH-DB-019 pendiente** |
+| Progreso del bloque | **BLOQUE R: 13 de 51 aprobadas; AUTH-DB-033 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-018::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-019** |
+| Carril documental | **ACTIVO — AUTH-DB-033** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-018::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-017` — Configurar esquemas expuestos y privilegios de Data API |
-| Tarea actual | `AUTH-DB-019` — Implementar vínculos canónicos entre Auth e identidades empresariales — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-033` — Implementar get_access_context canónico, sus resolvers privados y su proyección segura |
+| Última aprobada | `AUTH-DB-019` — Implementar vínculos canónicos entre Auth e identidades empresariales |
+| Tarea actual | `AUTH-DB-033` — Implementar get_access_context canónico, sus resolvers privados y su proyección segura — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-035` — Implementar token transaccional de frescura e invalidación del contexto |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 12 DE 51 APROBADAS — ACTUAL AUTH-DB-019** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 13 DE 51 APROBADAS — ACTUAL AUTH-DB-033** |
 | Implementación física | **SHELL-CON-018::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
-        ↓
-TAREA ACTUAL
 AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 12 de 51 tareas aprobadas
+BLOQUE R — 13 de 51 tareas aprobadas
 ```
