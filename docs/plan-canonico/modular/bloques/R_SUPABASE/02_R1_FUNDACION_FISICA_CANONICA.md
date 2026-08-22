@@ -8650,7 +8650,4249 @@ No se modifica el Registro Canónico de Requisitos de Prueba.
 `AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras`
 
 
-### [ ] AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
+### ✅ AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+**Tarea siguiente:** AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato de materialización del evaluador canónico `evaluate_authorization`, su núcleo privado, contratos runtime, resolvers de recurso, datasets de evaluación, predicado privado para RLS y proyección segura cerrado; futura instancia global `AUTH-DB-034::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-034` define el contrato físico único para materializar la evaluación real de autorización de Vento OS.
+
+La futura instancia debe convertir:
+
+```text
+PRINCIPAL Y ACTOR REALES
++
+AccessContext@1.0.0 FRESCO
++
+APLICACIÓN EXACTA
++
+PERMISO EXACTO
++
+CONTRATO VERSIONADO DEL PERMISO
++
+RECURSO EXACTO
++
+TERRITORIO, ESTADO Y CAMPOS DEL RECURSO
++
+DATASETS DE GRANTS, OVERRIDES Y DENIES
++
+PRECEDENCIA CANÓNICA
+=
+AuthorizationDecision@1.0.0
+```
+
+El resultado final real continúa siendo exclusivamente:
+
+```text
+ALLOW
+DENY
+```
+
+La tarea no crea una lista general de permisos.
+
+La tarea no convierte un rol en autorización.
+
+La tarea no usa `can_operate`.
+
+La tarea no acepta desde el caller actor, empleado, rol, sede efectiva, área efectiva, turno, check-in, dispositivo efectivo, grants, denies ni resultado deseado.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el siguiente resultado:
+
+```text
+AUTH-DB-034
+→ contrato documental único
+
+AUTH-DB-034::GLOBAL
+→ futura instancia física global reutilizable
+
+app_private.evaluate_authorization(jsonb)
+→ frontera SQL completa
+→ AuthorizationDecision@1.0.0
+
+app_private.evaluate_authorization_core(...)
+→ núcleo privado reutilizable y recursivo
+
+app_private.resolve_permission_contract_snapshot(...)
+→ contrato exacto del permiso
+
+app_private.resolve_authorization_resource(...)
+→ resolución canónica de recurso
+
+app_private.load_authorization_datasets(...)
+→ datasets exactos y versionados
+
+app_private.project_safe_authorization_decision(jsonb)
+→ reducción segura
+
+api.get_safe_authorization_decision(jsonb)
+→ única proyección SQL general apta para authenticated
+
+app_private.authorization_policy_allows(jsonb)
+→ predicado privado de paridad para RLS
+→ no conectado a policies por esta tarea documental
+```
+
+`AUTH-DB-034` produce la decisión.
+
+`AUTH-DB-032` conserva la persistencia durable.
+
+`AUTH-DB-021` conserva la adopción de RLS por esquema.
+
+`AUTH-DB-006` a `AUTH-DB-010` conservan la adopción en RPC sensibles.
+
+---
+
+#### 3. Topología y gate
+
+La clasificación canónica vigente es:
+
+```text
+task_id = AUTH-DB-034
+mode = GLOBAL_ENABLE_ONCE
+instance = AUTH-DB-034::GLOBAL
+execution_gate = PRE_E5_FOUNDATION
+canonical_work = DEFINE_CONTRACT_ONCE
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no se crea una instancia por `package_id`;
+3. puede materializarse antes de E5 una vez aprobado su contrato;
+4. requiere dependencias técnicas satisfechas;
+5. requiere autorización física explícita;
+6. no constituye adopción vertical de NEXO, FOGO, ORIGO, PULSO, VISO, NUMERA, ANIMA, PASS o AURA;
+7. no autoriza por sí sola migrar policies, RPC o consumidores;
+8. la aprobación documental no autoriza `AUTH-DB-034::GLOBAL`.
+
+---
+
+#### 4. Fuentes vinculantes
+
+La futura materialización consume y preserva:
+
+- `ADR-AUTH-001`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-028`;
+- `AUTH-CTX-001` a `AUTH-CTX-030`;
+- `AuthorizationEvaluationRequest@1.0.0`;
+- `AuthorizationDecision@1.0.0`;
+- `AccessContext@1.0.0`;
+- `vento.canonical-json@1.0.0`;
+- `AUTH-DB-019`, para principal y vínculos;
+- `AUTH-DB-033`, para `get_access_context`;
+- `AUTH-DB-035`, para frescura e invalidación;
+- `AUTH-DB-027`, para harness físico;
+- `AUTH-DB-028`, para baseline y drift;
+- `AUTH-DB-029`, para backup, restore y rollback;
+- `AUTH-DB-016`, `AUTH-DB-017` y `AUTH-DB-018`, para schemas, exposición y separación privada;
+- `SUPA-ARC-005`, `SUPA-ARC-006`, `SUPA-ARC-013`, `SUPA-ARC-014` y `SUPA-ARC-015`;
+- el catálogo compartido vigente de aplicaciones, permisos, roles, scopes y reason codes;
+- los contratos de recurso vigentes.
+
+---
+
+#### 5. Precedencia
+
+La precedencia física y contractual es:
+
+```text
+CONTRATOS AUTH
+→ significado
+
+@vento/contracts
+→ identidades y artefactos estáticos materializados disponibles
+
+AUTH-DB-019
+→ principal y vínculos
+
+AUTH-DB-033
+→ contexto
+
+AUTH-DB-035
+→ frescura
+
+AUTH-DB-034
+→ decisión
+
+AUTH-DB-032
+→ persistencia
+
+AUTH-DB-006..010 / AUTH-DB-021
+→ adopción por RPC y RLS
+
+AUTH-DB-030
+→ retiro legacy
+```
+
+Una tabla legacy, función legacy o policy actual no puede redefinir esta precedencia.
+
+---
+
+#### 6. Estado contractual físico observado en `vento-shell`
+
+La auditoría del remoto vigente identifica:
+
+```text
+AppCode activos = 10
+PermissionKey activos = 140
+ScopeCode = 13
+AuthorizationReasonCode = 20
+StructuralIssueCode = 100
+LaneAvailabilityReasonCode = 10
+LaneReasonCode = 110
+```
+
+Estos números describen el corte físico observado.
+
+No se congelan como cardinalidad eterna.
+
+La futura instancia deberá comprobar el universo exacto de la versión contractual activa al momento de materializarse.
+
+---
+
+#### 7. Reconciliación con contratos históricos
+
+Parte de la documentación histórica de recurso se redactó cuando el catálogo tenía una cardinalidad menor.
+
+Regla:
+
+```text
+MATRIZ HISTÓRICA
+≠ UNIVERSO FÍSICO ACTUAL
+```
+
+La futura instancia no puede:
+
+- asumir que 112 sigue siendo el número vigente;
+- ignorar permisos añadidos después;
+- fabricar contratos faltantes;
+- aplicar el contrato de otro permiso por similitud;
+- convertir una identidad de permiso sin metadata completa en un permiso evaluable.
+
+Debe cumplirse:
+
+```text
+PERMISOS ACTIVOS DE LA RELEASE
+=
+PERMISOS CON PermissionContractSnapshot VÁLIDO
+```
+
+antes de certificar el evaluador para esa release.
+
+---
+
+#### 8. Estado actual de `AuthorizationDecision` compartida
+
+La materialización actual de la familia de response contracts ya contiene:
+
+- `ContractMetadata`;
+- `AccessContextV1`;
+- `SimulationContextV1`;
+- `SimulatedAuthorizationDecisionV1`.
+
+La instancia física observada de `SHELL-CON-007::GLOBAL` dejó expresamente fuera el `AuthorizationDecisionV1` completo.
+
+Consecuencias:
+
+1. `AUTH-DB-034` no modifica `@vento/contracts`;
+2. no inventa una segunda definición TypeScript;
+3. la salida SQL se deriva de la fuente canónica documental;
+4. cuando exista una proyección estática completa, deberá demostrar paridad exacta;
+5. la ausencia temporal del tipo TypeScript no permite alterar el shape SQL;
+6. adopción y tipos se coordinan con las tareas propietarias existentes.
+
+---
+
+#### 9. Estado remoto Supabase observado
+
+La auditoría read-only del proyecto:
+
+```text
+vento-os-dev
+status = ACTIVE_HEALTHY
+PostgreSQL = 17.6.1.054
+```
+
+no encontró una función canónica denominada:
+
+```text
+evaluate_authorization
+```
+
+ni objetos de runtime canónico de decisión o resource contract con esa responsabilidad.
+
+Por tanto, esta tarea no adopta un evaluador físico existente como canonical.
+
+---
+
+#### 10. Evaluadores legacy observados
+
+Persisten:
+
+```text
+public.has_permission(text, uuid, uuid)
+public.has_operational_permission(text, uuid, uuid, text)
+public.has_effective_permission_v1(text, text)
+```
+
+También persisten:
+
+```text
+public.get_operational_context(...)
+public.get_effective_context_v1(...)
+```
+
+Estos objetos son antecedentes técnicos.
+
+No son fuente normativa de `AuthorizationDecision@1.0.0`.
+
+---
+
+#### 11. Riesgos observados en `public.has_permission`
+
+`public.has_permission` observado:
+
+```text
+STABLE
+SECURITY DEFINER
+search_path = public
+```
+
+y conserva `EXECUTE` para:
+
+```text
+PUBLIC
+authenticated
+service_role
+```
+
+Su semántica actual:
+
+- deriva empleado mediante `auth.uid()` como si fuera ID empresarial;
+- utiliza `public.employees.role`;
+- consulta `public.app_permissions`;
+- recibe site y area;
+- usa `current_employee_site_id()` como fallback;
+- evalúa overrides y role permissions;
+- retorna booleano;
+- no resuelve recurso canónico;
+- no produce evidencia canónica completa.
+
+Ninguna de esas características se hereda automáticamente.
+
+---
+
+#### 12. Riesgos observados en `has_operational_permission`
+
+La función actual:
+
+```text
+STABLE
+SECURITY DEFINER
+search_path = public
+```
+
+y:
+
+- llama `get_operational_context`;
+- acepta site y area;
+- permite `bypass_applied`;
+- depende de `can_operate`;
+- consulta `operational_role_permissions`;
+- retorna booleano.
+
+La futura evaluación elimina:
+
+```text
+bypass_applied
+can_operate
+caller site as effective site
+caller area as effective area
+```
+
+como fuentes de autoridad.
+
+---
+
+#### 13. Riesgos observados en `has_effective_permission_v1`
+
+La función actual:
+
+```text
+STABLE
+SECURITY DEFINER
+search_path = public, auth
+```
+
+mezcla:
+
+- contexto real;
+- simulación;
+- dispositivo compartido;
+- rol administrativo;
+- rol operativo;
+- `can_operate`.
+
+El evaluador canónico real no reutiliza esta función como núcleo.
+
+---
+
+#### 14. Dependencia legacy en RLS
+
+La auditoría actual encontró:
+
+```text
+policies que referencian has_permission = 181
+tablas distintas afectadas = 88
+```
+
+También existe una cantidad material de policies con helpers de bypass administrativo legacy.
+
+Estas cifras son AS-IS.
+
+No son target.
+
+Consecuencia:
+
+```text
+CREAR AUTH-DB-034
+≠
+REESCRIBIR AUTOMÁTICAMENTE 181 POLICIES
+```
+
+La adopción pertenece a `AUTH-DB-021` y paquetes posteriores.
+
+---
+
+#### 15. Decisión principal de arquitectura
+
+Se separan cuatro fronteras:
+
+```text
+ISSUER
+→ crea identidad temporal de decisión
+→ obtiene contexto real
+→ invoca núcleo
+
+CORE
+→ evalúa determinísticamente
+→ no persiste
+→ no tiene side effects empresariales
+
+SAFE PROJECTION
+→ reduce evidencia
+→ apta para presentación
+
+POLICY PROJECTION
+→ booleano privado
+→ únicamente para RLS certificado
+```
+
+No se crea un único helper booleano que sustituya todas esas fronteras.
+
+---
+
+#### 16. Identidad física del evaluador completo
+
+Se congela:
+
+```text
+app_private.evaluate_authorization(jsonb) → jsonb
+```
+
+Firma:
+
+```sql
+app_private.evaluate_authorization(
+  p_evaluation_request jsonb
+)
+returns jsonb
+```
+
+Es la única firma general completa.
+
+No se crean overloads que acepten hechos autoritativos.
+
+---
+
+#### 17. Único argumento público de la frontera completa
+
+El único argumento es:
+
+```text
+p_evaluation_request jsonb
+```
+
+Debe representar:
+
+```text
+AuthorizationEvaluationRequest@1.0.0
+```
+
+No se acepta:
+
+```text
+evaluate_authorization(text, text)
+evaluate_authorization(text, uuid)
+evaluate_authorization(jsonb, uuid)
+evaluate_authorization(jsonb, text, uuid)
+```
+
+como interfaces generales equivalentes.
+
+---
+
+#### 18. Volatilidad del issuer
+
+`app_private.evaluate_authorization(jsonb)` será:
+
+```text
+VOLATILE
+SECURITY DEFINER
+```
+
+`VOLATILE` se utiliza porque el issuer:
+
+- genera `decision_id`;
+- captura `decided_at`;
+- emite una instancia nueva de decisión.
+
+No implica efectos empresariales.
+
+La función no inserta la decisión durablemente.
+
+---
+
+#### 19. Seguridad del issuer
+
+El evaluador completo utiliza:
+
+```text
+search_path = pg_catalog, app_private
+```
+
+y nombres totalmente calificados para:
+
+- `auth`;
+- schemas propietarios;
+- `audit` cuando solo lea metadata autorizada;
+- funciones auxiliares.
+
+Reglas:
+
+1. owner técnico no interactivo;
+2. `PUBLIC EXECUTE` revocado;
+3. `anon` sin execute;
+4. `authenticated` sin execute directo;
+5. cero SQL dinámico derivado del caller;
+6. cero nombres de tabla derivados del caller;
+7. cero nombres de función derivados del caller;
+8. cero bypass por `service_role`;
+9. poisoning test obligatorio;
+10. homonym test obligatorio.
+
+---
+
+#### 20. Núcleo privado
+
+Se define conceptualmente:
+
+```text
+app_private.evaluate_authorization_core(
+  jsonb,
+  jsonb,
+  uuid,
+  timestamptz,
+  text[],
+  integer
+) → jsonb
+```
+
+Semántica de argumentos internos:
+
+```text
+request validado
+AccessContext exacto
+decision_id
+decided_at
+dependency_stack
+dependency_depth
+```
+
+No es una API de aplicación.
+
+---
+
+#### 21. Propiedades del núcleo
+
+El núcleo:
+
+- no genera otro `decision_id`;
+- no captura otro `decided_at`;
+- no vuelve a resolver contexto principal;
+- no persiste;
+- no envía eventos;
+- no ejecuta mutaciones empresariales;
+- no altera sesiones;
+- no altera caché;
+- no usa frontend state;
+- no consulta simulación.
+
+Las dependencias recursivas utilizan este mismo núcleo.
+
+---
+
+#### 22. Helpers privados mínimos
+
+La futura instancia puede materializar, bajo las identidades exactas gobernadas por esta tarea:
+
+```text
+app_private.validate_authorization_evaluation_request(jsonb)
+app_private.resolve_permission_contract_snapshot(text, text)
+app_private.resolve_authorization_resource(text, jsonb, text, text[])
+app_private.load_authorization_datasets(jsonb, jsonb, jsonb)
+app_private.evaluate_authorization_core(jsonb, jsonb, uuid, timestamptz, text[], integer)
+app_private.project_safe_authorization_decision(jsonb)
+app_private.authorization_policy_allows(jsonb)
+app_private.canonicalize_authorization_payload(jsonb)
+```
+
+Todos permanecen privados.
+
+---
+
+#### 23. Seguridad de helpers
+
+Regla por defecto:
+
+```text
+SECURITY INVOKER
+```
+
+excepto donde una lectura controlada requiera explícitamente una frontera privilegiada.
+
+Toda excepción `SECURITY DEFINER` debe:
+
+- tener motivo documental;
+- tener owner controlado;
+- fijar `search_path`;
+- revocar `PUBLIC`;
+- no recibir grants cliente;
+- demostrar que no amplía autoridad.
+
+No se utiliza `SECURITY DEFINER` como corrección genérica de permisos.
+
+---
+
+#### 24. Envelope de entrada
+
+La entrada exige:
+
+```text
+contract_family
+contract_family_version
+contract_name
+contract_version
+schema_version
+correlation_id
+request
+```
+
+Valores contractuales:
+
+```text
+contract_family = vento.authorization.request-contracts
+contract_family_version = 1.0.0
+contract_name = AuthorizationEvaluationRequest
+contract_version = 1.0.0
+schema_version = 1.0.0
+```
+
+`correlation_id` debe existir y puede ser `null` cuando el contrato lo permita.
+
+---
+
+#### 25. Request interno
+
+`request` contiene exactamente las dimensiones autorizadas:
+
+```text
+app_code
+permission_key
+operation_kind
+resource_request
+requested_fields
+request_source
+```
+
+No contiene hechos efectivos del actor.
+
+---
+
+#### 26. `operation_kind`
+
+Se preserva el vocabulario:
+
+```text
+READ
+CREATE
+UPDATE
+DELETE
+EXECUTE
+TRANSITION
+EXPORT
+APP_ACCESS
+```
+
+Un valor desconocido invalida el request.
+
+No se normaliza silenciosamente.
+
+---
+
+#### 27. `request_source`
+
+Se preserva:
+
+```text
+SERVER_ACTION
+RPC
+RLS
+API
+UI_GUARD
+JOB
+```
+
+`request_source` describe procedencia.
+
+No concede autoridad.
+
+No modifica precedencia.
+
+No puede convertir un `DENY` en `ALLOW`.
+
+---
+
+#### 28. Datos prohibidos en input
+
+El caller no declara:
+
+```text
+context_id
+AccessContext
+principal_id
+actor_id
+employee_id
+base_role
+operational_role
+effective_site_id
+effective_area_id
+shift_id
+checkin_id
+device_id efectivo
+authorization_requirement
+grants
+allows
+denies
+decision_id
+outcome
+catalog_hash
+dataset_hashes
+```
+
+Tampoco:
+
+```text
+expected_outcome
+allow
+can_operate
+bypass
+force_allow
+ignore_denies
+skip_resource_resolution
+skip_prerequisites
+```
+
+Cualquier equivalente semántico queda prohibido.
+
+---
+
+#### 29. Validación de forma
+
+La validación distingue:
+
+```text
+JSON mal formado
+envelope incompatible
+request incompatible
+estado empresarial denegado
+fallo técnico
+```
+
+No convierte todos los casos en la misma categoría.
+
+Un argumento estructuralmente inválido utiliza error SQL controlado de argumento inválido.
+
+No retorna `null`.
+
+---
+
+#### 30. Aplicación exacta
+
+`app_code`:
+
+- es obligatorio;
+- no tiene default;
+- debe corresponder al catálogo activo;
+- debe coincidir con el permiso;
+- no se deriva mediante `split_part(permission_key)` como autoridad;
+- no se corrige silenciosamente;
+- no admite alias no publicados.
+
+Una contradicción app-permission produce `DENY` contractual.
+
+---
+
+#### 31. Permiso exacto
+
+`permission_key`:
+
+- es obligatorio;
+- utiliza la identidad canónica activa;
+- no acepta prefijo parcial;
+- no acepta wildcard;
+- no acepta alias legacy salvo contrato explícito de transición;
+- no se construye desde una ruta;
+- no se construye desde nombre de componente;
+- no se construye desde rol.
+
+Un permiso ausente del catálogo produce razón segura equivalente a permiso no registrado.
+
+---
+
+#### 32. Snapshot de contrato del permiso
+
+Se materializa un `PermissionContractSnapshot` exacto para la evaluación.
+
+Debe conservar:
+
+```text
+catalog_version
+catalog_hash
+app_code
+permission_key
+status
+authorization_modality
+admitted_scopes
+authorization_requirement
+area_requirement
+device_policy
+sensitivity
+simulation_policy
+resource_contract_id
+dependency_permissions
+contract_fingerprint
+```
+
+La terminología física podrá mapear nombres de columnas sin alterar estos significados.
+
+---
+
+#### 33. Runtime projection del catálogo
+
+El evaluador no depende de leer archivos npm durante una transacción SQL.
+
+Se define una proyección técnica privada, versionada e inmutable:
+
+```text
+app_private.authorization_contract_releases
+app_private.authorization_permission_contracts
+```
+
+Estas tablas son proyecciones runtime del contrato estático.
+
+No son una segunda autoridad editable.
+
+---
+
+#### 34. `authorization_contract_releases`
+
+Representa releases instaladas.
+
+Campos mínimos:
+
+```text
+catalog_version
+authorization_contract_version
+schema_version
+manifest_sha256
+permission_count
+resource_contract_count
+contract_source_sha256
+installed_at
+activated_at
+retired_at
+status
+```
+
+Estados mínimos:
+
+```text
+INSTALLED
+ACTIVE
+SUPERSEDED
+BLOCKED
+```
+
+Debe existir exactamente una release `ACTIVE` por organización y runtime aplicables.
+
+---
+
+#### 35. `authorization_permission_contracts`
+
+Clave lógica mínima:
+
+```text
+catalog_version
++
+permission_key
+```
+
+Conserva:
+
+```text
+app_code
+permission_key
+status
+contract_snapshot
+contract_fingerprint
+resource_contract_id
+source_manifest_sha256
+```
+
+`contract_snapshot` es inmutable para una versión publicada.
+
+No se edita manualmente para corregir un permiso.
+
+Una corrección produce nueva release contractual.
+
+---
+
+#### 36. Integridad del catálogo runtime
+
+Antes de activar una release:
+
+```text
+permission_count declarado
+=
+filas válidas
+
+PermissionKey activos
+=
+PermissionContractSnapshot activos
+
+duplicados = 0
+faltantes = 0
+fingerprints inválidos = 0
+resource_contract_id sin resolver = 0
+```
+
+Una diferencia bloquea activación.
+
+---
+
+#### 37. Cardinalidad vigente frente a ejecución futura
+
+El corte auditado contiene 140 PermissionKey activos.
+
+La migration futura no debe hardcodear:
+
+```text
+140 = cardinalidad eterna
+```
+
+Debe instalar la release exacta incluida en el commit autorizado.
+
+La evidencia registra la cardinalidad observada de esa release.
+
+---
+
+#### 38. Resolución única del permiso
+
+Para:
+
+```text
+app_code
+permission_key
+catalog_version
+```
+
+debe existir exactamente un contrato activo.
+
+Resultados:
+
+```text
+0 coincidencias
+→ DENY / contrato no registrado
+
+1 coincidencia
+→ continuar
+
+más de 1
+→ CONTRACT_INVALID / DENY
+```
+
+No se elige la primera fila.
+
+---
+
+#### 39. Fingerprint del contrato de permiso
+
+Formato:
+
+```text
+sha256:
++
+64 hex minúsculos
+```
+
+La preimagen incluye únicamente el snapshot contractual canonicalizado.
+
+No incluye:
+
+- timestamps de instalación;
+- ID de fila;
+- correlation id;
+- métricas;
+- metadata de delivery.
+
+---
+
+#### 40. AccessContext único
+
+El issuer obtiene exactamente un contexto mediante:
+
+```text
+app_private.get_access_context(request.app_code)
+```
+
+para la decisión principal.
+
+No reconstruye el contexto desde tablas.
+
+No llama resolvers legacy.
+
+No acepta contexto del caller.
+
+---
+
+#### 41. Relación con frescura
+
+La evaluación real no puede tratar un contexto stale como válido.
+
+Cuando `AUTH-DB-035::GLOBAL` esté activo:
+
+```text
+contexto servido desde L1
+→ freshness ya validada por la frontera correspondiente
+```
+
+y:
+
+```text
+contexto resuelto fresco
+→ se usa directamente
+```
+
+Un token válido no equivale a `ALLOW`.
+
+---
+
+#### 42. Context fingerprint
+
+La decisión conserva referencia al:
+
+```text
+context_id
+context_fingerprint
+```
+
+El evaluator no recalcula los hechos empresariales.
+
+Puede validar integridad y versión.
+
+No usa el fingerprint como bearer token.
+
+---
+
+#### 43. `AccessContextReference`
+
+La referencia conserva:
+
+```text
+context_id
+context_contract_version
+resolved_at
+actor_type
+actor_id
+principal_type
+principal_id
+context_fingerprint
+```
+
+No copia el `AccessContext` completo dentro de cada referencia pública.
+
+La decisión completa sí puede conservar evidencia necesaria de forma controlada según su contrato.
+
+---
+
+#### 44. Identidad de decisión
+
+`decision_id`:
+
+- se genera en servidor;
+- es opaco;
+- es único por decisión nueva;
+- no deriva de usuario;
+- no deriva de recurso;
+- no deriva de permiso;
+- no concede autoridad;
+- no es bearer token.
+
+La persistencia posterior no cambia su identidad.
+
+---
+
+#### 45. Instante de decisión
+
+`decided_at`:
+
+- se captura una sola vez;
+- utiliza UTC;
+- procede del servidor/base de datos;
+- se comparte por toda la evaluación principal y dependencias internas de esa decisión;
+- no se obtiene desde el cliente.
+
+---
+
+#### 46. Snapshot transaccional
+
+La decisión principal debe usar un snapshot coherente.
+
+Regla:
+
+```text
+context
+permission contract
+resource
+datasets
+denies
+dependencies
+→ mismo marco de evaluación
+```
+
+No se combinan lecturas provenientes de instantes incompatibles para crear un `ALLOW`.
+
+---
+
+#### 47. Registro de resolvers de recurso
+
+Se crea:
+
+```text
+app_private.authorization_resource_resolver_registry
+```
+
+Es un registro técnico.
+
+No contiene autoridad empresarial.
+
+Campos mínimos:
+
+```text
+resource_contract_id
+resolver_key
+resolver_version
+resource_type
+allowed_request_modes
+owner_domain
+source_contract_version
+source_contract_fingerprint
+resolver_shape_fingerprint
+status
+created_at
+updated_at
+```
+
+---
+
+#### 48. Estados del resolver registry
+
+Se permiten:
+
+```text
+ACTIVE
+SUPERSEDED
+BLOCKED
+```
+
+Solo `ACTIVE` puede participar en una decisión real.
+
+`BLOCKED` produce fail closed.
+
+`SUPERSEDED` conserva historia de instalación pero no se selecciona para una release nueva.
+
+---
+
+#### 49. Prohibición de despacho dinámico inseguro
+
+El registry no almacena un nombre de función controlable por cliente para ejecutarlo dinámicamente.
+
+Regla:
+
+```text
+resource_contract_id
+→ resolver_key cerrado
+→ dispatch estático privado
+```
+
+No:
+
+```text
+caller text
+→ format()
+→ EXECUTE función arbitraria
+```
+
+El evaluator no construye SQL dinámico desde input.
+
+---
+
+#### 50. Resolver general de recurso
+
+Se congela:
+
+```text
+app_private.resolve_authorization_resource(
+  text,
+  jsonb,
+  text,
+  text[]
+) → jsonb
+```
+
+Semántica:
+
+```text
+resource_contract_id
+resource_request
+operation_kind
+requested_fields
+```
+
+La función selecciona un dispatch privado cerrado.
+
+---
+
+#### 51. Modos de recurso
+
+Se preservan:
+
+```text
+EXISTING_RESOURCE
+RESOURCE_DRAFT
+COLLECTION
+AGGREGATE
+BULK
+NON_RESOURCE
+```
+
+La representación física debe distinguirlos sin inferencia.
+
+Un shape de un modo no se interpreta como otro.
+
+---
+
+#### 52. Recurso existente
+
+El caller suministra un localizador permitido.
+
+El resolver:
+
+1. valida forma;
+2. localiza el recurso del lado servidor;
+3. carga versión;
+4. carga estado;
+5. carga territorio;
+6. carga sujetos y relaciones;
+7. carga lados requeridos;
+8. carga ownership;
+9. calcula fingerprint;
+10. valida campos solicitados.
+
+El objeto enviado por cliente nunca sustituye la lectura autoritativa.
+
+---
+
+#### 53. Resource draft
+
+En `CREATE`:
+
+```text
+draft
+→ normalizar
+→ resolver padres y relaciones
+→ resolver territorio propuesto
+→ validar estado inicial
+→ validar campos
+→ fingerprint
+→ decisión
+```
+
+El draft no se persiste durante la evaluación.
+
+La ejecución ocurre después y deberá revalidar.
+
+---
+
+#### 54. Colección
+
+Una colección autorizable:
+
+- se construye en servidor;
+- no empieza como lectura global filtrada únicamente en cliente;
+- conserva criterio de pertenencia;
+- conserva territorio;
+- conserva filtros efectivos;
+- evita enumeración de miembros no autorizados.
+
+El request del cliente puede reducir.
+
+Nunca ampliar.
+
+---
+
+#### 55. Agregado
+
+Un agregado solo incluye miembros cuya contribución esté permitida por el contrato.
+
+No se autoriza:
+
+```text
+SELECT todo
+→ ocultar filas después
+→ devolver SUM/COUNT de todo
+```
+
+si el agregado permite inferir miembros excluidos.
+
+---
+
+#### 56. Bulk
+
+Una solicitud bulk exige:
+
+```text
+permiso masivo explícito
+```
+
+o:
+
+```text
+decisión por recurso
+```
+
+La política de atomicidad debe ser explícita:
+
+```text
+ALL_OR_NOTHING
+PARTIAL_WITH_RESULTS
+```
+
+No se elige por conveniencia.
+
+---
+
+#### 57. `NON_RESOURCE`
+
+Solo se admite cuando el contrato del permiso declara legítimamente ausencia de recurso.
+
+Ejemplo conceptual:
+
+```text
+APP_ACCESS
+```
+
+No se utiliza como fallback cuando falla un resolver.
+
+---
+
+#### 58. Estados de resolución de recurso
+
+Se preservan:
+
+```text
+RESOLVED
+MULTI_RESOLVED
+NOT_APPLICABLE
+UNRESOLVED
+CONFLICT
+ISOLATED
+```
+
+Semántica:
+
+- `UNRESOLVED` no obtiene sede de fallback;
+- `CONFLICT` deniega;
+- `ISOLATED` deniega;
+- `NOT_APPLICABLE` solo es válido cuando el contrato lo permite.
+
+---
+
+#### 59. Territory snapshot
+
+El recurso puede resolver:
+
+```text
+organization
+business units
+sites
+areas
+site types
+area kinds
+origin
+destination
+routes
+vehicles
+isolated boundaries
+historical territory
+```
+
+Solo incluye dimensiones aplicables.
+
+`null` no significa organización.
+
+Array vacío no significa todos.
+
+---
+
+#### 60. Resource fingerprint
+
+Toda resolución produce fingerprint determinista del snapshot materialmente utilizado.
+
+Formato:
+
+```text
+sha256:
++
+64 hex
+```
+
+Incluye:
+
+- identidad de contrato;
+- localizador normalizado;
+- versión;
+- estado;
+- territorio;
+- ownership;
+- sujetos;
+- lados;
+- campos relevantes.
+
+No incluye secretos.
+
+---
+
+#### 61. Estado del recurso
+
+Las mutaciones validan estado y transición.
+
+No se autoriza únicamente porque el actor tenga un grant.
+
+Regla:
+
+```text
+permiso
++
+recurso
++
+estado permitido
+=
+todavía sujeto a todos los demás controles
+```
+
+Un state mismatch produce `DENY`.
+
+---
+
+#### 62. Concurrencia
+
+Cuando el contrato exige versión:
+
+```text
+expected version
+=
+resource current version
+```
+
+debe validarse.
+
+Una versión anterior no puede utilizarse para autorizar una mutación posterior.
+
+La ejecución deberá usar lock, condición optimista o mecanismo equivalente del dominio.
+
+---
+
+#### 63. Idempotencia
+
+Una idempotency key:
+
+- evita duplicación;
+- no concede permiso;
+- no permite saltar evaluación;
+- no sustituye resource version;
+- no convierte un request anterior en autoridad.
+
+La misma clave con payload incompatible falla cerrada.
+
+---
+
+#### 64. Cambio de territorio
+
+Una mutación que cambia territorio debe evaluar:
+
+```text
+territorio actual
++
+territorio propuesto
+```
+
+según el contrato.
+
+No basta autoridad sobre el destino.
+
+No basta autoridad sobre el origen.
+
+---
+
+#### 65. Política de campos
+
+El contrato distingue:
+
+- campos visibles;
+- campos ocultos;
+- campos enmascarados;
+- campos mutables;
+- campos de solo lectura;
+- campos sensibles;
+- campos que exigen permiso adicional.
+
+Autorizar el recurso no autoriza todos sus campos.
+
+---
+
+#### 66. Requested fields
+
+`requested_fields`:
+
+- se normaliza contra el contrato;
+- no acepta nombres arbitrarios fuera de schema;
+- no produce acceso implícito;
+- puede reducir la proyección;
+- no puede ampliar la política.
+
+Para `READ` puede existir resultado de campo parcial.
+
+Para mutaciones, un campo no autorizado no se elimina silenciosamente.
+
+---
+
+#### 67. Registro de datasets
+
+Se crea:
+
+```text
+app_private.authorization_dataset_source_registry
+```
+
+Finalidad:
+
+> declarar qué fuente física produce cada dataset requerido por el núcleo y detectar drift sin convertir nombres de tablas en input ejecutable.
+
+Campos mínimos:
+
+```text
+dataset_key
+dataset_version
+source_owner
+source_schema
+source_relation
+source_contract
+source_shape_fingerprint
+fingerprint_strategy
+status
+created_at
+updated_at
+```
+
+---
+
+#### 68. Registry de datasets no ejecuta SQL dinámico
+
+El registry es evidencia y control de drift.
+
+Los loaders contienen consultas estáticas y calificadas.
+
+No se ejecuta:
+
+```text
+SELECT FROM registry.source_relation
+```
+
+mediante SQL construido dinámicamente.
+
+Un cambio de fuente exige migration forward.
+
+---
+
+#### 69. Familias de datasets
+
+El evaluador puede requerir, según contrato:
+
+```text
+permission_catalog
+base_grants
+operational_grants
+individual_overrides
+actor_wide_denies
+base_lane_denies
+operational_lane_denies
+device_policy
+sensitivity_policy
+resource_contracts
+dependency_graph
+field_policy
+scope_catalog
+territory_catalogs
+```
+
+Solo se carga lo aplicable.
+
+---
+
+#### 70. Versionado de datasets
+
+Cada dataset materialmente consultado debe declarar:
+
+```text
+dataset_key
+dataset_version
+dataset_fingerprint
+```
+
+No se usan:
+
+```text
+latest
+current
+unknown
+main
+```
+
+como versión contractual.
+
+Una versión obligatoria no identificable bloquea la decisión.
+
+---
+
+#### 71. Dataset con cero matches
+
+Cero grants coincidentes sigue siendo un resultado válido del dataset:
+
+```text
+dataset identificado
+versionado
+fingerprinted
+matches = []
+```
+
+No se interpreta como dataset inexistente.
+
+Resultado de autorización:
+
+```text
+sin allow aplicable
+→ DEFAULT_DENY
+```
+
+---
+
+#### 72. Dataset no aplicable
+
+Si un dataset no aplica al permiso:
+
+- no se consulta;
+- no se inventa una versión `null`;
+- no se fabrica un hash vacío;
+- su ausencia no se convierte en error.
+
+La evidencia distingue:
+
+```text
+NOT_APPLICABLE
+```
+
+de:
+
+```text
+REQUIRED_BUT_MISSING
+```
+
+---
+
+#### 73. Snapshot de grants base
+
+Los grants base deben provenir de:
+
+- rol base canónico;
+- overrides individuales autorizados;
+- alcance válido;
+- vigencia;
+- permiso exacto;
+- fuente versionada.
+
+No se deriva allow de nombre de rol.
+
+---
+
+#### 74. Snapshot de grants operativos
+
+Los grants operativos deben provenir de:
+
+- rol operativo válido del turno;
+- dataset operativo;
+- sede y área operativas;
+- alcance;
+- permiso exacto;
+- vigencia.
+
+No se utiliza `navigation_role`.
+
+No se utiliza role override legacy.
+
+---
+
+#### 75. Overrides individuales
+
+Un override:
+
+- es explícito;
+- tiene efecto;
+- tiene scope;
+- tiene vigencia;
+- tiene fuente;
+- tiene identidad;
+- puede conceder o negar según contrato.
+
+No se convierte en bypass general.
+
+---
+
+#### 76. Denies
+
+Toda denegación aplicable conserva:
+
+- identidad;
+- efecto;
+- lane;
+- scope;
+- vigencia;
+- fuente;
+- motivo seguro;
+- evidencia necesaria.
+
+No se elimina porque exista un allow.
+
+---
+
+#### 77. Precedencia exacta
+
+Se congela:
+
+```text
+STRUCTURAL_DENY
+>
+ACTOR_WIDE_DENY
+>
+LANE_DENY
+>
+ALLOW
+>
+DEFAULT_DENY
+```
+
+No existe:
+
+```text
+ALLOW OR bypass
+```
+
+No existe:
+
+```text
+owner wins
+```
+
+No existe:
+
+```text
+manager wins
+```
+
+No existe:
+
+```text
+operational wins
+```
+
+fuera del contrato.
+
+---
+
+#### 78. Structural deny
+
+Un problema estructural con severidad bloqueante se aplica antes de grants.
+
+Ejemplos de fuentes:
+
+- contexto inválido;
+- principal incompatible;
+- actor unresolved;
+- contrato incompatible;
+- recurso conflictivo;
+- dataset requerido inválido.
+
+El reason code proviene de catálogos aprobados.
+
+---
+
+#### 79. Actor-wide deny
+
+Una denegación aplicable a todo el actor vence allows.
+
+Se evalúa antes de la lane.
+
+No puede ser omitida por:
+
+- app;
+- rol;
+- dispositivo;
+- resource owner;
+- service role.
+
+---
+
+#### 80. Lane deny
+
+Una denegación de carril vence los allows de ese carril.
+
+No necesariamente invalida un carril distinto cuando la modalidad permite OR y el deny no es global.
+
+La combinación aplica la modalidad exacta.
+
+---
+
+#### 81. Default deny
+
+Si no existe un allow suficiente después de todas las validaciones:
+
+```text
+DENY
+```
+
+No se utiliza ausencia de deny como allow.
+
+---
+
+#### 82. Modalidades de autorización
+
+Se preservan:
+
+```text
+BASE_ONLY
+OPERATIONAL_ONLY
+BASE_OR_OPERATIONAL
+BASE_AND_OPERATIONAL
+```
+
+Mapping:
+
+```text
+BASE_ONLY
+→ BASE requerido
+
+OPERATIONAL_ONLY
+→ OPERATIONAL requerido
+
+BASE_OR_OPERATIONAL
+→ ambos evaluables
+→ uno válido puede satisfacer combinación si no existe deny prevalente aplicable
+
+BASE_AND_OPERATIONAL
+→ ambos requeridos
+```
+
+---
+
+#### 83. Lane no admitida
+
+Una lane no admitida produce:
+
+```text
+evaluated = false
+outcome = NOT_APPLICABLE
+matched_allows = []
+matched_denies = []
+```
+
+No produce un `DENY` artificial que altere otra lane.
+
+---
+
+#### 84. Base lane
+
+La base lane utiliza:
+
+- actor real;
+- empleado cuando aplique;
+- rol base;
+- asignaciones;
+- cobertura administrativa;
+- scope;
+- recurso;
+- grants;
+- overrides;
+- denies.
+
+No toma prestados:
+
+- turno;
+- check-in;
+- rol operativo.
+
+---
+
+#### 85. Operational lane
+
+La lane operativa utiliza:
+
+- empleado;
+- turno válido;
+- check-in cuando el permiso lo exige;
+- rol operativo;
+- sede operativa;
+- área operativa cuando aplique;
+- grants operativos;
+- overrides;
+- denies;
+- recurso.
+
+No utiliza sede seleccionada.
+
+---
+
+#### 86. Prerrequisitos
+
+Se preservan las modalidades contractuales:
+
+```text
+N
+T
+T+C
+```
+
+Semántica:
+
+```text
+N
+→ no exige turno por ese contrato
+
+T
+→ exige turno válido
+
+T+C
+→ exige turno válido + check-in válido
+```
+
+El check-in nunca sustituye el turno.
+
+---
+
+#### 87. Check-in incompatible
+
+Un check-in activo pero incompatible con:
+
+- actor;
+- shift;
+- site;
+- area;
+- temporalidad;
+
+no satisface el prerrequisito.
+
+No se usa “último check-in abierto” como autoridad.
+
+---
+
+#### 88. Área operativa
+
+Cuando el permiso exige área:
+
+```text
+operational_area válida
++
+compatible con rol
++
+compatible con shift
++
+compatible con resource
+```
+
+debe existir.
+
+Un área enviada por frontend no rellena la ausencia.
+
+---
+
+#### 89. Dispositivo
+
+La política de dispositivo funciona por intersección.
+
+```text
+AUTORIDAD HUMANA
+∩
+RESTRICCIÓN DEL DISPOSITIVO
+```
+
+El dispositivo puede reducir.
+
+No puede ampliar.
+
+---
+
+#### 90. Shared device
+
+En dispositivo compartido:
+
+- principal de dispositivo permanece separado;
+- actor humano procede de actor session;
+- el actor real conserva sus lanes;
+- cambiar actor exige nuevo contexto;
+- la allowlist del dispositivo restringe app/permiso;
+- no existe rol propio del dispositivo.
+
+Sin actor válido:
+
+```text
+DENY
+```
+
+para acciones laborales reales que exijan actor humano.
+
+---
+
+#### 91. Sensibilidad
+
+El contrato puede exigir:
+
+- reautenticación;
+- AAL/MFA;
+- motivo;
+- aprobación;
+- separación de funciones;
+- dispositivo compatible;
+- controles reforzados.
+
+Cumplir sensibilidad no crea permiso.
+
+Fallar sensibilidad bloquea.
+
+---
+
+#### 92. Separación de funciones
+
+Cuando el contrato exige separación:
+
+- requester y approver se resuelven desde hechos autoritativos;
+- el actor no puede aprobarse a sí mismo si está prohibido;
+- un rol amplio no elimina la regla;
+- service role no elimina la regla.
+
+---
+
+#### 93. Dependencias entre permisos
+
+Las dependencias se evalúan desde el mismo:
+
+```text
+actor
+context
+decided_at
+catalog version
+```
+
+La dependencia utiliza un nuevo request interno.
+
+No reingresa por el issuer general.
+
+---
+
+#### 94. Grafo de dependencias
+
+Se exige:
+
+```text
+acyclic
+```
+
+y:
+
+```text
+MAX_DEPENDENCY_DEPTH = 32
+```
+
+El stack registra PermissionKey ya visitados.
+
+Ciclo:
+
+```text
+CONTRACT_INVALID
+→ DENY
+```
+
+Profundidad excedida:
+
+```text
+CONTRACT_INVALID
+→ DENY
+```
+
+---
+
+#### 95. Dependencia no heredable
+
+Un `ALLOW` sobre permiso A no se convierte en allow sobre permiso B salvo que B sea dependencia contractual explícita y se evalúe B.
+
+No existen jerarquías implícitas por prefijo.
+
+---
+
+#### 96. Combinación
+
+El objeto `combination` registra:
+
+- modalidad;
+- lanes requeridas;
+- lane results;
+- reglas aplicadas;
+- resultado antes de restricciones finales.
+
+No oculta denies.
+
+No sustituye `final_decision`.
+
+---
+
+#### 97. Restricciones posteriores a lanes
+
+Aun cuando la combinación de lanes sea positiva, el resultado puede ser `DENY` por:
+
+- resource invalid;
+- state mismatch;
+- dependency fail;
+- device restriction;
+- sensitivity fail;
+- field policy;
+- concurrency fail;
+- idempotency conflict;
+- structural deny prevalente.
+
+---
+
+#### 98. Resultado final
+
+`final_decision` solo admite:
+
+```text
+ALLOW
+DENY
+```
+
+No se serializa:
+
+```text
+UNKNOWN
+PARTIAL_ALLOW
+SOFT_ALLOW
+ALLOW_WITH_WARNING
+```
+
+como outcome final real.
+
+La visibilidad parcial se expresa en field policy, no cambiando el outcome final contractual de la operación evaluada.
+
+---
+
+#### 99. Matched allows
+
+Cada allow materializado debe conservar evidencia suficiente para demostrar:
+
+- permiso exacto;
+- lane;
+- source;
+- subject o role aplicable;
+- scope;
+- territory match;
+- resource relation;
+- vigencia.
+
+No se retorna una fila de allow por existir un rol sin scope válido.
+
+---
+
+#### 100. Matched denies
+
+Cada deny materializado conserva:
+
+- deny identity;
+- lane;
+- source;
+- scope;
+- vigencia;
+- match reason.
+
+La safe projection no expone esta evidencia completa.
+
+---
+
+#### 101. Blocked reasons
+
+`blocked_reasons`:
+
+- contiene todas las razones aplicables;
+- usa catálogo aprobado;
+- evita texto SQL libre;
+- no revela nombres de tablas;
+- no revela datos de terceros;
+- tiene orden determinista.
+
+No se devuelve solo “el primer error” si existen varias razones relevantes.
+
+---
+
+#### 102. Reason codes físicos
+
+La implementación consume el vocabulario compartido vigente.
+
+En el corte actual incluye 20 `AuthorizationReasonCode` canónicos y los reason codes estructurales ya materializados.
+
+Reglas:
+
+1. no se inventa un reason code local si existe uno canónico;
+2. un código nuevo requiere la tarea contractual propietaria;
+3. la proyección segura utiliza únicamente códigos permitidos;
+4. el texto visible procede del catálogo de mensajes, no del exception message.
+
+---
+
+#### 103. Auditoría dentro de la decisión
+
+`AuthorizationDecision.audit` contiene evidencia contractual suficiente para:
+
+- reproducir el porqué;
+- identificar versiones;
+- identificar contexto;
+- identificar recurso;
+- identificar datasets;
+- identificar combinación;
+- identificar restricciones;
+- vincular decisión posterior.
+
+No persiste por sí solo.
+
+---
+
+#### 104. Persistencia separada
+
+`AUTH-DB-034`:
+
+```text
+CONSTRUYE DECISIÓN
+```
+
+`AUTH-DB-032`:
+
+```text
+PERSISTE Y VINCULA
+```
+
+034 no inserta filas durables de decisiones.
+
+Esto evita que una función de lectura/evaluación tenga efectos empresariales ocultos.
+
+---
+
+#### 105. Canonicalización de payloads
+
+Se define:
+
+```text
+app_private.canonicalize_authorization_payload(jsonb)
+```
+
+que implementa:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+para preimágenes de 034.
+
+No cambia la política ya utilizada por 033.
+
+No considera `jsonb::text` suficiente.
+
+---
+
+#### 106. Fingerprints internos
+
+La evaluación puede utilizar internamente:
+
+```text
+request_fingerprint
+permission_contract_fingerprint
+resource_fingerprint
+dataset_fingerprints
+context_fingerprint
+```
+
+Cada uno tiene preimagen separada.
+
+No se reutiliza un hash de un objeto para representar otro.
+
+---
+
+#### 107. Request fingerprint
+
+Excluye:
+
+```text
+correlation_id
+timestamps de delivery
+```
+
+Incluye la semántica exacta de:
+
+```text
+app
+permission
+operation
+resource request
+requested fields
+request source cuando sea semánticamente relevante
+contract versions
+```
+
+No se convierte en decision ID.
+
+---
+
+#### 108. Decision identity frente a fingerprint
+
+```text
+decision_id
+→ identidad de instancia
+
+fingerprints
+→ identidad semántica/evidencia
+```
+
+Dos decisiones nuevas pueden tener:
+
+```text
+decision_id distinto
+```
+
+aunque hechos y resultado sean semánticamente iguales.
+
+---
+
+#### 109. Forma raíz de `AuthorizationDecision@1.0.0`
+
+La salida completa conserva:
+
+```text
+contract_family
+contract_family_version
+contract_name
+contract_version
+schema_version
+decision_id
+decided_at
+correlation_id
+access_context_ref
+request
+permission_contract
+resource
+required_lanes
+base_decision
+operational_decision
+prerequisite_decisions
+device_decision
+sensitivity_decision
+field_policy_decision
+matched_allows
+matched_denies
+structural_denies
+actor_wide_denies
+lane_denies
+blocked_reasons
+combination
+final_decision
+audit
+```
+
+No se eliminan campos para ahorrar payload interno.
+
+---
+
+#### 110. Determinismo de arrays
+
+Los arrays cuyo orden no sea semántico se ordenan por claves estables.
+
+Ejemplos:
+
+- matched allows;
+- matched denies;
+- blocked reasons;
+- dataset evidence;
+- territories;
+- requested fields normalizados.
+
+La misma semántica produce el mismo orden.
+
+---
+
+#### 111. Proyección segura privada
+
+Se define:
+
+```text
+app_private.project_safe_authorization_decision(jsonb) → jsonb
+```
+
+Recibe exclusivamente una `AuthorizationDecision@1.0.0` validada.
+
+No ejecuta una segunda evaluación.
+
+No rellena campos ausentes.
+
+---
+
+#### 112. Proyección SQL segura expuesta
+
+Se congela:
+
+```text
+api.get_safe_authorization_decision(jsonb) → jsonb
+```
+
+Firma:
+
+```sql
+api.get_safe_authorization_decision(
+  p_evaluation_request jsonb
+)
+returns jsonb
+```
+
+Responsabilidad:
+
+```text
+validar request
+→ evaluar una vez
+→ proyectar una vez
+→ devolver solo forma segura
+```
+
+---
+
+#### 113. Naturaleza del wrapper `api`
+
+`api.get_safe_authorization_decision(jsonb)` es una excepción estrecha a la preferencia por `SECURITY INVOKER`.
+
+Será:
+
+```text
+VOLATILE
+SECURITY DEFINER
+```
+
+porque:
+
+1. debe invocar el evaluador privado;
+2. authenticated no recibe `USAGE` sobre `app_private`;
+3. crea una nueva decision instance;
+4. reduce el payload antes de cruzar la frontera.
+
+---
+
+#### 114. ACL del wrapper seguro
+
+Estado objetivo:
+
+| Rol               | Acceso                                |
+| ----------------- | ------------------------------------- |
+| `PUBLIC`          | NO                                    |
+| `anon`            | NO por defecto                        |
+| `authenticated`   | EXECUTE exacto                        |
+| servicio aprobado | solo cuando el manifiesto lo requiera |
+
+El grant es por firma exacta.
+
+Una futura overload no hereda el permiso.
+
+---
+
+#### 115. Forma segura
+
+La proyección puede incluir:
+
+```text
+outcome
+app_code
+permission_key
+operation_kind
+resource_type
+safe_resource_reference
+safe_message_code
+safe_reason_codes
+recovery_actions
+visible_fields
+correlation_id
+decided_at
+```
+
+Los campos exactos se validan contra el contrato de presentación vigente.
+
+La proyección no es una `AuthorizationDecision` incompleta.
+
+---
+
+#### 116. Datos prohibidos en safe projection
+
+No se exponen por defecto:
+
+```text
+access_context_ref interno completo
+actor_id interno
+principal_id interno
+employee_id
+device_id
+shift_id
+checkin_id
+matched_allows completos
+matched_denies completos
+structural_denies completos
+actor_wide_denies completos
+lane_denies completos
+dataset versions
+dataset fingerprints
+source fingerprints
+permission contract hash
+resource fingerprint
+dependency graph interno
+audit completo
+SQL errors
+table names
+security configuration
+freshness token
+generation values
+```
+
+---
+
+#### 117. Outcome visible no es bearer authority
+
+Una respuesta segura:
+
+```text
+outcome = ALLOW
+```
+
+puede utilizarse para:
+
+- presentación;
+- navegación;
+- guard de lectura no ejecutiva;
+- explicación segura.
+
+No puede viajar posteriormente como:
+
+```text
+proof_of_authorization
+```
+
+para una mutación.
+
+La mutación se reevalúa en su frontera.
+
+---
+
+#### 118. Safe projection y navegador
+
+El navegador puede recibir únicamente la proyección segura.
+
+No recibe:
+
+```text
+app_private.evaluate_authorization
+```
+
+ni:
+
+```text
+AuthorizationDecision completo
+```
+
+La existencia del wrapper seguro no concede acceso directo a funciones privadas.
+
+---
+
+#### 119. RLS predicate privado
+
+Se define:
+
+```text
+app_private.authorization_policy_allows(jsonb) → boolean
+```
+
+Propósito:
+
+> proveer una proyección booleana privada sobre el mismo núcleo cuando una policy futura necesite una frontera SQL certificada.
+
+No es una API general.
+
+---
+
+#### 120. Reglas del RLS predicate
+
+El predicado:
+
+- no usa legacy `has_permission`;
+- no recibe actor;
+- no recibe rol efectivo;
+- no recibe sede efectiva;
+- no recibe area efectiva;
+- construye o recibe únicamente localizadores de recurso permitidos por la policy;
+- usa el mismo contrato de permiso;
+- usa el mismo contexto;
+- usa la misma precedencia;
+- retorna `true` solo si la decisión equivalente sería `ALLOW`.
+
+---
+
+#### 121. RLS predicate no se conecta todavía
+
+`AUTH-DB-034` puede materializar el primitive privado.
+
+No modifica las 181 policies legacy observadas.
+
+La conexión a policies pertenece a:
+
+```text
+AUTH-DB-021
+```
+
+y requiere paquete, recurso y parity evidence.
+
+---
+
+#### 122. Certificación de equivalencia RLS
+
+Antes de usar el predicado en una policy:
+
+```text
+full evaluator outcome
+=
+private RLS predicate outcome
+```
+
+para el mismo actor, permiso, recurso y snapshot.
+
+Deben probarse:
+
+- allow;
+- deny;
+- resource mismatch;
+- scope mismatch;
+- deny precedence;
+- actor switch;
+- stale context;
+- concurrent update.
+
+---
+
+#### 123. Rendimiento RLS
+
+No se llama al evaluator completo con generación de payload pesado por fila si un predicado equivalente certificado puede reducir la evaluación.
+
+Optimización permitida:
+
+```text
+MISMA SEMÁNTICA
++
+MENOR PROYECCIÓN
+```
+
+Optimización prohibida:
+
+```text
+MENOS REGLAS
++
+MÁS ALLOW
+```
+
+---
+
+#### 124. Adopción en RPC
+
+Las RPC sensibles no reciben el resultado de 034 desde el cliente.
+
+Su patrón futuro:
+
+```text
+RPC
+→ resolver resource
+→ evaluar internamente
+→ verificar ALLOW
+→ validar versión/lock
+→ ejecutar
+```
+
+La adopción concreta corresponde a:
+
+```text
+AUTH-DB-006
+AUTH-DB-007
+AUTH-DB-008
+AUTH-DB-009
+AUTH-DB-010
+```
+
+---
+
+#### 125. Legacy `has_permission`
+
+`has_permission` no se modifica ni retira por el simple hecho de crear 034.
+
+Durante transición:
+
+```text
+legacy
+→ inventariado
+→ migrado por consumidor
+→ telemetría cero
+→ retiro AUTH-DB-030
+```
+
+No se convierte el legacy en un alias silencioso del evaluador sin revisar sus firmas.
+
+---
+
+#### 126. Bypass legacy
+
+La futura migración no conserva:
+
+```text
+is_owner()
+is_global_manager()
+is_manager()
+bypass_applied
+```
+
+como precedencia paralela.
+
+Si un actor debe tener una capacidad:
+
+```text
+permiso exacto
++
+scope
++
+resource
++
+contrato
++
+sin deny
+```
+
+deben demostrarla.
+
+---
+
+#### 127. Simulación excluida
+
+`AUTH-DB-034` evalúa autoridad real.
+
+No acepta:
+
+- simulation id;
+- simulated role;
+- simulated site;
+- hypothetical grant;
+- would_allow.
+
+La simulación utiliza su evaluador separado.
+
+---
+
+#### 128. SYSTEM
+
+Un `SYSTEM`:
+
+- exige principal técnico registrado;
+- exige proceso/delegación aprobada;
+- usa permisos y recursos exactos;
+- no hereda autoridad de `service_role`;
+- deja evidencia de atribución.
+
+---
+
+#### 129. `service_role`
+
+`service_role` es capacidad técnica de infraestructura.
+
+No es:
+
+```text
+OWNER
+GLOBAL MANAGER
+SYSTEM ACTOR automáticamente
+```
+
+Una función ejecutada con privilegios altos todavía debe resolver un principal empresarial o técnico válido.
+
+---
+
+#### 130. Error de argumento
+
+Un envelope mal formado produce error SQL controlado.
+
+Categoría prevista:
+
+```text
+SQLSTATE 22023
+```
+
+No se devuelve `ALLOW = false` para ocultar un bug de contrato cuando el request ni siquiera es una invocación válida.
+
+---
+
+#### 131. Estado empresarial denegado
+
+Casos normales como:
+
+- permiso inexistente;
+- recurso fuera de scope;
+- lane no lista;
+- prerequisito faltante;
+- deny aplicable;
+- dispositivo incompatible;
+
+producen una decisión `DENY` válida cuando el contrato puede materializarla.
+
+---
+
+#### 132. Fallo técnico
+
+Un fallo que impide construir una decisión completa:
+
+- corrupción de contrato;
+- dataset requerido inaccesible;
+- source version imposible;
+- resolver roto;
+- schema incompatible;
+- excepción inesperada;
+
+no produce un `AuthorizationDecision` parcial positivo.
+
+Produce error técnico seguro.
+
+---
+
+#### 133. No fallback ante error
+
+Queda prohibido:
+
+```text
+evaluator error
+→ has_permission legacy
+→ ALLOW
+```
+
+También:
+
+```text
+resource resolver error
+→ NON_RESOURCE
+```
+
+y:
+
+```text
+dataset error
+→ asumir sin denies
+```
+
+---
+
+#### 134. Mensaje técnico seguro
+
+Las excepciones expuestas no contienen:
+
+- SQL completo;
+- nombres privados;
+- grants;
+- deny details;
+- IDs de otros actores;
+- secretos;
+- stacktrace.
+
+La correlación permite diagnóstico interno.
+
+---
+
+#### 135. Correlation id
+
+`correlation_id`:
+
+- se propaga;
+- puede ser `null` según contrato;
+- no concede permiso;
+- no participa en precedencia;
+- no sustituye decision id;
+- no se usa como cache key de autoridad.
+
+---
+
+#### 136. Cache de decisiones
+
+No se crea L1 de `AuthorizationDecision`.
+
+La política permanece:
+
+```text
+REQUEST-SCOPED ONLY
+```
+
+y con clave semántica exacta por:
+
+- context fingerprint;
+- app;
+- permission;
+- operation;
+- resource;
+- version;
+- fields;
+- source.
+
+---
+
+#### 137. Reutilización de decisión
+
+Una decisión no se reutiliza:
+
+- en otra solicitud;
+- para otro recurso;
+- para otra versión;
+- para otra mutación;
+- después de cambiar actor;
+- después de write barrier;
+- como token.
+
+---
+
+#### 138. Escritura posterior
+
+Patrón mínimo:
+
+```text
+evaluate
+→ ALLOW
+→ validar versión/lock
+→ persistir evidencia requerida
+→ ejecutar
+```
+
+Si existe una ventana material entre evaluación y escritura:
+
+```text
+REEVALUAR
+```
+
+o usar una frontera transaccional equivalente.
+
+---
+
+#### 139. Observabilidad
+
+Métricas mínimas futuras:
+
+```text
+authorization_evaluations_total
+authorization_allow_total
+authorization_deny_total
+authorization_error_total
+authorization_latency
+authorization_resource_resolution_latency
+authorization_dependency_depth
+authorization_dataset_load_latency
+authorization_contract_invalid_total
+authorization_default_deny_total
+authorization_structural_deny_total
+authorization_actor_wide_deny_total
+authorization_lane_deny_total
+authorization_safe_projection_total
+authorization_rls_projection_total
+authorization_legacy_comparison_total
+```
+
+Dimensiones sin PII:
+
+- app;
+- permission family cuando esté aprobada;
+- operation kind;
+- request source;
+- outcome;
+- reason class;
+- version.
+
+---
+
+#### 140. Logs
+
+Los logs pueden incluir:
+
+```text
+correlation_id
+decision_id protegido
+app_code
+permission_key
+operation_kind
+request_source
+outcome
+primary_safe_reason_code
+context_fingerprint_prefix
+resource_fingerprint_prefix
+contract_version
+catalog_version
+latency
+```
+
+No incluyen payloads completos por defecto.
+
+---
+
+#### 141. Privacidad de evidencia
+
+No registrar en logs generales:
+
+- documentos;
+- nombres;
+- correos;
+- salarios;
+- direcciones;
+- JWT;
+- refresh token;
+- grants completos;
+- denies completos;
+- contexto completo;
+- resource payload completo.
+
+La evidencia sensible se gobierna por auditoría propietaria.
+
+---
+
+#### 142. Objetos físicos runtime de contrato
+
+La futura instancia contempla:
+
+```text
+app_private.authorization_contract_releases
+app_private.authorization_permission_contracts
+app_private.authorization_resource_resolver_registry
+app_private.authorization_dataset_source_registry
+```
+
+Son metadata técnica y snapshots contractuales.
+
+No son tablas de decisión durable.
+
+---
+
+#### 143. RLS de objetos privados
+
+Las tablas anteriores:
+
+- mantienen RLS como defensa en profundidad;
+- no tienen policy para `anon`;
+- no tienen policy para `authenticated`;
+- no se añaden a Data API;
+- no se exponen en `api`;
+- no conceden `SELECT` cliente.
+
+---
+
+#### 144. ACL general
+
+Objetivo:
+
+```text
+PUBLIC
+→ sin acceso a objetos 034 privados
+
+anon
+→ sin acceso a objetos 034 privados
+→ sin safe decision por defecto
+
+authenticated
+→ solo api.get_safe_authorization_decision(jsonb)
+→ ningún helper privado
+
+servicio privilegiado aprobado
+→ solo firmas requeridas por manifiesto
+```
+
+---
+
+#### 145. `api` no contiene tablas de autoridad
+
+`api` contiene únicamente contrato expuesto.
+
+No contiene:
+
+- permission contract tables;
+- resolver registries;
+- datasets;
+- grants;
+- denies;
+- decision storage.
+
+---
+
+#### 146. No exposición de owner schemas
+
+034 no añade owner schemas a Data API.
+
+No concede `SELECT` directo para que frontend “resuelva” autorización.
+
+El evaluator privilegiado lee únicamente lo necesario.
+
+---
+
+#### 147. Source registry y drift
+
+El harness compara:
+
+```text
+permission contracts
+resource resolver registry
+dataset source registry
+physical functions
+source schemas/relations
+contract hashes
+```
+
+Debe detectar:
+
+- permission missing;
+- duplicate contract;
+- resource resolver missing;
+- dataset source missing;
+- source shape changed;
+- function signature changed;
+- ACL drift;
+- release mismatch.
+
+---
+
+#### 148. Drift que bloquea
+
+Bloquean una release:
+
+```text
+permission active without contract
+resource contract without resolver
+resolver registry duplicate
+dataset required but unresolved
+catalog hash mismatch
+reason-code version mismatch
+context contract mismatch
+unknown authorization modality
+unknown scope
+unknown requirement
+unknown event/source enum
+```
+
+No se ignoran con warning.
+
+---
+
+#### 149. Idempotencia de migration
+
+Una segunda aplicación segura:
+
+- no duplica release;
+- no duplica permission contracts;
+- no cambia snapshot publicado;
+- no amplía ACL;
+- no activa dos releases;
+- no cambia resource resolver por inferencia;
+- no resetea fingerprints.
+
+Drift incompatible requiere migration forward.
+
+---
+
+#### 150. Instalación de una nueva release contractual
+
+Orden:
+
+```text
+1. insertar release INSTALLED
+2. cargar permission contracts
+3. cargar resource registry
+4. verificar dataset registry
+5. validar cardinalidad
+6. validar hashes
+7. validar dependencies
+8. validar resource coverage
+9. ejecutar contract tests
+10. activar nueva release
+11. invalidar global authorization generation mediante 035
+12. marcar anterior SUPERSEDED
+```
+
+El cambio de release participa en frescura.
+
+---
+
+#### 151. Atomicidad de activación
+
+La activación de release y la invalidación correspondiente deben quedar en la misma transacción cuando cambien autoridad efectiva.
+
+Si no puede incrementarse la generación global:
+
+```text
+ROLLBACK
+```
+
+No se activa una release nueva con contexto cacheado de release anterior.
+
+---
+
+#### 152. Resource registry durante release
+
+Un nuevo permission contract no puede activarse si referencia un `resource_contract_id` sin resolver.
+
+No se acepta:
+
+```text
+TODO resolver
+```
+
+como estado activo.
+
+Puede permanecer `BLOCKED` sin activar la release.
+
+---
+
+#### 153. Dataset source migration
+
+Cuando un dataset cambia de tabla o schema:
+
+```text
+migration forward
+→ nuevo loader estático
+→ nuevo source shape fingerprint
+→ pruebas de paridad
+→ registry actualizado
+→ invalidación
+```
+
+No se cambia una fila de registry para apuntar dinámicamente a cualquier tabla.
+
+---
+
+#### 154. Índices
+
+Candidatos mínimos:
+
+```text
+authorization_contract_releases
+→ status
+→ catalog_version
+
+authorization_permission_contracts
+→ PK catalog_version + permission_key
+→ app_code + status
+→ resource_contract_id
+
+authorization_resource_resolver_registry
+→ PK resource_contract_id
+→ status
+→ owner_domain
+
+authorization_dataset_source_registry
+→ PK dataset_key + dataset_version
+→ status
+```
+
+Los índices finales requieren planes reales.
+
+---
+
+#### 155. Rendimiento
+
+El benchmark debe medir:
+
+- contexto;
+- permission contract;
+- resource resolution;
+- datasets;
+- dependencies;
+- final decision;
+- safe projection;
+- RLS predicate.
+
+Se registran p50 y p95 como mínimo.
+
+No se cambia semántica para alcanzar un objetivo de latencia.
+
+---
+
+#### 156. N+1 de dependencias
+
+El evaluator debe evitar consultas redundantes dentro de la misma decisión.
+
+Puede memoizar request-scoped:
+
+- context;
+- permission contracts;
+- datasets;
+- resource snapshots compatibles.
+
+No utiliza cache cross-request de decisiones.
+
+---
+
+#### 157. Bulk performance
+
+Una evaluación bulk no ejecuta una consulta completa independiente por campo o por regla cuando puede usar una consulta set-based equivalente.
+
+La equivalencia semántica debe probarse.
+
+Optimización no elimina decisiones por recurso cuando el contrato las requiere.
+
+---
+
+#### 158. RLS performance
+
+La existencia de 181 policies legacy que hoy llaman `has_permission` demuestra que la migración debe medir planes y frecuencia antes del cutover.
+
+No se sustituye mecánicamente:
+
+```text
+has_permission(...)
+```
+
+por:
+
+```text
+evaluate_authorization(...)
+```
+
+fila por fila.
+
+Se utilizan predicados certificados y queries de recurso apropiados.
+
+---
+
+#### 159. Rollout físico
+
+Orden de activación:
+
+```text
+1. materializar núcleo sin consumidores
+2. validar full evaluator
+3. validar safe projection
+4. validar policy predicate
+5. ejecutar shadow/parity contra casos legacy
+6. migrar consumidores por tareas propietarias
+7. medir diferencias
+8. clasificar diferencias
+9. retirar legacy solo al final
+```
+
+034 no hace cutover global.
+
+---
+
+#### 160. Paridad legacy
+
+Las comparaciones se clasifican:
+
+```text
+EXPECTED_EQUAL
+INTENTIONAL_CANONICAL_DENY
+LEGACY_SECURITY_BUG
+LEGACY_DATA_FALLBACK
+CANONICAL_DEFECT
+DATA_GAP
+CONSUMER_DEFECT
+CONTRACT_GAP
+```
+
+Un bug legacy no se conserva por paridad.
+
+---
+
+#### 161. Diferencias esperables actuales
+
+Son candidatos a corrección intencional:
+
+- bypass por rol;
+- `auth.uid()` como employee id;
+- site enviado como autoridad;
+- site default;
+- `can_operate`;
+- simulación mezclada;
+- booleano sin recurso;
+- ausencia de evidencia;
+- permiso por route helper;
+- policy con helper administrativo paralelo.
+
+La clasificación definitiva se prueba caso por caso.
+
+---
+
+#### 162. Rollback antes de consumidores
+
+Si la instancia física debe revertirse antes de adopción:
+
+```text
+1. confirmar cero consumidores
+2. retirar grant safe wrapper
+3. retirar api wrapper
+4. retirar helpers privados sin dependencias
+5. retirar registries mediante migration forward
+6. conservar legacy intacto
+7. validar drift
+```
+
+No `DROP CASCADE`.
+
+---
+
+#### 163. Rollback después de consumidores
+
+Si ya existen consumidores:
+
+```text
+1. detener nuevos cutovers
+2. volver consumidores a adapter compatible aprobado
+3. conservar evidencia
+4. aplicar migration forward
+5. no reactivar bypass
+6. no cambiar al resultado más permisivo
+```
+
+El rollback no convierte legacy en target final.
+
+---
+
+#### 164. Backup y restore
+
+`AUTH-DB-029` debe cubrir:
+
+- runtime contract releases;
+- permission contract snapshots;
+- resolver registry;
+- dataset registry;
+- funciones;
+- ACL;
+- RLS;
+- migrations.
+
+Después de restore:
+
+```text
+drift check
+→ contract hash check
+→ context/freshness check
+→ evaluator parity
+```
+
+antes de reanudar adopción.
+
+---
+
+#### 165. Dependencias físicas de `AUTH-DB-034::GLOBAL`
+
+Antes de autorización física debe existir evidencia de:
+
+```text
+R0 aplicable verificado
+AUTH-DB-016::GLOBAL cuando los schemas requeridos aún no existan
+AUTH-DB-018::GLOBAL cuando la separación de helpers sea prerrequisito
+AUTH-DB-017::GLOBAL coherente con exposición api
+AUTH-DB-019::GLOBAL VERIFIED
+AUTH-DB-033::GLOBAL VERIFIED
+AUTH-DB-035::GLOBAL VERIFIED
+AUTH-DB-027 disponible
+AUTH-DB-028 baseline vigente
+AUTH-DB-029 rollback disponible
+release contractual completa para el PermissionKey activo
+resource contracts resolubles
+reason-code contract compatible
+```
+
+Si 033 o 035 no están `VERIFIED`, 034 no se materializa.
+
+---
+
+#### 166. Dependencia de `@vento/contracts`
+
+La futura instancia registra hashes de la release contractual utilizada.
+
+No requiere que una aplicación cliente consuma el package.
+
+Sí requiere que la fuente contractual completa que alimenta el runtime sea verificable.
+
+Un artefacto estático parcial no se presenta como contrato completo.
+
+---
+
+#### 167. Manifiesto de futura materialización
+
+Debe registrar:
+
+```text
+instance_id = AUTH-DB-034::GLOBAL
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+project_ref
+environment
+migration_files
+source_contract_sha256
+request_contract_version
+decision_contract_version
+context_contract_version
+catalog_version
+catalog_manifest_sha256
+permission_count
+resource_contract_count
+reason_code_version
+function_signatures
+registry_counts
+acl_snapshot_before
+acl_snapshot_after
+rls_snapshot
+legacy_function_inventory
+legacy_policy_counts
+benchmark
+drift_before
+drift_after
+rollback_plan
+validation_commands
+evidence
+```
+
+---
+
+#### 168. Orden de materialización física
+
+Secuencia esperada:
+
+```text
+1. preflight
+2. baseline y snapshots
+3. verificar 019/033/035
+4. verificar release contractual
+5. crear migration
+6. crear runtime contract tables
+7. cargar release y permission contracts
+8. crear resource resolver registry
+9. crear dataset registry
+10. crear canonicalizer
+11. crear request validator
+12. crear permission resolver
+13. crear resource resolver dispatch
+14. crear dataset loaders
+15. crear core
+16. crear issuer
+17. crear safe projector
+18. crear api safe wrapper
+19. crear private policy predicate
+20. aplicar ACL/RLS
+21. ejecutar contract tests
+22. ejecutar resource tests
+23. ejecutar precedence tests
+24. ejecutar security tests
+25. ejecutar parity tests
+26. ejecutar performance tests
+27. rehearsal rollback
+28. drift final
+29. registrar evidencia
+```
+
+---
+
+#### 169. Política de migration
+
+Todo cambio físico:
+
+- se versiona en `vento-shell`;
+- no se aplica manualmente como estado final desde Dashboard;
+- no edita migration aplicada;
+- no crea objeto ad hoc fuera de historial;
+- usa migration forward para correcciones;
+- conserva hash.
+
+El desarrollo documental de esta tarea no crea la migration.
+
+---
+
+#### 170. Pruebas físicas — firma y envelope
+
+La futura instancia debe demostrar:
+
+1. existe exactamente `app_private.evaluate_authorization(jsonb)`;
+2. retorna `jsonb`;
+3. es `VOLATILE`;
+4. es `SECURITY DEFINER`;
+5. no existe overload inseguro;
+6. request null falla;
+7. objeto vacío falla;
+8. contract family inválida falla;
+9. version inválida falla;
+10. schema version inválida falla;
+11. request source inválido falla;
+12. operation kind inválido falla;
+13. actor suministrado por caller es rechazado;
+14. role suministrado es rechazado;
+15. site efectivo suministrado es rechazado.
+
+---
+
+#### 171. Pruebas físicas — permiso
+
+16. app válida;
+17. app desconocida;
+18. permission válida;
+19. permission desconocida;
+20. app-permission mismatch;
+21. alias no autorizado;
+22. wildcard rechazado;
+23. contrato único;
+24. contrato faltante;
+25. contrato duplicado;
+26. fingerprint reproducible;
+27. release cardinality consistente;
+28. permission activa sin snapshot bloquea.
+
+---
+
+#### 172. Pruebas físicas — contexto
+
+29. get_access_context se resuelve una sola vez;
+30. contexto sin actor;
+31. empleado inactivo;
+32. HUMAN_USER;
+33. SHARED_DEVICE con actor;
+34. SHARED_DEVICE sin actor;
+35. SYSTEM válido;
+36. service role sin SYSTEM;
+37. context fingerprint preservado;
+38. stale context rechazado;
+39. simulation no aparece.
+
+---
+
+#### 173. Pruebas físicas — recurso
+
+40. existing resource;
+41. draft;
+42. collection;
+43. aggregate;
+44. bulk;
+45. non-resource legítimo;
+46. resolver faltante;
+47. resolver conflictivo;
+48. resource isolated;
+49. territory null no global;
+50. array vacío no global;
+51. origin/destination;
+52. multi-site;
+53. historical snapshot;
+54. ownership exacta;
+55. resource version mismatch;
+56. state mismatch;
+57. field desconocido.
+
+---
+
+#### 174. Pruebas físicas — lanes
+
+58. BASE_ONLY allow;
+59. BASE_ONLY deny;
+60. OPERATIONAL_ONLY allow;
+61. OPERATIONAL_ONLY deny;
+62. BASE_OR_OPERATIONAL base allow;
+63. BASE_OR_OPERATIONAL operational allow;
+64. BASE_OR_OPERATIONAL ambos deny;
+65. BASE_AND_OPERATIONAL ambos allow;
+66. BASE_AND_OPERATIONAL una lane deny;
+67. lane no admitida NOT_APPLICABLE;
+68. base sin turno;
+69. operational sin turno;
+70. operational sin check-in requerido;
+71. operational con check-in válido;
+72. área requerida ausente.
+
+---
+
+#### 175. Pruebas físicas — precedencia
+
+73. structural deny vence allow;
+74. actor-wide deny vence allow;
+75. lane deny vence allow;
+76. allow sin deny permite cuando resto cumple;
+77. ausencia de allow produce default deny;
+78. deny no se borra por override positivo;
+79. role owner no bypass;
+80. global manager no bypass;
+81. manager no bypass;
+82. device no bypass;
+83. service role no bypass.
+
+---
+
+#### 176. Pruebas físicas — dependencias y restricciones
+
+84. dependencia allow;
+85. dependencia deny;
+86. ciclo;
+87. profundidad 32;
+88. profundidad 33;
+89. device restrict;
+90. MFA requerida;
+91. reauth requerida;
+92. separation of duties;
+93. field read partial;
+94. mutation con field bloqueado;
+95. idempotency conflict;
+96. concurrency conflict.
+
+---
+
+#### 177. Pruebas físicas — salida
+
+97. decision_id único;
+98. decided_at único por decisión;
+99. contract metadata completa;
+100. required lanes correctas;
+101. matched allows deterministas;
+102. matched denies deterministas;
+103. blocked reasons deterministas;
+104. final ALLOW;
+105. final DENY;
+106. audit coherente;
+107. canonical JSON reproducible;
+108. no `can_operate`;
+109. no `bypass_applied`.
+
+---
+
+#### 178. Pruebas físicas — safe projection
+
+110. wrapper seguro retorna jsonb;
+111. authenticated puede ejecutar firma exacta;
+112. anon no;
+113. PUBLIC no;
+114. no source fingerprints;
+115. no dataset fingerprints;
+116. no full grants;
+117. no full denies;
+118. no internal IDs prohibidos;
+119. safe reason codes válidos;
+120. outcome coincide con full decision;
+121. safe projection no se usa como mutation token.
+
+---
+
+#### 179. Pruebas físicas — seguridad
+
+122. internal evaluator sin execute authenticated;
+123. helpers sin execute cliente;
+124. registries sin select cliente;
+125. search path poisoning;
+126. homonym function;
+127. homonym table;
+128. SQL injection;
+129. dynamic function injection imposible;
+130. dynamic relation injection imposible;
+131. malicious resource request fail closed;
+132. manipulated app fail closed;
+133. manipulated permission fail closed;
+134. error no filtra SQL.
+
+---
+
+#### 180. Pruebas físicas — RLS
+
+135. private predicate allow = full allow;
+136. private predicate deny = full deny;
+137. resource mismatch parity;
+138. deny parity;
+139. actor switch parity;
+140. request source RLS no amplía;
+141. boolean predicate no concede fuera de core;
+142. no se reemplaza ninguna policy durante 034 por inferencia.
+
+---
+
+#### 181. Pruebas físicas — operación
+
+143. plan de ejecución capturado;
+144. p50 registrado;
+145. p95 registrado;
+146. dependencies benchmark;
+147. resource resolver benchmark;
+148. dataset loader benchmark;
+149. concurrencia;
+150. rollback rehearsal;
+151. segunda ejecución idempotente;
+152. drift final;
+153. release mismatch bloquea;
+154. local/staging/ambiente autorizado conservan paridad contractual.
+
+---
+
+#### 182. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** `AUTH-DB-034` materializa en una futura instancia física las reglas de evaluación, recurso, lanes, precedencia, evidencia, seguridad y proyección ya definidas por el modelo canónico, el catálogo, `AuthorizationDecision@1.0.0`, `AuthorizationEvaluationRequest@1.0.0` y el plan maestro de pruebas. La tarea concreta objetos SQL, fronteras, registries, loaders, ACL, rollback y validación sin introducir una capacidad empresarial nueva, un permiso nuevo ni una regla nueva de acceso.
+
+---
+
+#### 183. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificación la cobertura existente sobre:
+
+- aplicación y PermissionKey exactos;
+- modalidades;
+- scopes;
+- resource contracts;
+- ownership;
+- territory;
+- lanes;
+- shift y check-in;
+- devices;
+- sensitivity;
+- explicit denies;
+- dependencies;
+- field policies;
+- safe projections;
+- RLS parity;
+- RPC adoption;
+- legacy transition;
+- concurrency;
+- rollback;
+- drift;
+- adversarial security.
+
+El Registro Canónico de Requisitos de Prueba no se modifica.
+
+---
+
+#### 184. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | el desarrollo documental no creó migrations, funciones, tablas, policies ni código runtime                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| LOCAL     | NOT_EXECUTED   | pendiente de insertar el bloque en la rama documental `task/auth-db-034`, ejecutar formateo `--write`, `--check`, quality, delivery, topología y batería global                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| REMOTA    | PASS           | auditoría read-only 2026-08-22 sobre `vento-shell` y `vento-os-dev`: continuidad remota sitúa `AUTH-DB-034` después de 035; topología `GLOBAL_ENABLE_ONCE` y gate `PRE_E5_FOUNDATION` confirmados; catálogo compartido observado con 10 AppCode, 140 PermissionKey activos y 13 scopes; response contracts actuales materializan AccessContext y simulación pero no el AuthorizationDecision completo; Supabase no contiene evaluate_authorization canónico; persisten has_permission, has_operational_permission y has_effective_permission_v1 legacy; se observaron 181 policies sobre 88 tablas que referencian has_permission |
+| OPERATIVA | NOT_APPLICABLE | no se alteraron consumidores, navegación, RPC, policies, cache mode ni runtime                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| FÍSICA    | NOT_APPLICABLE | no se ejecutó SQL de mutación, no se creó migration y `AUTH-DB-034::GLOBAL` no fue autorizada                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+
+---
+
+#### 185. Decisiones vinculantes
+
+1. La futura instancia es `AUTH-DB-034::GLOBAL`.
+2. El modo es `GLOBAL_ENABLE_ONCE`.
+3. El gate es `PRE_E5_FOUNDATION`.
+4. La frontera completa es `app_private.evaluate_authorization(jsonb)`.
+5. Retorna `jsonb`.
+6. El input es `AuthorizationEvaluationRequest@1.0.0`.
+7. El output completo es `AuthorizationDecision@1.0.0`.
+8. El único argumento general es un envelope JSON.
+9. El caller no declara actor.
+10. El caller no declara empleado.
+11. El caller no declara roles efectivos.
+12. El caller no declara territorio efectivo.
+13. El caller no declara grants.
+14. El caller no declara denies.
+15. El caller no declara expected outcome.
+16. El issuer es `VOLATILE`.
+17. El issuer es `SECURITY DEFINER` endurecido.
+18. El issuer no persiste decisiones.
+19. Se separa issuer y core.
+20. El core reutiliza un solo AccessContext principal.
+21. Las dependencias no reingresan por el issuer.
+22. La profundidad máxima es 32.
+23. Los ciclos deniegan por contrato inválido.
+24. Se reutiliza `get_access_context`.
+25. 035 conserva ownership de freshness.
+26. Token válido no equivale a allow.
+27. Se crea runtime projection de releases contractuales.
+28. Se crea runtime projection de PermissionContractSnapshot.
+29. Esa projection no es una segunda autoridad editable.
+30. La cardinalidad futura proviene de la release.
+31. El corte observado es 140 permisos activos.
+32. No se hardcodea 112.
+33. No se hardcodea 140 como eterno.
+34. Todo permiso activo exige snapshot.
+35. Permiso sin snapshot bloquea release.
+36. Se crea resource resolver registry.
+37. El registry no ejecuta nombres dinámicos.
+38. El dispatch es cerrado.
+39. Se define existing resource.
+40. Se define draft.
+41. Se define collection.
+42. Se define aggregate.
+43. Se define bulk.
+44. NON_RESOURCE no es fallback.
+45. Territory viene del recurso.
+46. Null no significa global.
+47. Empty no significa all.
+48. Ownership es explícita.
+49. State predicate participa.
+50. Concurrency participa.
+51. Idempotency no concede autoridad.
+52. Field policy participa.
+53. Se crea dataset source registry.
+54. Los loaders usan SQL estático.
+55. Datasets son versionados.
+56. Cero matches no equivale a dataset faltante.
+57. Se preserva la precedencia exacta.
+58. Structural deny vence.
+59. Actor-wide deny vence.
+60. Lane deny vence.
+61. Allow solo aplica después.
+62. Default deny permanece.
+63. BASE_ONLY se preserva.
+64. OPERATIONAL_ONLY se preserva.
+65. BASE_OR_OPERATIONAL se preserva.
+66. BASE_AND_OPERATIONAL se preserva.
+67. Lane no admitida es NOT_APPLICABLE.
+68. Base no toma turno.
+69. Operational usa turno.
+70. Check-in solo cuando el contrato lo exige.
+71. Device restringe.
+72. Device no concede.
+73. Sensitivity restringe.
+74. SoD se preserva.
+75. Final real es ALLOW o DENY.
+76. Reasons son deterministas.
+77. La decisión tiene audit payload.
+78. 032 conserva persistencia.
+79. Canonical JSON se reutiliza.
+80. `jsonb::text` no basta.
+81. Se separan decision id y fingerprints.
+82. Se define safe projector privado.
+83. Se define `api.get_safe_authorization_decision(jsonb)`.
+84. El wrapper seguro es proyección, no decisión incompleta.
+85. `authenticated` recibe solo el wrapper seguro.
+86. `anon` no por defecto.
+87. El cliente no ejecuta el evaluator completo.
+88. Safe outcome no es bearer token.
+89. Se define private RLS predicate.
+90. 034 no reescribe las 181 policies observadas.
+91. 021 conserva adopción RLS.
+92. 006..010 conservan adopción RPC.
+93. 030 conserva retiro legacy.
+94. Bypass por owner no se conserva.
+95. Bypass por manager no se conserva.
+96. `can_operate` no se conserva.
+97. Simulación permanece separada.
+98. Service role no es autoridad empresarial.
+99. SYSTEM exige principal técnico.
+100. Input inválido falla controladamente.
+101. Deny empresarial produce decisión válida.
+102. Fallo técnico no produce allow.
+103. No existe fallback al legacy.
+104. No existe L1 de decisiones.
+105. Una decisión no se reutiliza cross-request.
+106. Mutaciones reevalúan.
+107. Se definen métricas sin PII.
+108. Se definen logs seguros.
+109. Objetos privados tienen RLS defensiva.
+110. Cero grants cliente a app_private.
+111. Data API no expone owner schemas.
+112. Drift de contracts/resolvers/datasets bloquea.
+113. Una nueva release invalida generación global.
+114. Activación e invalidación son atómicas.
+115. Migration es forward y versionada.
+116. Rollback no usa DROP CASCADE.
+117. Paridad no conserva bugs legacy.
+118. Rendimiento no cambia semántica.
+119. 154 pruebas físicas mínimas quedan especificadas.
+120. No se crean ni modifican requisitos de prueba.
+121. La aprobación documental no autoriza cambios físicos.
+122. La siguiente tarea documental es AUTH-DB-032.
+
+---
+
+#### 186. Criterios de aceptación
+
+`AUTH-DB-034` queda documentalmente completa cuando:
+
+1. se fija la instancia global;
+2. se fija el gate;
+3. se fija la firma completa;
+4. se fija el envelope;
+5. se excluyen inputs autoritativos;
+6. se separan issuer y core;
+7. se fija seguridad del issuer;
+8. se fija search path;
+9. se fijan ACL negativas;
+10. se fija request validation;
+11. se fija app exacta;
+12. se fija permission exacta;
+13. se fija PermissionContractSnapshot;
+14. se reconcilia la cardinalidad histórica;
+15. se documenta cardinalidad actual observada;
+16. se define runtime contract release;
+17. se define permission contract projection;
+18. se define integridad de release;
+19. se define AccessContext único;
+20. se preserva freshness;
+21. se define AccessContextReference;
+22. se define decision ID;
+23. se define decided_at;
+24. se define snapshot coherente;
+25. se define resource registry;
+26. se prohíbe dynamic dispatch;
+27. se define resource resolver;
+28. se definen seis modos de recurso;
+29. se define existing;
+30. se define draft;
+31. se define collection;
+32. se define aggregate;
+33. se define bulk;
+34. se define NON_RESOURCE;
+35. se definen estados de resolución;
+36. se define territory;
+37. se define resource fingerprint;
+38. se define state;
+39. se define concurrency;
+40. se define idempotency;
+41. se define territory mutation;
+42. se define field policy;
+43. se define requested fields;
+44. se define dataset registry;
+45. se prohíbe SQL dinámico por registry;
+46. se definen datasets;
+47. se define versionado;
+48. se define cero matches;
+49. se define NOT_APPLICABLE;
+50. se define base grants;
+51. se define operational grants;
+52. se definen overrides;
+53. se definen denies;
+54. se fija precedencia exacta;
+55. se define structural deny;
+56. se define actor-wide deny;
+57. se define lane deny;
+58. se define default deny;
+59. se definen modalidades;
+60. se define lane no admitida;
+61. se define base lane;
+62. se define operational lane;
+63. se definen prerrequisitos;
+64. se define check-in incompatible;
+65. se define área;
+66. se define device;
+67. se define shared device;
+68. se define sensitivity;
+69. se define SoD;
+70. se definen dependencies;
+71. se define profundidad;
+72. se define combinación;
+73. se definen restricciones posteriores;
+74. se fija final decision;
+75. se definen matched allows;
+76. se definen matched denies;
+77. se definen blocked reasons;
+78. se reutilizan reason codes;
+79. se define audit;
+80. se preserva 032;
+81. se define canonicalizer;
+82. se definen fingerprints;
+83. se define request fingerprint;
+84. se separa decision identity;
+85. se fija shape raíz;
+86. se fija determinismo;
+87. se define safe projector;
+88. se define wrapper api;
+89. se justifica security definer;
+90. se fija ACL safe;
+91. se define forma segura;
+92. se definen datos prohibidos;
+93. se declara outcome no bearer;
+94. se define frontera navegador;
+95. se define RLS predicate;
+96. se define paridad RLS;
+97. se conserva adopción en 021;
+98. se conserva adopción RPC;
+99. se conserva legacy;
+100. se eliminan bypasses del target;
+101. se excluye simulación;
+102. se define SYSTEM;
+103. se define service role;
+104. se define error de argumento;
+105. se define deny empresarial;
+106. se define fallo técnico;
+107. se prohíbe fallback;
+108. se define correlation;
+109. se prohíbe cache cross-request de decisiones;
+110. se define revalidación;
+111. se define observabilidad;
+112. se define privacidad;
+113. se definen objetos runtime;
+114. se define RLS defensiva;
+115. se define ACL;
+116. se preserva api como capa;
+117. se define drift;
+118. se define idempotencia de migration;
+119. se define nueva release;
+120. se define activación atómica;
+121. se define dataset migration;
+122. se define indexing;
+123. se define performance;
+124. se define N+1;
+125. se define bulk performance;
+126. se define RLS performance;
+127. se define rollout;
+128. se define parity;
+129. se define rollback;
+130. se define restore;
+131. se fijan dependencias;
+132. se define manifiesto;
+133. se fija orden físico;
+134. se fija política de migration;
+135. se definen pruebas de firma;
+136. se definen pruebas de permiso;
+137. se definen pruebas de contexto;
+138. se definen pruebas de recurso;
+139. se definen pruebas de lanes;
+140. se definen pruebas de precedencia;
+141. se definen pruebas de dependencias;
+142. se definen pruebas de salida;
+143. se definen pruebas safe;
+144. se definen pruebas de seguridad;
+145. se definen pruebas RLS;
+146. se definen pruebas operativas;
+147. se declara cero modificación del registro de pruebas;
+148. se registra evidencia remota;
+149. se preservan límites;
+150. se reserva AUTH-DB-032 sin desarrollarla.
+
+---
+
+#### 187. Límites
+
+`AUTH-DB-034` no:
+
+- ejecuta SQL durante su desarrollo documental;
+- crea migrations durante su desarrollo documental;
+- crea tablas durante su desarrollo documental;
+- crea funciones durante su desarrollo documental;
+- cambia Supabase durante su desarrollo documental;
+- autoriza `AUTH-DB-034::GLOBAL`;
+- modifica `@vento/contracts`;
+- inventa PermissionKey;
+- inventa scope;
+- inventa reason code;
+- cambia `AccessContext@1.0.0`;
+- cambia `ContextFreshnessToken@1.0.0`;
+- persiste decisiones;
+- implementa simulación;
+- crea cache cross-request de decisiones;
+- migra las 181 policies legacy observadas;
+- reescribe RLS;
+- migra RPC sensibles;
+- cambia consumidores;
+- cambia UI;
+- cambia navegación;
+- retira `has_permission`;
+- retira `has_operational_permission`;
+- retira `has_effective_permission_v1`;
+- retira `get_operational_context`;
+- retira `get_effective_context_v1`;
+- modifica 04A;
+- desarrolla `AUTH-DB-032`.
+
+---
+
+#### 188. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización`
+
+
 ### [ ] AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
 
 ### [ ] AUTH-DB-012 — Implementar auditoría de cambios de permisos

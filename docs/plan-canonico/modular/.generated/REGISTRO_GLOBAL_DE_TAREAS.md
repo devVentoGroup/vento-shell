@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1016** |
+| Aprobadas | **1017** |
 | En propuesta | **0** |
-| No iniciadas | **578** |
+| No iniciadas | **577** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **63.74% (1016/1594)** |
+| Porcentaje de completamiento | **63.80% (1017/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-035` — Implementar token transaccional de frescura e invalidación del contexto | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-034` — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-032` — Implementar persistencia canónica y vinculación de decisiones de autorización | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-034` — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-032` — Implementar persistencia canónica y vinculación de decisiones de autorización | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-012` — Implementar auditoría de cambios de permisos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1226,7 +1226,7 @@
 | ✅ APROBADA | `AUTH-DB-019` | Implementar vínculos canónicos entre Auth e identidades empresariales | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-033` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-035` | Implementar token transaccional de frescura e invalidación del contexto | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
-| ⬜ NO INICIADA | `AUTH-DB-034` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
+| ✅ APROBADA | `AUTH-DB-034` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-032` | Implementar persistencia canónica y vinculación de decisiones de autorización | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-012` | Implementar auditoría de cambios de permisos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-013` | Implementar auditoría de simulación | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
