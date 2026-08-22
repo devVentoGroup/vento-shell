@@ -2695,12 +2695,12 @@ La tarea documental puede desarrollarse mientras existe un carril físico indepe
 
 Se preservan cuatro planos distintos:
 
-| Plano | Autoridad |
-| --- | --- |
-| Auth administrado | `auth.users`, `auth.identities`, credenciales, sesiones y factores |
-| Principal empresarial | `identity_access` |
-| Identidad de dominio | `workforce`, `customer_engagement`, `technology_operations` y actor técnico cuando aplique |
-| Actor efectivo | resolución atribuible usada por contexto, autorización y auditoría |
+| Plano                 | Autoridad                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| Auth administrado     | `auth.users`, `auth.identities`, credenciales, sesiones y factores                         |
+| Principal empresarial | `identity_access`                                                                          |
+| Identidad de dominio  | `workforce`, `customer_engagement`, `technology_operations` y actor técnico cuando aplique |
+| Actor efectivo        | resolución atribuible usada por contexto, autorización y auditoría                         |
 
 Ningún plano sustituye a otro.
 
@@ -2777,11 +2777,11 @@ La futura forma SQL deberá respetar esta semántica sin inventar autoridad adic
 
 #### 11. Cardinalidad desde la cuenta Auth
 
-| Principal | `EMPLOYEE` activo | `CUSTOMER` activo | `DEVICE` activo |
-| --- | ---: | ---: | ---: |
-| `HUMAN_USER` | 0..1 | 0..1 | 0 |
-| `SHARED_DEVICE` | 0 | 0 | 1 cuando el dispositivo requiera autenticación propia |
-| `SERVICE` | 0 | 0 | 0 |
+| Principal       | `EMPLOYEE` activo | `CUSTOMER` activo |                                       `DEVICE` activo |
+| --------------- | ----------------: | ----------------: | ----------------------------------------------------: |
+| `HUMAN_USER`    |              0..1 |              0..1 |                                                     0 |
+| `SHARED_DEVICE` |                 0 |                 0 | 1 cuando el dispositivo requiera autenticación propia |
+| `SERVICE`       |                 0 |                 0 |                                                     0 |
 
 La combinación `EMPLOYEE + CUSTOMER` es la única multiidentidad humana aprobada y conserva dos vínculos independientes.
 
@@ -2789,11 +2789,11 @@ La combinación `EMPLOYEE + CUSTOMER` es la única multiidentidad humana aprobad
 
 #### 12. Cardinalidad desde la identidad empresarial
 
-| Identidad | Cuentas Auth activas permitidas |
-| --- | ---: |
-| `EMPLOYEE` | 0..1 |
-| `CUSTOMER` | 0..1 |
-| `DEVICE` | 0..1; exactamente 1 cuando el dispositivo habilitado requiera autenticación propia |
+| Identidad  |                                                    Cuentas Auth activas permitidas |
+| ---------- | ---------------------------------------------------------------------------------: |
+| `EMPLOYEE` |                                                                               0..1 |
+| `CUSTOMER` |                                                                               0..1 |
+| `DEVICE`   | 0..1; exactamente 1 cuando el dispositivo habilitado requiera autenticación propia |
 
 Una segunda reclamación activa no reemplaza silenciosamente la primera: exige conflicto o supersesión formal.
 
@@ -2826,14 +2826,14 @@ Las combinaciones incompatibles fallan cerradas.
 
 Se preserva el vocabulario cerrado de seis estados:
 
-| Estado | Participa en resolución normal |
-| --- | ---: |
-| `PENDING_VERIFICATION` | no |
-| `ACTIVE` | sí, sujeto al estado vigente de la identidad |
-| `SUSPENDED` | no |
-| `REVOKED` | no |
-| `SUPERSEDED` | no |
-| `CONFLICT` | no |
+| Estado                 |               Participa en resolución normal |
+| ---------------------- | -------------------------------------------: |
+| `PENDING_VERIFICATION` |                                           no |
+| `ACTIVE`               | sí, sujeto al estado vigente de la identidad |
+| `SUSPENDED`            |                                           no |
+| `REVOKED`              |                                           no |
+| `SUPERSEDED`           |                                           no |
+| `CONFLICT`             |                                           no |
 
 Solo `ACTIVE` puede participar en resolución empresarial normal.
 
@@ -3013,13 +3013,13 @@ La arquitectura histórica de `SUPA-ARC-009` documentó 73 cuentas e identidades
 
 En los schemas Vento auditados `app_private`, `club`, `pass`, `payments`, `pos`, `public`, `talento` y `viso` existen actualmente **73 foreign keys** directas hacia `auth.users`:
 
-| Schema | CASCADE | NO ACTION | RESTRICT | SET NULL | Total |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| `club` | 7 | 0 | 0 | 1 | 8 |
-| `pass` | 3 | 0 | 1 | 0 | 4 |
-| `payments` | 1 | 0 | 0 | 0 | 1 |
-| `public` | 11 | 24 | 2 | 23 | 60 |
-| **TOTAL** | **22** | **24** | **3** | **24** | **73** |
+| Schema     | CASCADE | NO ACTION | RESTRICT | SET NULL |  Total |
+| ---------- | ------: | --------: | -------: | -------: | -----: |
+| `club`     |       7 |         0 |        0 |        1 |      8 |
+| `pass`     |       3 |         0 |        1 |        0 |      4 |
+| `payments` |       1 |         0 |        0 |        0 |      1 |
+| `public`   |      11 |        24 |        2 |       23 |     60 |
+| **TOTAL**  |  **22** |    **24** |    **3** |   **24** | **73** |
 
 `public.employees.id → auth.users.id` continúa con `ON DELETE CASCADE`, confirmando que el acoplamiento legacy todavía existe físicamente.
 
@@ -3200,13 +3200,13 @@ Estos identificadores son trazabilidad de requisitos vigentes; no se modifica ni
 
 #### 36. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | la tarea documental no crea código ni migraciones |
-| LOCAL | NOT_EXECUTED | pendiente del lifecycle documental y validadores del checkout |
-| REMOTA | PASS | fuentes canónicas vigentes y auditoría read-only de `vento-os-dev`: 78 `auth.users`, 78 `auth.identities`, 73 FKs directas hacia `auth.users` en los schemas Vento auditados y `public.employees.id` todavía con `ON DELETE CASCADE` |
-| OPERATIVA | NOT_APPLICABLE | no se alteraron consumidores ni comportamiento runtime |
-| FÍSICA | NOT_APPLICABLE | `AUTH-DB-019::GLOBAL` permanece sin autorización física y no se ejecutó ninguna mutación |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                            |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED   | la tarea documental no crea código ni migraciones                                                                                                                                                                                    |
+| LOCAL     | NOT_EXECUTED   | pendiente del lifecycle documental y validadores del checkout                                                                                                                                                                        |
+| REMOTA    | PASS           | fuentes canónicas vigentes y auditoría read-only de `vento-os-dev`: 78 `auth.users`, 78 `auth.identities`, 73 FKs directas hacia `auth.users` en los schemas Vento auditados y `public.employees.id` todavía con `ON DELETE CASCADE` |
+| OPERATIVA | NOT_APPLICABLE | no se alteraron consumidores ni comportamiento runtime                                                                                                                                                                               |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-019::GLOBAL` permanece sin autorización física y no se ejecutó ninguna mutación                                                                                                                                             |
 
 ---
 
@@ -3313,7 +3313,2265 @@ Estos identificadores son trazabilidad de requisitos vigentes; no se modifica ni
 `AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura`
 
 
-### [ ] AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+### ✅ AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
+**Tarea siguiente:** AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato de materialización del resolver canónico `get_access_context`, sus resolvers privados, fingerprints, serialización y proyección segura cerrado; futura instancia global `AUTH-DB-033::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-033` cierra el contrato de materialización física futura del contexto real de acceso de Vento OS.
+
+La tarea transforma el diseño aprobado de `AUTH-CTX-025` en una especificación física única, verificable y reversible para:
+
+```text
+SESIÓN TÉCNICA REAL
++
+APLICACIÓN CANÓNICA
++
+PRINCIPAL EMPRESARIAL
++
+ACTOR EFECTIVO
++
+IDENTIDAD LABORAL O DE DOMINIO
++
+CONTEXTO OPERATIVO
++
+DISPOSITIVO
++
+INSTANTE Y SNAPSHOT ÚNICOS
+=
+AccessContext@1.0.0
+```
+
+La función resuelve hechos.
+
+No decide permisos, no resuelve recursos de una acción, no ejecuta operaciones empresariales y no sustituye `evaluate_authorization`.
+
+Regla central:
+
+```text
+get_access_context
+→ RESUELVE CONTEXTO REAL
+
+evaluate_authorization
+→ DECIDE AUTORIZACIÓN
+
+PROYECCIÓN SEGURA
+→ PRESENTA CONTEXTO MÍNIMO
+
+NINGUNA DE LAS TRES CAPAS
+→ CONCEDE AUTORIDAD POR INFERENCIA
+```
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el siguiente resultado objetivo:
+
+```text
+AUTH-DB-033
+→ contrato documental único
+
+AUTH-DB-033::GLOBAL
+→ futura instancia física global reutilizable
+
+app_private.get_access_context(text)
+→ resolver canónico completo
+→ AccessContext@1.0.0
+→ no expuesto directamente al cliente
+
+app_private.*
+→ resolvers y helpers privados
+→ no ejecutables por anon ni authenticated
+
+api.get_safe_access_context(text)
+→ única proyección SQL cliente de esta tarea
+→ payload mínimo y no autoritativo
+→ sin evidencia interna ni autoridad ejecutable
+```
+
+La instancia física futura deberá producir migraciones versionadas en `vento-shell`, pruebas reproducibles y evidencia de rollback.
+
+---
+
+#### 3. Topología y gate
+
+La clasificación recomputada desde `task-work-topology.json` es:
+
+```text
+task_id = AUTH-DB-033
+mode = GLOBAL_ENABLE_ONCE
+instance = AUTH-DB-033::GLOBAL
+execution_gate = PRE_E5_FOUNDATION
+canonical_work = DEFINE_CONTRACT_ONCE
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no se repite por `package_id`;
+3. la tarea documental se desarrolla una sola vez;
+4. la aprobación documental no autoriza la instancia;
+5. la instancia física se autoriza únicamente cuando sus prerrequisitos técnicos estén verificados;
+6. la futura materialización se reutiliza por todos los consumidores autorizados;
+7. una corrección posterior se realiza mediante migración forward versionada.
+
+---
+
+#### 4. Fuentes vinculantes y precedencia
+
+`AUTH-DB-033` consume y preserva, sin redefinirlas:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001..021`;
+- `AUTH-CAT-001..024`;
+- `AUTH-RBAC-001..028`;
+- `AUTH-CTX-001` — `AccessContext`;
+- `AUTH-CTX-004` — versionado y serialización;
+- `AUTH-CTX-005..015` — nodos contextuales, readiness y problemas estructurales;
+- `AUTH-CTX-016..024` — evidencia, referencias y auditoría;
+- `AUTH-CTX-025` — contrato SQL de `get_access_context`;
+- `AUTH-CTX-026` — evaluador posterior;
+- `AUTH-CTX-027` — inventario de consumidores;
+- `AUTH-CTX-028` — compatibilidad legacy;
+- `AUTH-CTX-029` — caché, límites temporales y `SafeContextProjection` L2;
+- `AUTH-CTX-030` — plan maestro de pruebas;
+- `SUPA-ARC-005` — `api` como capa expuesta;
+- `SUPA-ARC-006` — `app_private` como capa privada;
+- `SUPA-ARC-013` — funciones, RPC y triggers;
+- `SUPA-ARC-014` — política `SECURITY DEFINER`;
+- `SUPA-ARC-015` — exposición, grants y RLS;
+- `AUTH-DB-016` — topología de schemas;
+- `AUTH-DB-018` — separación entre contratos expuestos e internos;
+- `AUTH-DB-017` — Data API y privilegios;
+- `AUTH-DB-019` — principal y vínculos empresariales;
+- `AUTH-DB-027` — harness físico;
+- `AUTH-DB-028` — baseline y drift;
+- `AUTH-DB-029` — recuperación y rollback;
+- `AUTH-DB-030` — retiro legacy;
+- `AUTH-DB-031` — certificación final.
+
+Precedencia funcional:
+
+```text
+AUTH-DB-019
+→ principal y vínculo empresarial
+
+AUTH-DB-033
+→ contexto real
+
+AUTH-DB-035
+→ frescura transaccional
+
+AUTH-DB-034
+→ decisión de autorización
+
+AUTH-DB-032
+→ persistencia de decisión
+```
+
+`AUTH-DB-033` no redefine cardinalidad de identidad, permisos, grants empresariales, recurso, simulación o auditoría durable.
+
+---
+
+#### 5. Clasificación recomputada frente al trabajo proyectado
+
+La clasificación independiente es:
+
+```text
+TAREA = AUTH-DB-033
+NATURALEZA = DOCUMENTAL
+MODO = GLOBAL_ENABLE_ONCE
+INSTANCIA FUTURA = AUTH-DB-033::GLOBAL
+GATE = PRE_E5_FOUNDATION
+CARRIL ACTUAL = DOCUMENTAL
+SIGUIENTE DOCUMENTAL = AUTH-DB-035
+```
+
+Resultado:
+
+```text
+CLASIFICACIÓN RECOMPUTADA
+vs.
+CURRENT-WORK DOCUMENTAL
+
+COINCIDE
+```
+
+La existencia de una instancia física de otra familia no altera este contrato documental.
+
+---
+
+#### 6. Estado físico remoto AS-IS
+
+La auditoría read-only de `vento-os-dev` realizada durante el desarrollo documental confirma que el estado físico actual todavía es legacy respecto del objetivo.
+
+La línea base canónica vigente de R1 identifica actualmente como schemas objetivo ya existentes:
+
+```text
+app_private
+payments
+```
+
+y mantiene todavía pendientes de materialización otros schemas objetivo relevantes para este resolver, entre ellos:
+
+```text
+api
+identity_access
+workforce
+work_scheduling
+attendance
+technology_operations
+audit
+```
+
+`public` permanece como superficie legacy y no se considera owner schema objetivo.
+
+La configuración versionada de Data API todavía expone:
+
+```text
+public
+graphql_public
+```
+
+con:
+
+```text
+extra_search_path = public, extensions
+```
+
+Existen además los resolvers legacy:
+
+```text
+public.get_operational_context(
+  p_employee_id uuid,
+  p_site_id uuid,
+  p_app_code text
+)
+
+public.get_effective_context_v1(
+  p_app_code text
+)
+```
+
+El primero es `VOLATILE` y `SECURITY DEFINER`.
+
+El segundo es `STABLE` y `SECURITY DEFINER`, pero:
+
+- normaliza silenciosamente `p_app_code`;
+- usa `auth.uid()` como llave directa de `public.employees`;
+- consulta simulación;
+- usa `navigation_role`;
+- admite fallback a `nexo`;
+- reutiliza `get_operational_context`;
+- devuelve `bypass_applied`;
+- devuelve `can_operate`;
+- expone una forma plana incompatible con `AccessContext@1.0.0`.
+
+Estos objetos son antecedentes técnicos.
+
+No se convierten en fuente normativa y no se retiran dentro de esta tarea documental.
+
+---
+
+#### 7. Frontera exacta de responsabilidad
+
+`AUTH-DB-033` gobierna exclusivamente:
+
+1. identidad física del resolver canónico completo;
+2. firma SQL;
+3. ubicación privada;
+4. grafo de helpers privados;
+5. snapshot e instante únicos;
+6. serialización canónica;
+7. fingerprints;
+8. metadatos de resolución;
+9. seguridad de ejecución;
+10. proyección SQL segura;
+11. grants mínimos de sus funciones;
+12. compatibilidad física de coexistencia;
+13. pruebas del resolver;
+14. rendimiento del resolver;
+15. rollback de los objetos creados por la instancia.
+
+No gobierna:
+
+- catálogo de permisos;
+- decisión `ALLOW/DENY`;
+- recursos;
+- simulación;
+- caché L1;
+- generaciones de frescura;
+- persistencia durable de decisiones;
+- adaptación completa de consumidores;
+- retiro de resolvers legacy.
+
+---
+
+#### 8. Identidad física del resolver canónico
+
+Se congela la identidad física:
+
+```text
+app_private.get_access_context(text) → jsonb
+```
+
+Identidad lógica publicada en `resolution_metadata.resolver`:
+
+```text
+vento.authorization.get_access_context
+```
+
+Versión inicial del resolver:
+
+```text
+1.0.0
+```
+
+Versión contractual:
+
+```text
+AccessContext@1.0.0
+```
+
+La identidad física no cambia por ambiente.
+
+No se crean variantes como:
+
+```text
+get_access_context_v1
+get_access_context()
+get_access_context(uuid)
+get_access_context(text, uuid)
+get_access_context(jsonb)
+```
+
+Una firma nueva exige decisión contractual explícita.
+
+---
+
+#### 9. Firma exacta
+
+La firma completa es:
+
+```sql
+app_private.get_access_context(
+  p_app_code text
+)
+returns jsonb
+```
+
+`p_app_code` es el único parámetro.
+
+No tiene default.
+
+No puede ser `null`, vacío ni contener espacios periféricos.
+
+No se corrige mediante `trim`, `lower`, alias o fallback.
+
+Una invocación contractualmente mal formada produce:
+
+```text
+SQLSTATE 22023
+```
+
+Una app con forma válida pero configuración inexistente o ambigua se representa con los códigos estructurales ya aprobados.
+
+No se acepta desde el caller:
+
+```text
+user_id
+principal_id
+actor_id
+employee_id
+customer_id
+device_id
+role
+site_id
+area_id
+shift_id
+checkin_id
+simulation_id
+permission_key
+resource_id
+bypass
+can_operate
+```
+
+---
+
+#### 10. Ubicación y exposición
+
+Separación física obligatoria:
+
+| Objeto                          | Schema        | Exposición cliente                     |
+| ------------------------------- | ------------- | -------------------------------------- |
+| `get_access_context(text)`      | `app_private` | NO                                     |
+| resolvers privados              | `app_private` | NO                                     |
+| canonicalizador/fingerprint     | `app_private` | NO                                     |
+| proyector seguro                | `app_private` | NO directo                             |
+| `get_safe_access_context(text)` | `api`         | SÍ, únicamente según grants explícitos |
+
+`app_private` permanece fuera de Data API.
+
+El cliente no recibe `USAGE` sobre `app_private`.
+
+`api` continúa siendo la única capa empresarial Vento objetivo de contratos expuestos.
+
+---
+
+#### 11. Modo de seguridad del resolver completo
+
+`app_private.get_access_context(text)` será:
+
+```text
+VOLATILITY = STABLE
+SECURITY = DEFINER
+```
+
+`SECURITY DEFINER` se justifica exclusivamente porque el resolver debe leer fuentes que el caller no puede consultar directamente.
+
+No convierte al owner SQL en autoridad empresarial.
+
+Condiciones obligatorias:
+
+1. owner técnico no interactivo;
+2. owner no utilizado por frontend;
+3. owner distinto de `anon` y `authenticated`;
+4. privilegios mínimos;
+5. `search_path` fijo;
+6. objetos críticos calificados;
+7. sin SQL dinámico por selección de app, rol, schema o tabla;
+8. `PUBLIC EXECUTE` revocado;
+9. `anon EXECUTE` revocado;
+10. `authenticated EXECUTE` revocado sobre el resolver completo;
+11. helpers inaccesibles al cliente;
+12. prueba de escalamiento y poisoning.
+
+El nombre exacto del rol técnico propietario se obtiene del inventario físico verificado de la instancia.
+
+Si no existe un rol que cumpla estas condiciones, la instancia falla cerrada y no crea un owner improvisado por inferencia.
+
+---
+
+#### 12. `search_path`
+
+El resolver completo congela:
+
+```text
+pg_catalog
+app_private
+```
+
+como `search_path` lógico mínimo.
+
+Los objetos de:
+
+```text
+auth
+identity_access
+workforce
+work_scheduling
+attendance
+technology_operations
+org_governance
+extensions
+```
+
+se referencian mediante nombre calificado cuando sean consumidos.
+
+No se utiliza:
+
+```text
+search_path = public
+```
+
+No se confía en `extra_search_path` de Data API.
+
+No se incorpora un owner schema al `search_path` para ahorrar calificación.
+
+La función de hash y generación UUID se referencia de forma calificada desde el schema de extensión aprobado.
+
+---
+
+#### 13. Grafo de resolvers privados
+
+Se congela el siguiente grafo lógico dentro de `app_private`:
+
+```text
+resolve_access_application
+        ↓
+resolve_access_principal
+        ↓
+resolve_access_actor
+        ├───────────────┐
+        ↓               ↓
+resolve_access_base_lane
+                        resolve_access_device
+        ↓               ↓
+resolve_access_operational_lane
+        └───────┬───────┘
+                ↓
+validate_access_context
+                ↓
+canonicalize_access_context
+                ↓
+fingerprint_access_context
+                ↓
+project_safe_access_context
+```
+
+Identidades privadas iniciales:
+
+```text
+app_private.resolve_access_application(text, timestamptz) → jsonb
+app_private.resolve_access_principal(text, timestamptz, jsonb) → jsonb
+app_private.resolve_access_actor(text, timestamptz, jsonb, jsonb) → jsonb
+app_private.resolve_access_base_lane(text, timestamptz, jsonb, jsonb) → jsonb
+app_private.resolve_access_operational_lane(text, timestamptz, jsonb, jsonb) → jsonb
+app_private.resolve_access_device(text, timestamptz, jsonb, jsonb, jsonb) → jsonb
+app_private.validate_access_context(jsonb) → jsonb
+app_private.canonicalize_access_context(jsonb) → text
+app_private.fingerprint_access_context(jsonb) → text
+app_private.project_safe_access_context(text, jsonb) → jsonb
+```
+
+Las firmas son internas.
+
+No se exponen en `api`.
+
+No se consideran contratos cliente.
+
+---
+
+#### 14. Política de privilegios de helpers
+
+Los helpers privados serán `SECURITY INVOKER` por defecto.
+
+Motivo:
+
+```text
+UN ÚNICO BORDE PRIVILEGIADO
+=
+app_private.get_access_context
+```
+
+La función superior ejecuta con el owner técnico y los helpers heredan ese contexto de ejecución sin multiplicar superficies `SECURITY DEFINER`.
+
+Excepciones solo se permiten cuando una prueba física demuestre necesidad técnica concreta y se documenten individualmente.
+
+Para todos los helpers:
+
+```text
+PUBLIC        → REVOKE
+anon          → REVOKE
+authenticated → REVOKE
+```
+
+No existe ejecución directa cliente.
+
+---
+
+#### 15. Instante único
+
+`app_private.get_access_context` captura exactamente una vez:
+
+```text
+v_resolved_at timestamptz
+```
+
+Ese instante:
+
+- procede del servidor;
+- usa zona horaria;
+- se serializa UTC;
+- se comparte con todos los helpers;
+- gobierna vigencias;
+- no procede del navegador;
+- no se recalcula por resolver.
+
+No se usan relojes independientes para turno, check-in, actor session o dispositivo.
+
+---
+
+#### 16. Snapshot único
+
+La resolución completa opera bajo un único snapshot del statement.
+
+Queda prohibido:
+
+- abrir transacciones auxiliares;
+- resolver parte en cliente;
+- mezclar una caché anterior con tablas actuales;
+- resolver principal antes de una mutación visible y turno después;
+- combinar revisiones de fuentes distintas sin detección.
+
+Una mezcla detectable produce:
+
+```text
+CONTEXT_SNAPSHOT_MIXED
+```
+
+y falla cerrada.
+
+`get_access_context` no ejecuta escrituras para estabilizar el snapshot.
+
+---
+
+#### 17. Resolución de aplicación
+
+`resolve_access_application` valida:
+
+```text
+p_app_code
++
+catálogo canónico vigente
++
+política de identidad de dominio
++
+política de dispositivo aplicable
+```
+
+Resultado:
+
+- una configuración exacta;
+- `RESOLVER_CONFIGURATION_MISSING`;
+- `RESOLVER_CONFIGURATION_AMBIGUOUS`;
+- error 22023 cuando el argumento no cumple la forma contractual.
+
+No existe:
+
+```text
+null → nexo
+lowercase automático
+alias de app
+ruta frontend → app_code
+última app usada → app_code
+```
+
+---
+
+#### 18. Principal e identidad empresarial
+
+`resolve_access_principal` consume:
+
+```text
+sesión técnica real
+→ auth subject
+→ principal empresarial
+→ vínculo explícito
+```
+
+Conserva:
+
+```text
+auth.users
+→ sujeto técnico
+
+identity_access
+→ principal y vínculo
+
+owner schema
+→ identidad empresarial
+```
+
+`auth.uid()` es un localizador técnico.
+
+No es:
+
+```text
+employee_id
+customer_id
+device_id
+actor_id
+```
+
+No se infiere identidad mediante:
+
+- correo;
+- teléfono;
+- metadata;
+- provider;
+- nombre;
+- igualdad UUID legacy.
+
+---
+
+#### 19. Identidad de dominio y actor efectivo
+
+El actor se resuelve mediante:
+
+```text
+principal real
++
+app_code
++
+política de identidad de dominio
++
+vínculos vigentes
++
+actor session o delegación cuando aplique
+```
+
+Se conserva:
+
+```text
+principal
+≠ actor_effective
+```
+
+Una identidad `EMPLOYEE + CUSTOMER` no se mezcla para ampliar autoridad.
+
+Cuando la app no pueda seleccionar una identidad única:
+
+```text
+DOMAIN_IDENTITY_AMBIGUOUS
+```
+
+Una delegación exige vínculo explícito y vigente.
+
+`service_role` no constituye delegación.
+
+---
+
+#### 20. Empleado y estado laboral
+
+El empleado se resuelve desde el actor laboral efectivo.
+
+No desde el usuario Auth.
+
+Un empleado inactivo se representa:
+
+```text
+employee.is_active = false
+base readiness = UNAVAILABLE
+operational readiness = UNAVAILABLE
+```
+
+con razones aprobadas.
+
+No se reactiva por:
+
+- turno;
+- check-in;
+- rol legacy;
+- dispositivo;
+- grant residual.
+
+---
+
+#### 21. Carril base
+
+`resolve_access_base_lane` resuelve:
+
+1. estado laboral;
+2. rol base;
+3. assigned sites;
+4. assigned areas;
+5. cobertura administrativa;
+6. readiness base.
+
+`base_role` procede de una asignación laboral canónica vigente.
+
+No procede de:
+
+- turno;
+- `navigation_role`;
+- `employees.role` sin mapeo canónico;
+- dispositivo;
+- último rol usado.
+
+`assigned_sites` conserva todas las asignaciones relevantes.
+
+Orden:
+
+```text
+site_code
+site_id
+```
+
+`assigned_areas` conserva sede y área.
+
+Orden:
+
+```text
+site_id
+area_kind
+area_id
+```
+
+Una lista vacía significa ninguna asignación.
+
+No significa organización.
+
+---
+
+#### 22. Cobertura administrativa
+
+`administrative_coverage` se resuelve únicamente desde reglas aprobadas.
+
+`ORGANIZATION` exige autoridad organizacional explícita.
+
+No se infiere por:
+
+- nombre de rol;
+- varias sedes;
+- sede primaria;
+- `null`;
+- lista vacía;
+- `service_role`;
+- capacidad SQL del owner.
+
+La cobertura no decide un permiso específico.
+
+---
+
+#### 23. Carril operativo
+
+`resolve_access_operational_lane` resuelve:
+
+```text
+turno vigente
+→ rol operativo
+→ sede operativa
+→ área operativa
+→ check-in disponible
+→ readiness operativo
+```
+
+El turno debe ser:
+
+- publicado;
+- vigente en `v_resolved_at`;
+- del actor;
+- temporalmente válido;
+- territorialmente válido;
+- no ambiguo.
+
+No se usa `LIMIT 1` para ocultar solapamientos.
+
+Dos candidatos vigentes producen:
+
+```text
+SHIFT_OVERLAP
+active_shift = null
+operational readiness = INVALID
+```
+
+---
+
+#### 24. Ausencia normal de turno y check-in
+
+Ausencia normal de turno:
+
+```text
+active_shift = null
+NO_ACTIVE_SHIFT
+operational readiness = UNAVAILABLE
+```
+
+No invalida el carril base.
+
+Ausencia normal de check-in:
+
+```text
+active_checkin_session = null
+NO_ACTIVE_CHECKIN
+```
+
+No se convierte por sí sola en `StructuralIssue`.
+
+El resolver no reconstruye una sesión activa buscando el último evento de entrada sin un modelo canónico de sesión.
+
+---
+
+#### 25. Rol y territorio operativos
+
+`operational_role` procede exclusivamente del turno válido.
+
+`operational_site` procede exclusivamente del turno válido.
+
+`operational_area`:
+
+- procede del turno;
+- puede ser confirmado por check-in;
+- pertenece a la sede;
+- puede ser `null` legítimamente.
+
+Queda prohibido:
+
+```text
+selected_site
+employee_default_site
+device_site
+checkin_site aislado
+última sede usada
+navigation_role
+```
+
+como fallback de autoridad operativa.
+
+---
+
+#### 26. Zona horaria
+
+El resolver no hardcodea una zona horaria global.
+
+La vigencia temporal utiliza la fuente autoritativa correspondiente al contexto.
+
+Las reglas de cruce de medianoche y límites temporales usan el mismo `v_resolved_at`.
+
+Una zona horaria ausente o contradictoria se resuelve según el catálogo estructural aprobado y no mediante fallback silencioso.
+
+---
+
+#### 27. Dispositivo compartido
+
+`resolve_access_device` admite un dispositivo únicamente cuando existe identidad canónica de dispositivo.
+
+No usa:
+
+- user agent;
+- IP;
+- hostname;
+- cookie libre;
+- texto de cliente.
+
+Para `SHARED_DEVICE`:
+
+```text
+principal = SHARED_DEVICE
+actor_effective = EMPLOYEE o UNRESOLVED
+```
+
+El actor procede de una actor session vigente.
+
+El dispositivo puede restringir.
+
+No puede ampliar autoridad.
+
+No aporta:
+
+- rol base;
+- rol operativo;
+- permiso;
+- sede empresarial del actor.
+
+Sin actor vigente:
+
+```text
+actor_effective = UNRESOLVED
+base readiness = UNAVAILABLE
+operational readiness = UNAVAILABLE
+```
+
+No se reutiliza el último actor.
+
+---
+
+#### 28. Actor de sistema
+
+Un actor `SYSTEM` exige:
+
+- principal técnico registrado;
+- proceso permitido;
+- identidad `SYSTEM`;
+- actor exacto;
+- delegación explícita cuando represente a otra entidad.
+
+No basta con ejecutar bajo:
+
+```text
+service_role
+postgres
+owner de la función
+```
+
+Los privilegios SQL permiten ejecutar lógica.
+
+No crean autoridad empresarial.
+
+---
+
+#### 29. Simulación excluida
+
+El grafo real no consulta:
+
+- simulación activa;
+- actor simulado;
+- rol simulado;
+- sede simulada;
+- área simulada;
+- grants hipotéticos.
+
+`SimulationContext` permanece separado.
+
+`get_effective_context_v1` no se reutiliza como fuente del resolver nuevo porque mezcla contexto real y simulación.
+
+---
+
+#### 30. `lane_readiness`
+
+El resultado conserva:
+
+```text
+lane_readiness.base
+lane_readiness.operational
+```
+
+Readiness expresa suficiencia estructural.
+
+No expresa autorización.
+
+No existen en el resultado:
+
+```text
+can_operate
+can_admin
+allow
+deny
+has_permission
+bypass_applied
+```
+
+La ausencia de permiso evaluado es intencional.
+
+---
+
+#### 31. `structural_issues`
+
+Solo se emiten códigos del catálogo congelado por `AUTH-CTX-015`.
+
+Reglas:
+
+1. cada issue tiene resolver propietario;
+2. no se inventan códigos SQL locales;
+3. no se filtran nombres de tablas o excepciones;
+4. cascadas se suprimen;
+5. duplicados exactos se eliminan;
+6. metadata contradictoria falla cerrada;
+7. el orden es determinista.
+
+Orden:
+
+```text
+severidad
+issue_code
+subject_type
+subject_id o cadena vacía
+source
+```
+
+Un fallo de turno no genera automáticamente falsos errores derivados de rol, sede y área.
+
+---
+
+#### 32. Forma exacta de `AccessContext@1.0.0`
+
+El resolver retorna un único `jsonb` con todos los campos obligatorios del contrato:
+
+```text
+contract_family
+contract_family_version
+contract_name
+contract_version
+schema_version
+context_id
+resolved_at
+principal
+actor_effective
+domain_identity
+employee
+base_role
+assigned_sites
+assigned_areas
+administrative_coverage
+active_shift
+active_checkin_session
+operational_role
+operational_site
+operational_area
+device_context
+lane_readiness
+structural_issues
+resolution_metadata
+```
+
+No retorna:
+
+- tabla plana;
+- múltiples filas;
+- array;
+- booleano;
+- texto JSON;
+- `null`;
+- record parcial.
+
+Campos obligatorios ausentes no se omiten.
+
+`null` explícito y arrays vacíos conservan semántica distinta.
+
+---
+
+#### 33. `context_id`
+
+Cada resolución nueva sin caché genera un UUID de servidor.
+
+Propiedades:
+
+```text
+único
+inmutable
+no derivado de actor
+no derivado de usuario
+no derivado de dispositivo
+no bearer token
+no permiso
+```
+
+La futura implementación puede utilizar la función UUID criptográficamente segura disponible en la extensión aprobada, referenciada con nombre calificado.
+
+Cuando una caché válida se implemente posteriormente, un HIT podrá conservar el `context_id` almacenado según `AUTH-CTX-029`.
+
+---
+
+#### 34. `resolution_metadata`
+
+Se materializa exactamente:
+
+```text
+resolver
+resolver_version
+authorization_contract_version
+catalog_version
+source_versions
+source_fingerprints
+cache_status
+```
+
+Valores iniciales:
+
+```text
+resolver = vento.authorization.get_access_context
+resolver_version = 1.0.0
+authorization_contract_version = 1.0.0
+catalog_version = 1.0.0
+cache_status = NOT_IMPLEMENTED
+```
+
+`cache_status` permanecerá `NOT_IMPLEMENTED` mientras `AUTH-DB-035` y `SHELL-CTX-006` no hayan materializado y habilitado otra estrategia aprobada.
+
+No se usa:
+
+```text
+latest
+main
+current
+production
+unknown
+```
+
+como versión.
+
+---
+
+#### 35. Registro cerrado de `source_versions`
+
+Se congela el siguiente vocabulario de claves permitido:
+
+```text
+application_catalog
+principal_registry
+enterprise_identity_links
+domain_identity_policy
+actor_resolution_model
+employment_model
+role_catalog
+site_catalog
+area_catalog
+administrative_coverage_policy
+shift_model
+checkin_model
+device_model
+actor_session_model
+structural_issue_catalog
+```
+
+Reglas:
+
+1. toda fuente materialmente utilizada aparece;
+2. una fuente no utilizada no se inventa;
+3. una clave fuera del vocabulario bloquea la serialización hasta decisión contractual;
+4. cada valor es una versión exacta;
+5. una versión no identificable falla cerrada;
+6. `source_fingerprints` usa exactamente el mismo conjunto de claves efectivamente presentes.
+
+---
+
+#### 36. `source_fingerprints`
+
+Cada fingerprint representa únicamente el snapshot autoritativo mínimo utilizado por el resolver.
+
+Formato físico:
+
+```text
+sha256: seguido de 64 caracteres hexadecimales minúsculos
+```
+
+La preimagen:
+
+- usa `vento.canonical-json@1.0.0`;
+- contiene solo campos materialmente utilizados;
+- ordena colecciones determinísticamente;
+- no incluye JWT completo;
+- no incluye secretos;
+- no incluye tokens;
+- no incluye tablas completas cuando no corresponda;
+- no incluye datos de otros actores no utilizados;
+- no depende del formato Markdown ni de JSON incidental.
+
+La implementación utiliza SHA-256 desde una dependencia criptográfica aprobada y referenciada de forma calificada.
+
+---
+
+#### 37. `context_fingerprint`
+
+El fingerprint semántico del contexto se define como SHA-256 de una proyección canonicalizada que incluye:
+
+- versiones contractuales;
+- resolver;
+- versiones y fingerprints de fuentes;
+- principal;
+- actor;
+- identidad de dominio;
+- empleado;
+- roles;
+- asignaciones;
+- cobertura;
+- turno;
+- check-in;
+- territorio operativo;
+- dispositivo;
+- readiness;
+- structural issues.
+
+Excluye:
+
+```text
+context_id
+resolved_at
+cache_status
+tiempos de caché
+correlation_id
+métricas
+nodo de infraestructura
+metadata de delivery
+```
+
+Motivo:
+
+```text
+DOS RESOLUCIONES NUEVAS
+PUEDEN TENER
+context_id DIFERENTE
++
+context_fingerprint IGUAL
+```
+
+cuando los hechos semánticos no cambiaron.
+
+Formato:
+
+```text
+sha256: seguido de 64 caracteres hexadecimales minúsculos
+```
+
+---
+
+#### 38. Serialización canónica
+
+Toda preimagen y salida contractual respeta:
+
+```text
+vento.canonical-json@1.0.0
+```
+
+Reglas:
+
+- claves obligatorias presentes;
+- `null` explícito;
+- arrays vacíos explícitos;
+- timestamps UTC normalizados;
+- enums exactos;
+- Unicode normalizado;
+- conjuntos ordenados;
+- secuencias semánticas preservadas;
+- números no ambiguos.
+
+Queda prohibido considerar:
+
+```text
+jsonb::text
+```
+
+como implementación suficiente de la política completa.
+
+`app_private.canonicalize_access_context(jsonb)` centraliza la representación requerida y queda cubierta por pruebas propias.
+
+---
+
+#### 39. Identidad física de la proyección segura
+
+Se congela:
+
+```text
+api.get_safe_access_context(text) → jsonb
+```
+
+Firma:
+
+```sql
+api.get_safe_access_context(
+  p_app_code text
+)
+returns jsonb
+```
+
+Responsabilidad:
+
+```text
+1. validar la invocación;
+2. obtener exactamente un AccessContext canónico;
+3. calcular u obtener context_fingerprint;
+4. aplicar el proyector privado;
+5. devolver únicamente datos seguros;
+6. no decidir permisos;
+7. no devolver autoridad ejecutable.
+```
+
+No es equivalente a `app_private.get_access_context`.
+
+No devuelve un `AccessContext@1.0.0` incompleto.
+
+Es una proyección derivada.
+
+---
+
+#### 40. Excepción explícita `SECURITY DEFINER` de la proyección
+
+`api` conserva como política objetivo cero RPC `SECURITY DEFINER` por defecto.
+
+`api.get_safe_access_context(text)` constituye una excepción explícita y estrecha porque:
+
+1. `authenticated` no recibe `USAGE` ni `EXECUTE` sobre `app_private`;
+2. la proyección necesita invocar el resolver privado;
+3. un wrapper `SECURITY INVOKER` no debe forzar a abrir la capa privada al cliente;
+4. la salida se reduce antes de cruzar la frontera.
+
+La excepción exige:
+
+- owner técnico no interactivo;
+- `search_path` fijo;
+- llamadas totalmente calificadas a `app_private`;
+- cero SQL dinámico;
+- cero acceso directo cliente a helpers;
+- prueba de poisoning;
+- prueba de homónimos maliciosos;
+- prueba de datos no filtrados;
+- revisión de ACL.
+
+Si estas condiciones no pueden demostrarse, la RPC segura no se publica.
+
+---
+
+#### 41. Forma de la proyección SQL segura
+
+La proyección SQL devuelve únicamente:
+
+```text
+context_id
+resolved_at
+context_fingerprint
+expires_at
+safe_fields
+```
+
+`expires_at` representa el límite visual máximo de la proyección y nunca una autorización.
+
+`safe_fields` puede contener:
+
+```text
+principal_type
+actor_type
+employee_active
+base_role_code
+operational_role_code
+operational_site_code
+operational_area_kind
+operational_area_code
+device_mode
+lane_readiness.base.state
+lane_readiness.base.reason_codes
+lane_readiness.operational.state
+lane_readiness.operational.reason_codes
+safe_structural_issue_codes
+```
+
+Reglas:
+
+1. códigos territoriales se usan en lugar de UUID internos cuando exista código canónico;
+2. `base_role_code` solo se incluye cuando su visibilidad contractual sea segura;
+3. reason codes se filtran por el catálogo seguro vigente;
+4. `safe_structural_issue_codes` solo contiene códigos autorizados para presentación;
+5. los detalles del issue no cruzan la frontera;
+6. la proyección no contiene permisos efectivos.
+
+`AUTH-CTX-029` y `SHELL-AUTH-002` podrán envolver este resultado en `SafeContextProjection` L2 con:
+
+```text
+projection_id
+generated_at
+refresh_at
+actor_marker
+app_code
+```
+
+sin reconstruir autoridad en el cliente.
+
+---
+
+#### 42. Reconciliación del fingerprint seguro
+
+`AUTH-CTX-025` prohibió exponer fingerprints internos por defecto.
+
+`AUTH-CTX-029`, aprobado posteriormente, exige `context_fingerprint` en `SafeContextProjection` L2.
+
+Se reconcilia así:
+
+```text
+context_fingerprint
+→ PUEDE cruzar la proyección segura
+
+source_fingerprints
+→ NO cruzan la proyección segura
+
+source_versions internas
+→ NO cruzan la proyección segura
+```
+
+El `context_fingerprint` no permite reconstruir las fuentes.
+
+No se convierte en token de autorización.
+
+---
+
+#### 43. Límites temporales de la proyección
+
+La proyección segura calcula su `expires_at` con la política de `AUTH-CTX-029`.
+
+Debe respetar simultáneamente:
+
+- TTL visual máximo por tipo de actor;
+- expiración de sesión;
+- fin o cambio de turno relevante;
+- expiración o cierre de check-in;
+- expiración de actor session;
+- expiración de dispositivo;
+- expiración de delegación;
+- otras fronteras temporales contractualmente aprobadas;
+- margen de seguridad aprobado.
+
+La ausencia de una frontera aplicable no autoriza TTL infinito.
+
+El cliente puede refrescar antes.
+
+No puede usar una proyección no expirada como prueba de autorización de una mutación.
+
+---
+
+#### 44. Datos prohibidos en la proyección segura
+
+No se exponen por defecto:
+
+- `source_versions`;
+- `source_fingerprints`;
+- vínculo empresarial interno;
+- auth subject id;
+- employee id;
+- customer id;
+- device id interno;
+- actor session id;
+- shift id;
+- check-in id;
+- assigned sites completos;
+- assigned areas completas;
+- historial;
+- metadata de fuentes;
+- datos de otros actores;
+- secretos;
+- claims JWT;
+- grants;
+- denies;
+- permisos;
+- reglas de precedencia;
+- configuración completa;
+- errores PostgreSQL;
+- nombres de tablas;
+- detalles de `StructuralIssue`;
+- decisiones `ALLOW/DENY`;
+- `can_operate`;
+- bypass.
+
+Una nueva exposición requiere revisión contractual explícita.
+
+---
+
+#### 45. Matriz de grants
+
+Estado objetivo:
+
+| Identidad                              | `PUBLIC` |         `anon` | `authenticated` | Servicio privilegiado aprobado |
+| -------------------------------------- | -------: | -------------: | --------------: | -----------------------------: |
+| `app_private.get_access_context(text)` |       NO |             NO |              NO | solo si el manifiesto lo exige |
+| helpers `app_private.*` de esta tarea  |       NO |             NO |              NO |         no directo por defecto |
+| `api.get_safe_access_context(text)`    |       NO | NO por defecto |    SÍ explícito |      opcional según manifiesto |
+
+Reglas:
+
+1. `PUBLIC EXECUTE` queda revocado;
+2. `anon` no recibe contexto por defecto;
+3. `authenticated` recibe únicamente la proyección segura;
+4. la firma del grant es exacta;
+5. una sobrecarga futura no hereda el grant;
+6. `service_role` no se interpreta como actor empresarial;
+7. `USAGE api` se gobierna por `AUTH-DB-017`;
+8. no se concede `USAGE app_private` a roles cliente.
+
+---
+
+#### 46. RLS y acceso a owner schemas
+
+`get_access_context` no requiere que el caller tenga `SELECT` sobre fuentes empresariales.
+
+Tampoco:
+
+- desactiva RLS globalmente;
+- concede SELECT amplio;
+- cambia policies de otras tareas;
+- convierte `SECURITY DEFINER` en bypass de autorización;
+- expone tablas fuente.
+
+El resolver privilegiado lee únicamente lo necesario para construir el contrato.
+
+Los objetos propietarios conservan su autoridad de dominio.
+
+Cuando una fuente exija una policy o función propietaria todavía inexistente, la instancia se bloquea en vez de inventarla dentro de `AUTH-DB-033`.
+
+---
+
+#### 47. Errores y fail closed
+
+Se mantienen tres categorías.
+
+##### Invocación inválida
+
+```text
+p_app_code mal formado
+→ SQLSTATE 22023
+```
+
+##### Estado empresarial normal o inconsistente
+
+```text
+AccessContext válido
++
+structural_issues
++
+readiness correspondiente
+```
+
+No se usan excepciones para:
+
+- falta normal de turno;
+- falta normal de check-in;
+- empleado inactivo conocido;
+- dispositivo sin actor;
+- área opcional ausente.
+
+##### Fallo de infraestructura
+
+```text
+no se puede construir el contrato
+→ excepción controlada
+→ cero contexto parcial
+→ cero proyección parcial
+```
+
+El error expuesto no revela:
+
+- SQL;
+- schema interno;
+- tabla;
+- ID ajeno;
+- stack trace;
+- policy;
+- secreto.
+
+---
+
+#### 48. Frontera con legacy
+
+Permanecen legacy:
+
+```text
+public.get_operational_context(...)
+public.get_effective_context_v1(...)
+has_permission(...)
+has_operational_permission(...)
+has_effective_permission_v1(...)
+```
+
+`AUTH-DB-033` no los convierte en canónicos.
+
+La compatibilidad sigue:
+
+```text
+AccessContext canónico
+→ proyección legacy
+```
+
+Nunca:
+
+```text
+fila legacy
+→ reconstruir AccessContext
+```
+
+`AUTH-CTX-028` gobierna los modos:
+
+```text
+LEGACY_NATIVE
+CANONICAL_PROJECTION
+REMOVED
+```
+
+La adaptación de consumidores corresponde a tareas SHELL posteriores.
+
+El retiro pertenece a `AUTH-DB-030`.
+
+---
+
+#### 49. Frontera con `AUTH-DB-035`
+
+`AUTH-DB-033` implementa:
+
+- resolver;
+- contexto;
+- versiones de fuentes;
+- fingerprints;
+- fingerprint semántico;
+- límites temporales derivados;
+- proyección segura.
+
+No implementa:
+
+- generaciones transaccionales;
+- triggers de generación;
+- token de frescura;
+- outbox de invalidación;
+- L1 compartida;
+- single-flight cross-request.
+
+Estas responsabilidades pertenecen a:
+
+```text
+AUTH-DB-035
+SHELL-CTX-006
+```
+
+Hasta entonces:
+
+```text
+cache_status = NOT_IMPLEMENTED
+```
+
+---
+
+#### 50. Frontera con `AUTH-DB-034` y `AUTH-DB-032`
+
+`AUTH-DB-034`:
+
+- invoca el resolver canónico;
+- resuelve permiso y recurso;
+- aplica carriles y precedencia;
+- produce `AuthorizationDecision`.
+
+No reconstruye contexto.
+
+`AUTH-DB-032`:
+
+- persiste decisiones y referencias;
+- no sustituye al resolver;
+- no convierte `context_id` en token.
+
+`AUTH-DB-033` no inserta auditoría empresarial durable.
+
+---
+
+#### 51. Dependencias físicas de la instancia
+
+`AUTH-DB-033::GLOBAL` no puede autorizarse únicamente porque el documento esté aprobado.
+
+Antes de autorización física debe existir evidencia de los prerrequisitos aplicables:
+
+```text
+R0 aplicable verificado
++
+AUTH-DB-016::GLOBAL verificada
++
+AUTH-DB-018::GLOBAL verificada
++
+AUTH-DB-017::GLOBAL verificada
++
+AUTH-DB-019::GLOBAL verificada
++
+SHELL-AUD-002..005 cerradas según su gate
++
+SHELL-PKG-001..008 cerradas según su gate
++
+SHELL-CON-001..008 materializadas según el orden físico
++
+SHELL-AUTH-001 verificada
++
+SHELL-CTX-001 verificada
+=
+AUTH-DB-033 físicamente elegible
+```
+
+`AUTH-DB-027`, `AUTH-DB-028` y `AUTH-DB-029` acompañan la materialización según sus contratos.
+
+Una dependencia todavía no verificada bloquea únicamente la instancia física.
+
+No bloquea esta aprobación documental.
+
+---
+
+#### 52. Manifiesto mínimo de materialización
+
+Antes de mutar debe existir un manifiesto reproducible con:
+
+```text
+physical_identity
+object_kind
+schema
+function_signature
+logical_resolver_id
+resolver_version
+security_mode
+owner_role
+search_path
+source_dependencies
+source_version_key
+source_fingerprint_policy
+caller_roles
+grant_before
+grant_after
+contract_version
+migration_file
+rollback_action
+test_ids
+environment
+evidence
+```
+
+Integridad:
+
+1. toda función creada aparece exactamente una vez;
+2. toda firma es completa;
+3. todo `SECURITY DEFINER` tiene justificación;
+4. todo grant tiene audiencia;
+5. todo helper permanece privado;
+6. toda fuente tiene owner;
+7. toda dependencia sin owner queda `BLOCKED`;
+8. no existe objeto físico inferido fuera del manifiesto.
+
+---
+
+#### 53. Migración física futura
+
+La instancia materializará exclusivamente mediante migraciones forward versionadas bajo:
+
+```text
+vento-shell/supabase/migrations
+```
+
+Orden contractual:
+
+```text
+1. regenerar baseline remoto
+2. verificar schemas y dependencias
+3. verificar owner técnico
+4. congelar manifiesto
+5. crear helpers privados
+6. crear resolver canónico
+7. crear canonicalizador y fingerprints
+8. crear proyector privado
+9. crear wrapper seguro en api
+10. revocar grants implícitos
+11. conceder grants exactos
+12. recargar schema de API cuando corresponda
+13. ejecutar pruebas físicas
+14. capturar planes y rendimiento
+15. validar drift
+16. ensayar rollback
+```
+
+No se modifica un objeto legacy como atajo para convertirlo en el nuevo resolver.
+
+---
+
+#### 54. Índices y rendimiento
+
+`AUTH-DB-033` no crea índices especulativos.
+
+La instancia deberá capturar:
+
+- plan de ejecución;
+- filas estimadas y reales;
+- buffers;
+- tiempo total;
+- p50;
+- p95;
+- cardinalidades relevantes;
+- consultas dominantes.
+
+Un índice adicional solo puede entrar en el alcance físico cuando:
+
+1. el plan demuestra una necesidad;
+2. el owner schema afectado está identificado;
+3. no altera semántica;
+4. no duplica un índice existente;
+5. se incluye en manifiesto;
+6. se prueba escritura y lectura;
+7. dispone de rollback;
+8. permanece dentro del alcance autorizado de la instancia.
+
+No se usa `LIMIT 1` como optimización para resolver ambigüedades contractuales.
+
+---
+
+#### 55. Concurrencia
+
+Las pruebas deben cubrir cambios concurrentes de:
+
+- vínculo empresarial;
+- actor session;
+- estado laboral;
+- rol base;
+- asignación;
+- turno;
+- check-in;
+- dispositivo.
+
+La función `STABLE` conserva el snapshot del statement.
+
+Una mutación concurrente posterior no cambia retrospectivamente el contexto ya resuelto.
+
+La autorización de una acción posterior deberá revalidar frescura según las tareas propietarias.
+
+---
+
+#### 56. Rollback
+
+El rollback se diseña para los objetos creados por `AUTH-DB-033`.
+
+Secuencia segura:
+
+```text
+1. retirar grant de api.get_safe_access_context(text)
+2. verificar cero consumidores nuevos o activar compatibilidad aprobada
+3. retirar wrapper seguro solo sin dependencias
+4. retirar helpers y resolver solo sin consumidores internos
+5. restaurar ACL desde snapshot cuando corresponda
+6. conservar legacy intacto
+7. validar drift
+```
+
+Queda prohibido:
+
+- `DROP ... CASCADE` genérico;
+- `GRANT ALL`;
+- borrar datos;
+- borrar identidades;
+- reconstruir usuarios;
+- restaurar bypass;
+- retirar legacy dentro del rollback de esta tarea.
+
+Si ya existen consumidores del resolver, la corrección se realiza mediante migración forward y no mediante destrucción automática.
+
+---
+
+#### 57. Pruebas físicas obligatorias
+
+La futura instancia debe demostrar, como mínimo:
+
+##### Contrato
+
+1. firma exacta `app_private.get_access_context(text)`;
+2. retorno `jsonb`;
+3. `STABLE`;
+4. `SECURITY DEFINER`;
+5. un solo resultado;
+6. `AccessContext@1.0.0` completo;
+7. ausencia de campos prohibidos;
+8. serialización determinista;
+9. context fingerprint reproducible.
+
+##### Invocación
+
+10. app válida;
+11. app `null`;
+12. app vacía;
+13. app con espacios;
+14. app desconocida;
+15. app ambigua;
+16. ausencia de overload inseguro.
+
+##### Principal y actor
+
+17. HUMAN_USER;
+18. sesión sin vínculo;
+19. identidad `EMPLOYEE`;
+20. identidad `CUSTOMER`;
+21. identidad múltiple;
+22. actor delegado válido;
+23. actor delegado inválido;
+24. SYSTEM;
+25. service role sin autoridad implícita.
+
+##### Laboral
+
+26. empleado activo;
+27. empleado inactivo;
+28. rol base válido;
+29. rol base ambiguo;
+30. varias sedes;
+31. duplicados de sede;
+32. áreas incompatibles;
+33. cobertura NONE;
+34. cobertura ORGANIZATION explícita.
+
+##### Operativo
+
+35. sin turno;
+36. turno válido;
+37. turno nocturno;
+38. turno solapado;
+39. turno no publicado;
+40. sin check-in;
+41. check-in válido;
+42. check-in ajeno;
+43. check-in expirado;
+44. rol operativo inválido;
+45. sede inválida;
+46. área opcional;
+47. área incompatible.
+
+##### Dispositivo
+
+48. dispositivo personal;
+49. shared device con actor;
+50. shared device sin actor;
+51. dispositivo inactivo;
+52. actor ajeno;
+53. device id manipulado.
+
+##### Seguridad
+
+54. `PUBLIC` sin execute;
+55. `anon` sin execute interno;
+56. `authenticated` sin execute interno;
+57. helpers inaccesibles;
+58. wrapper seguro accesible solo por grant aprobado;
+59. search path poisoning;
+60. objeto homónimo malicioso;
+61. claim manipulado;
+62. SQL injection;
+63. RLS coexistente;
+64. ausencia de SELECT amplio.
+
+##### Snapshot y error
+
+65. mismo `resolved_at`;
+66. mismo snapshot;
+67. infraestructura fallida sin contexto parcial;
+68. error seguro sin nombres internos;
+69. orden determinista;
+70. deduplicación de issues.
+
+##### Proyección segura
+
+71. no expone source versions;
+72. no expone source fingerprints;
+73. expone context fingerprint conforme a AUTH-CTX-029;
+74. no expone IDs sensibles;
+75. no expone permisos;
+76. no expone grants o denies;
+77. no expone sesiones;
+78. no produce `can_operate`;
+79. límite temporal coherente;
+80. payload estable.
+
+##### Performance y operación
+
+81. plan de ejecución capturado;
+82. p50/p95 registrados;
+83. prueba de concurrencia;
+84. rollback ensayado;
+85. segunda ejecución idempotente;
+86. drift final;
+87. paridad local/staging/entorno autorizado.
+
+---
+
+#### 58. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** `AUTH-DB-033` materializa reglas ya protegidas por `AUTH-CTX-001..030`, la arquitectura E3, los contratos de identidad de `AUTH-DB-019`, la exposición de `AUTH-DB-017/018` y el plan maestro de pruebas. La tarea concreta nombres físicos, seguridad, fingerprints, proyección y estrategia de materialización sin introducir una capacidad empresarial nueva, un permiso nuevo, una regla de acceso nueva ni una semántica nueva de autorización.
+
+---
+
+#### 59. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificación la cobertura ya existente sobre:
+
+- separación `api` / `app_private`;
+- seguridad de RPC y `SECURITY DEFINER`;
+- grants y exposición;
+- principal, identidad y actor;
+- vínculos Auth ↔ identidad;
+- contexto laboral;
+- turno y check-in;
+- dispositivos compartidos;
+- problemas estructurales;
+- serialización y versionado;
+- proyecciones seguras;
+- caché e invalidación;
+- seguridad adversarial;
+- migración, paridad y rollback.
+
+Se conserva además la trazabilidad previamente documentada por las tareas R1, incluida la cobertura relacionada con:
+
+```text
+TREQ-SUPABASE-651..718
+TREQ-SUPABASE-757..836
+TREQ-SUPABASE-1047..1090
+```
+
+Estos rangos se citan únicamente como requisitos vigentes reutilizados.
+
+No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 60. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                                                                         |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | la tarea documental no ejecutó build de producto ni creó migraciones                                                                                                                                                                                                                                                                                                              |
+| LOCAL     | NOT_EXECUTED   | pendiente de insertar el bloque y ejecutar el lifecycle documental del checkout `task/auth-db-033`                                                                                                                                                                                                                                                                                |
+| REMOTA    | PASS           | auditoría read-only 2026-08-22 sobre `vento-shell` y `vento-os-dev`: contrato `AUTH-CTX-025` vigente; `api` todavía no materializado en el corte consultado; `public.get_operational_context` y `public.get_effective_context_v1` continúan legacy; `supabase/config.toml` expone todavía `public` y `graphql_public`; `pgcrypto` y `uuid-ossp` están disponibles en `extensions` |
+| OPERATIVA | NOT_APPLICABLE | no se alteraron consumidores ni runtime durante el desarrollo documental                                                                                                                                                                                                                                                                                                          |
+| FÍSICA    | NOT_APPLICABLE | no se ejecutó SQL de mutación, no se creó migración y `AUTH-DB-033::GLOBAL` no fue autorizada                                                                                                                                                                                                                                                                                     |
+
+---
+
+#### 61. Decisiones vinculantes
+
+1. La futura instancia es `AUTH-DB-033::GLOBAL`.
+2. Su modo es `GLOBAL_ENABLE_ONCE`.
+3. Su gate es `PRE_E5_FOUNDATION`.
+4. El resolver completo es `app_private.get_access_context(text)`.
+5. Retorna `jsonb`.
+6. Produce `AccessContext@1.0.0`.
+7. El único parámetro es `p_app_code text`.
+8. No existe app por defecto.
+9. No se normaliza silenciosamente el app code.
+10. El caller no suministra actor, empleado, rol, sede, área, turno, check-in o dispositivo.
+11. El resolver completo es `STABLE`.
+12. El resolver completo es `SECURITY DEFINER` endurecido.
+13. `PUBLIC`, `anon` y `authenticated` no ejecutan directamente el resolver completo.
+14. Los helpers viven en `app_private`.
+15. Los helpers son `SECURITY INVOKER` por defecto.
+16. El borde privilegiado principal es único.
+17. `search_path` mínimo es `pg_catalog, app_private`.
+18. Los objetos críticos se califican.
+19. No se usa SQL dinámico por app, rol, tabla o schema.
+20. Se captura un solo `resolved_at`.
+21. Se usa un solo snapshot.
+22. `auth.uid()` no es employee id.
+23. `identity_access` conserva principal y vínculos.
+24. Los perfiles continúan en sus owner schemas.
+25. El actor efectivo se resuelve explícitamente.
+26. La identidad múltiple no amplía autoridad.
+27. El rol base no procede del turno.
+28. Las asignaciones múltiples no se colapsan.
+29. `ORGANIZATION` exige autoridad explícita.
+30. El turno no se elige con `LIMIT 1` ante ambigüedad.
+31. El rol operativo procede del turno.
+32. La sede operativa procede del turno.
+33. El check-in no se reconstruye heurísticamente.
+34. El dispositivo no concede rol.
+35. Un shared device sin actor no reutiliza el actor anterior.
+36. SYSTEM exige principal técnico registrado.
+37. La simulación permanece fuera del contexto real.
+38. Readiness no es autorización.
+39. No existe `can_operate`.
+40. Solo se usan structural issues del catálogo aprobado.
+41. La salida es determinista.
+42. `resolution_metadata.resolver` es `vento.authorization.get_access_context`.
+43. `resolver_version` inicial es `1.0.0`.
+44. `authorization_contract_version` es `1.0.0`.
+45. `catalog_version` inicial es `1.0.0`.
+46. `cache_status` inicia `NOT_IMPLEMENTED`.
+47. `source_versions` usa vocabulario cerrado.
+48. `source_fingerprints` refleja exactamente las fuentes utilizadas.
+49. Los fingerprints usan SHA-256 sobre preimagen canonicalizada.
+50. `context_fingerprint` excluye `context_id`, `resolved_at` y metadata de delivery.
+51. `jsonb::text` no basta como canonicalización.
+52. La proyección cliente es `api.get_safe_access_context(text)`.
+53. La proyección segura es distinta del `AccessContext` completo.
+54. `api.get_safe_access_context(text)` es una excepción `SECURITY DEFINER` explícita, estrecha y probada.
+55. `authenticated` recibe únicamente la proyección segura por grant exacto.
+56. `anon` no recibe la proyección por defecto.
+57. `context_fingerprint` puede cruzar la proyección segura por reconciliación con `AUTH-CTX-029`.
+58. `source_fingerprints` y `source_versions` no cruzan la proyección.
+59. La proyección no contiene permisos ni decisiones.
+60. `AUTH-DB-035` conserva ownership de generaciones e invalidación.
+61. `AUTH-DB-034` conserva ownership de la evaluación.
+62. `AUTH-DB-032` conserva persistencia durable.
+63. Los resolvers legacy permanecen durante la compatibilidad.
+64. La dirección de compatibilidad es canónico → legacy.
+65. `AUTH-DB-030` conserva el retiro legacy.
+66. Los índices requieren evidencia de plan.
+67. Toda materialización usa migraciones forward en `vento-shell`.
+68. Rollback no usa `DROP CASCADE` ni `GRANT ALL`.
+69. No se crean ni modifican requisitos TREQ.
+70. La aprobación documental no autoriza cambios físicos.
+
+---
+
+#### 62. Criterios de aceptación
+
+`AUTH-DB-033` queda documentalmente completa cuando:
+
+1. se fija la identidad física exacta de `get_access_context`;
+2. se fija la firma `(text) → jsonb`;
+3. se fija `app_private` como ubicación del resolver completo;
+4. se fija `api.get_safe_access_context(text)` como proyección SQL segura;
+5. se separa la proyección del contrato completo;
+6. se congela el grafo de resolvers privados;
+7. se minimiza la superficie `SECURITY DEFINER`;
+8. se endurece `search_path`;
+9. se fijan grants negativos y positivos;
+10. se mantiene `authenticated` fuera de `app_private`;
+11. se preserva un instante y snapshot únicos;
+12. se conserva el modelo principal → identidad → actor;
+13. se preserva la independencia de IDs empresariales;
+14. se preservan rol base, asignaciones y cobertura;
+15. se preservan turno, check-in, rol y territorio operativos;
+16. se preserva el modelo de dispositivo;
+17. se excluye simulación;
+18. readiness permanece separado de autorización;
+19. no existe `can_operate`;
+20. structural issues permanecen en catálogo cerrado;
+21. se congela resolver/versiones;
+22. se congela vocabulario de `source_versions`;
+23. se define fingerprint de fuentes;
+24. se define `context_fingerprint`;
+25. se define canonicalización;
+26. se reconcilia la exposición del `context_fingerprint`;
+27. se bloquea exposición de evidencia interna;
+28. se define límite temporal seguro de la proyección;
+29. se preserva compatibilidad legacy sin invertir la fuente de verdad;
+30. se separan responsabilidades de AUTH-DB-035/034/032;
+31. se fijan prerrequisitos físicos;
+32. se define manifiesto de implementación;
+33. se define orden de migración;
+34. se define política de índices;
+35. se define concurrencia;
+36. se define rollback;
+37. se definen pruebas positivas y negativas;
+38. se documenta el AS-IS remoto sin convertirlo en objetivo;
+39. se declaran cero cambios TREQ;
+40. `AUTH-DB-035` queda como única continuidad documental reservada.
+
+---
+
+#### 63. Límites
+
+`AUTH-DB-033` no:
+
+- ejecuta SQL de mutación durante su desarrollo documental;
+- crea migraciones durante su desarrollo documental;
+- crea schemas durante su desarrollo documental;
+- crea owner roles durante su desarrollo documental;
+- modifica datos;
+- crea vínculos de identidad;
+- cambia Auth;
+- cambia providers;
+- cambia sesiones;
+- crea permisos;
+- crea grants empresariales;
+- evalúa recursos;
+- produce `AuthorizationDecision`;
+- persiste decisiones;
+- implementa simulación;
+- implementa generaciones de frescura;
+- implementa caché L1;
+- crea outbox de invalidación;
+- adapta todos los consumidores;
+- retira `get_operational_context`;
+- retira `get_effective_context_v1`;
+- cambia RLS de otros dominios;
+- desactiva RLS globalmente;
+- expone owner schemas;
+- concede acceso cliente a `app_private`;
+- modifica `04A`;
+- autoriza `AUTH-DB-033::GLOBAL`;
+- desarrolla `AUTH-DB-035`.
+
+---
+
+#### 64. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto`
+
+
 ### [ ] AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
 ### [ ] AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
 ### [ ] AUTH-DB-032 — Implementar persistencia canónica y vinculación de decisiones de autorización
