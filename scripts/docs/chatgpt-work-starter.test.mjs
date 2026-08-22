@@ -27,6 +27,9 @@ test('genera un unico iniciador desde la accion operativa vigente', () => {
   assert.match(result.source, /Reconciliación de apertura: docs:plan:build UNA VEZ \+ docs:plan:check/u);
   assert.match(result.source, /Batería física final: SOLO validation_commands AUTORIZADAS/u);
   assert.match(result.source, /Batería final PASS: CONTINUAR EN LA MISMA TRANSACCIÓN; EVIDENCIA REMOTA, SI APLICA, ANTES DE VERIFIED/u);
+  assert.match(result.source, /PRE_REPAIR_GATE/u);
+  assert.match(result.source, /npm run quality:repair/u);
+  assert.match(result.source, /READY_FOR_VALIDATION: SI/u);
   assert.match(result.source, /Cierre físico: docs:implementation:finish/u);
   assert.match(result.source, /=== RESULTADO PARA CHATGPT ===/u);
   assert.match(result.source, /SOLO EL BLOQUE FINAL/u);
@@ -71,6 +74,10 @@ test('ejecutar implementacion usa lifecycle de apertura y cierre sin pasos docum
   assert.match(source, /docs:plan:build una vez seguido de docs:plan:check/u);
   assert.match(source, /READY_TO_IMPLEMENT: SI/u);
   assert.match(source, /todos los cambios físicos deterministas/u);
+  assert.match(source, /npm run quality:repair/u);
+  assert.match(source, /READY_FOR_VALIDATION: SI/u);
+  assert.match(source, /Solo con PASS y READY_FOR_VALIDATION: SI lleva .* a IMPLEMENTED/u);
+  assert.match(source, /Si quality:repair falla, conserva el estado previo/u);
   assert.match(source, /contenido completo sin elipsis/u);
   assert.match(source, /a IMPLEMENTED/u);
   assert.match(source, /una sola batería final/u);
@@ -150,6 +157,8 @@ test('la autorizacion conserva ledger y delega apertura al lifecycle', () => {
   assert.doesNotMatch(source, /guardar primero el registro AUTHORIZED; detener el watcher/u);
   assert.match(source, /docs:implementation:start -- --instance-id SHELL-CI-002::GLOBAL/u);
   assert.match(source, /START_DOCS_PLAN_BUILD: PASS_ONCE/u);
+  assert.match(source, /aplicar todos los archivos sin volver al chat; ejecutar exactamente una vez npm run quality:repair/u);
+  assert.match(source, /solo con PASS y READY_FOR_VALIDATION: SI registrar IMPLEMENTED/u);
   assert.match(source, /docs:implementation:finish -- --instance-id SHELL-CI-002::GLOBAL/u);
   assert.match(source, /commit\/push mínimo de materialización/u);
   assert.doesNotMatch(source, /cambiar únicamente ese registro a IN_PROGRESS/u);
