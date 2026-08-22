@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1018** |
+| Aprobadas | **1019** |
 | En propuesta | **0** |
-| No iniciadas | **576** |
+| No iniciadas | **575** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **63.86% (1018/1594)** |
+| Porcentaje de completamiento | **63.93% (1019/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-032` — Implementar persistencia canónica y vinculación de decisiones de autorización | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-012` — Implementar auditoría de cambios de permisos | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-013` — Implementar auditoría de simulación | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-012` — Implementar auditoría de cambios de permisos | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-013` — Implementar auditoría de simulación | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-014` — Implementar auditoría de dispositivos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1228,7 +1228,7 @@
 | ✅ APROBADA | `AUTH-DB-035` | Implementar token transaccional de frescura e invalidación del contexto | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-034` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-032` | Implementar persistencia canónica y vinculación de decisiones de autorización | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
-| ⬜ NO INICIADA | `AUTH-DB-012` | Implementar auditoría de cambios de permisos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
+| ✅ APROBADA | `AUTH-DB-012` | Implementar auditoría de cambios de permisos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-013` | Implementar auditoría de simulación | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-014` | Implementar auditoría de dispositivos | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ⬜ NO INICIADA | `AUTH-DB-020` | Migrar objetos por dominio con compatibilidad temporal | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
