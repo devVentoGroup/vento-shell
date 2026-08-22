@@ -765,7 +765,903 @@ Estos identificadores se usan únicamente como trazabilidad de requisitos vigent
 `AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos`
 
 
-### [ ] AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos
+### ✅ AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-016 — Crear esquemas empresariales aprobados
+**Tarea siguiente:** AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** contrato documental de separación de vistas, RPC y helpers internos cerrado; futura instancia global `AUTH-DB-018::GLOBAL` pendiente de autorización explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-018` define el contrato único para separar la superficie contractual expuesta de Vento de las vistas, funciones, RPC y helpers que deben permanecer internos.
+
+La tarea no crea todavía objetos en `api`, no mueve rutinas, no cambia grants y no modifica la configuración de Data API. Su resultado es una clasificación canónica y verificable que permita materializar posteriormente la separación sin convertir la ubicación física actual en autoridad arquitectónica.
+
+La separación distingue exactamente entre:
+
+```text
+api
+→ contratos canónicos expuestos
+
+OWNER SCHEMA
+→ lógica, proyecciones y efectos internos del dominio propietario
+
+app_private
+→ helpers técnicos transversales privados
+
+audit
+→ evidencia, auditoría y eventos durables transversales
+
+COMPATIBILITY
+→ superficie legacy transitoria mientras existan consumidores
+
+PLATFORM_MANAGED
+→ objetos administrados por plataforma o extensión
+```
+
+Ninguna de estas capas adquiere autoridad empresarial por el solo hecho de alojar una vista o rutina.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el siguiente resultado:
+
+```text
+AUTH-DB-018
+→ contrato documental de clasificación y separación
+
+AUTH-DB-018::GLOBAL
+→ única futura instancia física global
+
+resultado físico esperado de esa instancia
+→ todo objeto Vento aplicable tiene identidad inequívoca
+→ todo objeto Vento aplicable tiene owner lógico
+→ todo objeto Vento aplicable tiene una disposición primaria
+→ los contratos expuestos quedan concentrados en api
+→ los helpers privados quedan fuera de la superficie cliente
+→ la lógica de negocio permanece en su owner
+→ la auditoría transversal no absorbe autoridad empresarial
+→ la compatibilidad legacy conserva condición explícita de salida
+→ ningún objeto se retira sin evidencia suficiente
+```
+
+La clasificación no concede acceso cliente ni materializa por sí misma ningún cambio físico.
+
+---
+
+#### 3. Topología y gate
+
+La reconciliación vigente del Bloque R establece:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-018::GLOBAL
+prerequisite = R0 aplicable verificado
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no se crea una instancia por paquete;
+3. la definición documental se aprueba una sola vez;
+4. la aprobación documental no autoriza la instancia física;
+5. la futura instancia puede crear la fundación de separación reutilizable sin migrar verticalmente un dominio;
+6. tablas, datos y backfills empresariales permanecen fuera de esta unidad;
+7. toda materialización conserva autorización humana explícita, migración versionada, pruebas y recuperación.
+
+---
+
+#### 4. Fuentes vinculantes y precedencia
+
+La definición consume y preserva:
+
+- `AUTH-DB-016`, para los 29 schemas objetivo y la separación entre 26 owner schemas, `api`, `app_private` y `audit`;
+- `SUPA-ARC-004`, para retirar a `public` de la autoridad empresarial objetivo;
+- `SUPA-ARC-005`, para `api` como única capa empresarial objetivo de contratos expuestos;
+- `SUPA-ARC-006`, para `app_private` como capa técnica privada;
+- `SUPA-ARC-007`, para `audit` como capa transversal durable de auditoría y eventos;
+- `SUPA-ARC-015`, para exposición, grants, RLS, vistas, funciones y roles runtime;
+- `SUPA-ARC-025`, para gobierno, drift y trazabilidad;
+- `AUTH-DB-015`, para migraciones versionadas y atribuibles;
+- `AUTH-DB-027`, para harness de esquema, integridad, RLS, RPC y migraciones;
+- `AUTH-DB-028`, para baseline y drift;
+- `AUTH-DB-029`, para recuperación y rollback;
+- `AUTH-DB-001..005`, para contención de RLS, policies, funciones privilegiadas y grants.
+
+Precedencia:
+
+```text
+ARQUITECTURA E3 APROBADA
+→ fija ownership, exposición objetivo y seguridad
+
+R0
+→ garantiza reproducibilidad, pruebas, drift y recuperación
+
+AUTH-DB-016
+→ materializa o reconcilia namespaces objetivo
+
+AUTH-DB-018
+→ separa contratos expuestos de objetos internos
+
+AUTH-DB-017
+→ configura exposición y privilegios de Data API
+```
+
+`AUTH-DB-018` no puede reinterpretar contratos de E3 ni adelantar responsabilidades de `AUTH-DB-017`.
+
+---
+
+#### 5. Universo de clasificación
+
+El universo primario de `AUTH-DB-018` está compuesto por:
+
+```text
+VISTAS VENTO
++
+RUTINAS VENTO DIRECTAMENTE INVOCABLES
+```
+
+Los trigger functions se inventarían y reconciliarían por ownership interno, pero no forman parte del universo primario de contratos expuestos.
+
+Un objeto de plataforma o extensión se clasifica como `PLATFORM_MANAGED` y queda fuera del universo gobernado de reubicación Vento.
+
+Cada identidad Vento aplicable deberá quedar clasificada exactamente una vez antes de cualquier mutación física.
+
+---
+
+#### 6. Cardinalidades vinculantes
+
+La línea base remota observada para esta tarea contiene:
+
+```text
+views_total = 62
+views_security_invoker = 58
+views_privileged = 4
+direct_vento_routines = 226
+direct_vento_security_definer = 192
+trigger_functions = 72
+
+primary_classification_universe
+= 62 views + 226 direct Vento routines
+= 288 identities
+```
+
+Los números son una línea base de evidencia y no una constante eterna.
+
+La futura materialización deberá regenerar el inventario inmediatamente antes de actuar y reconciliar cualquier drift.
+
+---
+
+#### 7. Línea base remota vigente
+
+La observación read-only de `vento-os-dev` muestra:
+
+| Schema actual | Vistas | `security_invoker` | Vistas privilegiadas | Rutinas Vento directas | Directas `SECURITY DEFINER` | Trigger functions |
+| ------------- | -----: | -----------------: | -------------------: | ---------------------: | --------------------------: | ----------------: |
+| `app_private` |      0 |                  0 |                    0 |                      1 |                           1 |                 0 |
+| `club`        |      0 |                  0 |                    0 |                      7 |                           2 |                 0 |
+| `pass`        |      1 |                  1 |                    0 |                     19 |                          16 |                11 |
+| `payments`    |      0 |                  0 |                    0 |                      0 |                           0 |                 0 |
+| `pos`         |      0 |                  0 |                    0 |                      0 |                           0 |                 0 |
+| `public`      |     61 |                 57 |                    4 |                    184 |                         146 |                59 |
+| `talento`     |      0 |                  0 |                    0 |                     15 |                          11 |                 1 |
+| `viso`        |      0 |                  0 |                    0 |                      0 |                           0 |                 0 |
+| **TOTAL**     | **62** |             **58** |                **4** |                **226** |                     **192** |            **72** |
+
+Esta línea base describe implementación actual. No convierte `public`, `club`, `pass`, `talento` ni ningún otro schema legacy en owner objetivo por mera existencia.
+
+---
+
+#### 8. Identidad física y sobrecargas
+
+Toda vista se identifica mediante:
+
+```text
+schema.object
+```
+
+Toda rutina se identifica mediante:
+
+```text
+schema.name(identity arguments)
+```
+
+Queda prohibido usar únicamente `schema.name` cuando existan sobrecargas.
+
+La línea base remota confirma al menos:
+
+```text
+public.create_order_checkout_draft
+→ 4 identidades de rutina
+
+public.fogo_create_real_production_batch
+→ 2 identidades de rutina
+```
+
+Reglas:
+
+1. cada firma se clasifica independientemente;
+2. dos sobrecargas pueden recibir disposiciones diferentes si su semántica lo exige;
+3. una sobrecarga no hereda automáticamente contrato, seguridad ni owner de otra;
+4. cualquier manifiesto que colapse firmas distintas falla cerrado.
+
+---
+
+#### 9. Capas destino permitidas
+
+Las capas destino canónicas son:
+
+| Capa                  | Clase                           | Autoridad empresarial  | Exposición objetivo       |
+| --------------------- | ------------------------------- | ---------------------- | ------------------------- |
+| `api`                 | contrato expuesto               | ninguna                | sí, gobernada             |
+| owner schema          | dominio propietario             | sí, cuando corresponda | no directa                |
+| `app_private`         | técnica privada transversal     | ninguna                | no                        |
+| `audit`               | auditoría/evidencia transversal | ninguna                | no directa por esta tarea |
+| compatibilidad legacy | transición                      | ninguna nueva          | temporal                  |
+| plataforma/extensión  | administrada externamente       | no gobernada por Vento | según plataforma          |
+
+No se crean capas alternativas por aplicación, módulo o conveniencia local.
+
+---
+
+#### 10. Contratos admitidos en `api`
+
+Todo objeto que llegue a `api` debe clasificarse exactamente como:
+
+```text
+READ_VIEW
+QUERY_RPC
+COMMAND_RPC
+```
+
+Significado:
+
+| Tipo          | Uso                                                                           |
+| ------------- | ----------------------------------------------------------------------------- |
+| `READ_VIEW`   | proyección estable de lectura expuesta                                        |
+| `QUERY_RPC`   | consulta parametrizada sin efecto empresarial                                 |
+| `COMMAND_RPC` | comando contractual que solicita un efecto cuyo owner permanece en el dominio |
+
+Queda prohibido convertir `api` en:
+
+- almacén de helpers;
+- owner de reglas de negocio;
+- ubicación de trigger functions;
+- ubicación de tablas autoritativas;
+- ubicación de secuencias autoritativas;
+- compatibilidad legacy indefinida.
+
+---
+
+#### 11. Ownership de lógica interna
+
+La ubicación física actual no determina ownership.
+
+Reglas:
+
+1. una consulta interna pertenece al owner de los datos y significado consultados;
+2. un comando interno pertenece al owner del efecto empresarial;
+3. un helper que implementa reglas o invariantes pertenece al dominio correspondiente;
+4. una proyección interna pertenece al owner de su significado;
+5. una función que toca varios schemas no se vuelve automáticamente transversal;
+6. el owner lógico se determina por autoridad y efecto, no por número de dependencias.
+
+Mover una función desde `public` no autoriza mover las tablas que consume.
+
+---
+
+#### 12. `app_private`
+
+`app_private` queda reservado a helpers técnicos transversales privados.
+
+Un objeto puede clasificarse allí únicamente cuando:
+
+- presta capacidad técnica reutilizable entre dominios;
+- no decide resultados de negocio;
+- no representa autoridad empresarial;
+- no necesita invocación directa de clientes;
+- su semántica no pertenece naturalmente a un único dominio.
+
+La línea base remota contiene:
+
+```text
+app_private.delivery_pin_for_session(p_session_id uuid)
+```
+
+Su existencia demuestra una superficie privada actual, pero no autoriza usar `app_private` como depósito genérico de funciones.
+
+---
+
+#### 13. `audit`
+
+`audit` puede alojar superficies técnicas transversales destinadas a:
+
+- evidencia durable;
+- auditoría;
+- trazabilidad técnica;
+- outbox;
+- evidencia de eventos o procesamiento.
+
+Reglas:
+
+1. el productor conserva su ownership lógico;
+2. registrar evidencia no transfiere autoridad empresarial;
+3. un comando de negocio no se mueve a `audit` porque produzca auditoría;
+4. `audit` no sustituye al owner del estado autoritativo;
+5. la exposición de cualquier proyección de auditoría queda gobernada separadamente.
+
+---
+
+#### 14. Superficies legacy y compatibilidad
+
+`public`, `club`, `pass`, `pos`, `talento`, `viso` y otras superficies actuales no son destinos canónicos por mera existencia.
+
+Una identidad legacy con consumidor vigente puede conservarse temporalmente mediante:
+
+- wrapper;
+- alias compatible;
+- forwarding controlado;
+- contrato de compatibilidad equivalente.
+
+Toda compatibilidad debe registrar:
+
+```text
+consumer_evidence
+compatibility_requirement
+exit_condition
+```
+
+La compatibilidad sin condición de salida es inválida.
+
+---
+
+#### 15. Regla de clasificación de vistas
+
+Una vista es candidata a `READ_VIEW` cuando:
+
+1. existe un caso legítimo de lectura cliente;
+2. su contrato puede mantenerse estable;
+3. no expone columnas internas por accidente;
+4. no depende de autoridad implícita del creador;
+5. su semántica puede mantenerse aunque cambie la implementación interna.
+
+Una vista interna, administrativa o de soporte permanece con su owner salvo decisión canónica distinta.
+
+---
+
+#### 16. `security_invoker` en vistas expuestas
+
+Toda `READ_VIEW` objetivo usa por defecto:
+
+```text
+security_invoker = true
+```
+
+La línea base actual contiene cuatro vistas en `public` que no cumplen ese default:
+
+```text
+public.permission_catalog_human_v1
+public.shared_operational_device_actor_policies_admin_v1
+public.shared_operational_device_templates_admin_v1
+public.shared_operational_devices_admin_v1
+```
+
+Las cuatro quedan:
+
+```text
+PUBLISH_API = BLOCKED_AS_IS
+```
+
+No pueden copiarse directamente a `api` conservando privilegios implícitos del creador.
+
+Si alguna necesita contrato expuesto, debe existir un rediseño explícito de seguridad antes de materializarla.
+
+---
+
+#### 17. Regla de clasificación de `QUERY_RPC`
+
+Una rutina es candidata a `QUERY_RPC` cuando:
+
+- no produce efecto empresarial;
+- su parametrización forma parte real del contrato;
+- la salida es explícita y estable;
+- el owner de los datos consultados permanece identificado;
+- la autorización puede evaluarse sin transferir autoridad a `api`;
+- no exige exposición directa del schema propietario.
+
+Una función que solo facilita implementación interna no se convierte en `QUERY_RPC` porque sea técnicamente invocable.
+
+---
+
+#### 18. Regla de clasificación de `COMMAND_RPC`
+
+Una rutina es candidata a `COMMAND_RPC` cuando:
+
+- representa una intención de negocio legítima;
+- el efecto tiene owner inequívoco;
+- la lógica autoritativa permanece en el owner;
+- el contrato define inputs y salida;
+- los errores son contractuales;
+- concurrencia e idempotencia quedan gobernadas cuando correspondan;
+- no depende de privilegios implícitos de una superficie legacy.
+
+El wrapper contractual de `api` debe ser mínimo y no debe convertirse en fuente de verdad del dominio.
+
+---
+
+#### 19. `SECURITY DEFINER`
+
+`SECURITY DEFINER` no se hereda por compatibilidad ni por copia física.
+
+Estado objetivo:
+
+```text
+api_default_security_definer_rpc = 0
+```
+
+Una futura excepción requerirá una decisión canónica específica que cubra, como mínimo:
+
+- justificación;
+- principal efectivo;
+- autorización explícita;
+- `search_path` endurecido;
+- referencias calificadas;
+- errores;
+- observabilidad;
+- pruebas negativas;
+- grants exactos.
+
+`AUTH-DB-018` no aprueba ninguna excepción de ese tipo.
+
+En capas privadas, la existencia de `SECURITY DEFINER` tampoco elimina la obligación de revisar exposición y autorización.
+
+---
+
+#### 20. Trigger functions
+
+Los trigger functions:
+
+- no pertenecen al universo primario de contratos expuestos;
+- nunca se materializan en `api`;
+- se reconcilian por owner del objeto protegido o del efecto producido;
+- pueden pertenecer a una capa técnica transversal solo cuando su semántica sea realmente transversal.
+
+La línea base actual contiene 72 trigger functions en los schemas observados.
+
+Su recuento se conserva como evidencia de ownership interno, no como inventario de RPC cliente.
+
+---
+
+#### 21. Disposiciones canónicas
+
+Cada identidad Vento aplicable recibe exactamente una disposición primaria:
+
+| Disposición           | Significado                                                                   |
+| --------------------- | ----------------------------------------------------------------------------- |
+| `PUBLISH_API`         | materializar contrato canónico en `api`                                       |
+| `KEEP_OWNER_INTERNAL` | mantener o materializar el objeto dentro del owner                            |
+| `MOVE_APP_PRIVATE`    | materializar helper técnico transversal en `app_private`                      |
+| `MOVE_AUDIT`          | materializar superficie técnica transversal en `audit`                        |
+| `KEEP_COMPATIBILITY`  | conservar temporalmente identidad legacy gobernada                            |
+| `RETIRE`              | retirar únicamente tras probar ausencia de contrato, consumidor y dependencia |
+| `BLOCKED`             | impedir materialización hasta resolver riesgo o ambigüedad                    |
+| `PLATFORM_MANAGED`    | excluir de la reubicación Vento por pertenecer a plataforma/extensión         |
+
+No se permiten disposiciones libres o ambiguas.
+
+---
+
+#### 22. Reglas fail-closed
+
+`RETIRE` exige demostrar:
+
+- ausencia de contrato canónico;
+- ausencia de consumidor vigente;
+- ausencia de call sites relevantes;
+- ausencia de dependencias de función, vista, trigger, policy o proceso;
+- ausencia de compatibilidad abierta.
+
+`BLOCKED` exige:
+
+- motivo exacto;
+- owner esperado o candidatos explícitos;
+- evidencia faltante;
+- riesgo;
+- condición de salida.
+
+`KEEP_COMPATIBILITY` exige:
+
+- consumidor identificado;
+- destino objetivo;
+- condición de retiro.
+
+La falta de evidencia nunca se interpreta como permiso para retirar o publicar.
+
+---
+
+#### 23. Manifiesto mínimo de la futura instancia
+
+Antes de cualquier mutación física, `AUTH-DB-018::GLOBAL` deberá producir un manifiesto completo con, como mínimo:
+
+```text
+physical_identity
+object_kind
+current_schema
+current_security_mode
+logical_owner
+contract_type
+target_layer
+disposition
+consumer_evidence
+compatibility_requirement
+security_gate
+blocking_reason
+exit_condition
+observed_state_before
+expected_state_after
+migration_reference
+environment
+drift_result
+evidence
+```
+
+Reglas:
+
+1. toda identidad aplicable aparece exactamente una vez;
+2. ninguna sobrecarga colapsa;
+3. ninguna identidad recibe dos disposiciones primarias;
+4. `PUBLISH_API` exige `READ_VIEW`, `QUERY_RPC` o `COMMAND_RPC`;
+5. `MOVE_APP_PRIVATE` no puede conservar contrato cliente directo;
+6. `MOVE_AUDIT` no transfiere autoridad;
+7. `RETIRE` exige evidencia negativa suficiente;
+8. `BLOCKED` y `KEEP_COMPATIBILITY` exigen condición de salida.
+
+---
+
+#### 24. Cobertura completa antes de mutar
+
+La futura instancia debe seguir:
+
+```text
+1. REGENERAR INVENTARIO
+2. IDENTIFICAR DRIFT
+3. RECONCILIAR DRIFT
+4. CLASIFICAR 100 % DEL UNIVERSO APLICABLE
+5. VALIDAR IDENTIDADES Y OWNERS
+6. VALIDAR DISPOSICIONES
+7. VALIDAR SEGURIDAD Y COMPATIBILIDAD
+8. SOLO ENTONCES PREPARAR CAMBIOS FÍSICOS
+```
+
+Queda prohibido:
+
+```text
+MOVER LO OBVIO
+→ DEJAR EL RESTO PARA DESPUÉS
+```
+
+Una identidad sin clasificación bloquea conformidad de la instancia.
+
+---
+
+#### 25. Frontera con `AUTH-DB-017`
+
+`AUTH-DB-017` es propietaria de configurar schemas expuestos y privilegios de Data API.
+
+Por tanto, `AUTH-DB-018` no modifica:
+
+- `api.schemas`;
+- `extra_search_path`;
+- exposición PostgREST;
+- exposición GraphQL;
+- `USAGE` de schemas para roles cliente;
+- `SELECT` sobre vistas expuestas;
+- `EXECUTE` de RPC expuestas;
+- default privileges;
+- grants positivos de runtime.
+
+Clasificación y exposición son decisiones separadas.
+
+```text
+AUTH-DB-018
+→ QUÉ OBJETO PUEDE SER CONTRATO Y DÓNDE PERTENECE
+
+AUTH-DB-017
+→ QUÉ SUPERFICIE QUEDA EXPUESTA Y CON QUÉ PRIVILEGIOS
+```
+
+---
+
+#### 26. Frontera con RLS, Auth y datos
+
+`AUTH-DB-018` no modifica:
+
+- RLS;
+- policies;
+- Supabase Auth;
+- proveedores de Auth;
+- sesiones;
+- Storage;
+- Realtime;
+- Edge Functions;
+- cron;
+- secretos;
+- datos;
+- tablas;
+- columnas;
+- claves;
+- backfills;
+- ownership vertical de entidades.
+
+Pertenecer a `api` no equivale a grant.
+
+Pertenecer a un owner, `app_private` o `audit` no equivale a policy RLS.
+
+Una dependencia de seguridad no resuelta produce `BLOCKED`; no se corrige silenciosamente dentro de esta tarea.
+
+---
+
+#### 27. Estrategia de futura materialización
+
+La instancia `AUTH-DB-018::GLOBAL` deberá usar migraciones forward versionadas en `vento-shell`.
+
+Secuencia contractual:
+
+```text
+1. REGENERAR Y CONGELAR BASELINE DE LA INSTANCIA
+2. GENERAR MANIFIESTO DE CLASIFICACIÓN COMPLETO
+3. VALIDAR 100 % DE COBERTURA
+4. CREAR DESTINOS CANÓNICOS NO DESTRUCTIVOS
+5. MATERIALIZAR WRAPPERS Y OBJETOS INTERNOS SEGÚN DISPOSICIÓN
+6. CONSERVAR COMPATIBILIDAD DONDE EXISTA CONSUMIDOR
+7. NO CONFIGURAR DATA API NI GRANTS DE AUTH-DB-017
+8. VALIDAR SEGURIDAD Y DEPENDENCIAS
+9. VALIDAR DRIFT
+10. CONSERVAR EVIDENCIA Y RECUPERACIÓN
+```
+
+No se permiten movimientos destructivos como estrategia base.
+
+---
+
+#### 28. Compatibilidad, idempotencia y rollback
+
+La transición es `wrapper-first`.
+
+Para contratos consumidos:
+
+```text
+CREAR DESTINO
+→ VALIDAR DESTINO
+→ CONSERVAR IDENTIDAD LEGACY
+→ MIGRAR CONSUMIDORES
+→ DEMOSTRAR CERO DEPENDENCIAS
+→ RETIRAR COMPATIBILIDAD
+```
+
+Reglas:
+
+1. no se elimina una vista consumida antes de migrar consumidores;
+2. no se renombra una RPC consumida sin compatibilidad;
+3. no se cambia simultáneamente identidad, semántica y permisos sin transición verificable;
+4. una ejecución repetida del harness no debe introducir nuevos cambios;
+5. rollback no usa destrucción genérica de objetos con dependencias;
+6. una corrección posterior se realiza mediante migración forward versionada;
+7. los wrappers no deben duplicar efectos ni debilitar idempotencia/concurrencia del owner.
+
+---
+
+#### 29. Pruebas positivas y negativas
+
+La futura instancia deberá demostrar:
+
+1. se regeneró el inventario remoto antes de materializar;
+2. toda vista Vento tiene identidad inequívoca;
+3. toda rutina Vento directa usa firma completa;
+4. el 100 % del universo aplicable tiene una disposición primaria;
+5. cada objeto tiene owner lógico o clasificación de plataforma explícita;
+6. cada `PUBLISH_API` tiene tipo `READ_VIEW`, `QUERY_RPC` o `COMMAND_RPC`;
+7. `api` contiene cero tablas autoritativas;
+8. `api` contiene cero secuencias autoritativas;
+9. `api` contiene cero trigger functions;
+10. las vistas expuestas usan `security_invoker=true` por defecto;
+11. las cuatro vistas privilegiadas observadas no se publican tal como están;
+12. `api` no incorpora RPC `SECURITY DEFINER` por defecto;
+13. `app_private` permanece fuera de acceso cliente directo;
+14. la lógica de negocio permanece en owner schemas;
+15. `audit` no absorbe autoridad empresarial;
+16. las identidades legacy consumidas conservan compatibilidad;
+17. `RETIRE` nunca se aplica sin evidencia negativa suficiente;
+18. `BLOCKED` siempre incluye condición de salida;
+19. las sobrecargas se clasifican por firma;
+20. trigger functions permanecen fuera de `api`;
+21. el drift entre baseline documental e inventario de instancia queda reconciliado;
+22. no se modifican grants ni configuración de Data API;
+23. no se mueven tablas ni datos;
+24. una segunda validación no detecta drift introducido por la primera materialización.
+
+Casos negativos obligatorios:
+
+- identidad faltante;
+- identidad duplicada;
+- firma sobrecargada colapsada;
+- `PUBLISH_API` sin tipo contractual;
+- vista privilegiada propuesta como contrato sin resolución de seguridad;
+- helper de dominio propuesto para `app_private`;
+- `RETIRE` sin evidencia;
+- `KEEP_COMPATIBILITY` sin consumidor o salida;
+- trigger function propuesta para `api`;
+- drift remoto no reconciliado;
+- intento de adelantar privilegios de `AUTH-DB-017`.
+
+---
+
+#### 30. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la separación entre `api`, owner schemas, `app_private` y `audit`, la seguridad de vistas y RPC, la prohibición de exposición directa, la compatibilidad, los grants, el drift y las condiciones de publicación ya poseen cobertura canónica vigente en la arquitectura E3. Esta tarea convierte esas decisiones en un contrato documental de materialización sin introducir una regla protegida nueva.
+
+---
+
+#### 31. Cobertura de prueba vigente reutilizada
+
+Se reutiliza, sin modificarla, la cobertura existente asociada especialmente a:
+
+- `TREQ-SUPABASE-651..686`, para la capa contractual expuesta `api`;
+- `TREQ-SUPABASE-687..718`, para la capa técnica privada `app_private`;
+- `TREQ-SUPABASE-1047..1090`, para seguridad, exposición, grants, vistas, RPC, compatibilidad y controles relacionados.
+
+Estos identificadores se usan únicamente como trazabilidad de requisitos vigentes.
+
+No se modifica ninguna fila del registro de requisitos.
+
+---
+
+#### 32. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                               |
+| --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | la tarea documental no materializa migraciones ni código de producto                                                                                                    |
+| LOCAL     | NOT_EXECUTED   | pendiente del lifecycle documental y validadores del checkout de la tarea                                                                                               |
+| REMOTA    | PASS           | fuentes canónicas vigentes y línea base read-only de `vento-os-dev` reconciliadas: 62 vistas, 226 rutinas Vento directas, 72 trigger functions y 4 vistas privilegiadas |
+| OPERATIVA | NOT_APPLICABLE | no se alteran consumidores, procesos ni comportamiento runtime                                                                                                          |
+| FÍSICA    | NOT_APPLICABLE | `AUTH-DB-018::GLOBAL` permanece sin autorización física                                                                                                                 |
+
+---
+
+#### 33. Decisiones vinculantes
+
+1. La futura instancia es `AUTH-DB-018::GLOBAL`.
+2. Su modo es `GLOBAL_ENABLE_ONCE`.
+3. Su gate es `PRE_E5_FOUNDATION`.
+4. `api` es la única capa contractual expuesta objetivo de Vento.
+5. `api` no posee autoridad empresarial.
+6. Los únicos tipos contractuales admitidos son `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC`.
+7. Las vistas se identifican por `schema.object`.
+8. Las rutinas se identifican por `schema.name(identity arguments)`.
+9. Las sobrecargas se clasifican independientemente.
+10. La línea base remota actual contiene 62 vistas.
+11. De esas vistas, 58 usan `security_invoker` y 4 son privilegiadas.
+12. La línea base contiene 226 rutinas Vento directas.
+13. La línea base contiene 72 trigger functions.
+14. El universo primario observado es de 288 identidades.
+15. Los 72 trigger functions permanecen fuera del universo primario de contratos.
+16. Las cuatro vistas privilegiadas actuales quedan bloqueadas para publicación directa tal como están.
+17. Toda `READ_VIEW` objetivo usa `security_invoker=true` por defecto.
+18. `api` mantiene objetivo de cero RPC `SECURITY DEFINER` por defecto.
+19. `app_private` aloja únicamente helpers técnicos transversales privados sin autoridad de negocio.
+20. La lógica e invariantes de negocio permanecen en owner schemas.
+21. `audit` registra evidencia transversal sin adquirir autoridad empresarial.
+22. Los schemas legacy no se convierten en destinos canónicos por mera existencia.
+23. La compatibilidad legacy requiere consumidor y condición de salida.
+24. `RETIRE` requiere evidencia negativa suficiente.
+25. `BLOCKED` requiere motivo y condición de salida.
+26. Los objetos de plataforma/extensión se clasifican `PLATFORM_MANAGED`.
+27. Ninguna tabla, secuencia o trigger function se publica en `api`.
+28. La transición de contratos consumidos es wrapper-first.
+29. La clasificación completa precede a cualquier mutación física.
+30. El drift se regenera y reconcilia antes de materializar.
+31. `AUTH-DB-017` conserva exposición, `USAGE`, `SELECT`, `EXECUTE` y default privileges.
+32. `AUTH-DB-001..005` conservan sus responsabilidades de RLS, policies, funciones privilegiadas y grants.
+33. Tablas, datos y backfills permanecen fuera del alcance.
+34. Toda futura materialización se versiona en `vento-shell`.
+35. La aprobación documental no autoriza ningún cambio físico en Supabase.
+36. No se crean ni modifican requisitos de prueba.
+
+---
+
+#### 34. Criterios de aceptación
+
+`AUTH-DB-018` queda documentalmente completa cuando:
+
+- la separación entre `api`, owner schemas, `app_private`, `audit` y compatibilidad quede cerrada;
+- se definan únicamente `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC` como contratos de `api`;
+- se cierre la identidad física de vistas y rutinas;
+- las sobrecargas no puedan colapsarse;
+- la línea base remota de 62 vistas, 226 rutinas directas y 72 trigger functions quede registrada como evidencia;
+- las cuatro vistas privilegiadas queden bloqueadas para publicación directa tal como están;
+- `security_invoker=true` quede fijado como default de vistas expuestas;
+- `SECURITY DEFINER` no quede heredado automáticamente hacia `api`;
+- las disposiciones canónicas queden cerradas;
+- `RETIRE`, `BLOCKED` y `KEEP_COMPATIBILITY` sean fail-closed;
+- se exija manifiesto y cobertura completa antes de mutar;
+- `AUTH-DB-017` conserve exposición y privilegios;
+- tablas, datos, RLS y migraciones verticales permanezcan fuera del alcance;
+- se definan pruebas positivas y negativas;
+- se declaren cero cambios TREQ con cobertura vigente reutilizada;
+- `AUTH-DB-018::GLOBAL` quede identificada sin quedar autorizada.
+
+---
+
+#### 35. Límites
+
+`AUTH-DB-018` no:
+
+- ejecuta SQL de mutación;
+- crea migraciones;
+- mueve funciones;
+- mueve vistas;
+- crea contratos físicos en `api`;
+- elimina objetos;
+- renombra objetos legacy;
+- mueve tablas;
+- cambia columnas;
+- cambia claves;
+- modifica datos;
+- ejecuta backfills;
+- modifica RLS;
+- modifica policies;
+- cambia Supabase Auth;
+- cambia sesiones;
+- cambia Storage;
+- cambia Realtime;
+- cambia Edge Functions;
+- cambia cron;
+- cambia secretos;
+- configura Data API;
+- modifica `api.schemas`;
+- modifica `extra_search_path`;
+- concede `USAGE`;
+- concede `SELECT`;
+- concede `EXECUTE`;
+- cambia default privileges;
+- modifica GraphQL;
+- retira compatibilidad sin evidencia;
+- modifica VITAL;
+- modifica el registro de requisitos;
+- autoriza `AUTH-DB-018::GLOBAL`;
+- desarrolla `AUTH-DB-017`.
+
+---
+
+#### 36. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-016 — Crear esquemas empresariales aprobados`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API`
+
+
 ### [ ] AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
 ### [ ] AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
 

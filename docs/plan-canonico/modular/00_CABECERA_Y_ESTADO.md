@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1011** |
+| Tareas aprobadas | **1012** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **583** |
+| Tareas no iniciadas | **582** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **63.43% (1011/1594)** |
+| Porcentaje de completamiento | **63.49% (1012/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-016 — Crear esquemas empresariales aprobados** |
-| Tarea actual | **AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos** |
+| Última tarea aprobada | **AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos** |
+| Tarea actual | **AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API** |
+| Siguiente tarea | **AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 10 de 51 aprobadas; AUTH-DB-018 pendiente** |
+| Progreso del bloque | **BLOQUE R: 11 de 51 aprobadas; AUTH-DB-017 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-017::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-018** |
+| Carril documental | **ACTIVO — AUTH-DB-017** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-017::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-016` — Crear esquemas empresariales aprobados |
-| Tarea actual | `AUTH-DB-018` — Separar vistas y RPC expuestas de helpers internos — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-017` — Configurar esquemas expuestos y privilegios de Data API |
+| Última aprobada | `AUTH-DB-018` — Separar vistas y RPC expuestas de helpers internos |
+| Tarea actual | `AUTH-DB-017` — Configurar esquemas expuestos y privilegios de Data API — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-019` — Implementar vínculos canónicos entre Auth e identidades empresariales |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 10 DE 51 APROBADAS — ACTUAL AUTH-DB-018** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 11 DE 51 APROBADAS — ACTUAL AUTH-DB-017** |
 | Implementación física | **SHELL-CON-017::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-016 — Crear esquemas empresariales aprobados
-        ↓
-TAREA ACTUAL
 AUTH-DB-018 — Separar vistas y RPC expuestas de helpers internos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-017 — Configurar esquemas expuestos y privilegios de Data API
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 10 de 51 tareas aprobadas
+BLOQUE R — 11 de 51 tareas aprobadas
 ```
