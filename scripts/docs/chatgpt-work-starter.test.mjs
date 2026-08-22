@@ -29,6 +29,10 @@ test('genera dos iniciadores separados por intención y un selector legacy míni
     new RegExp(`ID: ${result.control.documentary.taskId}`, 'u'),
   );
   assert.match(result.documentationSource, /CONTENIDO CANÓNICO DE LA TAREA OBJETIVO/u);
+  assert.doesNotMatch(
+    result.documentationSource,
+    /CONTEXTO CANÓNICO INMEDIATO — TAREA ANTERIOR APROBADA/u,
+  );
   assert.match(result.documentationSource, /FORMATO_ENTREGA_VENTO_V1/u);
   assert.match(result.documentationSource, /exactamente estas ocho secciones/u);
   assert.match(result.documentationSource, /NO autorices implementaciones/u);
@@ -94,6 +98,15 @@ test('genera dos iniciadores separados por intención y un selector legacy míni
     assert.match(result.implementationSource, /NO EXISTE UNA INSTANCIA FÍSICA ACTIVA/u);
     assert.doesNotMatch(result.implementationSource, /REGISTRO ACTIVO EXACTO/u);
   }
+});
+
+test('el iniciador documental no incrusta el bloque completo de la tarea anterior', () => {
+  const source = fs.readFileSync('scripts/docs/chatgpt-work-starter.mjs', 'utf8');
+
+  assert.doesNotMatch(source, /previous\.block\.trim\(\)/u);
+  assert.doesNotMatch(source, /CONTEXTO CANÓNICO INMEDIATO — TAREA ANTERIOR APROBADA/u);
+  assert.doesNotMatch(source, /sourceContext\(task, workTopology, emptyDraft\)/u);
+  assert.match(source, /sourceContext\(task\)/u);
 });
 
 test('la plantilla compartida contiene solo reglas comunes y una ranura', () => {
