@@ -191,6 +191,25 @@ export function actionResponseContract(control, sourceContractHash) {
     'CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY',
     'CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY',
     'FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE',
+    'MESSAGE_DELIVERY_CONTRACT: INLINE_VISIBLE_STEPS_ONLY',
+    'MESSAGE_MEANS_ASSISTANT_REPLY_BODY: TRUE',
+    'RUNBOOK_TERM_MEANS_VISIBLE_MESSAGE_PROCEDURE: TRUE',
+    'PROCEDURE_MUST_SURVIVE_ATTACHMENT_REMOVAL: TRUE',
+    'FILE_IS_NOT_MESSAGE: TRUE',
+    'DOWNLOAD_IS_SUPPLEMENT_ONLY: TRUE',
+    'RUNBOOK_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE',
+    'PATCH_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE',
+    'ORCHESTRATOR_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE',
+    'Un MENSAJE significa exclusivamente el cuerpo visible de la respuesta que ChatGPT envia en la conversacion. Un archivo, adjunto, patch, script, runbook o enlace descargable NO es un mensaje y nunca cuenta como sustituto.',
+    'La palabra RUNBOOK en este iniciador significa exclusivamente la secuencia de PASOS visible y numerada dentro del cuerpo del mensaje. Nunca significa ni autoriza crear un archivo llamado runbook para sustituir esa secuencia visible.',
+    'La frase EN UN SOLO MENSAJE exige que el mapa y todos los PASO 1..N deterministas aparezcan literalmente escritos y numerados en el cuerpo visible de esa misma respuesta.',
+    'Cada paso visible debe incluir como minimo: numero, operacion, repositorio o ruta cuando aplique, accion o comando, condicion PASS para continuar y condicion FAIL para detenerse.',
+    'Un archivo descargable solo puede acompanar un paso cuando contiene el contenido real de un archivo que debe crearse o reemplazarse. Nunca puede contener la unica copia de las instrucciones operativas.',
+    'Un patch puede ser el mecanismo de materializacion de codigo, pero no reemplaza el mensaje: el cuerpo visible debe conservar el paso que lo aplica, donde se aplica, como se valida y que ocurre despues de PASS o FAIL.',
+    'Esta prohibido crear un runbook descargable, script orquestador o archivo ejecutable con el proposito de reemplazar la enumeracion visible de pasos de la respuesta.',
+    'INVALID_DELIVERY_EXAMPLE: responder solo con descarga runbook.cjs, patch.txt, script o archivo que contenga el procedimiento y omitir los PASOS visibles del mensaje.',
+    'VALID_DELIVERY_EXAMPLE: escribir PASO 1, PASO 2, ... PASO N literalmente en la respuesta; cuando un paso necesite un archivo, enlazar ese archivo dentro de ese paso sin ocultar la instruccion.',
+    'AUTO_VERIFICATION_BEFORE_SEND: elimina mentalmente todos los enlaces y adjuntos; si al hacerlo el usuario deja de poder ver el procedimiento completo y saber que ejecutar en cada paso, la respuesta es invalida y debe reescribirse antes de enviarse.',
     'La mera existencia futura de un GATE LOCAL PASS/FAIL no constituye un gate conversacional cuando el tramo posterior para PASS ya puede determinarse.',
     'Si un GATE LOCAL produce PASS, continúa inmediatamente con el siguiente paso numerado del mismo runbook sin volver al chat.',
     'Si un GATE LOCAL produce FAIL, detén únicamente la secuencia local, conserva la terminal abierta y devuelve RESULTADO PARA CHATGPT.',
@@ -243,6 +262,15 @@ DO_NOT_SWITCH_LANES: TRUE
 CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY
 CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY
 FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE
+MESSAGE_DELIVERY_CONTRACT: INLINE_VISIBLE_STEPS_ONLY
+MESSAGE_MEANS_ASSISTANT_REPLY_BODY: TRUE
+RUNBOOK_TERM_MEANS_VISIBLE_MESSAGE_PROCEDURE: TRUE
+PROCEDURE_MUST_SURVIVE_ATTACHMENT_REMOVAL: TRUE
+FILE_IS_NOT_MESSAGE: TRUE
+DOWNLOAD_IS_SUPPLEMENT_ONLY: TRUE
+RUNBOOK_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE
+PATCH_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE
+ORCHESTRATOR_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE
 
 ESTADO
 
@@ -280,6 +308,15 @@ DO_NOT_SWITCH_LANES: TRUE
 CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY
 CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY
 FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE
+MESSAGE_DELIVERY_CONTRACT: INLINE_VISIBLE_STEPS_ONLY
+MESSAGE_MEANS_ASSISTANT_REPLY_BODY: TRUE
+RUNBOOK_TERM_MEANS_VISIBLE_MESSAGE_PROCEDURE: TRUE
+PROCEDURE_MUST_SURVIVE_ATTACHMENT_REMOVAL: TRUE
+FILE_IS_NOT_MESSAGE: TRUE
+DOWNLOAD_IS_SUPPLEMENT_ONLY: TRUE
+RUNBOOK_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE
+PATCH_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE
+ORCHESTRATOR_FILE_CAN_REPLACE_VISIBLE_PROCEDURE: FALSE
 
 REGLA CRITICA DE CONTINUIDAD CONVERSACIONAL
 
