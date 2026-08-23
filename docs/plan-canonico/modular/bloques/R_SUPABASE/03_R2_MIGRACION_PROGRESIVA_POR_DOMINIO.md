@@ -1692,7 +1692,1408 @@ Todo cambio físico queda reservado a una futura instancia con sus gates satisfe
 `AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles`
 
 
-### [ ] AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
+### ✅ AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal
+**Tarea siguiente:** AUTH-DB-007 — Validar sede dentro de RPC sensibles
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para adopción del contexto canónico dentro de RPC sensibles
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `RPC-CONTEXT-ADOPTION-006@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-006::package_id` permanece no ejecutada hasta verificar R0/R1 aplicables, paquete E5, `SHELL-CI-020::package_id` y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-006` define cómo toda RPC sensible incluida en un paquete aprobado incorpora un `AccessContext@1.0.0` real, resuelto en servidor y no controlable por el caller, antes de utilizar hechos de identidad, actor, empleo, turno, check-in, dispositivo, sede, área o rol para una operación protegida.
+
+La tarea no implementa RPC ni cambia funciones remotas. Cierra el contrato que cada futura instancia `AUTH-DB-006::package_id` deberá materializar.
+
+---
+
+#### 2. Decisión central
+
+La regla vinculante es:
+
+```text
+RPC SENSIBLE
+→ RESUELVE CONTEXTO CANÓNICO EN SERVIDOR
+→ CONSERVA UN ÚNICO SNAPSHOT DE CONTEXTO
+→ USA ESE SNAPSHOT COMO HECHOS DE AUTORIZACIÓN
+→ NO ACEPTA AUTORIDAD DEL CALLER
+→ ENTREGA A LAS VALIDACIONES POSTERIORES 007..010
+```
+
+Queda prohibido reconstruir autoridad desde parámetros legacy, filas planas, cookies locales, metadata editable, nombres de rol o helpers booleanos históricos.
+
+---
+
+#### 3. Contrato material producido
+
+El contrato de esta tarea se denomina:
+
+```text
+RPC-CONTEXT-ADOPTION-006@1.0.0
+```
+
+Su unidad repetible es una RPC identificada por firma exacta dentro de una instancia de paquete.
+
+El contrato no reemplaza `AccessContext@1.0.0`; define su adopción dentro de las RPC sensibles.
+
+---
+
+#### 4. Topología vinculante
+
+La topología aplicable es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance = AUTH-DB-006::package_id
+```
+
+Consecuencias:
+
+1. el marcador canónico se desarrolla una sola vez;
+2. no existe `AUTH-DB-006::GLOBAL`;
+3. cada `package_id` registra su propia instancia;
+4. cada instancia contiene únicamente las RPC incluidas en el alcance aprobado del paquete;
+5. una ejecución de un paquete no certifica las RPC de otro;
+6. la definición documental no abre implementación física.
+
+---
+
+#### 5. Gate temporal
+
+Una instancia futura solo podrá materializar cambios cuando, para el mismo `package_id`, existan:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+AUTH-DB-020::package_id = APPLICABLE_OR_VERIFIED
+E5-GATE-008::package_id = PASS
+SHELL-CI-020::package_id = OPENED
+physical_authorization = EXPLICIT
+```
+
+La ausencia de cualquiera de estas condiciones mantiene la instancia en `NOT_EXECUTED_GATE_CLOSED`.
+
+---
+
+#### 6. Frontera con AUTH-DB-020
+
+`AUTH-DB-020` decide qué objetos y contratos entran al paquete y gobierna su migración progresiva.
+
+`AUTH-DB-006` recibe de 020:
+
+```text
+package_id
+candidate_id
+transition_keys
+migration_unit_ids
+RPC incluidas
+compatibility_plan_refs
+consumer_refs
+rollback_refs
+```
+
+006 no amplía el package por descubrir una RPC nueva. Una RPC nueva produce drift y obliga a reconciliar el alcance propietario.
+
+---
+
+#### 7. Dependencias R1
+
+La adopción canónica depende de que las fundaciones R1 necesarias estén físicamente verificadas.
+
+Como mínimo, cuando aplique:
+
+```text
+app_private.get_access_context(text)
+app_private.get_context_freshness_token(text)
+app_private.evaluate_authorization(jsonb)
+app_private.authorization_policy_allows(jsonb)
+```
+
+La instancia no crea esas fundaciones para desbloquearse.
+
+---
+
+#### 8. Estado físico observado de las dependencias R1
+
+En el corte remoto usado para desarrollar esta tarea no existen todavía las identidades físicas canónicas enumeradas en la sección anterior.
+
+Por tanto:
+
+```text
+CONTRATOS R1 = APROBADOS
+MATERIALIZACIÓN R1 EN REMOTO = NO OBSERVADA
+AUTH-DB-006 FÍSICO = NO MATERIALIZABLE AÚN POR INFERENCIA
+```
+
+Cada paquete deberá repetir el precheck. Un remoto futuro puede ser distinto.
+
+---
+
+#### 9. Fuente canónica del contexto
+
+La fuente completa es:
+
+```text
+app_private.get_access_context(p_app_code text) → jsonb
+```
+
+y produce:
+
+```text
+AccessContext@1.0.0
+```
+
+La RPC sensible consume ese resultado como contexto autoritativo de hechos.
+
+---
+
+#### 10. Firma del resolver
+
+La firma permitida para obtener contexto es exactamente:
+
+```text
+app_private.get_access_context(text)
+```
+
+El único argumento público del resolver es `p_app_code`.
+
+No se aceptan overloads con actor, empleado, sede, área, dispositivo, rol, permiso o recurso como sustitutos.
+
+---
+
+#### 11. Proyección segura no autoritativa
+
+`api.get_safe_access_context(text)` es una proyección cliente y no una fuente de autoridad para una RPC protegida.
+
+Regla:
+
+```text
+api.get_safe_access_context
+→ PRESENTACIÓN SEGURA
+
+app_private.get_access_context
+→ CONTEXTO COMPLETO INTERNO
+```
+
+Una RPC no recibe la proyección segura desde el caller para reconstruir el contexto completo.
+
+---
+
+#### 12. Frontera con el evaluador canónico
+
+El contexto resuelve hechos.
+
+La autorización decide si una acción concreta está permitida.
+
+Por tanto:
+
+```text
+get_access_context
+→ RESUELVE QUIÉN Y EN QUÉ CONTEXTO
+
+evaluate_authorization
+→ DECIDE SI PUEDE HACER LA ACCIÓN
+```
+
+006 no sustituye la evaluación de permiso exacto propiedad de `AUTH-DB-009`.
+
+---
+
+#### 13. Prohibición de usar contexto como decisión
+
+Campos de contexto como:
+
+```text
+base_role
+operational_role
+operational_site
+operational_area
+lane_readiness
+```
+
+no son equivalentes a `ALLOW`.
+
+Una RPC no puede concluir autorización solamente porque alguno de esos campos exista.
+
+---
+
+#### 14. Definición de RPC sensible
+
+Dentro de un paquete, una RPC es sensible cuando cumple al menos una de estas condiciones:
+
+1. muta estado empresarial protegido;
+2. lee datos no públicos sujetos a actor, territorio o propósito;
+3. ejecuta una transición de estado;
+4. produce efectos externos o derivados;
+5. administra identidad, autorización, permisos, dispositivos o sesiones;
+6. actúa sobre dinero, inventario, documentos, asistencia, producción, pedidos o datos equivalentes protegidos;
+7. usa o deriva actor, empleado, rol, sede, área, turno, check-in o dispositivo;
+8. opera como borde privilegiado `SECURITY DEFINER`;
+9. puede ser invocada por un cliente, integración o servicio fuera del owner interno;
+10. un contrato canónico previo exige autorización contextual.
+
+El nombre de la función no decide por sí solo la sensibilidad.
+
+---
+
+#### 15. Registro por paquete
+
+Cada futura instancia materializa un registro cerrado:
+
+```text
+rpc_context_adoption_id
+package_id
+candidate_id
+transition_key
+migration_unit_id
+schema_name
+function_name
+identity_arguments
+return_contract
+rpc_class
+audience
+exposure_mode
+security_mode
+app_code_contract
+context_requirement
+canonical_context_source
+authority_bearing_legacy_arguments
+resource_arguments
+context_fields_consumed
+downstream_validation_007
+downstream_validation_008
+downstream_validation_009
+downstream_validation_010
+rls_handoff_021
+types_handoff_026
+compatibility_reference
+consumer_reference
+rollback_reference
+adoption_state
+blocking_or_exit_gate
+evidence_reference
+owner
+```
+
+No se admite una fila identificada solo por nombre sin firma.
+
+---
+
+#### 16. Cardinalidad del registro
+
+Para cada package:
+
+```text
+RPC sensibles esperadas = N
+RPC sensibles materializadas = N
+faltantes = 0
+duplicadas = 0
+sin clasificación = 0
+sin owner = 0
+sin firma exacta = 0
+sin estado = 0
+```
+
+`N` se deriva del package aprobado y del preflight de drift; no es un número global fijo de esta tarea.
+
+---
+
+#### 17. Identidad exacta de RPC
+
+Una RPC se identifica por:
+
+```text
+schema
+function_name
+identity_arguments
+```
+
+Cuando existan overloads, cada firma es una identidad distinta.
+
+Cambiar argumentos, tipos o schema requiere reconciliación contractual; no se considera la misma RPC por compartir nombre.
+
+---
+
+#### 18. Clases cerradas de adopción
+
+Cada identidad usa exactamente una clase:
+
+| Clase                              | Semántica                                                                                |
+| ---------------------------------- | ---------------------------------------------------------------------------------------- |
+| `CONTEXT_REQUIRED_COMMAND`         | comando protegido que debe resolver contexto antes de efectos                            |
+| `CONTEXT_REQUIRED_QUERY`           | consulta protegida que debe resolver contexto antes de leer                              |
+| `CONTEXT_INHERITED_INTERNAL`       | helper no expuesto que opera únicamente dentro de una RPC padre protegida                |
+| `CONTEXT_NOT_APPLICABLE_PUBLIC`    | contrato verdaderamente público con evidencia de que no depende de autoridad empresarial |
+| `CONTEXT_NOT_APPLICABLE_SYSTEM`    | operación de sistema con principal técnico explícito y contrato propio                   |
+| `LEGACY_CONTEXT_ADAPTER_TEMPORARY` | adapter temporal que conserva compatibilidad sin convertirse en autoridad                |
+| `BLOCKED_UNCLASSIFIED`             | evidencia insuficiente para decidir de forma segura                                      |
+
+No existe clase implícita por defecto.
+
+---
+
+#### 19. Comandos protegidos
+
+`CONTEXT_REQUIRED_COMMAND` exige que el contexto se resuelva antes de:
+
+- DML empresarial;
+- efectos externos;
+- emisión de eventos;
+- escritura de auditoría de resultado;
+- cambio de estado;
+- uso de parámetros que el caller pudiera falsificar para ampliar alcance.
+
+Un fallo de contexto produce cero efecto empresarial.
+
+---
+
+#### 20. Consultas protegidas
+
+`CONTEXT_REQUIRED_QUERY` resuelve contexto antes de construir filtros, joins, agregaciones o proyecciones sensibles.
+
+La ausencia de mutación no convierte una lectura en pública.
+
+---
+
+#### 21. Helpers internos
+
+`CONTEXT_INHERITED_INTERNAL` solo aplica cuando:
+
+1. no existe `EXECUTE` cliente;
+2. no constituye Data API pública;
+3. recibe su contexto desde una RPC padre ya protegida o trabaja dentro del mismo borde;
+4. no vuelve a resolver una autoridad contradictoria;
+5. su evidencia identifica la RPC padre.
+
+Un helper expuesto deja de ser elegible para esta clase.
+
+---
+
+#### 22. Contratos públicos
+
+`CONTEXT_NOT_APPLICABLE_PUBLIC` requiere evidencia positiva de publicidad.
+
+No basta con:
+
+```text
+anon tiene EXECUTE
+la función siempre estuvo en public
+no encontramos un check de permiso
+```
+
+Si la función toca información o efectos protegidos, permanece bloqueada hasta su clasificación correcta.
+
+---
+
+#### 23. Procesos de sistema
+
+`CONTEXT_NOT_APPLICABLE_SYSTEM` requiere un principal técnico explícito, proceso, ambiente, operaciones permitidas y owner.
+
+Un proceso de sistema no se representa como empleado ficticio.
+
+---
+
+#### 24. Adapter legacy temporal
+
+`LEGACY_CONTEXT_ADAPTER_TEMPORARY` puede conservar una firma histórica solo si:
+
+- la autoridad proviene del contexto canónico;
+- no reconstruye contexto desde la forma legacy;
+- no acepta actor o territorio del caller como autoridad;
+- tiene consumer owner;
+- tiene telemetría;
+- tiene sunset;
+- tiene rollback;
+- no admite nuevos consumidores.
+
+---
+
+#### 25. Estado bloqueado
+
+`BLOCKED_UNCLASSIFIED` impide cutover.
+
+Debe conservar:
+
+```text
+qué evidencia falta
+owner de resolución
+tarea propietaria
+condición exacta de salida
+```
+
+No se resuelve por inferencia optimista.
+
+---
+
+#### 26. Contrato de app_code
+
+Toda RPC sensible declara cómo obtiene `app_code`.
+
+Modos cerrados:
+
+```text
+FIXED_BY_RPC_CONTRACT
+EXACT_VALIDATED_INPUT
+INHERITED_FROM_PROTECTED_PARENT
+SYSTEM_CONTRACT
+NOT_APPLICABLE_PUBLIC
+```
+
+No se permiten defaults silenciosos.
+
+---
+
+#### 27. FIXED_BY_RPC_CONTRACT
+
+Cuando una RPC pertenece a una sola aplicación canónica, el código se fija server-side.
+
+Ejemplo conceptual:
+
+```text
+RPC de inventario NEXO
+→ app_code definido por el contrato de esa RPC
+→ caller no selecciona otra app para cambiar autoridad
+```
+
+El valor exacto pertenece al package y al contrato de la RPC.
+
+---
+
+#### 28. EXACT_VALIDATED_INPUT
+
+Solo se usa si una misma firma está contractualmente autorizada para más de una aplicación.
+
+El input:
+
+- es obligatorio;
+- se compara exactamente;
+- no se corrige silenciosamente;
+- no se convierte a minúscula para encubrir error;
+- no usa alias;
+- no tiene aplicación fallback.
+
+---
+
+#### 29. Resolución única por invocación
+
+Una RPC protegida resuelve el contexto una sola vez por ejecución lógica.
+
+Forma conceptual:
+
+```text
+BEGIN RPC
+→ resolve AccessContext
+→ freeze local immutable context
+→ validate resource/territory/permission
+→ execute business operation
+→ record correlated evidence
+END RPC
+```
+
+No se re-resuelve contextualmente en distintos puntos para escoger el resultado más conveniente.
+
+---
+
+#### 30. Snapshot inmutable
+
+La invocación conserva como mínimo cuando el contrato los produzca:
+
+```text
+context_id
+context_contract_version
+resolved_at
+principal
+actor_effective
+context_fingerprint
+lane_readiness
+structural_issues
+```
+
+La RPC no modifica ese objeto.
+
+---
+
+#### 31. Frescura
+
+Una instancia que dependa de frescura debe consumir la fundación canónica correspondiente.
+
+Reglas:
+
+1. no usa una caché cliente como autoridad;
+2. no usa stale-while-revalidate para autorizar una mutación;
+3. no inventa TTL local;
+4. no toma `context_fingerprint` del caller como prueba suficiente;
+5. un contexto no verificable mantiene la operación bloqueada.
+
+---
+
+#### 32. Sesión
+
+Para operaciones que exijan sesión activa, el contrato canónico conserva la identidad de sesión resuelta por servidor.
+
+Una RPC sensible no confía en:
+
+- un `session_id` enviado como parámetro;
+- una cookie interpretada manualmente dentro de SQL;
+- metadata de usuario editable;
+- la mera capacidad de una credencial privilegiada.
+
+La validación estricta de sesión permanece en su fundación propietaria.
+
+---
+
+#### 33. Parámetros con hechos de contexto
+
+Una firma legacy puede contener parámetros como:
+
+```text
+p_user_id
+p_employee_id
+p_actor_id
+p_site_id
+p_area_id
+p_role
+p_device_id
+p_shift_id
+```
+
+La presencia del argumento no concede autoridad.
+
+Cada parámetro debe clasificarse como:
+
+```text
+RESOURCE_IDENTIFIER
+BUSINESS_INPUT
+COMPATIBILITY_ONLY
+UNTRUSTED_AUTHORITY_INPUT
+REMOVE_AFTER_CONSUMER_MIGRATION
+```
+
+---
+
+#### 34. User, employee, principal y actor
+
+El caller no elige el principal o actor efectivo de una RPC humana protegida mediante un UUID.
+
+Un identificador de otra persona puede ser recurso de la operación, por ejemplo un empleado administrado, pero nunca se confunde con el actor que ejecuta la operación.
+
+---
+
+#### 35. Sede y área
+
+Los argumentos de sede y área pueden identificar el recurso objetivo.
+
+No definen por sí solos la sede o área autorizada del actor.
+
+La comparación de territorio se entrega a `AUTH-DB-007` y `AUTH-DB-008`.
+
+---
+
+#### 36. Rol y permiso
+
+Una RPC no acepta un rol enviado por el caller para decidir autoridad.
+
+El permiso exacto tampoco se deduce de un booleano proporcionado por el cliente.
+
+La evaluación de permiso exacto pertenece a `AUTH-DB-009`.
+
+---
+
+#### 37. Identificadores de recurso
+
+IDs de pedido, producto, documento, sesión de conteo, remisión o entidad equivalente siguen siendo inputs de negocio.
+
+La RPC debe resolver server-side su owner, territorio, estado y atributos necesarios antes de autorizar.
+
+006 define esta separación; las validaciones específicas posteriores conservan su ownership.
+
+---
+
+#### 38. Dispositivo y actor efectivo
+
+Un `device_id` o `actor_employee_id` enviado como argumento no prueba posesión, vínculo, sesión de actor ni autoridad.
+
+El contexto canónico debe conservar la resolución efectiva ya aprobada.
+
+---
+
+#### 39. Simulación
+
+`SimulationContext` permanece separado de `AccessContext` real.
+
+Una RPC de negocio no convierte una simulación en autoridad real ni reutiliza un rol simulado como actor efectivo.
+
+La operación solo admite simulación cuando su contrato propietario lo autorice expresamente y sin producir efectos prohibidos.
+
+---
+
+#### 40. Principal técnico
+
+Un principal técnico conserva:
+
+```text
+service identity
+system process
+environment
+delegation when applicable
+allowed operation
+```
+
+No adopta automáticamente carriles humanos de empleado o cliente.
+
+---
+
+#### 41. service_role
+
+`service_role` es capacidad de infraestructura y no autoridad empresarial universal.
+
+Reglas:
+
+1. no representa un empleado;
+2. no representa un gerente;
+3. no representa consentimiento;
+4. no sustituye `AccessContext`;
+5. no permite omitir el contrato de un principal técnico;
+6. una RPC no se considera autorizada porque `service_role` pueda ejecutarla.
+
+---
+
+#### 42. anon y authenticated
+
+`anon` y `authenticated` son roles técnicos de acceso, no decisiones empresariales.
+
+Una RPC sensible debe distinguir:
+
+```text
+puede invocar físicamente
+≠
+está autorizado empresarialmente
+```
+
+La reducción final de grants pertenece además a `AUTH-DB-021`.
+
+---
+
+#### 43. SECURITY DEFINER
+
+Adoptar contexto canónico no justifica añadir `SECURITY DEFINER`.
+
+Cuando una RPC ya lo necesita o su diseño aprobado lo exige:
+
+- la necesidad se documenta;
+- la autorización interna permanece obligatoria;
+- el owner técnico no se convierte en autoridad empresarial;
+- el privilegio no sustituye RLS ni evaluación;
+- la superficie de `EXECUTE` se minimiza.
+
+---
+
+#### 44. search_path
+
+Toda función `SECURITY DEFINER` aplicable debe tener `search_path` endurecido conforme al contrato vigente y referencias calificadas.
+
+Un package no conserva `search_path=public` por compatibilidad si eso contradice la fundación aprobada.
+
+La corrección física correspondiente se versiona en el package.
+
+---
+
+#### 45. Grants de ejecución
+
+El inventario por firma conserva:
+
+```text
+PUBLIC EXECUTE
+anon EXECUTE
+authenticated EXECUTE
+service execution
+```
+
+Una concesión histórica no se interpreta como contrato aprobado.
+
+006 registra la necesidad; `AUTH-DB-021` gobierna la política final de grants y RLS.
+
+---
+
+#### 46. Frontera transaccional
+
+La adquisición de contexto y la operación protegida deben pertenecer a una frontera coherente.
+
+La RPC no puede:
+
+1. autorizar con un contexto;
+2. ejecutar una operación significativa mucho después;
+3. ignorar cambios de versión o precondición;
+4. producir efectos parciales antes del fallo.
+
+---
+
+#### 47. Fallo antes del efecto
+
+Si falla la resolución o la precondición contextual:
+
+```text
+business mutation = 0
+external effect = 0
+authorization success = false
+```
+
+La auditoría del intento puede persistir únicamente según el contrato de auditoría aprobado.
+
+---
+
+#### 48. Reintentos e idempotencia
+
+Un retry no vuelve a confiar en inputs de autoridad.
+
+Cuando la RPC es idempotente, la identidad de operación, actor/contexto y precondiciones se correlacionan conforme al contrato del comando.
+
+Un resultado previo no se reutiliza para otro actor o contexto.
+
+---
+
+#### 49. Legacy: get_operational_context
+
+La identidad actual:
+
+```text
+public.get_operational_context(
+  p_employee_id uuid,
+  p_site_id uuid,
+  p_app_code text
+)
+```
+
+es legacy.
+
+Divergencias observadas:
+
+- acepta `employee_id`;
+- acepta `site_id`;
+- usa defaults;
+- combina selected site, check-in, shift y employee site;
+- contiene bypass por nombres de rol;
+- produce `can_operate`;
+- usa helpers legacy de permisos.
+
+No puede convertirse en la fuente canónica de 006.
+
+---
+
+#### 50. Legacy: get_effective_context_v1
+
+La identidad actual:
+
+```text
+public.get_effective_context_v1(p_app_code text)
+```
+
+es una proyección legacy.
+
+Divergencias observadas:
+
+- normaliza el app code;
+- admite default;
+- mezcla rutas de shared device, simulación y contexto real;
+- llama `get_operational_context`;
+- devuelve forma plana;
+- expone `bypass_applied` y `can_operate`.
+
+No representa `AccessContext@1.0.0`.
+
+---
+
+#### 51. Evaluadores booleanos legacy
+
+El baseline remoto contiene, entre otros:
+
+| Firma lógica                                                       | Estado en 006                        |
+| ------------------------------------------------------------------ | ------------------------------------ |
+| `public.has_effective_permission_v1(text,text)`                    | legacy; no autoridad canónica        |
+| `public.has_operational_permission(text,uuid,uuid,text)`           | legacy; no autoridad canónica        |
+| `public.has_operational_role_permission(text,text,uuid,uuid,text)` | helper legacy; no evaluador canónico |
+| `public.has_permission(text,uuid,uuid)`                            | legacy; no evaluador canónico        |
+| `public.has_role_permission(text,text,uuid,uuid)`                  | helper legacy; no evaluador canónico |
+
+La adopción de contexto no autoriza seguir ampliando estos contratos.
+
+---
+
+#### 52. Prohibición de dependencia legacy nueva
+
+Después de adoptar 006 en una RPC:
+
+```text
+new dependency on get_operational_context = PROHIBITED
+new dependency on get_effective_context_v1 = PROHIBITED
+new generic boolean permission dependency = PROHIBITED
+```
+
+Una excepción de compatibilidad debe figurar como adapter temporal con owner y sunset.
+
+---
+
+#### 53. Compatibilidad temporal
+
+Cuando un consumer todavía depende de firma legacy, el package puede conservar la firma mientras cambia la autoridad interna.
+
+Regla:
+
+```text
+LEGACY SIGNATURE
+→ CANONICAL CONTEXT
+→ CANONICAL VALIDATIONS
+→ SAME APPROVED OBSERVABLE CONTRACT
+```
+
+No:
+
+```text
+LEGACY SIGNATURE
+→ LEGACY AUTHORITY
+```
+
+---
+
+#### 54. Evolución de firma
+
+006 no obliga a eliminar en el mismo paso todos los parámetros legacy.
+
+El package decide, conforme a 020 y a los consumers:
+
+```text
+KEEP_TEMPORARILY
+DEPRECATE
+REMOVE_AFTER_ZERO_USE
+REPLACE_WITH_CANONICAL_CONTRACT
+```
+
+La autoridad debe migrarse antes o al mismo tiempo que el uso protegido de esos parámetros.
+
+---
+
+#### 55. Consumidores
+
+Toda RPC incluida debe enlazar sus consumidores conocidos.
+
+La adaptación conserva:
+
+- repositorio;
+- callsite o binding;
+- release/cohorte;
+- owner;
+- versión actual;
+- versión objetivo;
+- compatibilidad;
+- telemetría;
+- rollback.
+
+La ausencia de referencia literal no demuestra ausencia de consumidor.
+
+---
+
+#### 56. Invocación directa
+
+La suite debe invocar la RPC por su superficie real, sin pasar por la UI.
+
+Objetivo:
+
+```text
+UI BYPASS
+→ MISMA AUTORIZACIÓN O MÁS RESTRICTIVA
+```
+
+Una protección solo presente en frontend no satisface 006.
+
+---
+
+#### 57. Llamada sin interfaz
+
+Server Action, script, Data API, SDK, integración y llamada SQL autorizada deben conservar la misma autoridad contextual para la misma operación.
+
+La capa de presentación no puede agregar el hecho que haga segura la RPC.
+
+---
+
+#### 58. Handoff a AUTH-DB-007
+
+006 entrega a 007:
+
+```text
+AccessContext canónico resuelto
++
+recurso objetivo identificado
++
+site inputs clasificados
+```
+
+007 es propietaria de validar la sede dentro de la RPC.
+
+006 no congela reglas territoriales adicionales.
+
+---
+
+#### 59. Handoff a AUTH-DB-008
+
+006 entrega a 008:
+
+```text
+AccessContext canónico
++
+resource area cuando aplique
++
+area inputs clasificados
+```
+
+008 valida área y compatibilidad territorial.
+
+---
+
+#### 60. Handoff a AUTH-DB-009
+
+006 entrega a 009:
+
+```text
+AccessContext canónico
++
+acción/recurso
++
+permission contract exacto por definir en la RPC
+```
+
+009 adopta el evaluador canónico para el permiso exacto.
+
+006 no usa `has_permission` como sustituto.
+
+---
+
+#### 61. Handoff a AUTH-DB-010
+
+006 conserva principal y actor efectivos del contexto sin permitir que el caller los reemplace.
+
+010 valida explícitamente principal y actor efectivo dentro de las RPC sensibles.
+
+---
+
+#### 62. Handoff a AUTH-DB-021
+
+006 inventaría exposición y privilegio de ejecución.
+
+021 alinea:
+
+- RLS;
+- grants;
+- audiences;
+- superficie `api`;
+- owner schemas;
+- funciones privilegiadas.
+
+El contexto correcto no compensa una policy o grant incorrectos.
+
+---
+
+#### 63. Handoff a AUTH-DB-026
+
+Toda modificación de firma, retorno, schema o contrato observable queda registrada para regeneración y publicación de tipos después del paquete.
+
+006 no publica tipos.
+
+---
+
+#### 64. Paridad con RLS
+
+La adopción del contexto en RPC no crea una lógica de autorización paralela a RLS.
+
+El package debe poder demostrar que para el mismo actor, contexto, recurso y permiso:
+
+```text
+RPC
+RLS
+CANONICAL EVALUATOR
+```
+
+no producen una ampliación contradictoria.
+
+La materialización específica de políticas pertenece a 021.
+
+---
+
+#### 65. Semántica de errores
+
+006 no crea strings de error locales como contrato público.
+
+Una falla de contexto se mapea al catálogo canónico vigente de errores y razones.
+
+Si no existe un código compatible:
+
+```text
+BLOCK
+→ route to owning AUTH-ERR contract
+→ approve semantic error
+→ resume package
+```
+
+No se inventa un texto libre para poder continuar.
+
+---
+
+#### 66. Observabilidad
+
+Cada RPC adoptada registra evidencia correlacionable suficiente para distinguir:
+
+```text
+package
+candidate
+RPC exacta
+context_id
+context_fingerprint
+actor/principal reference
+resource reference
+decision reference cuando exista
+outcome
+timestamp
+correlation_id
+```
+
+La telemetría no expone el `AccessContext` completo ni datos sensibles innecesarios.
+
+---
+
+#### 67. Evidencia por RPC
+
+El bundle mínimo por identidad contiene:
+
+1. firma before/after;
+2. grants before/after;
+3. security mode;
+4. search_path;
+5. app_code contract;
+6. context source;
+7. parámetros de autoridad legacy;
+8. clasificación de esos parámetros;
+9. consumer set;
+10. tests positivos;
+11. tests negativos;
+12. manipulación directa;
+13. resultado sin UI;
+14. rollback;
+15. digest de evidencia.
+
+---
+
+#### 68. Suite previa
+
+Antes de materializar una RPC deben existir assertions para:
+
+- ausencia de contexto;
+- caller no autenticado cuando aplique;
+- app incorrecta;
+- actor incorrecto;
+- input de empleado falsificado;
+- input territorial falsificado;
+- rol falsificado;
+- llamada directa;
+- contexto estructuralmente inválido;
+- compatibilidad legacy;
+- rollback.
+
+Una suite no ejecutada no produce `PASS`.
+
+---
+
+#### 69. Prueba de contexto falsificado
+
+Los tests intentan suministrar:
+
+```text
+otro employee_id
+otro user_id
+otro actor_id
+otro site_id
+otro area_id
+otro role
+context_id ajeno
+context_fingerprint ajeno
+payload de contexto fabricado
+```
+
+El resultado esperado es que esos valores no sustituyan la autoridad resuelta en servidor.
+
+Un parámetro que sea recurso válido conserva su significado de recurso, no de actor.
+
+---
+
+#### 70. Prueba de app_code
+
+Casos mínimos:
+
+```text
+app exacta autorizada
+app desconocida
+app inactiva
+case alterado
+espacios periféricos
+alias
+null cuando el contrato exige app
+app de otro producto
+```
+
+La RPC no corrige silenciosamente el input para producir una autorización diferente.
+
+---
+
+#### 71. Prueba de frescura
+
+Cuando la fundación de frescura sea aplicable, se prueban al menos:
+
+- sesión revocada;
+- cambio de actor;
+- cambio laboral;
+- cambio de turno;
+- check-out;
+- cambio de rol;
+- cambio de dispositivo;
+- cambio de autorización de app.
+
+Un contexto viejo no puede conservar autorización indefinida.
+
+---
+
+#### 72. Prueba de dispositivo compartido
+
+El package demuestra que:
+
+```text
+principal del dispositivo
++
+actor efectivo
++
+límites del dispositivo
+```
+
+no transfieren privilegios administrativos del principal al trabajador ni del trabajador siguiente al anterior.
+
+006 verifica adopción de contexto; reglas específicas siguen en sus contratos propietarios.
+
+---
+
+#### 73. Prueba de principal técnico
+
+Para RPC de sistema:
+
+- el principal técnico debe ser identificable;
+- la operación permitida debe ser explícita;
+- no se usa un empleado ficticio;
+- `service_role` no es la única prueba;
+- una delegación, cuando exista, debe ser verificable.
+
+---
+
+#### 74. Prueba de consumidor directo
+
+Al menos una prueba por audiencia llama el contrato sin la ruta normal de UI.
+
+Debe demostrar que manipular parámetros o saltarse la interfaz no concede autoridad adicional.
+
+---
+
+#### 75. Rollback
+
+La instancia conserva rollback por RPC y package.
+
+Modos posibles se heredan de `AUTH-DB-020` y del plan de rollback del paquete.
+
+El rollback debe poder:
+
+- retirar la versión candidata;
+- restaurar contrato previo cuando sea seguro;
+- conservar datos y efectos válidos;
+- reconciliar operaciones ejecutadas;
+- no reabrir una fuente legacy como autoridad si ya cruzó su punto de no retorno.
+
+---
+
+#### 76. Drift
+
+Antes de aplicar, el package recaptura:
+
+```text
+firma
+cuerpo
+security mode
+owner
+search_path
+EXECUTE grants
+dependencias
+consumidores
+context helpers
+migration version
+```
+
+Resultado:
+
+```text
+MATCH
+APPROVED_DRIFT
+BLOCKING_DRIFT
+```
+
+`BLOCKING_DRIFT` detiene la identidad afectada.
+
+---
+
+#### 77. Baseline remoto de descubrimiento
+
+El corte remoto de desarrollo observa en `public` y `api`:
+
+```text
+funciones totales = 247
+SECURITY DEFINER = 165
+ejecutables por authenticated = 174
+ejecutables por anon = 73
+```
+
+Estos valores son baseline de exposición y descubrimiento.
+
+No significan:
+
+```text
+174 RPC sensibles
+73 RPC públicas aprobadas
+165 RPC que deben conservar SECURITY DEFINER
+```
+
+La clasificación se realiza por firma y contrato dentro de cada package.
+
+Ejemplos actuales que justifican revisión por paquete incluyen funciones con inputs de empleado, actor, sede, área, dispositivo, pedido, inventario, pago, asistencia y operación administrativa. La lista exacta futura se deriva del candidate y del alcance 020, no de una expresión heurística congelada aquí.
+
+---
+
+#### 78. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+```text
+Requisitos creados: 0
+Requisitos modificados: 0
+Requisitos diferidos: 0
+Requisitos obsoletos: 0
+```
+
+La cobertura canónica vigente ya exige autorización server-side de RPC manipuladas, coherencia contextual entre capas, frescura, trazabilidad y paridad con RLS.
+
+---
+
+#### 79. Cobertura de prueba vigente reutilizada
+
+Esta sección es trazabilidad y no modifica el registro 04A.
+
+Cobertura existente reutilizada:
+
+- `TREQ-AUTH-013` exige que ninguna RPC manipulada eluda autorización y asigna responsabilidad directa a `AUTH-DB-006` a `AUTH-DB-010`;
+- `TREQ-AUTH-008` protege coherencia entre contexto administrativo/operativo y las distintas capas;
+- `TREQ-AUTH-009` protege resolución territorial determinista;
+- `TREQ-AUTH-014` protege invalidez de contexto y decisiones obsoletas;
+- `TREQ-AUTH-015` protege evidencia correlacionable de decisiones y acciones.
+
+006 no cambia texto, owner, estado ni relaciones de esas filas.
+
+---
+
+#### 80. Criterios de aceptación
+
+`AUTH-DB-006` queda documentalmente aceptable cuando:
+
+1. se confirma `TEMPLATE_PER_PACKAGE`;
+2. se confirma `POST_E5_PACKAGE`;
+3. cada RPC se identifica por firma exacta;
+4. el universo se deriva del package y no de un conteo heurístico;
+5. existe una clase cerrada por RPC;
+6. `AccessContext@1.0.0` proviene del resolver privado canónico;
+7. la proyección segura no se usa como autoridad;
+8. el caller no puede suministrar actor o contexto autoritativo;
+9. app_code tiene contrato server-side;
+10. el contexto se resuelve una vez por invocación;
+11. una falla ocurre antes de efectos;
+12. `service_role` no equivale a autoridad empresarial;
+13. funciones privilegiadas conservan hardening;
+14. helpers legacy no se convierten en canonical;
+15. no se crean nuevas dependencias sobre evaluadores booleanos legacy;
+16. compatibilidad temporal no crea segunda autoridad;
+17. 007, 008, 009, 010, 021 y 026 conservan sus responsabilidades;
+18. existe evidencia y rollback por RPC;
+19. se reutiliza cobertura 04A sin cambiarla;
+20. no se ejecuta ningún cambio físico.
+
+---
+
+#### 81. Evidencia de validación
+
+| Clase     | Estado       | Evidencia                                                                                                                                                                                                                                              |
+| --------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED | La batería del checkout se ejecutará después del reemplazo documental.                                                                                                                                                                                 |
+| LOCAL     | PASS         | El artefacto fue validado estructuralmente: título único, metadata obligatoria, numeración continua, secciones requeridas, evidencia completa, cero placeholders y continuidad terminal.                                                               |
+| REMOTA    | PASS         | Se verificaron `main`, continuidad, topología R2, contratos R1, 04A aplicable y estado read-only de `vento-os-dev`; se observó la superficie legacy y se confirmó que las primitivas R1 canónicas aún no están materializadas en el remoto consultado. |
+| OPERATIVA | NOT_EXECUTED | No se invocaron RPC de negocio, cohortes, cutover, shadow traffic ni operación real.                                                                                                                                                                   |
+| FÍSICA    | NOT_EXECUTED | No se creó ni aplicó migración, función, wrapper, grant, policy, DDL, DML ni cambio de configuración.                                                                                                                                                  |
+
+`REMOTA = PASS` valida únicamente el desarrollo documental y el baseline read-only. No certifica ninguna futura instancia física.
+
+---
+
+#### 82. Límites
+
+Esta tarea no:
+
+- materializa `AUTH-DB-006::package_id`;
+- crea migraciones;
+- modifica RPC;
+- cambia firmas;
+- cambia cuerpos SQL;
+- crea `get_access_context`;
+- crea `evaluate_authorization`;
+- cambia RLS;
+- cambia grants;
+- revoca `EXECUTE`;
+- crea schemas;
+- modifica Auth;
+- cambia sesiones;
+- implementa validación de sede;
+- implementa validación de área;
+- implementa permiso exacto;
+- implementa principal/actor efectivo;
+- publica tipos;
+- retira helpers legacy;
+- actualiza 04A;
+- autoriza E5;
+- abre `SHELL-CI-020`;
+- ejecuta cambios en Supabase.
+
+Todo cambio físico pertenece a la instancia futura y a sus tareas propietarias.
+
+---
+
+#### 83. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-007 — Validar sede dentro de RPC sensibles`
+
+
 ### [ ] AUTH-DB-007 — Validar sede dentro de RPC sensibles
 ### [ ] AUTH-DB-008 — Validar área dentro de RPC sensibles
 ### [ ] AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
