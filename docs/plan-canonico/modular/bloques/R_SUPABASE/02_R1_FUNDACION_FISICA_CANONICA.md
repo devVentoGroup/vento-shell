@@ -23498,7 +23498,2196 @@ Antes de declarar `AUTH-DB-013::GLOBAL` como `VERIFIED` deberán pasar, como mí
 `AUTH-DB-014 — Implementar auditoría de dispositivos`
 
 
-### [ ] AUTH-DB-014 — Implementar auditoría de dispositivos
+### ✅ AUTH-DB-014 — Implementar auditoría de dispositivos
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-013 — Implementar auditoría de simulación
+**Tarea siguiente:** AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato global de auditoría inmutable, correlacionable y transaccional del lifecycle de dispositivos compartidos cerrado; futura instancia `AUTH-DB-014::GLOBAL` pendiente de autorización explícita y de la capa transversal `audit`
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato canónico, global, inmutable y transaccional de auditoría para el ciclo de vida de dispositivos compartidos y sus identidades técnicas, sin convertir la evidencia de auditoría en fuente de autoridad empresarial ni adelantar la implementación operativa de las tareas `AUTH-DEV-007` a `AUTH-DEV-016`.
+
+La tarea separa de forma obligatoria:
+
+```text
+DISPOSITIVO LÓGICO
+!=
+ENDPOINT TÉCNICO
+!=
+PRINCIPAL TÉCNICO
+!=
+VÍNCULO DE CREDENCIAL
+!=
+ACTIVO FÍSICO
+!=
+ESTACIÓN
+!=
+ACTOR HUMANO
+!=
+SESIÓN DE ACTOR
+!=
+DECISIÓN DE AUTORIZACIÓN
+!=
+EVIDENCIA DE AUDITORÍA
+```
+
+El resultado de esta tarea es documental. No crea objetos en Supabase, no cambia dispositivos, no rota credenciales, no revoca sesiones y no ejecuta la futura instancia `AUTH-DB-014::GLOBAL`.
+
+#### 2. Resultado canónico
+
+Queda definido un único contrato global de auditoría de dispositivos reutilizable por todos los consumidores autorizados.
+
+La futura instancia podrá materializar la infraestructura:
+
+```text
+audit.authorization_devices
+audit.authorization_device_revisions
+audit.authorization_device_events
+audit.authorization_device_attempts
+audit.authorization_device_links
+audit.authorization_device_corrections
+```
+
+Semántica:
+
+- `audit.authorization_devices`: raíz inmutable de auditoría por `device_id` canónico; no sustituye el registro empresarial del dispositivo;
+- `audit.authorization_device_revisions`: snapshot versionado de la configuración material que participó en cada transición relevante;
+- `audit.authorization_device_events`: hechos de lifecycle confirmados;
+- `audit.authorization_device_attempts`: intentos denegados, fallidos, conflictivos o sin efecto confirmado;
+- `audit.authorization_device_links`: correlación con decisiones, sesiones, recursos, cambios de permisos, simulaciones, migraciones y evidencia externa;
+- `audit.authorization_device_corrections`: correcciones append-only sin reescribir evidencia histórica.
+
+#### 3. Clasificación topológica
+
+La clasificación vigente es:
+
+```text
+task_id = AUTH-DB-014
+mode = GLOBAL_ENABLE_ONCE
+instance = AUTH-DB-014::GLOBAL
+execution_gate = PRE_E5_FOUNDATION
+canonical_work = DEFINE_CONTRACT_ONCE
+```
+
+Consecuencias:
+
+1. el marcador documental se desarrolla una sola vez;
+2. existe como máximo una instancia física global;
+3. no se crea una instancia por `package_id`;
+4. la aprobación documental no autoriza la instancia;
+5. la futura infraestructura podrá existir antes de E5 porque es transversal y reutilizable;
+6. su adopción por writers legacy o por paquetes concretos continúa dependiendo de sus tareas propietarias;
+7. una corrección física posterior se realiza mediante migración forward versionada.
+
+#### 4. Precondición transversal obligatoria
+
+`AUTH-DB-014::GLOBAL` requiere la capa transversal aprobada por `SUPA-ARC-007`:
+
+```text
+audit
+```
+
+Si el schema `audit` no existe físicamente cuando se autorice la instancia:
+
+```text
+AUTH-DB-014::GLOBAL
+-> BLOCKED
+```
+
+014 no crea una tabla alternativa en `public`, `technology_operations`, una aplicación o un dominio para evadir esta precondición.
+
+#### 5. Fuentes vinculantes consumidas
+
+La definición conserva las decisiones de:
+
+- `SUPA-ARC-007`, para la capa transversal `audit`, evidencia append-only y clases de compromiso;
+- `AUTH-MOD-011`, para separación entre dispositivo compartido, principal técnico y actor humano;
+- `AUTH-CTX-006`, `AUTH-CTX-014`, `AUTH-CTX-025` y `AUTH-CTX-029`, para contexto, identidad técnica e invalidación;
+- `AUTH-DEV-001` a `AUTH-DEV-006`, para inventario, identidad, sede, área, aplicaciones y techo máximo;
+- `AUTH-DB-012`, para auditoría de cambios de permisos sin absorber lifecycle de dispositivo;
+- `AUTH-DB-013`, para auditoría de simulación sin absorber lifecycle de dispositivo;
+- `AUTH-DB-032`, para persistencia de decisiones que solo referencia el dispositivo cuando participó;
+- `AUTH-DB-035`, para frescura e invalidación derivadas de cambios de identidad o contexto;
+- `AUTH-DB-020`, para adopción física progresiva de contratos en objetos migrados;
+- `AUTH-DEV-007` a `AUTH-DEV-013`, como futuros productores funcionales del lifecycle y de sesiones de actor;
+- `AUTH-QA-017`, `AUTH-QA-018` y `AUTH-QA-030`, como certificación posterior.
+
+#### 6. Frontera de propiedad
+
+`AUTH-DB-014` no se convierte en fuente de verdad del dispositivo.
+
+La autoridad del estado vigente del dispositivo, endpoint, principal técnico, vínculo de credencial, plantilla, sede, área, aplicaciones, paquetes y políticas permanece en las fuentes canónicas que las tareas propietarias materialicen.
+
+`audit` conserva evidencia histórica y correlacionable:
+
+```text
+FUENTE VIGENTE
+-> estado empresarial/técnico actual
+
+AUDIT
+-> evidencia inmutable de qué cambió, quién lo solicitó,
+   qué fue validado, qué resultado ocurrió y con qué versión
+```
+
+Una fila de auditoría no puede reactivar, suspender, mover, autorizar ni retirar un dispositivo.
+
+#### 7. Frontera con AUTH-DB-012
+
+`AUTH-DB-012` registra cambios de autoridad real sobre permisos, concesiones y denegaciones.
+
+`AUTH-DB-014` registra lifecycle y configuración de dispositivos.
+
+Ejemplos:
+
+```text
+cambiar permiso individual de un empleado
+-> AUTH-DB-012
+
+rotar credencial de un dispositivo
+-> AUTH-DB-014
+
+reducir paquete máximo del dispositivo
+-> AUTH-DB-014
+   + vínculo a la evidencia de autorización aplicable
+
+usar device_id como contexto de quien administró permisos
+-> AUTH-DB-012 puede referenciarlo
+```
+
+Ninguna de las dos tareas duplica el registro principal de la otra.
+
+#### 8. Frontera con AUTH-DB-013
+
+`AUTH-DB-013` registra simulaciones, revisiones de escenario, evaluaciones hipotéticas y lifecycle de simulación.
+
+`AUTH-DB-014` registra lifecycle de dispositivos reales o técnicamente enrolados.
+
+Una simulación puede conservar una referencia mínima al `device_id` real desde el que se solicitó, pero:
+
+- no convierte el dispositivo en simulación;
+- no registra un cambio de actor como cambio de escenario;
+- no registra rotación de credencial como evento de simulación;
+- no trata `WOULD_ALLOW` como autoridad del dispositivo.
+
+#### 9. Frontera con AUTH-DB-032
+
+`AUTH-DB-032` persiste decisiones de autorización.
+
+Cuando un dispositivo participó en la decisión, 032 conserva `device_id`, principal técnico y referencias de contexto aprobadas.
+
+014 conserva los eventos del dispositivo que explican su lifecycle.
+
+```text
+authorization_decision
+-> qué se decidió para una solicitud
+
+authorization_device_event
+-> qué ocurrió con el dispositivo
+```
+
+Un evento de dispositivo no es una decisión de autorización y una decisión no reemplaza el historial del dispositivo.
+
+#### 10. Frontera con AUTH-DB-035
+
+Los cambios de dispositivo que alteran identidad, sesión, territorio, aplicaciones, paquetes, credenciales o capacidad deberán invalidar contexto y tokens derivados conforme a `AUTH-DB-035`.
+
+014 conserva evidencia del hecho que disparó la invalidación y puede vincular:
+
+```text
+device_event_id
+freshness_event_id
+generation_before
+generation_after
+```
+
+014 no implementa el algoritmo de frescura ni genera por sí sola autoridad nueva.
+
+#### 11. Frontera con AUTH-DB-020
+
+`AUTH-DB-014::GLOBAL` crea la infraestructura global de auditoría cuando sea autorizada.
+
+`AUTH-DB-020::<package_id>` adopta los contratos canónicos en cada conjunto de objetos que migre y deberá clasificar cada writer de dispositivo o de configuración como:
+
+```text
+CANONICAL_AUDITED
+TRANSITIONAL_ADAPTER
+BLOCKED_FOR_MIGRATION
+LEGACY_READ_ONLY
+```
+
+014 no mueve las tablas legacy de dispositivo ni ejecuta backfills de dominio.
+
+#### 12. Frontera con AUTH-DEV-007 a AUTH-DEV-016
+
+Las tareas del BLOQUE P implementarán comportamiento y pruebas de dispositivos.
+
+Relación:
+
+- `AUTH-DEV-007`: identificación fuerte del trabajador;
+- `AUTH-DEV-008`: intersección entre actor y límites del dispositivo;
+- `AUTH-DEV-009`: no heredar autoridad administrativa;
+- `AUTH-DEV-010`: producir la evidencia correlacionada de dispositivo y trabajador;
+- `AUTH-DEV-011`: revocar dispositivo;
+- `AUTH-DEV-012`: manejar sesión expirada;
+- `AUTH-DEV-013`: manejar cambio de trabajador;
+- `AUTH-DEV-014` a `AUTH-DEV-016`: validar equipos y aplicaciones reales.
+
+Estas tareas consumen 014; no crean un ledger alternativo.
+
+#### 13. Planos de identidad obligatoriamente separados
+
+La auditoría reconoce como identidades independientes:
+
+| Identidad                   | Significado                                    |
+| --------------------------- | ---------------------------------------------- |
+| `device_id`                 | dispositivo lógico administrado                |
+| `device_code`               | código humano estable y no reutilizable        |
+| `endpoint_id`               | instalación técnica enrolada                   |
+| `technical_principal_id`    | principal técnico autenticado                  |
+| `credential_binding_id`     | vínculo versionado de credencial               |
+| `asset_id`                  | equipo físico                                  |
+| `station_instance_id`       | puesto físico compuesto                        |
+| `actor_employee_id`         | humano efectivo cuando aplique                 |
+| `actor_session_id`          | sesión temporal del actor                      |
+| `administrative_actor_id`   | actor real que ordenó un cambio administrativo |
+| `authorization_decision_id` | decisión que autorizó una operación protegida  |
+| `correlation_id`            | correlación transversal                        |
+| `causation_id`              | hecho inmediatamente causante                  |
+
+Ninguno puede sustituirse por otro por conveniencia.
+
+#### 14. Raíz de auditoría del dispositivo
+
+`audit.authorization_devices` conserva una raíz inmutable por `device_id`.
+
+Campos mínimos contractuales:
+
+```text
+device_audit_id
+device_id
+device_code
+first_observed_at
+first_event_id
+source_registry
+source_identity_version
+created_at
+```
+
+Reglas:
+
+1. una raíz no concede existencia física validada;
+2. el `device_code` se conserva como referencia histórica;
+3. un reemplazo de hardware no crea automáticamente otra raíz si el contrato mantiene el mismo dispositivo lógico;
+4. un dispositivo lógico nuevo exige otro `device_id`;
+5. la raíz no se elimina por revocación o retiro.
+
+#### 15. Revisión auditable de configuración
+
+`audit.authorization_device_revisions` conserva un snapshot por cambio material.
+
+Campos mínimos:
+
+```text
+device_revision_id
+device_audit_id
+device_id
+revision_number
+revision_kind
+configuration_snapshot
+configuration_fingerprint
+source_versions
+source_fingerprints
+valid_from
+recorded_at
+recorded_by_actor_id
+correlation_id
+```
+
+`configuration_snapshot` no contiene secretos y solo incluye valores necesarios para reproducir la decisión de lifecycle.
+
+#### 16. Componentes versionables de una revisión
+
+Una nueva revisión se exige cuando cambia materialmente cualquiera de estas dimensiones:
+
+- endpoint;
+- principal técnico;
+- vínculo de credencial;
+- activo físico;
+- estación;
+- estado de activación;
+- plantilla y versión;
+- sede fija;
+- política de área o conjunto permitido;
+- aplicaciones efectivas;
+- aplicación predeterminada;
+- paquete máximo de permisos;
+- reducción específica de instancia;
+- política de actor;
+- soporte de reautenticación fuerte;
+- restricciones de dispositivo;
+- generación de instalación;
+- generación de credencial.
+
+Un cambio puramente visual sin impacto contractual no crea revisión salvo que una política propietaria lo exija.
+
+#### 17. Fingerprint de configuración
+
+Cada revisión material usa SHA-256 sobre una representación canonicalizada.
+
+La preimagen incluye únicamente campos semánticos:
+
+```text
+contract_name
+contract_version
+device_id
+revision_number
+endpoint_id
+technical_principal_id
+credential_binding_id
+asset_id
+station_instance_id
+activation_state
+template_code
+template_version
+site_binding
+area_policy
+application_set
+permission_package_set
+actor_policy
+installation_generation
+credential_generation
+source_versions
+```
+
+No se incluyen timestamps de escritura, IDs de fila de auditoría ni metadata de transporte que cambie sin alterar el significado.
+
+#### 18. Estados de lifecycle
+
+El contrato distingue:
+
+```text
+DRAFT
+ENROLLING
+ACTIVE
+SUSPENDED
+REVOKED
+RETIRED
+CONFLICTED
+RECOVERY_REQUIRED
+```
+
+Reglas:
+
+- `ACTIVE` no equivale a equipo físicamente verificado;
+- `SUSPENDED` impide acciones empresariales mientras dure;
+- `REVOKED` invalida la identidad técnica aplicable;
+- `RETIRED` es terminal para nuevas operaciones del dispositivo lógico salvo proceso formal de reversión aprobado por otra decisión;
+- `CONFLICTED` falla cerrado;
+- `RECOVERY_REQUIRED` no permite autorizar por fallback.
+
+#### 19. Taxonomía de eventos
+
+`audit.authorization_device_events.event_type` utiliza vocabulario cerrado y versionado.
+
+Familias:
+
+```text
+IDENTITY
+ENROLLMENT
+ACTIVATION
+CREDENTIAL
+ENDPOINT
+HARDWARE
+TERRITORY
+APPLICATIONS
+PERMISSIONS
+TEMPLATE
+ACTOR_SESSION
+HEALTH_STATE
+SUSPENSION
+REVOCATION
+RETIREMENT
+CONFLICT
+RECOVERY
+MIGRATION
+```
+
+Un string libre no crea un tipo canónico nuevo.
+
+#### 20. Catálogo inicial de eventos
+
+| Event type                    | Familia         | Semántica                                                                                   |
+| ----------------------------- | --------------- | ------------------------------------------------------------------------------------------- |
+| `DEVICE_REGISTERED`           | `IDENTITY`      | Se registra por primera vez la identidad lógica auditable.                                  |
+| `ENROLLMENT_STARTED`          | `ENROLLMENT`    | Comienza enrolamiento sin conceder operación.                                               |
+| `ENROLLMENT_SUCCEEDED`        | `ENROLLMENT`    | Posesión y vínculo técnico quedaron validados.                                              |
+| `ENROLLMENT_FAILED`           | `ENROLLMENT`    | El enrolamiento terminó sin identidad operativa válida.                                     |
+| `DEVICE_ACTIVATED`            | `ACTIVATION`    | El estado vigente pasa a activo mediante operación autorizada.                              |
+| `DEVICE_SUSPENDED`            | `SUSPENSION`    | Se bloquea temporalmente el dispositivo.                                                    |
+| `DEVICE_RESUMED`              | `SUSPENSION`    | Se restaura desde suspensión después de revalidación.                                       |
+| `CREDENTIAL_ROTATION_STARTED` | `CREDENTIAL`    | Comienza rotación y se fija la generación previa.                                           |
+| `CREDENTIAL_ROTATED`          | `CREDENTIAL`    | Nueva generación quedó activa y la anterior dejó de ser válida.                             |
+| `CREDENTIAL_ROTATION_FAILED`  | `CREDENTIAL`    | No se confirma cambio de generación.                                                        |
+| `CREDENTIAL_REVOKED`          | `CREDENTIAL`    | El vínculo de credencial deja de ser válido.                                                |
+| `ENDPOINT_REINSTALLED`        | `ENDPOINT`      | Se crea endpoint nuevo para el mismo dispositivo lógico mediante recuperación autorizada.   |
+| `ENDPOINT_REVOKED`            | `ENDPOINT`      | Endpoint anterior deja de ser aceptable.                                                    |
+| `HARDWARE_REPLACED`           | `HARDWARE`      | Se sustituye activo físico conservando o no el dispositivo lógico según decisión explícita. |
+| `SITE_BINDING_CHANGED`        | `TERRITORY`     | Cambia la sede fija con cierre de versión anterior.                                         |
+| `AREA_POLICY_CHANGED`         | `TERRITORY`     | Cambia área fija o conjunto permitido.                                                      |
+| `APPLICATION_SET_CHANGED`     | `APPLICATIONS`  | Cambia el conjunto efectivo de aplicaciones.                                                |
+| `DEFAULT_APPLICATION_CHANGED` | `APPLICATIONS`  | Cambia la aplicación predeterminada válida.                                                 |
+| `PERMISSION_PACKAGE_CHANGED`  | `PERMISSIONS`   | Cambia techo o reducción de permisos.                                                       |
+| `TEMPLATE_BINDING_CHANGED`    | `TEMPLATE`      | Cambia plantilla o versión de plantilla.                                                    |
+| `ACTOR_SESSION_STARTED`       | `ACTOR_SESSION` | Se identifica actor humano para una sesión temporal.                                        |
+| `ACTOR_SESSION_ENDED`         | `ACTOR_SESSION` | Cierre normal de sesión de actor.                                                           |
+| `ACTOR_SESSION_EXPIRED`       | `ACTOR_SESSION` | Cierre por vencimiento.                                                                     |
+| `ACTOR_SESSION_REVOKED`       | `ACTOR_SESSION` | Cierre anticipado por revocación.                                                           |
+| `ACTOR_CHANGED`               | `ACTOR_SESSION` | Termina actor previo y comienza nuevo actor mediante transición correlacionada.             |
+| `DEVICE_BECAME_UNHEALTHY`     | `HEALTH_STATE`  | Cambio de estado de salud que bloquea o degrada capacidad según política.                   |
+| `DEVICE_RECOVERED_HEALTH`     | `HEALTH_STATE`  | Recupera estado de salud después de validación.                                             |
+| `DEVICE_REVOKED`              | `REVOCATION`    | Se invalida el dispositivo para nuevas acciones.                                            |
+| `RETIREMENT_STARTED`          | `RETIREMENT`    | Comienza retiro controlado.                                                                 |
+| `DEVICE_RETIRED`              | `RETIREMENT`    | Finaliza retiro y se preserva identidad histórica.                                          |
+| `IDENTITY_CONFLICT_DETECTED`  | `CONFLICT`      | Se detecta duplicado, clon o vínculo incompatible.                                          |
+| `IDENTITY_CONFLICT_RESOLVED`  | `CONFLICT`      | La reconciliación cierra el conflicto con evidencia.                                        |
+| `RECOVERY_STARTED`            | `RECOVERY`      | Comienza recuperación controlada.                                                           |
+| `RECOVERY_COMPLETED`          | `RECOVERY`      | La recuperación termina con identidades y generaciones nuevas o revalidadas.                |
+| `LEGACY_RECORD_IMPORTED`      | `MIGRATION`     | Se preserva evidencia existente sin afirmar un hecho no demostrado.                         |
+
+#### 21. Invariantes de evento confirmado
+
+Un registro en `authorization_device_events` significa que el hecho ocurrió o quedó confirmado por la fuente autorizada.
+
+Campos mínimos:
+
+```text
+device_event_id
+device_audit_id
+device_id
+device_revision_id
+event_type
+event_family
+event_outcome
+occurred_at
+recorded_at
+administrative_actor_id
+actor_employee_id
+actor_session_id
+technical_principal_id
+endpoint_id
+credential_binding_id
+authorization_decision_id
+correlation_id
+causation_id
+source_system
+source_operation_id
+contract_version
+source_versions
+source_fingerprints
+event_payload
+event_fingerprint
+```
+
+`event_outcome` para un evento confirmado es `SUCCEEDED` o `NO_OP_CONFIRMED`; un fallo previo pertenece a attempts.
+
+#### 22. Intentos de lifecycle
+
+`audit.authorization_device_attempts` registra operaciones que no producen un cambio confirmado.
+
+Resultados:
+
+```text
+DENIED
+FAILED
+CONFLICT
+RETRYABLE_FAILURE
+UNKNOWN_OUTCOME
+NO_EFFECT
+```
+
+Casos:
+
+- activación sin autorización;
+- revocación con dispositivo inexistente;
+- rotación con vínculo de credencial obsoleto;
+- traslado cross-site no permitido;
+- cierre de sesión de actor que ya estaba cerrada;
+- conflicto de concurrencia;
+- fallo de proveedor externo;
+- timeout con resultado todavía incierto.
+
+#### 23. Campos de un intento
+
+Campos mínimos:
+
+```text
+device_attempt_id
+device_id
+requested_operation
+requested_at
+resolved_at
+outcome
+reason_codes
+administrative_actor_id
+actor_employee_id
+technical_principal_id
+endpoint_id
+authorization_decision_id
+correlation_id
+idempotency_key_hash
+source_operation_id
+safe_request_snapshot
+safe_result_snapshot
+contract_version
+source_versions
+attempt_fingerprint
+```
+
+No se almacena el secreto usado en la solicitud.
+
+#### 24. Eventos de actor y cambio de trabajador
+
+El cambio de trabajador nunca se modela como edición del actor de una misma sesión.
+
+Flujo canónico:
+
+```text
+ACTOR_SESSION_ENDED(actor A)
++
+ACTOR_SESSION_STARTED(actor B)
++
+ACTOR_CHANGED(correlation_id común)
+```
+
+Cuando el actor A no puede cerrarse limpiamente:
+
+```text
+ACTOR_SESSION_REVOKED(actor A)
++
+ACTOR_SESSION_STARTED(actor B)
+```
+
+La sesión de actor B no hereda permisos, reautenticaciones, recursos, idempotency keys ni contexto cacheado del actor A.
+
+#### 25. Auditoría de enrolamiento
+
+El enrolamiento registra por separado:
+
+1. solicitud;
+2. challenge emitido;
+3. prueba de posesión verificada;
+4. endpoint asignado;
+5. principal técnico vinculado;
+6. vínculo de credencial creado;
+7. revisión de configuración;
+8. activación, si fue autorizada.
+
+No se considera enrolado por recibir `device_id` desde el cliente, por coincidir IP, MAC, hostname, serial, User-Agent o fingerprint de navegador.
+
+#### 26. Auditoría de activación
+
+`DEVICE_ACTIVATED` exige:
+
+```text
+device_id válido
++
+endpoint válido
++
+principal técnico válido
++
+vínculo de credencial vigente
++
+configuración no conflictiva
++
+autorización administrativa aplicable
++
+revisión persistida
++
+evidencia durable
+```
+
+La activación no crea permisos del actor y no demuestra que una estación física haya sido validada en sitio.
+
+#### 27. Auditoría de suspensión y reanudación
+
+Suspensión:
+
+- conserva identidad histórica;
+- invalida capacidad operativa;
+- termina o invalida sesiones incompatibles;
+- provoca frescura/invalidation cuando corresponda;
+- registra razón y actor;
+- no elimina evidencia.
+
+Reanudación:
+
+- nunca ocurre por simple cambio de `is_active`;
+- exige verificar que la causa de suspensión está resuelta;
+- produce revisión nueva cuando cambia configuración;
+- reautoriza desde cero el contexto aplicable.
+
+#### 28. Auditoría de rotación de credenciales
+
+La rotación registra:
+
+```text
+credential_generation_before
+credential_generation_after
+credential_binding_before
+credential_binding_after
+rotation_reason
+initiated_at
+completed_at
+provider_reference_hash
+result
+```
+
+Prohibido persistir:
+
+- contraseña;
+- secret key;
+- token completo;
+- refresh token;
+- private key;
+- PIN;
+- passkey secret;
+- código MFA;
+- challenge reutilizable.
+
+#### 29. Auditoría de revocación de credenciales
+
+`CREDENTIAL_REVOKED` identifica la generación y vínculo revocados.
+
+La revocación debe ser idempotente:
+
+```text
+revocar vínculo vigente
+-> evento confirmado
+
+repetir misma revocación con misma idempotency key
+-> mismo resultado lógico, sin duplicar efecto
+
+revocar vínculo distinto u obsoleto
+-> intento denegado o conflictivo
+```
+
+Una revocación no borra el vínculo histórico.
+
+#### 30. Auditoría de reinstalación
+
+Una reinstalación autorizada:
+
+- conserva `device_id` solo cuando el contrato de recuperación lo permite;
+- crea `endpoint_id` nuevo;
+- incrementa generación de instalación;
+- crea vínculo técnico nuevo;
+- revoca endpoint y vínculo anteriores;
+- invalida sesiones incompatibles;
+- registra correlación entre identidades anterior y nueva.
+
+La auditoría debe permitir reconstruir la cadena completa.
+
+#### 31. Auditoría de reemplazo de hardware
+
+Un reemplazo de hardware puede:
+
+```text
+MANTENER device_id
+```
+
+solo cuando existe decisión explícita de sustitución del mismo dispositivo lógico.
+
+Debe conservar:
+
+- activo anterior;
+- activo nuevo;
+- endpoint anterior;
+- endpoint nuevo;
+- motivo;
+- aprobador;
+- evidencia física o administrativa;
+- revisión antes/después;
+- fingerprint antes/después.
+
+Sin decisión explícita se crea una identidad lógica nueva o se falla cerrado.
+
+#### 32. Auditoría de traslado de sede
+
+`SITE_BINDING_CHANGED` nunca actualiza silenciosamente la sede.
+
+Debe registrar:
+
+```text
+site_binding_before
+site_binding_after
+effective_at
+verified_destination
+invalidated_actor_sessions
+freshness_link
+administrative_actor_id
+reason
+```
+
+La sede anterior permanece en la evidencia histórica.
+
+Un `null`, una sede inactiva o una resolución ambigua no significan cobertura global.
+
+#### 33. Auditoría de política de área
+
+Cambio de área fija o conjunto permitido:
+
+- cierra la versión anterior;
+- crea versión nueva;
+- conserva miembros exactos;
+- valida pertenencia a la sede;
+- termina sesiones incompatibles;
+- invalida contexto afectado;
+- revalida plantilla, aplicaciones y paquete máximo;
+- registra diff semántico.
+
+No se audita una lista ordenada como cambio cuando solo cambió el orden y no la semántica.
+
+#### 34. Auditoría de aplicaciones
+
+`APPLICATION_SET_CHANGED` registra conjunto antes/después mediante códigos canónicos exactos.
+
+Debe conservar:
+
+- apps añadidas;
+- apps retiradas;
+- default anterior;
+- default nuevo;
+- versión de catálogo;
+- plantilla/version;
+- actor;
+- justificación;
+- invalidaciones disparadas.
+
+Una aplicación visible, instalada o enrutable no se interpreta como pertenencia al conjunto.
+
+#### 35. Auditoría de techo de permisos
+
+`PERMISSION_PACKAGE_CHANGED` registra:
+
+- paquetes antes/después;
+- versiones;
+- claves añadidas o retiradas por delta;
+- clasificación STANDARD/STRONG/NOT_ALLOWED cuando aplique;
+- catálogo de permisos;
+- actor autorizador;
+- motivo;
+- invalidaciones;
+- vínculo a cambio de autoridad cuando exista.
+
+El evento no concede permisos. Solo evidencia la configuración del límite técnico.
+
+#### 36. Auditoría de plantilla
+
+`TEMPLATE_BINDING_CHANGED` separa:
+
+```text
+device_id
+template_code
+template_version
+```
+
+Cambiar plantilla:
+
+- no cambia automáticamente `device_id`;
+- no autoriza aplicaciones o permisos fuera de la nueva intersección;
+- obliga a recalcular sede, área, apps, paquete y política de actor;
+- produce conflicto si la instancia no puede satisfacer la plantilla.
+
+#### 37. Auditoría de revocación del dispositivo
+
+`DEVICE_REVOKED` es un hecho de seguridad de alto impacto.
+
+Debe correlacionar:
+
+- actor que revoca;
+- motivo;
+- decisión autorizadora;
+- endpoint y principal revocados;
+- credenciales afectadas;
+- sesiones de actor terminadas;
+- contexto y tokens invalidados;
+- estado anterior;
+- estado resultante;
+- evidencia de efectos externos;
+- resultado de conciliación.
+
+No puede confirmarse éxito mientras un efecto obligatorio conserve estado desconocido sin contención.
+
+#### 38. Auditoría de retiro
+
+El retiro conserva:
+
+```text
+device_id
+device_code
+historial completo
+vínculos anteriores
+revisiones
+eventos
+intentos
+correcciones
+```
+
+No reutiliza `device_code`.
+
+El retiro no borra evidencia ni reactiva automáticamente una identidad ante un alta posterior.
+
+#### 39. Auditoría de conflictos de identidad
+
+Se registra `IDENTITY_CONFLICT_DETECTED` cuando exista cualquiera de estos casos:
+
+- mismo principal técnico vinculado incompatiblemente a varios dispositivos;
+- mismo endpoint vinculado a varias identidades;
+- clon de credencial;
+- duplicación de `device_code`;
+- múltiples vínculos vigentes donde debe existir uno;
+- activo físico asociado contradictoriamente;
+- estación incompatible;
+- reconciliación física no concluyente.
+
+Mientras el conflicto siga abierto, las acciones empresariales dependientes del dispositivo fallan cerrado.
+
+#### 40. Resolución de conflictos
+
+`IDENTITY_CONFLICT_RESOLVED` exige:
+
+- caso de conflicto;
+- fuentes comparadas;
+- decisión;
+- actor responsable;
+- identidades que permanecen;
+- identidades cerradas;
+- efectos de revocación;
+- versión de configuración resultante;
+- evidencia física cuando aplique;
+- fingerprint antes/después.
+
+La resolución no reescribe el evento de conflicto original.
+
+#### 41. Correcciones append-only
+
+Una evidencia incorrecta no se edita.
+
+`audit.authorization_device_corrections` conserva:
+
+```text
+device_correction_id
+target_record_type
+target_record_id
+correction_kind
+reason
+authorized_by_actor_id
+authorization_decision_id
+before_reference
+after_reference
+recorded_at
+correction_fingerprint
+```
+
+La corrección puede aclarar metadata o enlazar evidencia faltante, pero no falsifica que un hecho ocurrió cuando no existe prueba.
+
+#### 42. Links de correlación
+
+`audit.authorization_device_links` relaciona sin duplicar payloads:
+
+```text
+device_event
+authorization_decision
+permission_change
+simulation
+freshness_event
+actor_session
+business_resource
+migration
+external_provider_operation
+evidence_object
+incident
+```
+
+Cada link declara:
+
+```text
+source_type
+source_id
+target_type
+target_id
+relationship
+recorded_at
+```
+
+No se permite un link cuyo tipo no pertenezca al vocabulario aprobado.
+
+#### 43. Atomicidad para cambios locales
+
+Cuando el estado fuente y la auditoría viven en la misma base y la operación es transaccional:
+
+```text
+MUTAR FUENTE
++
+INSERTAR REVISIÓN
++
+INSERTAR EVENTO
++
+REGISTRAR INVALIDACIÓN/OUTBOX APLICABLE
+=
+MISMA TRANSACCIÓN
+```
+
+Clase:
+
+```text
+AUDIT_ATOMIC_REQUIRED
+```
+
+No se confirma éxito al cliente si la mutación queda durable y la evidencia obligatoria no.
+
+#### 44. Efectos externos y durable before ack
+
+Para rotación de proveedor, Auth, MDM, secreto externo u otra operación fuera de la transacción PostgreSQL:
+
+1. se crea intento durable;
+2. se fija `correlation_id` e idempotency key;
+3. se registra la obligación o ancla durable;
+4. se ejecuta el efecto externo;
+5. se persiste resultado;
+6. se reconcilia estado;
+7. solo entonces se presenta éxito definitivo.
+
+Clase por defecto:
+
+```text
+AUDIT_DURABLE_BEFORE_ACK
+```
+
+Un timeout produce `UNKNOWN_OUTCOME`, no éxito supuesto.
+
+#### 45. Outbox y eventos transversales
+
+014 no crea un outbox general alternativo.
+
+Cuando una transición de dispositivo deba publicar un evento o invalidación, reutiliza la infraestructura transversal aprobada por `SUPA-ARC-007` y las tareas propietarias.
+
+La auditoría conserva el link entre:
+
+```text
+device_event_id
+outbox_item_id
+business_event_id
+delivery/effect evidence
+```
+
+si esos artefactos existen.
+
+#### 46. Idempotencia
+
+Toda operación mutante de lifecycle debe tener identidad idempotente estable.
+
+La preimagen de idempotencia incluye, según operación:
+
+```text
+device_id
+operation_kind
+expected_revision
+target_generation
+target_binding
+requested_effect
+actor_id
+request_scope
+```
+
+La auditoría guarda únicamente hash o referencia segura de la key.
+
+La misma operación repetida no crea dos activaciones, dos revocaciones ni dos rotaciones.
+
+#### 47. Concurrencia
+
+La implementación futura debe impedir:
+
+- dos activaciones incompatibles;
+- dos rotaciones simultáneas sobre la misma generación;
+- revocación y activación concurrentes;
+- doble cambio de actor;
+- traslado de sede durante sesión incompatible;
+- cambio de paquete sobre revisión obsoleta;
+- recuperación mientras retiro está en curso.
+
+La decisión usa `expected_revision` o mecanismo equivalente y falla cerrado ante stale write.
+
+#### 48. Secuencia por dispositivo
+
+No existe orden global confiable por timestamp.
+
+Cada dispositivo conserva orden lógico por:
+
+```text
+device_id
+revision_number
+event_sequence
+causation_id
+```
+
+`recorded_at` no sustituye la causalidad.
+
+Una importación tardía puede tener `occurred_at` anterior sin alterar silenciosamente una revisión ya consolidada.
+
+#### 49. Timestamps
+
+Timestamps mínimos:
+
+| Campo          | Regla                                              |
+| -------------- | -------------------------------------------------- |
+| `occurred_at`  | cuándo ocurrió el hecho                            |
+| `recorded_at`  | cuándo quedó durable en audit                      |
+| `requested_at` | cuándo se solicitó un intento                      |
+| `resolved_at`  | cuándo se conoció el resultado                     |
+| `effective_at` | desde cuándo rige una configuración cuando difiera |
+| `expires_at`   | solo cuando el concepto expira                     |
+| `revoked_at`   | revocación efectiva                                |
+| `retired_at`   | retiro efectivo                                    |
+
+Todos se almacenan como `timestamptz`. La presentación local no altera la semántica.
+
+#### 50. Versionado contractual
+
+Valores iniciales:
+
+```text
+contract_family = vento.authorization.device-audit
+contract_family_version = 1.0.0
+contract_name = AuthorizationDeviceAudit
+contract_version = 1.0.0
+schema_version = 1.0.0
+```
+
+Cambios incompatibles exigen versión nueva.
+
+Un campo desconocido no se interpreta permisivamente.
+
+#### 51. Versiones de fuente
+
+`source_versions` usa vocabulario cerrado cuando la fuente participa:
+
+```text
+device_registry
+endpoint_registry
+technical_principal_registry
+credential_binding_registry
+device_template_catalog
+site_catalog
+area_catalog
+application_catalog
+permission_catalog
+device_permission_package_catalog
+actor_policy_catalog
+authorization_contract
+freshness_contract
+```
+
+No se utilizan valores genéricos como `latest`, `current` o `unknown`.
+
+#### 52. Fingerprints de fuente
+
+`source_fingerprints` conserva únicamente las fuentes que materialmente participaron.
+
+Formato:
+
+```text
+sha256:
++
+64 caracteres hexadecimales minúsculos
+```
+
+La preimagen se canonicaliza de forma determinista.
+
+Un fingerprint no es firma criptográfica del actor y no sustituye control de acceso.
+
+#### 53. Canonicalización
+
+La serialización usada para fingerprints debe:
+
+- ordenar claves de objeto;
+- normalizar strings según el contrato;
+- preservar tipos;
+- ordenar conjuntos cuya semántica sea de conjunto;
+- preservar arrays cuando el orden sea semántico;
+- excluir timestamps no semánticos;
+- excluir IDs de fila de auditoría;
+- excluir secretos;
+- definir representación exacta de `null`.
+
+`jsonb::text` no se adopta por sí solo como contrato de canonicalización.
+
+#### 54. Inmutabilidad
+
+Tablas de evidencia confirmada:
+
+```text
+authorization_devices
+authorization_device_revisions
+authorization_device_events
+authorization_device_attempts
+authorization_device_links
+authorization_device_corrections
+```
+
+se tratan como append-only para usuarios y servicios ordinarios.
+
+No se permiten:
+
+- UPDATE histórico;
+- DELETE ordinario;
+- TRUNCATE desde roles de aplicación;
+- corrección en sitio;
+- cascadas que borren evidencia por eliminar una fuente.
+
+Las referencias a objetos retirados deben sobrevivir mediante IDs y snapshots mínimos.
+
+#### 55. Acceso directo desde clientes
+
+Roles de cliente no reciben acceso directo al schema `audit`.
+
+Objetivo:
+
+```text
+anon
+-> 0 acceso directo
+
+authenticated
+-> 0 acceso directo
+
+dispositivo técnico
+-> 0 acceso SQL directo al ledger
+
+service_role
+-> no se considera autoridad empresarial por sí solo
+```
+
+Toda escritura pasa por una función o servicio interno con contrato, validación e identidad efectiva.
+
+#### 56. Proyección de consulta
+
+Si una interfaz administrativa necesita consultar auditoría, lo hará mediante una proyección mínima y autorizada.
+
+La proyección:
+
+- vive en `api` o en servicio equivalente aprobado;
+- no expone secretos;
+- no entrega payload interno completo por defecto;
+- aplica alcance real del actor;
+- conserva paginación y límites;
+- separa resumen de evidencia sensible;
+- registra accesos sensibles cuando corresponda.
+
+014 no crea la interfaz de usuario.
+
+#### 57. Funciones privilegiadas
+
+Una función `SECURITY DEFINER` futura solo se admite cuando:
+
+- existe necesidad real de cruzar RLS;
+- reside en schema no expuesto;
+- tiene owner técnico controlado;
+- fija `search_path` endurecido;
+- usa nombres cualificados;
+- valida identidad y autorización;
+- revoca `PUBLIC EXECUTE`;
+- concede solo firmas exactas;
+- tiene pruebas de search-path poisoning y llamada directa.
+
+`SECURITY DEFINER` nunca se añade para resolver simplemente un error de permiso.
+
+#### 58. Minimización del payload
+
+`event_payload`, `safe_request_snapshot` y `safe_result_snapshot` contienen únicamente datos necesarios para reproducir el hecho.
+
+Preferir:
+
+```text
+IDs estables
+códigos canónicos
+versiones
+hashes
+razones estructuradas
+diff mínimo
+```
+
+Evitar:
+
+```text
+objetos completos
+perfiles completos
+tokens
+headers
+payloads de terceros
+PII no necesaria
+```
+
+#### 59. Secretos prohibidos
+
+Nunca se persisten en audit:
+
+- contraseña;
+- PIN de trabajador;
+- PIN de dispositivo;
+- bearer token;
+- JWT completo;
+- refresh token;
+- service role key;
+- secret key;
+- private key;
+- passkey private material;
+- OTP;
+- recovery code;
+- challenge reutilizable;
+- cookie;
+- session secret;
+- Authorization header.
+
+Cuando sea necesaria correlación se usa referencia opaca o hash no reversible con política aprobada.
+
+#### 60. Datos personales
+
+La auditoría puede conservar IDs de actor cuando son necesarios para atribución, pero no copia perfiles laborales ni datos personales no requeridos.
+
+`actor_employee_id` prueba atribución; no justifica persistir:
+
+- nombre completo;
+- documento;
+- correo;
+- teléfono;
+- salario;
+- diagnóstico;
+- información disciplinaria;
+- metadata ajena al evento.
+
+#### 61. Telemetría frente a auditoría
+
+014 no convierte cada heartbeat en evento de auditoría.
+
+Separación:
+
+```text
+TELEMETRÍA
+-> frecuencia alta, salud, métricas, last_seen
+
+AUDITORÍA
+-> cambios de estado, operaciones protegidas, incidentes y hechos relevantes
+```
+
+Solo un cambio de estado de salud con consecuencia contractual produce evento auditable.
+
+#### 62. Semántica de last_seen_at
+
+`last_seen_at` es observabilidad y no prueba por sí sola:
+
+- identidad física;
+- actor humano;
+- autorización;
+- estado de credencial;
+- sesión vigente;
+- seguridad del endpoint.
+
+Un dispositivo activo con `last_seen_at = null` no se certifica como físicamente operativo solo por tener fila activa.
+
+#### 63. Línea base remota de schemas
+
+La auditoría read-only del proyecto de referencia observó:
+
+```text
+audit       = AUSENTE
+api         = AUSENTE
+app_private = PRESENTE
+```
+
+Consecuencia:
+
+```text
+AUTH-DB-014::GLOBAL
+no puede ejecutarse hoy sin materializar antes la capa audit aplicable.
+```
+
+La ausencia de `api` tampoco autoriza exponer audit mediante `public`.
+
+#### 64. Línea base remota de tablas legacy
+
+Se observaron ocho tablas base relacionadas con dispositivo compartido en `public`:
+
+```text
+shared_operational_devices
+shared_operational_device_apps
+shared_operational_device_actor_sessions
+shared_operational_device_events
+shared_operational_device_templates
+shared_operational_device_template_apps
+shared_operational_device_actor_policies
+shared_operational_device_template_actor_policies
+```
+
+Todas las tablas base consultadas tienen RLS habilitado y `FORCE RLS = false`.
+
+También existen vistas administrativas legacy y varios índices auxiliares.
+
+#### 65. Cardinalidades físicas observadas
+
+| Relación                                            | Filas observadas |
+| --------------------------------------------------- | ---------------: |
+| `shared_operational_devices`                        |                2 |
+| `shared_operational_device_apps`                    |                4 |
+| `shared_operational_device_actor_sessions`          |                0 |
+| `shared_operational_device_events`                  |                3 |
+| `shared_operational_device_templates`               |                6 |
+| `shared_operational_device_template_apps`           |               17 |
+| `shared_operational_device_actor_policies`          |                2 |
+| `shared_operational_device_template_actor_policies` |                7 |
+
+Estas cifras son un snapshot de auditoría remota y no constituyen cardinalidades objetivo.
+
+#### 66. Instancias físicas observadas
+
+Se observaron exactamente dos filas activas:
+
+| device_code          | device_type          | activation_status | default_app | last_seen_at |
+| -------------------- | -------------------- | ----------------- | ----------- | ------------ |
+| `CAJA_VENTO_CAFE_01` | `pos_terminal`       | `active`          | `pulso`     | `null`       |
+| `KIOSCO_BODEGA_CP`   | `warehouse_terminal` | `active`          | `nexo`      | `null`       |
+
+Ambas exigen PIN de actor y turno activo según sus flags actuales.
+
+La fila registral no se eleva a evidencia física validada.
+
+#### 67. Plantillas físicas observadas
+
+El remoto contiene seis plantillas legacy activas:
+
+```text
+bar_satellite
+management_terminal
+pos_satellite
+procurement_reception
+production_center
+warehouse_kiosk
+```
+
+El contrato documental aprobado de `AUTH-DEV-001` conserva catorce plantillas objetivo y una plantilla legacy retirada.
+
+Por tanto, la estructura física actual no puede presentarse como cobertura completa. La reconciliación debe ser identidad por identidad y no por conteo o semejanza textual.
+
+#### 68. Eventos legacy observados
+
+`public.shared_operational_device_events` contiene tres eventos:
+
+```text
+device.created
+device.migrated_from_employee.safe_phase_1
+legacy_employee.deactivated
+```
+
+Distribución:
+
+```text
+device.created                              = 1
+device.migrated_from_employee.safe_phase_1 = 1
+legacy_employee.deactivated                = 1
+```
+
+No existen filas de sesión de actor en `shared_operational_device_actor_sessions`.
+
+#### 69. Brecha de cobertura del ledger legacy
+
+Tres eventos legacy no cubren el lifecycle exigido.
+
+No existe evidencia física suficiente, dentro del ledger observado, para demostrar de forma completa:
+
+- enrolamiento;
+- activación;
+- suspensión;
+- reanudación;
+- rotación de credenciales;
+- revocación de credenciales;
+- reinstalación;
+- reemplazo de hardware;
+- traslado;
+- cambio de área;
+- cambio de aplicaciones;
+- cambio de paquete;
+- cambio de plantilla;
+- inicio/cierre/expiración de actor;
+- revocación de dispositivo;
+- retiro;
+- conflictos y resolución.
+
+La ausencia de eventos no prueba que esos hechos nunca ocurrieron.
+
+#### 70. Brecha de ubicación del ledger legacy
+
+La evidencia actual vive en:
+
+```text
+public.shared_operational_device_events
+```
+
+La arquitectura objetivo exige:
+
+```text
+audit.*
+```
+
+014 no renombra la tabla actual por inferencia.
+
+La transición futura debe:
+
+1. preservar los tres eventos existentes;
+2. clasificar su calidad;
+3. migrar o enlazar evidencia mediante una operación versionada;
+4. impedir doble autoridad entre ledger legacy y canónico;
+5. conservar rollback.
+
+#### 71. Brecha de inmutabilidad física
+
+La tabla legacy observada:
+
+- no tiene trigger propio de inmutabilidad;
+- tiene PK e índices por dispositivo/actor y tiempo;
+- permite INSERT al rol `authenticated` mediante RLS para su propio dispositivo activo;
+- conserva grants de tabla amplios a roles runtime, aunque las policies limiten operaciones efectivas.
+
+El modelo objetivo no permite que un cliente sea escritor directo del ledger canónico de auditoría.
+
+#### 72. Brecha de grants legacy
+
+Las tablas y vistas relacionadas muestran privilegios amplios concedidos a `authenticated` y `service_role` en la capa legacy.
+
+Esto no significa que RLS permita todas las operaciones, pero sí demuestra que:
+
+```text
+GRANT DE TABLA
++
+RLS LEGACY
+```
+
+no debe reutilizarse como diseño del schema `audit`.
+
+La futura materialización parte de `REVOKE ALL`/default deny para roles cliente y concede solo contratos internos exactos.
+
+#### 73. Brecha de funciones privilegiadas
+
+La consulta física identificó once funciones relacionadas con shared-device.
+
+De ellas:
+
+```text
+9 = SECURITY DEFINER
+2 = funciones validadoras SECURITY INVOKER/triggers
+2 = SECURITY DEFINER con PUBLIC/anon EXECUTE observado
+```
+
+Las dos exposiciones observadas son:
+
+```text
+current_shared_device_can_access_app
+shared_device_actor_is_allowed_v1
+```
+
+014 no absorbe la corrección autoritativa de esos helpers. Su contrato sí prohíbe que cualquier nueva función del ledger canónico herede esa exposición.
+
+#### 74. Brecha de FK histórica
+
+La tabla legacy de eventos usa varias FK con `ON DELETE SET NULL`, incluidas referencias a dispositivo, actor y sesión técnica.
+
+El ledger canónico debe preservar identidad histórica aun cuando la fuente se retire.
+
+La implementación futura podrá usar:
+
+- IDs inmutables sin FK destructiva;
+- snapshots mínimos;
+- FK restringida cuando la retención sea compatible;
+- links append-only.
+
+Nunca se permitirá que eliminar una fuente borre o vuelva anónima evidencia que debe conservar atribución.
+
+#### 75. Registro canónico de brechas físicas
+
+Se congelan como brechas a reconciliar:
+
+| ID                | Brecha                                                          | Propietario de salida                   |
+| ----------------- | --------------------------------------------------------------- | --------------------------------------- |
+| `DEV-AUD-GAP-001` | schema `audit` ausente                                          | `AUTH-DB-016::GLOBAL`                   |
+| `DEV-AUD-GAP-002` | ledger en `public`                                              | `AUTH-DB-014::GLOBAL` + `AUTH-DB-020`   |
+| `DEV-AUD-GAP-003` | solo tres eventos legacy                                        | `AUTH-DB-014` + productores futuros     |
+| `DEV-AUD-GAP-004` | cero sesiones de actor persistidas                              | `AUTH-DEV-007` a `AUTH-DEV-013`         |
+| `DEV-AUD-GAP-005` | dos dispositivos activos con `last_seen_at = null`              | validación física `AUTH-DEV-014..016`   |
+| `DEV-AUD-GAP-006` | seis plantillas físicas frente a catálogo objetivo mayor        | `AUTH-DB-020` + bloque P                |
+| `DEV-AUD-GAP-007` | grants legacy amplios                                           | `AUTH-DB-004`, `AUTH-DB-021` y adopción |
+| `DEV-AUD-GAP-008` | funciones privilegiadas legacy                                  | `AUTH-DB-003`, `AUTH-DB-034` y adopción |
+| `DEV-AUD-GAP-009` | ledger legacy sin contrato canónico de corrección               | `AUTH-DB-014::GLOBAL`                   |
+| `DEV-AUD-GAP-010` | no existe evidencia completa de credential/endpoint generations | identidad física futura del dispositivo |
+
+Estas brechas no se marcan como corregidas por documentarlas.
+
+#### 76. Política de migración de evidencia legacy
+
+El proceso de migración usa tres clases:
+
+```text
+LEGACY_VERIFIED
+LEGACY_PARTIAL
+LEGACY_UNVERIFIABLE
+```
+
+`LEGACY_VERIFIED`:
+- conserva campos comprobables;
+- puede materializar un evento canónico importado con referencia de origen.
+
+`LEGACY_PARTIAL`:
+- conserva evento importado y señala campos no demostrados;
+- no inventa actor, endpoint, credencial o revisión.
+
+`LEGACY_UNVERIFIABLE`:
+- se conserva como evidencia legacy enlazada;
+- no se promueve a evento canónico afirmativo.
+
+#### 77. Prohibición de fabricar historia
+
+Un backfill no puede inferir que:
+
+```text
+fila activa actual
+=> DEVICE_ACTIVATED histórico
+
+template_id actual
+=> TEMPLATE_BINDING_CHANGED histórico
+
+auth_user_id actual
+=> enrolamiento demostrado
+
+last_seen_at null
+=> nunca usado
+
+0 actor sessions
+=> nunca existió actor humano
+```
+
+La historia se materializa solo desde evidencia verificable.
+
+#### 78. Estrategia de cutover
+
+La futura adopción debe declarar una etapa explícita:
+
+```text
+LEGACY_READ
+CANONICAL_SHADOW_AUDIT
+CANONICAL_AUTHORITATIVE_AUDIT
+LEGACY_READ_ONLY
+LEGACY_RETIRED
+```
+
+Reglas:
+
+- no existen dos ledgers autoritativos indefinidamente;
+- shadow audit compara sin ser fuente de autorización;
+- el cutover fija instante, versión y writer autorizado;
+- el legacy queda read-only antes de retiro;
+- los tres eventos históricos permanecen accesibles mediante lineage.
+
+#### 79. Dual write controlado
+
+Si una transición exige escribir temporalmente legacy y canónico:
+
+- una única operación orquestadora controla ambas escrituras;
+- se usa `correlation_id` común;
+- se usa idempotencia común;
+- se detecta divergencia;
+- el éxito solo se comunica según la clase de compromiso aprobada;
+- existe reconciliación;
+- la etapa tiene fecha/condición de salida;
+- no se deja dual write como arquitectura permanente.
+
+#### 80. Rollback
+
+Rollback de 014 nunca borra evidencia ya confirmada.
+
+La estrategia física deberá distinguir:
+
+```text
+ROLLBACK DE CÓDIGO
+-> volver a writer anterior si es seguro
+
+ROLLBACK DE EXPOSICIÓN
+-> retirar grants/RPC nuevos
+
+ROLLBACK DE CUTOVER
+-> volver temporalmente a lectura legacy cuando sea compatible
+
+EVIDENCIA YA ESCRITA
+-> se conserva
+```
+
+Si una versión nueva escribió hechos válidos, se mantiene su ledger aunque el código retroceda.
+
+#### 81. Retención
+
+La duración de conservación, legal hold, archivado y disposición final depende del gobierno transversal de retención.
+
+014 fija únicamente:
+
+- no borrado ordinario;
+- no cascada destructiva;
+- correcciones append-only;
+- capacidad de particionar/archivar sin perder correlación;
+- preservación de IDs y fingerprints.
+
+No inventa una cantidad de años.
+
+#### 82. Índices mínimos
+
+La materialización física evaluará índices sobre:
+
+```text
+(device_id, event_sequence)
+(device_id, occurred_at desc)
+(correlation_id)
+(administrative_actor_id, occurred_at desc)
+(actor_employee_id, occurred_at desc)
+(event_type, occurred_at desc)
+(source_operation_id)
+(configuration_fingerprint)
+(event_fingerprint)
+```
+
+No se crea un índice por cada campo JSON.
+
+Los índices se justifican con planes y volumen esperado.
+
+#### 83. Partición y crecimiento
+
+La primera versión puede permanecer no particionada si el volumen lo permite.
+
+Antes de particionar se requiere:
+
+- cardinalidad real;
+- tasa de crecimiento;
+- patrones de consulta;
+- política de retención;
+- impacto de índices;
+- backup/restore;
+- constraints compatibles;
+- pruebas de pruning.
+
+Una partición no cambia la identidad del evento.
+
+#### 84. Observabilidad de la infraestructura de auditoría
+
+Métricas mínimas posteriores:
+
+```text
+device_audit_write_success
+device_audit_write_failure
+device_audit_unknown_outcome
+device_audit_reconciliation_open
+device_audit_reconciliation_age
+device_audit_idempotent_replay
+device_audit_conflict
+device_audit_lag
+```
+
+Las métricas no incluyen secretos ni payloads completos.
+
+#### 85. Errores estructurados
+
+Familias mínimas:
+
+```text
+DEVICE_AUDIT_INVALID_INPUT
+DEVICE_AUDIT_IDENTITY_CONFLICT
+DEVICE_AUDIT_STALE_REVISION
+DEVICE_AUDIT_NOT_AUTHORIZED
+DEVICE_AUDIT_SOURCE_UNAVAILABLE
+DEVICE_AUDIT_EXTERNAL_RESULT_UNKNOWN
+DEVICE_AUDIT_PERSISTENCE_FAILED
+DEVICE_AUDIT_CONTRACT_MISMATCH
+DEVICE_AUDIT_LEGACY_UNVERIFIABLE
+```
+
+El mensaje público es seguro; el detalle interno queda en evidencia restringida.
+
+#### 86. Fail closed
+
+Ante ambigüedad:
+
+```text
+NO EVENTO DE ÉXITO
+NO ACTIVACIÓN SUPUESTA
+NO ROTACIÓN SUPUESTA
+NO REVOCACIÓN SUPUESTA
+NO CAMBIO DE ACTOR SUPUESTO
+NO MIGRACIÓN SUPUESTA
+```
+
+Se registra attempt o caso de reconciliación según corresponda.
+
+#### 87. Manifiesto de implementación futura
+
+La futura migración de `AUTH-DB-014::GLOBAL` deberá declarar al menos:
+
+```text
+task_id
+instance_id
+contract_version
+migration_file
+source_schema
+target_schema
+created_objects
+changed_grants
+changed_functions
+legacy_objects
+backfill_mode
+cutover_mode
+rollback_action
+test_ids
+environment
+baseline_fingerprint
+evidence
+```
+
+El manifiesto se versiona en `vento-shell`.
+
+#### 88. Orden de materialización futura
+
+Orden recomendado:
+
+```text
+1. verificar R0 y prerequisitos R1
+2. materializar/reconciliar schema audit
+3. crear vocabularios y tablas del ledger
+4. aplicar constraints
+5. aplicar índices mínimos
+6. revocar acceso directo
+7. crear writers internos endurecidos
+8. probar atomicidad e idempotencia
+9. importar evidencia legacy verificable
+10. comparar legacy/canónico
+11. habilitar adapters propietarios
+12. ejecutar cutover controlado
+13. validar rollback
+14. registrar baseline posterior
+```
+
+No se ejecuta en esta tarea documental.
+
+#### 89. Dependencias físicas de AUTH-DB-014::GLOBAL
+
+Antes de autorización física debe existir evidencia compatible de:
+
+```text
+R0 aplicable verificado
+AUTH-DB-016::GLOBAL materializada cuando audit todavía no exista
+AUTH-DB-018::GLOBAL cuando la separación de helpers sea necesaria para el writer
+AUTH-DB-019::GLOBAL cuando se requiera resolver principal/actor canónico
+AUTH-DB-027 disponible
+AUTH-DB-028 baseline vigente
+AUTH-DB-029 estrategia de backup/rollback disponible
+```
+
+Para declarar adopción completa de productores además deben estar disponibles las tareas propietarias de dispositivo y migración correspondientes.
+
+La ausencia de productores futuros no impide crear la infraestructura global, pero sí impide certificar cobertura operacional completa.
+
+#### 90. Pruebas de esquema
+
+La implementación física deberá probar:
+
+1. objetos exactos;
+2. PK/UNIQUE;
+3. FK o estrategia histórica;
+4. checks de vocabulario;
+5. no null;
+6. event sequence;
+7. revision sequence;
+8. canonical fingerprints;
+9. ausencia de secrets;
+10. grants;
+11. exposición;
+12. RLS/definer boundaries;
+13. índices;
+14. rollback.
+
+#### 91. Pruebas de inmutabilidad
+
+Casos obligatorios:
+
+```text
+authenticated UPDATE event
+-> DENY
+
+authenticated DELETE event
+-> DENY
+
+authenticated TRUNCATE
+-> DENY
+
+writer interno corrige evento existente
+-> DENY
+
+correction insert autorizada
+-> PASS
+
+borrado de fuente referenciada
+-> evidencia histórica preservada
+```
+
+#### 92. Pruebas de lifecycle
+
+La suite cubre al menos:
+
+- registrar;
+- enrolar;
+- activar;
+- suspender;
+- reanudar;
+- rotar credencial;
+- revocar credencial;
+- reinstalar;
+- reemplazar hardware;
+- trasladar sede;
+- cambiar área;
+- cambiar apps;
+- cambiar paquete;
+- cambiar plantilla;
+- iniciar actor;
+- cambiar actor;
+- expirar actor;
+- revocar actor;
+- revocar dispositivo;
+- retirar;
+- conflicto;
+- recuperación.
+
+#### 93. Pruebas negativas
+
+Casos:
+
+- ID de dispositivo desconocido;
+- endpoint ajeno;
+- principal ajeno;
+- vínculo de credencial obsoleto;
+- revisión stale;
+- sede incompatible;
+- área cross-site;
+- app no canónica;
+- permiso fuera de paquete;
+- actor no autorizado;
+- sesión expirada;
+- secreto en payload;
+- event type desconocido;
+- source version desconocida;
+- fingerprint inválido;
+- duplicado de idempotencia incompatible.
+
+#### 94. Pruebas de concurrencia
+
+Escenarios:
+
+```text
+ROTATE vs ROTATE
+REVOKE vs ACTIVATE
+RETIRE vs RECOVERY
+ACTOR_CHANGE vs ACTOR_CHANGE
+SITE_MOVE vs ACTOR_START
+PACKAGE_CHANGE vs ACTION
+ENDPOINT_REINSTALL vs CREDENTIAL_REVOKE
+```
+
+Solo una transición compatible puede confirmar la revisión esperada.
+
+#### 95. Pruebas de fallos externos
+
+Inyectar:
+
+- timeout;
+- conexión cortada después de enviar solicitud;
+- proveedor responde dos veces;
+- proveedor acepta pero respuesta se pierde;
+- base falla después del anchor;
+- outbox falla;
+- retry;
+- resultado tardío.
+
+La evidencia nunca presenta `SUCCEEDED` mientras el resultado real sea incierto.
+
+#### 96. Pruebas de migración legacy
+
+La suite fija el snapshot observado:
+
+```text
+devices = 2
+device_apps = 4
+actor_sessions = 0
+events = 3
+templates = 6
+template_apps = 17
+actor_policies = 2
+template_actor_policies = 7
+```
+
+Debe demostrar:
+
+- los tres eventos no se pierden;
+- ningún evento nuevo se inventa;
+- la clasificación legacy es reproducible;
+- la reconciliación no altera IDs fuente;
+- el cutover no duplica eventos;
+- rollback conserva evidencia.
+
+#### 97. Pruebas de acceso directo
+
+Verificar:
+
+```text
+anon -> 0 acceso audit
+authenticated -> 0 acceso audit
+PUBLIC EXECUTE -> 0 en writers privilegiados
+```
+
+Los consumidores autorizados usan únicamente el contrato interno aprobado.
+
+#### 98. Pruebas de search_path
+
+Para cada función privilegiada:
+
+- crear homónimo malicioso en schema accesible;
+- variar `search_path`;
+- intentar llamada con role cliente;
+- intentar referencia no cualificada;
+- verificar owner;
+- verificar EXECUTE exacto.
+
+El resultado debe permanecer fail closed.
+
+#### 99. Pruebas de minimización
+
+Fixtures con:
+
+- PIN;
+- JWT;
+- refresh token;
+- secret;
+- passkey material;
+- Authorization header;
+- correo;
+- teléfono.
+
+La prueba falla si cualquiera aparece en:
+
+```text
+event_payload
+attempt snapshots
+logs de writer
+errores públicos
+evidence export
+```
+
+#### 100. Pruebas de fingerprints
+
+Validar:
+
+- misma semántica -> mismo fingerprint;
+- orden distinto de set -> mismo fingerprint;
+- cambio de valor material -> fingerprint distinto;
+- timestamp de escritura distinto -> mismo fingerprint semántico;
+- `null` vs ausencia conforme al contrato;
+- Unicode canonicalizado conforme a versión;
+- campos secretos excluidos.
+
+#### 101. Criterios de cierre físico futuro
+
+`AUTH-DB-014::GLOBAL` solo puede declararse `VERIFIED` cuando:
+
+1. existe `audit`;
+2. existen los seis objetos del contrato;
+3. el acceso cliente directo es cero;
+4. writers internos están endurecidos;
+5. la inmutabilidad está demostrada;
+6. la importación legacy está reconciliada;
+7. los tres eventos actuales están preservados;
+8. no se inventó historia;
+9. idempotencia y concurrencia pasan;
+10. rollback pasa;
+11. baseline posterior está registrado;
+12. los gaps propiedad de 014 están cerrados o clasificados con dueño externo.
+
+#### 102. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+Justificación:
+
+- el lifecycle completo del dispositivo ya está cubierto por requisitos canónicos vigentes;
+- la identidad, endpoint, principal, credencial, sede, área, aplicaciones y techo ya poseen cobertura específica;
+- la atribución entre dispositivo y trabajador ya posee cobertura;
+- la auditoría transversal ya posee cobertura;
+- esta tarea materializa el contrato de persistencia de esa evidencia sin introducir una regla de negocio nueva.
+
+```text
+Requisitos creados: 0
+Requisitos modificados: 0
+Requisitos diferidos: 0
+Requisitos obsoletos: 0
+```
+
+#### 103. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza, sin modificarlos:
+
+- `TREQ-AUTH-003`, para ciclo auditable de creación, activación, uso, cambio de actor, expiración, suspensión, revocación, rotación y retiro;
+- `TREQ-AUTH-011`, para atribución de dispositivo, principal y actor;
+- `TREQ-AUTH-015`, para evidencia correlacionable de decisiones y acciones;
+- `TREQ-AUTH-020` a `TREQ-AUTH-029`, para identidad, endpoint, principal, credencial, reemplazo y conflictos;
+- `TREQ-AUTH-030` a `TREQ-AUTH-038`, para sede fija y traslados;
+- `TREQ-AUTH-039` a `TREQ-AUTH-048`, para política de área;
+- `TREQ-AUTH-049` a `TREQ-AUTH-058`, para aplicaciones;
+- `TREQ-AUTH-059` a `TREQ-AUTH-068`, para paquete máximo, cambios e invalidación.
+
+Esta lista es trazabilidad heredada, no actualización del registro 04A.
+
+#### 104. Criterios de aceptación
+
+- [x] Se definió una única instancia global `AUTH-DB-014::GLOBAL`.
+- [x] Se preservó el gate `PRE_E5_FOUNDATION`.
+- [x] Se exige la capa `audit`.
+- [x] Se separó fuente vigente de evidencia histórica.
+- [x] Se separaron dispositivo, endpoint, principal, credencial, activo, estación y actor.
+- [x] Se definieron seis objetos de auditoría.
+- [x] Se definieron revisiones y fingerprints.
+- [x] Se definió vocabulario de lifecycle.
+- [x] Se cubrieron enrolamiento, activación, suspensión, rotación, revocación y retiro.
+- [x] Se cubrieron cambios de sede, área, apps, paquetes y plantilla.
+- [x] Se cubrieron sesiones y cambios de actor.
+- [x] Se definieron attempts y unknown outcome.
+- [x] Se definió idempotencia.
+- [x] Se definió concurrencia.
+- [x] Se definió atomicidad local.
+- [x] Se definió durable-before-ack para efectos externos.
+- [x] Se definieron links y correcciones append-only.
+- [x] Se prohibieron secretos.
+- [x] Se prohibió acceso directo cliente al ledger objetivo.
+- [x] Se definió endurecimiento de funciones privilegiadas.
+- [x] Se distinguió telemetría de auditoría.
+- [x] Se auditó el remoto sin escrituras.
+- [x] Se preservaron las dos instancias observadas como registrales no verificadas.
+- [x] Se preservó que ambas tienen `last_seen_at = null`.
+- [x] Se preservaron seis plantillas legacy observadas.
+- [x] Se preservaron tres eventos legacy.
+- [x] Se preservó que existen cero sesiones de actor.
+- [x] Se congeló un registro de brechas.
+- [x] Se prohibió fabricar historia durante backfill.
+- [x] Se definió cutover y dual-write controlado.
+- [x] Se definió rollback sin borrar evidencia.
+- [x] Se definieron pruebas de esquema, seguridad, concurrencia y migración.
+- [x] Se justificaron cero cambios 04A.
+- [x] No se ejecutó SQL mutante.
+- [x] No se creó migration.
+- [x] No se cambió Supabase.
+- [x] No se inició `AUTH-DB-020`.
+
+#### 105. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                 |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El carril documental no creó build, migration, SQL, código runtime ni artefactos de despliegue.                                                                                                                                                           |
+| LOCAL     | NOT_EXECUTED   | El artefacto todavía debe insertarse y validarse en el checkout actualizado del usuario mediante el workflow documental.                                                                                                                                  |
+| REMOTA    | PASS           | `main` confirma `AUTH-DB-013` aprobado, `AUTH-DB-014` como marcador actual, topología `GLOBAL_ENABLE_ONCE`; lectura read-only de Supabase confirmó schemas, tablas, cardinalidades, dispositivos, plantillas, eventos, RLS, grants y funciones descritos. |
+| OPERATIVA | NOT_APPLICABLE | No se cambió comportamiento de tablets, kioscos, terminales, actor sessions, PIN, navegación ni aplicaciones.                                                                                                                                             |
+| FÍSICA    | NOT_APPLICABLE | No se ejecutó DDL/DML mutante, no se modificaron dispositivos, credenciales, sesiones, grants ni funciones.                                                                                                                                               |
+
+#### 106. Decisiones vinculantes
+
+1. `AUTH-DB-014` es documental.
+2. La futura instancia es `AUTH-DB-014::GLOBAL`.
+3. El modo es `GLOBAL_ENABLE_ONCE`.
+4. El gate es `PRE_E5_FOUNDATION`.
+5. Requiere `audit`.
+6. El ledger objetivo usa seis objetos.
+7. El ledger es append-only.
+8. Los roles cliente tienen cero acceso directo.
+9. El dispositivo no es actor humano.
+10. El principal técnico no es autoridad empresarial.
+11. Una credencial nunca se persiste en audit.
+12. Cada cambio material produce revisión.
+13. Un hecho confirmado y un intento fallido son clases distintas.
+14. Unknown outcome no se presenta como éxito.
+15. La causalidad es por dispositivo, no por timestamp global.
+16. La migración legacy no inventa historia.
+17. Los tres eventos existentes deben preservarse.
+18. Cero sesiones no se interpreta como conformidad.
+19. `last_seen_at = null` no prueba inactividad ni operación.
+20. Las seis plantillas físicas no sustituyen el catálogo documental objetivo.
+21. 014 no migra tablas de dominio.
+22. 014 no implementa el bloque P.
+23. 014 no absorbe 012, 013, 032, 035 ni 020.
+24. 04A no cambia.
+
+#### 107. Límites
+
+`AUTH-DB-014` no:
+
+- ejecuta `AUTH-DB-014::GLOBAL`;
+- crea el schema `audit` en este carril;
+- crea migrations;
+- ejecuta SQL mutante;
+- mueve `public.shared_operational_devices`;
+- mueve `public.shared_operational_device_events`;
+- modifica los dos dispositivos actuales;
+- crea sesiones de actor;
+- rota credenciales;
+- revoca dispositivos;
+- cambia plantillas;
+- cambia sede o área;
+- cambia aplicaciones;
+- cambia permisos;
+- corrige las funciones legacy;
+- cambia grants o RLS;
+- implementa `AUTH-DEV-007..016`;
+- implementa `AUTH-DB-020`;
+- crea un outbox alternativo;
+- crea una UI de auditoría;
+- define retención legal definitiva;
+- certifica equipos físicos.
+
+#### 108. Handoff exacto a AUTH-DB-020
+
+`AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal` recibe de 014:
+
+1. schema objetivo de auditoría ya definido;
+2. objetos del ledger y sus identidades;
+3. vocabulario de lifecycle;
+4. reglas de revisión y fingerprints;
+5. clasificación de evidencia legacy;
+6. snapshot de ocho tablas legacy;
+7. snapshot de cardinalidades;
+8. tres eventos existentes que no pueden perderse;
+9. reglas de cutover;
+10. reglas de dual write temporal;
+11. prohibición de fabricar historia;
+12. gaps que requieren adopción por writer;
+13. política de rollback;
+14. default deny para acceso cliente.
+
+020 no deberá rediseñar el contrato de auditoría para cada dominio.
 
 Regla de auditoría
 
@@ -23507,3 +25696,16 @@ la capa o esquema transversal de auditoría aprobado en SUPA-ARC-007.
 
 No deberán crear mecanismos de auditoría independientes dentro de cada
 aplicación o dominio.
+
+---
+
+#### 109. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-013 — Implementar auditoría de simulación`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-014 — Implementar auditoría de dispositivos`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal`

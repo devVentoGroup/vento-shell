@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1020** |
+| Tareas aprobadas | **1021** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **574** |
+| Tareas no iniciadas | **573** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **63.99% (1020/1594)** |
+| Porcentaje de completamiento | **64.05% (1021/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-013 — Implementar auditoría de simulación** |
-| Tarea actual | **AUTH-DB-014 — Implementar auditoría de dispositivos** |
+| Última tarea aprobada | **AUTH-DB-014 — Implementar auditoría de dispositivos** |
+| Tarea actual | **AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal** |
+| Siguiente tarea | **AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 19 de 51 aprobadas; AUTH-DB-014 pendiente** |
+| Progreso del bloque | **BLOQUE R: 20 de 51 aprobadas; AUTH-DB-020 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CON-022::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-014** |
+| Carril documental | **ACTIVO — AUTH-DB-020** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CON-022::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-013` — Implementar auditoría de simulación |
-| Tarea actual | `AUTH-DB-014` — Implementar auditoría de dispositivos — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-020` — Migrar objetos por dominio con compatibilidad temporal |
+| Última aprobada | `AUTH-DB-014` — Implementar auditoría de dispositivos |
+| Tarea actual | `AUTH-DB-020` — Migrar objetos por dominio con compatibilidad temporal — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-006` — Incorporar contexto canónico en RPC sensibles |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 19 DE 51 APROBADAS — ACTUAL AUTH-DB-014** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 20 DE 51 APROBADAS — ACTUAL AUTH-DB-020** |
 | Implementación física | **SHELL-CON-022::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-013 — Implementar auditoría de simulación
-        ↓
-TAREA ACTUAL
 AUTH-DB-014 — Implementar auditoría de dispositivos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-020 — Migrar objetos por dominio con compatibilidad temporal
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 19 de 51 tareas aprobadas
+BLOQUE R — 20 de 51 tareas aprobadas
 ```
