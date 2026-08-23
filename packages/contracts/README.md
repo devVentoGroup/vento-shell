@@ -177,4 +177,20 @@ La cobertura estática preserva `EXT-SYS-001..021` con adopción 21/21, faltante
 
 `INT-DB-004` conserva en exclusiva la persistencia física posterior. Esta materialización crea 0 valores físicos de `ExternalIdentifierMappingId`, 0 mappings operativos, 0 tablas, 0 índices, 0 RPC, 0 migraciones, 0 consumidores migrados y 0 cambios Supabase.
 
-Las seis instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-022::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION`. `SHELL-CON-023` conserva idempotencia y conciliación compartidas; `SHELL-CON-024` conserva rechazo, cuarentena y compensación.
+Las seis instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-022::GLOBAL` quedaron materializadas como fundaciones estáticas `PRE_E5_FOUNDATION` antes de esta instancia.
+
+`SHELL-CON-023::GLOBAL` materializa la tarea `SHELL-CON-023` y amplía el módulo con `IntegrationIdempotencyScope`, `IntegrationIdempotencyRef`, `IntegrationIdempotencyRecord`, `ExternalIntegrationClaimState`, `IntegrationIdempotencyOutcome`, `IntegrationReconciliationRef`, `IntegrationReconciliationCase` e `IntegrationReconciliationClosureOutcome`.
+
+El contrato conserva exactamente 7 alcances idempotentes, 7 estados de claim, 8 outcomes idempotentes y 8 cierres de conciliación. `IntegrationIdempotencyRef` conserva 6 campos, `IntegrationIdempotencyRecord` 21 campos de nivel superior e `IntegrationReconciliationCase` 23 campos de nivel superior.
+
+No existe una clave global de Vento OS ni de una venta. Retry y redelivery conservan la identidad; misma identidad con huella compatible recupera resultado previo, mientras una huella incompatible produce `CONFLICTING_REUSE`. `OUTCOME_UNKNOWN` y `RESULT_UNKNOWN` permanecen conceptos distintos y la incertidumbre exige consulta o conciliación antes de repetir un efecto.
+
+`IntegrationReconciliationRef` permanece separado de idempotency key, event ID, receipt ID, mapping ID, sale ID y effect ID. La conciliación compara fuentes autoritativas, no las sustituye, no ejecuta escrituras cruzadas y no reaplica efectos confirmados. No existe un cierre `UNKNOWN`.
+
+`ExternalReceivedEvent.idempotency_ref` permanece físicamente sin migrar; `IntegrationIdempotencyRef` queda como tipo objetivo posterior. Mapping, idempotencia, correlación y conciliación siguen separados. `CanonicalSaleId` y `CanonicalSaleLineId` no son claves universales de efectos.
+
+La cobertura preserva `EXT-SYS-001..021` con adopción 21/21, faltantes 0, duplicados 0 y distribución `1 + 6 + 2 + 2 + 1 + 1 + 7 + 1 = 21`. `makos_excel` no acredita idempotencia individual; telefonía/voz conserva bloqueo hasta `TI-INT-003`.
+
+`INT-DB-005`, `INT-DB-008` e `INT-DB-007` conservan respectivamente persistencia física de idempotencia, conciliación y auditoría. Esta instancia crea 0 registros idempotentes operativos, 0 casos de conciliación operativos, 0 claims runtime, 0 retries runtime, 0 tablas, 0 índices, 0 RPC, 0 migraciones, 0 consumidores migrados y 0 cambios Supabase.
+
+Las siete instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-023::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION`. `SHELL-CON-024` conserva en exclusiva rechazo, cuarentena y compensación compartidos.

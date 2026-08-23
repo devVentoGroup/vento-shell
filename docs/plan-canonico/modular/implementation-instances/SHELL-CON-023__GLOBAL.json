@@ -1,10 +1,72 @@
 {
   "instance_id": "SHELL-CON-023::GLOBAL",
   "task_id": "SHELL-CON-023",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-CON-023::GLOBAL como contrato estatico interno de idempotencia y conciliacion dentro de packages/contracts/integrations, preservando inmutables las materializaciones VERIFIED de SHELL-CON-017::GLOBAL a SHELL-CON-022::GLOBAL.",
+    "Crear packages/contracts/integrations/scripts/generate-integration-idempotency-reconciliation-contract.mjs y packages/contracts/integrations/generated/integration-idempotency-reconciliation.contract.ts sin modificar generadores existentes.",
+    "Crear packages/contracts/integrations/scripts/validate-integration-idempotency-reconciliation-contract.mjs para validar frescura, vocabularios exactos 7/7/8/8, formas 6/21/23, matriz EXT-SYS 21/21, dependencias, seguridad, package, indice interno y READMEs.",
+    "Materializar IntegrationIdempotencyScope con siete alcances distintos y sin clave global; IntegrationIdempotencyRef con identidad previa al primer efecto, namespace, generation y version contractual.",
+    "Materializar IntegrationIdempotencyRecord con huella logica versionada, claim condicional, outcome, resultado recuperable, contexto externo condicional, temporalidad, correlacion, auditoria y referencia de conciliacion.",
+    "Materializar ExternalIntegrationClaimState con siete estados, IntegrationIdempotencyOutcome con ocho outcomes y conservar OUTCOME_UNKNOWN separado de RESULT_UNKNOWN.",
+    "Materializar IntegrationReconciliationRef como identidad estable, opaca y no secreta, IntegrationReconciliationCase con 23 campos y IntegrationReconciliationClosureOutcome con ocho cierres sin cierre UNKNOWN.",
+    "Preservar mapping, idempotencia, correlacion, autenticidad, autorizacion y conciliacion como conceptos separados; no crear transaccion ACID global, retry policy paralela ni escrituras cross-owner.",
+    "Preservar ExternalReceivedEvent.idempotency_ref sin modificar SHELL-CON-019; IntegrationIdempotencyRef queda como tipo objetivo de adopcion posterior sin migrar consumidores.",
+    "Preservar CanonicalSaleId y CanonicalSaleLineId fuera de cualquier clave universal de efectos; conservar especializacion POS y prohibicion de fabricar identidad desde source_row_number, file hash o makos_excel.",
+    "Materializar la matriz EXT-SYS-001..021 21/21 con distribucion 1+6+2+2+1+1+7+1, sin crear operaciones, claims o casos reales y manteniendo telefonia bloqueada hasta TI-INT-003.",
+    "Actualizar packages/contracts/integrations/README.md y exclusivamente la seccion de integraciones externas de packages/contracts/README.md para registrar SHELL-CON-023::GLOBAL y reservar SHELL-CON-024.",
+    "Ejecutar una sola vez npm run quality:repair despues de materializar y antes de IMPLEMENTED; solo se permiten reparaciones deterministas del alcance y generacion bajo packages/contracts/integrations/generated.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-CON-023__GLOBAL.json exclusivamente para authorization, lifecycle y evidence.",
+    "No modificar packages/contracts/package.json, generated/index.ts, contratos o scripts SHELL-CON-017..022, exports, version, releases, consumidores, runtime, persistencia, tablas, indices, constraints, RPC, RLS, migraciones, datos, Supabase, 04A/TREQ, INT-DB-005, INT-DB-007, INT-DB-008 ni SHELL-CON-024."
+  ],
+  "validation_commands": [
+    "node packages/contracts/integrations/scripts/generate-integration-idempotency-reconciliation-contract.mjs --check",
+    "node packages/contracts/integrations/scripts/validate-integration-idempotency-reconciliation-contract.mjs",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-22T20:04:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "d6630e1e3280845765308579eb06302ce1b476da96475de675a1667e06ee68f0"
+  },
+  "status": "VERIFIED",
+  "evidence": [
+    "MATERIALIZATION integration idempotency reconciliation generator created without modifying SHELL-CON-017..022 generators",
+    "MATERIALIZATION integration idempotency reconciliation validator created",
+    "MATERIALIZATION integration-idempotency-reconciliation.contract.ts generated with idempotency and reconciliation shared types",
+    "MATERIALIZATION vocabularies idempotency scopes=7 claim states=7 idempotency outcomes=8 reconciliation closures=8",
+    "MATERIALIZATION shapes IntegrationIdempotencyRef=6 IntegrationIdempotencyRecord=21 IntegrationReconciliationCase=23",
+    "MATERIALIZATION EXT-SYS adoption 21/21 missing=0 duplicates=0 distribution=1+6+2+2+1+1+7+1",
+    "MATERIALIZATION ExternalReceivedEvent.idempotency_ref preserved without consumer migration",
+    "MATERIALIZATION package root index not extended and packages/contracts/package.json unchanged",
+    "MATERIALIZATION operational idempotency records=0 reconciliation cases=0 claims=0 retries=0 persistence=0 migrations=0 Supabase changes=0",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 d6630e1e3280845765308579eb06302ce1b476da96475de675a1667e06ee68f0",
+    "VALIDATION idempotency reconciliation generator freshness PASS",
+    "VALIDATION idempotency reconciliation contract validator PASS",
+    "VALIDATION idempotency scopes exact count=7 PASS",
+    "VALIDATION external claim states exact count=7 PASS",
+    "VALIDATION idempotency outcomes exact count=8 PASS",
+    "VALIDATION reconciliation closure outcomes exact count=8 PASS",
+    "VALIDATION IntegrationIdempotencyRef exact fields=6 PASS",
+    "VALIDATION IntegrationIdempotencyRecord exact top-level fields=21 PASS",
+    "VALIDATION IntegrationReconciliationCase exact top-level fields=23 PASS",
+    "VALIDATION EXT-SYS-001..021 exact coverage=21/21 missing=0 duplicates=0 distribution=1+6+2+2+1+1+7+1 PASS",
+    "VALIDATION SHELL-CON-019 generic idempotency_ref boundary preserved PASS",
+    "VALIDATION SHELL-CON-022 mapping/idempotency separation PASS",
+    "VALIDATION package boundary PASS",
+    "VALIDATION generated index boundary PASS",
+    "VALIDATION README boundary PASS",
+    "VALIDATION runtime and secret boundary PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-023::GLOBAL VERIFIED"
+  ]
 }
