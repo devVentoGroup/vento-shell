@@ -2,7 +2,7 @@
 
 Raiz privada de autoria para la fundacion compartida de normalizacion pura y determinista de Vento OS.
 
-`SHELL-NORM-001::GLOBAL` materializo la identidad fisica minima del package. `SHELL-NORM-002::GLOBAL` materializo exclusivamente el sistema compartido de tipos de campo normalizable. `SHELL-NORM-003::GLOBAL` materializa ahora las reglas puras de Unicode, espacios, espaciado de puntuacion de prosa y capitalizacion empresarial, sin habilitar exports publicos, consumidores, persistencia ni cambios Supabase.
+`SHELL-NORM-001::GLOBAL` materializo la identidad fisica minima del package. `SHELL-NORM-002::GLOBAL` materializo el sistema compartido de tipos de campo normalizable. `SHELL-NORM-003::GLOBAL` materializo las reglas puras de Unicode, espacios, espaciado de puntuacion de prosa y capitalizacion empresarial. `SHELL-NORM-004::GLOBAL` materializa ahora los catalogos versionados de conectores y excepciones oficiales, sin habilitar exports publicos, consumidores, persistencia ni cambios Supabase.
 
 ## Autoridad canonica
 
@@ -209,6 +209,102 @@ conectores y excepciones: RESOLVERS VERSIONADOS, CATALOGOS NO MATERIALIZADOS
 - token tecnico o mixto no resuelto se preserva y exige revision;
 - catalogos concretos pertenecen exclusivamente a `SHELL-NORM-004`.
 
+## Materializacion de SHELL-NORM-004
+
+El marcador historico de `SHELL-NORM-003` que dice `conectores y excepciones: RESOLVERS VERSIONADOS, CATALOGOS NO MATERIALIZADOS` describe correctamente el cierre de 003. `SHELL-NORM-004::GLOBAL` es el propietario posterior que materializa ahora esos catalogos sin reinterpretar E3.
+
+La superficie interna queda ampliada asi:
+
+```text
+packages/data-normalization/
+|-- README.md
+|-- package.json
+|-- scripts/
+|   |-- validate-normalization-types.mjs
+|   |-- validate-normalization-rules.mjs
+|   `-- validate-normalization-catalogs.mjs
+`-- src/
+    |-- normalization.types.ts
+    |-- normalization.rules.ts
+    `-- normalization.catalogs.ts
+```
+
+`src/normalization.catalogs.ts` materializa exactamente dos identidades versionadas:
+
+```text
+VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0
+VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0
+```
+
+### Catalogo de conectores
+
+El inventario cerrado contiene exactamente 18 entradas, sin faltantes ni duplicados:
+
+```text
+a, al, con, de, del, e, el, en, la, las, lo, los, o, para, por, sin, u, y
+```
+
+Las tres familias descriptivas son `preposiciones y contracciones`, `articulos` y `conjunciones coordinantes`. No crean gramatica ni amplian el catalogo.
+
+Las posiciones normativas son exactamente `NAME_START`, `DECLARED_SEGMENT_START` e `INTERNAL`. Los resultados cerrados son exactamente cinco: `CONNECTOR_INITIAL_CAPITALIZED`, `CONNECTOR_INTERNAL_LOWERCASED`, `CONNECTOR_PRESERVED_BY_EXCEPTION`, `CONNECTOR_PRESERVED_AMBIGUOUS` y `CONNECTOR_POLICY_BLOCKED`.
+
+`al` y `del` permanecen atomicos. No existen contracciones, expansiones, matching por subcadena, sustituciones `y/e` o `o/u`, aliases implicitos ni deteccion automatica de idioma.
+
+### Catalogo de excepciones
+
+La superficie contractual materializa:
+
+| Familia | Cantidad |
+| --- | ---: |
+| familias de excepcion | 4 |
+| atributos obligatorios de `OfficialTextExceptionEntry` | 23 |
+| alcances de coincidencia | 4 |
+| modos de coincidencia | 3 |
+| modos de aplicacion | 4 |
+| resultados de evaluacion | 7 |
+| tipos de autoridad | 5 |
+| estados de ciclo de vida | 3 |
+| formas normativas iniciales | 28 |
+
+Las 28 formas se distribuyen exactamente en 3 marcas, 10 aplicaciones/codigos controlados, 9 unidades/familias tecnicas y 6 protecciones contextuales de sufijo legal. De ellas, 22 corresponden a emision canonica o validacion tecnica y 6 a proteccion legal contextual.
+
+```text
+marcas: 3M, iPhone, Coca-Cola
+aplicaciones/codigos: NEXO, VISO, ORIGO, NUMERA, FOGO, PULSO, VGR, SAU, VCF, COP
+unidades/familias: g, kg, ml, l, un, dz, count, mass, volume
+sufijos legales: SAS, S.A.S., SA, S.A., LTDA, CIA
+```
+
+Las seis protecciones legales no son aliases entre si. `SAS` no implica `S.A.S.` y viceversa.
+
+### Binding explicito y ausencia de autoridad inventada
+
+Las 28 formas son definiciones normativas aprobadas, no entradas ejecutables globales con contexto inventado. La funcion `materializeOfficialExceptionEntry` exige que cada activacion suministre explicitamente los 23 atributos contractuales mediante un binding de coordenada, clase, representacion, fuente, autoridad, owner, evidencia, vigencia, estado y modo de aplicacion.
+
+La implementacion no fabrica `authority_owner`, `evidence_reference`, dominio, entidad, campo, `valid_from`, aliases ni permisos de mutacion. Una forma normativa reconocida sin binding compatible se preserva y queda en revision/bloqueo, no se emite por heuristica. Solo `ACTIVE` participa en decisiones nuevas.
+
+### Candidatos no activables
+
+Se preserva un inventario de 34 casos documentales no activables: 14 casos de marca o forma mixta, 11 casos de sigla/codigo contextual y 9 casos estructurales o lexicos. Ninguno se incorpora a las 28 formas normativas.
+
+Entre ellos permanecen `Oster/oster`, `Wellmix/Welmix`, `Vento`, `Saudo`, `BBQ`, `T26`, `Six Pack`, `six_pack` y `Bolsa 1 kg`. Coincidencia, caja, frecuencia o similitud no los promueven.
+
+### Integracion con SHELL-NORM-003
+
+`normalization.rules.ts` conserva las cinco operaciones y los 23 literales verificados de 003. 004 agrega un hook opcional `review_input` al resolver de catalogos. El hook es retrocompatible y permite que un candidato no activable, una entrada suspendida/retirada o una forma normativa sin binding explicito falle cerrada antes de la tokenizacion ordinaria.
+
+`createCommercialCapitalizationCatalogResolver` implementa el contrato consumido por 003 con versiones exactas de catalogo, entradas de excepcion explicitamente activadas y resolucion determinista de conectores. No existe fallback a listas locales ni seleccion `latest`.
+
+### Pureza y fronteras
+
+La materializacion 004 no usa filesystem, red, Supabase, variables de entorno, reloj implicito, aleatoriedad ni locale implicito para decidir semantica. El case mapping se recibe mediante adaptador versionado.
+
+Los catalogos no crean identidad, unicidad, deduplicacion, fusion, persistencia, commit ni autoridad empresarial. `EXTERNAL_ORIGINAL`, snapshots y evidencia conservan su frontera. VITAL no hereda estos catalogos. Correccion ortografica permanece reservada a `SHELL-NORM-005`; busqueda a `SHELL-NORM-006`.
+
+### Validacion de SHELL-NORM-004
+
+`scripts/validate-normalization-catalogs.mjs` valida el SHA del contrato propietario mediante el parser canonico de tareas, ejecuta primero los validadores verificados de 002/003, compila tipos/reglas/catalogos con el TypeScript local y comprueba inventarios, distribuciones, ausencia de promociones de candidatos y comportamiento fail-closed mediante fixture ejecutable.
+
 ## Pureza y dependencias runtime
 
 Las cinco funciones son puras respecto de sus inputs explicitos. El modulo no usa:
@@ -253,13 +349,21 @@ package.json: MATERIALIZADO
 tipos SHELL-NORM-002: MATERIALIZADOS
 reglas SHELL-NORM-003: MATERIALIZADAS
 operaciones SHELL-NORM-003: 5
-clases de token: 9
-resultados de token: 6
-fronteras de segmento: 3
 inventario SHELL-NORM-003: 23 literales
+catalogos SHELL-NORM-004: MATERIALIZADOS
+conectores: 18
+familias de conectores: 3
+posiciones de conectores: 3
+resultados de conectores: 5
+familias de excepcion: 4
+atributos de entrada de excepcion: 23
+scopes / matchers / aplicaciones: 4 / 3 / 4
+resultados / autoridades / estados: 7 / 5 / 3
+formas normativas iniciales: 28 = 22 + 6
+candidatos no activables: 34 = 14 + 11 + 9
+entradas ejecutables globales con owner/evidencia inventados: 0
 version npm: NO DECLARADA
 exports publicos: NO MATERIALIZADOS
-conectores y excepciones concretos: NO MATERIALIZADOS
 diccionario: NO MATERIALIZADO
 busqueda: NO MATERIALIZADA
 preview: NO MATERIALIZADO
@@ -272,17 +376,19 @@ cambios Supabase: 0
 
 | Tarea | Responsabilidad reservada |
 | --- | --- |
-| `SHELL-NORM-004` | catalogos versionados de conectores y excepciones |
 | `SHELL-NORM-005` | diccionarios ortograficos versionados |
 | `SHELL-NORM-006` | busqueda y comparacion |
 | `SHELL-NORM-007` | previsualizacion de transformaciones |
 | `SHELL-NORM-008` | metadatos de version y auditoria |
 | `SHELL-NORM-009` | certificacion de idempotencia y conservacion semantica |
 
-Ninguna de esas tareas se adelanta por `SHELL-NORM-003`.
+Ninguna de las tareas reservadas `SHELL-NORM-005..009` se adelanta por `SHELL-NORM-004`.
 
 Source contract SHA-256 `SHELL-NORM-001`: `f88a0eb3dc6ed6103dc00063124e3e1f5b2a78545d1980e39f596b4fc1653c90`.
 
 Source contract SHA-256 `SHELL-NORM-002`: `ae4bf09517c3e8d0e11c6e5e2e317079115205ba072913fbc76f31323dd90e76`.
 
 Source contract SHA-256 `SHELL-NORM-003`: `ce86eef6da718064b58f9b977af644d9ce0030fc1de07c203c5709e877c9c461`.
+
+
+Source contract SHA-256 `SHELL-NORM-004`: `abacc131fb8dd2b18dbd59ef04915e516f6044d4737422b55e45f1eb5dda64ef`.
