@@ -11532,7 +11532,258 @@ Esta tarea no:
 `AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación`
 
 
-### [ ] AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
+### ✅ AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
+**Tarea siguiente:** AUTH-DB-022 — Implementar gobierno y políticas de Storage
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para aplicar constraints únicamente después de backfills, reconciliación y compatibilidad verificadas
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `POST-BACKFILL-CONSTRAINTS-011@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-011::<package_id>` permanece no ejecutada hasta satisfacer R0/R1 aplicables, package/E5, backfill/reconciliación, `SHELL-CI-020::<package_id>` y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-011` define el contrato repetible por `package_id` para convertir invariantes ya reconciliadas en constraints PostgreSQL exigibles, sin adelantar restricciones sobre datos todavía ambiguos, sin perder compatibilidad necesaria y sin usar el constraint como mecanismo de descubrimiento de errores de calidad.
+
+```text
+BACKFILL / RECONCILIACIÓN CERRADOS
++ INVARIANTE APROBADA
++ UNIVERSO LIMPIO Y DEMOSTRADO
++ WRITERS COMPATIBLES
++ ROLLBACK PREPARADO
+= CONSTRAINT ELEGIBLE
+```
+
+#### 2. Resultado canónico
+
+Se define `POST-BACKFILL-CONSTRAINTS-011@1.0.0`. Cada ejecución física futura será `AUTH-DB-011::<package_id>` y contendrá exclusivamente constraints del candidate aprobado de ese package.
+
+#### 3. Topología y gate
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance = AUTH-DB-011::<package_id>
+```
+No existe `AUTH-DB-011::GLOBAL`. La aprobación documental no autoriza materialización física.
+
+#### 4. Precondiciones físicas
+
+La futura instancia requiere para el mismo package: R0/R1 aplicables verificados, 020/021 aplicables o verificados, `E5-GATE-008::<package_id> = PASS`, `SHELL-CI-020::<package_id> = OPENED`, backfill y reconciliación cerrados, y autorización física explícita.
+
+#### 5. Frontera con AUTH-DB-020 y 021
+
+020 aporta candidate, objetos, transition keys, migration units, consumidores, coexistencia, backfills y rollback. 021 aporta RLS/grants canónicos. 011 no amplía el package ni cambia seguridad para hacer pasar una constraint.
+
+#### 6. Handoff de backfills
+
+Todo constraint dependiente de transformación, crosswalk, deduplicación, derivación, cuarentena o corrección exige evidencia del backfill propietario. `DATA-NORM-TRANS-005` ya define lotes, checkpoints, reconciliación, idempotencia y rollback por unidad; 011 consume esos resultados cuando apliquen.
+
+#### 7. Principio post-backfill
+
+Un constraint no se usa para descubrir por primera vez filas inválidas. Antes de endurecer: `precheck exacto -> violaciones = 0 -> reconciliación = PASS -> writers compatibles -> constraint`.
+
+#### 8. Unidad de inventario
+
+Cada identidad conserva `package_id`, `candidate_id`, `transition_key`, `migration_unit_id`, schema, relation, nombre, clase, definición, columnas, referencia cuando aplique, modo de validación, writer/consumer compatibility, backfill/reconciliation refs, rollback, owner y evidencia.
+
+#### 9. Cardinalidad
+
+Por package: `constraints esperados = N`, `clasificados = N`, faltantes 0, duplicados 0, sin owner 0, sin precheck 0, sin rollback 0 y `BLOCKED` materializados 0. `N` se deriva del candidate, no del catálogo global.
+
+#### 10. Clases de constraint
+
+011 gobierna cuando correspondan: `CHECK`, `FOREIGN_KEY`, `UNIQUE`, `PRIMARY_KEY`, `NOT_NULL`, `EXCLUSION` y `DOMAIN_CONSTRAINT`. Cada clase conserva reglas propias.
+
+#### 11. CHECK
+
+Un `CHECK` se deriva de una invariante aprobada. No se crea por intuición desde valores actuales ni se eleva una regla local a global sin owner semántico.
+
+#### 12. FOREIGN KEY
+
+Una FK exige referenced key estable, cero huérfanos, semántica aprobada, `ON UPDATE`/`ON DELETE` aprobados, writers compatibles y rollback. IDs parecidos no demuestran relación canónica.
+
+#### 13. UNIQUE
+
+`UNIQUE` se aplica después de resolver duplicados y equivalencias. Coincidencia textual o normalizada no autoriza unicidad si el contrato distingue entidades legítimas.
+
+#### 14. PRIMARY KEY
+
+Una PK nueva o modificada exige identidad estable aprobada. 011 no reidentifica hechos históricos ni cambia claves por conveniencia.
+
+#### 15. NOT NULL
+
+Solo se aplica cuando `null_count = 0`, la semántica de ausencia está resuelta, writers nuevos producen valor válido, compatibilidad no requiere null y rollback está evaluado. `NULL`, vacío, desconocido, no aplica y pendiente no se colapsan.
+
+#### 16. EXCLUSION y DOMAIN
+
+Una exclusion constraint requiere regla explícita de solapamiento y operadores compatibles. Un domain constraint solo aplica si la misma invariante rige realmente para todos los consumidores del tipo.
+
+#### 17. Estados de adopción
+
+Estados cerrados: `READY_TO_CREATE`, `READY_NOT_VALID`, `READY_TO_VALIDATE`, `READY_TO_SET_NOT_NULL`, `READY_TO_ATTACH_UNIQUE`, `COMPATIBILITY_REQUIRED`, `BLOCKED_BACKFILL`, `BLOCKED_RECONCILIATION`, `BLOCKED_WRITER`, `BLOCKED_DUPLICATES`, `BLOCKED_ORPHANS`, `BLOCKED_SEMANTICS`, `BLOCKED_DRIFT`, `NOT_APPLICABLE`.
+
+#### 18. Candidate inmutable
+
+El candidate fija commit, migrations, objetos, constraint manifest, versiones de backfill, digests de reconciliación, writers, consumers, estado RLS/grants y rollback. Un cambio material crea otro candidate.
+
+#### 19. Baseline remoto
+
+El corte read-only actual de `vento-os-dev` en schemas Vento observados reporta 520 CHECK (508 validados, 12 `NOT VALID`), 726 FK (725 validadas, 1 `NOT VALID`), 261 PK y 91 UNIQUE. Es evidencia AS-IS, no el universo automático de 011.
+
+#### 20. Constraints NOT VALID observados
+
+Hay trece constraints no validados observados: doce CHECK y una FK, hoy ubicados en `public`. Solo entran a una instancia si su relation/transition key pertenece al package y su semántica coincide con el contrato aprobado.
+
+#### 21. NOT VALID y VALIDATE CONSTRAINT
+
+Cuando PostgreSQL lo permita para la clase aplicable, `NOT VALID` puede separar enforcement de nuevas escrituras de validación histórica. `VALIDATE CONSTRAINT` solo se ejecuta después de precheck y reconciliación con cero violaciones; no se usa como exploración en producción.
+
+#### 22. NOT NULL y UNIQUE transicionales
+
+`NOT NULL` no comparte exactamente el mismo ciclo de `NOT VALID`; el package define estrategia apropiada de bajo bloqueo. Para UNIQUE puede usarse una estrategia de índice previo/attachment cuando corresponda, preservando identidad, concurrencia, duplicate precheck y rollback.
+
+#### 23. Orden de endurecimiento
+
+```text
+1 congelar candidate
+2 capturar baseline
+3 ejecutar prechecks
+4 cerrar backfill
+5 cerrar reconciliación
+6 verificar writers/consumers
+7 materializar forma transicional segura
+8 validar histórico
+9 elevar enforcement final
+10 medir
+11 recapturar drift
+12 cerrar evidencia
+```
+
+#### 24. Precheck y reconciliación
+
+Cada constraint tiene precheck determinista equivalente a su predicado, con conteo, claves, digest y corte. Reconciliación compara source expected, target actual, quarantine, rejected, unresolved y delta writes. La tolerancia final es cero violaciones no aprobadas.
+
+#### 25. Writers y consumers
+
+Todos los writers activos del package deben producir datos compatibles: RPC, triggers, funciones, jobs, Edge Functions, imports y escrituras directas aprobadas. Los consumers de lectura deben tolerar el estado endurecido.
+
+#### 26. Quarantine, duplicados y huérfanos
+
+Una fila en cuarentena no se fuerza artificialmente. UNIQUE exige cero duplicados reales según la identidad aprobada. FK exige cero huérfanos; no se crean padres sintéticos solo para hacer pasar el constraint.
+
+#### 27. Historia y semántica de NULL
+
+Los hechos históricos conservan su significado. Antes de presence constraints se distinguen `NULL`, `EMPTY`, `UNKNOWN`, `NOT_APPLICABLE`, `NOT_RECEIVED` y `PENDING`; solo estados semánticamente equivalentes convergen.
+
+#### 28. Identidad, búsqueda y UOM
+
+Nombre, email, slug o forma normalizada no son identidad automática. Representaciones de búsqueda no justifican merge/UNIQUE sin contrato. En UOM se preservan cantidad, unidad, multiplicador, contexto y fuente.
+
+#### 29. Territorio, estados y texto
+
+Constraints de sede/área preservan jerarquía e historia aprobadas. CHECK de estados consume catálogo/versionado estable. Checks textuales distinguen identificador técnico, valor mostrado, texto libre y valor externo; no hay regex global por tipo `text`.
+
+#### 30. Acciones FK y deferrability
+
+`ON DELETE`/`ON UPDATE` se derivan del ciclo de vida, no de facilidad de migración. `DEFERRABLE`/`INITIALLY DEFERRED` solo se usan cuando una transacción legítima lo requiere; el baseline consultado no mostró constraints deferrable en las clases agregadas observadas.
+
+#### 31. RLS, triggers y generated values
+
+RLS controla acceso y constraints integridad. Un trigger complementa solo lógica no expresable declarativamente y conserva owner propio. Columnas derivadas deben estar estabilizadas; cambiar algoritmo/version invalida candidate.
+
+#### 32. Concurrencia, locks y timeouts
+
+Si continúan escrituras durante backfill, debe existir high-watermark/delta o equivalente y reconciliarse antes del enforcement final. Cada DDL declara impacto de locks, ventana y timeouts. Un timeout exige determinar outcome antes de reintentar.
+
+#### 33. Idempotencia y drift
+
+La migración distingue constraint ausente, presente exacta, presente drifted y parcialmente validada. Drift compara nombre, tipo, definición, columnas, referencia, acciones, validación, deferrability, owner y schema. `BLOCKING_DRIFT` detiene.
+
+#### 34. Migraciones y compatibilidad
+
+No se reescriben migraciones aplicadas; se usa forward migration. Se aplica expand-before-contract. Una forma menos restrictiva solo permanece con consumer legítimo, owner, deadline, telemetría, salida y rollback.
+
+#### 35. Rollback
+
+Rollback es específico por constraint y no siempre significa `DROP CONSTRAINT`. Debe evaluar datos creados después del endurecimiento y nunca borrar evidencia de prechecks, violaciones, locks o drift.
+
+#### 36. Validación por ambiente
+
+Local cubre clean rebuild y upgrade desde versión soportada con fixtures válidos/inválidos. Staging usa el mismo candidate y mide locks/tiempos/rollback. Producción promueve el mismo candidate y recaptura drift antes de actuar.
+
+#### 37. Pruebas por clase
+
+CHECK: casos válidos/inválidos y null. FK: parent válido/ausente, ON DELETE/UPDATE y huérfanos. UNIQUE: duplicado real y duplicado aparente permitido. NOT NULL: null_count cero y escrituras null rechazadas. Todas incluyen writers reales y upgrade.
+
+#### 38. Performance y observabilidad
+
+Se mide costo de validación y efecto en escrituras/consultas. Si hace falta índice, el finding se entrega al owner aplicable; no se debilita integridad. Evidencia registra package/candidate, identity, digest, violaciones, duración, locks, writer failures, rollback y drift.
+
+#### 39. Evidence bundle
+
+Bundle mínimo: manifiesto, baseline, backfill refs, reconciliation refs, prechecks, cero violaciones, writers/consumers, DDL candidate, validación local, staging, performance, rollback, drift final y digest.
+
+#### 40. Fronteras
+
+El baseline remoto no autoriza un sweep. VITAL queda fuera. Schemas administrados por Supabase/PostgreSQL no se alteran por inferencia. 011 no absorbe Storage (022), Realtime (023), Edge/cron (024), índices/retención (025) ni tipos (026).
+
+#### 41. Supabase vigente
+
+La revisión del changelog vigente no muestra un breaking change de agosto de 2026 que cambie la semántica PostgreSQL de constraints usada aquí. La deprecación reciente de version pinning de extensiones no modifica 011.
+
+#### 42. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+```text
+Requisitos creados: 0
+Requisitos modificados: 0
+Requisitos diferidos: 0
+Requisitos obsoletos: 0
+```
+La tarea materializa controles de integridad ya cubiertos por requisitos canónicos existentes.
+
+#### 43. Cobertura de prueba vigente reutilizada
+
+Esta sección es trazabilidad y no modifica 04A. Se reutiliza especialmente `TREQ-SUPABASE-002`, `TREQ-SUPABASE-003`, `TREQ-SUPABASE-008`, `TREQ-DATA-001` y `TREQ-DATA-003`, que ya protegen atomicidad/reconciliación, dependencia/rollback, constraints/drift, identidad estable e integridad/backfills.
+
+#### 44. Evidencia de validación
+
+| Clase     | Estado       | Evidencia                                                                                                                                                                                                             |
+| --------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | La batería real del checkout se ejecutará después de insertar y normalizar la tarea.                                                                                                                                  |
+| LOCAL     | PASS         | Validación estructural del artefacto: una tarea, metadata obligatoria, secciones requeridas, cinco clases de evidencia, continuidad terminal, cero placeholders y cero TREQ dentro de la sección de cero cambios.     |
+| REMOTA    | PASS         | Se verificaron `main`, merge de 021, active sequence 021→011→022, topología R2, owner R2, backfill plan, 04A aplicable, package.json, baseline read-only de constraints y changelog/documentación actual de Supabase. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron writers, consumers ni pruebas de negocio.                                                                                                                                                            |
+| FÍSICA    | NOT_EXECUTED | No se creó, validó, alteró ni eliminó ningún constraint ni dato.                                                                                                                                                      |
+
+#### 45. Criterios de aceptación
+
+La tarea queda documentalmente completa si conserva topología/gate, candidate por package, exige backfill/reconciliación y cero violaciones, gobierna todas las clases aplicables, writers/consumers, quarantine, identidad, null, FK actions, locks, idempotencia, drift, forward migrations, compatibilidad, rollback, clean rebuild/upgrade, pruebas por clase, performance, evidence bundle, fronteras 022..026 y cero cambios 04A.
+
+#### 46. Límites
+
+No ejecuta SQL; no crea migraciones, constraints, backfills, correcciones, merges, crosswalks, RLS/grants, schemas, Auth, Storage, Realtime, Edge/cron, índices ajenos, tipos ni cambios VITAL; no modifica 04A ni autoriza implementación física.
+
+#### 47. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-022 — Implementar gobierno y políticas de Storage`
+
+
 ### [ ] AUTH-DB-022 — Implementar gobierno y políticas de Storage
 ### [ ] AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
 ### [ ] AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
