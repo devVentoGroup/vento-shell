@@ -1,10 +1,52 @@
 {
   "instance_id": "SHELL-NORM-004::GLOBAL",
   "task_id": "SHELL-NORM-004",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-NORM-004::GLOBAL como catalogos puros, deterministas y versionados internos de @vento/data-normalization para VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0 y VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0, sin reinterpretar las decisiones canonicas de E3.",
+    "Crear packages/data-normalization/src/normalization.catalogs.ts con exactamente 18 conectores, 3 familias descriptivas, 3 posiciones, 5 resultados de conector, 4 familias de excepcion, 23 atributos de entrada, 4 scopes, 3 matchers, 4 modos de aplicacion, 7 resultados, 5 tipos de autoridad, 3 estados y 28 formas normativas iniciales distribuidas 3/10/9/6.",
+    "Materializar las 28 formas como definiciones normativas y exigir binding explicito para convertir una forma en OfficialTextExceptionEntry ejecutable; no inventar authority_owner, evidence_reference, scopes, aliases, vigencia, fuente o autoridad empresarial ausentes del contrato.",
+    "Materializar 34 casos no activables distribuidos 14/11/9 y conservarlos fuera de las 28 formas normativas; coincidencia, caja, frecuencia o similitud no los promueven.",
+    "Modificar packages/data-normalization/src/normalization.rules.ts unicamente con un hook opcional review_input en CommercialCapitalizationCatalogResolver y su evaluacion fail-closed previa a tokenizacion, conservando las cinco operaciones, los 23 literales y compatibilidad de SHELL-NORM-003.",
+    "Crear packages/data-normalization/scripts/validate-normalization-catalogs.mjs para validar el contrato propietario mediante parseTaskBlocks, ejecutar primero compatibilidad 002/003, compilar con el TypeScript local sin wrappers .cmd y validar inventarios y comportamiento mediante fixture.",
+    "Reemplazar completamente packages/data-normalization/README.md para documentar SHELL-NORM-004, preservando los marcadores historicos requeridos por los validadores de 002/003 y reservando SHELL-NORM-005..009.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance de esta instancia.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-NORM-004__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar packages/data-normalization/src/normalization.types.ts, packages/data-normalization/package.json, package-lock.json, package.json raiz, version npm, exports, dependencias, consumidores, diccionario SHELL-NORM-005, busqueda SHELL-NORM-006, preview, auditoria runtime, persistencia, Supabase, DDL, DML, RPC, RLS, migraciones, backfills, constraints, indices, triggers, datos, 04A/TREQ ni SHELL-NORM-005..009."
+  ],
+  "validation_commands": [
+    "node packages/data-normalization/scripts/validate-normalization-catalogs.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext packages/data-normalization/src/normalization.types.ts packages/data-normalization/src/normalization.rules.ts packages/data-normalization/src/normalization.catalogs.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T09:40:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "abacc131fb8dd2b18dbd59ef04915e516f6044d4737422b55e45f1eb5dda64ef"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/data-normalization/src/normalization.catalogs.ts created with two exact versioned catalog identities",
+    "MATERIALIZATION connectors=18 connector_families=3 connector_positions=3 connector_results=5",
+    "MATERIALIZATION exception_families=4 exception_fields=23 scopes=4 match_modes=3 application_modes=4 exception_results=7 authority_types=5 statuses=3",
+    "MATERIALIZATION normative_forms=28 distribution=3/10/9/6 emission_or_validation=22 legal_context_protections=6",
+    "MATERIALIZATION non_activable_candidate_cases=34 distribution=14/11/9 and promoted_candidates=0",
+    "MATERIALIZATION explicit binding required for executable exception entries; invented authority/evidence bindings=0",
+    "MATERIALIZATION normalization.rules.ts extended only with optional review_input fail-closed hook; SHELL-NORM-003 vocabulary preserved",
+    "MATERIALIZATION packages/data-normalization/scripts/validate-normalization-catalogs.mjs and README update completed",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 abacc131fb8dd2b18dbd59ef04915e516f6044d4737422b55e45f1eb5dda64ef",
+    "VALIDATION normalization catalogs validator PASS; connectors=18 connector_families=3 connector_positions=3 connector_results=5 exception_families=4 exception_fields=23 scopes=4 match_modes=3 application_modes=4 exception_results=7 authority_types=5 statuses=3 normative_forms=28 candidates=34 behavior=PASS previous_compatibility=PASS",
+    "VALIDATION TypeScript strict compile PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-NORM-004::GLOBAL VERIFIED"
+  ]
 }

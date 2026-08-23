@@ -123,6 +123,7 @@ export interface CommercialCapitalizationTokenCandidate {
 export interface CommercialCapitalizationCatalogResolver {
   readonly connector_catalog_version_ref: string;
   readonly exception_catalog_version_ref: string;
+  readonly review_input?: (value: string) => string | null;
   readonly official_phrase_candidates: (
     tokens: readonly string[],
     start_index: number,
@@ -641,6 +642,9 @@ export function applyCommercialCapitalization(
   if (versionRefs.some((value) => !nonEmpty(value))) {
     return block('capitalization, segmentation, case, connector and exception versions are required');
   }
+
+  const catalogReview = catalogs.review_input?.(input) ?? null;
+  if (catalogReview) return block(catalogReview, true);
 
   let segments: readonly CommercialCapitalizationSegment[];
   try {
