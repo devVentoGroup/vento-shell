@@ -1,10 +1,49 @@
 {
   "instance_id": "SHELL-NORM-008::GLOBAL",
   "task_id": "SHELL-NORM-008",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-NORM-008::GLOBAL como metadata logica interna, pura y determinista de @vento/data-normalization para VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0, sin reinterpretar DATA-NORM-ARC-009 ni adquirir autoridad de persistencia.",
+    "Crear packages/data-normalization/src/normalization.audit.ts con exactamente 6 familias de registro logico, 13 atributos de regla/version, 11 dependencias posibles de resolved_version_set, 8 estados, 7 atributos de activacion, 5 modos de compatibilidad, 11 atributos de procedencia, 12 eventos, 30 atributos de auditoria, 10 resultados, 5 clases de retencion, 3 niveles de reproducibilidad, 7 tiempos semanticos, 9 componentes de idempotencia, 6 clases idempotentes, 4 expectativas de concurrencia y 9 atributos de replay.",
+    "Implementar exclusivamente constructores y validadores logicos puros para resolved_version_set/version_set_digest, identidad y lifecycle de regla, procedencia, audit envelopes, claves idempotentes, conflicto IDEMPOTENCY_PAYLOAD_CONFLICT, expectativas de concurrencia, replay metadata y proyeccion no vinculante desde SHELL-NORM-007.",
+    "Exigir que actor, autorizacion, tiempos, identidades de evento, estado persistido y confirmacion de efectos sean entradas explicitas de la capa propietaria; el package no genera reloj, UUID aleatorio, autorizacion ni afirmaciones de commit.",
+    "Consumir por version los contratos ya verificados de SHELL-NORM-002..007 sin modificar normalization.types.ts, normalization.rules.ts, normalization.catalogs.ts, normalization.dictionary.ts, normalization.search.ts ni normalization.preview.ts.",
+    "Crear packages/data-normalization/scripts/validate-normalization-audit.mjs para validar el SHA del contrato propietario, topologia GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, compatibilidad encadenada con SHELL-NORM-002..007, compilacion TypeScript, inventarios, fronteras de autoridad y comportamiento mediante fixtures aislados.",
+    "Reemplazar completamente packages/data-normalization/README.md para documentar SHELL-NORM-008 y preservar los marcadores historicos requeridos por los validadores de SHELL-NORM-002..007.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance de esta instancia.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-NORM-008__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar package manifests, lockfile, version npm, exports, dependencias, consumidores, fuentes o validadores anteriores, SHELL-NORM-009, persistencia de auditoria, API, RPC, SQL, tablas, DDL, DML, RLS, migraciones, backfills, constraints, indices, triggers, datos, Supabase, despliegues ni 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/data-normalization/scripts/validate-normalization-audit.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext packages/data-normalization/src/normalization.types.ts packages/data-normalization/src/normalization.rules.ts packages/data-normalization/src/normalization.catalogs.ts packages/data-normalization/src/normalization.dictionary.ts packages/data-normalization/src/normalization.search.ts packages/data-normalization/src/normalization.preview.ts packages/data-normalization/src/normalization.audit.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T14:17:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "SIGAMOS IMPLEMENTANDO",
+    "source_contract_sha256": "6d20fca811de725d18a4df5c952b37f90557ba7d9ebf7365bb50becd5c827d2e"
+  },
+  "status": "VERIFIED",
+  "evidence": [
+    "MATERIALIZATION packages/data-normalization/src/normalization.audit.ts created as pure deterministic internal metadata contract",
+    "MATERIALIZATION policy VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0 inventories families=6 rule_fields=13 version_dependencies=11 statuses=8 activation_fields=7 compatibility_modes=5 provenance_fields=11 events=12 audit_fields=30 outcomes=10 retention=5 reproducibility=3 semantic_times=7 idempotency_components=9 idempotent_classes=6 concurrency=4 replay_fields=9",
+    "MATERIALIZATION explicit owner context required for actor authorization times event identity persisted state and effect confirmation; implicit clock=0 random_identity=0 persistence_authority=0 authorization_authority=0",
+    "MATERIALIZATION resolved_version_set version_set_digest lifecycle provenance audit envelopes idempotency concurrency replay and non-binding preview projection completed",
+    "MATERIALIZATION packages/data-normalization/scripts/validate-normalization-audit.mjs and README update completed without public exports consumers persistence or Supabase changes",
+    "SOURCE CONTRACT SHA256 6d20fca811de725d18a4df5c952b37f90557ba7d9ebf7365bb50becd5c827d2e",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION normalization audit metadata validator PASS; families=6 rule_fields=13 version_dependencies=11 statuses=8 activation_fields=7 compatibility_modes=5 provenance_fields=11 events=12 audit_fields=30 outcomes=10 retention=5 reproducibility=3 semantic_times=7 idempotency_components=9 idempotent_classes=6 concurrency=4 replay_fields=9 behavior=PASS previous_compatibility=PASS",
+    "VALIDATION TypeScript strict compile PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-NORM-008::GLOBAL VERIFIED"
+  ]
 }
