@@ -1,10 +1,45 @@
 {
   "instance_id": "SHELL-DB-001::GLOBAL",
   "task_id": "SHELL-DB-001",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/supabase/package.json para materializar la raiz workspace privada @vento/supabase en estado PRE_E5_FOUNDATION, sin version npm, exports, dependencias runtime, publicacion, registry, tags ni releases.",
+    "Crear packages/supabase/README.md para documentar identidad, cuatro familias reservadas de responsabilidad, fronteras de seguridad y prohibiciones del package sin materializar factories, tipos generados, wrappers RPC ni taxonomia de errores.",
+    "Actualizar package-lock.json exclusivamente como consecuencia determinista de registrar packages/supabase dentro del workspace packages/* ya existente; no modificar package.json raiz.",
+    "Modificar exclusivamente docs/plan-canonico/modular/implementation-instances/SHELL-DB-001__GLOBAL.json para conservar autorizacion, lifecycle y evidencia de esta instancia.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "No modificar fuentes TypeScript, exports, API publica, dependencias, consumidores, helpers legacy, SHELL-DB-002..005, SQL, DDL, DML, migraciones, RLS, RPC, grants, tablas, funciones, triggers, indices, constraints, datos, secretos, configuracion remota, Supabase ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node -e \"const fs=require('fs');const p=JSON.parse(fs.readFileSync('packages/supabase/package.json','utf8'));const lock=JSON.parse(fs.readFileSync('package-lock.json','utf8'));const files=fs.readdirSync('packages/supabase').sort();const entry=lock.packages?.['packages/supabase'];const ok=p.name==='@vento/supabase'&&p.private===true&&p.type==='module'&&!('version' in p)&&!('exports' in p)&&!('dependencies' in p)&&JSON.stringify(files)===JSON.stringify(['README.md','package.json'])&&entry?.name==='@vento/supabase';if(!ok)throw new Error('SHELL-DB-001 physical scope mismatch')\"",
+    "npm ls --workspace @vento/supabase --depth=0",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T17:00:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Haaaas todos los pasooooos y solo para si hay algun error para resolverlo y vuelves a reanudar despues de corregirlo",
+    "source_contract_sha256": "126d75bc5b88e789b491b353e9c617e99e89b60859761eb2cf5123a31dac741a"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/supabase root created as private PRE_E5_FOUNDATION workspace without version exports dependencies or runtime API",
+    "MATERIALIZATION packages/supabase/README.md documents exactly four reserved responsibility families and security boundaries",
+    "MATERIALIZATION package-lock.json updated only for packages/supabase workspace registration",
+    "MATERIALIZATION consumers legacy helpers SQL migrations RLS RPC data secrets remote configuration and Supabase unchanged",
+    "SOURCE CONTRACT SHA256 126d75bc5b88e789b491b353e9c617e99e89b60859761eb2cf5123a31dac741a",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION npm ci PASS; workspace dependencies installed from lockfile",
+    "VALIDATION authorized package structure and package-lock workspace registration PASS",
+    "VALIDATION npm ls --workspace @vento/supabase --depth=0 PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "VALIDATION environment PATH miss recovered with the same authorized Node validation through the verified FNM executable",
+    "RESULT SHELL-DB-001::GLOBAL VERIFIED"
+  ]
 }
