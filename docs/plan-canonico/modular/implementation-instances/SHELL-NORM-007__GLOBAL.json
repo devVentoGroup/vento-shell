@@ -1,10 +1,48 @@
 {
   "instance_id": "SHELL-NORM-007::GLOBAL",
   "task_id": "SHELL-NORM-007",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/data-normalization/src/normalization.preview.ts como superficie TypeScript interna, pura y determinista de SHELL-NORM-007::GLOBAL para materializar la consulta no mutante NORMALIZATION_EVALUATION_QUERY y la funcion PREVIEW_AND_GUIDANCE, reutilizando sin modificar los contratos verificados de SHELL-NORM-002..006.",
+    "Materializar exactamente las cuatro funciones de autoridad, cuatro capas logicas, 21 atributos del descriptor de colocacion, diez etapas del flujo transaccional y seis dimensiones de divergencia aprobadas; conservar entrada observada, propuesta o valor preservado, resultado cerrado, explicacion, derivaciones, coincidencias autorizadas, scope, fuente y conjunto efectivo de versiones sin latest implicito.",
+    "Implementar construccion de preview mediante un evaluador semantico autoritativo inyectado y autorizacion explicita; distinguir sin colapsar NO_CHANGE, PROPOSED_CHANGE, BLOCKED_POLICY, BLOCKED_CONFLICT, REVIEW_REQUIRED, ESCALATED_STRUCTURAL y TECHNICAL_FAILURE; marcar toda salida como NON_BINDING y sin autoridad de commit, unicidad, identidad, reserva, lock, auditoria raiz o escritura.",
+    "Implementar comparacion pura entre el corte observado del preview y un contexto posterior para reportar las seis dimensiones VALUE, SCOPE, POLICY, VERSION_SET, UNIQUENESS y RELATIONSHIPS, exigiendo reevaluacion ante cualquier divergencia sin ejecutar ni simular persistencia.",
+    "Crear packages/data-normalization/scripts/validate-normalization-preview.mjs para verificar el SHA del contrato propietario, topologia GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, compatibilidad encadenada con SHELL-NORM-002..006, inventarios exactos, compilacion TypeScript, pureza, fallo cerrado, no vinculacion, reproducibilidad y divergencia mediante fixtures aislados.",
+    "Actualizar packages/data-normalization/README.md para documentar la materializacion de SHELL-NORM-007, sus inventarios, fronteras, validacion y handoffs reservados a SHELL-NORM-008..009, preservando todos los marcadores historicos requeridos por los validadores anteriores.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-NORM-007__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/data-normalization/package.json, version npm, exports publicos, dependencias, consumidores, fuentes propietarias verificadas de SHELL-NORM-002..006, validadores propietarios anteriores, metadata o auditoria SHELL-NORM-008, corpus certificado SHELL-NORM-009, endpoints, RPC, persistencia, Supabase, DDL, DML, RLS, migraciones, backfills, constraints, indices, triggers, datos, secretos, configuracion remota, despliegues ni 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/data-normalization/scripts/validate-normalization-preview.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext packages/data-normalization/src/normalization.types.ts packages/data-normalization/src/normalization.rules.ts packages/data-normalization/src/normalization.catalogs.ts packages/data-normalization/src/normalization.dictionary.ts packages/data-normalization/src/normalization.search.ts packages/data-normalization/src/normalization.preview.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T13:21:28-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO. Se autoriza continuar e implementar completamente SHELL-NORM-007::GLOBAL con el alcance y las validaciones enumerados; detenerse solo ante un error real y no ampliar el alcance por inferencia.",
+    "source_contract_sha256": "3a05097677cbf3e0f36700a7bbc0fb2e6e3a06e955296bbe9135db06b1bef9a0"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/data-normalization/src/normalization.preview.ts created as pure deterministic internal non-binding preview contract",
+    "MATERIALIZATION NORMALIZATION_EVALUATION_QUERY and PREVIEW_AND_GUIDANCE with authority_functions=4 layers=4 descriptor_fields=21 transaction_stages=10 divergence_dimensions=6 results=7",
+    "MATERIALIZATION authoritative semantic evaluator and authorization are explicit injected dependencies; implicit latest=0 local semantic fallback=0",
+    "MATERIALIZATION binding=NON_BINDING commit_authority=0 mutation_performed=0 state_reserved=0 uniqueness_certified=0 identity_decided=0 transactional_revalidation_required=1",
+    "MATERIALIZATION packages/data-normalization/scripts/validate-normalization-preview.mjs created and README updated without public exports, consumers, persistence or Supabase changes",
+    "SOURCE CONTRACT SHA256 3a05097677cbf3e0f36700a7bbc0fb2e6e3a06e955296bbe9135db06b1bef9a0",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION normalization preview validator PASS; authority_functions=4 layers=4 descriptor_fields=21 transaction_stages=10 divergence_dimensions=6 results=7 behavior=PASS previous_compatibility=PASS",
+    "VALIDATION TypeScript strict compile PASS",
+    "VALIDATION quality lint ratchet PASS; touched_files_clean=6",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-NORM-007::GLOBAL VERIFIED"
+  ]
 }
