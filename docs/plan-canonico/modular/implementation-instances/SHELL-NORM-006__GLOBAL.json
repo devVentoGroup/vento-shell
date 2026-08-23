@@ -1,10 +1,47 @@
 {
   "instance_id": "SHELL-NORM-006::GLOBAL",
   "task_id": "SHELL-NORM-006",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/data-normalization/src/normalization.search.ts como superficie TypeScript interna, pura y determinista de SHELL-NORM-006::GLOBAL para materializar VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0, reutilizando sin modificar los contratos verificados de SHELL-NORM-002..005.",
+    "Materializar exactamente las 7 representaciones derivadas, 7 clases de token o frontera, 15 atributos de alias, 6 perfiles cerrados, 9 modos y niveles de coincidencia, pipeline de 15 pasos, ranking determinista, 13 atributos de respuesta, matriz de 14 clases semanticas y 11 componentes estructurados; preservar valor mostrado, tildes, n con virgulilla, signos, fronteras, scope, version, privacidad e identidad separada.",
+    "Implementar derivacion, matching y ranking exclusivamente mediante dependencias explicitas y versionadas para NFC, casefold, tokenizacion, aliases y autorizacion; transliteracion y similitud permanecen deshabilitadas y fallan cerrado; no se permite matching por subcadena, stopwords implicitas, seleccion automatica, identidad, unicidad, correccion, fusion ni efectos de escritura.",
+    "Crear packages/data-normalization/scripts/validate-normalization-search.mjs para verificar el SHA del contrato propietario, topologia GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, compatibilidad encadenada con SHELL-NORM-002..005, inventarios exactos, compilacion TypeScript, pureza, fronteras y comportamiento normativo mediante fixtures aislados.",
+    "Actualizar packages/data-normalization/README.md para documentar la materializacion de SHELL-NORM-006, sus inventarios, fronteras, validacion y handoffs reservados a SHELL-NORM-007..009, preservando todos los marcadores historicos requeridos por los validadores anteriores.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-NORM-006__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/data-normalization/package.json, version npm, exports publicos, dependencias, consumidores, fuentes propietarias verificadas de SHELL-NORM-002..005, validadores propietarios anteriores, preview SHELL-NORM-007, metadata o auditoria SHELL-NORM-008, corpus certificado SHELL-NORM-009, persistencia, Supabase, DDL, DML, RPC, RLS, migraciones, backfills, constraints, indices, triggers, datos, secretos, configuracion remota, despliegues ni 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/data-normalization/scripts/validate-normalization-search.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext packages/data-normalization/src/normalization.types.ts packages/data-normalization/src/normalization.rules.ts packages/data-normalization/src/normalization.catalogs.ts packages/data-normalization/src/normalization.dictionary.ts packages/data-normalization/src/normalization.search.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T12:48:54-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "AUTORIZO EJECUCION ASISTIDA DEL PASO 1. Se aprueba exclusivamente SHELL-NORM-006::GLOBAL en vento-group-sas/vento-shell con los cambios y validaciones enumerados; no se autoriza ninguna ampliacion inferida.",
+    "source_contract_sha256": "64d18e5a35e8a91dbae23cd0f3cef6928a684d8ba2c9e6e37101f1e7959a5a14"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/data-normalization/src/normalization.search.ts created as pure deterministic internal search and comparison policy",
+    "MATERIALIZATION policy VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0 with inventories representations=7 token_classes=7 alias_fields=15 profiles=6 modes=9 pipeline=15 response_fields=13 semantic_classes=14 structured_components=11",
+    "MATERIALIZATION versioned adapters and resolvers required for NFC, es-CO case mapping, tokenization, accent folding, aliases and authorization; implicit runtime dependencies=0",
+    "MATERIALIZATION transliteration=DISABLED similarity=DISABLED substring_matching=0 automatic_identity_or_merge=0 write_effects=0",
+    "MATERIALIZATION packages/data-normalization/scripts/validate-normalization-search.mjs created and README updated without public exports, consumers, persistence or Supabase changes",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 64d18e5a35e8a91dbae23cd0f3cef6928a684d8ba2c9e6e37101f1e7959a5a14",
+    "VALIDATION normalization search validator PASS; representations=7 token_classes=7 alias_fields=15 profiles=6 modes=9 pipeline=15 response_fields=13 semantic_classes=14 structured_components=11 behavior=PASS previous_compatibility=PASS",
+    "VALIDATION TypeScript strict compile PASS",
+    "VALIDATION quality lint ratchet PASS; touched_files_clean=6",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-NORM-006::GLOBAL VERIFIED"
+  ]
 }

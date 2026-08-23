@@ -414,6 +414,61 @@ El validador cubre como minimo:
 7. bloquea dependencias runtime implicitas y heuristicas de busqueda;
 8. verifica que archivos y contratos propietarios anteriores permanezcan sin cambios.
 
+## Materializacion de SHELL-NORM-006
+
+`SHELL-NORM-006::GLOBAL` materializa la politica interna, pura y determinista de busqueda y comparacion en:
+
+```text
+packages/data-normalization/src/normalization.search.ts
+```
+
+La identidad exacta es:
+
+```text
+VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0
+```
+
+El runtime recibe adaptadores y resolvers versionados de NFC, case mapping `es-CO`, tokenizacion, plegado acotado de tildes, aliases y autorizacion. No selecciona locale, catalogos, permisos, filesystem, red, reloj, entorno ni persistencia de forma implicita.
+
+Inventario cerrado:
+
+```text
+representaciones derivadas: 7
+clases de token o frontera: 7
+atributos de alias: 15
+perfiles cerrados: 6
+modos de coincidencia: 9
+pipeline de busqueda: 15
+atributos de respuesta: 13
+clases semanticas: 14
+componentes estructurados: 11
+transliteracion: DESHABILITADA
+similitud: DESHABILITADA
+```
+
+`deriveSearchRepresentations` produce claves y tokens no autoritativos despues de validar finalidad, scope, clase, perfil, locale, versiones y autorizacion. La consulta vacia, una clase bloqueada, una version incompleta, un adapter inconsistente o una autorizacion denegada fallan cerrado.
+
+`evaluateSearchCandidates` aplica la precedencia cerrada de nueve modos y ordena deterministamente por nivel, especificidad de scope, cobertura, prioridad empresarial aprobada, clave estable e identificador inmutable. El valor mostrado siempre procede del candidato autorizado; las claves derivadas no sustituyen el valor empresarial.
+
+La tolerancia `es-CO` pliega solo vocales autorizadas y preserva `ñ`. Signos, guiones, apostrofos y fronteras permanecen disponibles para comparacion. No hay matching por subcadena dentro de tokens, stopwords implicitas, aprendizaje de aliases, seleccion automatica, identidad, unicidad, correccion, fusion ni efectos de escritura.
+
+La superficie sigue siendo interna: no agrega version npm, exports publicos, dependencias o consumidores. No crea SQL, RPC, columnas, indices, constraints, migraciones, backfills ni cambios Supabase.
+
+## Validacion de SHELL-NORM-006
+
+`scripts/validate-normalization-search.mjs`:
+
+1. verifica el SHA del contrato propietario de `SHELL-NORM-006` mediante `parseTaskBlocks`;
+2. comprueba `GLOBAL_ENABLE_ONCE` y `PRE_E5_FOUNDATION`;
+3. ejecuta primero el validador verificado de 005, que encadena compatibilidad 004/003/002;
+4. compila tipos, reglas, catalogos, diccionario y busqueda con el TypeScript local;
+5. valida los inventarios cerrados 7/7/15/6/9/15/13/14/11;
+6. prueba tildes con `ñ` preservada, signos, fronteras, ausencia de union de palabras, prefijo del ultimo token, ranking estable, privacidad y autorizacion fail-closed;
+7. bloquea dependencias runtime implicitas, heuristicas fuzzy, `unaccent`, Supabase y efectos de escritura;
+8. verifica que las fuentes y validadores propietarios anteriores permanezcan sin cambios.
+
+Source contract SHA-256 `SHELL-NORM-006`: `64d18e5a35e8a91dbae23cd0f3cef6928a684d8ba2c9e6e37101f1e7959a5a14`.
+
 ## Estado de esta fundacion
 
 ```text
@@ -441,7 +496,18 @@ resultados: 7
 entradas ejecutables globales con scope/evidencia/aprobacion inventados: 0
 version npm: NO DECLARADA
 exports publicos: NO MATERIALIZADOS
-busqueda: NO MATERIALIZADA
+busqueda SHELL-NORM-006: MATERIALIZADA
+representaciones derivadas de busqueda: 7
+clases de token o frontera de busqueda: 7
+atributos de alias de busqueda: 15
+perfiles cerrados de busqueda: 6
+modos de coincidencia: 9
+pasos de pipeline: 15
+atributos de respuesta: 13
+clases semanticas gobernadas: 14
+componentes estructurados: 11
+transliteracion: DESHABILITADA
+similitud: DESHABILITADA
 preview: NO MATERIALIZADO
 metadata runtime / auditoria: NO MATERIALIZADA
 consumidores migrados: 0
@@ -468,3 +534,5 @@ Source contract SHA-256 `SHELL-NORM-003`: `ce86eef6da718064b58f9b977af644d9ce003
 Source contract SHA-256 `SHELL-NORM-004`: `abacc131fb8dd2b18dbd59ef04915e516f6044d4737422b55e45f1eb5dda64ef`.
 
 Source contract SHA-256 `SHELL-NORM-005`: `6a9e98517f962da17c5b8877aa8f358f746e60a397ff621f8dd559bde5ae8837`.
+
+Source contract SHA-256 `SHELL-NORM-006`: `64d18e5a35e8a91dbae23cd0f3cef6928a684d8ba2c9e6e37101f1e7959a5a14`.
