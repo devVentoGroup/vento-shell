@@ -1,10 +1,65 @@
 {
   "instance_id": "SHELL-CON-021::GLOBAL",
   "task_id": "SHELL-CON-021",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-CON-021::GLOBAL como contrato estatico interno de linea de venta canonica dentro de packages/contracts/integrations, preservando inmutables las materializaciones verificadas de SHELL-CON-017::GLOBAL a SHELL-CON-020::GLOBAL.",
+    "Crear packages/contracts/integrations/scripts/generate-canonical-sale-line-contract.mjs como generador propietario de SHELL-CON-021 y packages/contracts/integrations/generated/canonical-sale-line.contract.ts, sin modificar los generadores existentes de SHELL-CON-017..020.",
+    "Crear packages/contracts/integrations/scripts/validate-canonical-sale-line-contract.mjs para validar frescura, dependencia con CanonicalSaleId, forma exacta de CanonicalSaleLine, 20 campos de nivel superior, 7 componentes monetarios, fronteras de identidad, mapping, estado, agregados, seguridad, package, indice interno y READMEs.",
+    "Materializar CanonicalSaleLineId como identidad estable, opaca y no secreta sin formato serial fisico, parser, registro runtime ni derivacion heuristica desde venta, fuente, producto, item vendido, precio, cantidad, posicion, fila, timestamp, hash, mapping, receta o presentacion.",
+    "Materializar CanonicalSaleLine con sale_line_id, sale_id CanonicalSaleId, version contractual, identidad/secuencia/revision de fuente condicionales, sold_item_ref, referencias separadas de producto/presentacion/receta/mapping, cantidad/unidad, snapshot monetario, estado, temporalidad condicional, procedencia y correlacion.",
+    "Representar cantidad, secuencia y componentes monetarios sin inventar tipo escalar, precision decimal, redondeo, conversion de unidad ni valores predeterminados que SHELL-CON-021 deja sin fijar.",
+    "Preservar ACTIVE/CANCELLED y MAPPED/NOT_PROVIDED/UNRESOLVED como semantica acreditada sin crear un enum fisico ejecutable ni adelantar el contrato compartido de mapping de SHELL-CON-022.",
+    "Preservar que una linea estructural puede existir con mapping pendiente, pero no es elegible para efectos dependientes de producto mientras falten resoluciones obligatorias o exista cuarentena activa; elegibilidad no ejecuta efectos.",
+    "Preservar makos_excel agregado como evidencia o conciliacion cuando corresponda, sin fabricar CanonicalSaleLineId ni granularidad individual inexistente.",
+    "Actualizar packages/contracts/integrations/README.md y exclusivamente la seccion de integraciones externas de packages/contracts/README.md para registrar SHELL-CON-021::GLOBAL y reservar SHELL-CON-022 como continuidad.",
+    "Ejecutar una sola vez npm run quality:repair despues de materializar el lote y antes de IMPLEMENTED; se autorizan solo reparaciones deterministas del alcance y generacion bajo packages/contracts/integrations/generated.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-CON-021__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar packages/contracts/package.json, generated/index.ts, canonical-sale.contract.ts, los contratos o scripts propietarios de SHELL-CON-017..020, exports publicos, version, releases, consumidores, runtime, ventas o lineas operativas, persistencia, mappings runtime, cuarentenas runtime, endpoints, eventos empresariales, Supabase, RLS, RPC, migraciones, datos, 04A/TREQ ni SHELL-CON-022..024."
+  ],
+  "validation_commands": [
+    "node packages/contracts/integrations/scripts/generate-canonical-sale-line-contract.mjs --check",
+    "node packages/contracts/integrations/scripts/validate-canonical-sale-line-contract.mjs",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-22T18:54:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "f4ac39874bfa4864973cdf52f63c2519f03cdbf1519afca93a1cb6dcc6fdf802"
+  },
+  "evidence": [
+    "MATERIALIZATION canonical sale line generator created without modifying SHELL-CON-017..020 generators",
+    "MATERIALIZATION canonical sale line validator created",
+    "MATERIALIZATION canonical-sale-line.contract.ts generated with CanonicalSaleLineId and CanonicalSaleLine",
+    "MATERIALIZATION CanonicalSaleLine top-level logical fields=20 monetary_snapshot fields=7",
+    "MATERIALIZATION sale_id reuses CanonicalSaleId and CanonicalSale<TSaleLine> remains unchanged",
+    "MATERIALIZATION no public barrel export and packages/contracts/package.json unchanged",
+    "MATERIALIZATION runtime sale lines=0 persistence=0 mappings runtime=0 quarantine runtime=0 downstream effects=0 Supabase changes=0",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 f4ac39874bfa4864973cdf52f63c2519f03cdbf1519afca93a1cb6dcc6fdf802",
+    "VALIDATION canonical sale line generator freshness PASS",
+    "VALIDATION canonical sale line contract validator PASS",
+    "VALIDATION CanonicalSaleLine exact top-level fields=20 PASS",
+    "VALIDATION monetary_snapshot exact fields=7 PASS",
+    "VALIDATION sale dependency CanonicalSaleId and non-empty generic lines PASS",
+    "VALIDATION stable sale line identity boundaries PASS",
+    "VALIDATION mapping and product effect eligibility boundaries PASS",
+    "VALIDATION state semantics without physical enum PASS",
+    "VALIDATION makos_excel aggregate boundary PASS",
+    "VALIDATION package boundary PASS",
+    "VALIDATION generated index boundary PASS",
+    "VALIDATION README boundary PASS",
+    "VALIDATION runtime and secret boundary PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-CON-021::GLOBAL VERIFIED"
+  ]
 }

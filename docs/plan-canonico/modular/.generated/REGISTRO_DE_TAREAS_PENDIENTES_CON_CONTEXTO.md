@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `AUTH-DB-014` — Implementar auditoría de dispositivos | `AUTH-DB-020` — Migrar objetos por dominio con compatibilidad temporal | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-CON-021::GLOBAL` — Crear contrato canónico de línea de venta | `SHELL-CON-022::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-CON-022::GLOBAL` — Crear contrato de mapeo de identificadores externos | `SHELL-CON-023::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1019/1594 aprobadas** | **574** no aprobadas (1 propuesta, 0 rechazadas) | `AUTH-DB-014` |
-| 🟧 **Implementación física conocida** | **39/94 VERIFIED** | **55** no terminales | `SHELL-CON-021::GLOBAL` |
+| 🟧 **Implementación física conocida** | **40/94 VERIFIED** | **54** no terminales | `SHELL-CON-022::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-CON-021::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **54**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-CON-022::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **53**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,18 +35,18 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `SHELL-CON-021::GLOBAL` | Crear contrato canónico de línea de venta | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `SHELL-CON-022::GLOBAL` | Crear contrato de mapeo de identificadores externos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 3 | PENDIENTE | `SHELL-CON-023::GLOBAL` | Crear contrato de idempotencia y conciliación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 4 | PENDIENTE | `SHELL-CON-024::GLOBAL` | Crear contrato de cuarentena, rechazo y compensación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 5 | PENDIENTE | `SHELL-NORM-001::GLOBAL` | Crear `@vento/data-normalization` | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 6 | PENDIENTE | `SHELL-NORM-002::GLOBAL` | Centralizar tipos de campo normalizable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 7 | PENDIENTE | `SHELL-NORM-003::GLOBAL` | Centralizar reglas de espacios, Unicode y capitalización | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 8 | PENDIENTE | `SHELL-NORM-004::GLOBAL` | Centralizar conectores y excepciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 9 | PENDIENTE | `SHELL-NORM-005::GLOBAL` | Centralizar diccionarios ortográficos versionados | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 10 | PENDIENTE | `SHELL-NORM-006::GLOBAL` | Crear normalización de búsqueda y comparación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 11 | PENDIENTE | `SHELL-NORM-007::GLOBAL` | Crear previsualización de transformaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
-| 12 | PENDIENTE | `SHELL-NORM-008::GLOBAL` | Crear metadatos de versión y auditoría de reglas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-021::GLOBAL. |
+| 1 | **ACTUAL** | `SHELL-CON-022::GLOBAL` | Crear contrato de mapeo de identificadores externos | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `SHELL-CON-023::GLOBAL` | Crear contrato de idempotencia y conciliación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 3 | PENDIENTE | `SHELL-CON-024::GLOBAL` | Crear contrato de cuarentena, rechazo y compensación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 4 | PENDIENTE | `SHELL-NORM-001::GLOBAL` | Crear `@vento/data-normalization` | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 5 | PENDIENTE | `SHELL-NORM-002::GLOBAL` | Centralizar tipos de campo normalizable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 6 | PENDIENTE | `SHELL-NORM-003::GLOBAL` | Centralizar reglas de espacios, Unicode y capitalización | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 7 | PENDIENTE | `SHELL-NORM-004::GLOBAL` | Centralizar conectores y excepciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 8 | PENDIENTE | `SHELL-NORM-005::GLOBAL` | Centralizar diccionarios ortográficos versionados | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 9 | PENDIENTE | `SHELL-NORM-006::GLOBAL` | Crear normalización de búsqueda y comparación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 10 | PENDIENTE | `SHELL-NORM-007::GLOBAL` | Crear previsualización de transformaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 11 | PENDIENTE | `SHELL-NORM-008::GLOBAL` | Crear metadatos de versión y auditoría de reglas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
+| 12 | PENDIENTE | `SHELL-NORM-009::GLOBAL` | Probar idempotencia y conservación semántica | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-CON-022::GLOBAL. |
 
 ## Modos de trabajo y materialización
 
