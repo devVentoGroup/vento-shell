@@ -469,6 +469,35 @@ La superficie sigue siendo interna: no agrega version npm, exports publicos, dep
 
 Source contract SHA-256 `SHELL-NORM-006`: `64d18e5a35e8a91dbae23cd0f3cef6928a684d8ba2c9e6e37101f1e7959a5a14`.
 
+## Materializacion de SHELL-NORM-007
+
+`src/normalization.preview.ts` materializa la consulta interna y pura `NORMALIZATION_EVALUATION_QUERY` mediante `createNormalizationPreview`. El evaluador semantico autoritativo y la autorizacion se inyectan explicitamente; el cliente no ejecuta una variante local ni resuelve versiones por `latest`.
+
+Toda respuesta conserva entrada observada, propuesta o valor preservado, resultado cerrado, explicacion, scope, fuente y conjunto efectivo de versiones. El contrato mantiene exactamente cuatro funciones de autoridad, cuatro capas logicas, 21 atributos del descriptor de colocacion, diez etapas del flujo transaccional, seis dimensiones de divergencia y siete resultados cerrados de preview.
+
+La salida declara siempre `binding: NON_BINDING`, `commit_authority: false`, `mutation_performed: false`, `state_reserved: false`, `uniqueness_certified: false`, `identity_decided: false` y `requires_transactional_revalidation: true`. Un preview no constituye seleccion, identidad, unicidad, auditoria raiz, lock, reserva o commit.
+
+`analyzePreviewDivergence` compara de forma pura valor, scope, politica, conjunto de versiones, unicidad y relaciones. Incluso sin divergencia, una mutacion posterior conserva la obligacion de revalidacion transaccional; el modulo no construye comandos ni persiste efectos.
+
+Las condiciones incompletas, versiones inactivas, `latest`, descriptor incompatible, material protegido o autorizacion denegada fallan cerrado. Fallo tecnico, bloqueo, conflicto, revision y escalamiento estructural no se colapsan en ausencia de cambio.
+
+La superficie sigue siendo interna: no agrega version npm, exports publicos, dependencias, API, endpoint, RPC, persistencia o consumidores. No crea SQL, tablas, ledger, indices, constraints, migraciones, backfills ni cambios Supabase.
+
+## Validacion de SHELL-NORM-007
+
+`scripts/validate-normalization-preview.mjs`:
+
+1. verifica el SHA del contrato propietario de `SHELL-NORM-007` mediante `parseTaskBlocks`;
+2. comprueba `GLOBAL_ENABLE_ONCE` y `PRE_E5_FOUNDATION`;
+3. ejecuta primero el validador verificado de 006, que encadena compatibilidad 005/004/003/002;
+4. compila tipos, reglas, catalogos, diccionario, busqueda y preview con el TypeScript local;
+5. valida funciones de autoridad: 4, capas logicas: 4, atributos del descriptor de colocacion: 21, etapas del flujo transaccional: 10, dimensiones de divergencia: 6 y resultados cerrados de preview: 7;
+6. prueba reproducibilidad, preservacion del input, autorizacion, material protegido, ausencia de `latest`, fallo tecnico y las seis dimensiones de divergencia;
+7. bloquea I/O, reloj implicito, aleatoriedad, Supabase y cualquier efecto de escritura;
+8. verifica que las fuentes y validadores propietarios anteriores permanezcan sin cambios.
+
+Source contract SHA-256 `SHELL-NORM-007`: `3a05097677cbf3e0f36700a7bbc0fb2e6e3a06e955296bbe9135db06b1bef9a0`.
+
 ## Estado de esta fundacion
 
 ```text
@@ -508,7 +537,14 @@ clases semanticas gobernadas: 14
 componentes estructurados: 11
 transliteracion: DESHABILITADA
 similitud: DESHABILITADA
-preview: NO MATERIALIZADO
+preview SHELL-NORM-007: MATERIALIZADO
+funciones de autoridad de preview: 4
+capas logicas de preview: 4
+atributos del descriptor de colocacion: 21
+etapas del flujo transaccional: 10
+dimensiones de divergencia: 6
+resultados cerrados de preview: 7
+binding: NON_BINDING
 metadata runtime / auditoria: NO MATERIALIZADA
 consumidores migrados: 0
 cambios Supabase: 0
@@ -519,7 +555,7 @@ cambios Supabase: 0
 | Tarea | Responsabilidad reservada |
 | --- | --- |
 | `SHELL-NORM-006` | normalizacion de busqueda y comparacion |
-| `SHELL-NORM-007` | previsualizacion de transformaciones |
+| `SHELL-NORM-007` | previsualizacion no vinculante materializada |
 | `SHELL-NORM-008` | metadatos de version y auditoria |
 | `SHELL-NORM-009` | certificacion de idempotencia y conservacion semantica |
 
@@ -536,3 +572,5 @@ Source contract SHA-256 `SHELL-NORM-004`: `abacc131fb8dd2b18dbd59ef04915e516f604
 Source contract SHA-256 `SHELL-NORM-005`: `6a9e98517f962da17c5b8877aa8f358f746e60a397ff621f8dd559bde5ae8837`.
 
 Source contract SHA-256 `SHELL-NORM-006`: `64d18e5a35e8a91dbae23cd0f3cef6928a684d8ba2c9e6e37101f1e7959a5a14`.
+
+Source contract SHA-256 `SHELL-NORM-007`: `3a05097677cbf3e0f36700a7bbc0fb2e6e3a06e955296bbe9135db06b1bef9a0`.
