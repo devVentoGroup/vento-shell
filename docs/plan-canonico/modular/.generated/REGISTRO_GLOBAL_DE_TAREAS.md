@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1025** |
+| Aprobadas | **1026** |
 | En propuesta | **0** |
-| No iniciadas | **569** |
+| No iniciadas | **568** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **64.30% (1025/1594)** |
+| Porcentaje de completamiento | **64.37% (1026/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-008` — Validar área dentro de RPC sensibles | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-009` — Validar permiso exacto dentro de RPC sensibles | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-010` — Validar principal y actor efectivo dentro de RPC sensibles | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-009` — Validar permiso exacto dentro de RPC sensibles | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-010` — Validar principal y actor efectivo dentro de RPC sensibles | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-021` — Implementar políticas RLS y grants canónicos por esquema | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1235,7 +1235,7 @@
 | ✅ APROBADA | `AUTH-DB-006` | Incorporar contexto canónico en RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ✅ APROBADA | `AUTH-DB-007` | Validar sede dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ✅ APROBADA | `AUTH-DB-008` | Validar área dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
-| ⬜ NO INICIADA | `AUTH-DB-009` | Validar permiso exacto dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
+| ✅ APROBADA | `AUTH-DB-009` | Validar permiso exacto dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-010` | Validar principal y actor efectivo dentro de RPC sensibles | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-021` | Implementar políticas RLS y grants canónicos por esquema | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-011` | Aplicar constraints después de backfills y reconciliación | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |

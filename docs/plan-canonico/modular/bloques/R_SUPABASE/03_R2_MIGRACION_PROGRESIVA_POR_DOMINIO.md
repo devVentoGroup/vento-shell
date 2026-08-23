@@ -6786,7 +6786,1632 @@ Esta tarea no:
 `AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles`
 
 
-### [ ] AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
+### ✅ AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-008 — Validar área dentro de RPC sensibles
+**Tarea siguiente:** AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para vinculación y evaluación de la capacidad canónica exacta dentro de RPC sensibles
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `RPC-PERMISSION-VALIDATION-009@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-009::package_id` permanece no ejecutada hasta satisfacer R0/R1 aplicables, el paquete E5 correspondiente, `SHELL-CI-020::package_id` y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-009` define cómo toda RPC sensible incluida en un paquete aprobado debe vincular cada efecto protegido con la `permission_key` canónica exacta y hacer que la decisión proceda del evaluador de autorización aprobado, usando el contexto y el territorio ya resueltos, sin convertir nombres de rol, acceso general a la aplicación, una pantalla visible, un argumento manipulable, un helper booleano legacy, `SECURITY DEFINER`, RLS bypass o privilegios SQL en autoridad empresarial.
+
+La tarea cierra la frontera de permiso dentro de R2. No materializa ninguna RPC ni modifica el catálogo.
+
+#### 2. Resultado canónico
+
+Se define:
+
+```text
+RPC PERMISSION BINDING
++
+PERMISSION CONTRACT SNAPSHOT
++
+ACCESS CONTEXT
++
+RESOLVED RESOURCE
++
+SITE FACTS
++
+AREA FACTS
+=
+INPUT CANÓNICO PARA evaluate_authorization
+```
+
+Y queda prohibido:
+
+```text
+ROLE NAME
+OR APP ACCESS
+OR CLIENT PERMISSION STRING
+OR SQL PRIVILEGE
+=
+ALLOW
+```
+
+#### 3. Contrato material producido
+
+La identidad contractual es:
+
+```text
+RPC-PERMISSION-VALIDATION-009@1.0.0
+```
+
+Este contrato gobierna por `package_id`:
+
+- la identidad exacta del permiso requerido;
+- su binding con la RPC y con cada operación protegida;
+- la versión contractual usada;
+- la resolución del `PermissionContractSnapshot`;
+- la entrega al evaluador canónico;
+- la prohibición de fallbacks o sustituciones;
+- la transición desde helpers legacy;
+- la evidencia, pruebas, adopción y rollback.
+
+#### 4. Topología vinculante
+
+La topología vigente es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance = AUTH-DB-009::package_id
+```
+
+Consecuencias:
+
+1. el marcador se desarrolla una sola vez;
+2. no existe `AUTH-DB-009::GLOBAL`;
+3. cada paquete conserva una instancia independiente;
+4. cada instancia cubre exclusivamente las RPC incluidas en su candidate;
+5. dos paquetes no comparten evidencia anónima;
+6. una aprobación documental no autoriza materialización.
+
+#### 5. Gate temporal
+
+Una futura instancia requiere, para el mismo `package_id`:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+DELIV-PKG aplicable = CLOSED
+E5-GATE-008::package_id = PASS
+SHELL-CI-020::package_id = OPENED
+physical_authorization = EXPLICIT
+```
+
+Si falta una condición, la instancia no ejecuta cambios físicos.
+
+#### 6. Fuentes vinculantes
+
+009 consume sin reinterpretación silenciosa:
+
+- el modelo de permisos y precedencia aprobado;
+- el catálogo canónico versionado de autorización;
+- `AUTH-CAT-016`, para contrato de recurso;
+- `AUTH-CAT-017`, para catálogo técnico versionado;
+- `AUTH-CTX-025`, para `AccessContext`;
+- `AUTH-CTX-026`, para `evaluate_authorization` y `AuthorizationRequestContext`;
+- `AUTH-DB-034`, para el evaluador físico canónico y sus snapshots runtime;
+- `AUTH-DB-007`, para sede;
+- `AUTH-DB-008`, para área;
+- `AUTH-SRV-005`, como contrato equivalente de permiso exacto en acciones de servidor;
+- la release contractual aplicable al candidate;
+- el expediente E5 del package.
+
+#### 7. Handoff recibido de AUTH-DB-008
+
+008 entrega a 009 hechos, no autorización:
+
+```text
+AccessContext canónico
+ResolvedResourceContext
+site_resolution_status
+resolved_site_set
+area_resolution_status
+resolved_area_set
+site_area_relationships
+area_requirement
+area_resolution_mode
+area classification cuando aplique
+resource side roles
+```
+
+009 no recalcula esos hechos con fallbacks locales para obtener una decisión favorable.
+
+#### 8. Handoff hacia AUTH-DB-010
+
+009 entrega a 010, sin absorber su responsabilidad:
+
+```text
+AccessContext canónico sin alterar
+ResolvedResourceContext
+site facts
+area facts
+required_permission_binding
+permission_resolution_status
+PermissionContractSnapshot
+catalog_version
+catalog_hash
+permission_contract_hash
+operation_kind
+required lanes
+prerequisite contract
+scope contract
+resource contract reference
+AuthorizationEvaluationRequest preparado o referencia equivalente
+```
+
+010 conserva la responsabilidad de validar principal y actor efectivo dentro de la RPC antes de permitir el efecto.
+
+#### 9. Regla de no autorización parcial
+
+009 por sí sola no completa una autorización de RPC.
+
+```text
+006 + 007 + 008 + 009 + 010
+→ conjunto de obligaciones de la frontera R2
+```
+
+Una RPC no puede ejecutar porque “el permiso dio true” si otra obligación del pipeline permanece inválida, no resuelta o técnicamente indisponible.
+
+#### 10. Identidad canónica del permiso
+
+La identidad protegida es:
+
+```text
+permission_key = app_code + "." + permission_code
+```
+
+La `permission_key` completa es estable dentro de una versión de catálogo y debe resolverse por igualdad exacta.
+
+#### 11. app_code
+
+`app_code` identifica la aplicación propietaria de la capacidad.
+
+Debe:
+
+- existir;
+- estar activo en la release aplicable;
+- coincidir exactamente;
+- ser compatible con la `permission_key`;
+- permanecer separado del nombre de repositorio, ruta o schema.
+
+No existe aplicación predeterminada por comodidad del caller.
+
+#### 12. permission_code
+
+`permission_code` es relativo a la aplicación propietaria.
+
+Ejemplo conceptual:
+
+```text
+app_code = nexo
+permission_code = inventory.remissions.prepare
+permission_key = nexo.inventory.remissions.prepare
+```
+
+La RPC no reconstruye otra semántica desde el texto del código.
+
+#### 13. Igualdad exacta
+
+La comparación vinculante es:
+
+```text
+requested/bound permission_key
+===
+published permission_key
+```
+
+No se admite equivalencia por:
+
+- prefijo;
+- sufijo;
+- substring;
+- case folding;
+- coincidencia aproximada;
+- normalización silenciosa;
+- nombre humano;
+- alias no publicado.
+
+#### 14. Permiso activo
+
+Una clave evaluable debe pertenecer a una definición activa de la release aplicable.
+
+Una clave retirada, ausente, conflictiva o no publicada no se convierte en capacidad por existir todavía en SQL legacy o en un consumidor.
+
+#### 15. Definición única
+
+Para una combinación aplicable:
+
+```text
+catalog_version
++
+permission_key
+```
+
+debe existir exactamente un `PermissionContractSnapshot` efectivo.
+
+Cero definiciones bloquean. Más de una definición bloquea.
+
+#### 16. Snapshot contractual mínimo
+
+La resolución del permiso debe disponer, como mínimo, de las propiedades contractuales aprobadas que correspondan:
+
+```text
+permission_key
+app_code
+lifecycle_status
+authorization_requirement
+allowed_scopes
+maximum_scope
+lane prerequisites
+operational area requirement
+shared device mode
+simulation mode
+strong reauthentication requirement
+resource_contract_id
+resource_type
+resolution_mode
+required_sides
+field_policy_id
+audit_policy_id
+contract_hash
+catalog_version
+catalog_hash
+```
+
+La ausencia de metadata requerida no se rellena desde defaults locales.
+
+#### 17. Release runtime
+
+La evaluación usa una release contractual explícita.
+
+La release activa determina:
+
+- universo de permisos evaluables;
+- versión de catálogo;
+- hashes;
+- contratos de recurso;
+- datasets y matrices compatibles.
+
+No se mezcla metadata de dos releases en una misma decisión.
+
+#### 18. Cardinalidad runtime
+
+009 no congela un número eterno de permisos.
+
+La cardinalidad esperada procede de la release activa aplicable al candidate.
+
+```text
+expected_permission_contracts
+=
+release manifest
+```
+
+No se usa un número histórico hardcodeado.
+
+#### 19. Conteos históricos no son autoridad
+
+Los conteos documentales o físicos observados en distintos cortes pueden divergir durante la transición.
+
+Esa divergencia no se corrige haciendo que el evaluador acepte cualquier clave presente en alguna de las fuentes.
+
+La regla es:
+
+```text
+release activa y validada
+→ autoridad contractual runtime
+```
+
+#### 20. Catálogo técnico en vento-shell
+
+El repositorio contiene una familia versionada bajo:
+
+```text
+packages/contracts/authorization
+```
+
+009 consume la identidad publicada de esa familia y no crea una copia local por RPC o aplicación.
+
+#### 21. Proyección Supabase
+
+`AUTH-DB-034` reserva una proyección runtime privada equivalente a:
+
+```text
+app_private.authorization_contract_releases
+app_private.authorization_permission_contracts
+```
+
+Estas proyecciones sirven al evaluador; no son una segunda autoridad editable de negocio.
+
+#### 22. Resolver canónico del permiso
+
+La fundación R1 define conceptualmente:
+
+```text
+app_private.resolve_permission_contract_snapshot(text, text)
+```
+
+R2 no crea otro resolver semánticamente distinto por package.
+
+La instancia de 009 adopta o consume esa fundación cuando esté materializada y verificada.
+
+#### 23. Evaluador canónico
+
+La frontera completa definida por R1 es:
+
+```text
+app_private.evaluate_authorization(jsonb) → jsonb
+```
+
+Una RPC sensible migrada no mantiene un segundo motor de decisión con reglas propias.
+
+#### 24. AuthorizationRequestContext
+
+La solicitud de evaluación conserva, entre otros hechos aprobados:
+
+```text
+app_code
+permission_key
+operation_kind
+resource request
+context reference
+```
+
+La presencia de `permission_key` en el request no significa que el cliente pueda elegir libremente qué permiso lo autoriza.
+
+#### 25. Permission binding de la RPC
+
+Cada operación protegida de una RPC debe declarar un binding cerrado:
+
+```text
+rpc identity
++
+operation branch
+→ exact required permission_key
+```
+
+Ese binding es contrato del servidor.
+
+#### 26. El permiso requerido es SERVER_DERIVED
+
+La capacidad necesaria para ejecutar un efecto es un hecho derivado del contrato de la operación.
+
+El caller puede solicitar una operación. No puede declarar un permiso alternativo para obtener autorización.
+
+#### 27. Inputs de permiso legacy
+
+Un argumento como:
+
+```text
+p_permission_code
+permission_code
+permission_key
+```
+
+se clasifica por función real, no por nombre.
+
+Puede ser:
+
+```text
+CONTRACT_SELECTOR_INTERNAL
+COMPATIBILITY_ONLY
+UNTRUSTED_PERMISSION_SELECTOR
+```
+
+No existe la clase `CLIENT_AUTHORITY`.
+
+#### 28. CONTRACT_SELECTOR_INTERNAL
+
+Solo es admisible cuando:
+
+1. la superficie externa no puede elegir arbitrariamente la clave;
+2. el caller interno ya está vinculado a una operación cerrada;
+3. la clave pertenece a una allowlist contractual exacta;
+4. el valor se valida contra la release activa;
+5. no existe ampliación por prefijo o wildcard.
+
+#### 29. COMPATIBILITY_ONLY
+
+Un argumento conservado temporalmente por compatibilidad:
+
+- no concede autoridad;
+- puede compararse contra el binding esperado;
+- debe tener consumer owner;
+- debe tener plan de retiro;
+- no puede transformarse en fallback si el binding no existe.
+
+#### 30. UNTRUSTED_PERMISSION_SELECTOR
+
+Un parámetro controlable por navegador, móvil o caller externo que seleccione la capacidad autorizante se considera no confiable.
+
+La futura migración debe impedir cambiar una capacidad mutante por otra más débil para obtener acceso.
+
+#### 31. Binding por constante contractual
+
+Una RPC con un único efecto puede declarar:
+
+```text
+RPC_A
+→ PERMISSION_X
+```
+
+La constante pertenece al contrato/matriz del package, no a un string disperso sin validación.
+
+#### 32. Binding por rama de operación
+
+Una RPC que reciba un selector empresarial legítimo de operación puede tener:
+
+```text
+operation = A → PERMISSION_A
+operation = B → PERMISSION_B
+```
+
+La matriz de ramas debe ser cerrada.
+
+Un valor fuera de la matriz falla cerrado.
+
+#### 33. Operación única por decisión
+
+El contrato canónico de evaluación conserva una `permission_key` por solicitud/decisión.
+
+Una operación protegida no introduce silenciosamente un array de permisos dentro del mismo `AuthorizationDecision`.
+
+#### 34. Operación compuesta
+
+Si un efecto compuesto exige varias capacidades independientes:
+
+```text
+P1
+AND
+P2
+```
+
+cada obligación obtiene su evaluación canónica propia y todas deben resultar ejecutables antes del efecto compuesto.
+
+No se sintetiza un permiso más amplio para evitar evaluaciones múltiples.
+
+#### 35. Operación READ
+
+Una lectura protegida se enlaza con su capacidad de lectura exacta.
+
+Un permiso de acceso a aplicación o una lectura de otro recurso no sustituye el permiso requerido.
+
+#### 36. Operación CREATE
+
+Una creación se enlaza con la capacidad exacta de creación, registro o apertura que el catálogo declare para ese recurso y proceso.
+
+La semántica no se deriva del verbo SQL `INSERT` por sí solo.
+
+#### 37. Operación UPDATE
+
+Una actualización utiliza la capacidad exacta de la acción empresarial.
+
+`update`, `approve`, `resolve`, `override` o `publish` permanecen capacidades distintas cuando el catálogo las separa.
+
+#### 38. Operación DELETE
+
+Una eliminación o cancelación usa la capacidad exacta aprobada.
+
+No se concede porque el actor tenga `manage`, `update` o acceso a aplicación salvo relación contractual explícita publicada.
+
+#### 39. Operación EXECUTE
+
+Una acción que no se modele como CRUD utiliza `EXECUTE` cuando el contrato de evaluación así corresponda, pero conserva una `permission_key` exacta.
+
+El tipo de operación no sustituye el permiso.
+
+#### 40. No wildcard
+
+Queda prohibido evaluar mediante patrones equivalentes a:
+
+```text
+nexo.*
+nexo.inventory.*
+*.approve
+permission prefix
+```
+
+La membresía y el grant son por clave publicada exacta.
+
+#### 41. No prefijo de módulo como capacidad
+
+Conocer que una clave pertenece a `inventory` no concede otras claves del mismo módulo.
+
+```text
+nexo.inventory.stock.view
+≠
+nexo.inventory.adjustments.register
+```
+
+#### 42. app.access
+
+Una clave `app.access` representa acceso general a la aplicación según su contrato.
+
+No equivale a todos sus permisos internos.
+
+#### 43. Visibilidad de pantalla
+
+Poder renderizar una pantalla, menú, tab, botón o ruta no autoriza el efecto de la RPC.
+
+La RPC valida la capacidad exacta aunque la UI ya haya aplicado un guard.
+
+#### 44. Nombre de rol
+
+Ningún nombre de rol es una capacidad.
+
+`propietario`, `gerente_general`, `gerente`, `supervisor` o un rol operativo no sustituyen un grant/deny evaluado para la `permission_key` exacta.
+
+#### 45. Jerarquía
+
+No existe autorización por rol superior fuera de las matrices y concesiones publicadas.
+
+La jerarquía humana no crea wildcard de permisos.
+
+#### 46. Herencia entre acciones
+
+No se asume automáticamente:
+
+```text
+manage → view
+approve → update
+update → create
+delete → manage
+access → view
+```
+
+Toda relación permitida debe estar publicada como contrato.
+
+#### 47. Alias
+
+Un alias solo participa cuando la release contractual lo publica expresamente con semántica y ciclo de vida gobernados.
+
+Un alias legacy no puede ampliar un permiso retirado hacia una capacidad más amplia.
+
+#### 48. Clave retirada
+
+Una clave retirada conserva historia y evidencia.
+
+No se reactiva porque siga almacenada en una matriz legacy, un helper la reconozca, un consumidor antiguo la envíe o exista una cadena similar activa.
+
+#### 49. Clave nueva
+
+Una clave nueva no hereda concesiones por parecido, módulo, rol o permiso anterior.
+
+Comienza con el tratamiento de default deny previsto por el modelo hasta contar con asignaciones aprobadas.
+
+#### 50. Case, espacios y corrección silenciosa
+
+009 no usa `lower()`, `trim()` o sustituciones para convertir una clave inválida en otra válida.
+
+Una incompatibilidad de representación se resuelve mediante compatibilidad explícita, no modificando silenciosamente la identidad.
+
+#### 51. permission_key y app_code coherentes
+
+Debe cumplirse:
+
+```text
+permission_contract.app_code
+=
+request.app_code
+```
+
+y la `permission_key` debe pertenecer a ese namespace.
+
+No se infiere `app_code` desde una entrada manipulable cuando el contrato exige declararlo y validarlo.
+
+#### 52. Configuración ausente
+
+Si la clave no tiene contrato runtime completo:
+
+- no se fabrica metadata;
+- no se consulta otro permiso parecido;
+- no se degrada a `app.access`;
+- no se usa un helper legacy como autoridad alternativa.
+
+La evaluación falla cerrada conforme a la taxonomía propietaria.
+
+#### 53. Fallo técnico no es DENY falso
+
+La indisponibilidad técnica del catálogo, contexto, resolver o evaluator no se registra como un `DENY` empresarial inventado.
+
+Se conserva la separación canónica entre decisión y fallo técnico.
+
+#### 54. Default deny
+
+Ausencia de grant aplicable significa que no existe autorización concedida.
+
+No se busca un rol, scope o permiso alternativo para salvar la operación.
+
+#### 55. authorization_requirement
+
+Cada permiso activo declara exactamente una modalidad:
+
+```text
+BASE_ONLY
+OPERATIONAL_ONLY
+BASE_OR_OPERATIONAL
+BASE_AND_OPERATIONAL
+```
+
+La RPC no redefine esta modalidad.
+
+#### 56. BASE_ONLY
+
+`BASE_ONLY` evalúa exclusivamente el carril base.
+
+La existencia de turno o rol operativo no amplía ni reemplaza el grant base.
+
+#### 57. OPERATIONAL_ONLY
+
+`OPERATIONAL_ONLY` requiere el carril operativo conforme al contrato de contexto y prerrequisitos.
+
+Una asignación administrativa no sustituye el carril operativo.
+
+#### 58. BASE_OR_OPERATIONAL
+
+Cada carril se evalúa independientemente.
+
+La operación puede continuar por un carril permitido sin mezclar grants parciales de ambos para fabricar uno nuevo.
+
+#### 59. BASE_AND_OPERATIONAL
+
+Ambos carriles deben satisfacer sus obligaciones.
+
+```text
+base ALLOW
++
+operational DENY
+=
+no executable
+```
+
+#### 60. Prerrequisitos N, T y T+C
+
+La release conserva por carril los prerrequisitos aplicables:
+
+```text
+N
+T
+T+C
+```
+
+009 no cambia la exigencia de turno/check-in para hacer coincidir el estado del actor.
+
+#### 61. Área operativa requerida
+
+La clasificación contractual distingue:
+
+```text
+REQUIRED
+SITE_SUFFICIENT
+NOT_APPLICABLE
+```
+
+009 consume el resultado territorial de 008 y lo compara mediante el evaluador.
+
+No transforma `SITE_SUFFICIENT` en todas las áreas.
+
+#### 62. Scopes permitidos
+
+La `PermissionContractSnapshot` define los scopes admitidos y el máximo del permiso.
+
+Un grant con scope no admitido por el permiso es configuración inválida, no autoridad adicional.
+
+#### 63. NT y ORG
+
+Permisos legítimamente no territoriales u organizacionales no fabrican sede o área.
+
+La ausencia de territorio solo es válida cuando el contrato exacto lo permite.
+
+#### 64. G
+
+El alcance global mantiene el límite de la capacidad exacta y de la organización aplicable.
+
+```text
+GLOBAL
+≠
+ALL PERMISSIONS
+```
+
+#### 65. AS, SS, AST y TST
+
+Los scopes de sede o tipo de sede se comparan contra los hechos ya resueltos por 007.
+
+009 no vuelve a escoger territorio desde el grant.
+
+#### 66. AA, SA, AAT y ATW
+
+Los scopes de área se comparan contra los hechos resueltos por 008.
+
+`area_kind` clasifica; no sustituye la identidad concreta del área.
+
+#### 67. CTX
+
+`CTX` utiliza el territorio operativo efectivo del `AccessContext`.
+
+No acepta sede o área enviadas por cliente como sustitutos del contexto.
+
+#### 68. OWN
+
+`OWN` requiere la relación exacta definida por el contrato de recurso.
+
+Ser creador, registrador o actor de la pantalla no crea `OWN` por inferencia.
+
+#### 69. Scope no se deduce del permiso
+
+La identidad del permiso no indica por sí sola el territorio concedido.
+
+```text
+permission_key
++
+grant/deny dataset
++
+resource territory
++
+context
+→ alcance evaluado
+```
+
+#### 70. Contrato de recurso
+
+El permiso exacto conserva su `resource_contract_id`.
+
+La RPC no puede usar un permiso de un recurso y resolver territorio contra otro recurso para obtener un ALLOW aparente.
+
+#### 71. operation_kind y resource contract
+
+La combinación:
+
+```text
+permission_key
+operation_kind
+resolved resource
+```
+
+debe ser coherente con el contrato publicado.
+
+Una inconsistencia bloquea antes del efecto.
+
+#### 72. required_sides
+
+En recursos multilado, el permiso conserva los lados que deben autorizarse.
+
+009 usa los `resource side roles` heredados y no reduce la operación a un único lado conveniente.
+
+#### 73. Política de campos
+
+Autorizar el recurso no autoriza todos sus campos.
+
+La `field_policy_id` aplicable continúa limitando qué puede leerse o mutarse.
+
+#### 74. Sensibilidad
+
+Una capacidad sensible conserva su clasificación.
+
+No se rebaja sensibilidad porque la RPC sea interna, la invoque un backend o el actor ya esté autenticado.
+
+#### 75. Reautenticación fuerte
+
+Cuando el contrato exige reautenticación fuerte, la decisión no puede convertirse en ejecutable sin evidencia válida.
+
+009 no implementa el mecanismo de reautenticación; conserva el prerrequisito.
+
+#### 76. Dispositivo compartido
+
+El dispositivo puede imponer un techo adicional.
+
+Nunca crea el permiso del actor.
+
+#### 77. Simulación
+
+Una evaluación simulada permanece separada de una decisión real.
+
+Una `permission_key` visible o permitida en simulación no autoriza una RPC empresarial real.
+
+#### 78. Explicit deny
+
+Las denegaciones explícitas aplicables conservan precedencia.
+
+Un grant coincidente no neutraliza una denegación que el modelo declara superior.
+
+#### 79. Deny individual
+
+Un `employee_permissions` negativo aplicable debe conservar su efecto de denegación conforme a precedencia.
+
+No se salta buscando después un rol con grant equivalente cuando el contrato lo prohíbe.
+
+#### 80. Grant individual
+
+Un grant individual solo autoriza si corresponde a la misma clave exacta, está vigente, su scope cubre el recurso, no existe deny superior y los demás prerrequisitos se satisfacen.
+
+#### 81. Grant de rol base
+
+Una asignación de rol base participa únicamente a través de la matriz contractual aplicable.
+
+El rol no se convierte en shortcut de la evaluación.
+
+#### 82. Grant de rol operativo
+
+Un rol operativo participa únicamente cuando el carril operativo y la matriz correspondiente aplican.
+
+La coincidencia de string de rol no sustituye turno, área, dispositivo ni recurso.
+
+#### 83. Paridad con AUTH-SRV-005
+
+La regla de servidor y la regla de RPC son equivalentes:
+
+```text
+EFECTO PROTEGIDO
+→ UNA CAPACIDAD CANÓNICA EXACTA
+→ CONTEXTO Y RECURSO RESUELTOS
+→ DECISIÓN CANÓNICA
+```
+
+La misma operación no puede requerir un permiso en Server Action y otro más amplio en RPC sin contrato explícito.
+
+#### 84. Helper booleano legacy no es decisión completa
+
+Un helper que retorna `boolean` puede ser antecedente o compatibilidad.
+
+No sustituye una `AuthorizationDecision` con permiso, lanes, razones, contexto, recurso, hashes, versión y evidencia.
+
+#### 85. has_permission AS-IS
+
+El estado remoto contiene `public.has_permission(...)`.
+
+La función resuelve un permiso por clave completa contra `app_permissions`, roles y excepciones, pero pertenece al modelo legacy y no reemplaza el evaluator canónico de R1.
+
+Su existencia se registra como transición, no como contrato normativo nuevo.
+
+#### 86. has_effective_permission_v1 AS-IS
+
+El estado remoto contiene `public.has_effective_permission_v1(...)`.
+
+Se observaron comportamientos transitorios como:
+
+- limpieza de strings;
+- normalización de `app_code`;
+- inferencia de app desde la clave cuando falta;
+- mezcla con contexto legacy;
+- selección de helpers base/operativos.
+
+009 no incorpora esas precedencias al contrato canónico por existir físicamente.
+
+#### 87. has_operational_permission AS-IS
+
+El helper operacional observado:
+
+- recibe `permission_code`, sede, área y app;
+- usa contexto operacional legacy;
+- consulta matrices operativas;
+- contiene una ruta de `bypass_applied` heredada.
+
+La futura adopción canónica no conserva un bypass por nombre, flag o helper local fuera de la decisión aprobada.
+
+#### 88. app_code inferido AS-IS
+
+Inferir `app_code` con el primer segmento de una clave puede existir en compatibilidad legacy.
+
+El contrato futuro exige `app_code` explícito y coherente dentro del request canónico; una inferencia no puede ocultar una discrepancia.
+
+#### 89. Normalización de strings AS-IS
+
+`trim` o `lower` usados por helpers actuales son hechos del baseline, no reglas nuevas de identidad.
+
+La adopción debe comparar contra la clave exacta publicada y tratar cualquier alias o normalización exclusivamente mediante compatibilidad gobernada.
+
+#### 90. SQL privilege no es business permission
+
+Tener `EXECUTE` sobre una función solo significa que el rol PostgreSQL puede invocar esa superficie.
+
+No significa que el actor esté autorizado para el efecto empresarial.
+
+#### 91. SECURITY DEFINER
+
+`SECURITY DEFINER` ejecuta con privilegios del owner SQL.
+
+Por tanto aumenta la necesidad de validar `permission_key`, actor, recurso y contexto; no la reduce.
+
+#### 92. PUBLIC y anon
+
+Una función accesible a `PUBLIC` o `anon` debe tratarse como superficie potencialmente invocable por audiencia amplia.
+
+009 no corrige grants, pero su matriz registra la exposición observada y exige que la lógica empresarial no dependa de que nadie debería llamarla directamente.
+
+#### 93. authenticated
+
+`authenticated` demuestra autenticación de la sesión PostgreSQL/PostgREST.
+
+No demuestra autorización para una capacidad concreta.
+
+#### 94. service_role
+
+`service_role` o una conexión privilegiada no representan automáticamente autoridad empresarial.
+
+Cuando ejecuten en nombre de un actor o proceso, debe existir el contrato de principal y capacidad correspondiente.
+
+#### 95. Principal técnico
+
+Un principal técnico permitido usa permisos y contratos propios.
+
+No toma prestado un permiso humano ni recibe un wildcard por ser integración, job, cron o worker.
+
+#### 96. Direct PostgREST RPC
+
+Una RPC expuesta debe producir la misma decisión aunque se invoque directamente y se omita la UI que normalmente la consume.
+
+#### 97. Caller backend
+
+Un Server Action, Route Handler o Edge Function que invoque la RPC sigue obligado a vincular el efecto al permiso exacto.
+
+El backend no convierte argumentos manipulables del usuario en autoridad por reenviarlos.
+
+#### 98. RLS
+
+009 no implementa policies.
+
+`AUTH-DB-021` mantiene la responsabilidad de que la capa RLS consuma una semántica equivalente sin crear una segunda tabla de permisos, excepción o scope.
+
+#### 99. authorization_policy_allows
+
+La fundación R1 reserva un helper de predicado equivalente a:
+
+```text
+app_private.authorization_policy_allows(jsonb)
+```
+
+Su uso futuro en RLS debe permanecer side-effect-free y semánticamente equivalente al evaluator.
+
+#### 100. Grants
+
+El cierre físico de grants pertenece a la tarea propietaria de RLS/grants.
+
+009 identifica la audiencia y el riesgo de cada RPC para asegurar que el permiso exacto se valida incluso cuando la superficie es alcanzable.
+
+#### 101. Frontera transaccional
+
+Para efectos sensibles:
+
+```text
+resolve context/resource/territory
+→ bind exact permission
+→ evaluate
+→ persist required decision evidence
+→ validate freshness/concurrency
+→ execute effect
+```
+
+La separación temporal no puede permitir ejecutar con una decisión obsoleta.
+
+#### 102. Frescura
+
+009 reutiliza la fundación de frescura e invalidación aprobada.
+
+Cambios relevantes en actor, asignación, turno/check-in, recurso, sede/área, grants/denies, catálogo o datasets deben impedir reutilizar ciegamente una decisión anterior.
+
+#### 103. Cambio de catálogo
+
+Una nueva release contractual invalida la suposición de que una clave conserva exactamente la misma metadata.
+
+El candidate debe demostrar qué release utiliza.
+
+#### 104. Cambio de permiso
+
+Cambiar modalidad, scope máximo, prerequisitos, sensibilidad o contrato de recurso requiere una nueva versión/hash y no una edición runtime silenciosa.
+
+#### 105. Cache
+
+No se permite un cache de decisiones cross-request que ignore versión de catálogo, contexto o recurso.
+
+#### 106. Retry
+
+Un retry no elige un permiso alternativo después de un DENY.
+
+Si cambia la realidad contractual o contextual, se crea una nueva evaluación conforme al modelo canónico.
+
+#### 107. Idempotencia
+
+La clave de idempotencia de una operación no es un permiso.
+
+La repetición segura conserva la misma obligación de autorización y detecta cambios que exijan reevaluación.
+
+#### 108. Auditoría
+
+La evidencia debe poder correlacionar:
+
+```text
+package_id
+candidate_id
+rpc identity
+operation branch
+required permission_key
+catalog_version
+catalog_hash
+permission_contract_hash
+context_id
+resource reference
+site/area facts
+decision_id
+outcome
+correlation_id
+execution reference
+timestamp
+```
+
+#### 109. DENY como evidencia
+
+Una denegación real se conserva como evidencia.
+
+No se borra durante rollback ni se reetiqueta como error de interfaz.
+
+#### 110. Fallo técnico
+
+Un fallo técnico de evaluación conserva identidad y telemetría separadas.
+
+No genera un candidate `decision_id` falso ni incrementa métricas de DENY empresarial.
+
+#### 111. Mensajes seguros
+
+La RPC no devuelve al cliente matrices completas, grants internos, denies de otros actores, hashes privados o detalles suficientes para enumerar permisos.
+
+#### 112. Observabilidad
+
+Las métricas pueden segmentar por RPC, aplicación, permiso, operation kind, ALLOW/DENY/TECHNICAL_FAILURE, latencia y candidate/package, sin convertir logs en una copia de datos sensibles.
+
+#### 113. Registro obligatorio por RPC
+
+Cada futura instancia mantiene una fila por firma exacta y operación protegida.
+
+Una RPC con dos ramas protegidas produce dos bindings explícitos aunque comparta función SQL.
+
+#### 114. Campos mínimos del registro
+
+Cada binding conserva como mínimo:
+
+```text
+rpc_permission_binding_id
+package_id
+candidate_id
+transition_key
+migration_unit_id
+schema_name
+function_name
+identity_arguments
+operation_branch
+operation_kind
+required_permission_key
+required_app_code
+permission_binding_mode
+catalog_version
+catalog_hash
+permission_contract_hash
+resource_contract_id
+authorization_requirement
+allowed_scopes
+maximum_scope
+lane_prerequisites
+area_requirement
+shared_device_mode
+simulation_mode
+strong_reauthentication_requirement
+site_handoff_reference
+area_handoff_reference
+principal_actor_handoff_reference
+legacy_helper_reference
+legacy_permission_argument_role
+security_mode
+owner_role
+execute_audience
+compatibility_reference
+consumer_reference
+rollback_reference
+adoption_state
+evidence_reference
+owner
+```
+
+#### 115. Estados de binding
+
+Cada fila usa un estado cerrado equivalente a:
+
+```text
+BOUND_EXACT
+BOUND_MULTI_DECISION
+COMPATIBILITY_ONLY
+BLOCKED_MISSING_PERMISSION
+BLOCKED_AMBIGUOUS_PERMISSION
+BLOCKED_INACTIVE_PERMISSION
+BLOCKED_CONTRACT_INCOMPLETE
+BLOCKED_OPERATION_MISMATCH
+BLOCKED_DRIFT
+OUTSIDE_PACKAGE
+```
+
+Los estados `BLOCKED_*` nunca se interpretan como autorización.
+
+#### 116. Cardinalidad por package
+
+Cada candidate demuestra:
+
+```text
+protected rpc operations expected = N
+classified operations = N
+unbound protected operations = 0
+unknown permission keys = 0
+ambiguous permission keys = 0
+inactive permission keys = 0
+wildcard bindings = 0
+client-authority permission selectors = 0
+permission contracts incomplete = 0
+```
+
+`N` procede del package y del candidate.
+
+#### 117. Cobertura de una RPC sin argumento de permiso
+
+Una RPC puede no recibir ningún `permission_code` y seguir siendo protegida.
+
+El binding exacto debe provenir de su contrato de operación.
+
+#### 118. Cobertura de una RPC con argumento de permiso
+
+Una RPC que recibe un string de permiso no queda automáticamente bien protegida.
+
+La instancia debe demostrar que el argumento no permite seleccionar una capacidad más débil o diferente a la requerida por el efecto.
+
+#### 119. Baseline remoto de catálogo
+
+El corte read-only utilizado para desarrollar esta tarea observa en `vento-os-dev`:
+
+```text
+apps total = 10
+apps activas = 10
+app_permissions total = 179
+app_permissions activas = 179
+stored permission codes relative = 179
+stored codes already app-prefixed = 0
+duplicate app+code pairs = 0
+duplicate derived permission keys = 0
+role_permission rows = 613
+employee_permission rows = 17
+operational_role_permission rows = 32
+```
+
+Estos conteos son AS-IS y no se hardcodean como release eterna.
+
+#### 120. Baseline remoto de funciones
+
+El mismo corte observa:
+
+```text
+functions referencing has_permission = 35
+functions referencing has_operational_permission = 2
+functions referencing app_permissions = 4
+functions referencing role_permissions = 4
+functions referencing operational_role_permissions = 2
+functions referencing permission_code = 9
+physical app_private.evaluate_authorization = 0
+physical api.get_safe_authorization_decision = 0
+```
+
+Esto confirma que la adopción del evaluator canónico continúa pendiente físicamente.
+
+#### 121. Baseline de matrices operativas
+
+En el corte observado:
+
+```text
+operational_role_permission rows = 32
+allowed rows = 32
+denied rows = 0
+distinct permission strings = 11
+rows matching active full permission_key = 32
+rows matching only a relative code = 0
+```
+
+La diferencia de representación entre matrices legacy forma parte de la transición y no redefine la identidad canónica.
+
+#### 122. Superficies de riesgo observadas
+
+Entre las superficies actuales que consumen autorización legacy se observan, entre otras:
+
+```text
+apply_restock_receipt
+apply_restock_shipment
+create_remission_shipment_from_fulfillments
+fogo_create_production_batch_from_recipe
+fogo_create_real_production_batch
+mark_restock_request_in_transit
+origo_reverse_inventory_entry
+pulso_post_daily_sales_import
+update_order_operational_state
+viso_accounting_dashboard
+```
+
+La lista es evidencia AS-IS y no significa que todas pertenezcan al mismo package.
+
+#### 123. Superficies amplias observadas
+
+El baseline también muestra funciones legacy de autorización alcanzables por audiencias amplias, entre ellas `has_permission` y algunas RPC con `PUBLIC`/`anon` EXECUTE.
+
+009 registra el riesgo; la corrección física de grants permanece en su tarea propietaria.
+
+#### 124. Drift previo a materialización
+
+Antes de cada instancia se recaptura:
+
+```text
+schema
+function name
+identity arguments
+function body
+owner
+security mode
+search_path
+EXECUTE grants
+operation branches
+permission bindings
+catalog version/hash
+resource contract
+consumers
+migration baseline
+```
+
+Resultado:
+
+```text
+MATCH
+APPROVED_DRIFT
+BLOCKING_DRIFT
+```
+
+#### 125. Drift de permiso
+
+Se considera bloqueante, salvo reconciliación aprobada:
+
+- permiso requerido ya no existe;
+- permiso cambió de app;
+- permiso se retiró;
+- contrato cambió sin candidate nuevo;
+- binding apunta a alias no aprobado;
+- una rama nueva quedó sin permiso;
+- la RPC empezó a aceptar permiso arbitrario;
+- apareció bypass local.
+
+#### 126. Candidate inmutable
+
+Cada futura instancia vincula sus bindings a un `candidate_id` que fija como mínimo:
+
+```text
+commit_sha
+migration set
+rpc definitions
+contract bundle
+catalog version/hash
+package scope
+```
+
+Cambiar un componente material crea otro candidate.
+
+#### 127. Adopción por package
+
+La adopción avanza únicamente para las RPC incluidas y verificadas del package.
+
+No se migra una función fuera de alcance porque use el mismo helper.
+
+#### 128. Shadow comparison
+
+Cuando el plan de transición lo permita, una etapa controlada puede comparar:
+
+```text
+legacy result
+vs
+canonical AuthorizationDecision
+```
+
+La comparación no permite ejecutar con el resultado más permisivo.
+
+#### 129. Fuente de autoridad durante shadow
+
+Mientras canonical no sea la fuente de ejecución aprobada, shadow solo observa.
+
+Después del cutover, el helper legacy no puede recuperar autoridad ante un DENY canónico.
+
+#### 130. Cutover
+
+El cutover de una RPC exige:
+
+1. binding exacto validado;
+2. evaluator canónico disponible;
+3. contexto, recurso y territorio compatibles;
+4. principal/actor de 010 cerrado;
+5. evidencia y tests verdes;
+6. consumidor migrado;
+7. rollback preparado.
+
+#### 131. Rollback
+
+Rollback restaura una ruta de código o compatibilidad previamente aprobada cuando sea seguro.
+
+No borra decisiones históricas, reactiva permisos retirados, convierte wildcard en solución temporal, relaja el permiso exacto ni omite evidencia.
+
+#### 132. Rollback de catálogo
+
+Si una release contractual debe revertirse, se activa una release aprobada compatible mediante el procedimiento propietario.
+
+009 no edita en sitio una versión publicada.
+
+#### 133. Pruebas de identidad exacta
+
+Cada binding cubre al menos:
+
+- clave exacta válida;
+- typo;
+- case diferente;
+- espacios periféricos;
+- clave inexistente;
+- clave inactiva;
+- clave de otra app;
+- alias no publicado;
+- wildcard;
+- prefijo;
+- substring.
+
+#### 134. Pruebas de sustitución
+
+Se prueba que no autoricen:
+
+- `app.access` en lugar de permiso interno;
+- permiso `view` para mutación;
+- permiso de recurso vecino;
+- rol administrativo por nombre;
+- pantalla visible;
+- flag cliente;
+- permiso enviado por body distinto al binding.
+
+#### 135. Pruebas de modalidad
+
+Se cubren:
+
+```text
+BASE_ONLY
+OPERATIONAL_ONLY
+BASE_OR_OPERATIONAL
+BASE_AND_OPERATIONAL
+```
+
+incluyendo casos donde solo uno de los carriles satisface condiciones.
+
+#### 136. Pruebas de scopes
+
+Se cubren scopes aplicables con:
+
+- recurso dentro y fuera de territorio;
+- recurso propio y de tercero;
+- sede/área correcta e incorrecta;
+- tipo de sede/área correcto e incorrecto;
+- scope no admitido por el permiso;
+- grant ausente;
+- deny aplicable.
+
+#### 137. Pruebas de prerequisitos
+
+Se cubren N, turno válido/ausente, check-in requerido/ausente, área REQUIRED, SITE_SUFFICIENT y contexto no aplicable.
+
+#### 138. Pruebas de precedencia
+
+Se demuestra que:
+
+- deny superior vence grant;
+- individual grant no crea wildcard;
+- rol no sustituye permiso;
+- dos grants parciales no se fusionan fuera del contrato;
+- base y operativo siguen la modalidad exacta.
+
+#### 139. Pruebas de caller adversarial
+
+Una llamada directa intenta modificar:
+
+```text
+permission_key
+app_code
+operation selector
+site
+area
+resource locator
+principal/actor hints
+```
+
+y no consigue sustituir los hechos de servidor ni el binding requerido.
+
+#### 140. Pruebas de SQL privilege
+
+Se comprueba que:
+
+- `authenticated` con EXECUTE pero sin permiso empresarial falla;
+- una función `SECURITY DEFINER` sigue validando negocio;
+- `service_role` no se usa como sustituto del principal empresarial;
+- acceso directo a PostgREST no salta el evaluator.
+
+#### 141. Pruebas de operación compuesta
+
+Si una operación exige varias capacidades:
+
+- cada capacidad genera evaluación independiente;
+- faltar una bloquea el efecto compuesto;
+- no se crea permiso sintético más amplio;
+- la evidencia correlaciona todas las decisiones requeridas.
+
+#### 142. Pruebas de drift
+
+Se cubren:
+
+- nueva rama de RPC sin binding;
+- clave retirada;
+- catalog hash distinto;
+- cambio de modalidad;
+- cambio de resource contract;
+- grant nuevo;
+- helper legacy alterado;
+- audiencia EXECUTE ampliada.
+
+#### 143. Pruebas de paridad
+
+Para el mismo request efectivo, contexto, recurso y release:
+
+```text
+RPC
+Server Action / backend
+RLS equivalente cuando aplique
+```
+
+deben producir semántica de autorización equivalente, sin excepciones locales de permiso.
+
+#### 144. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos obsoletos:** 0
+
+La cobertura ya registrada obliga a usar permisos canónicos exactos, mantener paridad entre capas y bloquear llamadas RPC manipuladas; 009 convierte esa obligación existente en contrato R2 por package sin crear una regla de negocio nueva.
+
+#### 145. Cobertura de prueba vigente reutilizada
+
+Esta sección es únicamente trazabilidad y no modifica el registro 04A.
+
+Se reutiliza cobertura existente sobre:
+
+- `TREQ-AUTH-001`, para resolución mediante permisos/contexto/alcance canónicos;
+- `TREQ-AUTH-002`, para identidad de permiso existente y libre de strings huérfanos;
+- `TREQ-AUTH-004`, para igualdad de decisión entre evaluadores;
+- `TREQ-AUTH-008`, para coherencia entre carriles y capas;
+- `TREQ-AUTH-009`, para territorio determinista;
+- `TREQ-AUTH-013`, que asigna expresamente `AUTH-DB-006` a `AUTH-DB-010` al bloqueo de bypass por RPC;
+- `TREQ-AUTH-015`, para evidencia correlacionable de permiso y decisión;
+- `TREQ-AUTH-060`, para `permission_key` exacta sin wildcard/prefijo en membresías de autorización.
+
+No se modifica texto, owner, estado, relación ni artefacto de esas filas.
+
+#### 146. Evidencia de validación
+
+| Clase     | Estado       | Evidencia                                                                                                                                                                                                                                                                                              |
+| --------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED | La batería del checkout se ejecutará después de insertar la tarea en su archivo propietario.                                                                                                                                                                                                           |
+| LOCAL     | PASS         | El artefacto fue validado estructuralmente: una tarea, metadata obligatoria, secciones requeridas, cinco clases de evidencia, cero placeholders, cero TREQ dentro de la sección de cero cambios y continuidad terminal.                                                                                |
+| REMOTA    | PASS         | Se verificaron `main` en `edeea19eea3a18d9eb5a1212f9c97f5ba4203e86`, continuidad, topología R2, 008 aprobado, catálogo versionado, `AUTH-CTX-026`, `AUTH-DB-034`, `AUTH-SRV-005`, 04A AUTH, scripts documentales vigentes, documentación actual de Supabase y el baseline read-only de `vento-os-dev`. |
+| OPERATIVA | NOT_EXECUTED | No se invocaron RPC empresariales ni se ejecutaron flujos reales de negocio.                                                                                                                                                                                                                           |
+| FÍSICA    | NOT_EXECUTED | No se creó ni aplicó migración, función, grant, policy, DDL, DML, despliegue o configuración.                                                                                                                                                                                                          |
+
+`REMOTA = PASS` valida el desarrollo documental y los hechos observados; no certifica una futura instancia física.
+
+#### 147. Criterios de aceptación
+
+009 queda documentalmente satisfecha cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. consume exactamente el handoff de 008;
+4. entrega a 010 sin absorber principal/actor;
+5. cada operación protegida tiene binding exacto;
+6. `permission_key` se resuelve por igualdad exacta;
+7. `app_code` se valida independientemente;
+8. la clave está activa;
+9. existe un único snapshot contractual aplicable;
+10. se conservan versión y hashes;
+11. la cardinalidad procede de la release;
+12. no se hardcodean conteos históricos;
+13. el permiso requerido es server-derived;
+14. un argumento cliente no elige una capacidad alternativa;
+15. una RPC multirama tiene matriz cerrada;
+16. un efecto compuesto conserva decisiones separadas;
+17. no existen wildcards;
+18. no existen prefijos permisivos;
+19. `app.access` no sustituye permisos internos;
+20. no existe herencia implícita entre acciones;
+21. alias y retiros son versionados;
+22. no se normaliza silenciosamente una identidad inválida;
+23. modalidad y lanes proceden del catálogo;
+24. prerrequisitos proceden del catálogo;
+25. scopes proceden del catálogo;
+26. contrato de recurso coincide;
+27. required sides se conservan;
+28. política de campos no se omite;
+29. sensibilidad y reautenticación no se degradan;
+30. deny conserva precedencia;
+31. grants individuales y de rol no crean bypass;
+32. simulación no produce autoridad real;
+33. dispositivo solo restringe conforme a contrato;
+34. helper booleano legacy no es decisión completa;
+35. `bypass_applied` legacy no se adopta como excepción canónica;
+36. `SECURITY DEFINER` no es autoridad empresarial;
+37. EXECUTE SQL no es permiso empresarial;
+38. service role no es wildcard de negocio;
+39. llamada PostgREST directa conserva autorización;
+40. backend conserva la misma obligación;
+41. RLS no crea semántica paralela;
+42. se respeta frescura;
+43. se respeta frontera transaccional;
+44. DENY y fallo técnico permanecen separados;
+45. se conserva evidencia correlacionable;
+46. la matriz por RPC cierra N/N;
+47. drift bloqueante se detecta;
+48. shadow no escoge el resultado más permisivo;
+49. rollback no relaja permiso exacto;
+50. no se ejecutan cambios físicos durante esta tarea documental.
+
+#### 148. Límites
+
+Esta tarea no:
+
+- materializa `AUTH-DB-009::package_id`;
+- crea o modifica migraciones;
+- modifica funciones o RPC;
+- modifica `app_permissions`;
+- modifica matrices de rol o empleado;
+- publica una nueva versión de catálogo;
+- crea runtime projections de R1;
+- materializa `evaluate_authorization`;
+- modifica `get_access_context`;
+- redefine sede o área;
+- valida principal/actor en lugar de 010;
+- cambia grants;
+- cambia RLS;
+- cambia Storage, Realtime, Edge Functions o cron;
+- retira helpers legacy;
+- crea aliases;
+- cambia consumidores;
+- ejecuta backfills;
+- modifica 04A;
+- abre E5;
+- abre `SHELL-CI-020`;
+- autoriza una instancia física.
+
+#### 149. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-008 — Validar área dentro de RPC sensibles`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles`
+
+
 ### [ ] AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
 ### [ ] AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
 ### [ ] AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
