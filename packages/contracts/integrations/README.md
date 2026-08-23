@@ -19,7 +19,10 @@ Materialización estática interna de la superficie lógica `@vento/contracts/in
 - `INT-EXT-013` conserva la semántica propietaria del mapping externo; `INT-POS-010`, `INT-POS-011` e `INT-POS-013` conservan sus especializaciones posteriores.
 - `SHELL-CON-022::GLOBAL` materializa `ExternalIdentifierMappingId`, `ExternalIdentifierRef`, `ExternalIdentifierMapping` y `ExternalIdentifierMappingRef` como forma estática compartida de mapping.
 - `INT-DB-004` conserva la persistencia física posterior de mappings externos/canónicos.
-- `SHELL-CON-023` y `SHELL-CON-024` conservan respectivamente idempotencia/conciliación y disposición de rechazo/cuarentena/compensación.
+- `INT-APP-004..010`, `INT-EXT-012`, `INT-EXT-017`, `INT-POS-013`, `INT-POS-020`, `INT-SALES-007` e `INT-SALES-008` conservan la semántica propietaria de idempotencia, retry, incertidumbre y conciliación.
+- `SHELL-CON-023::GLOBAL` materializa la forma estática compartida de idempotencia y conciliación.
+- `INT-DB-005`, `INT-DB-008` e `INT-DB-007` conservan respectivamente persistencia física de idempotencia, conciliación y auditoría de procesamiento.
+- `SHELL-CON-024` conserva en exclusiva la disposición compartida de rechazo/cuarentena/compensación.
 
 ## Principal técnico de integración
 
@@ -109,11 +112,43 @@ La adopción estática conserva exactamente `EXT-SYS-001..021`: 21/21 identidade
 
 Source contract SHA-256 `SHELL-CON-022`: `89fbd1be5e68ec81239097376a1656eb4722ad6f38f55b1b76bb1f3dd469f474`.
 
+## Idempotencia y conciliación compartidas
+
+`SHELL-CON-023::GLOBAL` materializa el contrato estático compartido de idempotencia y conciliación dentro de `@vento/contracts/integrations`, sin ejecutar claims, retries, conciliaciones ni efectos runtime.
+
+La superficie contiene `IntegrationIdempotencyScope`, `IntegrationIdempotencyRef`, `IntegrationIdempotencyRecord`, `ExternalIntegrationClaimState`, `IntegrationIdempotencyOutcome`, `IntegrationReconciliationRef`, `IntegrationReconciliationCase` e `IntegrationReconciliationClosureOutcome`.
+
+`IntegrationIdempotencyScope` conserva exactamente 7 alcances: `REQUEST_ACCEPTANCE`, `OWNER_COMMAND`, `EVENT_EMISSION`, `CONSUMER_INBOX`, `CONSUMER_EFFECT`, `EXTERNAL_RECEIPT` y `REPLAY_BATCH`. No existe una clave idempotente global de Vento OS ni de una venta.
+
+`IntegrationIdempotencyRef` conserva exactamente 6 campos de `IntegrationIdempotencyRef`: `scope`, `scope_owner_ref`, `namespace_ref`, `operation_key`, `generation` y `contract_version`. `operation_key` se fija antes del primer efecto, no es secreto y no cambia por retry, redelivery, restart, worker, dispositivo, deployment o transporte.
+
+`IntegrationIdempotencyRecord` conserva exactamente 21 campos de nivel superior para identidad, huella lógica versionada, claim, outcome, resultado recuperable, contexto externo condicional, temporalidad, correlación, auditoría y conciliación. `attempt_count` no cambia la identidad y no se fija aquí una representación escalar arbitraria.
+
+`ExternalIntegrationClaimState` conserva exactamente 7 estados de claim: `CLAIMED`, `SUCCEEDED`, `FAILED_RETRYABLE`, `FAILED_FINAL`, `OUTCOME_UNKNOWN`, `CANCELLED` y `EXPIRED`. `OUTCOME_UNKNOWN` permanece distinto de `RESULT_UNKNOWN`.
+
+`IntegrationIdempotencyOutcome` conserva exactamente 8 outcomes idempotentes: `APPLIED`, `DUPLICATE_RESULT_RETURNED`, `CONFLICTING_REUSE`, `IN_PROGRESS_RECOVERABLE`, `STALE_VERSION`, `OUT_OF_ORDER_DEFERRED`, `RECONCILIATION_REQUIRED` y `REJECTED`. Un duplicado compatible recupera el resultado previo con cero nueva mutación; una huella incompatible produce conflicto y `RECONCILIATION_REQUIRED` no autoriza repetición ciega.
+
+`IntegrationReconciliationRef` es una identidad estable, opaca y no secreta independiente de idempotency key, event ID, receipt ID, mapping ID, sale ID y effect ID. `IntegrationReconciliationCase` conserva exactamente 23 campos de nivel superior para fuentes comparadas, evidencia, diferencias, decisión, residuales, siguiente acción, responsable y cierre.
+
+`IntegrationReconciliationClosureOutcome` conserva exactamente 8 cierres de conciliación: `RESOLVED_CONFIRMED`, `RESOLVED_NO_EFFECT`, `RESOLVED_DUPLICATE_PRIOR_RESULT`, `RESOLVED_CORRECTED`, `RESOLVED_COMPENSATED`, `RESOLVED_WITH_ACCEPTED_RESIDUAL`, `PERMANENTLY_REJECTED` y `SUPERSEDED_BY_SUCCESSOR`. No existe un cierre `UNKNOWN` y el paso del tiempo no cierra incertidumbre.
+
+`ExternalReceivedEvent.idempotency_ref` permanece físicamente como referencia genérica ya verificada; `IntegrationIdempotencyRef` queda como tipo objetivo para adopción posterior sin modificar `ExternalReceivedEvent`. Mapping, idempotencia, correlación y conciliación permanecen contratos distintos.
+
+`CanonicalSaleId` y `CanonicalSaleLineId` no son claves universales de efectos downstream. Cada consumidora conserva inbox independiente y cada efecto su identidad propietaria; recuperar un efecto pendiente no reemite la venta ni reaplica efectos confirmados.
+
+La especialización POS conserva `SOURCE_SYSTEM_SCOPE`, `EXTERNAL_SALE_SCOPE` y `EXTERNAL_SALE_LINE_SCOPE`. `source_row_number`, file hash, fecha, sede, total, producto o posición no fabrican identidad. `makos_excel` continúa sin acreditar idempotencia individual de venta o línea.
+
+La matriz estática conserva `EXT-SYS-001..021` con adopción 21/21, faltantes 0, duplicados 0 y distribución exacta `1 + 6 + 2 + 2 + 1 + 1 + 7 + 1 = 21`. Wompi, RevenueCat, Resend, Expo Push, PassKit/APNs y Zebra aplican idempotencia/conciliación según su contrato; POS externo permanece `PENDIENTE_DE_EVIDENCIA` para identidad individual y telefonía/voz permanece bloqueada hasta `TI-INT-003`.
+
+`INT-DB-005`, `INT-DB-008` e `INT-DB-007` conservan la materialización física posterior. Esta instancia crea 0 registros idempotentes operativos, 0 casos de conciliación operativos, 0 claims runtime, 0 retries runtime, 0 tablas, 0 índices, 0 RPC, 0 migraciones, 0 consumidores migrados y 0 cambios Supabase.
+
+Source contract SHA-256 `SHELL-CON-023`: `d6630e1e3280845765308579eb06302ce1b476da96475de675a1667e06ee68f0`.
+
 ## Límite físico
 
-Las seis instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-022::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION` con modalidad `GLOBAL_ENABLE_ONCE`.
+Las siete instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-023::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION` con modalidad `GLOBAL_ENABLE_ONCE`.
 
-Esta materialización no publica el subpath, no modifica `packages/contracts/package.json`, no añade `exports`, no cambia la versión de `@vento/contracts`, no extiende `generated/index.ts`, no adopta consumidores, no ejecuta integraciones, no crea mappings runtime, no persiste datos, no crea tablas, migraciones, RLS, RPC o cambios Supabase y no modifica 04A/TREQ.
+Esta materialización no publica el subpath, no modifica `packages/contracts/package.json`, no añade `exports`, no cambia la versión de `@vento/contracts`, no extiende `generated/index.ts`, no adopta consumidores, no ejecuta integraciones, no crea mappings, claims, retries o conciliaciones runtime, no persiste datos, no crea tablas, migraciones, RLS, RPC o cambios Supabase y no modifica 04A/TREQ.
 
 ## Archivos generados
 
@@ -125,3 +160,5 @@ Esta materialización no publica el subpath, no modifica `packages/contracts/pac
 - `scripts/validate-canonical-sale-line-contract.mjs` valida frescura, forma exacta de 20 campos, 7 componentes monetarios, dependencia con `CanonicalSaleId`, fronteras de mapping/estado/agregados, seguridad, package, índice interno y READMEs.
 - `scripts/generate-external-identifier-mapping-contract.mjs` mantiene `generated/external-identifier-mapping.contract.ts` para `SHELL-CON-022`.
 - `scripts/validate-external-identifier-mapping-contract.mjs` valida frescura, vocabularios 10/7/8, formas 7/14/2, cobertura 21/21, fronteras con 019/021, package, índice interno, READMEs, runtime y secretos.
+- `scripts/generate-integration-idempotency-reconciliation-contract.mjs` mantiene `generated/integration-idempotency-reconciliation.contract.ts` para `SHELL-CON-023`.
+- `scripts/validate-integration-idempotency-reconciliation-contract.mjs` valida vocabularios 7/7/8/8, formas 6/21/23, cobertura 21/21, fronteras con 019/022, package, índice interno, READMEs, runtime y secretos.
