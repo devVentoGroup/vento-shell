@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1028** |
+| Tareas aprobadas | **1029** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **566** |
+| Tareas no iniciadas | **565** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **64.49% (1028/1594)** |
+| Porcentaje de completamiento | **64.55% (1029/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema** |
-| Tarea actual | **AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación** |
+| Última tarea aprobada | **AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación** |
+| Tarea actual | **AUTH-DB-022 — Implementar gobierno y políticas de Storage** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-022 — Implementar gobierno y políticas de Storage** |
+| Siguiente tarea | **AUTH-DB-023 — Implementar canales y contratos Realtime aprobados** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 27 de 51 aprobadas; AUTH-DB-011 pendiente** |
+| Progreso del bloque | **BLOQUE R: 28 de 51 aprobadas; AUTH-DB-022 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-NORM-009::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-011** |
+| Carril documental | **ACTIVO — AUTH-DB-022** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-NORM-009::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-021` — Implementar políticas RLS y grants canónicos por esquema |
-| Tarea actual | `AUTH-DB-011` — Aplicar constraints después de backfills y reconciliación — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-022` — Implementar gobierno y políticas de Storage |
+| Última aprobada | `AUTH-DB-011` — Aplicar constraints después de backfills y reconciliación |
+| Tarea actual | `AUTH-DB-022` — Implementar gobierno y políticas de Storage — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-023` — Implementar canales y contratos Realtime aprobados |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 27 DE 51 APROBADAS — ACTUAL AUTH-DB-011** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 28 DE 51 APROBADAS — ACTUAL AUTH-DB-022** |
 | Implementación física | **SHELL-NORM-009::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
-        ↓
-TAREA ACTUAL
 AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-022 — Implementar gobierno y políticas de Storage
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 27 de 51 tareas aprobadas
+BLOQUE R — 28 de 51 tareas aprobadas
 ```
