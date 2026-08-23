@@ -1,10 +1,51 @@
 {
   "instance_id": "SHELL-NORM-005::GLOBAL",
   "task_id": "SHELL-NORM-005",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-NORM-005::GLOBAL como diccionario ortografico puro, determinista, direccional y versionado interno de @vento/data-normalization para VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0, sin reinterpretar DATA-NORM-ARC-006.",
+    "Crear packages/data-normalization/src/normalization.dictionary.ts con locale es-CO, exactamente 21 atributos de entrada, 3 scopes, PRESERVE_RESOLVED_CASE_PATTERN, 3 modos de decision, 4 niveles de resolucion, 8 niveles de precedencia, 3 correcciones iniciales, 1 forma ambigua explicita, 11 condiciones de activacion, 6 estados y 7 resultados cerrados.",
+    "Materializar exclusivamente las correcciones ORTHO_ES_CO_MAIZ_MAIZ maiz -> maíz, ORTHO_ES_CO_CLASICO_CLASICO clasico -> clásico y ORTHO_ES_CO_FRIO_FRIO frio -> frío; no agregar una cuarta corrección ni activar expresso.",
+    "Exigir binding explicito para convertir una definicion normativa en OrthographicDictionaryEntry ejecutable; no inventar scope, evidencia, aprobacion, vigencia, representacion, fuente ni autoridad empresarial ausentes del contrato.",
+    "Consumir por version los contratos ya verificados de SHELL-NORM-002..004 sin modificar normalization.types.ts, normalization.rules.ts ni normalization.catalogs.ts; las excepciones oficiales y protecciones tecnicas conservan precedencia superior.",
+    "Crear packages/data-normalization/scripts/validate-normalization-dictionary.mjs para validar el contrato propietario mediante parseTaskBlocks, ejecutar primero compatibilidad 004/003/002, compilar con el TypeScript local y validar inventarios, fronteras y comportamiento mediante fixture ejecutable.",
+    "Reemplazar completamente packages/data-normalization/README.md para documentar SHELL-NORM-005 y preservar los marcadores historicos requeridos por los validadores de SHELL-NORM-002..004.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance de esta instancia.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-NORM-005__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar package manifests, lockfile, exports, dependencias, consumidores, busqueda SHELL-NORM-006, preview, auditoria runtime, identidad, unicidad, deduplicacion, fusion, persistencia, Supabase, DDL, DML, RPC, RLS, migraciones, backfills, constraints, indices, triggers, datos, 04A/TREQ ni SHELL-NORM-006..009."
+  ],
+  "validation_commands": [
+    "node packages/data-normalization/scripts/validate-normalization-dictionary.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext packages/data-normalization/src/normalization.types.ts packages/data-normalization/src/normalization.rules.ts packages/data-normalization/src/normalization.catalogs.ts packages/data-normalization/src/normalization.dictionary.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T10:38:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "6a9e98517f962da17c5b8877aa8f358f746e60a397ff621f8dd559bde5ae8837"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/data-normalization/src/normalization.dictionary.ts created with canonical dictionary identity VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0 and explicit locale es-CO",
+    "MATERIALIZATION entry_fields=21 scopes=3 case_projection=PRESERVE_RESOLVED_CASE_PATTERN decisions=3 resolution_levels=4 precedence=8",
+    "MATERIALIZATION normative_entries=3 ambiguous_forms=1 activation_conditions=11 statuses=6 results=7",
+    "MATERIALIZATION executable global entries with invented scope/evidence/approval=0; explicit activation binding required",
+    "MATERIALIZATION SHELL-NORM-002..004 source contracts preserved; normalization.types.ts normalization.rules.ts normalization.catalogs.ts unchanged",
+    "MATERIALIZATION packages/data-normalization/scripts/validate-normalization-dictionary.mjs and README update completed",
+    "MATERIALIZATION VITAL boundary explicit and blocked from Vento OS transversal dictionary",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 6a9e98517f962da17c5b8877aa8f358f746e60a397ff621f8dd559bde5ae8837",
+    "VALIDATION normalization dictionary validator PASS; entry_fields=21 scopes=3 decisions=3 resolution_levels=4 precedence=8 entries=3 ambiguous=1 activation_conditions=11 statuses=6 results=7 behavior=PASS previous_compatibility=PASS",
+    "VALIDATION TypeScript strict compile PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-NORM-005::GLOBAL VERIFIED"
+  ]
 }
