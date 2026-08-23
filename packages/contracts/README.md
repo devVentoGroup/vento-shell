@@ -147,22 +147,34 @@ La materialización no añade `exports` públicos, no modifica la versión de `@
 
 `SHELL-CON-017::GLOBAL` materializa internamente `packages/contracts/integrations` para la semántica lógica `@vento/contracts/integrations` con `IntegrationPrincipalId`, `IntegrationPrincipal` e `IntegrationPrincipalRef`. Conserva 21 decisiones `ESPECIFICADO`, 11 `PENDIENTE_DE_EVIDENCIA`, 10 `NO_APLICA` y 0 valores físicos de `IntegrationPrincipalId`.
 
-`SHELL-CON-018::GLOBAL` amplía el módulo con `ExternalCredentialId` y `ExternalCredentialRef`. Conserva 9 `PENDIENTE_DE_EVIDENCIA`, 2 `NO_APLICA` y 10 `NO_APLICA_ACTUAL`, con 0 valores físicos de `ExternalCredentialId`, 0 referencias persistidas y 0 secretos.
+`SHELL-CON-018::GLOBAL` amplía el módulo con `ExternalCredentialId` y `ExternalCredentialRef`. Conserva 9 `PENDIENTE_DE_EVIDENCIA`, 2 `NO_APLICA` y 10 `NO_APLICA_ACTUAL`, con 0 valores físicos de `ExternalCredentialId`, 0 referencias persistidas y 0 secretos. `INT-EXT-003..008` e `INT-DB-002` conservan su autoridad.
 
 `SHELL-CON-019::GLOBAL` materializa `ExternalReceivedEvent<TNormalizedAssertion>`. La cobertura conserva 21 decisiones, incluidas 2 `APLICA_EVENTO_INBOUND_ACREDITADO` para Wompi y RevenueCat y 19 sin evento externo recibido acreditado. La recepción externa no es un hecho empresarial ni transporta por defecto el payload sensible. El símbolo contractual `ExternalReceivedEvent` permanece como identidad de tipo interno de esa forma genérica.
 
-`SHELL-CON-020::GLOBAL` materializa `CanonicalSaleId` y `CanonicalSale<TSaleLine>` como representación estática de una venta individual. La forma mantiene 22 campos de nivel superior y 6 componentes monetarios, exige una colección no vacía de `TSaleLine` y conserva la semántica de `INT-POS-005` e `INT-SALES-001`. Una venta histórica Makos conserva Makos como fuente; PULSO solo es fuente bajo autoridad aprobada. Esta etapa conserva 0 ventas operativas y 0 cambios Supabase.
+`SHELL-CON-020::GLOBAL` materializa `CanonicalSaleId` y `CanonicalSale<TSaleLine>` como representación estática de una venta individual. La forma mantiene 22 campos de nivel superior y 6 componentes monetarios, exige una colección no vacía de `TSaleLine` y conserva la semántica de `INT-POS-005` e `INT-SALES-001`. Una venta histórica Makos conserva Makos como fuente; PULSO solo es fuente bajo autoridad aprobada. `source_system`, `source_sale_id`, `source_revision`, `occurred_at` y `recorded_at` permanecen separados. Esta etapa conserva 0 ventas operativas y 0 cambios Supabase.
 
 `SHELL-CON-021::GLOBAL` materializa `CanonicalSaleLineId` y `CanonicalSaleLine` y concreta la composición `CanonicalSale<CanonicalSaleLine>` sin redefinir el encabezado de venta. La semántica propietaria permanece en `INT-POS-005..013` e `INT-SALES-001`.
 
 `CanonicalSaleLine` contiene 20 campos de nivel superior y 7 componentes monetarios. Conserva identidad estable de línea, pertenencia por `sale_id`, identidad/secuencia/revisión de origen cuando existan, `sold_item_ref`, referencias separadas a producto/presentación/receta/mapping, cantidad/unidad, snapshot histórico, estado acreditable, temporalidad condicional, procedencia y correlación.
 
-`CanonicalSaleLineId` es estable, opaco y no secreto. Mapping, cuarentena, liberación, retry, replay, sincronización tardía y revisiones válidas no cambian su identidad. `source_line_id` no se fabrica; la posición o número de fila no es identidad universal.
-
-`product_ref` debe resolverse antes de efectos dependientes de producto; presentación y receta son condicionales. `ACTIVE` y `CANCELLED` solo se materializan con equivalencia semántica acreditada. `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED` conservan la semántica aprobada de `line_state_mapping_result` sin crear un enum físico ejecutable.
+`CanonicalSaleLineId` es estable, opaco y no secreto. `ACTIVE` y `CANCELLED` solo se materializan con equivalencia semántica acreditada. `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED` conservan la semántica aprobada. Mapping, cuarentena, liberación, retry, replay, sincronización tardía y revisiones válidas no cambian su identidad. `source_line_id` no se fabrica; la posición o número de fila no es identidad universal.
 
 El flujo agregado `makos_excel` no se eleva a línea individual sin granularidad e identidad suficientes. Una fila agregada, número de fila, producto + fecha + sede o hash de archivo no sustituyen `CanonicalSaleLineId`.
 
 La materialización crea 0 valores físicos de `CanonicalSaleLineId`, 0 líneas operativas, 0 persistencia, 0 mappings runtime, 0 consumidores migrados, 0 efectos downstream, 0 secretos y 0 cambios Supabase. No modifica `packages/contracts/package.json`, no añade `exports`, no extiende `generated/index.ts` y no publica el subpath.
 
-Las cinco instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-021::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION`. Para trazabilidad histórica, `SHELL-CON-020` identifica la tarea de venta ya materializada y `SHELL-CON-021` la tarea de línea ya materializada. `SHELL-CON-022`, `SHELL-CON-023` y `SHELL-CON-024` conservan respectivamente mapping compartido, idempotencia/conciliación y rechazo/cuarentena/compensación.
+Para trazabilidad histórica, `SHELL-CON-020` identifica la venta canónica ya materializada, `SHELL-CON-021` identifica la línea canónica ya materializada y `SHELL-CON-022` identifica el mapping compartido materializado en esta instancia.
+
+`SHELL-CON-022::GLOBAL` materializa la tarea `SHELL-CON-022` y amplía el mismo módulo con `ExternalIdentifierMappingId`, `ExternalIdentifierRef`, `ExternalIdentifierMapping` y `ExternalIdentifierMappingRef` como forma estática compartida de mapping bajo la autoridad semántica de `INT-EXT-013`, con especializaciones preservadas de `INT-POS-010`, `INT-POS-011` e `INT-POS-013`.
+
+`ExternalIdentifierRef` conserva exactamente 7 dimensiones contractuales: sistema externo, ambiente, superficie, namespace externo, clase, kind y valor. `ExternalIdentifierMapping` conserva exactamente 14 campos de nivel superior y `ExternalIdentifierMappingRef` exactamente 2 campos: `mapping_id` y `contract_version`.
+
+El contrato conserva exactamente 10 clases de identificador, 7 relaciones y 8 estados compartidos. La misma cadena no implica la misma identidad fuera de su namespace; coincidencia de UUID, email, teléfono, nombre, dirección, coordenadas, producto, `source_row_number`, hash o timestamp no acredita mapping exacto.
+
+`ExternalReceivedEvent.mapping_refs[]` y `CanonicalSaleLine.mapping_refs[]` permanecen físicamente sin migrar en esta instancia; `ExternalIdentifierMappingRef` queda como referencia tipada objetivo para una adopción posterior autorizada. Un mapping `RESOLVED` no concede autorización, autenticidad no sustituye mapping y mapping no sustituye idempotencia.
+
+La cobertura estática preserva `EXT-SYS-001..021` con adopción 21/21, faltantes 0 y duplicados 0. Wompi separa transaction ID, reference, canonical ID propagado y event ID; RevenueCat separa `app_user_id`, producto, original transaction y aliases; Expo Push Service conserva push token como routing ref; Google `place_id` no se convierte en `site_id`; PassKit mantiene separados serial, pass type, device library ID, push token y owner; Zebra requiere vínculo acreditado; `makos_excel` no obtiene granularidad individual; telefonía/voz conserva bloqueo hasta `TI-INT-003`.
+
+`INT-DB-004` conserva en exclusiva la persistencia física posterior. Esta materialización crea 0 valores físicos de `ExternalIdentifierMappingId`, 0 mappings operativos, 0 tablas, 0 índices, 0 RPC, 0 migraciones, 0 consumidores migrados y 0 cambios Supabase.
+
+Las seis instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-022::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION`. `SHELL-CON-023` conserva idempotencia y conciliación compartidas; `SHELL-CON-024` conserva rechazo, cuarentena y compensación.
