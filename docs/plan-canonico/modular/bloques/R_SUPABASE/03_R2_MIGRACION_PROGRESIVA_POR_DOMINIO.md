@@ -3094,7 +3094,1853 @@ Todo cambio físico pertenece a la instancia futura y a sus tareas propietarias.
 `AUTH-DB-007 — Validar sede dentro de RPC sensibles`
 
 
-### [ ] AUTH-DB-007 — Validar sede dentro de RPC sensibles
+### ✅ AUTH-DB-007 — Validar sede dentro de RPC sensibles
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles
+**Tarea siguiente:** AUTH-DB-008 — Validar área dentro de RPC sensibles
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para resolución y validación canónica de sede dentro de RPC sensibles
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `RPC-SITE-VALIDATION-007@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-007::package_id` permanece no ejecutada hasta satisfacer R0/R1 aplicables, el paquete E5 correspondiente, `SHELL-CI-020::package_id` y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-007` define cómo toda RPC sensible incluida en un paquete aprobado debe resolver y validar la sede empresarial relevante para la operación antes de producir efectos o entregar hechos territoriales al evaluador de autorización.
+
+La tarea recibe el handoff de `AUTH-DB-006`:
+
+```text
+AccessContext canónico resuelto
++
+recurso objetivo identificado
++
+site inputs clasificados
+```
+
+y lo transforma en un resultado territorial de sede determinista, verificable y no controlado por el caller.
+
+---
+
+#### 2. Decisión central
+
+La regla vinculante es:
+
+```text
+RPC SENSIBLE
+→ RESOLVER RECURSO O BORRADOR
+→ RESOLVER SU SEDE REAL O DECLARADA
+→ VALIDAR EXISTENCIA, RELACIONES Y COHERENCIA
+→ PRESERVAR CADA LADO TERRITORIAL REQUERIDO
+→ ENTREGAR HECHOS DE SEDE AL PIPELINE CANÓNICO
+→ NO CONCEDER ALLOW POR SÍ SOLA
+```
+
+Un `site_id` enviado por cliente puede expresar intención, localizar un recurso o declarar la sede objetivo de una creación, pero nunca constituye por sí mismo autoridad territorial.
+
+---
+
+#### 3. Contrato material producido
+
+Se define:
+
+```text
+RPC-SITE-VALIDATION-007@1.0.0
+```
+
+El contrato gobierna la resolución, clasificación y validación de la dimensión sede dentro de cada RPC sensible del package.
+
+No reemplaza:
+
+- `AccessContext@1.0.0`;
+- el contrato de recurso del permiso;
+- `AuthorizationDecision@1.0.0`;
+- la validación de área de `AUTH-DB-008`;
+- la evaluación de permiso exacto de `AUTH-DB-009`.
+
+---
+
+#### 4. Topología vinculante
+
+La topología vigente es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance = AUTH-DB-007::package_id
+```
+
+Consecuencias:
+
+1. el marcador documental se desarrolla una sola vez;
+2. no existe `AUTH-DB-007::GLOBAL`;
+3. cada package aplicable registra una instancia propia;
+4. cada instancia contiene únicamente RPC y recursos incluidos en ese package;
+5. la ejecución de una instancia no certifica otra;
+6. la aprobación documental no autoriza ejecución física.
+
+---
+
+#### 5. Gate temporal
+
+La futura instancia solo puede materializar cambios cuando, para el mismo `package_id`, se hayan satisfecho los gates aplicables del ciclo R2:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+E5-GATE-008::package_id = PASS
+SHELL-CI-020::package_id = OPENED
+physical_authorization = EXPLICIT
+```
+
+Si una precondición no está satisfecha, el package permanece cerrado para materialización.
+
+---
+
+#### 6. Handoff recibido de AUTH-DB-006
+
+006 entrega exactamente:
+
+```text
+AccessContext canónico resuelto
+recurso objetivo identificado
+site inputs clasificados
+```
+
+007 no vuelve a resolver el actor desde parámetros legacy.
+
+007 tampoco convierte la clasificación realizada por 006 en una decisión territorial automática.
+
+---
+
+#### 7. Handoff hacia AUTH-DB-008
+
+007 entrega a 008:
+
+```text
+site_resolution_status
++
+resolved_site_set
++
+resource_site_relationships
++
+resource area references cuando existan
++
+site/area coherence preconditions
+```
+
+008 conserva la responsabilidad exclusiva de validar área dentro de la RPC.
+
+---
+
+#### 8. Handoff hacia AUTH-DB-009
+
+007 entrega a 009 hechos, no autorización:
+
+```text
+AccessContext canónico
++
+ResolvedResourceContext
++
+resolved_site_set
++
+site resolution state
++
+resource side roles
++
+site classifications
+```
+
+009 adopta el permiso exacto y el evaluador canónico para decidir si el alcance concedido cubre esos hechos.
+
+---
+
+#### 9. Separación entre resolución y autorización
+
+La tarea distingue:
+
+```text
+RESOLVER SEDE
+≠
+AUTORIZAR SEDE
+```
+
+007 responde:
+
+```text
+¿qué sede o sedes pertenecen realmente al recurso?
+¿son coherentes y resolubles?
+¿qué papel tiene cada una?
+```
+
+No responde de forma final:
+
+```text
+¿el permiso exacto del actor cubre esa sede?
+```
+
+La segunda pregunta pertenece al pipeline de autorización exacta.
+
+---
+
+#### 10. Fuente canónica del territorio
+
+La sede de una operación se obtiene desde el contrato de recurso y sus relaciones canónicas.
+
+Regla:
+
+```text
+RECURSO O BORRADOR
+→ TERRITORY RESOLVER
+→ SEDE REAL
+```
+
+No:
+
+```text
+p_site_id
+→ AUTORIDAD TERRITORIAL
+```
+
+---
+
+#### 11. Contrato de recurso obligatorio
+
+Toda RPC sensible territorial debe enlazar un `resource_contract_id` vigente que defina, según aplique:
+
+```text
+resource_type
+resource_locator
+territory_resolver
+required_sides
+state_predicate
+concurrency_policy
+field_policy
+audit_policy
+```
+
+007 no inventa una ruta de sede cuando el contrato no la declara.
+
+---
+
+#### 12. Resolver canónico de recurso
+
+La fundación R1 aprobada reserva la resolución canónica de recurso dentro del pipeline de autorización.
+
+007 debe ser compatible con esa resolución y no crear un segundo resolver territorial independiente con semántica distinta.
+
+La instancia por package podrá adaptar RPC legacy, pero el resultado deberá ser semánticamente equivalente al contrato canónico de recurso.
+
+---
+
+#### 13. Estados canónicos de resolución
+
+Se preserva exactamente el vocabulario:
+
+```text
+RESOLVED
+MULTI_RESOLVED
+NOT_APPLICABLE
+UNRESOLVED
+CONFLICT
+ISOLATED
+```
+
+007 no crea estados alternos para sede que contradigan esta taxonomía.
+
+---
+
+#### 14. RESOLVED
+
+`RESOLVED` significa:
+
+```text
+recurso o borrador exacto
++
+una sede territorial aplicable
++
+relaciones coherentes
++
+identidad de sede comprobable
+```
+
+Este estado permite continuar el pipeline.
+
+No significa `ALLOW`.
+
+---
+
+#### 15. MULTI_RESOLVED
+
+`MULTI_RESOLVED` significa que se resolvieron todos los lados territoriales de sede exigidos por el contrato.
+
+Ejemplos:
+
+```text
+origin_site
+destination_site
+seller_site
+buyer_site
+requesting_site
+fulfillment_site
+```
+
+Los lados no se colapsan a una sola sede.
+
+---
+
+#### 16. NOT_APPLICABLE
+
+`NOT_APPLICABLE` solo es válido cuando el contrato de recurso declara legítimamente que la operación no posee dimensión de sede variable.
+
+Casos posibles:
+
+```text
+NT
+ORG
+recurso organizacional sin sede
+```
+
+En ese caso 007 no inventa una sede para satisfacer una validación territorial inexistente.
+
+---
+
+#### 17. UNRESOLVED
+
+`UNRESOLVED` significa que falta una dimensión de sede necesaria.
+
+No puede repararse mediante:
+
+- sede seleccionada;
+- sede primaria;
+- `employees.site_id`;
+- última sede usada;
+- primera sede asignada;
+- sede del dispositivo;
+- `p_site_id` libre;
+- valor por defecto de la aplicación.
+
+La operación falla cerrada para la dimensión que exige sede.
+
+---
+
+#### 18. CONFLICT
+
+`CONFLICT` se produce cuando dos fuentes que deberían representar el mismo hecho territorial se contradicen.
+
+Ejemplos:
+
+```text
+order.site_id != persisted_fulfillment.site_id
+area.site_id != resolved_resource.site_id
+request_site != persisted_resource_site cuando deben coincidir
+origin relation contradictoria
+duplicate authoritative relationship
+```
+
+El conflicto no se resuelve escogiendo una fuente arbitrariamente.
+
+---
+
+#### 19. ISOLATED
+
+`ISOLATED` se conserva cuando el recurso o su sede pertenecen a un aislamiento no incluido en la autoridad ordinaria aplicable.
+
+Un alcance organizacional ordinario no convierte un recurso aislado en accesible.
+
+---
+
+#### 20. Sede solicitada por cliente
+
+Un valor como:
+
+```text
+p_site_id
+site_id
+selected_site_id
+target_site_id
+```
+
+se trata según su rol contractual.
+
+Puede ser:
+
+- localizador;
+- intención de creación;
+- filtro;
+- lado explícito de un recurso multilado;
+- dato de compatibilidad.
+
+Nunca es evidencia suficiente de autoridad.
+
+---
+
+#### 21. Roles cerrados para inputs de sede
+
+Cada site input de una RPC incluida se clasifica exactamente como uno de:
+
+```text
+RESOURCE_LOCATOR_SITE
+RESOURCE_DRAFT_SITE
+FILTER_ONLY
+MULTI_SIDE_ORIGIN
+MULTI_SIDE_DESTINATION
+RELATED_RESOURCE_SITE
+HISTORICAL_SNAPSHOT_SITE
+COMPATIBILITY_ONLY
+UNTRUSTED_AUTHORITY_SITE
+NOT_APPLICABLE
+```
+
+Una firma puede contener varios inputs con roles distintos.
+
+---
+
+#### 22. RESOURCE_LOCATOR_SITE
+
+`RESOURCE_LOCATOR_SITE` participa en localizar un recurso, pero no reemplaza la lectura de su estado territorial persistido.
+
+Ejemplo:
+
+```text
+order_id + site_id
+→ localizar candidate
+→ leer order
+→ obtener persisted site
+→ comparar
+```
+
+Si el contrato exige coincidencia y no coincide, el resultado es conflicto o denegación estructural, nunca reubicación silenciosa.
+
+---
+
+#### 23. RESOURCE_DRAFT_SITE
+
+`RESOURCE_DRAFT_SITE` representa la sede propuesta de un recurso que todavía no existe.
+
+La sede de creación debe:
+
+1. tener forma válida;
+2. existir en la fuente autoritativa aplicable;
+3. pertenecer al dominio/organización esperados;
+4. cumplir estado y clasificación exigidos;
+5. ser coherente con relaciones padre;
+6. quedar incorporada al borrador normalizado;
+7. ser evaluada después contra el permiso exacto.
+
+---
+
+#### 24. FILTER_ONLY
+
+Un filtro de sede:
+
+```text
+site_id
+site_ids
+selected_site
+```
+
+puede reducir un conjunto previamente autorizable.
+
+Regla:
+
+```text
+FILTRO
+→ REDUCE
+```
+
+Nunca:
+
+```text
+FILTRO
+→ AMPLÍA
+```
+
+Una lista no se recupera globalmente para filtrar únicamente en el cliente.
+
+---
+
+#### 25. MULTI_SIDE_ORIGIN
+
+Cuando una sede es origen obligatorio:
+
+```text
+origin_site_id
+```
+
+007 conserva ese lado con identidad independiente.
+
+No se sustituye por la sede del actor ni por la sede destino.
+
+---
+
+#### 26. MULTI_SIDE_DESTINATION
+
+Cuando una sede es destino obligatorio:
+
+```text
+destination_site_id
+```
+
+007 conserva ese lado con identidad independiente.
+
+Una autoridad sobre el origen no implica autoridad sobre destino.
+
+---
+
+#### 27. RELATED_RESOURCE_SITE
+
+Cuando la sede se deriva mediante una relación:
+
+```text
+document → employee → active territory
+location → zone → site
+fulfillment → order → site
+```
+
+la relación debe existir y ser coherente.
+
+Una cadena rota produce `UNRESOLVED`; una cadena contradictoria produce `CONFLICT`.
+
+---
+
+#### 28. HISTORICAL_SNAPSHOT_SITE
+
+Un recurso histórico puede requerir la sede vigente al momento del hecho y no la sede actual.
+
+La implementación futura deberá usar el snapshot territorial aprobado por el contrato.
+
+Regla:
+
+```text
+HISTORIA
+→ TERRITORIO HISTÓRICO AUTORITATIVO
+```
+
+No se reescribe el pasado usando la sede actual del actor, del empleado o del recurso.
+
+---
+
+#### 29. COMPATIBILITY_ONLY
+
+Un argumento legacy puede conservarse temporalmente para no romper consumidores.
+
+Si está clasificado `COMPATIBILITY_ONLY`:
+
+- no concede autoridad;
+- puede compararse contra el hecho resuelto;
+- puede participar en compatibilidad observable;
+- tiene owner y sunset;
+- no se usa como fallback.
+
+---
+
+#### 30. UNTRUSTED_AUTHORITY_SITE
+
+Un parámetro que históricamente se utilizaba como autoridad debe marcarse explícitamente:
+
+```text
+UNTRUSTED_AUTHORITY_SITE
+```
+
+La migración debe dejar de usarlo para decidir territorio.
+
+Conservarlo en la firma no autoriza conservar su semántica insegura.
+
+---
+
+#### 31. NOT_APPLICABLE como input
+
+`NOT_APPLICABLE` para un input de sede significa que ese argumento no participa en la dimensión territorial de autorización.
+
+No convierte una RPC territorial en no territorial.
+
+La clasificación se hace por argumento y por contrato de recurso.
+
+---
+
+#### 32. Recursos existentes
+
+Para un recurso existente:
+
+```text
+stable resource locator
+→ current persisted resource
+→ canonical relationships
+→ current or contract-approved historical territory
+```
+
+La sede real del recurso gobierna la resolución.
+
+Un site recibido se compara cuando el contrato lo requiere, pero no sobrescribe la sede persistida.
+
+---
+
+#### 33. Creaciones
+
+Para una creación:
+
+```text
+validated intent
+→ normalized ResourceDraft
+→ target site resolution
+→ relationship validation
+→ evaluator
+→ insert
+```
+
+La sede objetivo debe quedar resuelta antes de persistir.
+
+No existe fase válida:
+
+```text
+insertar primero
+→ descubrir después si la sede era autorizable
+```
+
+---
+
+#### 34. Actualizaciones sin cambio territorial
+
+Cuando una actualización no pretende cambiar sede:
+
+1. se resuelve la sede actual desde el recurso;
+2. cualquier site selector requerido debe coincidir;
+3. la sede se mantiene como hecho de recurso;
+4. no se acepta un campo de sede no permitido dentro del payload final;
+5. el evaluador recibe la sede real.
+
+---
+
+#### 35. Actualizaciones con cambio territorial
+
+Si una operación puede mover un recurso entre sedes:
+
+```text
+current_site
++
+proposed_site
+```
+
+ambas deben resolverse.
+
+El resultado territorial es multilado.
+
+La futura evaluación debe autorizar todos los lados obligatorios según el contrato de recurso.
+
+007 no colapsa la operación al `proposed_site`.
+
+---
+
+#### 36. Eliminaciones
+
+Una eliminación utiliza el territorio del recurso existente antes de borrarlo.
+
+La autorización no puede evaluarse después de perder la relación territorial que la sustentaba.
+
+La evidencia conserva la sede resuelta.
+
+---
+
+#### 37. Transiciones de estado
+
+Cambiar estado no elimina el requisito territorial.
+
+La RPC debe resolver el recurso, su sede y el estado vigente dentro de una frontera coherente antes de la transición.
+
+Las reglas concretas de estado siguen siendo propiedad del contrato de recurso y sus tareas dueñas.
+
+---
+
+#### 38. Colecciones
+
+Para colecciones:
+
+```text
+scope autorizado
+→ query server-side
+→ filtro solicitado
+→ paginación/orden
+```
+
+007 asegura que la dimensión sede de la colección sea computable por miembro o por consulta equivalente.
+
+No se autoriza una colección por el `site_id` de la pantalla.
+
+---
+
+#### 39. Agregados
+
+Un agregado territorial solo puede incorporar miembros cuya sede sea resoluble dentro del conjunto que después será autorizado.
+
+La etiqueta de un agregado no sustituye los territorios de sus miembros.
+
+No puede inferir o revelar datos de sedes excluidas mediante totales o conteos.
+
+---
+
+#### 40. Operaciones masivas
+
+Una operación masiva no convierte múltiples recursos en una única sede por conveniencia.
+
+Cada miembro conserva:
+
+```text
+resource_id
+resolved_site_set
+resolution_state
+```
+
+o una consulta demostrablemente equivalente.
+
+La política de atomicidad pertenece al contrato del comando.
+
+---
+
+#### 41. Recursos no territoriales
+
+Si el contrato declara `NT` u `ORG`:
+
+- 007 acepta `NOT_APPLICABLE` para sede;
+- no usa sede del actor;
+- no exige `employee_sites`;
+- no convierte ausencia de sede en denegación por sí sola;
+- tampoco convierte ausencia de sede en globalidad.
+
+El evaluador conserva las demás restricciones.
+
+---
+
+#### 42. Sede activa
+
+Para recursos corrientes que exigen sede ordinaria activa, la sede resuelta debe cumplir la política de vigencia definida por el contrato.
+
+007 no establece una regla universal de:
+
+```text
+site.is_active = true
+```
+
+para todo objeto histórico.
+
+Los recursos históricos usan la semántica temporal aprobada de su contrato.
+
+---
+
+#### 43. Fuente física de sedes
+
+La futura instancia debe consumir la fuente autoritativa vigente en el candidate del package.
+
+El estado AS-IS observado contiene:
+
+```text
+public.sites
+```
+
+pero R2 puede mover esa autoridad al owner schema aprobado.
+
+Por tanto, 007 no congela `public.sites` como ubicación física eterna.
+
+---
+
+#### 44. Identidad de sede
+
+La identidad territorial se basa en el identificador canónico de sede resuelto desde la fuente vigente.
+
+Un nombre humano no constituye identidad.
+
+Un código puede participar como identificador contractual cuando su contrato lo declare, pero no se compara por texto libre.
+
+---
+
+#### 45. Tipo de sede
+
+`site_type` es una clasificación territorial, no una sede concreta.
+
+Regla:
+
+```text
+SITE TYPE
+≠
+SITE ID
+```
+
+Una capacidad por tipo de sede todavía debe resolver la sede real del recurso.
+
+---
+
+#### 46. Campos físicos legacy de tipo
+
+El estado actual puede contener más de una representación física histórica de clasificación de sede.
+
+Una instancia no escogerá entre campos legacy por parecido de nombre.
+
+El mapping físico debe proceder del contrato de transición y del candidate aplicable.
+
+---
+
+#### 47. Sedes asignadas
+
+El contexto canónico representa `assigned_sites` como lista explícita.
+
+En el estado AS-IS, la relación laboral relevante se observa mediante la fuente equivalente a:
+
+```text
+employee_sites
+```
+
+La ubicación física futura puede cambiar por R2 sin cambiar la semántica.
+
+---
+
+#### 48. employees.site_id
+
+`employees.site_id` se considera referencia legacy de sede primaria en el modelo actual.
+
+No es la fuente canónica definitiva de cobertura multisede.
+
+No se usa como fallback cuando la relación autoritativa de sedes asignadas está vacía o es inválida.
+
+---
+
+#### 49. Sede primaria
+
+Una sede primaria:
+
+```text
+is_primary = true
+```
+
+es referencia laboral.
+
+No concede:
+
+- permiso;
+- cobertura global;
+- autoridad sobre el recurso;
+- fallback territorial;
+- sustitución del `territory_resolver`.
+
+---
+
+#### 50. Sede seleccionada
+
+La sede seleccionada es preferencia de navegación o filtro.
+
+No participa como autoridad.
+
+Puede reducir la experiencia visible cuando esté dentro del conjunto permitido, pero no crea una nueva sede autorizable.
+
+---
+
+#### 51. Lista vacía de assigned_sites
+
+```text
+assigned_sites = []
+```
+
+no significa:
+
+- todas las sedes;
+- la sede primaria;
+- la sede seleccionada;
+- sede global;
+- sede del recurso;
+- sede del dispositivo.
+
+La interpretación permanece literalmente vacía.
+
+---
+
+#### 52. Cobertura administrativa
+
+`administrative_coverage` es un hecho contextual que puede contribuir al carril base.
+
+No es una decisión de permiso.
+
+007 no convierte:
+
+```text
+administrative_coverage.site_ids
+```
+
+en `ALLOW`.
+
+La cobertura se entrega al evaluador junto con el permiso exacto y el recurso.
+
+---
+
+#### 53. Alcance global
+
+Un permiso con alcance global organizacional puede cubrir múltiples sedes ordinarias.
+
+Sin embargo:
+
+```text
+GLOBAL
+≠
+WILDCARD DE RECURSO
+```
+
+007 todavía resuelve la sede real del recurso cuando el recurso es territorial.
+
+---
+
+#### 54. Alcance AS
+
+El alcance conceptual `AS` representa sedes activamente asignadas.
+
+La colección de sedes asignadas proviene del contexto/fuente laboral canónica, no de `employees.site_id`.
+
+007 entrega la sede real del recurso; 009 determina si el permiso exacto con alcance AS la cubre.
+
+---
+
+#### 55. Alcance SS
+
+`SS` representa una sede específica.
+
+007 no decide el grant SS.
+
+Su obligación es entregar una sede real exacta para que el evaluador pueda comparar identidad con identidad.
+
+---
+
+#### 56. Alcances AST y TST
+
+Para permisos por tipo de sede:
+
+- 007 resuelve la sede exacta;
+- resuelve su clasificación canónica cuando el contrato la necesita;
+- no transforma el tipo en lista de sedes por inferencia;
+- no trata TST como modalidad predeterminada.
+
+La evaluación del grant sigue en 009.
+
+---
+
+#### 57. Alcance CTX
+
+`CTX` utiliza territorio operativo efectivo.
+
+007 entrega la sede del recurso.
+
+El `AccessContext` entrega la sede operativa efectiva.
+
+El evaluador decide la compatibilidad entre ambos hechos.
+
+007 no sustituye la sede del recurso por la sede operativa.
+
+---
+
+#### 58. OWN
+
+La relación `OWN` no elimina la sede.
+
+Un recurso propio puede seguir estando sujeto a territorio.
+
+007 resuelve la sede aunque el sujeto sea el actor.
+
+---
+
+#### 59. Carril base
+
+En el carril base:
+
+- la cobertura administrativa puede participar;
+- no se exige turno por el solo hecho de validar sede;
+- una sede asignada no concede permiso;
+- una sede primaria no concede permiso;
+- el permiso exacto conserva su modalidad y alcance.
+
+---
+
+#### 60. Carril operativo
+
+En el carril operativo:
+
+```text
+operational_site
+```
+
+proviene del contexto canónico aprobado.
+
+La sede del recurso se resuelve de forma independiente.
+
+El evaluador posterior intersecta las condiciones del carril operativo y el recurso.
+
+---
+
+#### 61. BASE_OR_OPERATIONAL
+
+En `BASE_OR_OPERATIONAL`, cada carril conserva su propia resolución y alcance.
+
+007 no fusiona:
+
+```text
+administrative site coverage
++
+operational site
+```
+
+en un único wildcard territorial.
+
+---
+
+#### 62. BASE_AND_OPERATIONAL
+
+En `BASE_AND_OPERATIONAL`, los hechos territoriales de ambos carriles deben permanecer disponibles para la intersección posterior.
+
+007 no declara éxito final porque uno de los carriles coincida.
+
+---
+
+#### 63. Dispositivo compartido
+
+El territorio de un dispositivo puede restringir.
+
+No puede:
+
+- crear la sede del recurso;
+- ampliar las sedes del actor;
+- sustituir el turno;
+- sustituir `assigned_sites`;
+- autorizar una sede distinta.
+
+La compatibilidad final permanece en el evaluador y las tareas propietarias de dispositivo.
+
+---
+
+#### 64. Principal técnico
+
+Una credencial técnica o proceso de sistema no convierte el territorio en irrelevante.
+
+Cuando el recurso es territorial, su sede continúa resolviéndose.
+
+La autoridad del proceso técnico pertenece a su contrato propietario.
+
+---
+
+#### 65. service_role
+
+`service_role` es una capacidad técnica de infraestructura.
+
+No significa:
+
+```text
+all_sites
+global_business_authority
+skip_resource_territory
+```
+
+Una RPC ejecutada mediante una credencial privilegiada debe conservar las mismas reglas contractuales de territorio aplicables a su operación.
+
+---
+
+#### 66. SECURITY DEFINER
+
+`SECURITY DEFINER` no concede autoridad territorial.
+
+007 no exige añadirlo.
+
+Cuando una RPC ya usa o necesita legítimamente ese modo:
+
+- conserva autorización empresarial explícita;
+- endurece `search_path` según la fundación aprobada;
+- minimiza `EXECUTE`;
+- no usa el owner técnico como actor empresarial.
+
+---
+
+#### 67. Grants y RLS
+
+007 no modifica grants ni policies.
+
+Sí registra si la RPC puede ser ejecutada por:
+
+```text
+PUBLIC
+anon
+authenticated
+service
+```
+
+porque esa superficie afecta el riesgo y las pruebas.
+
+La política final de RLS y grants permanece en `AUTH-DB-021`.
+
+---
+
+#### 68. Null no es global
+
+Un `site_id = null` no significa por sí mismo:
+
+```text
+all_sites
+global
+organization
+assigned_sites
+```
+
+La interpretación procede únicamente del contrato de permiso/recurso que corresponda.
+
+Los `null` históricos no reciben nueva semántica local.
+
+---
+
+#### 69. Site + null legacy
+
+Cuando una configuración legacy de alcance `site + null` conserva semántica aprobada de sedes asignadas, esa interpretación pertenece al contrato canónico de alcance y no a una regla genérica de SQL.
+
+007 no transforma cualquier argumento de sede nulo en `assigned_sites`.
+
+---
+
+#### 70. Operaciones cross-site
+
+Una operación que afecta más de una sede conserva todos los lados requeridos.
+
+Ejemplo:
+
+```text
+inventory transfer
+→ origin
+→ destination
+```
+
+Participar en un lado no autoriza el otro.
+
+La futura decisión exacta deberá comprobar todos los lados requeridos.
+
+---
+
+#### 71. Remisiones y logística
+
+Los recursos de remisión pueden cambiar qué lado es relevante según estado y acción.
+
+007 consume `required_sides` del contrato.
+
+No fija por sí sola que origen o destino sea siempre suficiente.
+
+---
+
+#### 72. Pagos y pedidos
+
+Una RPC que recibe:
+
+```text
+order_id
++
+site_id
+```
+
+debe resolver el pedido y su sede persistida o contractual.
+
+El parámetro de sede no puede desplazar un pedido a otro territorio ni actuar como prueba de pertenencia.
+
+---
+
+#### 73. Inventario
+
+Stock, ubicación, conteo, ajuste o traslado deben resolver sus relaciones territoriales desde las fuentes del dominio.
+
+Un `p_site_id` de una RPC de inventario puede participar como locator o draft intent, pero no sustituye la relación real entre stock, ubicación y sede.
+
+---
+
+#### 74. Asistencia
+
+Un evento de asistencia puede contener sede observada, geofence o sede de turno.
+
+Cada dimensión conserva su significado.
+
+007 no declara equivalentes:
+
+```text
+requested site
+geofence site
+shift site
+employee primary site
+```
+
+El contrato aplicable determina cuál es el territorio del recurso o evento.
+
+---
+
+#### 75. Administración de perfiles
+
+Operaciones sobre perfiles operativos o configuraciones de sede deben distinguir:
+
+```text
+target employee
+target site
+actor territory
+resource owner
+```
+
+El `target_site` es el objeto solicitado; no prueba que el actor pueda administrarlo.
+
+---
+
+#### 76. Simulación
+
+Una sede simulada no se transforma en sede real del actor.
+
+Las RPC empresariales reales no usan un contexto simulado para producir autoridad real.
+
+Las herramientas de simulación conservan contratos separados y sin mutaciones prohibidas.
+
+---
+
+#### 77. Frescura
+
+Cuando la sede efectiva depende de asignaciones, turno, check-in, actor o dispositivo, la instancia usa la fundación de frescura aprobada.
+
+Una sede resuelta desde un contexto obsoleto no puede conservarse indefinidamente como autoridad.
+
+007 no inventa TTL local.
+
+---
+
+#### 78. Frontera transaccional
+
+Para una mutación:
+
+```text
+resolve resource
+→ resolve site
+→ evaluate
+→ validate state/concurrency
+→ write
+```
+
+debe ocurrir dentro de una frontera que impida usar un territorio que cambió entre evaluación y escritura.
+
+Cuando no pueda mantenerse la misma frontera, se revalida antes del efecto.
+
+---
+
+#### 79. TOCTOU territorial
+
+La instancia debe probar cambios concurrentes de sede o relación territorial.
+
+No es válido:
+
+```text
+authorize site A
+→ resource moves to site B
+→ write using old decision
+```
+
+El control puede ser versión, lock, snapshot o mecanismo equivalente definido por el contrato de recurso.
+
+---
+
+#### 80. Error seguro
+
+007 no crea mensajes de negocio libres como fuente contractual.
+
+Los resultados territoriales internos usan estados y reason codes canónicos.
+
+La proyección cliente usa únicamente códigos seguros aprobados por la capa de error correspondiente.
+
+---
+
+#### 81. Auditoría
+
+La evidencia territorial conserva como mínimo, cuando aplique:
+
+```text
+package_id
+candidate_id
+rpc identity
+resource reference
+resource_contract_id
+site_resolution_status
+resolved_site_set
+side roles
+source references
+context_id
+decision reference posterior
+correlation_id
+timestamp
+```
+
+No necesita exponer el `AccessContext` completo.
+
+---
+
+#### 82. Registro por RPC
+
+Cada futura instancia mantiene una fila por firma exacta con, como mínimo:
+
+```text
+rpc_site_validation_id
+package_id
+candidate_id
+transition_key
+migration_unit_id
+schema_name
+function_name
+identity_arguments
+resource_contract_id
+site_inputs
+site_input_roles
+site_resolution_mode
+resource_site_source
+historical_territory_mode
+site_state_requirement
+multi_side_roles
+legacy_site_fallbacks
+context_site_inputs
+handoff_008
+handoff_009
+handoff_010
+rls_handoff_021
+types_handoff_026
+compatibility_reference
+consumer_reference
+rollback_reference
+adoption_state
+evidence_reference
+owner
+```
+
+La fila se identifica por package y firma exacta.
+
+---
+
+#### 83. Modos de resolución de sede
+
+Cada RPC usa uno o más modos contractuales explícitos:
+
+```text
+FROM_EXISTING_RESOURCE
+FROM_NORMALIZED_DRAFT
+FROM_RELATED_RESOURCE
+FROM_HISTORICAL_SNAPSHOT
+FROM_COLLECTION_MEMBERS
+FROM_AGGREGATE_MEMBERS
+MULTI_SIDE
+NOT_APPLICABLE
+```
+
+No existe `FROM_CALLER_AUTHORITY`.
+
+---
+
+#### 84. Resultado lógico de validación
+
+El resultado interno equivalente conserva:
+
+```text
+resolution_state
+resource_contract_id
+sites[]
+```
+
+Cada elemento de `sites[]` conserva, cuando aplique:
+
+```text
+side_role
+site_id
+site_code
+site_type
+source_path
+state_observed
+historical_snapshot
+```
+
+Este shape es interno y no se declara como nuevo contrato público.
+
+---
+
+#### 85. Cardinalidad por package
+
+Para cada package:
+
+```text
+RPC sensibles esperadas para 007 = N
+RPC clasificadas = N
+RPC sin tratamiento = 0
+site inputs sin rol = 0
+resource contracts faltantes = 0
+resoluciones ambiguas aceptadas = 0
+fallbacks permisivos aceptados = 0
+```
+
+`N` procede del alcance aprobado y del preflight de drift.
+
+---
+
+#### 86. Universo no fijado por heurística
+
+El estado remoto observado contiene actualmente funciones con argumentos de sede, pero esa observación no define el universo canónico de 007.
+
+Una RPC sin `p_site_id` puede seguir siendo territorial por sus relaciones.
+
+Una RPC con `p_site_id` puede ser pública, técnica, no territorial para autorización o estar fuera del package.
+
+---
+
+#### 87. Baseline remoto observado
+
+En el corte read-only de desarrollo se observó:
+
+```text
+public/api functions = 247
+firmas con p_site_id uuid = 42
+de esas, EXECUTE authenticated = 41
+de esas, EXECUTE anon = 16
+de esas, SECURITY DEFINER = 39
+```
+
+También existen funciones que:
+
+```text
+referencian selected_site
+referencian employees.site_id o equivalentes
+usan current_employee_site_id
+usan get_operational_context
+```
+
+Estos conteos son señales de auditoría AS-IS y deberán recapturarse por candidate.
+
+---
+
+#### 88. Ejemplos de firmas AS-IS a clasificar cuando entren en un package
+
+Ejemplos observados:
+
+```text
+apply_inventory_site_count(...)
+assign_inventory_stock_to_location(...)
+create_inventory_count_session_with_lines(...)
+create_order_delivery_courier_link(...)
+process_order_payment(...)
+register_shift_departure_event(...)
+start_attendance_break(...)
+update_order_operational_state(...)
+upsert_employee_site_operational_profile(...)
+viso_accounting_dashboard(...)
+```
+
+La presencia en esta lista no las incluye automáticamente en una instancia futura.
+
+El package y sus `transition_keys` gobiernan inclusión.
+
+---
+
+#### 89. RPC legacy de contexto
+
+`get_operational_context(...)` acepta una sede suministrada por caller y contiene fallbacks incompatibles con el modelo canónico final.
+
+007 no reutiliza esa semántica como resolver de sede.
+
+La compatibilidad temporal puede conservar firmas, nunca autoridad legacy.
+
+---
+
+#### 90. Helper legacy de permisos
+
+Los helpers booleanos legacy que reciben `site_id` no demuestran que la sede haya sido resuelta desde el recurso.
+
+007 no considera suficiente:
+
+```text
+has_permission(permission, caller_site)
+```
+
+como prueba territorial de una RPC.
+
+---
+
+#### 91. Funciones anon actuales
+
+Que una firma con `p_site_id` tenga `EXECUTE` por `anon` es una observación de superficie, no una declaración de publicidad legítima.
+
+La audiencia y los grants finales se reconcilian en su package y en `AUTH-DB-021`.
+
+007 debe probar que un caller anónimo no puede convertir site input en autoridad cuando la RPC es protegida.
+
+---
+
+#### 92. Funciones privileged actuales
+
+Que una RPC sea `SECURITY DEFINER` aumenta la necesidad de demostrar resolución territorial correcta.
+
+No autoriza:
+
+```text
+trust p_site_id
+skip resource lookup
+skip actor context
+skip evaluator
+```
+
+---
+
+#### 93. Drift previo a materialización
+
+Antes de ejecutar una identidad se recaptura:
+
+```text
+schema
+function name
+identity arguments
+body
+owner
+security mode
+search_path
+EXECUTE grants
+resource relationships
+site sources
+consumer set
+migration version
+```
+
+Resultado:
+
+```text
+MATCH
+APPROVED_DRIFT
+BLOCKING_DRIFT
+```
+
+Un cambio material no aprobado bloquea esa identidad.
+
+---
+
+#### 94. Pruebas de sede requerida
+
+Por cada RPC territorial aplicable se prueban, como mínimo:
+
+- sede existente correcta;
+- sede inexistente;
+- sede inactiva cuando la política exige actividad;
+- sede aislada;
+- site input nulo;
+- site input de otra sede;
+- recurso con sede distinta al input;
+- recurso sin sede resoluble;
+- relación territorial duplicada;
+- relación territorial contradictoria.
+
+---
+
+#### 95. Pruebas de creación
+
+Para un `ResourceDraft`:
+
+- target site válida;
+- target site inexistente;
+- target site inactiva cuando aplica;
+- parent de otra sede;
+- area que pertenece a otra sede;
+- caller intenta alterar sede después de validación;
+- draft sin dimensión obligatoria;
+- idempotent retry con misma sede;
+- retry con sede distinta.
+
+La validación específica del área se completa en 008.
+
+---
+
+#### 96. Pruebas cross-site
+
+Cuando el contrato sea multilado:
+
+- origen permitido y destino no permitido;
+- origen no permitido y destino permitido;
+- ambos iguales cuando el dominio lo prohíbe;
+- relación origen/destino inexistente;
+- uno de los lados aislado;
+- lado faltante;
+- lado cambia concurrentemente;
+- ambos lados resueltos.
+
+007 prueba la resolución; 009 prueba la autorización exacta.
+
+---
+
+#### 97. Pruebas de contexto
+
+Casos:
+
+- assigned_sites vacía;
+- una sede asignada;
+- múltiples sedes asignadas;
+- sede primaria distinta al recurso;
+- selected site distinta al recurso;
+- operational site distinta al recurso;
+- contexto estructuralmente inválido;
+- contexto stale cuando la fundación lo detecta;
+- dispositivo con sede distinta;
+- principal técnico.
+
+Ningún caso permite que el contexto reemplace la sede del recurso.
+
+---
+
+#### 98. Pruebas de filtros y colecciones
+
+Se prueba:
+
+- sin filtro de sede;
+- filtro dentro del conjunto;
+- filtro fuera del conjunto;
+- lista multisede;
+- paginación;
+- búsqueda;
+- orden;
+- agregado;
+- intento de inferir una sede excluida.
+
+El filtro solo puede reducir.
+
+---
+
+#### 99. Pruebas históricas
+
+Se prueba al menos:
+
+- recurso histórico de sede aún activa;
+- recurso histórico de sede hoy inactiva;
+- recurso trasladado después del hecho;
+- actor trasladado después del hecho;
+- snapshot ausente cuando es obligatorio;
+- snapshot contradictorio.
+
+No se reescribe el territorio histórico con datos actuales.
+
+---
+
+#### 100. Pruebas de llamada directa
+
+La suite invoca la RPC sin UI y manipula:
+
+```text
+p_site_id
+site_id
+selected_site
+target_site
+origin_site
+destination_site
+```
+
+El resultado debe ser igual o más restrictivo que el camino normal.
+
+---
+
+#### 101. Pruebas de credencial privilegiada
+
+Cuando aplique se prueba:
+
+- authenticated;
+- anon;
+- service process;
+- ejecución privilegiada controlada.
+
+Una credencial con mayor privilegio SQL no cambia la sede empresarial del recurso.
+
+---
+
+#### 102. Pruebas de rollback
+
+El rollback por RPC debe restaurar el candidate previo sin:
+
+- perder evidencia territorial válida;
+- crear autoridad nueva desde un fallback legacy;
+- reabrir consumers incompatibles sin control;
+- dejar firmas parcialmente migradas.
+
+El mecanismo exacto se hereda del plan del package.
+
+---
+
+#### 103. Rendimiento
+
+Resolver territorio no justifica consultas repetidas sin límite.
+
+La implementación futura deberá:
+
+- evitar N+1 cuando una colección pueda resolverse server-side;
+- conservar equivalencia semántica;
+- usar índices gobernados por su tarea propietaria;
+- medir rutas críticas;
+- no sustituir precisión por una caché autoritativa incorrecta.
+
+---
+
+#### 104. Concurrencia
+
+Las pruebas incluyen cambios de relaciones territoriales durante una operación.
+
+Una decisión basada en una sede que dejó de ser válida antes del efecto debe fallar o revalidarse conforme al contrato de concurrencia.
+
+---
+
+#### 105. Paridad entre capas
+
+Para el mismo:
+
+```text
+principal
+actor
+context
+resource
+resource state
+site facts
+permission
+```
+
+RPC, evaluador, Server Action y RLS no pueden producir una ampliación territorial contradictoria.
+
+007 gobierna el hecho de sede dentro de RPC; las demás capas conservan sus tareas propietarias.
+
+---
+
+#### 106. Semántica de denegación
+
+007 puede producir una condición territorial que impida continuar, por ejemplo:
+
+```text
+UNRESOLVED
+CONFLICT
+ISOLATED
+```
+
+No crea una excepción para “intentar” con otra sede.
+
+La decisión final y sus reasons pertenecen al evaluador canónico.
+
+---
+
+#### 107. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+```text
+Requisitos creados: 0
+Requisitos modificados: 0
+Requisitos diferidos: 0
+Requisitos obsoletos: 0
+```
+
+La cobertura vigente ya exige resolución territorial determinista, bloqueo de cruces no autorizados y resistencia a manipulación directa de RPC.
+
+---
+
+#### 108. Cobertura de prueba vigente reutilizada
+
+Esta sección es trazabilidad y no modifica el registro 04A.
+
+La cobertura existente reutilizada incluye:
+
+- `TREQ-AUTH-007`, para limitar administración de seguridad al territorio autorizado;
+- `TREQ-AUTH-008`, para coherencia entre carril administrativo, operativo, RPC y RLS;
+- `TREQ-AUTH-009`, para resolución determinista de sede y área y denegación de cruces territoriales;
+- `TREQ-AUTH-013`, para impedir bypass mediante RPC o request manipulado.
+
+007 no cambia texto, owner, estado ni relaciones de estas filas.
+
+---
+
+#### 109. Evidencia de validación
+
+| Clase     | Estado       | Evidencia                                                                                                                                                                                                                   |
+| --------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | La batería del checkout se ejecutará después del reemplazo documental.                                                                                                                                                      |
+| LOCAL     | PASS         | El artefacto fue validado estructuralmente: una tarea, metadata obligatoria, secciones requeridas, evidencia completa, cero placeholders, cero TREQ dentro de la sección de cero cambios y continuidad terminal.            |
+| REMOTA    | PASS         | Se verificaron `main`, continuidad, topología R2, 006 aprobado, contratos de contexto/alcance/recurso, 04A AUTH y el estado read-only de `vento-os-dev`, incluyendo firmas actuales con argumentos de sede y fuentes AS-IS. |
+| OPERATIVA | NOT_EXECUTED | No se invocaron RPC empresariales ni se ejecutaron escenarios de negocio.                                                                                                                                                   |
+| FÍSICA    | NOT_EXECUTED | No se creó ni aplicó migración, función, grant, policy, DDL, DML ni cambio de configuración.                                                                                                                                |
+
+`REMOTA = PASS` valida el desarrollo documental y el baseline observado; no certifica una futura instancia física.
+
+---
+
+#### 110. Criterios de aceptación
+
+`AUTH-DB-007` queda documentalmente aceptable cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. consume exactamente el handoff de 006;
+4. identifica cada RPC por firma exacta;
+5. clasifica cada site input;
+6. deriva la sede de recursos existentes desde el recurso;
+7. normaliza y valida la sede de creaciones antes del efecto;
+8. conserva todos los lados de recursos multisede;
+9. usa estados de resolución canónicos;
+10. no convierte `p_site_id` en autoridad;
+11. no usa sede seleccionada como fallback;
+12. no usa sede primaria como fallback;
+13. no usa `employees.site_id` como cobertura canónica;
+14. distingue site ID de site type;
+15. preserva territorio histórico cuando el contrato lo exige;
+16. no inventa sede para NT/ORG;
+17. no convierte null en global;
+18. no confunde cobertura administrativa con ALLOW;
+19. no confunde operational site con resource site;
+20. el dispositivo solo puede restringir;
+21. `service_role` no otorga autoridad territorial;
+22. mantiene frontera transaccional/revalidación;
+23. registra evidencia y rollback por RPC;
+24. entrega hechos a 008 y 009 sin absorberlas;
+25. no modifica RLS/grants/tipos;
+26. reutiliza TREQ existentes sin cambiar 04A;
+27. no ejecuta cambios físicos.
+
+---
+
+#### 111. Límites
+
+Esta tarea no:
+
+- materializa `AUTH-DB-007::package_id`;
+- crea migraciones;
+- modifica RPC;
+- cambia tablas o datos;
+- crea resolvers;
+- modifica `get_access_context`;
+- modifica `evaluate_authorization`;
+- valida área de forma completa;
+- decide el permiso exacto;
+- decide principal o actor efectivo;
+- modifica grants;
+- modifica RLS;
+- modifica Storage;
+- modifica Realtime;
+- cambia Edge Functions;
+- publica tipos;
+- retira funciones legacy;
+- modifica 04A;
+- autoriza E5;
+- abre `SHELL-CI-020`;
+- autoriza implementación física.
+
+Las responsabilidades reservadas continúan en sus tareas propietarias.
+
+---
+
+#### 112. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-006 — Incorporar contexto canónico en RPC sensibles`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-007 — Validar sede dentro de RPC sensibles`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-008 — Validar área dentro de RPC sensibles`
+
+
 ### [ ] AUTH-DB-008 — Validar área dentro de RPC sensibles
 ### [ ] AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
 ### [ ] AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
