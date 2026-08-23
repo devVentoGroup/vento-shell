@@ -10259,7 +10259,1279 @@ Esta tarea no:
 `AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema`
 
 
-### [ ] AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
+### ✅ AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
+**Tarea siguiente:** AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para materializar RLS y privilegios mínimos sobre los objetos incluidos en cada paquete
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `RLS-GRANTS-PACKAGE-021@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-021::<package_id>` permanece no ejecutada hasta satisfacer las fundaciones aplicables, `E5-GATE-008::<package_id>`, `SHELL-CI-020::<package_id>` y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-021` define el contrato repetible que cada paquete R2 utilizará para cerrar Row Level Security y privilegios PostgreSQL sobre los objetos que ese paquete migra, crea, adapta o publica.
+
+La tarea no ejecuta SQL. Impide considerar operativo un package cuyas tablas, vistas, rutinas, schemas, policies, grants o default privileges todavía permitan una superficie más amplia, distinta o incoherente con los contratos de autorización aprobados.
+
+#### 2. Resultado canónico
+
+```text
+PACKAGE APROBADO
+→ OBJETOS EXACTOS DEL PACKAGE
+→ AUTORIDAD Y AUDIENCIA CLASIFICADAS
+→ RLS POR RELACIÓN
+→ POLICIES POR OPERACIÓN Y ROL
+→ GRANTS MÍNIMOS POR OBJETO
+→ DEFAULT PRIVILEGES VERIFICADOS
+→ PARIDAD CON RPC + EVALUATOR
+→ PRUEBAS POSITIVAS Y NEGATIVAS
+→ CUTOVER CONSUMER-AWARE
+→ EVIDENCIA + ROLLBACK
+```
+
+La policy y el grant se derivan del contrato del objeto; no se copian desde el schema legacy por conveniencia.
+
+#### 3. Contrato material producido
+
+Se define:
+
+```text
+RLS-GRANTS-PACKAGE-021@1.0.0
+```
+
+Su unidad física futura es `AUTH-DB-021::<package_id>` y su inventario se identifica por objeto, operación, rol runtime, policy/grant objetivo y candidate.
+
+#### 4. Topología vinculante
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance = AUTH-DB-021::<package_id>
+```
+
+La definición global no se reabre por package. Cada package registra su propia instancia, evidencia y rollback.
+
+#### 5. Gate temporal
+
+Una futura instancia solo puede materializarse cuando, para el mismo `package_id`, estén satisfechos:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+AUTH-DB-020::<package_id> = APPLICABLE_OR_VERIFIED
+E5-GATE-008::<package_id> = PASS
+SHELL-CI-020::<package_id> = OPENED
+physical_authorization = EXPLICIT
+```
+
+La ausencia de una condición mantiene la instancia no ejecutable.
+
+#### 6. Frontera con AUTH-DB-020
+
+020 define package, candidate, transition keys, migration units, compatibilidad, consumidores y rollback.
+
+021 no amplía el package porque descubra una policy, grant o relación adyacente. Un objeto nuevo produce drift y debe reconciliarse antes de modificar seguridad.
+
+#### 7. Handoff de AUTH-DB-006
+
+006 entrega el inventario de RPC sensibles, adopción de `AccessContext`, audiencia y security mode.
+
+021 asegura que policy y grant no permitan un camino directo que evite ese contexto.
+
+#### 8. Handoff de AUTH-DB-007
+
+007 entrega la sede real y los lados de sede del recurso.
+
+021 no vuelve a escoger una sede desde el request ni usa `selected_site` como autoridad.
+
+#### 9. Handoff de AUTH-DB-008
+
+008 entrega área real, pertenencia a sede, semántica de área nula y lados aplicables.
+
+021 no interpreta `area_id = null` como wildcard ni reconstruye autoridad desde columnas legacy.
+
+#### 10. Handoff de AUTH-DB-009
+
+009 entrega binding exacto de `permission_key`, modalidad, scopes, prerequisitos, resource contract, catalog version y hashes.
+
+021 no autoriza por nombre de rol, prefijo, wildcard, `app.access` o visibilidad de pantalla.
+
+#### 11. Handoff de AUTH-DB-010
+
+010 entrega principal, actor efectivo, fuentes confiables de identidad, argumentos controlables por cliente, audiencia SQL, security mode, compatibilidad y evidencia.
+
+021 no trata `auth.uid() = employee_id`, `authenticated`, `service_role` u owner PostgreSQL como autoridad empresarial universal.
+
+#### 12. Handoff hacia AUTH-DB-011
+
+021 entrega a 011 un candidate cuya seguridad de acceso ya es coherente con estructura y datos reconciliados.
+
+011 conserva constraints posteriores a backfill. 021 no adelanta `NOT NULL`, FKs, uniques o checks dependientes de reconciliación.
+
+#### 13. Fronteras posteriores
+
+021 no absorbe:
+
+```text
+AUTH-DB-022 → Storage
+AUTH-DB-023 → Realtime
+AUTH-DB-024 → Edge Functions, webhooks, cron y automatizaciones
+AUTH-DB-025 → índices, retención y crecimiento
+AUTH-DB-026 → tipos publicados
+```
+
+Puede producir handoffs, nunca materializar esas responsabilidades.
+
+#### 14. R0 como contención previa
+
+`AUTH-DB-001..005` gobiernan la contención transversal de RLS faltante, policies demasiado amplias, funciones privilegiadas y grants legacy.
+
+021 no repite ese barrido global. Consume el resultado R0 y aplica el estado final únicamente a las identidades del package.
+
+#### 15. Fundación R1 de exposición
+
+R1 ya fija:
+
+```text
+api
+= única superficie empresarial Vento objetivo de Data API
+
+owner schemas
+app_private
+audit
+= no son superficie empresarial cliente
+```
+
+y limita contratos `api` a:
+
+```text
+READ_VIEW
+QUERY_RPC
+COMMAND_RPC
+```
+
+021 no reabre esta arquitectura.
+
+#### 16. Grants y RLS son capas distintas
+
+```text
+SCHEMA / API EXPOSURE
++
+SCHEMA PRIVILEGE
++
+OBJECT GRANT
++
+RLS / INTERNAL AUTHORIZATION
+=
+ACCESO EFECTIVO
+```
+
+Un grant permite llegar al objeto. RLS decide qué filas puede operar el rol cuando aplica. Ninguna capa sustituye a la otra.
+
+#### 17. Unidad de inventario
+
+Cada package produce una decisión por identidad:
+
+```text
+RELATION    = schema + relation
+POLICY      = schema + relation + policy identity
+VIEW        = schema + view
+ROUTINE     = schema + name + identity arguments
+SCHEMA      = schema
+DEFAULT ACL = creator role + target schema + object class
+```
+
+No se colapsan overloads ni objetos homónimos.
+
+#### 18. Registro RLS/grants por package
+
+Cada futura instancia conserva, como mínimo:
+
+```text
+rls_grant_binding_id
+package_id
+candidate_id
+transition_key
+migration_unit_id
+object_class
+schema_name
+object_name
+routine_identity_arguments
+logical_owner
+contract_type
+client_exposure_mode
+required_audiences
+rls_required
+force_rls_mode
+policy_set_reference
+grant_set_reference
+default_acl_reference
+context_contract_reference
+permission_binding_reference
+site_handoff_reference
+area_handoff_reference
+principal_actor_reference
+legacy_compatibility_reference
+consumer_reference
+rollback_reference
+adoption_state
+evidence_reference
+owner
+```
+
+#### 19. Clases de relación
+
+Cada relación aplicable queda en una clase cerrada:
+
+```text
+OWNER_AUTHORITATIVE_TABLE
+OWNER_PROJECTION_TABLE
+LEGACY_COMPATIBILITY_RELATION
+API_READ_VIEW
+AUDIT_RELATION
+PRIVATE_TECHNICAL_RELATION
+PLATFORM_MANAGED
+OUTSIDE_PACKAGE
+```
+
+La clase determina qué controles aplican.
+
+#### 20. Identidad de policy
+
+Una policy se registra por:
+
+```text
+schema
+relation
+policy_name
+command
+roles
+permissive_or_restrictive
+using_expression
+with_check_expression
+```
+
+Cambiar cualquiera puede alterar la autorización efectiva.
+
+#### 21. Comandos RLS
+
+Se distinguen:
+
+```text
+SELECT
+INSERT
+UPDATE
+DELETE
+ALL
+```
+
+`ALL` no se usa por comodidad cuando las operaciones tienen contratos distintos.
+
+#### 22. SELECT
+
+`SELECT` controla visibilidad mediante `USING`.
+
+El conjunto visible debe coincidir con resource contract, actor, permission, scope y territorio aplicables.
+
+#### 23. INSERT
+
+`INSERT` usa `WITH CHECK` para validar la fila nueva.
+
+Autenticación sola no basta: ownership, territorio y campos protegidos siguen su contrato.
+
+#### 24. UPDATE
+
+`UPDATE` gobierna:
+
+```text
+USING
+→ fila existente operable
+
+WITH CHECK
+→ estado posterior permitido
+```
+
+Si el contrato no permite mover owner, sede o área, el estado nuevo debe impedirlo.
+
+#### 25. SELECT requerido para UPDATE
+
+Una operación `UPDATE` bajo RLS necesita visibilidad compatible de la fila objetivo.
+
+El package prueba explícitamente la interacción `SELECT` + `UPDATE`; cero filas modificadas no se interpreta como autorización correcta sin diagnóstico.
+
+#### 26. DELETE
+
+`DELETE` usa `USING` sobre la fila existente.
+
+La autorización se resuelve antes de perder owner, territorio o estado que la sustentan.
+
+#### 27. FOR ALL
+
+`FOR ALL` solo es admisible cuando audiencia, predicados y semántica sean realmente equivalentes para todas las operaciones afectadas.
+
+Si no se demuestra, se separan policies.
+
+#### 28. USING
+
+`USING` forma parte de la decisión efectiva y queda versionado en evidencia.
+
+No se sustituye por una descripción narrativa.
+
+#### 29. WITH CHECK
+
+`WITH CHECK` protege el estado posterior de `INSERT` y `UPDATE`.
+
+La semántica implícita solo se acepta cuando se verifica explícitamente y coincide con el contrato.
+
+#### 30. Roles de policy
+
+Cada policy declara su audiencia mediante roles PostgreSQL explícitos.
+
+La ausencia de `TO` no se usa para incluir audiencias no analizadas.
+
+#### 31. authenticated
+
+`TO authenticated` selecciona un rol técnico; no concede autorización empresarial.
+
+Contexto, actor, permiso, recurso y territorio siguen siendo obligatorios cuando el contrato los exige.
+
+#### 32. anon
+
+`anon` recibe policies y grants únicamente para contratos expresamente públicos.
+
+La ausencia de sesión no habilita fallbacks hacia otra identidad ni actor fabricado.
+
+#### 33. service_role
+
+`service_role` es infraestructura privilegiada.
+
+No se modela como policy de negocio ni demuestra que un flujo cliente esté protegido. Los procesos que lo usan mantienen principal técnico y autorización interna.
+
+#### 34. PUBLIC
+
+`PUBLIC` no es audiencia empresarial Vento.
+
+Un privilege heredado de `PUBLIC` se clasifica expresamente; nunca se asume legítimo por default PostgreSQL.
+
+#### 35. Owner y BYPASSRLS
+
+Un owner o rol `BYPASSRLS` no sirve como sujeto de prueba positiva de RLS.
+
+El package prueba con roles runtime reales y registra owner, `relrowsecurity`, `relforcerowsecurity` y bypasses relevantes.
+
+#### 36. force_rls_mode
+
+Cada relación aplicable declara:
+
+```text
+REQUIRED
+NOT_REQUIRED
+NOT_APPLICABLE
+BLOCKED_PENDING_DECISION
+```
+
+021 no impone `FORCE ROW LEVEL SECURITY` indiscriminadamente.
+
+#### 37. RLS habilitado
+
+Toda tabla alcanzable directamente desde una superficie cliente expuesta debe tener RLS habilitado.
+
+Las tablas privadas también pueden mantener RLS como defensa en profundidad.
+
+#### 38. RLS sin policy
+
+```text
+RLS ENABLED
++
+NO CLIENT GRANT
++
+NO CLIENT POLICY
+```
+
+puede ser un estado fail-closed válido para una relación privada.
+
+021 no crea `USING (true)` solo para silenciar un advisor.
+
+#### 39. Policies PERMISSIVE
+
+Las policies `PERMISSIVE` aplicables pueden combinarse por OR.
+
+El package analiza el conjunto efectivo y no cada policy aisladamente.
+
+#### 40. Policies RESTRICTIVE
+
+Las policies `RESTRICTIVE` actúan como guardrails acumulativos según la semántica PostgreSQL.
+
+No se convierten mecánicamente; la elección debe proceder del contrato.
+
+#### 41. Composición efectiva
+
+Por rol y comando se conserva:
+
+```text
+permissive set
+restrictive set
+effective predicate
+expected business set
+```
+
+La composición no puede ampliar el contrato y debe conservar casos legítimos.
+
+#### 42. Predicados true
+
+`USING (true)` o `WITH CHECK (true)` no se califican solo por sintaxis.
+
+Requieren un contrato realmente amplio y audiencia deliberada; no se agregan como compatibilidad genérica.
+
+#### 43. auth.role()
+
+Las policies nuevas o modificadas no dependen de `auth.role()` para seleccionar audiencia cuando `TO` resuelve esa dimensión.
+
+Audiencia técnica y autorización empresarial permanecen separadas.
+
+#### 44. auth.uid()
+
+`auth.uid()` identifica un sujeto Auth, no un empleado universal.
+
+Solo participa directamente cuando el resource contract realmente usa ownership Auth o una fundación canónica lo consume para resolver principal.
+
+#### 45. JWT y metadata
+
+Claims de JWT solo participan según contratos aprobados y frescura.
+
+`user_metadata` autoadministrable no concede rol, permiso, employee, actor, sede, área ni ownership protegido.
+
+#### 46. Contexto canónico en RLS
+
+Cuando una policy necesite autorización compleja, reutiliza una fundación canónica compatible y side-effect-free.
+
+No copia en cada tabla la lógica completa de roles, turnos, scopes, sedes y áreas.
+
+#### 47. Helper privilegiado para policy
+
+Un helper `SECURITY DEFINER` utilizado por RLS solo puede existir como primitiva privada aprobada.
+
+Debe estar fuera de schemas expuestos, con `search_path` endurecido, referencias calificadas, `EXECUTE` mínimo y sin convertirse en endpoint cliente.
+
+#### 48. Recursión RLS
+
+El package prueba que helpers y relaciones usadas por policies no generen recursión infinita, ciclos o bypass accidental.
+
+Romper recursión nunca justifica exponer un helper privilegiado.
+
+#### 49. Paridad con evaluator y RPC
+
+Para el mismo actor, contexto, permission key, resource y territorio:
+
+```text
+CANONICAL EVALUATOR
+RPC
+RLS
+```
+
+deben producir semántica equivalente.
+
+RLS no añade excepciones locales.
+
+#### 50. Permission key exacta
+
+Una policy/helper no evalúa permiso por prefijo, wildcard o nombre de rol.
+
+El permiso procede del binding exacto de 009 o del resource contract aplicable.
+
+#### 51. Principal y actor
+
+La policy no permite que parámetros, columnas manipulables o headers cliente reemplacen principal y actor de 010.
+
+El mismo modelo aplica a acceso directo Data API.
+
+#### 52. Sede
+
+La dimensión de sede usada por RLS debe ser la resuelta por 007 o una proyección semánticamente equivalente desde el recurso.
+
+`selected_site` no es autoridad.
+
+#### 53. Área
+
+La dimensión de área conserva 008.
+
+`null` no significa todas las áreas y `area_kind` no reemplaza la identidad concreta.
+
+#### 54. Scopes, lanes y deny
+
+Los scopes se comparan contra recurso y contexto canónicos.
+
+`BASE_ONLY`, `OPERATIONAL_ONLY`, `BASE_OR_OPERATIONAL` y `BASE_AND_OPERATIONAL` conservan su semántica, y un deny aplicable no se neutraliza mediante una policy más amplia.
+
+#### 55. Resource contract y multilado
+
+Toda policy sensible está vinculada a un recurso/operación.
+
+Cuando el contrato exige varios lados territoriales u ownership, se conservan todos; no se autoriza solo por el lado favorable.
+
+#### 56. Historia, colecciones y agregados
+
+Territorio histórico usa su snapshot contractual.
+
+Colecciones se filtran server-side y agregados no pueden revelar filas excluidas mediante totales, conteos, diferencias o errores.
+
+#### 57. Protección de campos
+
+RLS controla filas, no columnas por sí sola.
+
+Campos sensibles requieren proyección, field policy, RPC u otro mecanismo propietario. `SELECT` de una fila no autoriza todos sus campos.
+
+#### 58. Schema USAGE
+
+`USAGE` permite resolver objetos del namespace; no concede privilegios de objeto.
+
+La matriz lo registra por rol/schema y evita concesiones cliente a owner schemas, `app_private` o `audit` como estado objetivo.
+
+#### 59. Grants sobre tablas
+
+Tablas autoritativas de owner schemas no reciben DML cliente directo como estado objetivo.
+
+Un grant legacy temporal solo permanece con consumidor, telemetría, rollback y condición de salida.
+
+#### 60. Grants sobre vistas
+
+Una `READ_VIEW` publicada recibe exclusivamente `SELECT` de su audiencia contractual.
+
+No se usa `SELECT ON ALL TABLES IN SCHEMA api` como sustituto del manifiesto.
+
+#### 61. Grants sobre funciones
+
+`QUERY_RPC` y `COMMAND_RPC` reciben `EXECUTE` únicamente por firma exacta y audiencia aprobada.
+
+No se usa `GRANT EXECUTE ON ALL FUNCTIONS`.
+
+#### 62. Sobrecargas
+
+Cada overload de una rutina tiene identidad y grant independiente.
+
+Publicar una firma no publica otra con el mismo nombre.
+
+#### 63. Grants sobre secuencias
+
+Una secuencia no se expone a roles cliente por default.
+
+Si un flujo interno requiere privilegio, se registra rol técnico exacto y se demuestra que no crea una superficie cliente.
+
+#### 64. Schemas privados y security_invoker
+
+Los roles cliente objetivo no reciben `USAGE` directo sobre owner schemas, `app_private` ni `audit`.
+
+Si una `READ_VIEW security_invoker` demuestra una dependencia técnica incompatible con esta frontera, el package queda `BLOCKED` y la contradicción se resuelve en la fundación propietaria; no se concede `USAGE` silenciosamente.
+
+#### 65. api como destino contractual
+
+021 puede aplicar seguridad final a objetos `api` incluidos en su package únicamente si están clasificados como:
+
+```text
+READ_VIEW
+QUERY_RPC
+COMMAND_RPC
+```
+
+No coloca tablas autoritativas en `api`.
+
+#### 66. Owner schemas
+
+Los owner schemas conservan lógica y autoridad empresarial.
+
+Su estado objetivo es no exposición directa a clientes, grants mínimos a roles técnicos necesarios y RLS coherente como defensa o mecanismo runtime cuando corresponda.
+
+#### 67. app_private
+
+`app_private` aloja helpers técnicos transversales privados.
+
+No recibe acceso cliente directo. Un helper utilizado por RLS no se convierte en RPC Data API.
+
+#### 68. audit
+
+`audit` conserva evidencia y no autoridad empresarial.
+
+021 no concede acceso cliente directo a sus relaciones o rutinas.
+
+#### 69. graphql_public
+
+`graphql_public`, cuando sea requerido por Supabase, es superficie administrada por plataforma y no dominio empresarial Vento.
+
+No sustituye `api` ni autoriza owner schemas.
+
+#### 70. Transición de public
+
+`public` puede seguir siendo superficie legacy durante migración.
+
+021 no lo retira globalmente; cada package elimina dependencias propias cuando consumidores y fundación Data API lo permiten.
+
+#### 71. Vistas security_invoker
+
+Una vista contractual expuesta usa `security_invoker=true` por defecto conforme a R1.
+
+El package prueba con rol runtime real que respeta RLS de sus fuentes y que los privilegios necesarios no abren acceso directo no aprobado.
+
+#### 72. Vistas privilegiadas
+
+Una vista que ejecute con privilegios del creador no se publica directamente sin excepción canónica explícita.
+
+Las vistas privilegiadas actuales son hallazgos de transición, no patrones a copiar.
+
+#### 73. QUERY_RPC
+
+Una `QUERY_RPC` conserva autorización interna o acceso a fuentes protegido según su contrato.
+
+Tener `EXECUTE` no significa permiso para cualquier fila.
+
+#### 74. COMMAND_RPC
+
+Una `COMMAND_RPC` valida contexto, actor, permiso, resource y estado dentro de la operación.
+
+RLS subyacente no sustituye esa validación si la función usa privilegios que pueden bypassarlo.
+
+#### 75. SECURITY INVOKER por defecto
+
+Las rutinas usan `SECURITY INVOKER` por defecto cuando no requieren elevación.
+
+No se cambia a `SECURITY DEFINER` para resolver un error de permisos.
+
+#### 76. Excepción SECURITY DEFINER
+
+Una excepción debe demostrar:
+
+```text
+necesidad
+owner
+search_path endurecido
+referencias calificadas
+autorización interna
+audiencia exacta
+grants mínimos
+tests negativos
+observabilidad
+rollback
+```
+
+Sin el bundle queda bloqueada.
+
+#### 77. search_path y SQL dinámico
+
+Funciones privilegiadas no dependen de `search_path` amplio/controlable.
+
+Dynamic SQL exige validación estricta de identificadores y ausencia de interpolación insegura; una policy externa correcta no compensa una rutina privilegiada insegura.
+
+#### 78. Default privileges
+
+El package verifica que default privileges de R1 no reabran acceso al crear objetos.
+
+La revisión se realiza por:
+
+```text
+creator/owner role
+schema
+object class
+target grantee
+privileges
+```
+
+No se asume una regla global para todos los owners.
+
+#### 79. Nuevo objeto no es endpoint
+
+Crear tabla, vista o función no la convierte automáticamente en contrato Data API.
+
+Exposición exige clasificación, audiencia, grant y seguridad explícitos.
+
+#### 80. Auto-exposure de plataforma
+
+Supabase actual permite proyectos donde tablas nuevas ya no reciben grants automáticos de Data API.
+
+021 no depende de ese default cambiante: el estado esperado procede del manifiesto y se verifica explícitamente.
+
+#### 81. Manifiesto de grants
+
+Cada package genera before/after exacto:
+
+```text
+schema
+object identity
+grantee
+privilege
+source of privilege
+target state
+consumer
+compatibility state
+revoke gate
+rollback
+evidence
+```
+
+No se cierran grants desde una lista narrativa.
+
+#### 82. Origen del privilege
+
+El inventario distingue:
+
+```text
+DIRECT GRANT
+ROLE MEMBERSHIP
+PUBLIC INHERITANCE
+DEFAULT ACL
+OWNER
+BYPASSRLS
+PLATFORM_MANAGED
+```
+
+La ausencia de grant directo no demuestra ausencia de acceso efectivo.
+
+#### 83. No GRANT ALL
+
+`GRANT ALL` no es estado objetivo ni rollback genérico.
+
+Los privileges se conceden por operación necesaria.
+
+#### 84. Revoke consumer-aware
+
+Toda revocación legacy sigue:
+
+```text
+privilegio observado
+→ consumidor identificado
+→ destino aprobado
+→ consumidor migrado
+→ prueba positiva destino
+→ prueba negativa origen
+→ revoke
+```
+
+No se revoca primero para descubrir dependencias después.
+
+#### 85. Compatibilidad temporal
+
+Una policy o grant legacy temporal requiere:
+
+```text
+owner
+consumer set
+activation condition
+telemetry
+sunset
+exit gate
+rollback
+```
+
+No admite consumidores nuevos.
+
+#### 86. VITAL fuera de alcance
+
+VITAL permanece fuera del alcance de Vento OS para esta tarea.
+
+Un advisor global que reporte objetos VITAL no autoriza su modificación dentro de `AUTH-DB-021`.
+
+#### 87. Security advisor actual
+
+El audit read-only actual reporta RLS habilitado sin policies en:
+
+```text
+pass.site_business_hours
+pass.site_delivery_slots
+pass.site_schedule_exception_resolutions
+pass.site_schedule_exceptions
+public.client_push_tokens
+```
+
+También reporta cuatro vistas privilegiadas en `public`:
+
+```text
+shared_operational_devices_admin_v1
+shared_operational_device_templates_admin_v1
+permission_catalog_human_v1
+shared_operational_device_actor_policies_admin_v1
+```
+
+y numerosas funciones `SECURITY DEFINER` ejecutables por `anon` o `authenticated`.
+
+Estos hallazgos son baseline AS-IS; 021 solo actúa sobre identidades del package aplicable.
+
+#### 88. Baseline histórico de R1
+
+R1 registró una superficie legacy amplia de relaciones, vistas y rutinas con grants cliente.
+
+Ese baseline es evidencia histórica. Cada instancia recaptura el before-state actual de sus propias identidades.
+
+#### 89. Candidate inmutable
+
+Cada instancia fija un `candidate_id` con:
+
+```text
+commit_sha
+migration set
+package scope
+object identities
+policy definitions
+ACL/default ACL snapshot
+R1 contract bundle
+006..010 handoffs
+consumer set
+```
+
+Cambiar una dimensión material crea otro candidate.
+
+#### 90. Captura before
+
+Antes de mutar se captura:
+
+- `relrowsecurity`;
+- `relforcerowsecurity`;
+- owner;
+- policies completas;
+- ACL de schema;
+- ACL de relación/vista;
+- ACL de rutina por firma;
+- default ACL;
+- security mode;
+- `search_path`;
+- exposición Data API relevante;
+- consumers;
+- advisors relevantes;
+- migration baseline.
+
+#### 91. Drift
+
+Cada identidad produce:
+
+```text
+MATCH
+APPROVED_DRIFT
+BLOCKING_DRIFT
+```
+
+Es drift material un cambio de policy, `USING`, `WITH CHECK`, roles, composición, owner, grantee, privilege, PUBLIC inheritance, default ACL, overload expuesta o schema USAGE.
+
+`BLOCKING_DRIFT` detiene la identidad.
+
+#### 92. Orden de materialización
+
+La futura instancia sigue:
+
+```text
+1. CAPTURAR BASELINE
+2. RECONCILIAR DRIFT
+3. CONGELAR MANIFIESTO RLS/GRANTS
+4. VALIDAR R1 + 006..010
+5. MATERIALIZAR CAMBIOS EXPANSIVOS NO DESTRUCTIVOS
+6. CREAR/REEMPLAZAR POLICIES OBJETIVO
+7. APLICAR GRANTS OBJETIVO
+8. CONSERVAR COMPATIBILIDAD NECESARIA
+9. EJECUTAR PARIDAD Y TESTS ADVERSARIALES
+10. MIGRAR CONSUMIDORES
+11. RETIRAR PRIVILEGIOS LEGACY AUTORIZADOS
+12. REVALIDAR DEFAULT ACL
+13. REVALIDAR DRIFT
+14. CONSERVAR EVIDENCIA Y ROLLBACK
+```
+
+#### 93. Expand antes de contract
+
+El destino nuevo se crea y valida antes de retirar la ruta legacy.
+
+Un estado intermedio no puede ser más permisivo que el baseline aprobado.
+
+#### 94. Migraciones aplicadas
+
+Una policy/grant ya desplegada no se corrige reescribiendo una migración aplicada.
+
+La corrección usa migración forward versionada y conserva lineage.
+
+#### 95. Shadow y paridad
+
+Cuando el plan lo permita puede compararse:
+
+```text
+legacy result
+vs
+canonical result
+```
+
+Shadow observa diferencias; nunca ejecuta con la opción más permisiva.
+
+#### 96. Cutover
+
+Cutover exige:
+
+1. candidate intacto;
+2. R1 disponible;
+3. 006..010 satisfechas;
+4. policies/grants objetivo aplicados;
+5. consumers destino listos;
+6. pruebas positivas;
+7. pruebas negativas;
+8. paridad;
+9. rollback listo;
+10. evidencia correlacionada.
+
+#### 97. Ventana de observación
+
+Compatibilidad legacy solo permanece durante la ventana aprobada.
+
+Retiro exige evidencia de cero consumidor dentro del alcance medido; una búsqueda literal aislada no basta.
+
+#### 98. Rollback
+
+Rollback puede restaurar policy/grant before-state capturado cuando sea seguro.
+
+No usa `GRANT ALL`, no amplía más que el baseline, no revive `PUBLIC` genérico y no borra evidencia.
+
+#### 99. Paridad entre ambientes
+
+Local, staging y producción usan el mismo candidate promovible.
+
+Policies, ACL, default ACL y configuración efectiva relevante deben ser equivalentes o tener divergencia aprobada. No se corrige producción manualmente fuera de `vento-shell`.
+
+#### 100. Pruebas positivas
+
+Por objeto se prueba al menos:
+
+- lectura autorizada con filas/campos exactos;
+- creación válida;
+- actualización válida;
+- eliminación válida cuando corresponda;
+- view/RPC autorizada;
+- audiencia contractual correcta;
+- compatibilidad todavía aprobada.
+
+Un `200` sin verificar resultado no es suficiente.
+
+#### 101. Pruebas negativas de lectura
+
+Se cubren:
+
+- otro usuario;
+- otra sede;
+- otra área;
+- otro owner;
+- permiso ausente;
+- deny;
+- actor no resuelto;
+- llamada directa;
+- recurso aislado;
+- contexto stale cuando aplique.
+
+#### 102. Pruebas de mutaciones
+
+Para INSERT/UPDATE/DELETE se intenta:
+
+- owner ajeno;
+- site ajeno;
+- area de otra sede;
+- actor fabricado;
+- permiso insuficiente;
+- campo protegido;
+- cambio territorial no permitido;
+- relación no resoluble.
+
+El efecto no puede completarse fuera de contrato.
+
+#### 103. Prueba de composición
+
+Fixtures activan múltiples policies `PERMISSIVE` y `RESTRICTIVE`.
+
+La suite demuestra el conjunto efectivo, no únicamente cada policy por separado.
+
+#### 104. Pruebas de roles runtime
+
+Se prueba:
+
+```text
+anon
+authenticated
+service process cuando aplique
+```
+
+`authenticated` sin permiso empresarial falla y un proceso privilegiado no usa bypass de RLS como sustituto de autorización.
+
+#### 105. Direct Data API / RPC
+
+La misma operación se invoca directamente por Data API o RPC, sin UI.
+
+El resultado debe ser igual o más restrictivo que el consumer normal.
+
+#### 106. Views, SECURITY DEFINER y overloads
+
+Una `READ_VIEW` demuestra source RLS, audiencia y campos mínimos.
+
+Toda excepción `SECURITY DEFINER` prueba caller autorizado/no autorizado, search_path y ausencia de PUBLIC accidental.
+
+Una overload autorizada no habilita otra firma.
+
+#### 107. Default ACL, metadata y null
+
+El harness demuestra que un objeto nuevo no recibe privilege cliente accidental.
+
+Cambiar `user_metadata` no cambia autorización.
+
+`NULL` no se convierte en wildcard, globalidad u ownership.
+
+#### 108. Territorio y deny
+
+Fixtures cross-site/cross-area demuestran que un permiso no cruza scope.
+
+Un deny aplicable continúa prevaleciendo aunque exista grant SQL suficiente para alcanzar el objeto.
+
+#### 109. Rendimiento e índices
+
+El package mide rutas críticas before/after.
+
+Si una policy necesita índice para ser viable, 021 registra el hallazgo y lo entrega a `AUTH-DB-025` cuando corresponda; nunca elimina filtros de seguridad para recuperar rendimiento.
+
+#### 110. Observabilidad y evidence bundle
+
+La instancia registra, como mínimo:
+
+1. candidate/commit;
+2. objetos exactos;
+3. baseline RLS;
+4. policies before/after;
+5. ACL before/after;
+6. default ACL before/after;
+7. owners;
+8. security mode;
+9. exposición relevante;
+10. consumer map;
+11. compatibilidad;
+12. tests positivos;
+13. tests negativos;
+14. paridad evaluator/RPC/RLS;
+15. performance;
+16. drift final;
+17. rollback;
+18. digest de evidencia.
+
+#### 111. Estados y cardinalidad
+
+Estados cerrados equivalentes:
+
+```text
+RLS_GRANTS_ALIGNED
+PRIVATE_FAIL_CLOSED
+COMPATIBILITY_TEMPORARY
+BLOCKED_R1_MISSING
+BLOCKED_POLICY_AMBIGUOUS
+BLOCKED_GRANT_AMBIGUOUS
+BLOCKED_CONSUMER
+BLOCKED_SECURITY_DEFINER
+BLOCKED_DATA_API_CONTRADICTION
+BLOCKED_DRIFT
+OUTSIDE_PACKAGE
+```
+
+Y por package:
+
+```text
+objetos esperados = N
+objetos clasificados = N
+faltantes = 0
+duplicados = 0
+policies sin owner = 0
+grants sin audiencia = 0
+objetos BLOCKED publicados = 0
+```
+
+#### 112. No implementación oportunista de R1
+
+Si faltan `api`, `app_private`, evaluator, identity links o predicados canónicos requeridos:
+
+```text
+BLOCK
+→ resolver fundación propietaria
+→ verificar
+→ reanudar package
+```
+
+021 no crea R1 oportunistamente.
+
+#### 113. No implementación global desde 021
+
+El título no autoriza un sweep global.
+
+Cada futura ejecución se restringe a `package_id` e identidades del candidate. Correcciones globales siguen en R0/R1 o en su owner canónico.
+
+#### 114. Plataforma Supabase vigente
+
+El contrato incorpora hechos verificados:
+
+1. grants y RLS son controles separados;
+2. nuevas tablas pueden requerir grants explícitos para Data API;
+3. RLS debe estar habilitado en tablas expuestas;
+4. views en PostgreSQL 15+ pueden usar `security_invoker=true`;
+5. RLS no protege el `EXECUTE` de funciones como protege filas.
+
+021 deriva siempre el estado esperado del manifiesto y no de defaults de plataforma.
+
+#### 115. Ownership de hallazgos
+
+Todo finding diferido conserva:
+
+```text
+qué falta
+blocking yes/no
+owner
+exit condition
+evidence reference
+```
+
+No se permiten pendientes narrativos sin dueño.
+
+#### 116. Cierre de una instancia
+
+`AUTH-DB-021::<package_id>` solo puede cerrarse cuando el 100 % del universo de seguridad aplicable tenga decisión, evidencia y estado no bloqueante.
+
+No se cierra por muestreo.
+
+#### 117. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+```text
+Requisitos creados: 0
+Requisitos modificados: 0
+Requisitos diferidos: 0
+Requisitos obsoletos: 0
+```
+
+La tarea materializa por package reglas ya protegidas por el registro canónico; no introduce una capacidad empresarial nueva.
+
+#### 118. Cobertura de prueba vigente reutilizada
+
+Esta sección es trazabilidad y no modifica 04A.
+
+Se reutiliza especialmente:
+
+- `TREQ-SUPABASE-005`, mínimo privilegio de vistas/RPC, `security_invoker`, `search_path`, grants y autorización interna;
+- `TREQ-SUPABASE-007`, equivalencia entre evaluator, RPC y RLS;
+- `TREQ-SUPABASE-008`, RLS, RPC, drift, rollback y migraciones;
+- `TREQ-AUTH-004`, paridad entre evaluadores;
+- `TREQ-AUTH-008`, coherencia entre contexto, RPC y RLS;
+- `TREQ-AUTH-009`, territorio determinista;
+- `TREQ-AUTH-013`, bloqueo de bypass mediante RPC/request manipulado.
+
+No se modifica texto, owner, estado ni relación de esas filas.
+
+#### 119. Evidencia de validación
+
+| Clase     | Estado       | Evidencia                                                                                                                                                                                                                        |
+| --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | La batería real del checkout se ejecutará después de insertar y normalizar la tarea.                                                                                                                                             |
+| LOCAL     | PASS         | El artefacto fue validado estructuralmente: una tarea, metadata obligatoria, secciones requeridas, cinco clases de evidencia, continuidad terminal, cero placeholders y cero TREQ dentro de la sección que declara cero cambios. |
+| REMOTA    | PASS         | Se verificaron `main`, continuidad 010→021→011, topología R2, contratos R0/R1, handoffs 006..010, 04A aplicable, `package.json`, documentación vigente de Supabase y el security advisor read-only de `vento-os-dev`.            |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron requests de negocio ni cambios de consumers.                                                                                                                                                                    |
+| FÍSICA    | NOT_EXECUTED | No se creó ni modificó policy, grant, schema, función, vista, tabla, default ACL, configuración Data API, migración o dato.                                                                                                      |
+
+`REMOTA = PASS` certifica únicamente el desarrollo documental y el baseline consultado; no certifica una instancia física futura.
+
+#### 120. Criterios de aceptación
+
+`AUTH-DB-021` queda documentalmente completa cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. define `AUTH-DB-021::<package_id>`;
+4. consume el alcance de 020 y handoffs 006..010;
+5. no absorbe 011 ni 022..026;
+6. distingue grants de RLS;
+7. inventaría todo objeto por identidad exacta;
+8. define policies por comando y audiencia;
+9. gobierna `USING` y `WITH CHECK`;
+10. prueba SELECT requerido para UPDATE;
+11. calcula composición permissive/restrictive;
+12. `authenticated`, `service_role`, owner y `PUBLIC` no son autoridad empresarial;
+13. force RLS es decisión explícita;
+14. RLS sin policy puede ser fail-closed legítimo;
+15. no crea `USING (true)` como compatibilidad genérica;
+16. no usa `user_metadata` para autoridad;
+17. `auth.uid()` no se equipara universalmente a employee;
+18. reutiliza contexto/evaluator canónicos;
+19. preserva permission key, actor, recurso, sede, área, scopes, lanes y deny;
+20. protege colecciones, agregados y campos sensibles;
+21. gobierna USAGE/SELECT/EXECUTE por objeto;
+22. gobierna overloads por firma;
+23. evita exposición cliente de owner schemas como objetivo;
+24. conserva `api`, `app_private`, `audit` y VITAL en sus fronteras;
+25. verifica `security_invoker`;
+26. SECURITY DEFINER requiere excepción explícita;
+27. endurece search_path;
+28. verifica default ACL por owner;
+29. nuevo objeto no se auto-publica;
+30. usa manifiesto de grants;
+31. no usa GRANT ALL;
+32. revoca consumer-aware;
+33. compatibilidad tiene owner y sunset;
+34. candidate es inmutable;
+35. drift bloqueante detiene;
+36. no edita migraciones aplicadas;
+37. expand precede contract;
+38. cutover exige tests, paridad y rollback;
+39. rollback no amplía baseline;
+40. usa mismo candidate entre ambientes;
+41. cubre pruebas positivas/negativas por operación;
+42. cubre llamada directa;
+43. cubre roles runtime;
+44. cubre policies compuestas;
+45. cubre views, RPC y overloads;
+46. cubre default privileges, metadata y null;
+47. cubre cross-site/cross-area y deny;
+48. mide performance;
+49. conserva observabilidad/evidencia;
+50. reutiliza 04A sin modificarlo y no ejecuta cambios físicos.
+
+#### 121. Límites
+
+Esta tarea no:
+
+- materializa `AUTH-DB-021::<package_id>`;
+- crea migraciones;
+- ejecuta DDL/DML;
+- habilita o deshabilita RLS;
+- crea, altera o elimina policies;
+- concede o revoca grants;
+- cambia default privileges;
+- modifica owners, roles o memberships;
+- modifica `supabase/config.toml`;
+- cambia schemas expuestos;
+- crea `api`, `app_private` u owner schemas;
+- materializa context/evaluator;
+- cambia Auth;
+- cambia Storage;
+- cambia Realtime;
+- cambia Edge Functions o cron;
+- crea constraints de 011;
+- crea índices de 025;
+- genera tipos de 026;
+- modifica VITAL;
+- modifica 04A;
+- abre E5;
+- abre `SHELL-CI-020`;
+- autoriza implementación física.
+
+#### 122. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación`
+
+
 ### [ ] AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
 ### [ ] AUTH-DB-022 — Implementar gobierno y políticas de Storage
 ### [ ] AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
