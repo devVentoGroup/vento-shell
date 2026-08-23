@@ -1,10 +1,48 @@
 {
   "instance_id": "SHELL-DB-004::GLOBAL",
   "task_id": "SHELL-DB-004",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/supabase/src/errors.ts como normalizador tecnico interno, puro, determinista y runtime-neutral de SHELL-DB-004::GLOBAL, sin exports publicos de package ni efectos secundarios.",
+    "Materializar exactamente cuatro capas separadas, once familias semanticas heredadas, fuentes tecnicas estructuradas, preservacion prioritaria de outcomes contractuales, resultado desconocido para mutaciones inciertas, retry gobernado por contrato, redaccion publica y diagnostico protegido.",
+    "Prohibir branching por message, hint, details, stack o texto humano; permitir solo mappings explicitos, versionados y exactos por codigo estructurado, con fallback cerrado y cero error-to-success silencioso.",
+    "Crear packages/supabase/scripts/validate-supabase-errors.mjs para verificar SHA del contrato, topologia GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, compatibilidad con SHELL-DB-001, compilacion TypeScript, inventarios, fronteras y las 36 coberturas futuras obligatorias mediante fixtures aislados.",
+    "Actualizar packages/supabase/README.md para documentar la porcion fisica de SHELL-DB-004, preservando la raiz y fronteras materializadas por SHELL-DB-001.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-DB-004__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/supabase/package.json, exports, dependencias, factories, clientes browser/server/native/privileged, tipos generados, wrappers RPC, consumidores, helpers legacy, SQL, DDL, DML, migraciones, RLS, grants, tablas, funciones, triggers, indices, constraints, datos, secretos, configuracion remota, Supabase, VITAL ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/supabase/scripts/validate-supabase-errors.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext packages/supabase/src/errors.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T17:29:09-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Continua implementando, con el mismo proceso, has todo el paso a paso continuo.",
+    "source_contract_sha256": "1a135810618ae8e186415ef8c5cd4ce99f2845d083e4a968eb9883a88a70a042"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/supabase/src/errors.ts created as pure deterministic runtime-neutral technical error normalizer",
+    "MATERIALIZATION policy VENTO_SUPABASE_TECHNICAL_ERROR_NORMALIZATION@1.0.0 layers=4 semantic_families=11 structured_sources=10 retry_directives=4",
+    "MATERIALIZATION contractual outcomes preserve priority; dispatched uncertain commands become RESULT_UNKNOWN with reconciliation before retry",
+    "MATERIALIZATION exact versioned mappings fail closed; message hint details stack and isolated HTTP status do not govern semantic branching",
+    "MATERIALIZATION public diagnostics redact protected internals; full protected diagnostic is server-only; browser and native receive redacted public representation",
+    "MATERIALIZATION packages/supabase/scripts/validate-supabase-errors.mjs and README update completed without package manifest consumers factories SQL migrations or Supabase changes",
+    "SOURCE CONTRACT SHA256 1a135810618ae8e186415ef8c5cd4ce99f2845d083e4a968eb9883a88a70a042",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION technical error normalizer PASS; layers=4 families=11 scenarios=36 contract_outcome=PASS unknown_result=PASS redaction=PASS parity=PASS vital=BLOCKED",
+    "VALIDATION TypeScript strict compile PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-DB-004::GLOBAL VERIFIED"
+  ]
 }
