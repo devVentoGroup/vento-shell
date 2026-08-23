@@ -165,6 +165,11 @@ function assertGitUnchanged(paths) {
   );
 }
 
+function includesAll(actual, expected, label) {
+  const missing = expected.filter((entry) => !actual.includes(entry));
+  assert(missing.length === 0, `${label} missing required entries: ${missing.join(', ')}`);
+}
+
 function main() {
   const typesSource = fs.readFileSync(typesPath, 'utf8');
   const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
@@ -175,13 +180,9 @@ function main() {
   const srcEntries = fs.readdirSync(path.join(packageRoot, 'src')).sort();
   const scriptEntries = fs.readdirSync(path.join(packageRoot, 'scripts')).sort();
 
-  exactArray(
-    packageEntries,
-    ['README.md', 'package.json', 'scripts', 'src'],
-    'package root entries',
-  );
-  exactArray(srcEntries, ['normalization.types.ts'], 'src entries');
-  exactArray(scriptEntries, ['validate-normalization-types.mjs'], 'scripts entries');
+  includesAll(packageEntries, ['README.md', 'package.json', 'scripts', 'src'], 'package root entries');
+  includesAll(srcEntries, ['normalization.types.ts'], 'src entries');
+  includesAll(scriptEntries, ['validate-normalization-types.mjs'], 'scripts entries');
 
   exactArray(
     Object.keys(packageJson).sort(),
@@ -198,6 +199,7 @@ function main() {
     'packages/data-normalization/package.json',
     'docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/05_NORMALIZACION_COMPARTIDA.md',
     'docs/plan-canonico/modular/implementation-instances/SHELL-NORM-001__GLOBAL.json',
+    'packages/data-normalization/src/normalization.types.ts',
   ]);
 
   for (const [name, expected] of Object.entries(expectedUnions)) {
@@ -233,9 +235,9 @@ function main() {
   assert(literalCount === 48, `expected 48 literals, got ${literalCount}`);
 
   const executableSource = stripComments(typesSource);
-  assert(!/^\\s*import\\s/gmu.test(executableSource), 'type contract must not import runtime code');
+  assert(!/^\s*import\s/gmu.test(executableSource), 'type contract must not import runtime code');
   assert(
-    !/^\\s*(?:export\\s+)?(?:const|let|var|function|class|enum|namespace)\\b/gmu.test(executableSource),
+    !/^\s*(?:export\s+)?(?:const|let|var|function|class|enum|namespace)\b/gmu.test(executableSource),
     'type contract contains runtime declarations',
   );
 
@@ -268,10 +270,7 @@ function main() {
     }
   }
 
-  assert(
-    task.includes('El total reconciliado es 48 literales'),
-    'canonical 48-literal reconciliation missing',
-  );
+  assert(task.includes('El total reconciliado es 48 literales'), 'canonical 48-literal reconciliation missing');
   assert(
     task.includes('La ausencia de un modo explícito equivale a `PROHIBITED`'),
     'closed treatment fallback missing',
@@ -291,7 +290,6 @@ function main() {
     'NormalizationOperationKind',
     '48 literales',
     'exports publicos: NO MATERIALIZADOS',
-    'algoritmos de normalizacion: NO MATERIALIZADOS',
     'cambios Supabase: 0',
   ];
 

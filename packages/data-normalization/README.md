@@ -1,22 +1,24 @@
 # @vento/data-normalization
 
-Raiz privada de autoria para la fundacion compartida de normalizacion de Vento OS.
+Raiz privada de autoria para la fundacion compartida de normalizacion pura y determinista de Vento OS.
 
-`SHELL-NORM-001::GLOBAL` materializo la identidad fisica minima y la frontera arquitectonica del package. `SHELL-NORM-002::GLOBAL` materializa exclusivamente el sistema compartido de tipos de campo normalizable, sin habilitar todavia algoritmos, catalogos especializados, diccionarios, validadores runtime, exports publicos, consumidores ni persistencia.
+`SHELL-NORM-001::GLOBAL` materializo la identidad fisica minima del package. `SHELL-NORM-002::GLOBAL` materializo exclusivamente el sistema compartido de tipos de campo normalizable. `SHELL-NORM-003::GLOBAL` materializa ahora las reglas puras de Unicode, espacios, espaciado de puntuacion de prosa y capitalizacion empresarial, sin habilitar exports publicos, consumidores, persistencia ni cambios Supabase.
 
 ## Autoridad canonica
 
-El package consume y ejecutara semantica aprobada; no crea una segunda fuente de politica.
+El package consume semantica aprobada; no crea una segunda fuente de politica.
 
 - `DATA-NORM-ARC-001..012` conservan el gobierno canonico de normalizacion.
-- `DATA-NORM-TRANS-001..009` conservan la transicion, dry-run, colisiones, backfill, rollback y evidencia.
-- `SHELL-PKG-001..008` conservan distribucion, SemVer, compatibilidad, deprecacion, rollback y adopcion.
+- `DATA-NORM-TRANS-001..009` conservan transicion, dry-run, colisiones, backfill, rollback y evidencia.
+- `SHELL-PKG-001..008` conservan distribucion, versionado, compatibilidad, deprecacion, rollback y adopcion.
 - `SHELL-NORM-002..009` materializan progresivamente el contenido especializado del package.
-- `DATA-NORM-DB-001..010` conservan persistencia y enforcement fisico cuando un package autorizado lo requiera.
+- `DATA-NORM-DB-001..010` conservan persistencia y enforcement fisico cuando corresponda.
 
-## Frontera fisica de SHELL-NORM-001
+La reconciliacion topologica vigente para `SHELL-NORM-001..009` es `GLOBAL_ENABLE_ONCE` / `PRE_E5_FOUNDATION`: la fundacion compartida pura puede materializarse una sola vez antes de E5, sin adquirir autoridad de persistencia.
 
-La raiz existe como workspace privado bajo `packages/*` con estas invariantes:
+## Frontera fisica heredada de SHELL-NORM-001
+
+La raiz continua como workspace privado bajo `packages/*` con estas invariantes:
 
 - nombre exacto: `@vento/data-normalization`;
 - `private: true`;
@@ -24,29 +26,15 @@ La raiz existe como workspace privado bajo `packages/*` con estas invariantes:
 - sin campo `version`;
 - sin `exports`;
 - sin `main` ni `types`;
-- sin `dependencies`, `devDependencies` ni `peerDependencies`;
+- sin dependencias propias;
 - sin scripts npm propios;
 - sin publicacion, tag, release, registry ni credenciales;
 - sin consumidores migrados;
-- sin cambios Supabase.
+- cambios Supabase: 0.
 
-El `package-lock.json` raiz registra este workspace exclusivamente como consecuencia determinista de `packages/*`.
+## Materializacion heredada de SHELL-NORM-002
 
-## Materializacion de SHELL-NORM-002
-
-`SHELL-NORM-002::GLOBAL` agrega una unica superficie TypeScript interna y type-only:
-
-```text
-packages/data-normalization/
-├─ README.md
-├─ package.json
-├─ scripts/
-│  └─ validate-normalization-types.mjs
-└─ src/
-   └─ normalization.types.ts
-```
-
-El archivo `src/normalization.types.ts` materializa exactamente nueve artefactos logicos compartidos:
+`SHELL-NORM-002::GLOBAL` conserva una superficie TypeScript interna y type-only en `src/normalization.types.ts` con exactamente nueve artefactos logicos:
 
 1. `NormalizableFieldSemanticClass`;
 2. `NormalizationRepresentationRole`;
@@ -58,105 +46,243 @@ El archivo `src/normalization.types.ts` materializa exactamente nueve artefactos
 8. `NormalizableStructuredComponentDescriptor`;
 9. `NormalizablePolymorphicVariantDescriptor`.
 
-Los cinco vocabularios cerrados conservan exactamente esta conciliacion:
+Los vocabularios de tipos conservan exactamente 48 literales: 14 clases semanticas, 7 roles de representacion, 6 roles de fuente, 8 modos de tratamiento y 13 familias de operacion.
 
-| Familia | Literales |
-| --- | ---: |
-| clases semanticas | 14 |
-| roles de representacion | 7 |
-| roles de fuente | 6 |
-| modos de tratamiento | 8 |
-| familias de operacion | 13 |
-| **Total** | **48 literales** |
+`IDENTITY_OR_RECORD_ACTION` permanece fuera de la mutacion textual. La ausencia de modo explicito sigue cerrada como `PROHIBITED`. VITAL no hereda politicas Vento por compartir infraestructura o tipos.
 
-Los cuatro descriptores son contratos de clasificacion. No conceden autorizacion, no persisten, no ejecutan operaciones y no convierten coincidencia textual en identidad empresarial.
+El validador `scripts/validate-normalization-types.mjs` sigue siendo propietario de 002. A partir de 003 valida sus propios artefactos por inclusion, no exige que `src/` o `scripts/` permanezcan congelados para siempre; esta correccion de compatibilidad no modifica los nueve tipos ni los 48 literales verificados de 002.
 
-`implementation_binding_ref` conserva cardinalidad opcional de cero o mas referencias sin convertir bindings fisicos en semantica. `auxiliary_context` permanece deliberadamente `unknown` en esta instancia para no inventar una estructura fisica que el contrato documental no define.
+## Materializacion de SHELL-NORM-003
 
-El validador `scripts/validate-normalization-types.mjs` comprueba:
-
-- cobertura exacta 14/7/6/8/13 y total 48;
-- orden e identidad exacta de cada literal;
-- existencia exacta de los nueve artefactos;
-- campos exactos de los cuatro descriptores;
-- ausencia de declaraciones runtime en el contrato de tipos;
-- permanencia de la raiz privada sin version, exports ni dependencias;
-- coherencia con la reconciliacion `GLOBAL_ENABLE_ONCE` / `PRE_E5_FOUNDATION`;
-- presencia de las fronteras de identidad, fallo cerrado y VITAL en el contrato canonico;
-- frontera documental de esta materializacion.
-
-## Pureza y determinismo
-
-La futura evaluacion compartida debe conservar simultaneamente:
-
-- mismo input logico + mismo contexto explicito + mismas versiones -> mismo resultado logico;
-- cero persistencia o efectos empresariales por evaluar;
-- cero acceso implicito a Supabase, red, filesystem mutable, navegador o secretos;
-- cero dependencia de locale, timezone, hora actual, aleatoriedad o configuracion privada del consumidor cuando no sean inputs contractuales;
-- fallo cerrado cuando falte contexto o version obligatoria;
-- separacion entre evaluacion, preview, comando autorizado y commit transaccional.
-
-Importar el package no concede autoridad semantica, empresarial, de autenticacion ni de autorizacion a la capa consumidora.
-
-## Clasificacion, identidad y tratamiento
-
-Las taxonomias de `SHELL-NORM-002` expresan contrato, no ejecucion.
+La superficie interna queda:
 
 ```text
-semantic_class
-+ representation_role
-+ source_role
-+ operation_kind
-+ applicable_exceptions
-+ policy_version
-=
-treatment_mode
+packages/data-normalization/
+|-- README.md
+|-- package.json
+|-- scripts/
+|   |-- validate-normalization-types.mjs
+|   `-- validate-normalization-rules.mjs
+`-- src/
+    |-- normalization.types.ts
+    `-- normalization.rules.ts
 ```
 
-La interseccion es restrictiva. La ausencia de modo explicito equivale a `PROHIBITED`; una dimension local puede restringir mas, pero no convertir un modo restrictivo en uno permisivo.
+`src/normalization.rules.ts` materializa cinco operaciones puras e independientes:
 
-`IDENTITY_OR_RECORD_ACTION` cruza deliberadamente la frontera de normalizacion textual: nunca se resuelve como mutacion textual. Igualdad de texto o de derivacion de busqueda no constituye identidad, unicidad, duplicado confirmado ni autorizacion de fusion.
+1. `UNICODE_CANONICALIZATION`;
+2. `EDGE_WHITESPACE_TRIM`;
+3. `INTERNAL_WHITESPACE_COMPACTION`;
+4. `PROSE_PUNCTUATION_SPACING`;
+5. `COMMERCIAL_CAPITALIZATION`.
 
-## Datos externos, evidencia y VITAL
+No existe pipeline universal. Cada operacion exige `NormalizableFieldDescriptor`, `operation_kind`, politica efectiva, `policy_version_ref`, tratamiento permitido y las versiones especificas de la etapa. Una operacion no habilita otra por implicacion.
 
-`EXTERNAL_ORIGINAL` expresa representacion y `EXTERNAL_EVIDENCE` expresa rol de fuente. Ninguno convierte procedencia externa en autoridad interna.
+## Inventario cerrado de SHELL-NORM-003
 
-Secretos, firmas, tokens, hashes y material criptografico permanecen bajo `SECRET_OR_SIGNATURE_MATERIAL` y `PRESERVE_EXACT`.
+| Familia | Esperado | Materializado |
+| --- | ---: | ---: |
+| operaciones deterministas | 5 | 5 |
+| clases de token de capitalizacion | 9 | 9 |
+| resultados de token | 6 | 6 |
+| fronteras de segmento | 3 | 3 |
+| **Total** | **23 literales** | **23 literales** |
 
-VITAL permanece fuera de las reglas transversales de Vento OS. Compartir estos tipos no transfiere politicas Vento a VITAL.
+Faltantes: 0. Duplicados: 0.
 
-## Handoffs reservados
+### Clases de token
 
-La materializacion actual no adelanta las tareas siguientes:
+- `ORDINARY_LEXICAL_TOKEN`;
+- `CONNECTOR_TOKEN`;
+- `OFFICIAL_EXCEPTION_TOKEN`;
+- `CONTROLLED_ACRONYM_TOKEN`;
+- `MEASUREMENT_OR_UNIT_TOKEN`;
+- `NUMERIC_TOKEN`;
+- `ALPHANUMERIC_OR_MODEL_TOKEN`;
+- `PUNCTUATION_OR_SEPARATOR`;
+- `AMBIGUOUS_TOKEN`.
 
-| Tarea | Responsabilidad reservada |
-| --- | --- |
-| `SHELL-NORM-003` | espacios, Unicode, puntuacion de prosa y capitalizacion |
-| `SHELL-NORM-004` | conectores y excepciones |
-| `SHELL-NORM-005` | diccionarios ortograficos versionados |
-| `SHELL-NORM-006` | busqueda y comparacion |
-| `SHELL-NORM-007` | previsualizacion de transformaciones |
-| `SHELL-NORM-008` | metadatos de version y auditoria |
-| `SHELL-NORM-009` | idempotencia y conservacion semantica |
+### Resultados de token
+
+- `CAPITALIZED_ORDINARY`;
+- `LOWERCASED_CONNECTOR`;
+- `PRESERVED_OFFICIAL_EXCEPTION`;
+- `PRESERVED_NON_CASED`;
+- `PRESERVED_AMBIGUOUS`;
+- `BLOCKED_CONFLICT`.
+
+### Fronteras de segmento
+
+- `NAME_START`;
+- `DECLARED_SEGMENT_START`;
+- `NO_SEGMENT_RESET`.
+
+## Unicode
+
+`UNICODE_CANONICALIZATION` ejecuta exclusivamente la composicion NFC suministrada por un adaptador explicito y versionado.
+
+Reglas de frontera:
+
+- no NFKC ni NFKD;
+- no unaccent;
+- no eliminacion de diacriticos;
+- `ñ` permanece distinta de `n`;
+- no transliteracion;
+- no casefold del valor mostrado;
+- no capitalizacion ni diccionario implicitos;
+- el adaptador debe demostrar idempotencia para la version declarada;
+- originales externos, snapshots, evidencia y material protegido permanecen cerrados por politica.
+
+La implementacion no selecciona una libreria Unicode ni una version implicita del runtime. La semantica fisica se recibe mediante `UnicodeCanonicalizationAdapter` con `unicode_version_ref` explicito.
+
+## Espacios
+
+`EDGE_WHITESPACE_TRIM` solo elimina separadores de borde listados explicitamente por la politica de la etapa. No existe `trim` universal y no se permite cruzar silenciosamente la frontera hacia contenido vacio cuando `allow_empty_result` no lo autoriza.
+
+`INTERNAL_WHITESPACE_COMPACTION` solo compacta separadores declarados `accidental_internal_separators` y conserva los separadores de borde. No existe una regla global equivalente a `\s+`. Saltos de linea, tabs, NBSP, Markdown, plantillas y formato significativo permanecen intactos salvo politica explicita que los identifique como transformables.
+
+## Puntuacion de prosa
+
+`PROSE_PUNCTUATION_SPACING` consume reglas explicitas de campo. Cada regla declara:
+
+- puntuacion exacta;
+- token de espaciado exacto;
+- cantidad de espacios antes;
+- cantidad de espacios despues;
+- `prose_spacing_version_ref`.
+
+La operacion solo modifica el espaciado adyacente a la puntuacion declarada. No agrega, elimina, sustituye ni reordena signos; no modifica palabras, tildes, caja, Unicode, identidad o estructura; no crea una gramatica universal.
+
+## Capitalizacion empresarial
+
+El unico perfil materializado es:
+
+```text
+VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0
+```
+
+con locale explicito:
+
+```text
+es-CO
+```
+
+`COMMERCIAL_CAPITALIZATION` solo puede producir mutacion sobre `COMMERCIAL_NAME` cuando la politica efectiva, representacion, fuente, perfil y todas las versiones obligatorias permiten la evaluacion.
+
+Combinaciones admitidas por la frontera pura:
+
+```text
+PRIMARY_VALUE + AUTHORITATIVE_SOURCE
+DISPLAY_OVERRIDE + APPROVED_OVERRIDE
+OUTPUT_PROJECTION + OUTPUT_ONLY
+```
+
+La salida de `OUTPUT_PROJECTION` es derivada y no retroalimenta la fuente.
+
+La precedencia fisica de clasificacion es:
+
+```text
+1. excepcion oficial de frase, coincidencia valida mas larga
+2. excepcion oficial de token
+3. sigla, unidad, codigo o forma tecnica protegida
+4. conector aprobado
+5. palabra ordinaria elegible
+6. ambiguedad / revision
+```
+
+Un token ordinario cambia solo caja: primer grafema con caja a mayuscula y los restantes grafemas con caja a minuscula bajo `es-CO`; marcas, diacriticos y grafemas sin caja se preservan.
+
+`Frio` y `Maiz` son resultados posibles de caja. `Frío` y `Maíz` requieren diccionario o revision y no pueden ser inventados por esta operacion.
+
+Las fronteras `NAME_START`, `DECLARED_SEGMENT_START` y `NO_SEGMENT_RESET` permanecen separadas. Un reset declarado solo se activa cuando la politica lo habilita; la implementacion reconoce como fronteras declaradas los separadores contractuales de dos puntos y raya larga/corta rodeados por espacios, sin convertir puntuacion interna en una nueva palabra por heuristica.
+
+## Catalogos futuros y fallo cerrado
+
+conectores y excepciones: RESOLVERS VERSIONADOS, CATALOGOS NO MATERIALIZADOS
+
+`SHELL-NORM-003` define interfaces de consumo para conectores y excepciones, pero no materializa ninguna entrada concreta. El consumidor debe proporcionar resolvers con `connector_catalog_version_ref` y `exception_catalog_version_ref` explicitos.
+
+- no existe lista local de conectores;
+- no existe lista local de marcas, siglas, unidades o nombres legales;
+- no existe seleccion implicita de `latest`;
+- conflicto de candidatos bloquea la mutacion;
+- token tecnico o mixto no resuelto se preserva y exige revision;
+- catalogos concretos pertenecen exclusivamente a `SHELL-NORM-004`.
+
+## Pureza y dependencias runtime
+
+Las cinco funciones son puras respecto de sus inputs explicitos. El modulo no usa:
+
+- filesystem;
+- red;
+- Supabase;
+- variables de entorno;
+- reloj;
+- aleatoriedad;
+- locale implicito;
+- catalogos globales;
+- persistencia;
+- identidad, deduplicacion o fusion;
+- autoridad de commit.
+
+Los adaptadores de segmentacion, grafemas, case mapping y NFC son dependencias explicitas y versionadas. Esto evita convertir la version de Node, navegador o sistema operativo en semantica contractual silenciosa.
+
+## Validacion
+
+`scripts/validate-normalization-rules.mjs` valida simultaneamente:
+
+- compatibilidad de `SHELL-NORM-002` mediante su validador propietario;
+- cinco operaciones exactas;
+- nueve clases de token;
+- seis resultados de token;
+- tres fronteras;
+- total exacto de 23 literales;
+- perfil `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`;
+- locale `es-CO`;
+- SHA-256 del contrato propietario de `SHELL-NORM-003`;
+- ausencia de dependencias runtime implicitas prohibidas;
+- ausencia de catalogos concretos de conectores y excepciones;
+- comportamiento de NFC, trim, compactacion, puntuacion, capitalizacion, protecciones y fallo cerrado mediante fixture puro;
+- permanencia del package sin version ni exports publicos.
 
 ## Estado de esta fundacion
 
 ```text
 package root: MATERIALIZADO
 package.json: MATERIALIZADO
-README: MATERIALIZADO
 tipos SHELL-NORM-002: MATERIALIZADOS
-artefactos logicos de tipos: 9
-literales contractuales: 48
+reglas SHELL-NORM-003: MATERIALIZADAS
+operaciones SHELL-NORM-003: 5
+clases de token: 9
+resultados de token: 6
+fronteras de segmento: 3
+inventario SHELL-NORM-003: 23 literales
 version npm: NO DECLARADA
 exports publicos: NO MATERIALIZADOS
-algoritmos de normalizacion: NO MATERIALIZADOS
-catalogos especializados / diccionarios: NO MATERIALIZADOS
-validadores runtime: NO MATERIALIZADOS
+conectores y excepciones concretos: NO MATERIALIZADOS
+diccionario: NO MATERIALIZADO
+busqueda: NO MATERIALIZADA
+preview: NO MATERIALIZADO
+metadata runtime / auditoria: NO MATERIALIZADA
 consumidores migrados: 0
 cambios Supabase: 0
 ```
 
+## Handoffs reservados
+
+| Tarea | Responsabilidad reservada |
+| --- | --- |
+| `SHELL-NORM-004` | catalogos versionados de conectores y excepciones |
+| `SHELL-NORM-005` | diccionarios ortograficos versionados |
+| `SHELL-NORM-006` | busqueda y comparacion |
+| `SHELL-NORM-007` | previsualizacion de transformaciones |
+| `SHELL-NORM-008` | metadatos de version y auditoria |
+| `SHELL-NORM-009` | certificacion de idempotencia y conservacion semantica |
+
+Ninguna de esas tareas se adelanta por `SHELL-NORM-003`.
+
 Source contract SHA-256 `SHELL-NORM-001`: `f88a0eb3dc6ed6103dc00063124e3e1f5b2a78545d1980e39f596b4fc1653c90`.
 
 Source contract SHA-256 `SHELL-NORM-002`: `ae4bf09517c3e8d0e11c6e5e2e317079115205ba072913fbc76f31323dd90e76`.
+
+Source contract SHA-256 `SHELL-NORM-003`: `ce86eef6da718064b58f9b977af644d9ce0030fc1de07c203c5709e877c9c461`.
