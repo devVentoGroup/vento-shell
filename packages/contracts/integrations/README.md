@@ -22,7 +22,9 @@ Materialización estática interna de la superficie lógica `@vento/contracts/in
 - `INT-APP-004..010`, `INT-EXT-012`, `INT-EXT-017`, `INT-POS-013`, `INT-POS-020`, `INT-SALES-007` e `INT-SALES-008` conservan la semántica propietaria de idempotencia, retry, incertidumbre y conciliación.
 - `SHELL-CON-023::GLOBAL` materializa la forma estática compartida de idempotencia y conciliación.
 - `INT-DB-005`, `INT-DB-008` e `INT-DB-007` conservan respectivamente persistencia física de idempotencia, conciliación y auditoría de procesamiento.
-- `SHELL-CON-024` conserva en exclusiva la disposición compartida de rechazo/cuarentena/compensación.
+- `INT-APP-006`, `INT-APP-009`, `INT-EXT-016`, `INT-EXT-017`, `INT-POS-012`, `INT-POS-019` e `INT-POS-020` conservan las decisiones propietarias de compensación, error parcial, cuarentena, auditoría y especialización POS.
+- `SHELL-CON-024::GLOBAL` materializa la forma estática compartida de disposición, cuarentena, dead-letter, rechazo seguro, intervención y referencia de compensación.
+- `INT-DB-006`, `INT-DB-007` e `INT-DB-008` conservan la materialización física posterior de cuarentena, auditoría y conciliación; `QUEUE-ARC-008`, `QUEUE-ARC-009`, `QUEUE-ARC-011` y `QUEUE-ARC-012` conservan operación posterior de colas y recuperación.
 
 ## Principal técnico de integración
 
@@ -104,7 +106,7 @@ El namespace mínimo conserva sistema, ambiente, superficie, namespace externo y
 
 `ExternalReceivedEvent.mapping_refs[]` y `CanonicalSaleLine.mapping_refs[]` conservan físicamente sus referencias genéricas ya verificadas. Esta instancia materializa `ExternalIdentifierMappingRef` como tipo objetivo para adopción posterior, pero no modifica esos contratos históricos ni migra consumidores.
 
-Mapping permanece separado de autenticidad, autorización, propiedad empresarial, correlación e idempotencia. `mapping_id` no es idempotency key y `SHELL-CON-023` conserva esa responsabilidad. `SHELL-CON-024` conserva la disposición compartida de rechazo, cuarentena y compensación.
+Mapping permanece separado de autenticidad, autorización, propiedad empresarial, correlación e idempotencia. `mapping_id` no es idempotency key y `SHELL-CON-023` conserva esa responsabilidad. `SHELL-CON-024::GLOBAL` materializa separadamente la disposición compartida sin convertir mapping, idempotencia, conciliación o compensación en el mismo concepto.
 
 La adopción estática conserva exactamente `EXT-SYS-001..021`: 21/21 identidades adoptadas, faltantes 0 y duplicados 0. Entre los casos explícitos permanecen Wompi, RevenueCat, Expo Push Service, Google `place_id`, Apple Wallet / PassKit, Zebra BrowserPrint y POS externo. `makos_excel` no adquiere granularidad individual. Telefonía / voz (`EXT-SYS-020`) permanece bloqueada hasta evidencia de `TI-INT-003`.
 
@@ -144,11 +146,54 @@ La matriz estática conserva `EXT-SYS-001..021` con adopción 21/21, faltantes 0
 
 Source contract SHA-256 `SHELL-CON-023`: `d6630e1e3280845765308579eb06302ce1b476da96475de675a1667e06ee68f0`.
 
+
+## Disposición compartida: cuarentena, rechazo y compensación
+
+`SHELL-CON-024::GLOBAL` materializa el contrato estático compartido de disposición dentro de `@vento/contracts/integrations`, sin crear casos runtime, persistencia, colas, workers, retries, reprocess, compensaciones reales ni cambios Supabase.
+
+La superficie contiene `IntegrationDispositionCaseId`, `IntegrationDispositionCaseRef`, `IntegrationDispositionCase`, `IntegrationFailureScope`, `IntegrationPartialityClass`, `IntegrationDisposition`, `IntegrationQuarantineReason`, `IntegrationQuarantineRef`, `IntegrationDeadLetterGate`, `IntegrationDeadLetterRef`, `IntegrationManualInterventionAction` e `IntegrationCompensationPlanRef`.
+
+`IntegrationDispositionCaseId` es estable, opaco y no secreto. No reutiliza event ID, receipt ID, attempt ID, delivery ID, mapping ID, sale ID, sale line ID, correlation ID ni idempotency key. Un retry técnico no crea otro caso por defecto y una identidad cerrada no se reutiliza.
+
+`IntegrationDispositionCaseRef` conserva exactamente 2 campos: `integration_disposition_case_id` y `contract_version`. `IntegrationCompensationPlanRef` conserva exactamente 8 campos y referencia un plan gobernado por la política transversal de compensación sin copiarlo ni ejecutarlo.
+
+`IntegrationDispositionCase` conserva exactamente 39 campos de nivel superior para unidad afectada, fallo, parcialidad, disposición, propietaria, referencias de operación/recurso, contexto externo, principal, evento, mappings, idempotencia, conciliación, cuarentena, dead-letter, compensación, evidencia, integridad, versión, especialización, gates, intervención, autorización, intentos, resultado, responsable, siguiente acción, residuales, retención, legal hold, auditoría, cierre y temporalidad.
+
+`IntegrationFailureScope` conserva exactamente 8 alcances de fallo: `REQUEST_OR_COMMAND`, `OWNER_TRANSACTION`, `EVENT_EMISSION`, `DELIVERY`, `CONSUMER_EFFECT`, `BATCH_OR_BULK_ITEM`, `EXTERNAL_EXCHANGE` y `OFFLINE_OR_EVIDENCE`.
+
+`IntegrationPartialityClass` conserva exactamente 9 clases de parcialidad: `NO_EFFECT_CONFIRMED`, `SOME_EFFECTS_CONFIRMED`, `SOME_EFFECTS_UNKNOWN`, `ALL_EFFECTS_UNKNOWN`, `DEPENDENCY_INCOMPLETE`, `CONFLICTING_RESULTS`, `UNTRUSTED_OR_TAMPERED_INPUT`, `CONTRACT_OR_SCHEMA_INCOMPATIBLE` y `EXTERNAL_STATE_DIVERGENCE`.
+
+`IntegrationDisposition` conserva exactamente 12 disposiciones: `RETRY_SAME_OPERATION`, `WAIT_FOR_DEPENDENCY`, `QUERY_AUTHORITATIVE_RESULT`, `RECONCILE`, `QUARANTINE`, `DEAD_LETTER_CANDIDATE`, `MANUAL_INTERVENTION_REQUIRED`, `PERMANENTLY_REJECT`, `COMPENSATE_CONFIRMED_EFFECTS`, `CREATE_CORRECTION_OR_SUCCESSOR`, `CONTINUE_INDEPENDENT_UNITS` y `BLOCK_DEPENDENT_UNITS`.
+
+`IntegrationQuarantineReason` conserva exactamente 8 razones de cuarentena: `UNTRUSTED_SIGNATURE_OR_AUTHENTICITY`, `SCHEMA_OR_VERSION_UNSUPPORTED`, `PAYLOAD_INTEGRITY_FAILED`, `IDENTITY_OR_ROUTING_AMBIGUOUS`, `SENSITIVITY_OR_POLICY_VIOLATION`, `REPEATED_POISON_MESSAGE`, `EVIDENCE_LINKAGE_INVALID` y `MANUAL_HOLD_FOR_INVESTIGATION`.
+
+`IntegrationDeadLetterGate` conserva exactamente 7 puertas de dead-letter: `AUTOMATION_BUDGET_CLOSED`, `ITEM_ISOLATED`, `IDENTITY_AND_CONTENT_PRESERVED`, `BUSINESS_OUTCOME_CLASSIFIED_OR_RECONCILIATION_OPEN`, `OWNER_AND_NEXT_ACTION_ASSIGNED`, `REPROCESSING_REQUIRES_AUTHORIZATION` y `RETENTION_AND_AUDIT_DEFINED`. Las siete son acumulativas: retry agotado no constituye dead-letter completo ni rechazo terminal.
+
+`IntegrationManualInterventionAction` conserva exactamente 10 acciones manuales autorizables: `RETRY_AUTHORIZED`, `QUERY_RECEIPT`, `CORRECT_METADATA`, `CREATE_SUCCESSOR`, `RELINK_EVIDENCE`, `REPROCESS_FROM_QUARANTINE`, `REPROCESS_FROM_DEAD_LETTER`, `PERMANENT_REJECT`, `START_RECONCILIATION` y `START_COMPENSATION`.
+
+El contrato reutiliza los 8 cierres de conciliación de `SHELL-CON-023` mediante `IntegrationReconciliationClosureOutcome`; no crea un vocabulario competidor. También reutiliza `IntegrationIdempotencyRef`, `IntegrationReconciliationRef`, `IntegrationPrincipalRef` y `ExternalIdentifierMappingRef` sin modificar las materializaciones verificadas anteriores.
+
+Cuarentena, dead-letter, rechazo terminal, resultado desconocido, conciliación, compensación y contingencia permanecen conceptos distintos. La cuarentena preserva identidad, evidencia, integridad, versión y procedencia; no autoejecuta efectos ni se libera por edad. Dead-letter exige las siete puertas. `PERMANENTLY_REJECT` exige ausencia demostrada de efecto incompatible y ausencia de incertidumbre material.
+
+Cuando existe posibilidad de efecto previo, se consulta una fuente autoritativa o se concilia antes de repetir. Un timeout o ausencia de respuesta no demuestran ausencia de efecto. `COMPENSATE_CONFIRMED_EFFECTS` solo aplica a efectos confirmados y elegibles; la compensación tiene identidad e idempotencia propias, preserva el original y cada propietaria compensa únicamente sus propios efectos. No existe rollback global entre PULSO, NEXO, NUMERA, PASS y proveedor.
+
+El reproceso de la misma intención conserva identidad empresarial, idempotencia y huella compatible. Un cambio material de intención exige `CREATE_CORRECTION_OR_SUCCESSOR`, nueva identidad para la nueva intención y relación explícita con el original.
+
+La especialización POS conserva `EXTERNAL-SALE-LINE-QUARANTINE-001`: la línea canónica es la unidad propietaria cuando el bloqueo depende del mapping; liberar una línea no ejecuta inventario; corregir mapping no cambia identidad; si pudo existir efecto previo, se concilia primero; NEXO, NUMERA y PASS compensan solo sus propios efectos confirmados.
+
+La adopción estática conserva exactamente `EXT-SYS-001..021`: 21/21 identidades, faltantes 0, duplicados 0 y la distribución heredada `1 + 6 + 2 + 2 + 1 + 1 + 7 + 1 = 21`. Estados de aplicación de esta instancia: 12 `ESPECIFICADO`, 8 `NO_APLICA` y 1 `BLOQUEADO`. `EXT-SYS-013` usa la especialización POS vigente y `EXT-SYS-020` permanece bloqueado hasta binding acreditado.
+
+`INT-DB-006`, `INT-DB-007` e `INT-DB-008` conservan la persistencia y operación física posterior. `QUEUE-ARC-008`, `QUEUE-ARC-009`, `QUEUE-ARC-011` y `QUEUE-ARC-012` conservan cola de fallos, exclusión de reproceso, métricas y autorización manual posterior. Esta instancia crea 0 casos de disposición operativos, 0 registros de cuarentena, 0 registros dead-letter, 0 compensaciones reales, 0 tablas, 0 índices, 0 RPC, 0 migraciones, 0 consumidores migrados y 0 cambios Supabase.
+
+Source contract SHA-256 `SHELL-CON-024`: `aae1f418511d792568d76a309b98fcdab74fbb13dc7ae4b559fa9561f5f72f30`.
+
+La siguiente continuidad reservada es `SHELL-NORM-001`, que abre `@vento/data-normalization`; esta instancia no la desarrolla.
+
 ## Límite físico
 
-Las siete instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-023::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION` con modalidad `GLOBAL_ENABLE_ONCE`.
+Las ocho instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-024::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION` con modalidad `GLOBAL_ENABLE_ONCE`.
 
-Esta materialización no publica el subpath, no modifica `packages/contracts/package.json`, no añade `exports`, no cambia la versión de `@vento/contracts`, no extiende `generated/index.ts`, no adopta consumidores, no ejecuta integraciones, no crea mappings, claims, retries o conciliaciones runtime, no persiste datos, no crea tablas, migraciones, RLS, RPC o cambios Supabase y no modifica 04A/TREQ.
+Esta materialización no publica el subpath, no modifica `packages/contracts/package.json`, no añade `exports`, no cambia la versión de `@vento/contracts`, no extiende `generated/index.ts`, no adopta consumidores, no ejecuta integraciones, no crea mappings, claims, retries, conciliaciones, cuarentenas, dead-letter, rechazos o compensaciones runtime, no persiste datos, no crea tablas, migraciones, RLS, RPC o cambios Supabase y no modifica 04A/TREQ.
 
 ## Archivos generados
 
@@ -162,3 +207,5 @@ Esta materialización no publica el subpath, no modifica `packages/contracts/pac
 - `scripts/validate-external-identifier-mapping-contract.mjs` valida frescura, vocabularios 10/7/8, formas 7/14/2, cobertura 21/21, fronteras con 019/021, package, índice interno, READMEs, runtime y secretos.
 - `scripts/generate-integration-idempotency-reconciliation-contract.mjs` mantiene `generated/integration-idempotency-reconciliation.contract.ts` para `SHELL-CON-023`.
 - `scripts/validate-integration-idempotency-reconciliation-contract.mjs` valida vocabularios 7/7/8/8, formas 6/21/23, cobertura 21/21, fronteras con 019/022, package, índice interno, READMEs, runtime y secretos.
+- `scripts/generate-integration-disposition-contract.mjs` mantiene `generated/integration-disposition.contract.ts` para `SHELL-CON-024`.
+- `scripts/validate-integration-disposition-contract.mjs` valida vocabularios 8/9/12/8/7/10, reutilización de los 8 cierres de 023, formas 2/8/39, cobertura 21/21, fronteras con 019/022/023, package, índice interno, READMEs, runtime y secretos.

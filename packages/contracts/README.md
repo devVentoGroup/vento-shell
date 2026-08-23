@@ -193,4 +193,20 @@ La cobertura preserva `EXT-SYS-001..021` con adopción 21/21, faltantes 0, dupli
 
 `INT-DB-005`, `INT-DB-008` e `INT-DB-007` conservan respectivamente persistencia física de idempotencia, conciliación y auditoría. Esta instancia crea 0 registros idempotentes operativos, 0 casos de conciliación operativos, 0 claims runtime, 0 retries runtime, 0 tablas, 0 índices, 0 RPC, 0 migraciones, 0 consumidores migrados y 0 cambios Supabase.
 
-Las siete instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-023::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION`. `SHELL-CON-024` conserva en exclusiva rechazo, cuarentena y compensación compartidos.
+`SHELL-CON-024::GLOBAL` materializa el contrato estático compartido de disposición para cuarentena, dead-letter, rechazo seguro, intervención y referencia de compensación sin ejecutar tratamiento runtime.
+
+La superficie añade `IntegrationDispositionCaseId`, `IntegrationDispositionCaseRef`, `IntegrationDispositionCase`, `IntegrationFailureScope`, `IntegrationPartialityClass`, `IntegrationDisposition`, `IntegrationQuarantineReason`, `IntegrationQuarantineRef`, `IntegrationDeadLetterGate`, `IntegrationDeadLetterRef`, `IntegrationManualInterventionAction` e `IntegrationCompensationPlanRef`.
+
+Se preservan exactamente 8 alcances de fallo, 9 clases de parcialidad, 12 disposiciones, 8 razones de cuarentena, 7 puertas de dead-letter y 10 acciones manuales autorizables. Los 8 cierres de conciliación de `SHELL-CON-023` se reutilizan mediante `IntegrationReconciliationClosureOutcome` y no se duplican.
+
+`IntegrationDispositionCaseRef` conserva 2 campos, `IntegrationCompensationPlanRef` 8 campos e `IntegrationDispositionCase` 39 campos de nivel superior. `IntegrationDispositionCaseId` es estable, opaco y no secreto, y permanece separado de operación, evento, receipt, intento, mapping, venta, correlación, idempotencia, conciliación y compensación.
+
+Cuarentena no es dead-letter; dead-letter no es rechazo empresarial; resultado desconocido no se cierra por cuarentena, dead-letter o rechazo. Retry agotado no completa dead-letter ni produce rechazo terminal automáticamente. El reproceso de la misma intención conserva identidad e idempotencia; un cambio material crea corrección o sucesor.
+
+La compensación exige un efecto original confirmado, tiene identidad e idempotencia propias, conserva el original y se ejecuta únicamente dentro de la propietaria del efecto. No existe rollback global entre PULSO, NEXO, NUMERA, PASS y proveedor.
+
+La matriz conserva `EXT-SYS-001..021` 21/21, faltantes 0, duplicados 0 y la clasificación heredada de 023. `EXT-SYS-013` conserva `EXTERNAL-SALE-LINE-QUARANTINE-001` como especialización POS; `EXT-SYS-020` permanece bloqueado sin binding acreditado.
+
+`INT-DB-006`, `INT-DB-007` e `INT-DB-008` conservan materialización física posterior; las responsabilidades de cola y recuperación permanecen en `QUEUE-ARC-008`, `QUEUE-ARC-009`, `QUEUE-ARC-011` y `QUEUE-ARC-012`. Esta instancia crea 0 casos de disposición operativos, 0 compensaciones reales, 0 persistencia, 0 colas/workers, 0 consumidores migrados y 0 cambios Supabase.
+
+Las ocho instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-024::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION`. `SHELL-NORM-001` queda como siguiente tarea reservada y abre la familia `@vento/data-normalization` sin ser desarrollada por esta instancia.
