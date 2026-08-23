@@ -89,6 +89,11 @@ test('genera dos iniciadores separados por intención y un selector legacy míni
     assert.match(result.implementationSource, /FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA/u);
     assert.match(result.implementationSource, /READY_TO_RESTART_WATCHER: SI/u);
     assert.match(result.implementationSource, /RESULTADO PARA CHATGPT/u);
+    assert.match(result.implementationSource, /LIMPIEZA TRANSACCIONAL DE ENTRADAS DESCARGADAS/u);
+    assert.match(result.implementationSource, /Remove-Item -LiteralPath sin comodines y sin -Recurse/u);
+    assert.match(result.implementationSource, /DOWNLOAD_CLEANUP: PASS/u);
+    assert.match(result.implementationSource, /DOWNLOAD_CLEANUP: FAIL/u);
+    assert.match(result.implementationSource, /no emitas el PASS final de la operación/u);
     assert.match(result.implementationSource, /CONTINUATION_POLICY: PASS_CONTINUES_LOCALLY/u);
     assert.match(result.implementationSource, /CHAT_RETURN_POLICY: FAIL_OR_UNRESOLVED_ONLY/u);
     assert.match(result.implementationSource, /FULL_DETERMINISTIC_RUNBOOK_REQUIRED: TRUE/u);
@@ -213,4 +218,17 @@ test('el contrato físico conserva lifecycle, reparación y autorización explí
   assert.match(source, /source_contract_sha256/u);
   assert.match(source, new RegExp('a{64}', 'u'));
   assert.match(source, /evidence permanece \[\]/u);
+});
+
+test('la limpieza de Descargas es post-PASS, exacta y fail-closed', () => {
+  const source = fs.readFileSync('scripts/docs/chatgpt-work-starter.mjs', 'utf8');
+
+  assert.match(source, /LIMPIEZA TRANSACCIONAL DE ENTRADAS DESCARGADAS/u);
+  assert.match(source, /todos los consumidores previstos terminaron de usarla/u);
+  assert.match(source, /todas las comprobaciones que pertenecen a la operación consumidora produjeron PASS/u);
+  assert.match(source, /Remove-Item -LiteralPath sin comodines y sin -Recurse/u);
+  assert.match(source, /rechaza cualquier ruta que no resuelva dentro de la carpeta real de Descargas/u);
+  assert.match(source, /DOWNLOAD_CLEANUP: PASS/u);
+  assert.match(source, /DOWNLOAD_CLEANUP: FAIL/u);
+  assert.match(source, /Nunca limpies Descargas de forma general/u);
 });
