@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1027** |
+| Tareas aprobadas | **1028** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **567** |
+| Tareas no iniciadas | **566** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **64.43% (1027/1594)** |
+| Porcentaje de completamiento | **64.49% (1028/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles** |
-| Tarea actual | **AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema** |
+| Última tarea aprobada | **AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema** |
+| Tarea actual | **AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación** |
+| Siguiente tarea | **AUTH-DB-022 — Implementar gobierno y políticas de Storage** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 26 de 51 aprobadas; AUTH-DB-021 pendiente** |
+| Progreso del bloque | **BLOQUE R: 27 de 51 aprobadas; AUTH-DB-011 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-NORM-008::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-021** |
+| Carril documental | **ACTIVO — AUTH-DB-011** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-NORM-008::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-010` — Validar principal y actor efectivo dentro de RPC sensibles |
-| Tarea actual | `AUTH-DB-021` — Implementar políticas RLS y grants canónicos por esquema — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-011` — Aplicar constraints después de backfills y reconciliación |
+| Última aprobada | `AUTH-DB-021` — Implementar políticas RLS y grants canónicos por esquema |
+| Tarea actual | `AUTH-DB-011` — Aplicar constraints después de backfills y reconciliación — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-022` — Implementar gobierno y políticas de Storage |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 26 DE 51 APROBADAS — ACTUAL AUTH-DB-021** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 27 DE 51 APROBADAS — ACTUAL AUTH-DB-011** |
 | Implementación física | **SHELL-NORM-008::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
-        ↓
-TAREA ACTUAL
 AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-022 — Implementar gobierno y políticas de Storage
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 26 de 51 tareas aprobadas
+BLOQUE R — 27 de 51 tareas aprobadas
 ```
