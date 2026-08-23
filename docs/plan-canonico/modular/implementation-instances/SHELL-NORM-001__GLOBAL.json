@@ -1,10 +1,50 @@
 {
   "instance_id": "SHELL-NORM-001::GLOBAL",
   "task_id": "SHELL-NORM-001",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-NORM-001::GLOBAL como raiz workspace privada minima de @vento/data-normalization dentro de packages/data-normalization, aplicando la reconciliacion PRE_E5_FOUNDATION y sin adelantar contenido propietario de SHELL-NORM-002..009.",
+    "Crear packages/data-normalization/package.json con name @vento/data-normalization, private true, type module y descripcion de autoria; omitir version, exports, main, types, scripts y toda clase de dependencies en esta instancia.",
+    "Crear packages/data-normalization/README.md para documentar identidad, autoridad, pureza, determinismo, separacion evaluacion/commit, fronteras de identidad, datos externos, VITAL y handoffs SHELL-NORM-002..009.",
+    "Actualizar package-lock.json exclusivamente mediante npm como consecuencia determinista de registrar packages/data-normalization bajo el workspace packages/* ya existente; no modificar el package.json raiz.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar package.json, README y lockfile, antes de registrar IMPLEMENTED.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-NORM-001__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No crear src, archivos TypeScript, exports, algoritmos, tipos de campo, reglas linguisticas, conectores, excepciones, diccionarios, busqueda, preview, metadata runtime, tests especializados, consumidores, registry, tags, releases, publicacion, credenciales, DDL, DML, RPC, RLS, migraciones, backfills, constraints, indices, triggers, datos, Supabase ni cambios 04A/TREQ."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node -e \"const fs=require('fs');const p=JSON.parse(fs.readFileSync('packages/data-normalization/package.json','utf8'));const root=fs.readdirSync('packages/data-normalization').sort();const lock=JSON.parse(fs.readFileSync('package-lock.json','utf8'));const ws=lock.packages?.['packages/data-normalization'];const link=lock.packages?.['node_modules/@vento/data-normalization'];const ok=p.name==='@vento/data-normalization'&&p.private===true&&p.type==='module'&&!Object.hasOwn(p,'version')&&!Object.hasOwn(p,'exports')&&!Object.hasOwn(p,'main')&&!Object.hasOwn(p,'types')&&!Object.hasOwn(p,'dependencies')&&!Object.hasOwn(p,'devDependencies')&&!Object.hasOwn(p,'peerDependencies')&&!Object.hasOwn(p,'scripts')&&JSON.stringify(root)===JSON.stringify(['README.md','package.json'])&&ws?.name==='@vento/data-normalization'&&link?.link===true&&link?.resolved==='packages/data-normalization';if(!ok){throw new Error('SHELL-NORM-001 physical scope mismatch')}\"",
+    "npm ls --workspace @vento/data-normalization --depth=0",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T01:29:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "f88a0eb3dc6ed6103dc00063124e3e1f5b2a78545d1980e39f596b4fc1653c90"
+  },
+  "status": "VERIFIED",
+  "evidence": [
+    "MATERIALIZATION packages/data-normalization root created with package.json and README.md only",
+    "MATERIALIZATION package manifest name=@vento/data-normalization private=true type=module version=ABSENT exports=ABSENT main=ABSENT types=ABSENT scripts=ABSENT dependencies=ABSENT",
+    "MATERIALIZATION source code directories and TypeScript files created=0",
+    "MATERIALIZATION package-lock workspace registration updated deterministically under existing packages/* workspace",
+    "MATERIALIZATION root package.json unchanged",
+    "MATERIALIZATION normalization algorithms=0 specialized types=0 catalogs=0 dictionaries=0 consumers=0 Supabase changes=0",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 f88a0eb3dc6ed6103dc00063124e3e1f5b2a78545d1980e39f596b4fc1653c90",
+    "VALIDATION npm ci PASS",
+    "VALIDATION SHELL-NORM-001 exact physical scope PASS",
+    "VALIDATION package root exact entries README.md + package.json PASS",
+    "VALIDATION package manifest private boundary and absence of version/exports/dependencies/scripts PASS",
+    "VALIDATION package-lock workspace and node_modules link registration PASS",
+    "VALIDATION npm ls --workspace @vento/data-normalization --depth=0 PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-NORM-001::GLOBAL VERIFIED"
+  ]
 }
