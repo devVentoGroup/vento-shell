@@ -2,7 +2,7 @@
 
 Raiz privada de autoria para la fundacion compartida de normalizacion pura y determinista de Vento OS.
 
-`SHELL-NORM-001::GLOBAL` materializo la identidad fisica minima del package. `SHELL-NORM-002::GLOBAL` materializo el sistema compartido de tipos de campo normalizable. `SHELL-NORM-003::GLOBAL` materializo las reglas puras de Unicode, espacios, espaciado de puntuacion de prosa y capitalizacion empresarial. `SHELL-NORM-004::GLOBAL` materializa ahora los catalogos versionados de conectores y excepciones oficiales, sin habilitar exports publicos, consumidores, persistencia ni cambios Supabase.
+`SHELL-NORM-001::GLOBAL` materializo la identidad fisica minima del package. `SHELL-NORM-002::GLOBAL` materializo el sistema compartido de tipos de campo normalizable. `SHELL-NORM-003::GLOBAL` materializo las reglas puras de Unicode, espacios, puntuacion de prosa y capitalizacion empresarial. `SHELL-NORM-004::GLOBAL` materializo los catalogos versionados de conectores y excepciones oficiales. `SHELL-NORM-005::GLOBAL` materializa ahora el diccionario ortografico canonico versionado, sin habilitar exports publicos, consumidores, persistencia, busqueda ni cambios Supabase.
 
 ## Autoridad canonica
 
@@ -46,29 +46,13 @@ La raiz continua como workspace privado bajo `packages/*` con estas invariantes:
 8. `NormalizableStructuredComponentDescriptor`;
 9. `NormalizablePolymorphicVariantDescriptor`.
 
-Los vocabularios de tipos conservan exactamente 48 literales: 14 clases semanticas, 7 roles de representacion, 6 roles de fuente, 8 modos de tratamiento y 13 familias de operacion.
+Los vocabularios de tipos conservan exactamente **48 literales**: 14 clases semanticas, 7 roles de representacion, 6 roles de fuente, 8 modos de tratamiento y 13 familias de operacion.
 
 `IDENTITY_OR_RECORD_ACTION` permanece fuera de la mutacion textual. La ausencia de modo explicito sigue cerrada como `PROHIBITED`. VITAL no hereda politicas Vento por compartir infraestructura o tipos.
 
-El validador `scripts/validate-normalization-types.mjs` sigue siendo propietario de 002. A partir de 003 valida sus propios artefactos por inclusion, no exige que `src/` o `scripts/` permanezcan congelados para siempre; esta correccion de compatibilidad no modifica los nueve tipos ni los 48 literales verificados de 002.
-
 ## Materializacion de SHELL-NORM-003
 
-La superficie interna queda:
-
-```text
-packages/data-normalization/
-|-- README.md
-|-- package.json
-|-- scripts/
-|   |-- validate-normalization-types.mjs
-|   `-- validate-normalization-rules.mjs
-`-- src/
-    |-- normalization.types.ts
-    `-- normalization.rules.ts
-```
-
-`src/normalization.rules.ts` materializa cinco operaciones puras e independientes:
+`src/normalization.rules.ts` conserva cinco operaciones puras e independientes:
 
 1. `UNICODE_CANONICALIZATION`;
 2. `EDGE_WHITESPACE_TRIM`;
@@ -76,144 +60,62 @@ packages/data-normalization/
 4. `PROSE_PUNCTUATION_SPACING`;
 5. `COMMERCIAL_CAPITALIZATION`.
 
-No existe pipeline universal. Cada operacion exige `NormalizableFieldDescriptor`, `operation_kind`, politica efectiva, `policy_version_ref`, tratamiento permitido y las versiones especificas de la etapa. Una operacion no habilita otra por implicacion.
+El inventario cerrado de 003 conserva exactamente 5 operaciones, 9 clases de token, 6 resultados de token y 3 fronteras: **23 literales** en total, sin faltantes ni duplicados.
 
-## Inventario cerrado de SHELL-NORM-003
-
-| Familia | Esperado | Materializado |
-| --- | ---: | ---: |
-| operaciones deterministas | 5 | 5 |
-| clases de token de capitalizacion | 9 | 9 |
-| resultados de token | 6 | 6 |
-| fronteras de segmento | 3 | 3 |
-| **Total** | **23 literales** | **23 literales** |
-
-Faltantes: 0. Duplicados: 0.
-
-### Clases de token
-
-- `ORDINARY_LEXICAL_TOKEN`;
-- `CONNECTOR_TOKEN`;
-- `OFFICIAL_EXCEPTION_TOKEN`;
-- `CONTROLLED_ACRONYM_TOKEN`;
-- `MEASUREMENT_OR_UNIT_TOKEN`;
-- `NUMERIC_TOKEN`;
-- `ALPHANUMERIC_OR_MODEL_TOKEN`;
-- `PUNCTUATION_OR_SEPARATOR`;
-- `AMBIGUOUS_TOKEN`.
-
-### Resultados de token
-
-- `CAPITALIZED_ORDINARY`;
-- `LOWERCASED_CONNECTOR`;
-- `PRESERVED_OFFICIAL_EXCEPTION`;
-- `PRESERVED_NON_CASED`;
-- `PRESERVED_AMBIGUOUS`;
-- `BLOCKED_CONFLICT`.
-
-### Fronteras de segmento
-
-- `NAME_START`;
-- `DECLARED_SEGMENT_START`;
-- `NO_SEGMENT_RESET`.
-
-## Unicode
-
-`UNICODE_CANONICALIZATION` ejecuta exclusivamente la composicion NFC suministrada por un adaptador explicito y versionado.
-
-Reglas de frontera:
-
-- no NFKC ni NFKD;
-- no unaccent;
-- no eliminacion de diacriticos;
-- `ñ` permanece distinta de `n`;
-- no transliteracion;
-- no casefold del valor mostrado;
-- no capitalizacion ni diccionario implicitos;
-- el adaptador debe demostrar idempotencia para la version declarada;
-- originales externos, snapshots, evidencia y material protegido permanecen cerrados por politica.
-
-La implementacion no selecciona una libreria Unicode ni una version implicita del runtime. La semantica fisica se recibe mediante `UnicodeCanonicalizationAdapter` con `unicode_version_ref` explicito.
-
-## Espacios
-
-`EDGE_WHITESPACE_TRIM` solo elimina separadores de borde listados explicitamente por la politica de la etapa. No existe `trim` universal y no se permite cruzar silenciosamente la frontera hacia contenido vacio cuando `allow_empty_result` no lo autoriza.
-
-`INTERNAL_WHITESPACE_COMPACTION` solo compacta separadores declarados `accidental_internal_separators` y conserva los separadores de borde. No existe una regla global equivalente a `\s+`. Saltos de linea, tabs, NBSP, Markdown, plantillas y formato significativo permanecen intactos salvo politica explicita que los identifique como transformables.
-
-## Puntuacion de prosa
-
-`PROSE_PUNCTUATION_SPACING` consume reglas explicitas de campo. Cada regla declara:
-
-- puntuacion exacta;
-- token de espaciado exacto;
-- cantidad de espacios antes;
-- cantidad de espacios despues;
-- `prose_spacing_version_ref`.
-
-La operacion solo modifica el espaciado adyacente a la puntuacion declarada. No agrega, elimina, sustituye ni reordena signos; no modifica palabras, tildes, caja, Unicode, identidad o estructura; no crea una gramatica universal.
-
-## Capitalizacion empresarial
-
-El unico perfil materializado es:
+El perfil de capitalizacion sigue siendo exactamente:
 
 ```text
 VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0
 ```
 
-con locale explicito:
+con locale explicito `es-CO`.
 
-```text
-es-CO
-```
+La implementacion no selecciona Unicode, locale, segmentacion, case mapping o catalogos desde el runtime de forma implicita. Las dependencias se reciben mediante adaptadores y referencias de version explicitas.
 
-`COMMERCIAL_CAPITALIZATION` solo puede producir mutacion sobre `COMMERCIAL_NAME` cuando la politica efectiva, representacion, fuente, perfil y todas las versiones obligatorias permiten la evaluacion.
-
-Combinaciones admitidas por la frontera pura:
-
-```text
-PRIMARY_VALUE + AUTHORITATIVE_SOURCE
-DISPLAY_OVERRIDE + APPROVED_OVERRIDE
-OUTPUT_PROJECTION + OUTPUT_ONLY
-```
-
-La salida de `OUTPUT_PROJECTION` es derivada y no retroalimenta la fuente.
-
-La precedencia fisica de clasificacion es:
-
-```text
-1. excepcion oficial de frase, coincidencia valida mas larga
-2. excepcion oficial de token
-3. sigla, unidad, codigo o forma tecnica protegida
-4. conector aprobado
-5. palabra ordinaria elegible
-6. ambiguedad / revision
-```
-
-Un token ordinario cambia solo caja: primer grafema con caja a mayuscula y los restantes grafemas con caja a minuscula bajo `es-CO`; marcas, diacriticos y grafemas sin caja se preservan.
-
-`Frio` y `Maiz` son resultados posibles de caja. `Frío` y `Maíz` requieren diccionario o revision y no pueden ser inventados por esta operacion.
-
-Las fronteras `NAME_START`, `DECLARED_SEGMENT_START` y `NO_SEGMENT_RESET` permanecen separadas. Un reset declarado solo se activa cuando la politica lo habilita; la implementacion reconoce como fronteras declaradas los separadores contractuales de dos puntos y raya larga/corta rodeados por espacios, sin convertir puntuacion interna en una nueva palabra por heuristica.
-
-## Catalogos futuros y fallo cerrado
+### Marcador historico de 003
 
 conectores y excepciones: RESOLVERS VERSIONADOS, CATALOGOS NO MATERIALIZADOS
 
-`SHELL-NORM-003` define interfaces de consumo para conectores y excepciones, pero no materializa ninguna entrada concreta. El consumidor debe proporcionar resolvers con `connector_catalog_version_ref` y `exception_catalog_version_ref` explicitos.
-
-- no existe lista local de conectores;
-- no existe lista local de marcas, siglas, unidades o nombres legales;
-- no existe seleccion implicita de `latest`;
-- conflicto de candidatos bloquea la mutacion;
-- token tecnico o mixto no resuelto se preserva y exige revision;
-- catalogos concretos pertenecen exclusivamente a `SHELL-NORM-004`.
+Ese marcador describe correctamente el estado al cierre de `SHELL-NORM-003`; la materializacion posterior de 004 no reescribe la evidencia historica de 003.
 
 ## Materializacion de SHELL-NORM-004
 
-El marcador historico de `SHELL-NORM-003` que dice `conectores y excepciones: RESOLVERS VERSIONADOS, CATALOGOS NO MATERIALIZADOS` describe correctamente el cierre de 003. `SHELL-NORM-004::GLOBAL` es el propietario posterior que materializa ahora esos catalogos sin reinterpretar E3.
+`SHELL-NORM-004::GLOBAL` materializo dos identidades versionadas:
 
-La superficie interna queda ampliada asi:
+```text
+VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0
+VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0
+```
+
+El catalogo de conectores conserva exactamente 18 entradas, 3 familias descriptivas, 3 posiciones y 5 resultados. El catalogo de excepciones conserva exactamente 4 familias, 23 atributos de entrada, 4 scopes, 3 matchers, 4 modos de aplicacion, 7 resultados, 5 tipos de autoridad, 3 estados y 28 formas normativas iniciales.
+
+formas normativas iniciales: 28 = 22 + 6
+
+Las 28 formas se distribuyen en 3 marcas, 10 aplicaciones/codigos controlados, 9 unidades/familias tecnicas y 6 protecciones legales contextuales.
+
+candidatos no activables: 34 = 14 + 11 + 9
+
+Los 34 candidatos permanecen fuera del catalogo activo. Coincidencia, caja, frecuencia o similitud no los promueven.
+
+`materializeOfficialExceptionEntry` exige binding explicito de coordenada, clase, representacion, fuente, autoridad, owner, evidencia, vigencia, estado y modo. 004 no inventa `authority_owner`, `evidence_reference`, scopes, aliases ni permisos de mutacion.
+
+`normalization.rules.ts` conserva las cinco operaciones de 003 y solo incorpora el hook opcional `review_input` requerido por 004 para fallo cerrado antes de la tokenizacion.
+
+## Materializacion de SHELL-NORM-005
+
+`SHELL-NORM-005::GLOBAL` materializa una etapa ortografica pura nueva en:
+
+```text
+packages/data-normalization/src/normalization.dictionary.ts
+```
+
+El validador propietario queda en:
+
+```text
+packages/data-normalization/scripts/validate-normalization-dictionary.mjs
+```
+
+La superficie interna despues de 005 es:
 
 ```text
 packages/data-normalization/
@@ -222,124 +124,295 @@ packages/data-normalization/
 |-- scripts/
 |   |-- validate-normalization-types.mjs
 |   |-- validate-normalization-rules.mjs
-|   `-- validate-normalization-catalogs.mjs
+|   |-- validate-normalization-catalogs.mjs
+|   `-- validate-normalization-dictionary.mjs
 `-- src/
     |-- normalization.types.ts
     |-- normalization.rules.ts
-    `-- normalization.catalogs.ts
+    |-- normalization.catalogs.ts
+    `-- normalization.dictionary.ts
 ```
 
-`src/normalization.catalogs.ts` materializa exactamente dos identidades versionadas:
+### Identidad y locale
+
+El diccionario compartido es exactamente:
 
 ```text
-VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0
-VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0
+VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0
 ```
 
-### Catalogo de conectores
+El perfil linguistico es exactamente `es-CO` y nunca se infiere desde Node, navegador, sistema operativo, base de datos o consumidor.
 
-El inventario cerrado contiene exactamente 18 entradas, sin faltantes ni duplicados:
+### Contrato de entrada
+
+atributos de entrada del diccionario: 21
+
+Los 21 atributos son exactamente:
 
 ```text
-a, al, con, de, del, e, el, en, la, las, lo, los, o, para, por, sin, u, y
+dictionary_entry_key
+locale
+source_form
+canonical_form
+match_scope
+semantic_class
+domain_scope
+entity_scope
+field_scope
+representation_role
+source_role
+case_projection_mode
+decision_mode
+status
+valid_from
+valid_to
+dictionary_version
+supersedes
+evidence_reference
+approval_reference
+reason
 ```
 
-Las tres familias descriptivas son `preposiciones y contracciones`, `articulos` y `conjunciones coordinantes`. No crean gramatica ni amplian el catalogo.
+Las tres correcciones aprobadas se materializan primero como definiciones normativas. `materializeOrthographicDictionaryEntry` solo las convierte en entradas ejecutables cuando recibe un binding explicito de alcance, clase, representacion, fuente, estado, vigencia, evidencia, aprobacion y motivo. Una entrada incompleta no es ejecutable.
 
-Las posiciones normativas son exactamente `NAME_START`, `DECLARED_SEGMENT_START` e `INTERNAL`. Los resultados cerrados son exactamente cinco: `CONNECTOR_INITIAL_CAPITALIZED`, `CONNECTOR_INTERNAL_LOWERCASED`, `CONNECTOR_PRESERVED_BY_EXCEPTION`, `CONNECTOR_PRESERVED_AMBIGUOUS` y `CONNECTOR_POLICY_BLOCKED`.
+No se inventan scopes, `evidence_reference`, `approval_reference`, `valid_from`, autoridad o contexto empresarial para hacer ejecutable una correccion.
 
-`al` y `del` permanecen atomicos. No existen contracciones, expansiones, matching por subcadena, sustituciones `y/e` o `o/u`, aliases implicitos ni deteccion automatica de idioma.
+### Alcances, caja y decision
 
-### Catalogo de excepciones
-
-La superficie contractual materializa:
-
-| Familia | Cantidad |
-| --- | ---: |
-| familias de excepcion | 4 |
-| atributos obligatorios de `OfficialTextExceptionEntry` | 23 |
-| alcances de coincidencia | 4 |
-| modos de coincidencia | 3 |
-| modos de aplicacion | 4 |
-| resultados de evaluacion | 7 |
-| tipos de autoridad | 5 |
-| estados de ciclo de vida | 3 |
-| formas normativas iniciales | 28 |
-
-Las 28 formas se distribuyen exactamente en 3 marcas, 10 aplicaciones/codigos controlados, 9 unidades/familias tecnicas y 6 protecciones contextuales de sufijo legal. De ellas, 22 corresponden a emision canonica o validacion tecnica y 6 a proteccion legal contextual.
+Los alcances cerrados de coincidencia son exactamente:
 
 ```text
-marcas: 3M, iPhone, Coca-Cola
-aplicaciones/codigos: NEXO, VISO, ORIGO, NUMERA, FOGO, PULSO, VGR, SAU, VCF, COP
-unidades/familias: g, kg, ml, l, un, dz, count, mass, volume
-sufijos legales: SAS, S.A.S., SA, S.A., LTDA, CIA
+FULL_VALUE
+PHRASE
+TOKEN
 ```
 
-Las seis protecciones legales no son aliases entre si. `SAS` no implica `S.A.S.` y viceversa.
+La version 1.0.0 solo contiene entradas activables `TOKEN`; `FULL_VALUE` y `PHRASE` permanecen parte del contrato cerrado para versiones/entradas que los declaren explicitamente. No existe matching por subcadena.
 
-### Binding explicito y ausencia de autoridad inventada
+El modo de proyeccion de caja es exactamente:
 
-Las 28 formas son definiciones normativas aprobadas, no entradas ejecutables globales con contexto inventado. La funcion `materializeOfficialExceptionEntry` exige que cada activacion suministre explicitamente los 23 atributos contractuales mediante un binding de coordenada, clase, representacion, fuente, autoridad, owner, evidencia, vigencia, estado y modo de aplicacion.
+```text
+PRESERVE_RESOLVED_CASE_PATTERN
+```
 
-La implementacion no fabrica `authority_owner`, `evidence_reference`, dominio, entidad, campo, `valid_from`, aliases ni permisos de mutacion. Una forma normativa reconocida sin binding compatible se preserva y queda en revision/bloqueo, no se emite por heuristica. Solo `ACTIVE` participa en decisiones nuevas.
+La etapa ortografica consume la caja ya resuelta; no vuelve a ejecutar capitalizacion. Ejemplos:
 
-### Candidatos no activables
+```text
+maiz -> maíz
+Maiz -> Maíz
+MAIZ -> MAÍZ
+```
 
-Se preserva un inventario de 34 casos documentales no activables: 14 casos de marca o forma mixta, 11 casos de sigla/codigo contextual y 9 casos estructurales o lexicos. Ninguno se incorpora a las 28 formas normativas.
+Los modos cerrados de decision son exactamente:
 
-Entre ellos permanecen `Oster/oster`, `Wellmix/Welmix`, `Vento`, `Saudo`, `BBQ`, `T26`, `Six Pack`, `six_pack` y `Bolsa 1 kg`. Coincidencia, caja, frecuencia o similitud no los promueven.
+```text
+REPLACE_ORTHOGRAPHY
+PRESERVE_AS_APPROVED
+REVIEW_REQUIRED
+```
 
-### Integracion con SHELL-NORM-003
+### Resolucion de alcance
 
-`normalization.rules.ts` conserva las cinco operaciones y los 23 literales verificados de 003. 004 agrega un hook opcional `review_input` al resolver de catalogos. El hook es retrocompatible y permite que un candidato no activable, una entrada suspendida/retirada o una forma normativa sin binding explicito falle cerrada antes de la tokenizacion ordinaria.
+Los cuatro niveles explicitos son exactamente:
 
-`createCommercialCapitalizationCatalogResolver` implementa el contrato consumido por 003 con versiones exactas de catalogo, entradas de excepcion explicitamente activadas y resolucion determinista de conectores. No existe fallback a listas locales ni seleccion `latest`.
+```text
+FIELD_SCOPE
+ENTITY_SCOPE
+DOMAIN_SCOPE
+VENTO_OS_TRANSVERSAL_SCOPE
+```
 
-### Pureza y fronteras
+La codificacion fisica del alcance transversal usa `domain_scope = VENTO_OS_TRANSVERSAL_SCOPE` con `entity_scope = null` y `field_scope = null`. Es una representacion interna explicita del nivel contractual; no crea un dominio empresarial nuevo.
 
-La materializacion 004 no usa filesystem, red, Supabase, variables de entorno, reloj implicito, aleatoriedad ni locale implicito para decidir semantica. El case mapping se recibe mediante adaptador versionado.
+La especificidad es:
 
-Los catalogos no crean identidad, unicidad, deduplicacion, fusion, persistencia, commit ni autoridad empresarial. `EXTERNAL_ORIGINAL`, snapshots y evidencia conservan su frontera. VITAL no hereda estos catalogos. Correccion ortografica permanece reservada a `SHELL-NORM-005`; busqueda a `SHELL-NORM-006`.
+```text
+FIELD_SCOPE
+> ENTITY_SCOPE
+> DOMAIN_SCOPE
+> VENTO_OS_TRANSVERSAL_SCOPE
+> conservar por ausencia de politica
+```
 
-### Validacion de SHELL-NORM-004
+La ausencia de resolucion no es un quinto scope permisivo.
 
-`scripts/validate-normalization-catalogs.mjs` valida el SHA del contrato propietario mediante el parser canonico de tareas, ejecuta primero los validadores verificados de 002/003, compila tipos/reglas/catalogos con el TypeScript local y comprueba inventarios, distribuciones, ausencia de promociones de candidatos y comportamiento fail-closed mediante fixture ejecutable.
+### Precedencia general
 
-## Pureza y dependencias runtime
+La precedencia conserva exactamente ocho niveles:
 
-Las cinco funciones son puras respecto de sus inputs explicitos. El modulo no usa:
+1. excepcion oficial de frase valida mas larga;
+2. excepcion oficial de token o componente estructurado;
+3. proteccion tecnica por clase, representacion o fuente;
+4. entrada de diccionario mas especifica;
+5. entrada de frase mas larga dentro de la misma especificidad;
+6. entrada de token exacto;
+7. token sin entrada;
+8. forma ambigua o conflictiva.
 
-- filesystem;
-- red;
-- Supabase;
-- variables de entorno;
-- reloj;
-- aleatoriedad;
-- locale implicito;
-- catalogos globales;
-- persistencia;
-- identidad, deduplicacion o fusion;
-- autoridad de commit.
+`OrthographicDictionaryPrecedenceResolver` es una dependencia explicita: 005 no duplica los catalogos de 004 ni intenta inferir excepciones, conectores o protecciones tecnicas por su cuenta. El resolver debe declarar exactamente las versiones de 004 compatibles con la evaluacion.
 
-Los adaptadores de segmentacion, grafemas, case mapping y NFC son dependencias explicitas y versionadas. Esto evita convertir la version de Node, navegador o sistema operativo en semantica contractual silenciosa.
+### Catalogo inicial
 
-## Validacion
+correcciones iniciales: 3
 
-`scripts/validate-normalization-rules.mjs` valida simultaneamente:
+La version 1.0.0 contiene exactamente:
 
-- compatibilidad de `SHELL-NORM-002` mediante su validador propietario;
-- cinco operaciones exactas;
-- nueve clases de token;
-- seis resultados de token;
-- tres fronteras;
-- total exacto de 23 literales;
-- perfil `VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0`;
-- locale `es-CO`;
-- SHA-256 del contrato propietario de `SHELL-NORM-003`;
-- ausencia de dependencias runtime implicitas prohibidas;
-- ausencia de catalogos concretos de conectores y excepciones;
-- comportamiento de NFC, trim, compactacion, puntuacion, capitalizacion, protecciones y fallo cerrado mediante fixture puro;
-- permanencia del package sin version ni exports publicos.
+| Clave | Origen | Forma canonica | Scope | Decision |
+| --- | --- | --- | --- | --- |
+| `ORTHO_ES_CO_MAIZ_MAIZ` | `maiz` | `maíz` | `TOKEN` | `REPLACE_ORTHOGRAPHY` |
+| `ORTHO_ES_CO_CLASICO_CLASICO` | `clasico` | `clásico` | `TOKEN` | `REPLACE_ORTHOGRAPHY` |
+| `ORTHO_ES_CO_FRIO_FRIO` | `frio` | `frío` | `TOKEN` | `REPLACE_ORTHOGRAPHY` |
+
+No existe cuarta correccion por analogia.
+
+### Expresso
+
+expresso: REVISION, NO CORRECCION AUTOMATICA
+
+`expresso` permanece fuera de las tres entradas. Bajo el contrato 1.0.0 produce `DICTIONARY_AMBIGUOUS_REVIEW`, conserva el valor y mantiene destino en `DATA-NORM-ARC-007`. No se convierte automaticamente en `espresso`, `expreso` ni otra forma.
+
+### Puerta de activacion
+
+La evaluacion conserva exactamente 11 condiciones de activacion:
+
+1. existe una politica activa para dominio, entidad y campo;
+2. la clase semantica admite correccion mediante diccionario;
+3. representacion y fuente permiten mutacion o derivacion;
+4. el locale es explicitamente `es-CO`;
+5. diccionario, capitalizacion, conectores y excepciones usan versiones compatibles;
+6. la entrada esta `APPROVED_ACTIVE` y vigente;
+7. el matching exacto y las fronteras se resuelven;
+8. no existe excepcion oficial o proteccion de mayor precedencia;
+9. no existe conflicto entre entradas activas aplicables;
+10. la proyeccion de caja es determinista;
+11. decision, entrada y versiones quedan trazables.
+
+Faltar una condicion preserva el valor y produce no aplicacion, revision o bloqueo segun la causa.
+
+### Estados y resultados
+
+Los seis estados cerrados son exactamente:
+
+```text
+DRAFT
+APPROVED_ACTIVE
+SUSPENDED
+SUPERSEDED
+RETIRED
+REJECTED
+```
+
+Solo `APPROVED_ACTIVE` puede participar en una decision ejecutable nueva. No existe fallback desde una entrada suspendida, supersedida, retirada o rechazada.
+
+Los siete resultados cerrados son exactamente:
+
+```text
+DICTIONARY_CANONICAL_EMITTED
+DICTIONARY_ALREADY_CANONICAL
+DICTIONARY_PRESERVED_PROTECTED
+DICTIONARY_NOT_APPLICABLE
+DICTIONARY_AMBIGUOUS_REVIEW
+DICTIONARY_CONFLICT_BLOCKED
+DICTIONARY_POLICY_BLOCKED
+```
+
+Proteccion, no aplicabilidad, revision, conflicto y bloqueo permanecen semanticamente distintos.
+
+### Pureza y matching
+
+La implementacion solo usa comparacion exacta direccional mediante case mapping `es-CO` suministrado por un adaptador versionado. No elimina tildes ni signos durante el matching y no une o divide palabras.
+
+Quedan fuera:
+
+- Levenshtein y distancia de edicion;
+- matching difuso;
+- fonetica;
+- stemming o lematizacion;
+- autocorrector del sistema, navegador o teclado;
+- frecuencia, popularidad o mayoria;
+- modelos linguisticos como autoridad;
+- aliases automaticos;
+- `unaccent` o transliteracion;
+- sustituciones `y/e` u `o/u`;
+- contracciones o expansiones;
+- busqueda tolerante.
+
+### Clases, representaciones y fuentes
+
+La etapa exige `APPROVED_DICTIONARY_CORRECTION` dentro de una politica activa. Una mutacion directa solo es posible en las combinaciones autorizadas:
+
+```text
+PRIMARY_VALUE + AUTHORITATIVE_SOURCE
+DISPLAY_OVERRIDE + APPROVED_OVERRIDE
+```
+
+`OUTPUT_PROJECTION + OUTPUT_ONLY` solo puede operar como derivacion bajo `DERIVATION_ONLY`.
+
+Permanecen protegidos por defecto:
+
+- `OFFICIAL_BRAND_FORM`;
+- `OFFICIAL_LEGAL_NAME`;
+- `MEASUREMENT_OR_UNIT_CODE`;
+- `TECHNICAL_IDENTIFIER`;
+- `CONTACT_IDENTIFIER`;
+- `SECRET_OR_SIGNATURE_MATERIAL`;
+- `UNCLASSIFIED_PRESERVE`;
+- cualquier combinacion de representacion/fuente que no tenga autoridad de mutacion o derivacion.
+
+`EXTERNAL_ORIGINAL`, snapshots, evidencia y copias sin autoridad independiente se preservan. `SYNCHRONIZED_COPY` no se convierte en una autoridad ortografica local.
+
+### Frontera VITAL
+
+El contexto de evaluacion declara explicitamente `product_boundary` como `VENTO_OS` o `VITAL`. El diccionario transversal solo ejecuta bajo `VENTO_OS`. `VITAL` produce bloqueo de politica y preserva el valor aun cuando el texto coincida con una de las tres formas de origen.
+
+### Idempotencia y trazabilidad
+
+Para la misma entrada, coordenada, versiones y contexto:
+
+```text
+apply_dictionary(apply_dictionary(value, context), context)
+=
+apply_dictionary(value, context)
+```
+
+La evaluacion devuelve `matched_entry_keys`, referencias de evidencia y aprobacion, scope resuelto, versiones y resultados por token. La persistencia fisica de esas trazas no pertenece a 005.
+
+Una entrada nueva o un cambio ejecutable exige versionado/supersesion. El rollback logico no borra historia, evidencia ni decisiones. La version nueva no es retroactiva por defecto.
+
+### Corpus de conformidad de 005
+
+El validador cubre como minimo:
+
+- `Harina de Maiz` -> `Harina de Maíz`;
+- `Pan Masa Madre Clasico` -> `Pan Masa Madre Clásico`;
+- `Latte Frio` -> `Latte Frío`;
+- `MAIZ` -> `MAÍZ`;
+- `Maíz` -> `DICTIONARY_ALREADY_CANONICAL`;
+- `expresso` -> revision y preservacion;
+- `Coca-Cola` -> proteccion por 004;
+- `COMERCIALIZADORA ABC S.A.S.` -> preservacion por clase protegida;
+- `500 g` -> proteccion de unidad;
+- identificador tecnico `FRIO` -> preservacion;
+- `EXTERNAL_ORIGINAL=maiz` -> preservacion;
+- `maizena` -> no aplicable, sin matching por subcadena;
+- conflicto de igual especificidad -> `DICTIONARY_CONFLICT_BLOCKED`;
+- scope de campo prevalece sobre scope transversal;
+- entrada retirada no ejecuta ni reaparece como fallback;
+- VITAL queda bloqueado;
+- segunda evaluacion sobre resultado canonico es estable.
+
+## Validacion de SHELL-NORM-005
+
+`scripts/validate-normalization-dictionary.mjs`:
+
+1. verifica el SHA del contrato propietario de `SHELL-NORM-005` mediante `parseTaskBlocks`;
+2. comprueba `GLOBAL_ENABLE_ONCE` y `PRE_E5_FOUNDATION`;
+3. ejecuta primero el validador verificado de 004, que encadena compatibilidad 003/002;
+4. compila tipos, reglas, catalogos y diccionario con el TypeScript local;
+5. valida 21 atributos, 3 scopes, 3 modos de decision, 4 niveles, 8 precedencias, 3 entradas, 1 forma ambigua, 11 condiciones, 6 estados y 7 resultados;
+6. verifica binding explicito, falta de cuarta correccion, protecciones, conflicto, idempotencia, VITAL y fallo cerrado mediante fixture ejecutable;
+7. bloquea dependencias runtime implicitas y heuristicas de busqueda;
+8. verifica que archivos y contratos propietarios anteriores permanezcan sin cambios.
 
 ## Estado de esta fundacion
 
@@ -347,24 +420,27 @@ Los adaptadores de segmentacion, grafemas, case mapping y NFC son dependencias e
 package root: MATERIALIZADO
 package.json: MATERIALIZADO
 tipos SHELL-NORM-002: MATERIALIZADOS
+48 literales SHELL-NORM-002: MATERIALIZADOS
 reglas SHELL-NORM-003: MATERIALIZADAS
-operaciones SHELL-NORM-003: 5
-inventario SHELL-NORM-003: 23 literales
+23 literales SHELL-NORM-003: MATERIALIZADOS
 catalogos SHELL-NORM-004: MATERIALIZADOS
-conectores: 18
-familias de conectores: 3
-posiciones de conectores: 3
-resultados de conectores: 5
-familias de excepcion: 4
-atributos de entrada de excepcion: 23
-scopes / matchers / aplicaciones: 4 / 3 / 4
-resultados / autoridades / estados: 7 / 5 / 3
-formas normativas iniciales: 28 = 22 + 6
-candidatos no activables: 34 = 14 + 11 + 9
-entradas ejecutables globales con owner/evidencia inventados: 0
+conectores SHELL-NORM-004: 18
+formas normativas SHELL-NORM-004: 28 = 22 + 6
+candidatos no activables SHELL-NORM-004: 34 = 14 + 11 + 9
+diccionario SHELL-NORM-005: MATERIALIZADO
+atributos de entrada del diccionario: 21
+scopes del diccionario: 3
+modos de decision: 3
+niveles de resolucion: 4
+niveles de precedencia: 8
+correcciones iniciales: 3
+formas ambiguas explicitas: 1
+condiciones de activacion: 11
+estados: 6
+resultados: 7
+entradas ejecutables globales con scope/evidencia/aprobacion inventados: 0
 version npm: NO DECLARADA
 exports publicos: NO MATERIALIZADOS
-diccionario: NO MATERIALIZADO
 busqueda: NO MATERIALIZADA
 preview: NO MATERIALIZADO
 metadata runtime / auditoria: NO MATERIALIZADA
@@ -376,13 +452,12 @@ cambios Supabase: 0
 
 | Tarea | Responsabilidad reservada |
 | --- | --- |
-| `SHELL-NORM-005` | diccionarios ortograficos versionados |
-| `SHELL-NORM-006` | busqueda y comparacion |
+| `SHELL-NORM-006` | normalizacion de busqueda y comparacion |
 | `SHELL-NORM-007` | previsualizacion de transformaciones |
 | `SHELL-NORM-008` | metadatos de version y auditoria |
 | `SHELL-NORM-009` | certificacion de idempotencia y conservacion semantica |
 
-Ninguna de las tareas reservadas `SHELL-NORM-005..009` se adelanta por `SHELL-NORM-004`.
+005 no adelanta busqueda, preview, auditoria runtime, persistencia, identidad, unicidad, deduplicacion o fusion.
 
 Source contract SHA-256 `SHELL-NORM-001`: `f88a0eb3dc6ed6103dc00063124e3e1f5b2a78545d1980e39f596b4fc1653c90`.
 
@@ -390,5 +465,6 @@ Source contract SHA-256 `SHELL-NORM-002`: `ae4bf09517c3e8d0e11c6e5e2e31707911520
 
 Source contract SHA-256 `SHELL-NORM-003`: `ce86eef6da718064b58f9b977af644d9ce0030fc1de07c203c5709e877c9c461`.
 
-
 Source contract SHA-256 `SHELL-NORM-004`: `abacc131fb8dd2b18dbd59ef04915e516f6044d4737422b55e45f1eb5dda64ef`.
+
+Source contract SHA-256 `SHELL-NORM-005`: `6a9e98517f962da17c5b8877aa8f358f746e60a397ff621f8dd559bde5ae8837`.

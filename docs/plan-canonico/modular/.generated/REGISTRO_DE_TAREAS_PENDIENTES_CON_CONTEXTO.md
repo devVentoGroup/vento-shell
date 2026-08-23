@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `AUTH-DB-010` — Validar principal y actor efectivo dentro de RPC sensibles | `AUTH-DB-021` — Implementar políticas RLS y grants canónicos por esquema | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-NORM-005::GLOBAL` — Centralizar diccionarios ortográficos versionados | `SHELL-NORM-006::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-NORM-006::GLOBAL` — Crear normalización de búsqueda y comparación | `SHELL-NORM-007::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1025/1594 aprobadas** | **568** no aprobadas (1 propuesta, 0 rechazadas) | `AUTH-DB-010` |
-| 🟧 **Implementación física conocida** | **47/95 VERIFIED** | **48** no terminales | `SHELL-NORM-005::GLOBAL` |
+| 🟧 **Implementación física conocida** | **48/95 VERIFIED** | **47** no terminales | `SHELL-NORM-006::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-NORM-005::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **47**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-NORM-006::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **46**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,18 +35,18 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `SHELL-NORM-005::GLOBAL` | Centralizar diccionarios ortográficos versionados | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `SHELL-NORM-006::GLOBAL` | Crear normalización de búsqueda y comparación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 3 | PENDIENTE | `SHELL-NORM-007::GLOBAL` | Crear previsualización de transformaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 4 | PENDIENTE | `SHELL-NORM-008::GLOBAL` | Crear metadatos de versión y auditoría de reglas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 5 | PENDIENTE | `SHELL-NORM-009::GLOBAL` | Probar idempotencia y conservación semántica | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 6 | PENDIENTE | `SHELL-DB-001::GLOBAL` | Crear @vento/supabase | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 7 | PENDIENTE | `SHELL-DB-004::GLOBAL` | Normalizar errores de Supabase | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 8 | PENDIENTE | `SHELL-DB-005::GLOBAL` | Separar cliente server, browser y native | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 9 | PENDIENTE | `SHELL-UI-001::GLOBAL` | Crear @vento/ui-web | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 10 | PENDIENTE | `SHELL-UI-002::GLOBAL` | Compartir Alert | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 11 | PENDIENTE | `SHELL-UI-003::GLOBAL` | Compartir Button | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
-| 12 | PENDIENTE | `SHELL-UI-004::GLOBAL` | Compartir Card | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-005::GLOBAL. |
+| 1 | **ACTUAL** | `SHELL-NORM-006::GLOBAL` | Crear normalización de búsqueda y comparación | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `SHELL-NORM-007::GLOBAL` | Crear previsualización de transformaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 3 | PENDIENTE | `SHELL-NORM-008::GLOBAL` | Crear metadatos de versión y auditoría de reglas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 4 | PENDIENTE | `SHELL-NORM-009::GLOBAL` | Probar idempotencia y conservación semántica | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 5 | PENDIENTE | `SHELL-DB-001::GLOBAL` | Crear @vento/supabase | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 6 | PENDIENTE | `SHELL-DB-004::GLOBAL` | Normalizar errores de Supabase | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 7 | PENDIENTE | `SHELL-DB-005::GLOBAL` | Separar cliente server, browser y native | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 8 | PENDIENTE | `SHELL-UI-001::GLOBAL` | Crear @vento/ui-web | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 9 | PENDIENTE | `SHELL-UI-002::GLOBAL` | Compartir Alert | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 10 | PENDIENTE | `SHELL-UI-003::GLOBAL` | Compartir Button | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 11 | PENDIENTE | `SHELL-UI-004::GLOBAL` | Compartir Card | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
+| 12 | PENDIENTE | `SHELL-UI-005::GLOBAL` | Compartir EmptyState | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-NORM-006::GLOBAL. |
 
 ## Modos de trabajo y materialización
 
