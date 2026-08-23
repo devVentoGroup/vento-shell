@@ -2,7 +2,7 @@
 
 Raiz privada de autoria para la fundacion compartida de normalizacion pura y determinista de Vento OS.
 
-`SHELL-NORM-001::GLOBAL` materializo la identidad fisica minima del package. `SHELL-NORM-002::GLOBAL` materializo tipos compartidos. `SHELL-NORM-003::GLOBAL` materializo reglas puras. `SHELL-NORM-004::GLOBAL` materializo catalogos versionados. `SHELL-NORM-005::GLOBAL` materializo el diccionario ortografico. `SHELL-NORM-006::GLOBAL` materializo busqueda y comparacion. `SHELL-NORM-007::GLOBAL` materializo preview no vinculante. `SHELL-NORM-008::GLOBAL` materializa ahora metadata logica de version, procedencia, auditoria, idempotencia, concurrencia y replay sin adquirir autoridad de persistencia.
+`SHELL-NORM-001::GLOBAL` materializo la identidad fisica minima del package. `SHELL-NORM-002::GLOBAL` materializo tipos compartidos. `SHELL-NORM-003::GLOBAL` materializo reglas puras. `SHELL-NORM-004::GLOBAL` materializo catalogos versionados. `SHELL-NORM-005::GLOBAL` materializo el diccionario ortografico. `SHELL-NORM-006::GLOBAL` materializo busqueda y comparacion. `SHELL-NORM-007::GLOBAL` materializo preview no vinculante. `SHELL-NORM-008::GLOBAL` materializo metadata logica de version, procedencia, auditoria, idempotencia, concurrencia y replay. `SHELL-NORM-009::GLOBAL` materializa ahora el corpus y el oraculo compartido de conformidad para determinismo, idempotencia de evaluacion y conservacion semantica.
 
 ## Autoridad canonica
 
@@ -13,6 +13,7 @@ El package consume semantica aprobada; no crea una segunda fuente de politica.
 - `SHELL-PKG-001..008` conservan distribucion, versionado, compatibilidad y adopcion.
 - `SHELL-NORM-002..009` materializan progresivamente contenido especializado interno.
 - `DATA-NORM-DB-001..010` conservan persistencia y enforcement fisico.
+- `SHELL-CI-001` conserva la integracion futura del corpus con la suite general de CI del package.
 
 La reconciliacion topologica vigente para `SHELL-NORM-001..009` es `GLOBAL_ENABLE_ONCE` / `PRE_E5_FOUNDATION`: la fundacion pura puede materializarse una sola vez antes de E5 sin adquirir autoridad de persistencia.
 
@@ -92,8 +93,6 @@ clasico -> clasico con tilde canonica
 frio -> frio con tilde canonica
 ```
 
-La forma materializada conserva UTF-8 canonico; esta descripcion ASCII evita depender de la codificacion de consola.
-
 expresso: REVISION, NO CORRECCION AUTOMATICA
 
 Los scopes son 3, los modos de decision 3, los niveles de resolucion 4, la precedencia 8, las formas ambiguas explicitas 1, las condiciones de activacion 11, los estados 6 y los resultados 7. No existe matching por subcadena ni cuarta correccion inferida.
@@ -101,8 +100,6 @@ Los scopes son 3, los modos de decision 3, los niveles de resolucion 4, la prece
 ## Materializacion de SHELL-NORM-006
 
 `normalization.search.ts` materializa `VENTO_TEXT_SEARCH_AND_COMPARISON_POLICY@1.0.0`.
-
-Inventario cerrado:
 
 ```text
 representaciones derivadas: 7
@@ -138,27 +135,13 @@ Toda salida conserva `commit_authority: false`, `mutation_performed: false`, `st
 
 ## Materializacion de SHELL-NORM-008
 
-`SHELL-NORM-008::GLOBAL` materializa metadata logica pura en:
-
-```text
-packages/data-normalization/src/normalization.audit.ts
-```
-
-El validador propietario queda en:
-
-```text
-packages/data-normalization/scripts/validate-normalization-audit.mjs
-```
-
-La identidad exacta es:
+`normalization.audit.ts` materializa:
 
 ```text
 VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0
 ```
 
-La metadata compartida nunca equivale por si sola a auditoria persistida, autorizacion, commit o efecto empresarial. Actor, autorizacion, tiempos, identidades de evento y confirmacion de efectos deben ser proporcionados explicitamente por la capa propietaria.
-
-### Inventarios cerrados de 008
+Inventarios cerrados:
 
 ```text
 familias de registro logico: 6
@@ -180,153 +163,155 @@ expectativas de concurrencia: 4
 atributos de replay: 9
 ```
 
-### Familias de registro logico
-
-```text
-RULE_GOVERNANCE_RECORD
-RULE_EVALUATION_RECORD
-PERSISTED_MUTATION_RECORD
-DERIVATION_MATERIALIZATION_RECORD
-REVIEW_DECISION_RECORD
-PROPAGATION_OR_TRANSITION_RECORD
-```
-
-Una `RULE_EVALUATION_RECORD` puede existir sin mutacion. `PERSISTED_MUTATION_RECORD` solo describe un efecto cuando la capa propietaria suministra confirmacion de commit y contexto de actor/autorizacion. El package nunca produce esa confirmacion por si mismo.
-
-### Identidad y conjunto efectivo de versiones
-
-Cada regla conserva `rule_key`, `rule_version_id`, familia, coordenada, clase, operacion, perfil, version, digest, estado, vigencia y supersesion. `rule_version_id` es inmutable y una variacion de contenido exige otra version.
-
-`materializeResolvedVersionSet` acepta exclusivamente las 11 claves canonicas, exige estados `RESOLVED` o `NOT_APPLICABLE`, bloquea `latest`, elimina ambiguedad de orden mediante orden canonico y calcula `version_set_digest` mediante un adaptador de digest explicitamente inyectado. El modulo no selecciona versiones desde reloj, cache, Git, registry o configuracion ambiental.
-
-### Ciclo de vida y compatibilidad
-
-Los ocho estados son:
-
-```text
-DRAFT
-APPROVED_PENDING_ACTIVATION
-ACTIVE
-SUSPENDED
-SUPERSEDED
-RETIRED
-REJECTED
-INVALIDATED
-```
-
-Solo `ACTIVE` representa una version apta para decisiones nuevas. `SUPERSEDED`, `RETIRED`, `REJECTED` e `INVALIDATED` son terminales para esa version. El modulo valida transiciones logicas; no activa, suspende, supersede, retira ni invalida persistencia.
-
-Los cinco modos son:
-
-```text
-ACTIVE_ONLY
-DUAL_EVALUATION_SHADOW
-HISTORICAL_READ_ONLY
-REPLAY_ONLY
-INCOMPATIBLE_BLOCKED
-```
-
-Shadow nunca implica dual write.
-
-### Procedencia y auditoria logica
-
-La procedencia conserva 11 atributos de algoritmo y artefacto. `latest` y dependencias ambientales implicitas estan bloqueados.
-
-Los 12 eventos mantienen semanticas diferenciadas. Los 30 atributos del audit envelope distinguen `logical_operation_id`, `attempt_id`, `correlation_id`, `causation_id`, actor, autorizacion, coordenada, version set, procedencia, idempotencia, concurrencia, outcome y referencias relacionadas.
-
-`validateLogicalAuditEnvelope` devuelve exclusivamente validacion logica y declara:
+`validateLogicalAuditEnvelope` declara siempre:
 
 ```text
 persistence_authority: false
 authorization_authority: false
 ```
 
-Una evaluacion no puede afirmar `APPLIED_CHANGE`. Un efecto confirmado exige familia de efecto, contexto del owner y `effect_committed_at` explicito.
-
-### Idempotencia
-
-La clave logica usa exactamente nueve componentes. `materializeIdempotencyKey` produce una clave determinista mediante digest inyectado; no consulta ni persiste estado.
-
-Misma clave + mismo payload puede reutilizar resultado previo solamente cuando la capa propietaria aporta ese estado. Misma clave + payload distinto produce exactamente:
-
-```text
-IDEMPOTENCY_PAYLOAD_CONFLICT
-```
-
-Un `APPLIED_CHANGE` previo no se reutiliza sin `effect_confirmation_reference` explicita.
-
-`PURE_EVALUATION` es la unica de las seis clases cuya garantia puede demostrarse completamente dentro del motor puro. Las demas dependen de evidencia de la capa que posee estado o commit.
-
-### Concurrencia
-
-Las cuatro expectativas son:
-
-```text
-expected_source_version_or_hash
-expected_policy_coordinate
-expected_version_set_digest
-expected_current_state
-```
-
-`assessConcurrency` compara expectativas con un estado entregado por el caller y devuelve `state_authority: false`. No existe last-writer-wins semantico.
-
-### Replay
-
-El contrato de replay conserva nueve atributos y `validateReplayContract` declara siempre:
-
-```text
-production_mutation_authority: false
-```
-
-Replay metadata no ejecuta replay, no selecciona ambiente, no toca produccion y no aplica rollback o compensaciones.
-
-### Relacion con preview
-
-`projectNonBindingPreviewAuditMetadata` puede proyectar metadata de evaluacion a partir de `SHELL-NORM-007`, pero conserva:
-
-```text
-binding: NON_BINDING
-commit_authority: false
-effect_committed_at: NOT_APPLICABLE
-```
-
-Un preview que intente afirmar `APPLIED_CHANGE` se rechaza como `PREVIEW_CANNOT_ASSERT_APPLIED_CHANGE`.
-
-### VITAL y minimizacion
-
-VITAL permanece fuera de la politica transversal de Vento OS. Metadata sensible se representa mediante referencias protegidas, hashes contextualizados o valores `NOT_APPLICABLE` cuando el contrato lo permite. El package no lee secretos ni amplia visibilidad.
-
-### Fronteras fisicas
-
-008 no crea ni modifica:
-
-- tablas, columnas, ledger o almacenamiento de auditoria;
-- API, endpoint, RPC o trigger;
-- SQL, DDL, DML, indices, constraints, migraciones o backfills;
-- timestamps desde reloj implicito;
-- UUID o aleatoriedad para identidad semantica;
-- autorizacion;
-- persistencia de eventos;
-- activacion de versiones;
-- replay, rollback o compensaciones;
-- diccionarios, catalogos, busqueda o preview anteriores;
-- consumidores;
-- Supabase.
+Misma clave de idempotencia con payload distinto produce `IDEMPOTENCY_PAYLOAD_CONFLICT`. Replay conserva `production_mutation_authority: false`. Preview conserva `binding: NON_BINDING`, `commit_authority: false` y no puede afirmar `APPLIED_CHANGE`.
 
 persistencia de auditoria: NO MATERIALIZADA
 
 ## Validacion de SHELL-NORM-008
 
-`validate-normalization-audit.mjs`:
+`validate-normalization-audit.mjs` verifica la identidad contractual de 008, encadena 007 -> 002, compila los siete modulos internos, reconcilia todos los inventarios 008 y prueba version set, ciclo de vida, procedencia, audit envelope, idempotencia, concurrencia, replay, preview y VITAL.
 
-1. verifica el SHA del contrato propietario de 008 mediante `parseTaskBlocks`;
+## Materializacion de SHELL-NORM-009
+
+`SHELL-NORM-009::GLOBAL` materializa el corpus fisico privado y el oraculo de certificacion en:
+
+```text
+packages/data-normalization/conformance/normalization.conformance.ts
+```
+
+El validador propietario queda en:
+
+```text
+packages/data-normalization/scripts/validate-normalization-conformance.mjs
+```
+
+La identidad exacta es:
+
+```text
+VENTO_NORMALIZATION_IDEMPOTENCY_AND_SEMANTIC_PRESERVATION_CONFORMANCE@1.0.0
+```
+
+### Corpus heredado
+
+La fuente reconciliadora es `DATA-NORM-TRANS-002`.
+
+```text
+corpus heredado: 89
+distribucion del corpus: 16 + 20 + 21 + 15 + 17
+
+DATA-NORM-ARC-003 capitalizacion: 16
+DATA-NORM-ARC-004 conectores: 20
+DATA-NORM-ARC-005 excepciones oficiales: 21
+DATA-NORM-ARC-006 diccionario: 15
+DATA-NORM-ARC-008 busqueda y comparacion: 17
+```
+
+Los escenarios no se renombran semanticamente ni se sustituyen por ejemplos alternativos. La materializacion usa una clave fisica estable compuesta por tarea propietaria y ordinal de la fila canonica, y conserva las tres celdas de cada escenario para comparacion exacta contra las tablas propietarias.
+
+### Cuatro dimensiones de prueba
+
+```text
+dimensiones de prueba: 4
+
+DETERMINISM
+EVALUATION_IDEMPOTENCY
+SEMANTIC_PRESERVATION
+NO_UNAUTHORIZED_SIDE_EFFECTS
+```
+
+### Diez dimensiones de conservacion semantica
+
+```text
+dimensiones de conservacion semantica: 10
+
+COORDINATE
+SEMANTIC_CLASS
+REPRESENTATION
+SOURCE_ROLE
+STRUCTURE
+PROTECTED_FORM
+PROVENANCE
+IDENTITY
+HISTORY
+PRODUCT_BOUNDARY
+```
+
+Un resultado visual correcto no certifica conformidad si cambia cualquiera de estas dimensiones fuera del delta autorizado.
+
+### Cobertura cerrada
+
+```text
+operaciones cubiertas: 13/13
+clases semanticas cubiertas: 14/14
+roles de representacion cubiertos: 7/7
+roles de fuente cubiertos: 6/6
+modos de tratamiento cubiertos: 8/8
+
+faltantes: 0
+duplicados: 0
+```
+
+### Oraculo A/B/C
+
+A/B/C: MATERIALIZADO
+
+```text
+A = evaluacion de la entrada bajo un corte contractual fijo
+B = repeticion de la misma evaluacion bajo el mismo corte
+C = reevaluacion de la salida de A cuando la operacion sea reaplicable
+```
+
+`certifyABCConformance` exige simultaneamente:
+
+1. A y B con el mismo resultado logico, salida y snapshot protegido;
+2. C sin un segundo cambio semantico;
+3. las diez dimensiones protegidas invariantes respecto del snapshot fuente;
+4. cero side effects no autorizados.
+
+El oraculo devuelve siempre:
+
+```text
+production_mutation_authority: false
+identity_authority: false
+uniqueness_authority: false
+merge_authority: false
+```
+
+### Versiones
+
+`classifyVersionCut` distingue `SAME_CONTRACT_CUT` de `DIFFERENT_CONTRACT_CUT`.
+
+Una diferencia entre conjuntos efectivos de versiones no se clasifica como fallo de idempotencia del mismo contrato. `latest`, un digest vacio o un corte no fijado son invalidos.
+
+### Frontera VITAL
+
+`conformanceProductBoundaryDisposition('VITAL')` devuelve `BLOCKED_VITAL`. Compartir proyecto, tipos o infraestructura no transfiere la politica transversal de Vento OS.
+
+### Alcance de la certificacion fisica
+
+`validate-normalization-conformance.mjs`:
+
+1. verifica el SHA del contrato propietario de 009 mediante `parseTaskBlocks`;
 2. comprueba `GLOBAL_ENABLE_ONCE` y `PRE_E5_FOUNDATION`;
-3. ejecuta primero el validador verificado de 007, que encadena 006/005/004/003/002;
-4. compila los siete modulos internos con el TypeScript local;
-5. reconcilia todos los inventarios cerrados 6/13/11/8/7/5/11/12/30/10/5/3/7/9/6/4/9;
-6. prueba version set determinista, terminalidad, procedencia, audit envelopes, idempotencia, concurrencia, replay, preview y VITAL;
-7. bloquea I/O, reloj implicito, aleatoriedad, Supabase y autoridad de persistencia;
-8. verifica que fuentes, validadores y contratos anteriores permanezcan sin cambios.
+3. ejecuta primero `validate-normalization-audit.mjs`, que encadena toda la compatibilidad 008 -> 002;
+4. compila los siete modulos internos mas el contrato de conformance;
+5. compara fila por fila el corpus fisico con las tablas canonicas de ARC-003/004/005/006/008;
+6. reconcilia 89/89 y la distribucion 16/20/21/15/17 contra `DATA-NORM-TRANS-002`;
+7. valida 4 dimensiones de prueba, 10 dimensiones protegidas y cobertura 13/14/7/6/8;
+8. prueba A/B/C positivo y fallos por divergencia, segunda mutacion, dimension protegida, side effect, mezcla de versiones y VITAL;
+9. bloquea I/O, reloj implicito, aleatoriedad, Supabase y autoridad estructural dentro del contrato de conformance;
+10. verifica que fuentes, validadores, manifests y contratos propietarios anteriores permanezcan sin cambios.
+
+El validador de 009 es una certificacion interna ejecutable y privada. No agrega framework de test, script npm, export publico ni consumidor. La incorporacion posterior a la suite transversal de CI del package permanece en `SHELL-CI-001` sin cambiar los oraculos definidos aqui.
+
+efectos empresariales desde conformance: 0
 
 ## Estado de esta fundacion
 
@@ -382,6 +367,18 @@ clases de operacion idempotente: 6
 expectativas de concurrencia: 4
 atributos de replay: 9
 persistencia de auditoria: NO MATERIALIZADA
+conformance SHELL-NORM-009: MATERIALIZADA
+corpus heredado: 89
+distribucion del corpus: 16 + 20 + 21 + 15 + 17
+dimensiones de prueba: 4
+dimensiones de conservacion semantica: 10
+operaciones cubiertas: 13/13
+clases semanticas cubiertas: 14/14
+roles de representacion cubiertos: 7/7
+roles de fuente cubiertos: 6/6
+modos de tratamiento cubiertos: 8/8
+A/B/C: MATERIALIZADO
+efectos empresariales desde conformance: 0
 version npm: NO DECLARADA
 exports publicos: NO MATERIALIZADOS
 consumidores migrados: 0
@@ -392,7 +389,8 @@ cambios Supabase: 0
 
 | Tarea | Responsabilidad reservada |
 | --- | --- |
-| `SHELL-NORM-009` | corpus y certificacion de idempotencia y conservacion semantica |
+| `SHELL-CI-001` | integrar y ejecutar el corpus dentro de la suite transversal de CI del package |
+| `SHELL-CI-005` | certificar compatibilidad por consumidor |
 | `DATA-NORM-DB-001` | almacenamiento fisico de versiones |
 | `DATA-NORM-DB-009` | evidencia fisica de efectos confirmados |
 | `DATA-NORM-DB-010` | pruebas fisicas de idempotencia y rollback |
@@ -414,3 +412,5 @@ Source contract SHA-256 `SHELL-NORM-006`: `64d18e5a35e8a91dbae23cd0f3cef6928a684
 Source contract SHA-256 `SHELL-NORM-007`: `3a05097677cbf3e0f36700a7bbc0fb2e6e3a06e955296bbe9135db06b1bef9a0`.
 
 Source contract SHA-256 `SHELL-NORM-008`: `6d20fca811de725d18a4df5c952b37f90557ba7d9ebf7365bb50becd5c827d2e`.
+
+Source contract SHA-256 `SHELL-NORM-009`: `13632f04e23e618baf5e1ead9d0c0370ae19106a611d6e68730713e443777cd5`.
