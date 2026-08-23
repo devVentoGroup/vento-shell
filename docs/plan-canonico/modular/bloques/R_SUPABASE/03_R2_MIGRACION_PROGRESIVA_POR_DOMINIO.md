@@ -8412,7 +8412,1853 @@ Esta tarea no:
 `AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles`
 
 
-### [ ] AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
+### ✅ AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
+**Tarea siguiente:** AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para validación de principal técnico y actor efectivo dentro de RPC sensibles
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `RPC-PRINCIPAL-ACTOR-VALIDATION-010@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-010::<package_id>` permanece no ejecutada hasta satisfacer R0/R1 aplicables, el paquete E5 correspondiente, `SHELL-CI-020::<package_id>` y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-010` define cómo toda RPC sensible incluida en un paquete aprobado debe validar por separado el principal técnico que presenta la credencial y el actor empresarial efectivo al que se atribuye la acción.
+
+La tarea consume el `AccessContext@1.0.0` canónico, la resolución territorial de `AUTH-DB-007` y `AUTH-DB-008`, y el binding exacto de permiso de `AUTH-DB-009`. No permite que una RPC convierta `auth.uid()`, un `employee_id` enviado por el caller, un rol, un dispositivo, una simulación, `service_role`, un campo `created_by` o una coincidencia histórica de UUID en actor autorizado por inferencia.
+
+#### 2. Resultado canónico
+
+Se congela la frontera:
+
+```text
+CREDENCIAL TÉCNICA VALIDADA
+→ PRINCIPAL CANÓNICO
+→ VÍNCULO EMPRESARIAL
+→ IDENTIDAD DE DOMINIO
+→ ACTOR EFECTIVO
+→ CONTEXTO + RECURSO + TERRITORIO
+→ PERMISO EXACTO DE 009
+→ evaluate_authorization
+→ DECISIÓN
+→ EFECTO
+```
+
+Y queda prohibida la equivalencia:
+
+```text
+auth.uid()
+=
+employee_id
+=
+actor_id
+=
+business authority
+```
+
+#### 3. Contrato material producido
+
+La identidad contractual es:
+
+```text
+RPC-PRINCIPAL-ACTOR-VALIDATION-010@1.0.0
+```
+
+Gobierna por `package_id` la procedencia del principal, la resolución del actor, la clasificación de argumentos de identidad, los casos humano/dispositivo/servicio/cliente, la delegación, la frescura, la evidencia, el cutover y el rollback.
+
+#### 4. Topología vinculante
+
+La topología vigente es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance = AUTH-DB-010::<package_id>
+```
+
+El marcador se define una sola vez. Cada paquete aplicable conserva una instancia física independiente y no existe `AUTH-DB-010::GLOBAL`.
+
+#### 5. Gate temporal
+
+Una futura instancia requiere, para el mismo `package_id`:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+DELIV-PKG aplicable = CLOSED
+E5-GATE-008::<package_id> = PASS
+SHELL-CI-020::<package_id> = OPENED
+physical_authorization = EXPLICIT
+```
+
+La falta de cualquiera mantiene la materialización cerrada.
+
+#### 6. Fuentes vinculantes
+
+010 consume sin reinterpretación silenciosa:
+
+- `AUTH-CTX-005`, principal;
+- `AUTH-CTX-006`, actor efectivo;
+- `AUTH-CTX-025`, contrato de `get_access_context`;
+- `AUTH-CTX-026`, contrato de `evaluate_authorization`;
+- `AUTH-DB-019`, vínculos Auth e identidades empresariales;
+- `AUTH-DB-033`, materialización futura del `AccessContext`;
+- `AUTH-DB-035`, frescura e invalidación;
+- `AUTH-DB-034`, evaluador canónico;
+- `AUTH-DB-006..009`, handoffs de contexto, sede, área y permiso;
+- contratos de dispositivo, simulación, auditoría y paquete E5 aplicables.
+
+#### 7. Handoff recibido de AUTH-DB-009
+
+009 entrega hechos y contrato de permiso, no una atribución nueva:
+
+```text
+AccessContext canónico sin alterar
+ResolvedResourceContext
+site facts
+area facts
+required_permission_binding
+permission_resolution_status
+PermissionContractSnapshot
+catalog_version
+catalog_hash
+permission_contract_hash
+operation_kind
+required lanes
+prerequisite contract
+scope contract
+resource contract reference
+```
+
+010 no vuelve a escoger permiso, sede o área para favorecer una decisión.
+
+#### 8. Handoff hacia AUTH-DB-021
+
+010 entrega a 021, para las superficies incluidas en el mismo package:
+
+```text
+RPC inventory
+principal source classification
+actor resolution classification
+trusted identity sources
+client-controlled identity arguments
+principal/actor validation state
+AccessContext dependency
+permission binding reference
+resource/site/area references
+security mode
+execute audience
+legacy compatibility state
+adoption state
+evidence and rollback references
+```
+
+021 conserva la responsabilidad exclusiva de materializar RLS y grants canónicos por esquema.
+
+#### 9. Regla de no autorización parcial
+
+010 no autoriza por sí sola un efecto.
+
+```text
+006 + 007 + 008 + 009 + 010
+→ obligaciones acumulativas de la frontera RPC
+```
+
+Una validación correcta de identidad no compensa un permiso, territorio, recurso, contexto o estado inválido.
+
+#### 10. Separación entre principal y actor
+
+El principal responde:
+
+```text
+¿quién o qué presentó la credencial técnica?
+```
+
+El actor efectivo responde:
+
+```text
+¿a qué sujeto empresarial se atribuye la acción?
+```
+
+Son dimensiones distintas y ambas deben conservarse en evidencia.
+
+#### 11. PrincipalContext congelado
+
+010 consume la forma aprobada de `PrincipalContext`:
+
+```text
+principal_type
+auth_user_id
+session_id
+authenticated
+authentication_method
+authenticated_at
+session_expires_at
+principal_status
+```
+
+No agrega campos ad hoc dentro de una RPC.
+
+#### 12. Clases de principal
+
+Las clases canónicas son:
+
+```text
+HUMAN_USER
+SHARED_DEVICE
+SYSTEM_SERVICE
+ANONYMOUS
+```
+
+Nombres de rol, aplicación, dispositivo o proceso no crean nuevas clases localmente.
+
+#### 13. Principal válido no implica autorización
+
+Se preserva:
+
+```text
+principal_status = VALID
+≠ actor resuelto
+≠ identidad laboral vigente
+≠ permiso concedido
+≠ efecto ejecutable
+```
+
+La autenticación abre la resolución; no la termina.
+
+#### 14. Fuente autoritativa del principal
+
+El principal procede de una credencial o sesión validada en servidor y de la fundación canónica de identidad.
+
+No procede de:
+
+- body;
+- query string;
+- headers empresariales definidos por cliente;
+- `localStorage`;
+- estado de UI;
+- UUID escrito por caller;
+- correo o teléfono;
+- `user_metadata`;
+- rol enviado por frontend.
+
+#### 15. auth_user_id
+
+`auth_user_id` identifica al sujeto técnico de Supabase Auth cuando aplica.
+
+No significa por sí solo:
+
+```text
+employee_id
+customer_id
+device_id
+actor_id
+role
+permission
+```
+
+No se acepta como autoridad desde argumentos de negocio.
+
+#### 16. session_id
+
+`session_id` es una referencia técnica opaca y no una credencial reutilizable.
+
+No contiene access token, refresh token, JWT completo ni secreto. Su presencia tampoco sustituye la comprobación de vigencia requerida por la operación.
+
+#### 17. Estado INVALID
+
+Un principal `INVALID` no puede ejecutar una RPC protegida que requiera identidad autenticada.
+
+La RPC no intenta recuperar autoridad buscando un empleado, dispositivo o rol por otros campos.
+
+#### 18. Estado ANONYMOUS
+
+`ANONYMOUS` representa ausencia comprobada de credencial aceptable.
+
+Una RPC sensible que requiere actor empresarial falla cerrado. Un endpoint verdaderamente público solo continúa si su contrato propietario lo permite expresamente y no convierte datos enviados por el cliente en actor.
+
+#### 19. EffectiveActorContext congelado
+
+010 consume la forma aprobada del actor efectivo:
+
+```text
+actor_type
+actor_id
+attribution_source
+delegation_id
+resolved
+```
+
+El actor no se sustituye por el principal ni por el recurso objetivo.
+
+#### 20. Clases de actor
+
+Los valores canónicos son:
+
+```text
+EMPLOYEE
+CUSTOMER
+SYSTEM
+UNRESOLVED
+```
+
+`HUMAN_USER`, `SHARED_DEVICE` y `SYSTEM_SERVICE` son clases de principal, no de actor.
+
+#### 21. actor_id
+
+`actor_id` se interpreta únicamente junto a `actor_type`:
+
+```text
+EMPLOYEE   → employee_id canónico
+CUSTOMER   → customer_id canónico
+SYSTEM     → identidad estable del proceso
+UNRESOLVED → null
+```
+
+No se reemplaza por `auth_user_id`, `device_id`, correo, documento, rol o `delegation_id`.
+
+#### 22. Fuentes de atribución
+
+La matriz aprobada es:
+
+```text
+EMPLOYEE   → PERSONAL_SESSION | DEVICE_ACTOR_SESSION | SYSTEM_PROCESS
+CUSTOMER   → DOMAIN_IDENTITY
+SYSTEM     → SYSTEM_PROCESS
+UNRESOLVED → NONE
+```
+
+Una RPC no inventa una fuente adicional para resolver un caso difícil.
+
+#### 23. Invariante resolved true
+
+Debe cumplirse:
+
+```text
+resolved = true
+→ actor_type != UNRESOLVED
+→ actor_id != null
+→ attribution_source != NONE
+```
+
+El actor resuelto sigue sujeto a vigencia, dominio y autorización.
+
+#### 24. Invariante resolved false
+
+Debe cumplirse:
+
+```text
+resolved = false
+→ actor_type = UNRESOLVED
+→ actor_id = null
+→ attribution_source = NONE
+→ delegation_id = null
+```
+
+Un estado incompleto no se transforma en actor parcial.
+
+#### 25. Ambigüedad
+
+Dos o más candidatos válidos sin una regla canónica que seleccione exactamente uno producen:
+
+```text
+actor_type = UNRESOLVED
+resolved = false
+```
+
+No se escoge el primero, el más reciente, el de la sede visible ni el de mayor rol.
+
+#### 26. Identidad de dominio
+
+La identidad de dominio y el actor deben ser coherentes.
+
+```text
+EMPLOYEE actor → identidad EMPLOYEE compatible
+CUSTOMER actor → identidad CUSTOMER compatible
+SYSTEM actor   → identidad SYSTEM cuando el contrato la exija
+```
+
+Una identidad adicional disponible no se fusiona silenciosamente.
+
+#### 27. Vínculos Auth ↔ identidad
+
+010 consume `AUTH-DB-019`.
+
+La resolución futura usa vínculos empresariales explícitos y versionados. Correo, teléfono, provider, metadata o coincidencia histórica de UUID no son vínculos nuevos por sí mismos.
+
+#### 28. Igualdad legacy de UUID
+
+El estado físico puede conservar temporalmente:
+
+```text
+employees.id = auth.users.id
+```
+
+Pero la igualdad no es el contrato objetivo y no puede ser la única prueba de que el principal sea el empleado actor.
+
+#### 29. Cambio de cuenta Auth
+
+Reemplazar una cuenta Auth no renumera automáticamente la identidad empresarial.
+
+La RPC debe resolver el vínculo vigente y no asumir que el identificador técnico permanecerá para siempre idéntico al actor.
+
+#### 30. HUMAN_USER
+
+Un `HUMAN_USER + VALID` demuestra una sesión personal técnica válida.
+
+La aplicación y política de identidad de dominio determinan después qué identidad empresarial puede participar. La mera existencia del principal no declara EMPLOYEE ni CUSTOMER.
+
+#### 31. HUMAN_USER como EMPLOYEE
+
+Para atribuir:
+
+```text
+principal_type = HUMAN_USER
+actor_type = EMPLOYEE
+attribution_source = PERSONAL_SESSION
+```
+
+debe existir una resolución canónica, única y vigente hacia el empleado correspondiente, compatible con la aplicación y el contexto.
+
+#### 32. Empleado inactivo
+
+Un principal Auth puede continuar técnicamente válido aunque el empleado asociado esté inactivo.
+
+Para una operación laboral:
+
+```text
+principal VALID
++
+employee inactive
+→ no executable
+```
+
+No se invalida ficticiamente Auth ni se ignora el estado laboral.
+
+#### 33. Empleado inexistente
+
+Un principal humano sin vínculo laboral válido no se convierte en empleado porque exista el mismo UUID en una tabla legacy o porque la aplicación sea laboral.
+
+El actor queda no resoluble para operaciones que exijan empleado.
+
+#### 34. HUMAN_USER como CUSTOMER
+
+Una aplicación cliente puede resolver:
+
+```text
+principal_type = HUMAN_USER
+actor_type = CUSTOMER
+attribution_source = DOMAIN_IDENTITY
+```
+
+solo mediante la política de identidad de dominio y el vínculo canónico aplicables.
+
+#### 35. Persona con identidad laboral y cliente
+
+Una misma persona puede tener más de una identidad de dominio.
+
+NEXO puede resolver EMPLOYEE y una superficie cliente puede resolver CUSTOMER, pero 010 no fusiona ambos namespaces ni permite que privilegios laborales aparezcan en una operación cliente.
+
+#### 36. Aplicación como selector de dominio
+
+`p_app_code` participa en la política de resolución de contexto, no como autoridad.
+
+Una aplicación no convierte automáticamente al principal en empleado, cliente o actor.
+
+#### 37. SHARED_DEVICE
+
+Para un dispositivo compartido:
+
+```text
+principal = identidad técnica del dispositivo
+actor     = humano efectivo cuando la acción lo requiera
+```
+
+La sesión técnica del dispositivo nunca es el trabajador.
+
+#### 38. Vínculo técnico del dispositivo
+
+Un dispositivo válido debe resolver de forma inequívoca su identidad técnica y su registro empresarial conforme a la fundación propietaria.
+
+`auth_user_id` del dispositivo no se interpreta como `employee_id`.
+
+#### 39. Actor de dispositivo
+
+Un actor EMPLOYEE en dispositivo compartido requiere una relación de atribución aprobada, por ejemplo una `DEVICE_ACTOR_SESSION` vigente o evidencia equivalente gobernada.
+
+La presencia física del dispositivo o su autenticación no crea actor.
+
+#### 40. Sesión de actor
+
+La sesión de actor debe conservar como mínimo identidad del dispositivo, actor, vigencia y contexto necesario.
+
+Una sesión expirada, finalizada, revocada, ambigua o perteneciente a otro dispositivo no se reutiliza.
+
+#### 41. Cambio de actor
+
+Cambiar el trabajador efectivo invalida el contexto y las decisiones dependientes del actor anterior.
+
+La siguiente acción debe reconstruir o revalidar el contexto correspondiente.
+
+#### 42. PIN de dispositivo
+
+Un PIN u otro mecanismo ligero puede servir como método aprobado de identificación del trabajador únicamente dentro del contrato de dispositivo.
+
+No es una sesión Auth humana, no sustituye reautenticación fuerte y no concede privilegios por sí mismo.
+
+#### 43. Firma de acción de dispositivo
+
+Una firma legacy de acción puede aportar evidencia transitoria cuando su contrato la valide.
+
+No se convierte automáticamente en `AccessContext`, `ActorEffectiveContext` o permiso. Debe conservar vínculo con dispositivo, actor, acción, objetivo, vigencia y política.
+
+#### 44. navigation_role
+
+`navigation_role` es información de navegación/compatibilidad legacy.
+
+No es actor, rol efectivo canónico ni fuente de permiso.
+
+#### 45. Administrador del dispositivo
+
+La identidad de quien configuró, creó o administra un dispositivo no se transfiere al trabajador operativo.
+
+```text
+device administrator
+≠ current actor
+```
+
+#### 46. Dispositivo sin actor
+
+Un dispositivo puede mantener principal técnico válido y actor `UNRESOLVED`.
+
+Las acciones cuya política exige actor humano permanecen bloqueadas. Una bandera local de conveniencia no crea excepción canónica.
+
+#### 47. Dispositivo y techo de permisos
+
+El dispositivo puede restringir el máximo permitido conforme al contrato propietario.
+
+No concede un permiso que el actor no tenga y no sustituye el permiso exacto fijado por 009.
+
+#### 48. SYSTEM_SERVICE
+
+Un servicio interno puede ser un principal técnico `SYSTEM_SERVICE`.
+
+La identidad técnica del runtime o el uso de credenciales privilegiadas no determina automáticamente el actor empresarial.
+
+#### 49. Servicio autónomo
+
+Un proceso autónomo aprobado puede resolver:
+
+```text
+actor_type = SYSTEM
+attribution_source = SYSTEM_PROCESS
+delegation_id = null
+```
+
+Debe existir una identidad estable y auditable del proceso, no el secreto que lo autentica.
+
+#### 50. Servicio delegado
+
+Un proceso puede actuar en nombre de un empleado únicamente mediante delegación explícita y verificable:
+
+```text
+actor_type = EMPLOYEE
+attribution_source = SYSTEM_PROCESS
+delegation_id != null
+```
+
+La delegación debe estar vigente y acotada al proceso, acción y alcance aplicables.
+
+#### 51. Delegación implícita prohibida
+
+No existe delegación por:
+
+- recibir `employee_id`;
+- conocer un correo;
+- ejecutar con `service_role`;
+- usar `createAdminClient`;
+- correr en backend;
+- tener owner PostgreSQL;
+- haber sido invocado por un job.
+
+#### 52. service_role
+
+`service_role` es una credencial técnica privilegiada de Supabase.
+
+No representa `SYSTEM`, EMPLOYEE, owner empresarial ni wildcard de permisos. Su uso exige controles de negocio explícitos.
+
+#### 53. Supabase authenticated
+
+El rol PostgreSQL `authenticated` demuestra una clase de sesión Data API.
+
+No demuestra qué identidad empresarial actúa ni qué capacidad puede ejecutar.
+
+#### 54. SECURITY DEFINER
+
+`SECURITY DEFINER` cambia los privilegios SQL bajo los cuales se ejecuta una función.
+
+No cambia principal ni actor empresariales. Una RPC privilegiada conserva la obligación de validar contexto y autorización antes del efecto.
+
+#### 55. Owner PostgreSQL
+
+El owner de una función o schema es identidad técnica de base de datos.
+
+No se utiliza como actor de negocio y no se transforma en un usuario VENTO.
+
+#### 56. ANONYMOUS y servicios públicos
+
+Una superficie pública puede existir sin actor empresarial únicamente cuando su contrato lo permita.
+
+Una mutación sensible no adopta un `user_id`, teléfono, order code o similar para simular atribución.
+
+#### 57. Simulación
+
+La simulación no reescribe `actor_effective`.
+
+El actor real conserva la atribución de la solicitud de simulación y el sujeto simulado permanece en su contrato separado. Un resultado hipotético no se convierte en actor de una RPC real.
+
+#### 58. Principal técnico en simulación
+
+Un dispositivo, `service_role`, integración o cuenta compartida no se vuelve simulador humano por tener acceso técnico.
+
+Las reglas propietarias de simulación siguen exigiendo actor real elegible.
+
+#### 59. Argumentos de identidad
+
+Toda firma de RPC incluida en el candidate clasifica cada argumento relacionado con identidad o atribución.
+
+La clasificación se realiza por semántica, no por nombre.
+
+#### 60. Clases de argumentos de identidad
+
+Se utiliza un vocabulario cerrado equivalente a:
+
+```text
+TARGET_SUBJECT
+RESOURCE_OWNER_INPUT
+INTERNAL_DELEGATION_REFERENCE
+COMPATIBILITY_ONLY
+UNTRUSTED_ACTOR_SELECTOR
+SERVER_DERIVED
+NOT_IDENTITY
+```
+
+Ninguna clase convierte por sí sola un valor cliente en actor.
+
+#### 61. TARGET_SUBJECT
+
+Un `target_employee_id` puede identificar al empleado sobre el que actúa una operación administrativa.
+
+Ese empleado es el sujeto objetivo, no necesariamente el actor. La acción sigue atribuida al caller resuelto.
+
+#### 62. RESOURCE_OWNER_INPUT
+
+Un identificador recibido puede servir para localizar un recurso cuya propiedad debe verificarse en servidor.
+
+La propiedad resultante se compara con el actor canónico; el input no declara quién es el actor.
+
+#### 63. INTERNAL_DELEGATION_REFERENCE
+
+Una referencia de delegación solo es confiable en una frontera interna aprobada y debe resolverse contra datos autoritativos.
+
+La existencia del ID no prueba que la delegación esté vigente o aplique.
+
+#### 64. COMPATIBILITY_ONLY
+
+Un parámetro legacy puede conservarse temporalmente para compatibilidad.
+
+Debe:
+
+- tener consumer owner;
+- compararse contra el valor derivado cuando corresponda;
+- no cambiar la atribución;
+- tener plan de retiro;
+- fallar cerrado ante mismatch.
+
+#### 65. UNTRUSTED_ACTOR_SELECTOR
+
+Un parámetro controlable por cliente que permite elegir quién aparece como actor se considera no confiable.
+
+La futura adopción canónica debe eliminar su autoridad, aunque la firma se conserve transitoriamente.
+
+#### 66. SERVER_DERIVED
+
+Los campos de atribución persistida deben derivarse de principal/actor canónicos en servidor.
+
+El cliente no debe poder sobrescribirlos.
+
+#### 67. p_employee_id
+
+`p_employee_id` puede ser target legítimo en algunos contratos, pero no se interpreta automáticamente como actor.
+
+Si la función usa el parámetro para decidir autoridad o llenar atribución del caller, el candidate debe reclasificar y corregir esa dependencia antes del cutover.
+
+#### 68. p_actor_id
+
+Un argumento `p_actor_id` externo es `UNTRUSTED_ACTOR_SELECTOR` por defecto para una RPC sensible, salvo que un contrato interno específico demuestre otra clasificación segura.
+
+La RPC no acepta la declaración del actor como hecho.
+
+#### 69. p_user_id
+
+`p_user_id` no se equipara a principal ni actor.
+
+Puede ser sujeto objetivo en un proceso cliente, pero la autoridad del caller se resuelve por separado.
+
+#### 70. created_by
+
+Cuando `created_by` representa atribución, el valor objetivo se deriva del actor efectivo.
+
+Un `p_created_by` suministrado por caller no puede escribir quién creó la acción salvo contrato explícito de importación histórica que lo clasifique como dato y no como autoridad.
+
+#### 71. updated_by
+
+`updated_by` se deriva del actor de la modificación.
+
+La UI no decide el autor actual.
+
+#### 72. approved_by
+
+`approved_by` representa al actor que realmente aprobó bajo una decisión válida.
+
+No se acepta un UUID arbitrario para registrar aprobación de tercero.
+
+#### 73. closed_by y performed_by
+
+Campos equivalentes de atribución siguen la misma regla:
+
+```text
+actor efectivo del efecto
+→ campo de auditoría
+```
+
+No al revés.
+
+#### 74. Campos de actor en payload JSON
+
+La ausencia de un argumento SQL dedicado no elimina el riesgo.
+
+Un `jsonb` puede contener `employee_id`, `actor_id`, `user_id`, `created_by` o equivalentes; el candidate debe clasificar también esos campos cuando influyan en autoridad o atribución.
+
+#### 75. Headers empresariales
+
+Headers como `X-Employee-Id`, `X-Actor-Id`, `X-Role` o equivalentes no son fuente de identidad solo por ser headers.
+
+Únicamente un mecanismo criptográfico y contractual propietario podría convertir una cabecera en evidencia confiable.
+
+#### 76. user_metadata
+
+Los metadatos autoadministrables del usuario no son fuente de rol, empleado, actor, sede o permiso.
+
+La RPC no resuelve actor desde valores que el usuario pueda modificar.
+
+#### 77. app_metadata
+
+Metadata protegida puede aportar contexto técnico solo cuando el contrato canónico la declare fuente.
+
+No sustituye los vínculos empresariales de `AUTH-DB-019` ni el `AccessContext` completo.
+
+#### 78. JWT
+
+Un JWT decodificado no basta.
+
+La identidad técnica debe provenir de una sesión/credencial validada conforme al borde de autenticación y luego resolverse empresarialmente.
+
+#### 79. auth.uid()
+
+`auth.uid()` es una fuente útil del sujeto Auth en sesiones compatibles.
+
+No es una declaración canónica de EMPLOYEE. Toda dependencia legacy `employees.id = auth.uid()` se trata como compatibilidad hasta que los vínculos de R1 sean la fuente efectiva.
+
+#### 80. UUID coincidente
+
+Que dos UUID sean iguales no elimina sus namespaces.
+
+La evidencia debe conservar al menos qué ID corresponde al principal y cuál al actor, aun cuando temporalmente tengan el mismo valor físico.
+
+#### 81. Recurso propio
+
+Una operación `OWN` compara la identidad propietaria resuelta del recurso con el actor/identidad de dominio que define el contrato.
+
+No usa un `user_id` enviado por cliente para declarar que el recurso es propio.
+
+#### 82. Acciones sobre terceros
+
+En una operación administrativa sobre otra persona se mantienen separados:
+
+```text
+ACTOR
+TARGET SUBJECT
+RESOURCE OWNER
+```
+
+La coincidencia puede ocurrir, pero nunca se presume.
+
+#### 83. Actor requerido
+
+Cada operación protegida declara si exige actor efectivo.
+
+Para mutaciones empresariales sensibles el patrón normal es `actor_required = true`; una excepción debe provenir del contrato propietario, no de la comodidad de una RPC.
+
+#### 84. Actor no requerido
+
+Si un proceso técnico legítimo no requiere actor humano, debe declarar qué principal y actor SYSTEM o ausencia contractual se permiten.
+
+`resolved = false` no se transforma genéricamente en permiso para ejecutar.
+
+#### 85. Estado del actor
+
+Cuando el actor corresponde a una entidad con lifecycle, la operación usa su estado vigente.
+
+Una identidad conocida pero inactiva no se convierte en `UNRESOLVED`; se conserva la identidad y se deniega conforme al estado aplicable.
+
+#### 86. Actor eliminado o retirado
+
+Retiro o finalización de vínculo no borra la evidencia histórica.
+
+Las nuevas operaciones no pueden seguir utilizando autoridad derivada de un estado anterior.
+
+#### 87. Frescura de principal
+
+Expiración, revocación o reemplazo relevante de la sesión técnica obliga a revalidar el principal.
+
+Una decisión anterior no se conserva solo porque `auth_user_id` continúe igual.
+
+#### 88. Frescura de actor
+
+Cambio de identidad de dominio, relación laboral, sesión de dispositivo, delegación o actor efectivo invalida decisiones dependientes.
+
+La revalidación ocurre antes del efecto.
+
+#### 89. Frescura de vínculo
+
+Cambios en `enterprise_identity_links` o su equivalente materializado invalidan la resolución afectada.
+
+La RPC no mantiene caches de actor independientes del token de frescura canónico.
+
+#### 90. Frescura de dispositivo
+
+Revocación, suspensión, cambio de endpoint o cambio de sesión de actor invalida la autoridad derivada del dispositivo.
+
+La credencial técnica todavía válida no compensa un dispositivo empresarial inválido.
+
+#### 91. Frescura de delegación
+
+Una delegación expirada o revocada deja de autorizar atribución humana inmediatamente según el contrato de frescura.
+
+No se extiende por retry ni por job reanudado.
+
+#### 92. Frescura y permiso
+
+La resolución de actor y la decisión de permiso deben referirse a un contexto compatible en el mismo candidate.
+
+Un actor resuelto bajo un contexto obsoleto no se combina con un permiso recién evaluado para fabricar un ALLOW.
+
+#### 93. Frontera transaccional
+
+Para un efecto sensible:
+
+```text
+resolve/revalidate AccessContext
+→ validate principal
+→ validate actor
+→ validate resource/site/area
+→ bind exact permission
+→ evaluate and persist required evidence
+→ validate freshness/concurrency
+→ execute effect
+```
+
+El orden físico puede optimizarse sin alterar estas obligaciones.
+
+#### 94. Una resolución por request
+
+Dentro de una evaluación atómica se reutiliza el mismo `AccessContext` canónico cuando el contrato así lo permita.
+
+No se resuelve principal una vez y actor otra con fuentes o tiempos incompatibles.
+
+#### 95. Operación compuesta
+
+Una operación compuesta puede requerir varias decisiones de permiso, pero conserva principal y actor coherentes dentro de la misma unidad de ejecución o revalida antes de cada efecto cuando cambie el contexto.
+
+#### 96. Retry
+
+Un retry no acepta un actor alternativo después de un fallo.
+
+Si cambió la sesión, actor, delegación o contexto, se produce una evaluación nueva.
+
+#### 97. Idempotencia
+
+Una clave de idempotencia no es identidad.
+
+Debe impedir duplicados sin permitir que otro principal o actor reclame una operación previa.
+
+#### 98. Concurrencia
+
+Cambios concurrentes de sesión, actor, dispositivo, vínculo o estado empresarial se detectan mediante las primitivas de frescura y concurrencia propietarias.
+
+Un resultado stale no ejecuta.
+
+#### 99. Direct PostgREST RPC
+
+Invocar directamente la RPC por PostgREST produce la misma validación de principal y actor que invocarla desde la UI o un backend.
+
+La seguridad no depende de haber pasado primero por una pantalla.
+
+#### 100. Server Action o Route Handler
+
+Un backend que invoque la RPC no puede reenviar un `employee_id` cliente y tratarlo como actor confiable.
+
+Debe conservar el mismo principal/actor canónico o una delegación técnica aprobada.
+
+#### 101. Edge Function
+
+Una Edge Function puede actuar como caller técnico o como proxy de una sesión.
+
+En ambos casos debe declarar y validar cuál modelo aplica; no mezcla una credencial de servicio con el actor del usuario por inferencia.
+
+#### 102. Jobs y cron
+
+Un job puede operar como SYSTEM o bajo delegación explícita.
+
+El nombre del job, su owner o el hecho de ejecutarse en infraestructura VENTO no crean autorización.
+
+#### 103. RLS
+
+010 no materializa RLS.
+
+021 deberá consumir una semántica compatible y no tratar `auth.uid() = employee_id` como sustituto permanente del modelo de principal/actor cuando el dominio ya haya adoptado vínculos canónicos.
+
+#### 104. Grants SQL
+
+Los grants determinan quién puede invocar una superficie SQL.
+
+No determinan a qué actor empresarial se atribuye la operación.
+
+#### 105. RLS bypass y service_role
+
+Un rol que bypassa RLS incrementa el riesgo y exige controles internos más fuertes.
+
+No suprime la necesidad de autorización empresarial.
+
+#### 106. Auditoría
+
+La evidencia de una acción protegida conserva separadamente:
+
+```text
+principal_type
+auth_user_id cuando aplique
+session reference
+actor_type
+actor_id
+attribution_source
+delegation reference
+device reference
+context_id
+permission_key
+resource reference
+decision_id
+correlation_id
+timestamp
+```
+
+No se colapsan principal y actor en un único `user_id`.
+
+#### 107. Privacidad de evidencia
+
+La auditoría conserva identificadores y hashes mínimos necesarios.
+
+No copia tokens, PIN, secretos, JWT completos ni metadata sensible innecesaria.
+
+#### 108. DENY
+
+Un actor no resoluble, inactivo o incompatible puede producir una denegación contractual cuando los hechos están disponibles.
+
+La evidencia conserva la razón sin inventar otro actor.
+
+#### 109. Fallo técnico
+
+Indisponibilidad del resolver, vínculo o fuente autoritativa se mantiene diferenciada de un DENY empresarial.
+
+No se fabrica una identidad `UNRESOLVED` para ocultar una falla de infraestructura cuando el contrato exige distinguirla.
+
+#### 110. Mensajes seguros
+
+La respuesta pública no revela candidatos alternativos, vínculos internos, estado laboral de terceros, IDs de sesión, PIN, secretos ni estructuras completas de identidad.
+
+La proyección pública usa códigos de error seguros.
+
+#### 111. Matriz de binding principal/actor
+
+Cada futura instancia conserva una fila por firma exacta y operación protegida.
+
+Una misma función con varias ramas puede tener reglas distintas de target subject, actor requerido o delegación, pero cada rama queda explícita.
+
+#### 112. Campos mínimos del registro
+
+Cada fila conserva como mínimo:
+
+```text
+rpc_principal_actor_binding_id
+package_id
+candidate_id
+transition_key
+migration_unit_id
+schema_name
+function_name
+identity_arguments
+operation_branch
+operation_kind
+principal_required
+allowed_principal_types
+principal_source
+actor_required
+allowed_actor_types
+allowed_attribution_sources
+actor_resolution_source
+enterprise_identity_link_reference
+domain_identity_policy_reference
+session_reference_policy
+device_reference_policy
+actor_session_reference_policy
+delegation_reference_policy
+identity_argument_classifications
+target_subject_arguments
+attribution_fields
+permission_binding_reference
+access_context_reference
+resource_reference
+site_handoff_reference
+area_handoff_reference
+security_mode
+owner_role
+execute_audience
+compatibility_reference
+consumer_reference
+rollback_reference
+adoption_state
+evidence_reference
+owner
+```
+
+#### 113. Estados de adopción
+
+El registro usa un conjunto cerrado equivalente a:
+
+```text
+VALIDATED_PRINCIPAL_ACTOR
+VALIDATED_SYSTEM_ACTOR
+VALIDATED_NO_HUMAN_ACTOR_REQUIRED
+COMPATIBILITY_ONLY
+BLOCKED_UNAUTHENTICATED
+BLOCKED_INVALID_PRINCIPAL
+BLOCKED_ANONYMOUS
+BLOCKED_ACTOR_UNRESOLVED
+BLOCKED_ACTOR_AMBIGUOUS
+BLOCKED_ACTOR_INACTIVE
+BLOCKED_PRINCIPAL_ACTOR_MISMATCH
+BLOCKED_IDENTITY_LINK
+BLOCKED_DEVICE_ACTOR_SESSION
+BLOCKED_DELEGATION
+BLOCKED_CLIENT_ACTOR_SELECTOR
+BLOCKED_DRIFT
+OUTSIDE_PACKAGE
+```
+
+Los estados `BLOCKED_*` no son autorizaciones parciales.
+
+#### 114. Cardinalidad por package
+
+Cada candidate demuestra:
+
+```text
+protected rpc operations expected = N
+classified operations = N
+unclassified identity arguments = 0
+client-authority actor selectors = 0
+unresolved required actors = 0
+ambiguous required actors = 0
+principal/actor mismatches = 0
+unowned compatibility paths = 0
+```
+
+`N` procede del package, no de un conteo global histórico.
+
+#### 115. Baseline físico de Auth e identidades
+
+El corte read-only usado para desarrollar 010 observa:
+
+```text
+auth.users = 79
+public.users = 86
+employees = 61
+active employees = 39
+employees matching auth.users by UUID = 61
+employees without matching auth.users UUID = 0
+employees matching public.users by UUID = 61
+public.users matching auth.users by UUID = 79
+```
+
+Son hechos AS-IS y no cardinalidades objetivo.
+
+#### 116. FK legacy de empleados
+
+El corte actual confirma:
+
+```text
+public.employees.id
+→ auth.users.id
+ON DELETE CASCADE
+```
+
+La FK explica parte de la igualdad observada, pero `AUTH-DB-019` ya prohíbe convertir ese acoplamiento legacy en contrato objetivo.
+
+#### 117. Baseline físico de dispositivos
+
+El mismo corte observa:
+
+```text
+shared_operational_devices = 2
+devices with auth_user_id = 2
+devices whose auth_user_id matches auth.users = 2
+actor sessions total = 0
+active actor sessions = 0
+active context simulations = 0
+```
+
+La ausencia actual de sesiones de actor no autoriza a usar `navigation_role` o el principal del dispositivo como trabajador.
+
+#### 118. Baseline físico de funciones
+
+La auditoría read-only observa en `public`, `app_private` y `api`:
+
+```text
+functions total = 248
+functions using auth.uid() = 83
+functions using auth.jwt() = 0
+functions with identity-like arguments = 24
+identity-like argument functions SECURITY DEFINER = 22
+identity-like argument functions using auth.uid() = 11
+identity-like argument functions without auth.uid() = 13
+physical app_private.get_access_context = 0
+physical app_private.evaluate_authorization = 0
+```
+
+Estos conteos se recapturan antes de materializar cada package.
+
+#### 119. get_operational_context AS-IS
+
+El resolver legacy acepta:
+
+```text
+p_employee_id
+p_site_id
+p_app_code
+```
+
+y contiene fallbacks territoriales y bypass administrativos. 010 no adopta esos argumentos como autoridad ni sus precedencias como contrato futuro.
+
+#### 120. get_effective_context_v1 AS-IS
+
+El resolver legacy usa `auth.uid()` y mezcla ramas real, dispositivo y simulación.
+
+En la rama de dispositivo deriva un rol efectivo desde `navigation_role`; en la rama de simulación puede tratar el contexto simulado como efectivo. Esas divergencias son transición, no modelo canónico.
+
+#### 121. sign_shared_device_action AS-IS
+
+La función legacy de firma recibe `p_actor_employee_id` y/o PIN y registra `auth_user_id` del dispositivo junto a `actor_employee_id`.
+
+Puede ser evidencia transitoria, pero el caller no obtiene autoridad para declarar libremente actor dentro del contrato objetivo.
+
+#### 122. Riesgo observado en firma de dispositivo
+
+La implementación AS-IS debe recapturarse antes del package: cuando el actor se resuelve por PIN en una variable interna, existen llamadas posteriores que usan el parámetro original `p_actor_employee_id`.
+
+Ese patrón se clasifica como riesgo de reconciliación de compatibilidad; 010 no lo corrige físicamente ni lo convierte en semántica aprobada.
+
+#### 123. verify_shared_device_action_signature AS-IS
+
+La verificación legacy vincula firma, `auth.uid()`, app, acción, target y vigencia.
+
+La futura adopción deberá demostrar que esa evidencia se integra correctamente al actor canónico y no permite replay, target widening ni atribución fuera de contexto.
+
+#### 124. Funciones con p_employee_id AS-IS
+
+El inventario actual incluye múltiples funciones con argumentos de empleado.
+
+010 no afirma que todas sean vulnerables: cada package debe clasificar si el parámetro es target, dato de compatibilidad, selector no confiable o input interno aprobado.
+
+#### 125. Funciones con created_by AS-IS
+
+También existen firmas con parámetros de atribución como `p_created_by`.
+
+Cada candidate debe demostrar si se trata de importación histórica, target metadata o autoría actual; la autoría actual se deriva del actor canónico.
+
+#### 126. No generalización desde el baseline
+
+Los 24 argumentos de identidad observados no definen el universo permanente.
+
+Cada package recaptura firmas, payloads JSON, consumidores y funciones nuevas antes de su instancia.
+
+#### 127. Drift previo a materialización
+
+Antes de ejecutar `AUTH-DB-010::<package_id>` se recaptura:
+
+```text
+function identity
+identity arguments
+function body
+security mode
+owner
+search_path
+EXECUTE audience
+auth/session usage
+identity tables and links
+device/session sources
+delegation sources
+consumers
+catalog/context versions
+migration baseline
+```
+
+Resultado:
+
+```text
+MATCH
+APPROVED_DRIFT
+BLOCKING_DRIFT
+```
+
+#### 128. Drift bloqueante de principal
+
+Bloquea, salvo reconciliación aprobada:
+
+- nueva fuente cliente de principal;
+- dependencia nueva de metadata editable;
+- nueva credencial técnica sin clasificación;
+- sesión no verificable;
+- app code que cambia política de identidad sin contrato;
+- bypass por SQL role o owner.
+
+#### 129. Drift bloqueante de actor
+
+Bloquea:
+
+- nuevo `p_actor_id` o equivalente con autoridad;
+- selección de empleado desde body sin verificación;
+- nuevo fallback por rol;
+- dispositivo convertido en actor;
+- simulación convertida en actor real;
+- delegación sin lifecycle;
+- actor ambiguo escogido por orden.
+
+#### 130. Drift de vínculo de identidad
+
+Bloquea una materialización si la tabla o contrato de vínculos difiere del candidate, aparecen duplicados, falta una identidad requerida o cambia la semántica de supersesión/revocación.
+
+#### 131. Drift de audiencia
+
+Una ampliación de `EXECUTE` a `anon`, `authenticated`, `PUBLIC` o un servicio nuevo cambia el riesgo de la superficie y debe entrar al candidate.
+
+No se considera detalle irrelevante.
+
+#### 132. Candidate inmutable
+
+Cada instancia fija un `candidate_id` con:
+
+```text
+commit_sha
+migration set
+RPC definitions
+principal/actor binding register
+contract bundle
+identity-link version
+context version
+permission/catalog version
+package scope
+```
+
+Cambiar un componente material produce un nuevo candidate.
+
+#### 133. Adopción por package
+
+Solo se migran las RPC incluidas en el package.
+
+Una función fuera de alcance no se reescribe porque use el mismo helper o tenga un parámetro parecido.
+
+#### 134. Shadow comparison
+
+Cuando el plan de transición lo permita, puede compararse:
+
+```text
+legacy principal/actor result
+vs
+canonical AccessContext principal/actor
+```
+
+Shadow observa diferencias; no ejecuta con la opción más permisiva.
+
+#### 135. Divergencia en shadow
+
+Una diferencia se clasifica y tiene owner.
+
+No se resuelve escogiendo el actor legacy para mantener compatibilidad si el contrato canónico concluye `UNRESOLVED` o conflicto.
+
+#### 136. Cutover
+
+El cutover de una RPC exige:
+
+1. R1 de identidad/contexto disponible;
+2. principal source cerrado;
+3. actor resolution cerrado;
+4. argumentos de identidad clasificados;
+5. binding de permiso de 009 válido;
+6. recurso/sede/área compatibles;
+7. pruebas positivas y adversariales verdes;
+8. consumidor migrado;
+9. evidencia y rollback preparados.
+
+#### 137. Rollback
+
+Rollback restaura una ruta de compatibilidad previamente aprobada cuando sea seguro.
+
+No:
+
+- reactiva actor ambiguo;
+- acepta `p_employee_id` como autoridad temporal;
+- convierte `auth.uid()` en empleado por atajo;
+- borra evidencia;
+- restablece privilegios más amplios que el baseline aprobado.
+
+#### 138. Pruebas de HUMAN_USER EMPLOYEE
+
+Se cubre al menos:
+
+- principal válido y vínculo laboral único;
+- actor EMPLOYEE correcto;
+- employee inactive;
+- employee missing;
+- vínculo expirado/revocado;
+- app incompatible;
+- UUID coincidente sin vínculo objetivo después del cutover.
+
+#### 139. Pruebas de HUMAN_USER CUSTOMER
+
+Se cubre:
+
+- customer único;
+- identidad cliente inexistente;
+- persona dual employee/customer;
+- aplicación que selecciona dominio correcto;
+- intento de usar privilegios laborales en contexto cliente.
+
+#### 140. Pruebas de ambigüedad
+
+Fixtures con múltiples candidatos deben producir `UNRESOLVED` o razón estructural aprobada.
+
+No se acepta `LIMIT 1` como regla de resolución.
+
+#### 141. Pruebas de principal inválido
+
+Se cubren:
+
+- sesión ausente;
+- sesión expirada;
+- sesión revocada cuando el contrato pueda comprobarla;
+- sujeto no resoluble;
+- tipo de principal no permitido;
+- credencial de proyecto o contexto incorrectos.
+
+#### 142. Pruebas de spoofing de cliente
+
+Una llamada adversarial intenta alterar:
+
+```text
+auth_user_id
+user_id
+employee_id
+actor_id
+customer_id
+device_id
+role
+created_by
+updated_by
+approved_by
+delegation_id
+```
+
+y no cambia principal ni actor efectivos.
+
+#### 143. Pruebas de user_metadata
+
+Modificar metadata autoadministrable no cambia rol, actor, empleado, sede, área ni permiso.
+
+El caso queda cubierto tanto por llamada directa como por consumer normal.
+
+#### 144. Pruebas de dispositivo
+
+Se cubren:
+
+- dispositivo válido + actor válido;
+- dispositivo sin actor;
+- actor session expirada;
+- actor de otro dispositivo;
+- actor inactivo;
+- cambio de actor;
+- PIN incorrecto;
+- firma expirada;
+- replay;
+- target mismatch;
+- administrador del dispositivo distinto del actor.
+
+#### 145. Pruebas de navigation_role
+
+Cambiar `navigation_role` no cambia el actor ni crea capacidad empresarial.
+
+Una implementación que lo use como rol efectivo canónico falla la adopción.
+
+#### 146. Pruebas de servicio
+
+Se cubren:
+
+- servicio autónomo SYSTEM;
+- servicio delegado EMPLOYEE válido;
+- delegación inexistente;
+- delegación expirada;
+- delegación fuera de alcance;
+- `service_role` sin contrato empresarial;
+- intento de enviar employee ID como delegación implícita.
+
+#### 147. Pruebas de simulación
+
+Se demuestra que:
+
+- el actor real permanece en `actor_effective`;
+- el sujeto simulado no se vuelve actor real;
+- una simulación no concede una mutación;
+- el principal técnico no se transforma en simulador humano.
+
+#### 148. Pruebas de target subject
+
+Una acción administrativa sobre otro empleado conserva:
+
+```text
+actor != target employee
+```
+
+salvo coincidencia real del caso. El target no se escribe como `approved_by` o autor.
+
+#### 149. Pruebas de campos de auditoría
+
+El caller intenta enviar `created_by`, `updated_by` o equivalentes distintos del actor.
+
+El servidor conserva el actor canónico o rechaza el campo según el contrato.
+
+#### 150. Pruebas de Direct RPC
+
+La misma operación ejecutada por PostgREST directo, UI o backend conserva principal/actor equivalentes y las mismas razones de bloqueo.
+
+#### 151. Pruebas de SECURITY DEFINER
+
+Una función `SECURITY DEFINER` sigue fallando si principal/actor empresarial no son válidos.
+
+Los privilegios del owner SQL no se reflejan en el actor.
+
+#### 152. Pruebas de authenticated
+
+Una sesión `authenticated` sin vínculo empresarial suficiente no puede ejecutar una acción que requiera actor EMPLOYEE o CUSTOMER.
+
+#### 153. Pruebas de frescura
+
+Se invalidan resultados ante:
+
+- expiración de sesión;
+- cambio/revocación de vínculo;
+- inactivación laboral;
+- cambio de actor de dispositivo;
+- revocación de dispositivo;
+- revocación de delegación;
+- cambio contractual relevante.
+
+#### 154. Pruebas de concurrencia
+
+Se fuerza un cambio de actor/vínculo entre evaluación y efecto.
+
+La operación debe revalidar o abortar, nunca completar con atribución stale.
+
+#### 155. Pruebas de evidencia
+
+Se verifica que principal y actor queden correlacionables por separado y que no se registren secretos.
+
+La evidencia de DENY y fallo técnico permanece distinguible.
+
+#### 156. Pruebas de drift
+
+Se cubren:
+
+- firma nueva;
+- nuevo identity arg;
+- nuevo campo actor en JSON;
+- nueva audiencia EXECUTE;
+- cambio de FK;
+- cambio de fuente de device actor;
+- nueva delegación;
+- cambio de resolver legacy.
+
+#### 157. Pruebas de rollback
+
+Después de rollback se demuestra que:
+
+- no se pierden decisiones/auditoría;
+- no revive una delegación expirada;
+- no se amplía audiencia;
+- no se restaura actor client-controlled;
+- la compatibilidad vuelve al estado aprobado.
+
+#### 158. Paridad con AUTH-SRV y otras capas
+
+La misma acción protegida conserva la misma interpretación de principal y actor en acciones de servidor, RPC y RLS equivalente.
+
+Ninguna capa puede introducir un actor alternativo para obtener una decisión distinta.
+
+#### 159. Relación con AUTH-DB-021
+
+021 recibe las fronteras ya cerradas por 006..010.
+
+Al diseñar RLS/grants, no debe volver a definir principal, actor, permiso o territorio, sino consumir los contratos aprobados dentro de las capacidades técnicas de PostgreSQL/Supabase.
+
+#### 160. Relación con AUTH-DB-011
+
+010 no aplica constraints posteriores a backfill.
+
+`AUTH-DB-011` conserva la responsabilidad de constraints después de reconciliación y no debe adelantarse desde esta tarea.
+
+#### 161. Relación con auditoría
+
+La auditoría transversal conserva principal y actor como hechos separados.
+
+010 define qué evidencia debe llegar a esa capa, pero no materializa tablas de auditoría.
+
+#### 162. Relación con revocación
+
+La revocación de vínculo, sesión, dispositivo o delegación pertenece a sus tareas propietarias.
+
+010 exige que las RPC respeten su resultado e invalidación.
+
+#### 163. Relación con privacidad
+
+Resolver actor no autoriza devolver perfiles completos.
+
+Las RPC consumen identificadores y atributos mínimos necesarios para decidir y auditar.
+
+#### 164. Relación con Pass
+
+Una identidad cliente no se transforma en identidad laboral porque `public.users` y `employees` puedan compartir UUID hoy.
+
+El namespace y la política de dominio permanecen explícitos.
+
+#### 165. Relación con dispositivos compartidos
+
+La autoridad efectiva desde un dispositivo conserva la intersección de:
+
+```text
+principal técnico válido
++
+actor humano válido
++
+techo del dispositivo
++
+contexto
++
+permiso exacto
++
+territorio/recurso
++
+ausencia de deny
+```
+
+Ningún componente sustituye a otro.
+
+#### 166. Relación con simulación
+
+La simulación conserva su propio contrato y evidencia.
+
+010 evita que el actor simulado contamine las RPC reales y mantiene atribución al actor real.
+
+#### 167. Relación con permisos
+
+El actor correcto no concede capacidad.
+
+009 conserva la selección y evaluación del permiso exacto; 010 solo asegura que la decisión se atribuye al principal/actor correctos.
+
+#### 168. Relación con recurso y territorio
+
+El actor se compara contra el recurso, sede y área ya resueltos.
+
+010 no altera esos hechos para hacer coincidir asignaciones del actor.
+
+#### 169. Relación con errores
+
+La taxonomía propietaria debe distinguir, según corresponda:
+
+```text
+unauthenticated
+invalid principal
+actor unresolved
+actor ambiguous
+actor inactive
+principal/actor mismatch
+identity link failure
+device actor session failure
+delegation failure
+technical failure
+```
+
+No se reemplaza todo por un único `permission denied`.
+
+#### 170. Observabilidad
+
+Métricas seguras pueden segmentar por:
+
+- app;
+- RPC;
+- principal type;
+- actor type;
+- attribution source;
+- adoption state;
+- allow/deny/technical failure;
+- package/candidate;
+- latencia.
+
+No incluyen tokens ni IDs personales innecesarios en labels de alta cardinalidad.
+
+#### 171. Inventario obligatorio
+
+Cada package produce inventario completo de sus RPC sensibles y no una muestra.
+
+Toda firma se clasifica incluso cuando hoy parezca usar correctamente `auth.uid()`.
+
+#### 172. Owners de hallazgos
+
+Todo hallazgo diferido conserva:
+
+```text
+finding
+blocking yes/no
+owner task/package
+exit condition
+evidence reference
+```
+
+No quedan notas narrativas sin propietario.
+
+#### 173. Compatibilidad temporal
+
+La compatibilidad puede conservar firmas antiguas o igualdad de IDs mientras haya consumidores.
+
+No puede conservar la autoridad de un argumento cliente una vez que el candidate declara adopción canónica.
+
+#### 174. No implementación oportunista de R1
+
+Si faltan `AUTH-DB-019`, `AUTH-DB-033`, `AUTH-DB-035` o `AUTH-DB-034` materializados para el package:
+
+```text
+BLOCK
+→ resolver fundación propietaria
+→ verificar
+→ reanudar candidate
+```
+
+010 no crea esas fundaciones dentro de una migración R2.
+
+#### 175. No modificación de Auth
+
+010 no crea, elimina ni modifica cuentas, providers, sesiones, MFA, metadata o identidades de Supabase Auth.
+
+Solo define cómo las RPC consumen el resultado canónico futuro.
+
+#### 176. No cambio de identidad empresarial
+
+La tarea no fusiona employees/users, no renumera IDs, no crea customer links y no migra dispositivos.
+
+Esas responsabilidades pertenecen a R1/R2 propietarios.
+
+#### 177. No cambio de funciones
+
+Durante el desarrollo documental no se altera ninguna función SQL.
+
+Los cambios de firmas o cuerpos ocurren únicamente dentro de futuras instancias físicas autorizadas.
+
+#### 178. No cambio de grants
+
+No se ejecutan REVOKE/GRANT.
+
+La audiencia observada solo informa el candidate y se entrega a 021.
+
+#### 179. No cambio de RLS
+
+No se crean ni modifican policies.
+
+La equivalencia futura se gobierna por 021 y las fundaciones de autorización.
+
+#### 180. No cambio de datos
+
+No se actualizan `employees`, `users`, `auth.users`, dispositivos, sesiones, simulaciones, grants ni registros de auditoría.
+
+La auditoría remota usada para esta definición es read-only.
+
+#### 181. No backfill
+
+No se rellena ningún vínculo de identidad ni campo de actor en esta tarea documental.
+
+Los backfills pertenecen a la materialización aprobada del package y sus tareas propietarias.
+
+#### 182. No cambio de consumidores
+
+No se modifica Next.js, Expo, Edge Functions ni clientes.
+
+La futura instancia debe tratar consumidores según el candidate y el registro de adaptación correspondiente.
+
+#### 183. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya exige principal y actor efectivos en toda mutación/RPC protegida, separación entre dispositivo y humano, evidencia correlacionable, invalidación por cambio de sesión/actor y bloqueo de bypass cliente. 010 convierte esas obligaciones existentes en un contrato R2 por package sin introducir una regla empresarial nueva.
+
+#### 184. Cobertura de prueba vigente reutilizada
+
+Esta sección es únicamente trazabilidad y no modifica el registro 04A.
+
+Se reutiliza cobertura existente, entre otra, sobre:
+
+- `TREQ-AUTH-004`, paridad para el mismo principal y actor;
+- `TREQ-AUTH-011`, dispositivo compartido y humano real;
+- `TREQ-AUTH-013`, principal y actor efectivos dentro de RPC protegidas;
+- `TREQ-AUTH-014`, invalidación ante cambios de sesión, trabajador, dispositivo o rol;
+- `TREQ-AUTH-015`, evidencia correlacionable de principal y actor;
+- `TREQ-AUTH-019`, separación de identidad de dispositivo y actor humano;
+- `TREQ-AUTH-021`, vínculo explícito del principal técnico y dispositivo;
+- `TREQ-AUTH-062`, intersección entre actor, dispositivo, contexto y permiso.
+
+No se modifica texto, owner, estado, relación ni artefacto de esas filas.
+
+#### 185. Evidencia de validación
+
+| Clase     | Estado       | Evidencia                                                                                                                                                                                                                                                |
+| --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | La batería del checkout se ejecutará después de insertar la tarea en su archivo propietario.                                                                                                                                                             |
+| LOCAL     | PASS         | El artefacto fue validado estructuralmente: una tarea, metadata obligatoria, secciones requeridas, cinco clases de evidencia, cero placeholders, cero referencias TREQ dentro de la sección de cero cambios y continuidad terminal.                      |
+| REMOTA    | PASS         | Se verificaron `main` en `595492315e069ec285116260c02b9e634a120214`, continuidad, topología R2, 009 aprobado, contratos de principal/actor/contexto, fundaciones 019/033/034/035, 04A AUTH, scripts documentales y baseline read-only de `vento-os-dev`. |
+| OPERATIVA | NOT_EXECUTED | No se invocaron flujos empresariales ni se alteraron sesiones, actores, dispositivos o consumidores.                                                                                                                                                     |
+| FÍSICA    | NOT_EXECUTED | No se creó ni aplicó migración, DDL, DML, función, grant, policy, usuario, sesión, vínculo o despliegue.                                                                                                                                                 |
+
+`REMOTA = PASS` valida el desarrollo documental y los hechos observados; no certifica una futura instancia física.
+
+#### 186. Criterios de aceptación
+
+010 queda documentalmente satisfecha cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. la instancia futura es `AUTH-DB-010::<package_id>`;
+4. recibe intacto el handoff de 009;
+5. entrega a 021 sin absorber RLS/grants;
+6. principal y actor permanecen separados;
+7. principal procede de fuente técnica confiable;
+8. actor procede de resolución empresarial canónica;
+9. `auth.uid()` no se equipara permanentemente a employee;
+10. igualdad legacy de UUID no es autoridad objetivo;
+11. HUMAN_USER no implica EMPLOYEE;
+12. HUMAN_USER puede resolver CUSTOMER por política de dominio;
+13. identidad dual no se fusiona;
+14. SHARED_DEVICE no actúa como trabajador;
+15. actor de dispositivo exige relación vigente;
+16. `navigation_role` no crea actor;
+17. administrador de dispositivo no transfiere autoridad;
+18. SYSTEM_SERVICE no crea business authority;
+19. servicio autónomo usa actor SYSTEM válido;
+20. delegación humana es explícita;
+21. `service_role` no es wildcard;
+22. ANONYMOUS no fabrica actor;
+23. simulación no sustituye actor real;
+24. actor ambiguo queda UNRESOLVED;
+25. actor inactivo se distingue de no resuelto;
+26. target subject se separa del actor;
+27. argumentos de identidad quedan clasificados;
+28. selector cliente de actor queda bloqueado;
+29. campos de autoría se derivan en servidor;
+30. payload JSON se inspecciona igual que argumentos escalares;
+31. user metadata no concede identidad;
+32. sesión y vínculo conservan frescura;
+33. cambio de actor invalida contexto;
+34. cambio de dispositivo invalida contexto aplicable;
+35. cambio de delegación invalida autoridad;
+36. retry no selecciona actor alternativo;
+37. idempotencia no sustituye identidad;
+38. PostgREST directo conserva la misma validación;
+39. backend conserva la misma validación;
+40. Edge/job declaran su modelo de principal;
+41. SECURITY DEFINER no es actor;
+42. authenticated no es actor;
+43. RLS bypass no es actor;
+44. evidencia conserva principal y actor por separado;
+45. DENY y fallo técnico no se confunden;
+46. registro por RPC cierra N/N;
+47. drift material bloquea;
+48. shadow no elige el resultado más permisivo;
+49. rollback no restaura actor client-controlled;
+50. no se ejecutan cambios físicos durante esta tarea documental.
+
+#### 187. Límites
+
+Esta tarea no:
+
+- materializa `AUTH-DB-010::<package_id>`;
+- crea migraciones;
+- cambia funciones/RPC;
+- crea `get_access_context`;
+- crea `evaluate_authorization`;
+- crea vínculos Auth;
+- modifica Auth;
+- modifica employees/users;
+- crea sesiones de actor;
+- modifica dispositivos;
+- inicia simulaciones;
+- crea delegaciones;
+- cambia permisos;
+- cambia 04A;
+- cambia RLS;
+- cambia grants;
+- cambia schemas;
+- ejecuta backfills;
+- cambia consumidores;
+- abre E5;
+- abre `SHELL-CI-020`;
+- autoriza una instancia física.
+
+#### 188. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema`
+
+
 ### [ ] AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
 ### [ ] AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
 ### [ ] AUTH-DB-022 — Implementar gobierno y políticas de Storage
