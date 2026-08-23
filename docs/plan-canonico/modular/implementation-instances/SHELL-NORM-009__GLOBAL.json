@@ -1,10 +1,48 @@
 {
   "instance_id": "SHELL-NORM-009::GLOBAL",
   "task_id": "SHELL-NORM-009",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/data-normalization/conformance/normalization.conformance.ts como corpus privado y oraculo puro de SHELL-NORM-009::GLOBAL, materializando exactamente los 89 escenarios heredados reconciliados por DATA-NORM-TRANS-002 con distribucion 16/20/21/15/17 y sin renombrar ni sustituir semanticamente los escenarios propietarios.",
+    "Materializar exactamente cuatro dimensiones de prueba, diez dimensiones de conservacion semantica y cobertura cerrada 13/13 operaciones, 14/14 clases semanticas, 7/7 roles de representacion, 6/6 roles de fuente y 8/8 modos de tratamiento, con faltantes=0 y duplicados=0.",
+    "Implementar un oraculo A/B/C puro que detecte divergencia determinista A/B, segundo cambio semantico en C, alteracion de cualquiera de las diez dimensiones protegidas y side effects no autorizados; distinguir un cambio de version_set_digest como otro corte contractual y bloquear latest implicito.",
+    "Conservar autoridad estructural en cero: production_mutation_authority=false, identity_authority=false, uniqueness_authority=false y merge_authority=false; mantener VITAL fuera de la politica transversal de Vento OS.",
+    "Crear packages/data-normalization/scripts/validate-normalization-conformance.mjs para verificar SHA del contrato propietario, topologia GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, compatibilidad encadenada con SHELL-NORM-002..008, coincidencia fila por fila del corpus fisico con ARC-003/004/005/006/008, reconciliacion 89/89 con DATA-NORM-TRANS-002, compilacion TypeScript, pureza y comportamiento del oraculo.",
+    "Reemplazar packages/data-normalization/README.md para documentar SHELL-NORM-009, el corpus 89/89, A/B/C, matrices de conservacion, fronteras y handoffs, preservando todos los marcadores historicos requeridos por los validadores anteriores.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-NORM-009__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/data-normalization/package.json, version npm, exports publicos, dependencias, consumidores, fuentes o validadores propietarios SHELL-NORM-002..008, fuentes DATA-NORM, Supabase, SQL, DDL, DML, RLS, RPC, migraciones, backfills, constraints, indices, triggers, datos, secretos, configuracion remota, despliegues, VITAL ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/data-normalization/scripts/validate-normalization-conformance.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext packages/data-normalization/src/normalization.types.ts packages/data-normalization/src/normalization.rules.ts packages/data-normalization/src/normalization.catalogs.ts packages/data-normalization/src/normalization.dictionary.ts packages/data-normalization/src/normalization.search.ts packages/data-normalization/src/normalization.preview.ts packages/data-normalization/src/normalization.audit.ts packages/data-normalization/conformance/normalization.conformance.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T14:49:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "13632f04e23e618baf5e1ead9d0c0370ae19106a611d6e68730713e443777cd5"
+  },
+  "status": "VERIFIED",
+  "evidence": [
+    "MATERIALIZATION packages/data-normalization/conformance/normalization.conformance.ts created as private pure conformance corpus and A/B/C oracle",
+    "MATERIALIZATION inherited corpus=89 distribution=16/20/21/15/17 source=DATA-NORM-TRANS-002",
+    "MATERIALIZATION test_dimensions=4 preservation_dimensions=10 operations=13 semantic_classes=14 representations=7 sources=6 treatment_modes=8",
+    "MATERIALIZATION authority production_mutation=0 identity=0 uniqueness=0 merge=0 VITAL=BLOCKED",
+    "MATERIALIZATION packages/data-normalization/scripts/validate-normalization-conformance.mjs created and README updated without package manifest, consumer, persistence or Supabase changes",
+    "SOURCE CONTRACT SHA256 13632f04e23e618baf5e1ead9d0c0370ae19106a611d6e68730713e443777cd5",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION normalization conformance validator PASS; corpus=89 distribution=16/20/21/15/17 test_dimensions=4 preservation_dimensions=10 operations=13 semantic_classes=14 representations=7 sources=6 treatment_modes=8 abc=PASS source_reconciliation=PASS previous_compatibility=PASS",
+    "VALIDATION TypeScript strict compile PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-NORM-009::GLOBAL VERIFIED"
+  ]
 }
