@@ -34,10 +34,36 @@ Esta raíz no materializa todavía ninguna de esas familias.
 - Sin `exports`.
 - Sin versión npm.
 - Sin dependencias runtime propias.
-- Sin archivos TypeScript.
-- Sin factories, tipos generados, wrappers RPC ni taxonomía de errores.
+- `src/errors.ts` existe como infraestructura interna de normalización técnica; no es un export público del package.
+- Sin factories, tipos generados ni wrappers RPC.
 - Sin publicación, registry, tags o releases.
 
 ## Fuera de alcance
 
 Esta instancia no modifica consumidores, helpers legacy, SQL, migraciones, tablas, vistas, funciones, RPC, RLS, grants, triggers, índices, constraints, datos, secretos, configuración remota ni el proyecto Supabase.
+
+## Normalización técnica de errores
+
+`SHELL-DB-004::GLOBAL` materializa la política interna y runtime-neutral:
+
+`VENTO_SUPABASE_TECHNICAL_ERROR_NORMALIZATION@1.0.0`
+
+La política conserva:
+
+- 4/4 capas separadas: diagnóstico nativo, normalización técnica, outcome contractual y mensaje público;
+- 11/11 familias semánticas heredadas;
+- prioridad de un outcome contractual machine-readable válido;
+- mappings exactos y versionados por fuente, código, contrato y versión;
+- fallback cerrado para errores desconocidos o sin mapping;
+- resultado desconocido y reconciliación para commands despachados cuyo efecto sea incierto;
+- retry únicamente desde un contrato explícito;
+- correlación segura y diagnóstico técnico protegido;
+- redacción de SQLSTATE, stack, SQL, constraints, objetos físicos, secretos y PII en superficies públicas;
+- paridad semántica entre server, browser y native;
+- 36/36 coberturas conductuales contractuales.
+
+La clasificación nunca depende de `Error.message`, `hint`, `details`, stack, idioma, copy, heurísticas textuales o un status HTTP aislado. Un fallo técnico nunca se transforma silenciosamente en `null`, lista vacía, `false` o éxito.
+
+El detalle protegido completo solo se conserva en runtime `SERVER`. Browser y native reciben únicamente la representación pública redactada. VITAL permanece excluido de esta política transversal.
+
+La separación física de factories, configuración, cookies, secretos y capacidades browser/server/native/privileged continúa reservada a `SHELL-DB-005`.
