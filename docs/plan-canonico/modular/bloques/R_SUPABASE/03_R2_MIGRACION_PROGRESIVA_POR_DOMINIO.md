@@ -4941,7 +4941,1851 @@ Las responsabilidades reservadas continúan en sus tareas propietarias.
 `AUTH-DB-008 — Validar área dentro de RPC sensibles`
 
 
-### [ ] AUTH-DB-008 — Validar área dentro de RPC sensibles
+### ✅ AUTH-DB-008 — Validar área dentro de RPC sensibles
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-007 — Validar sede dentro de RPC sensibles
+**Tarea siguiente:** AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para resolución y validación canónica de área dentro de RPC sensibles
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `RPC-AREA-VALIDATION-008@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-008::package_id` permanece no ejecutada hasta satisfacer R0/R1 aplicables, el paquete E5 correspondiente, `SHELL-CI-020::package_id` y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-008` define cómo toda RPC sensible incluida en un paquete aprobado debe resolver y validar la dimensión de área del recurso, borrador, colección, agregado o relación empresarial después de que la sede aplicable haya quedado resuelta coherentemente por el contrato de `AUTH-DB-007`.
+
+La tarea impide que un `area_id`, un nombre de área, un `area_kind`, una selección visual o un dato legacy enviado por el caller se convierta por sí mismo en autoridad territorial.
+
+---
+
+#### 2. Decisión central
+
+La regla vinculante es:
+
+```text
+RPC SENSIBLE
+→ CONSUMIR SEDE RESUELTA POR 007
+→ RESOLVER RECURSO O BORRADOR
+→ RESOLVER ÁREA REAL, DECLARADA O LEGÍTIMAMENTE AUSENTE
+→ VALIDAR PERTENENCIA ÁREA-SEDE
+→ VALIDAR COHERENCIA Y ESTADO TERRITORIAL
+→ PRESERVAR TODOS LOS LADOS REQUERIDOS
+→ ENTREGAR HECHOS DE ÁREA AL PIPELINE CANÓNICO
+→ NO DECLARAR ALLOW POR SÍ SOLA
+```
+
+---
+
+#### 3. Contrato material producido
+
+Se define:
+
+```text
+RPC-AREA-VALIDATION-008@1.0.0
+```
+
+Este contrato gobierna la resolución, clasificación, coherencia sede-área y semántica de ausencia de área dentro de las RPC sensibles de cada package.
+
+No reemplaza:
+
+- `AccessContext@1.0.0`;
+- el contrato de recurso;
+- `AuthorizationDecision@1.0.0`;
+- la validación de sede de `AUTH-DB-007`;
+- la evaluación del permiso exacto de `AUTH-DB-009`;
+- la validación del principal y actor efectivo de `AUTH-DB-010`.
+
+---
+
+#### 4. Topología vinculante
+
+La topología vigente es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance = AUTH-DB-008::package_id
+```
+
+Consecuencias:
+
+1. el marcador documental se desarrolla una sola vez;
+2. no existe `AUTH-DB-008::GLOBAL`;
+3. cada package aplicable registra una instancia propia;
+4. cada instancia opera únicamente sobre sus RPC y `transition_keys`;
+5. la evidencia de un package no certifica otro;
+6. la aprobación documental no autoriza materialización física.
+
+---
+
+#### 5. Gate temporal
+
+La futura instancia solo podrá materializarse cuando, para el mismo `package_id`, se hayan satisfecho los gates aplicables:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+DELIV-PKG aplicable = CLOSED
+E5-GATE-008::package_id = PASS
+SHELL-CI-020::package_id = OPENED
+physical_authorization = EXPLICIT
+```
+
+La falta de una precondición mantiene la instancia cerrada.
+
+---
+
+#### 6. Handoff recibido de AUTH-DB-007
+
+007 entrega a 008:
+
+```text
+site_resolution_status
++
+resolved_site_set
++
+resource_site_relationships
++
+resource area references cuando existan
++
+site/area coherence preconditions
+```
+
+008 no vuelve a escoger una sede diferente para hacer coincidir un área.
+
+---
+
+#### 7. Handoff hacia AUTH-DB-009
+
+008 entrega a 009, sin conceder autorización:
+
+```text
+AccessContext canónico
++
+ResolvedResourceContext
++
+site_resolution_status
++
+resolved_site_set
++
+area_resolution_status
++
+resolved_area_set
++
+site_area_relationships
++
+area_requirement
++
+area_resolution_mode
++
+area classification cuando aplique
++
+resource side roles
+```
+
+009 conserva la responsabilidad de evaluar el permiso exacto, sus grants, denies, modalidad y alcance contra estos hechos.
+
+---
+
+#### 8. Handoff hacia AUTH-DB-010
+
+008 no altera:
+
+```text
+principal
+actor_effective
+employee
+domain_identity
+```
+
+Los conserva en el snapshot para que `AUTH-DB-010` valide principal y actor efectivo sin reinterpretar territorio.
+
+---
+
+#### 9. Separación entre resolución y autorización
+
+La tarea distingue:
+
+```text
+RESOLVER ÁREA
+≠
+AUTORIZAR ÁREA
+```
+
+008 responde:
+
+```text
+¿qué área o áreas pertenecen realmente al recurso?
+¿pertenecen a la sede correcta?
+¿es obligatorio tener área?
+¿la ausencia de área es legítima?
+¿qué clasificación territorial tiene el área?
+```
+
+No responde de forma final:
+
+```text
+¿el permiso exacto cubre esa área?
+```
+
+---
+
+#### 10. Sede como precondición
+
+Toda área concreta debe estar contenida en una sede coherente ya resuelta.
+
+Regla:
+
+```text
+area_id
+→ area.site_id
+→ una sede aplicable de resolved_site_set
+```
+
+Si la sede propietaria del área contradice el hecho de sede aplicable, la operación falla cerrada.
+
+---
+
+#### 11. No corrección silenciosa de sede
+
+Ante:
+
+```text
+resolved_site = SITE_A
+resolved_area.site_id = SITE_B
+```
+
+008 no puede:
+
+- cambiar la sede a `SITE_B`;
+- ignorar el área;
+- buscar un área equivalente en `SITE_A`;
+- usar el mismo nombre de área;
+- reinterpretar el request.
+
+El resultado es conflicto territorial.
+
+---
+
+#### 12. Fuente canónica del área
+
+El área de una operación se obtiene desde el contrato de recurso y sus relaciones canónicas.
+
+Regla:
+
+```text
+RECURSO O BORRADOR
+→ TERRITORY RESOLVER
+→ ÁREA REAL O AUSENCIA CONTRACTUAL
+```
+
+No:
+
+```text
+p_area_id
+→ AUTORIDAD TERRITORIAL
+```
+
+---
+
+#### 13. Contrato de recurso obligatorio
+
+Toda RPC sensible que opere sobre recurso con dimensión de área debe enlazar un `resource_contract_id` vigente que permita conocer, según aplique:
+
+```text
+resource_type
+resource_locator
+territory_resolver
+required_sides
+state_predicate
+concurrency_policy
+field_policy
+audit_policy
+```
+
+008 no inventa una ruta de área cuando el contrato no la declara.
+
+---
+
+#### 14. Estados canónicos de resolución
+
+Se preserva el vocabulario de resolución del recurso:
+
+```text
+RESOLVED
+MULTI_RESOLVED
+NOT_APPLICABLE
+UNRESOLVED
+CONFLICT
+ISOLATED
+```
+
+La dimensión de área utiliza estos estados sin crear una taxonomía pública divergente.
+
+---
+
+#### 15. RESOLVED
+
+`RESOLVED` para la dimensión de área significa:
+
+```text
+recurso o borrador exacto
++
+área concreta aplicable o ausencia site-level explícitamente válida
++
+sede propietaria coherente
++
+relaciones resolubles
+```
+
+Permite continuar el pipeline.
+
+No significa `ALLOW`.
+
+---
+
+#### 16. MULTI_RESOLVED
+
+`MULTI_RESOLVED` conserva todos los lados o miembros de área exigidos por el contrato.
+
+Ejemplos:
+
+```text
+origin_area
+destination_area
+source_area
+target_area
+requesting_area
+fulfillment_area
+```
+
+Los lados no se colapsan por compartir sede o `area_kind`.
+
+---
+
+#### 17. NOT_APPLICABLE
+
+`NOT_APPLICABLE` solo es válido cuando el contrato declara legítimamente que el recurso no tiene dimensión de área aplicable.
+
+Puede ocurrir en:
+
+```text
+recurso organizacional
+recurso estrictamente site-level
+contrato NT u ORG
+operación cuya granularidad aprobada termina en sede
+```
+
+La ausencia de área no crea acceso a todas las áreas.
+
+---
+
+#### 18. UNRESOLVED
+
+`UNRESOLVED` significa que una dimensión de área obligatoria no pudo resolverse.
+
+No puede repararse mediante:
+
+- área seleccionada;
+- área primaria;
+- `employees.area_id`;
+- primera área de la sede;
+- única área encontrada;
+- `employee_areas`;
+- área del dispositivo;
+- último turno distinto al vigente;
+- `p_area_id` libre;
+- nombre humano.
+
+---
+
+#### 19. CONFLICT
+
+`CONFLICT` se produce cuando fuentes que deben representar el mismo hecho territorial son incompatibles.
+
+Ejemplos:
+
+```text
+resource.area_id != persisted_related_area_id
+area.site_id != resolved_resource_site_id
+draft.area_id pertenece a otra sede
+current_area != proposed_area cuando el comando no permite traslado
+duplicate authoritative area relationships
+```
+
+No se escoge silenciosamente una fuente ganadora.
+
+---
+
+#### 20. ISOLATED
+
+`ISOLATED` se conserva cuando el recurso, área o su relación territorial pertenece a un aislamiento no incluido por la autoridad ordinaria.
+
+Compartir `area_kind` con un área autorizable no elimina el aislamiento.
+
+---
+
+#### 21. Área solicitada por cliente
+
+Valores como:
+
+```text
+p_area_id
+area_id
+selected_area_id
+target_area_id
+origin_area_id
+destination_area_id
+```
+
+pueden expresar intención, localización, filtro, borrador o compatibilidad.
+
+Nunca son por sí solos evidencia de autorización.
+
+---
+
+#### 22. Roles cerrados para inputs de área
+
+Cada input territorial de área incluido en una RPC se clasifica exactamente en uno de:
+
+```text
+RESOURCE_LOCATOR_AREA
+RESOURCE_DRAFT_AREA
+FILTER_ONLY
+MULTI_SIDE_ORIGIN_AREA
+MULTI_SIDE_DESTINATION_AREA
+RELATED_RESOURCE_AREA
+HISTORICAL_SNAPSHOT_AREA
+COMPATIBILITY_ONLY
+UNTRUSTED_AUTHORITY_AREA
+NOT_APPLICABLE
+```
+
+Una firma puede contener varios inputs con roles diferentes.
+
+---
+
+#### 23. RESOURCE_LOCATOR_AREA
+
+Un área recibida como locator participa en localizar o desambiguar un recurso.
+
+Debe compararse contra la relación territorial persistida cuando el contrato exige coincidencia.
+
+No reemplaza la lectura canónica del recurso.
+
+---
+
+#### 24. RESOURCE_DRAFT_AREA
+
+Representa el área propuesta para una creación.
+
+Antes del efecto debe comprobarse:
+
+1. forma válida;
+2. existencia;
+3. sede propietaria;
+4. compatibilidad con la sede ya resuelta;
+5. estado aplicable;
+6. relaciones padre;
+7. clasificación cuando sea relevante;
+8. obligatoriedad contractual;
+9. incorporación al `ResourceDraft` normalizado.
+
+---
+
+#### 25. FILTER_ONLY
+
+Un filtro por área reduce un conjunto ya gobernado.
+
+Regla:
+
+```text
+FILTRO DE ÁREA
+→ REDUCE
+```
+
+Nunca:
+
+```text
+FILTRO DE ÁREA
+→ AMPLÍA
+```
+
+El servidor no recupera una colección territorial amplia para depender únicamente del filtrado cliente.
+
+---
+
+#### 26. MULTI_SIDE_ORIGIN_AREA
+
+Cuando un área origen es obligatoria, conserva identidad independiente.
+
+La autoridad sobre otra área del mismo site no la sustituye.
+
+---
+
+#### 27. MULTI_SIDE_DESTINATION_AREA
+
+Cuando un área destino es obligatoria, conserva identidad independiente.
+
+Compartir `area_kind` o sede con el origen no autoriza el destino por implicación.
+
+---
+
+#### 28. RELATED_RESOURCE_AREA
+
+Cuando el área se deriva desde una relación:
+
+```text
+stock → location → zone → area
+shift → area
+production batch → workstation → area
+document → target employee → territorial relation
+```
+
+la cadena debe existir y ser coherente.
+
+Una cadena rota produce `UNRESOLVED`; una contradictoria produce `CONFLICT`.
+
+---
+
+#### 29. HISTORICAL_SNAPSHOT_AREA
+
+Los recursos históricos utilizan el snapshot territorial aprobado cuando el área actual reescribiría el pasado.
+
+Regla:
+
+```text
+HISTORIA
+→ ÁREA HISTÓRICA AUTORITATIVA
+```
+
+No se sustituye por el área actual del trabajador, sede o recurso.
+
+---
+
+#### 30. COMPATIBILITY_ONLY
+
+Un argumento legacy puede conservarse temporalmente para mantener consumidores.
+
+Si está clasificado `COMPATIBILITY_ONLY`:
+
+- no concede autoridad;
+- puede compararse con el área resuelta;
+- puede mantenerse por compatibilidad observable;
+- debe tener owner y sunset;
+- nunca es fallback.
+
+---
+
+#### 31. UNTRUSTED_AUTHORITY_AREA
+
+Un parámetro usado históricamente como autoridad se marca explícitamente:
+
+```text
+UNTRUSTED_AUTHORITY_AREA
+```
+
+La migración debe retirar su uso como fuente de autoridad aunque la firma permanezca temporalmente.
+
+---
+
+#### 32. NOT_APPLICABLE como input
+
+`NOT_APPLICABLE` significa que ese argumento concreto no participa en la dimensión de autorización de área.
+
+No transforma una RPC territorial en no territorial.
+
+---
+
+#### 33. Modos de resolución de área
+
+Cada RPC usa uno o más modos explícitos:
+
+```text
+FROM_EXISTING_RESOURCE
+FROM_NORMALIZED_DRAFT
+FROM_RELATED_RESOURCE
+FROM_HISTORICAL_SNAPSHOT
+FROM_COLLECTION_MEMBERS
+FROM_AGGREGATE_MEMBERS
+MULTI_SIDE
+SITE_LEVEL_NO_AREA
+NOT_APPLICABLE
+```
+
+No existe:
+
+```text
+FROM_CALLER_AUTHORITY
+```
+
+---
+
+#### 34. Resultado interno de área
+
+El resultado interno equivalente conserva:
+
+```text
+resolution_state
+resource_contract_id
+area_requirement
+area_resolution_mode
+areas[]
+```
+
+Cada elemento de `areas[]` conserva, cuando aplique:
+
+```text
+side_role
+area_id
+site_id
+area_kind
+source_path
+state_observed
+historical_snapshot
+```
+
+Este shape es interno y no crea un contrato público nuevo.
+
+---
+
+#### 35. Área requerida
+
+Cuando el contrato del permiso, recurso, rol operativo o proceso exige área concreta:
+
+```text
+area_required = true
++
+área no resoluble
+=
+UNRESOLVED
+```
+
+No existe fallback permisivo.
+
+---
+
+#### 36. Área opcional
+
+`area_required = false` no significa:
+
+```text
+cualquier área
+```
+
+Significa que la operación puede ser válida sin granularidad de área únicamente cuando su contrato lo permite.
+
+Si una área concreta está presente, debe seguir siendo coherente con la sede.
+
+---
+
+#### 37. Null no es wildcard
+
+La regla universal es:
+
+```text
+area_id = null
+≠
+ALL_AREAS
+```
+
+`null` no significa:
+
+- todas las áreas;
+- primera área;
+- área principal;
+- área seleccionada;
+- área del dispositivo;
+- área del turno anterior;
+- área de cualquier `area_kind`.
+
+---
+
+#### 38. Null site-level
+
+`area_id = null` puede ser legítimo cuando el recurso o configuración es explícitamente de nivel sede.
+
+Resultado conceptual:
+
+```text
+site resuelto
++
+area = null
++
+contrato site-level válido
+=
+SITE_LEVEL_NO_AREA
+```
+
+Esto conserva una ausencia de área, no una lista implícita de áreas.
+
+---
+
+#### 39. Site-wide operativo
+
+Una configuración operacional puede ser site-wide solo cuando el contrato vigente lo declara expresamente.
+
+Ejemplo conceptual:
+
+```text
+site_operational_role
+area_id = null
+site-wide = permitido
+```
+
+No se deriva site-wide por omisión.
+
+---
+
+#### 40. Área nula con requisito de área
+
+Cuando el contrato exige área:
+
+```text
+area_id = null
+→ fallo cerrado
+```
+
+No se usa:
+
+```text
+employee_areas
+employees.area_id
+selected_area_id
+device.area_id
+primary area
+```
+
+para completarla.
+
+---
+
+#### 41. Recursos existentes
+
+Para recurso existente:
+
+```text
+stable resource locator
+→ current persisted resource
+→ canonical relationships
+→ site fact de 007
+→ current or historical area fact
+```
+
+El área persistida o relacional gobierna la resolución.
+
+---
+
+#### 42. Creaciones
+
+Para creación:
+
+```text
+validated intent
+→ normalized ResourceDraft
+→ resolved site
+→ target area resolution
+→ site-area coherence
+→ evaluator
+→ insert
+```
+
+No se persiste primero para descubrir después si el área era coherente.
+
+---
+
+#### 43. Actualización sin cambio de área
+
+Cuando una actualización no permite mover el recurso:
+
+1. se resuelve el área actual;
+2. cualquier selector debe coincidir cuando aplique;
+3. el payload no acepta un área no permitida;
+4. el evaluador recibe el área real;
+5. la mutación conserva territorio.
+
+---
+
+#### 44. Actualización con cambio de área
+
+Si la operación admite traslado:
+
+```text
+current_area
++
+proposed_area
+```
+
+ambas áreas se resuelven.
+
+Si implican sedes diferentes, se conservan también los lados de sede entregados por 007.
+
+008 no oculta un cambio cross-site dentro de un cambio de área.
+
+---
+
+#### 45. Eliminaciones
+
+Una eliminación debe resolver sede y área aplicables antes de borrar el recurso.
+
+La evidencia territorial persiste aunque el registro deje de existir.
+
+---
+
+#### 46. Transiciones de estado
+
+Una transición conserva la dimensión territorial.
+
+Debe resolverse:
+
+```text
+resource
+site
+area
+current state
+```
+
+antes del efecto o revalidarse dentro de la frontera transaccional.
+
+---
+
+#### 47. Colecciones
+
+Para colecciones:
+
+```text
+territorio autorizable
+→ query server-side
+→ filtro opcional
+→ paginación
+→ orden
+```
+
+Cada miembro debe ser territorialmente resoluble o la consulta debe demostrar equivalencia semántica.
+
+---
+
+#### 48. Agregados
+
+Un agregado por área solo incorpora miembros cuya área sea resoluble y posteriormente autorizable.
+
+No puede inferir datos de áreas excluidas mediante:
+
+- totales;
+- conteos;
+- diferencias;
+- comparaciones;
+- errores diferenciados.
+
+---
+
+#### 49. Operaciones masivas
+
+Una operación masiva conserva por miembro:
+
+```text
+resource_id
+resolved_site_set
+resolved_area_set
+resolution_state
+```
+
+o una consulta demostrablemente equivalente.
+
+No se fuerza una única área a todo el lote por conveniencia.
+
+---
+
+#### 50. Recursos site-level
+
+Un recurso legítimamente site-level puede tener:
+
+```text
+site_id = valor
+area_id = null
+```
+
+Esto significa que pertenece a la sede sin subdivisión de área contractual.
+
+No significa todas las áreas de esa sede.
+
+---
+
+#### 51. Recursos no territoriales
+
+Para `NT` u `ORG`:
+
+- el área puede ser `NOT_APPLICABLE`;
+- no se inventa área;
+- no se exige `employee_areas`;
+- no se interpreta ausencia como globalidad;
+- las demás restricciones continúan.
+
+---
+
+#### 52. Identidad de área
+
+La identidad de un área concreta es su identificador canónico resuelto.
+
+No es:
+
+- nombre;
+- etiqueta;
+- posición visual;
+- índice;
+- `area_kind`;
+- alias no contractual.
+
+---
+
+#### 53. Código de área
+
+Un código puede participar en localización cuando el contrato lo declare.
+
+Debe resolverse contra fuente canónica y quedar vinculado a un `area_id`.
+
+No se usa texto libre como equivalencia.
+
+---
+
+#### 54. area_kind
+
+`area_kind` representa clasificación funcional.
+
+Regla:
+
+```text
+AREA KIND
+≠
+AREA ID
+```
+
+Un permiso por tipo de área todavía debe resolver el área concreta y su sede.
+
+---
+
+#### 55. Nombre de área
+
+`areas.name` no es clasificación canónica para autorización.
+
+No se autoriza por semejanza textual:
+
+```text
+"Cocina"
+"cocina"
+"COCINA"
+```
+
+La normalización de tipos pertenece a su contrato propietario.
+
+---
+
+#### 56. Fuente física de áreas
+
+La futura instancia consume la fuente autoritativa vigente en su candidate.
+
+El estado AS-IS observado contiene:
+
+```text
+public.areas
+```
+
+pero R2 puede mover esta autoridad al owner schema aprobado.
+
+008 no congela `public.areas` como ubicación física eterna.
+
+---
+
+#### 57. assigned_areas
+
+El contexto canónico representa `assigned_areas` como relaciones laborales explícitas.
+
+Su semántica es:
+
+```text
+empleado
+→ asignación de área
+→ área
+→ sede propietaria
+```
+
+No representa permisos ni área operativa.
+
+---
+
+#### 58. employee_areas AS-IS
+
+La fuente AS-IS equivalente es:
+
+```text
+public.employee_areas
+```
+
+pero su cobertura actual incompleta no puede ampliar autoridad.
+
+Una ausencia de filas no produce fallback permisivo.
+
+---
+
+#### 59. employees.area_id
+
+`employees.area_id` es legacy y no representa el conjunto canónico de áreas asignadas.
+
+No se usa como fallback cuando `assigned_areas` está vacío o inválido.
+
+---
+
+#### 60. Área primaria
+
+Una relación:
+
+```text
+is_primary = true
+```
+
+representa referencia habitual.
+
+No concede:
+
+- permiso;
+- autoridad;
+- cobertura global;
+- área operativa;
+- área del recurso;
+- fallback.
+
+---
+
+#### 61. Área seleccionada
+
+`selected_area_id` es preferencia administrativa o de navegación.
+
+Puede reducir la experiencia cuando sea coherente.
+
+No amplía territorio ni reemplaza el área real del recurso.
+
+---
+
+#### 62. Lista vacía de assigned_areas
+
+```text
+assigned_areas = []
+```
+
+significa literalmente que no existen asignaciones de área representables en el snapshot.
+
+No significa:
+
+- todas las áreas de la sede;
+- área general;
+- área del turno;
+- área seleccionada;
+- área primaria;
+- cualquier área del mismo tipo.
+
+---
+
+#### 63. Cobertura administrativa
+
+`administrative_coverage` puede contener cobertura por áreas para el carril base.
+
+No es `ALLOW`.
+
+008 entrega hechos territoriales; 009 aplica permiso y alcance exactos.
+
+---
+
+#### 64. Área operativa
+
+`operational_area` procede del contexto canónico derivado del turno publicado y vigente cuando exista.
+
+No se obtiene desde:
+
+- área primaria;
+- `employee_areas`;
+- `employees.area_id`;
+- selected area;
+- dispositivo;
+- caller.
+
+---
+
+#### 65. Turno sin área
+
+Un turno con `area_id = null` puede ser válido solo cuando la configuración operacional permite contexto site-wide.
+
+008 conserva esa ausencia.
+
+No inventa área.
+
+---
+
+#### 66. Rol con área obligatoria
+
+Cuando el rol operativo exige área y el contexto no la resuelve:
+
+```text
+operational area required
++
+operational_area = null
+=
+condición bloqueante
+```
+
+La evaluación final pertenece a 009 y al contrato canónico.
+
+---
+
+#### 67. Dispositivo compartido
+
+El área fija de un dispositivo puede restringir.
+
+No puede:
+
+- crear área del recurso;
+- crear asignación laboral;
+- cambiar la sede resuelta;
+- sustituir el turno;
+- ampliar `assigned_areas`.
+
+---
+
+#### 68. Área del dispositivo distinta
+
+Si un dispositivo restringido a un área participa y el recurso pertenece a otra, el hecho de incompatibilidad se conserva para evaluación.
+
+008 no mueve el recurso ni el dispositivo para obtener coincidencia.
+
+---
+
+#### 69. Principal técnico
+
+Un proceso técnico no elimina la necesidad de resolver área cuando el recurso la requiere.
+
+La autoridad del proceso pertenece a su contrato de principal y permiso.
+
+---
+
+#### 70. service_role
+
+`service_role` es privilegio técnico de infraestructura.
+
+No significa:
+
+```text
+all_areas
+skip_area_resolution
+global_business_authority
+```
+
+Una llamada privilegiada conserva las reglas empresariales de área.
+
+---
+
+#### 71. SECURITY DEFINER
+
+`SECURITY DEFINER` no concede autoridad territorial.
+
+008 no exige agregarlo.
+
+Cuando ya existe o es legítimamente necesario:
+
+- el helper privilegiado no confía en `p_area_id`;
+- se mantiene `search_path` endurecido;
+- se minimiza `EXECUTE`;
+- el owner PostgreSQL no se interpreta como actor empresarial.
+
+---
+
+#### 72. Grants y RLS
+
+008 no modifica grants ni policies.
+
+Sí registra la audiencia ejecutable actual de cada RPC porque afecta riesgo y pruebas.
+
+La reconciliación final de grants y RLS permanece en `AUTH-DB-021`.
+
+---
+
+#### 73. Alcance AA
+
+`AA` representa áreas activamente asignadas al actor.
+
+008 resuelve el área real del recurso.
+
+009 determina si un grant exacto con alcance `AA` la cubre.
+
+---
+
+#### 74. Alcance SA
+
+`SA` representa un área específica dentro de sede autorizada.
+
+008 garantiza identidad exacta de área y sede propietaria.
+
+No decide el grant.
+
+---
+
+#### 75. Alcance AAT
+
+`AAT` representa áreas asignadas cuyo tipo coincide con una clasificación aprobada.
+
+Requiere:
+
+```text
+área concreta
++
+sede coherente
++
+area_kind canónico
+```
+
+El tipo no sustituye la identidad del área.
+
+---
+
+#### 76. Alcance ATW
+
+`ATW` representa áreas de un tipo exacto dentro de un alcance superior de sedes autorizado.
+
+No existe sin límite superior de sede.
+
+008 conserva el vínculo área-sede para que 009 pueda evaluar esa intersección.
+
+---
+
+#### 77. Alcance CTX
+
+`CTX` usa el territorio operativo efectivo.
+
+008 entrega:
+
+```text
+resource area
+```
+
+El `AccessContext` entrega:
+
+```text
+operational_area
+```
+
+009 decide compatibilidad.
+
+008 no reemplaza el área del recurso por el área operativa.
+
+---
+
+#### 78. Alcance OWN
+
+`OWN` no elimina territorio.
+
+Un recurso propio puede seguir requiriendo área.
+
+008 resuelve el área incluso cuando el sujeto sea el actor.
+
+---
+
+#### 79. Alcance global
+
+Un permiso global puede alcanzar recursos en distintas áreas ordinarias.
+
+Aun así, un recurso territorial debe conservar su área real cuando la tenga.
+
+```text
+GLOBAL
+≠
+AREA UNRESOLVED
+```
+
+---
+
+#### 80. BASE_ONLY
+
+En carril base:
+
+- cobertura administrativa puede participar;
+- no se exige turno por la mera existencia de área;
+- asignación de área no concede permiso;
+- ausencia de `employee_areas` no crea fallback.
+
+---
+
+#### 81. OPERATIONAL_ONLY
+
+En carril operativo:
+
+- el contexto aporta `operational_site` y `operational_area`;
+- el recurso aporta su propio territorio;
+- el permiso aporta alcance y prerrequisitos;
+- 009 evalúa la intersección.
+
+---
+
+#### 82. BASE_OR_OPERATIONAL
+
+Cada carril conserva su territorio.
+
+008 no fusiona:
+
+```text
+administrative area coverage
++
+operational_area
+```
+
+en una lista más amplia.
+
+---
+
+#### 83. BASE_AND_OPERATIONAL
+
+Los hechos de ambos carriles permanecen disponibles para la intersección posterior.
+
+008 no declara éxito final porque uno de ellos coincida.
+
+---
+
+#### 84. Cambios cross-area
+
+Una operación que cambia de área debe conservar:
+
+```text
+current_area
+proposed_area
+```
+
+Si ambas pertenecen a la misma sede, sigue siendo cross-area.
+
+Si pertenecen a sedes distintas, también conserva el tratamiento cross-site de 007.
+
+---
+
+#### 85. Recursos multilado
+
+Cada lado obligatorio puede tener área propia.
+
+La matriz no asume:
+
+```text
+same site
+→ same area
+```
+
+ni:
+
+```text
+same area_kind
+→ same authority
+```
+
+---
+
+#### 86. Remisiones y logística
+
+El área relevante puede cambiar según recurso, lado y estado.
+
+008 consume `required_sides` y el `territory_resolver`.
+
+No fija una única área universal para todas las acciones de una remisión.
+
+---
+
+#### 87. Inventario
+
+Stock, ubicaciones, zonas, conteos y traslados pueden derivar área indirectamente.
+
+La relación territorial debe resolverse desde el dominio.
+
+Un `p_area_id` aislado no sustituye stock → ubicación → zona/área → sede cuando esa sea la ruta contractual.
+
+---
+
+#### 88. Producción
+
+Una receta, lote, estación o solicitud puede ser site-level o area-level según su contrato.
+
+008 no asume que “Producción” sea un área concreta ni que un nombre funcional equivalga a `area_id`.
+
+---
+
+#### 89. Asistencia
+
+En asistencia pueden coexistir:
+
+```text
+shift.area_id
+geofence site
+check-in
+device area
+requested area
+```
+
+Cada hecho conserva su significado.
+
+El área operativa procede del turno/contexto vigente cuando corresponda.
+
+---
+
+#### 90. Administración de perfiles
+
+Operaciones sobre perfiles operativos deben distinguir:
+
+```text
+target employee
+target site
+target area
+actor coverage
+resource territory
+```
+
+El target area solicitado no prueba que el actor pueda administrarlo.
+
+---
+
+#### 91. Simulación
+
+Un área simulada no se convierte en área real del actor.
+
+Las RPC empresariales reales no aceptan un contexto simulado como autoridad real.
+
+La simulación conserva contratos separados.
+
+---
+
+#### 92. Frescura
+
+Cuando hechos de área dependen de:
+
+- asignación laboral;
+- turno;
+- actor;
+- dispositivo;
+- recurso;
+- clasificación territorial;
+
+la instancia reutiliza la fundación de frescura aprobada.
+
+008 no inventa un TTL local.
+
+---
+
+#### 93. Frontera transaccional
+
+Para una mutación:
+
+```text
+resolve resource
+→ consume site
+→ resolve area
+→ evaluate
+→ validate state/concurrency
+→ write
+```
+
+debe ocurrir en una frontera que impida usar un territorio obsoleto.
+
+Si no puede mantenerse, se revalida antes del efecto.
+
+---
+
+#### 94. TOCTOU de área
+
+Se debe impedir:
+
+```text
+authorize AREA_A
+→ relation moves to AREA_B
+→ write using old facts
+```
+
+La estrategia concreta puede usar versión, lock, snapshot o mecanismo equivalente definido por el contrato del recurso.
+
+---
+
+#### 95. Error seguro
+
+Los estados territoriales internos no se sustituyen por textos libres.
+
+La proyección cliente utiliza únicamente reason/message codes seguros de la capa propietaria.
+
+008 no crea una taxonomía pública de errores paralela.
+
+---
+
+#### 96. Auditoría
+
+La evidencia territorial conserva, cuando aplique:
+
+```text
+package_id
+candidate_id
+rpc identity
+resource reference
+resource_contract_id
+site_resolution_status
+resolved_site_set
+area_resolution_status
+resolved_area_set
+area_requirement
+area_resolution_mode
+side roles
+source references
+context_id
+decision reference posterior
+correlation_id
+timestamp
+```
+
+---
+
+#### 97. Registro por RPC
+
+Cada futura instancia mantiene una fila por firma exacta con, como mínimo:
+
+```text
+rpc_area_validation_id
+package_id
+candidate_id
+transition_key
+migration_unit_id
+schema_name
+function_name
+identity_arguments
+resource_contract_id
+site_resolution_reference
+area_inputs
+area_input_roles
+area_resolution_mode
+resource_area_source
+area_requirement
+area_kind_source
+null_area_policy
+historical_territory_mode
+multi_side_roles
+legacy_area_fallbacks
+context_area_inputs
+handoff_009
+handoff_010
+rls_handoff_021
+types_handoff_026
+compatibility_reference
+consumer_reference
+rollback_reference
+adoption_state
+evidence_reference
+owner
+```
+
+---
+
+#### 98. Cardinalidad por package
+
+Cada package debe demostrar:
+
+```text
+RPC sensibles esperadas para 008 = N
+RPC clasificadas = N
+RPC sin tratamiento = 0
+area inputs sin rol = 0
+resource contracts faltantes = 0
+áreas contradictorias aceptadas = 0
+fallbacks permisivos aceptados = 0
+```
+
+`N` procede del package y del candidate, no de heurísticas globales.
+
+---
+
+#### 99. Universo no fijado por argumentos
+
+Una RPC sin `p_area_id` puede ser area-level porque su recurso deriva área indirectamente.
+
+Una RPC con `p_area_id` puede ser:
+
+- técnica;
+- pública;
+- site-level;
+- simulación;
+- fuera del package;
+- legacy.
+
+Por tanto, la firma no define por sí sola pertenencia a 008.
+
+---
+
+#### 100. Baseline remoto observado
+
+El corte read-only de `vento-os-dev` utilizado para desarrollar este contrato observa:
+
+```text
+public/api functions = 247
+firmas con p_area_id uuid = 10
+firmas con algún argumento uuid de área = 11
+SECURITY DEFINER con p_area_id = 10
+funciones que referencian employee_areas = 2
+funciones que referencian employees + area_id = 7
+funciones que referencian selected_area = 3
+funciones que referencian get_operational_context = 3
+```
+
+Estos conteos son señales AS-IS y deberán recapturarse por candidate.
+
+---
+
+#### 101. Baseline de datos territoriales observado
+
+El mismo corte read-only observa:
+
+```text
+areas total = 22
+areas activas = 22
+employee_areas total = 1
+employee_areas activas = 1
+employees con area_id = 0
+employee_settings con selected_area_id = 0
+employee_shifts con area_id = 1087
+site_operational_roles con area_id = 13
+site_operational_roles site-wide = 3
+shared_operational_devices con area_id = 2
+shared_operational_devices site-wide = 0
+```
+
+Esta asimetría confirma que la transición no puede usar `employee_areas` incompleto como razón para ampliar autoridad ni inventar fallbacks.
+
+---
+
+#### 102. Firmas AS-IS con argumentos de área
+
+Se observaron, entre otras:
+
+```text
+can_access_area(...)
+can_access_recipe_scope(...)
+current_actor_shift_for_shared_device_v1(...)
+has_operational_permission(...)
+has_operational_role_permission(...)
+has_permission(...)
+has_role_permission(...)
+permission_scope_matches(...)
+shared_device_actor_is_allowed_v1(...)
+start_context_simulation_v1(...)
+upsert_site_operational_role(...)
+```
+
+La lista es evidencia de auditoría, no inclusión automática en un package.
+
+---
+
+#### 103. Helpers legacy
+
+Los helpers booleanos legacy que reciben `area_id` no demuestran que el área se haya derivado del recurso.
+
+No se acepta como prueba suficiente:
+
+```text
+has_permission(permission, site, caller_area)
+```
+
+si el `caller_area` no ha sido resuelto canónicamente.
+
+---
+
+#### 104. PUBLIC EXECUTE y audiencia
+
+La superficie AS-IS incluye funciones privilegiadas con acceso heredado amplio.
+
+008 no normaliza esos grants.
+
+Cada futura instancia debe registrar audiencia y riesgo, mientras `AUTH-DB-021` mantiene la propiedad del cierre de grants y RLS.
+
+---
+
+#### 105. Drift previo a materialización
+
+Antes de ejecutar una identidad se recaptura:
+
+```text
+schema
+function name
+identity arguments
+function body
+owner
+security mode
+search_path
+EXECUTE grants
+resource relationships
+area sources
+area kind source
+consumer set
+migration version
+```
+
+Resultado:
+
+```text
+MATCH
+APPROVED_DRIFT
+BLOCKING_DRIFT
+```
+
+---
+
+#### 106. Pruebas mínimas de área
+
+Por cada RPC area-level aplicable se cubre al menos:
+
+- área correcta;
+- área inexistente;
+- área inactiva cuando aplica;
+- área de otra sede;
+- área aislada;
+- área nula permitida;
+- área nula requerida;
+- recurso con área distinta al input;
+- recurso sin área resoluble;
+- relación duplicada;
+- relación contradictoria;
+- `area_kind` incorrecto;
+- nombre parecido sin identidad;
+- selected area distinta;
+- primary area distinta;
+- device area distinta.
+
+---
+
+#### 107. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+```text
+Requisitos creados: 0
+Requisitos modificados: 0
+Requisitos diferidos: 0
+Requisitos obsoletos: 0
+```
+
+La cobertura canónica vigente ya exige coherencia territorial de sede y área, igualdad de decisión entre capas y resistencia a manipulación directa de superficies protegidas.
+
+---
+
+#### 108. Cobertura de prueba vigente reutilizada
+
+Esta sección es únicamente trazabilidad y no modifica el registro 04A.
+
+Se reutiliza cobertura existente sobre:
+
+- `TREQ-AUTH-004`, para igualdad de decisión entre evaluadores;
+- `TREQ-AUTH-007`, para limitar administración por sede y área;
+- `TREQ-AUTH-008`, para coherencia entre carriles, RPC y RLS;
+- `TREQ-AUTH-009`, para resolución determinista de sede y área y bloqueo de cruces;
+- `TREQ-AUTH-013`, para impedir bypass mediante RPC o request manipulado.
+
+No se modifica texto, owner, estado ni relación de esos requisitos.
+
+---
+
+#### 109. Evidencia de validación
+
+| Clase     | Estado       | Evidencia                                                                                                                                                                                                                  |
+| --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | La batería del checkout se ejecutará después del reemplazo documental.                                                                                                                                                     |
+| LOCAL     | PASS         | El artefacto fue validado estructuralmente: una tarea, metadata obligatoria, secciones requeridas, cinco clases de evidencia, cero placeholders y continuidad terminal.                                                    |
+| REMOTA    | PASS         | Se verificaron `main`, continuidad, topología R2, 007 aprobado, contratos de contexto, alcances y recurso, paridad de Server Actions, 04A AUTH, documentación vigente de Supabase y el estado read-only de `vento-os-dev`. |
+| OPERATIVA | NOT_EXECUTED | No se invocaron RPC empresariales ni escenarios de negocio.                                                                                                                                                                |
+| FÍSICA    | NOT_EXECUTED | No se creó ni aplicó migración, función, grant, policy, DDL, DML ni configuración.                                                                                                                                         |
+
+`REMOTA = PASS` valida el desarrollo documental y el baseline observado; no certifica una futura instancia física.
+
+---
+
+#### 110. Criterios de aceptación
+
+`AUTH-DB-008` queda documentalmente satisfecha cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. consume el handoff exacto de 007;
+4. identifica cada RPC por firma exacta;
+5. clasifica cada area input;
+6. resuelve el área desde recurso o borrador;
+7. valida pertenencia área-sede;
+8. conserva todos los lados multilado;
+9. preserva estados canónicos de resolución;
+10. no convierte `p_area_id` en autoridad;
+11. no usa selected area como fallback;
+12. no usa primary area como fallback;
+13. no usa `employees.area_id` como asignación canónica;
+14. no usa `employee_areas` incompleto para ampliar autoridad;
+15. separa `area_id` de `area_kind`;
+16. no usa nombres humanos como tipo;
+17. distingue área requerida de opcional;
+18. `null` nunca equivale a todas las áreas;
+19. permite site-level solo cuando el contrato lo declara;
+20. preserva territorio histórico;
+21. mantiene `operational_area` ligada al contexto/turno;
+22. el dispositivo solo puede restringir;
+23. `service_role` no elimina validación empresarial;
+24. mantiene frontera transaccional o revalidación;
+25. registra evidencia y rollback por RPC;
+26. entrega hechos a 009 sin absorber su evaluación;
+27. no absorbe 010;
+28. no modifica RLS o grants;
+29. reutiliza requisitos vigentes sin modificar 04A;
+30. no ejecuta cambios físicos.
+
+---
+
+#### 111. Límites
+
+Esta tarea no:
+
+- materializa `AUTH-DB-008::package_id`;
+- crea migraciones;
+- modifica RPC;
+- modifica tablas o datos;
+- crea resolvers nuevos;
+- modifica `get_access_context`;
+- modifica `evaluate_authorization`;
+- redefine el contrato de sede de 007;
+- decide el permiso exacto;
+- decide principal o actor efectivo;
+- crea asignaciones `employee_areas`;
+- migra `employees.area_id`;
+- normaliza físicamente `area_kind`;
+- modifica grants;
+- modifica RLS;
+- modifica Storage;
+- modifica Realtime;
+- cambia Edge Functions;
+- publica tipos;
+- retira helpers legacy;
+- modifica 04A;
+- abre E5;
+- abre `SHELL-CI-020`;
+- autoriza implementación física.
+
+---
+
+#### 112. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-007 — Validar sede dentro de RPC sensibles`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-008 — Validar área dentro de RPC sensibles`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles`
+
+
 ### [ ] AUTH-DB-009 — Validar permiso exacto dentro de RPC sensibles
 ### [ ] AUTH-DB-010 — Validar principal y actor efectivo dentro de RPC sensibles
 ### [ ] AUTH-DB-021 — Implementar políticas RLS y grants canónicos por esquema
