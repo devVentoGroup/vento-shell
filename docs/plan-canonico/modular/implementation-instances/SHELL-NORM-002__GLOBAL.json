@@ -1,10 +1,56 @@
 {
   "instance_id": "SHELL-NORM-002::GLOBAL",
   "task_id": "SHELL-NORM-002",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Materializar SHELL-NORM-002::GLOBAL exclusivamente como contrato TypeScript interno y type-only de los nueve artefactos logicos aprobados dentro de packages/data-normalization, aplicando la reconciliacion GLOBAL_ENABLE_ONCE / PRE_E5_FOUNDATION; preservar inmutables packages/data-normalization/package.json, package-lock.json y package.json raiz, y actualizar README.md solo para documentar esta materializacion.",
+    "Crear packages/data-normalization/src/normalization.types.ts con exactamente cinco vocabularios cerrados: NormalizableFieldSemanticClass=14, NormalizationRepresentationRole=7, NormalizationSourceRole=6, NormalizationTreatmentMode=8 y NormalizationOperationKind=13; total exacto 48 literales, sin aliases, faltantes, duplicados, enums runtime ni valores ejecutables.",
+    "Materializar NormalizableFieldCoordinate, NormalizableFieldDescriptor, NormalizableStructuredComponentDescriptor y NormalizablePolymorphicVariantDescriptor como estructuras readonly que preserven coordenada semantica, clasificacion, representacion, fuente, version, bindings opcionales, componentes estructurados y variantes polimorficas sin inferencia heuristica ni autoridad de mutacion.",
+    "Crear packages/data-normalization/scripts/validate-normalization-types.mjs para validar cobertura exacta 14/7/6/8/13, total 48, los nueve artefactos, campos exactos de descriptores, ausencia de runtime en el contrato de tipos, frontera del package, reconciliacion PRE_E5_FOUNDATION y marcadores canonicos de fallo cerrado, identidad y VITAL.",
+    "Actualizar completamente packages/data-normalization/README.md para registrar SHELL-NORM-002::GLOBAL, la superficie type-only materializada, los conteos exactos, las fronteras de clasificacion/identidad y reservar SHELL-NORM-003..009 sin habilitar exports publicos.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance de esta instancia.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-NORM-002__GLOBAL.json exclusivamente para authorization, lifecycle y evidence de esta instancia.",
+    "No modificar packages/data-normalization/package.json, package-lock.json, package.json raiz, version npm, exports, main, types, dependencias, algoritmos de normalizacion, conectores, excepciones, diccionarios, busqueda, preview, metadata runtime, corpus, consumidores, registry, tags, releases, publicacion, credenciales, Supabase, DDL, DML, RPC, RLS, migraciones, backfills, constraints, indices, triggers, datos, 04A/TREQ ni SHELL-NORM-003..009."
+  ],
+  "validation_commands": [
+    "node packages/data-normalization/scripts/validate-normalization-types.mjs",
+    "npx tsc --noEmit --strict --skipLibCheck --target ES2022 --module NodeNext --moduleResolution NodeNext packages/data-normalization/src/normalization.types.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T02:11:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "ae4bf09517c3e8d0e11c6e5e2e317079115205ba072913fbc76f31323dd90e76"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/data-normalization/src/normalization.types.ts created as type-only contract",
+    "MATERIALIZATION nine logical type artifacts created exactly once",
+    "MATERIALIZATION closed vocabularies semantic=14 representation=7 source=6 treatment=8 operations=13 total=48",
+    "MATERIALIZATION four readonly descriptors created for coordinate, field, structured component and polymorphic variant",
+    "MATERIALIZATION runtime declarations=0 normalization algorithms=0 public exports=0 consumers=0 Supabase changes=0",
+    "MATERIALIZATION packages/data-normalization/scripts/validate-normalization-types.mjs created",
+    "MATERIALIZATION packages/data-normalization/README.md updated for SHELL-NORM-002 without changing package manifest or lockfile",
+    "PRE_REPAIR_GATE quality:repair PASS",
+    "PRE_REPAIR_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 ae4bf09517c3e8d0e11c6e5e2e317079115205ba072913fbc76f31323dd90e76",
+    "VALIDATION normalization type contract validator PASS",
+    "VALIDATION exact artifacts=9 PASS",
+    "VALIDATION exact literal distribution semantic=14 representation=7 source=6 treatment=8 operations=13 total=48 PASS",
+    "VALIDATION exact descriptor fields and readonly boundary PASS",
+    "VALIDATION runtime declarations absent PASS",
+    "VALIDATION package manifest and public export boundary PASS",
+    "VALIDATION canonical reconciliation GLOBAL_ENABLE_ONCE / PRE_E5_FOUNDATION PASS",
+    "VALIDATION canonical fail-closed identity and VITAL boundaries PASS",
+    "VALIDATION TypeScript strict compile PASS",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-NORM-002::GLOBAL VERIFIED"
+  ]
 }
