@@ -16,7 +16,10 @@ Materialización estática interna de la superficie lógica `@vento/contracts/in
 - `SHELL-CON-020::GLOBAL` materializa `CanonicalSaleId` y `CanonicalSale<TSaleLine>`.
 - `INT-POS-005..013` e `INT-SALES-001` conservan la semántica propietaria de identidad, revisión, cantidad, snapshots, mapping y efectos de línea.
 - `SHELL-CON-021::GLOBAL` materializa `CanonicalSaleLineId` y `CanonicalSaleLine` y concreta la composición `CanonicalSale<CanonicalSaleLine>` sin redefinir `CanonicalSale`.
-- `SHELL-CON-022`, `SHELL-CON-023` y `SHELL-CON-024` conservan respectivamente mapping compartido, idempotencia/conciliación y disposición de rechazo/cuarentena/compensación.
+- `INT-EXT-013` conserva la semántica propietaria del mapping externo; `INT-POS-010`, `INT-POS-011` e `INT-POS-013` conservan sus especializaciones posteriores.
+- `SHELL-CON-022::GLOBAL` materializa `ExternalIdentifierMappingId`, `ExternalIdentifierRef`, `ExternalIdentifierMapping` y `ExternalIdentifierMappingRef` como forma estática compartida de mapping.
+- `INT-DB-004` conserva la persistencia física posterior de mappings externos/canónicos.
+- `SHELL-CON-023` y `SHELL-CON-024` conservan respectivamente idempotencia/conciliación y disposición de rechazo/cuarentena/compensación.
 
 ## Principal técnico de integración
 
@@ -62,44 +65,55 @@ Source contract SHA-256 `SHELL-CON-020`: `5495541814c4bf5387462d98e638c9f25dbd12
 
 `SHELL-CON-021::GLOBAL` materializa `CanonicalSaleLineId` y `CanonicalSaleLine` dentro de `@vento/contracts/integrations`. `sale_id` reutiliza `CanonicalSaleId`, por lo que cada línea pertenece inequívocamente a una venta sin fusionar las dos identidades.
 
-`CanonicalSaleLine` conserva exactamente 20 campos de nivel superior:
+`CanonicalSaleLine` conserva exactamente 20 campos de nivel superior y exactamente 7 componentes del `monetary_snapshot`. La composición física común queda `CanonicalSale<CanonicalSaleLine>`.
 
-- `sale_line_id`, `sale_id` y `contract_version`;
-- `source_line_id`, `source_line_sequence` y `source_line_revision`;
-- `sold_item_ref`;
-- `product_ref`, `presentation_ref`, `recipe_ref` y `mapping_refs`;
-- `quantity` y `unit_ref`;
-- `monetary_snapshot`;
-- `source_line_state`, `canonical_line_state`, `line_state_mapping_result` y `line_occurred_at`;
-- `provenance_refs` y `correlation_refs`.
+La línea conserva `sale_line_id`, `sale_id`, `source_line_id`, `source_line_sequence`, `source_line_revision`, `sold_item_ref`, `product_ref`, `presentation_ref`, `recipe_ref`, `mapping_refs`, `quantity`, `unit_ref`, `source_line_state`, `canonical_line_state`, `line_state_mapping_result`, `line_occurred_at`, procedencia y correlación. Los componentes monetarios incluyen `currency_ref`, `applied_unit_price`, `line_subtotal`, `discount_total`, `tax_total`, `tip_total` y `line_total`.
 
-El `monetary_snapshot` conserva exactamente 7 componentes del `monetary_snapshot`: `currency_ref`, `applied_unit_price`, `line_subtotal`, `discount_total`, `tax_total`, `tip_total` y `line_total`. Cantidad y valores monetarios no inventan tipo escalar, precisión decimal ni redondeo físico.
+`CanonicalSaleLineId` es estable, opaco y no secreto. `ACTIVE` y `CANCELLED` solo aplican con equivalencia semántica acreditada. `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED` conservan la semántica aprobada sin crear un enum físico ejecutable.
 
-La identidad de línea permanece estable frente a revisión, retry, replay, sincronización tardía, resolución de mapping, entrada o liberación de cuarentena y cambios de estado. `source_line_id` se preserva cuando exista y sea estable; `source_line_sequence` no es identidad universal; `source_line_revision` no se fabrica.
-
-`sold_item_ref` preserva el ítem realmente vendido antes de mapping. `product_ref` debe estar resuelto antes de efectos dependientes de producto; `presentation_ref` y `recipe_ref` son condicionales. `mapping_refs` solo referencia decisiones propietarias y no adelanta `SHELL-CON-022`.
-
-`quantity` es la cantidad comercial; no se convierte automáticamente en cantidad de inventario y un valor negativo no significa por sí solo devolución o compensación. `unit_ref` se exige cuando la magnitud no sea autosuficiente.
-
-Estado de línea, estado de venta, estado de mapping, cuarentena e inventario permanecen separados. `ACTIVE` y `CANCELLED` solo aplican con equivalencia semántica acreditada. `line_state_mapping_result` conserva la distinción semántica `MAPPED`, `NOT_PROVIDED` y `UNRESOLVED` sin crear un enum físico ejecutable.
-
-`line_occurred_at` es condicional y no se fabrica desde importación, recepción, replay, sincronización ni desde `CanonicalSale.occurred_at` por defecto.
-
-Una línea estructural puede conservarse con mapping pendiente, pero no queda elegible para un efecto dependiente de producto mientras falten resoluciones obligatorias o exista cuarentena activa. Elegibilidad no equivale a ejecución.
-
-El flujo agregado `makos_excel` no satisface por sí solo una línea individual: fila agregada, número de fila, producto + fecha + sede o hash de archivo no se elevan a `CanonicalSaleLineId`.
-
-La composición física común queda `CanonicalSale<CanonicalSaleLine>` sin añadir un alias público ni modificar el contrato de venta. `SHELL-CON-022`, `SHELL-CON-023` y `SHELL-CON-024` permanecen propietarios de mapping, idempotencia/conciliación y disposición de rechazo/cuarentena/compensación.
+El flujo agregado `makos_excel` no se eleva a línea individual sin granularidad e identidad suficientes. Una fila agregada, número de fila, producto + fecha + sede o hash de archivo no sustituyen `CanonicalSaleLineId`.
 
 Esta instancia crea 0 valores físicos de `CanonicalSaleLineId`, 0 líneas operativas, 0 persistencia, 0 mappings runtime, 0 cuarentenas runtime, 0 consumidores migrados, 0 efectos downstream, 0 secretos y 0 cambios Supabase.
 
 Source contract SHA-256 `SHELL-CON-021`: `f4ac39874bfa4864973cdf52f63c2519f03cdbf1519afca93a1cb6dcc6fdf802`.
 
+## Mapeo de identificadores externos
+
+`SHELL-CON-022::GLOBAL` materializa la forma compartida estática de mapping definida por `INT-EXT-013` y reconciliada con `INT-POS-010`, `INT-POS-011` e `INT-POS-013`, sin resolver mappings runtime ni crear persistencia.
+
+La superficie contiene:
+
+- `ExternalIdentifierMappingId`: identidad estable, opaca y no secreta de la relación de mapping;
+- `ExternalIdentifierRef`: referencia tipada con 7 campos de `ExternalIdentifierRef`: `external_system_id`, ambiente, superficie, namespace, clase, kind y valor;
+- `ExternalIdentifierMapping`: relación trazable con exactamente 14 campos de nivel superior;
+- `ExternalIdentifierMappingRef`: referencia mínima e inmutable de 2 campos de `ExternalIdentifierMappingRef`: `mapping_id` y `contract_version`;
+- `ExternalIdentifierClass`: exactamente 10 clases;
+- `ExternalIdentifierRelationKind`: exactamente 7 relaciones;
+- `ExternalIdentifierMappingState`: exactamente 8 estados.
+
+Las 10 clases preservadas son `EXTERNAL_OBJECT_ID`, `CANONICAL_VENTO_ID`, `PROPAGATED_CANONICAL_ID`, `EXTERNAL_ROUTING_REF`, `IDEMPOTENCY_REF`, `CORRELATION_REF`, `DISPLAY_SEARCH_ATTRIBUTE`, `TECHNICAL_NAMESPACE_ID`, `EXTERNAL_ALIAS` y `MAPPING_RECORD`.
+
+Las 7 relaciones preservadas son `EXTERNAL_TO_CANONICAL`, `CANONICAL_PROPAGATED_EXTERNAL`, `EXTERNAL_ROUTE_TO_OWNER`, `EXTERNAL_EVENT_TO_RECEIPT`, `EXTERNAL_NAMESPACE_BINDING`, `CORRELATION_ONLY` y `NO_EQUIVALENCE`.
+
+Los 8 estados preservados son `RESOLVED`, `PARTIALLY_RESOLVED`, `UNRESOLVED`, `AMBIGUOUS`, `CONFLICT`, `RETIRED`, `NOT_APPLICABLE` y `BLOCKED`. Los estados propietarios de `INT-POS-011` continúan siendo autoridad de su especialización y se proyectan sin pérdida mediante `resolution_detail`.
+
+El namespace mínimo conserva sistema, ambiente, superficie, namespace externo y kind. Coincidencia de UUID, correo, teléfono, nombre, dirección, coordenadas, alias, producto, fila, `source_row_number`, hash o timestamp no prueba identidad ni mapping exacto.
+
+`ExternalReceivedEvent.mapping_refs[]` y `CanonicalSaleLine.mapping_refs[]` conservan físicamente sus referencias genéricas ya verificadas. Esta instancia materializa `ExternalIdentifierMappingRef` como tipo objetivo para adopción posterior, pero no modifica esos contratos históricos ni migra consumidores.
+
+Mapping permanece separado de autenticidad, autorización, propiedad empresarial, correlación e idempotencia. `mapping_id` no es idempotency key y `SHELL-CON-023` conserva esa responsabilidad. `SHELL-CON-024` conserva la disposición compartida de rechazo, cuarentena y compensación.
+
+La adopción estática conserva exactamente `EXT-SYS-001..021`: 21/21 identidades adoptadas, faltantes 0 y duplicados 0. Entre los casos explícitos permanecen Wompi, RevenueCat, Expo Push Service, Google `place_id`, Apple Wallet / PassKit, Zebra BrowserPrint y POS externo. `makos_excel` no adquiere granularidad individual. Telefonía / voz (`EXT-SYS-020`) permanece bloqueada hasta evidencia de `TI-INT-003`.
+
+`INT-DB-004` conserva en exclusiva la futura persistencia física. Esta instancia crea 0 valores físicos de `ExternalIdentifierMappingId`, 0 mappings operativos, 0 tablas, 0 índices, 0 RPC, 0 migraciones, 0 consumidores migrados y 0 cambios Supabase.
+
+Source contract SHA-256 `SHELL-CON-022`: `89fbd1be5e68ec81239097376a1656eb4722ad6f38f55b1b76bb1f3dd469f474`.
+
 ## Límite físico
 
-Las cinco instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-021::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION` con modalidad `GLOBAL_ENABLE_ONCE`.
+Las seis instancias `SHELL-CON-017::GLOBAL` a `SHELL-CON-022::GLOBAL` son fundaciones estáticas `PRE_E5_FOUNDATION` con modalidad `GLOBAL_ENABLE_ONCE`.
 
-Esta materialización no publica el subpath, no modifica `packages/contracts/package.json`, no añade `exports`, no cambia la versión de `@vento/contracts`, no adopta consumidores, no ejecuta integraciones, no crea ventas o líneas operativas, no persiste datos, no emite eventos, no ejecuta efectos NEXO/NUMERA/PASS, no crea tablas, migraciones, RLS, RPC o cambios Supabase y no modifica 04A/TREQ.
+Esta materialización no publica el subpath, no modifica `packages/contracts/package.json`, no añade `exports`, no cambia la versión de `@vento/contracts`, no extiende `generated/index.ts`, no adopta consumidores, no ejecuta integraciones, no crea mappings runtime, no persiste datos, no crea tablas, migraciones, RLS, RPC o cambios Supabase y no modifica 04A/TREQ.
 
 ## Archivos generados
 
@@ -109,3 +123,5 @@ Esta materialización no publica el subpath, no modifica `packages/contracts/pac
 - `scripts/validate-canonical-sale-contract.mjs` valida venta canónica y sus fronteras.
 - `scripts/generate-canonical-sale-line-contract.mjs` mantiene `generated/canonical-sale-line.contract.ts` para `SHELL-CON-021`.
 - `scripts/validate-canonical-sale-line-contract.mjs` valida frescura, forma exacta de 20 campos, 7 componentes monetarios, dependencia con `CanonicalSaleId`, fronteras de mapping/estado/agregados, seguridad, package, índice interno y READMEs.
+- `scripts/generate-external-identifier-mapping-contract.mjs` mantiene `generated/external-identifier-mapping.contract.ts` para `SHELL-CON-022`.
+- `scripts/validate-external-identifier-mapping-contract.mjs` valida frescura, vocabularios 10/7/8, formas 7/14/2, cobertura 21/21, fronteras con 019/021, package, índice interno, READMEs, runtime y secretos.
