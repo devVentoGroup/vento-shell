@@ -24,6 +24,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-009::GLOBAL` materializa internamente `SimulatedRoleNotice` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-009`, como presentacion estatica de simulacion controlada por su propietario, sin resolver autoridad, lifecycle, persistencia, red, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-010::GLOBAL` materializa internamente `AppShell` como marco interactivo de composicion y sus estilos de chrome bajo el contrato aprobado de `SHELL-UI-010`, con navegacion preparada externamente y disclosure local, sin resolver identidad, autoridad, contexto, datos, rutas empresariales, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -66,6 +68,9 @@ Fronteras vinculantes:
 - `src/SimulatedRoleNotice.tsx` como implementacion interna de `SimulatedRoleNotice`.
 - `src/simulated-role-notice.css` como estilos internos de `SimulatedRoleNotice`.
 - `scripts/validate-simulated-role-notice.mjs` como validador fisico de `SHELL-UI-009::GLOBAL`.
+- `src/AppShell.tsx` como implementacion interna de `AppShell`.
+- `src/app-shell.css` como estilos internos del marco y disclosure responsive de `AppShell`.
+- `scripts/validate-app-shell.mjs` como validador fisico de `SHELL-UI-010::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -396,6 +401,67 @@ Los usos legacy de `Modo prueba`, role overrides y avisos locales existentes no 
 
 Cada consumidor requiere paridad y rollback verificable antes de retirar una copia legacy. Consumidores migrados: 0.
 
+## AppShell
+
+`AppShell` es un marco de composicion para chrome y contenido web. Recibe piezas ya preparadas por la aplicacion, organiza landmarks, responsive y disclosure local de navegacion, pero no se convierte en orquestador de identidad, autorizacion, contexto, datos, gating o navegacion empresarial.
+
+Contrato interno materializado:
+
+- frontera cliente aislada mediante `use client` porque el disclosure de navegacion movil necesita estado local de presentacion;
+- `children` obligatorio como contenido principal de la aplicacion;
+- `brand` obligatorio como identidad visual ya preparada por el consumidor;
+- `skipToContentLabel` obligatorio como texto humano y localizable aportado por el consumidor para el salto al contenido principal; este refinamiento fisico cumple la obligacion de accesibilidad sin congelar copy dentro del package;
+- `navigation` opcional; cuando existe, la relacion de tipos exige `navigationLabel` humano y perceptible;
+- navegacion presente exige `navigationLabel`; sin `navigation`, `navigationLabel` no forma parte de la combinacion valida de props;
+- `context`, `notices` y `headerActions` opcionales como slots de composicion;
+- atributos compatibles de `HTMLDivElement`, `aria-*`, `data-*`, `className` y `style` transferibles a la raiz;
+- una sola cabecera estructural y un unico landmark `main` dentro del componente;
+- enlace de salto al contenido principal con destino focusable mediante `tabIndex={-1}`;
+- navegacion persistente en escritorio y disclosure colapsado por defecto en viewport reducido;
+- navegacion movil cerrada mediante `display: none`, por lo que no permanece interactiva ni en el tab order de ese layout;
+- control nativo `button` con `aria-controls` y `aria-expanded` para el disclosure;
+- cierre local mediante el mismo control y mediante `Escape` cuando el foco esta dentro de la navegacion abierta; el cierre por `Escape` devuelve foco al control;
+- sin animacion ni transicion obligatoria, por lo que no depende de movimiento para comunicar estado;
+- sin variantes fisicas `tablet`, `kiosk`, `simulated`, `admin` u `operational` dentro de la API base.
+
+### Slots y composicion
+
+`brand` presenta identidad visual; no determina `AppCode`, permiso, dominio ni disponibilidad operacional.
+
+`navigation` recibe navegacion preparada externamente. AppShell no define items, rutas, permisos ni agrupacion empresarial y no interpreta `permissionCode`, `required`, `anyOf`, matrices de rol o rutas autorizadas. `SHELL-UI-011` conserva la navegacion orientada a tareas y su contrato propio.
+
+`context` reserva una ubicacion estable para una proyeccion visual ya resuelta. Puede componer `ContextIndicator`, `SiteSelector` y `AreaSelector`, pero AppShell no confirma sede, area, rol, turno, actor, dispositivo ni simulacion.
+
+`notices` puede componer `SimulatedRoleNotice`, `Alert` u otros avisos ya preparados. AppShell no resuelve su causa, no los convierte en autoridad y no inicia recuperacion o lifecycle empresarial.
+
+`headerActions` recibe utilidades ya preparadas. `AppSwitcher` y `ProfileMenu` pueden ser contenidos candidatos, pero no forman parte integral de AppShell y sus datos, catalogos, sesion y autoridad permanecen fuera del componente.
+
+`children` ocupa el unico contenido principal. AppShell no inspecciona proceso, etapa, recurso, permiso, mutacion, idempotencia, confirmacion ni persistencia del contenido.
+
+### Presentacion, autoridad y datos
+
+El estado `navigationOpen` es exclusivamente presentacional. Abrir o cerrar el disclosure no cambia permisos, no filtra items, no activa contexto y no representa un receipt empresarial. La presentacion no sustituye autorizacion y la visibilidad del chrome nunca concede acceso.
+
+AppShell no recibe `AccessContext`, `EffectiveContext`, `SimulationContext`, `siteId`, `areaId`, `shiftId`, `role` o `isSimulated` como contrato propio. Tampoco consulta `@vento/os-context`, `@vento/supabase`, Supabase, Auth, RPC, tablas, red, cookies, storage, query params o router.
+
+No contiene `OperatingGate`, no reconstruye sesion, no resuelve empleados, no mantiene catalogo local de aplicaciones y no hardcodea rutas de NEXO, FOGO, ORIGO, VISO, PULSO, NUMERA o SHELL.
+
+### Responsive, foco y accesibilidad
+
+En escritorio, el marco puede mantener navegacion lateral junto al `main`. En viewport reducido, el layout pasa a disclosure y la navegacion cerrada queda fuera del flujo interactivo. El contenido, contexto, avisos y acciones permiten reflow mediante columnas flexibles, `min-width: 0`, wrapping y breakpoints sin imponer scroll horizontal estructural ordinario.
+
+El control movil conserva semantica nativa, estado expandido perceptible y foco visible. El skip link aparece al recibir foco y permite saltar al `main`. El componente no crea listeners globales ni focus trap; el contenido suministrado por cada slot conserva su propia responsabilidad de accesibilidad.
+
+### Consumidores, legacy y rollback
+
+La materializacion global no migra aplicaciones. Permanecen 7 consumidores conceptualmente elegibles: `vento-shell`, `vento-nexo`, `vento-fogo`, `vento-origo`, `vento-viso`, `vento-pulso` y `vento-numera`.
+
+La evidencia documental conserva 6 familias runtime duplicadas `VentoShell` / `VentoChrome` que requieren reconciliacion y 1 launcher SHELL con composicion diferenciada sin sidebar obligatorio. Esta instancia no adopta ninguna copia actual como API canónica, no modifica `templates/app-shell-standard` y no retira `VentoShell` o `VentoChrome`.
+
+Consumidores migrados: 0/7. Copias legacy retiradas: 0. Releases publicadas por UI010: 0. Cambios Supabase por UI010: 0.
+
+La adopcion, paridad, compatibilidad, observacion y rollback por consumidor permanecen en `SHELL-MIG-*`, `SHELL-CI-*` y los packages propietarios antes de cualquier retiro legacy.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -414,6 +480,8 @@ Cada consumidor requiere paridad y rollback verificable antes de retirar una cop
 
 `SimulatedRoleNotice` conserva los cuatro significados como texto visible, no depende solo de color o iconografia, no entra por defecto a la secuencia de tabulacion, no impone una region viva y permite reflow, zoom, viewport estrecho y contenido largo sin autocierre ni movimiento de foco.
 
+`AppShell` conserva un unico `main`, skip link con copy externo, navegacion con nombre accesible, control nativo con `aria-expanded`, disclosure movil fuera del tab order cuando esta cerrado, foco visible, retorno de foco al cerrar por `Escape`, reflow y chrome operable por teclado sin convertir presentacion en autoridad.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -424,14 +492,14 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-008`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-009`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-009`
+TAREA ACTUAL APROBADA: `SHELL-UI-010`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-010`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-011`
 
-`SHELL-UI-010` conserva la responsabilidad de evaluar AppShell compartido. `SHELL-UI-009::GLOBAL` no materializa AppShell, navegacion, lifecycle o enforcement de simulacion, migracion de consumidores ni patrones compuestos posteriores.
+`SHELL-UI-011` conserva la navegacion orientada a tareas. `SHELL-UI-010::GLOBAL` materializa solamente el marco composicional, landmarks, responsive y disclosure local; no define items, rutas, permisos, agrupacion empresarial, migracion de consumidores ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/ui-web/src/ContextIndicator.tsx`, `packages/ui-web/src/context-indicator.css`, `packages/ui-web/scripts/validate-context-indicator.mjs`, `packages/ui-web/src/SiteSelector.tsx`, `packages/ui-web/src/site-selector.css`, `packages/ui-web/scripts/validate-site-selector.mjs`, `packages/ui-web/src/AreaSelector.tsx`, `packages/ui-web/src/area-selector.css`, `packages/ui-web/scripts/validate-area-selector.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `VentoChrome`, aplicaciones consumidoras, role overrides, cookies legacy, sesiones, roles reales o simulados, permisos, grants, contexto efectivo, inicio o salida de simulacion, auditoria de simulacion, modo solo lectura, bloqueo de acciones criticas, AppShell, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, Supabase, `SHELL-UI-010` ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/ui-web/src/ContextIndicator.tsx`, `packages/ui-web/src/context-indicator.css`, `packages/ui-web/scripts/validate-context-indicator.mjs`, `packages/ui-web/src/SiteSelector.tsx`, `packages/ui-web/src/site-selector.css`, `packages/ui-web/scripts/validate-site-selector.mjs`, `packages/ui-web/src/AreaSelector.tsx`, `packages/ui-web/src/area-selector.css`, `packages/ui-web/scripts/validate-area-selector.mjs`, `packages/ui-web/src/SimulatedRoleNotice.tsx`, `packages/ui-web/src/simulated-role-notice.css`, `packages/ui-web/scripts/validate-simulated-role-notice.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, navegacion orientada a tareas, items o grupos de navegacion, rutas empresariales, catalogos de aplicaciones, role overrides, cookies legacy, sesiones, roles reales o simulados, permisos, grants, contexto efectivo, `OperatingGate`, inicio o salida de simulacion, auditoria de simulacion, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, Supabase, `SHELL-UI-011` ni el registro 04A/TREQ.
