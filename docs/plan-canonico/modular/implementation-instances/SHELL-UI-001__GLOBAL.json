@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-001::GLOBAL",
   "task_id": "SHELL-UI-001",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/package.json para materializar la raiz workspace privada @vento/ui-web en estado PRE_E5_FOUNDATION, sin version npm, main, types, exports, dependencias, peerDependencies, scripts, componentes, CSS, publicacion, registry, tags ni releases.",
+    "Crear packages/ui-web/README.md para documentar identidad, responsabilidad visual web, fronteras con @vento/contracts, @vento/os-context y @vento/supabase, superficie fisica minima y responsabilidades reservadas a SHELL-UI-002..020, sin materializar API publica ni componentes.",
+    "Actualizar package-lock.json exclusivamente como consecuencia determinista de registrar packages/ui-web dentro del workspace packages/* ya existente; no modificar package.json raiz.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-001__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "No crear packages/ui-web/src ni modificar src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, SHELL-UI-002..020, exports publicos, componentes, CSS distribuible, consumidores, rutas, navegacion, autenticacion, autorizacion, SQL, DDL, DML, migraciones, RLS, RPC, grants, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "npm ci",
+    "node -e \"const fs=require('fs');const p=JSON.parse(fs.readFileSync('packages/ui-web/package.json','utf8'));const lock=JSON.parse(fs.readFileSync('package-lock.json','utf8'));const files=fs.readdirSync('packages/ui-web').sort();const entry=lock.packages?.['packages/ui-web'];const forbidden=['version','main','types','exports','dependencies','devDependencies','peerDependencies','scripts'];const ok=p.name==='@vento/ui-web'&&p.private===true&&p.type==='module'&&p.description==='Raiz privada de autoria para la implementacion visual web compartida de Vento OS.'&&forbidden.every((key)=>!(key in p))&&JSON.stringify(files)===JSON.stringify(['README.md','package.json'])&&entry?.name==='@vento/ui-web';if(!ok)throw new Error('SHELL-UI-001 physical scope mismatch')\"",
+    "npm ls --workspace @vento/ui-web --depth=0",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T19:45:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "5f1187c0e58144c38989063d603fec8d1cd9c9b88ad912d626688efa84b587b0"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web root created as private PRE_E5_FOUNDATION workspace without version main types exports dependencies peerDependencies scripts src components CSS or runtime API",
+    "MATERIALIZATION packages/ui-web/README.md documents the approved visual web responsibility and boundaries without advancing SHELL-UI-002..020",
+    "MATERIALIZATION package-lock.json updated only for packages/ui-web workspace registration",
+    "MATERIALIZATION root package.json local UI components template contracts os-context supabase consumers SQL migrations remote configuration Supabase and TREQ unchanged",
+    "SOURCE CONTRACT SHA256 5f1187c0e58144c38989063d603fec8d1cd9c9b88ad912d626688efa84b587b0",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION npm ci PASS; workspace dependencies installed from lockfile",
+    "VALIDATION authorized @vento/ui-web root structure and package-lock workspace registration PASS",
+    "VALIDATION npm ls --workspace @vento/ui-web --depth=0 PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-001::GLOBAL VERIFIED"
+  ]
 }
