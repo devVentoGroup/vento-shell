@@ -13832,7 +13832,1127 @@ La siguiente referencia es trazabilidad de cobertura existente y no constituye c
 `AUTH-DB-025 — Implementar índices, retención y controles de crecimiento`
 
 
-### [ ] AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
+### ✅ AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
+**Tarea siguiente:** AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para implementar índices, mantenimiento, retención, crecimiento, capacidad y decisiones de particionamiento o archivo mediante evidencia reproducible, sin optimización especulativa ni complejidad prematura
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato canónico `TEMPLATE_PER_PACKAGE` cerrado; cada futura instancia `AUTH-DB-025::<package_id>` permanece no ejecutada hasta satisfacer las fundaciones R0/R1 aplicables, el paquete E5 correspondiente, `E5-GATE-008::<package_id>`, `SHELL-CI-020::<package_id>`, la reconciliación de drift aplicable y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+`AUTH-DB-025` define el contrato repetible que deberá aplicar cada paquete aprobado para decidir, implementar y verificar cambios de índices, mantenimiento, retención, crecimiento y capacidad de Supabase.
+
+La tarea convierte las decisiones de arquitectura y auditoría ya aprobadas en una plantilla ejecutable por `package_id`, sin ejecutar en esta definición ninguna migración, purga, `VACUUM`, cambio de configuración, creación o eliminación de índice, particionamiento, archivado, modificación de Storage ni ajuste remoto.
+
+La optimización se gobierna por evidencia. Ningún cambio se justifica únicamente por intuición, tamaño actual, nombre de tabla, recomendación automática, contador aislado o una única captura de métricas.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+AUTH-DB-025
+→ contrato documental único y reutilizable
+
+AUTH-DB-025::<package_id>
+→ futura instancia física por paquete
+
+resultado esperado de cada instancia
+→ baseline reproducible
+→ workloads aplicables identificados
+→ consultas y objetos afectados delimitados
+→ decisión explícita sobre índices
+→ política de mantenimiento comprobada
+→ política de retención aplicable
+→ tendencia de crecimiento y capacidad evaluada
+→ decisión explícita sobre partición, archivo o diferimiento
+→ pruebas antes y después
+→ observabilidad y alertas vinculadas
+→ rollback o recuperación verificables
+→ riesgo residual documentado
+```
+
+La definición global no se reabre por cada paquete.
+
+---
+
+#### 3. Topología vinculante
+
+La topología aplicable es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = AUTH-DB-025::<package_id>
+```
+
+Consecuencias:
+
+1. no existe `AUTH-DB-025::GLOBAL`;
+2. una aprobación documental no crea una ejecución física;
+3. cada paquete conserva baseline, objetos, consultas, decisiones, evidencia y rollback propios;
+4. dos paquetes no pueden compartir una ejecución anónima;
+5. una mejora válida para un paquete no se propaga a otro sin evidencia propia;
+6. el marcador global no se modifica para registrar cada ejecución futura.
+
+---
+
+#### 4. Gate temporal
+
+Una instancia solo podrá materializar cambios cuando exista, para el mismo `package_id`:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+DELIV-PKG aplicable = CLOSED
+E5-GATE-008::<package_id> = PASS
+SHELL-CI-020::<package_id> = OPENED
+drift aplicable = RECONCILED
+physical_authorization = EXPLICIT
+```
+
+La falta de cualquiera de estas condiciones mantiene la instancia sin ejecución física.
+
+---
+
+#### 5. Fuentes vinculantes
+
+Cada instancia deberá consumir sin reinterpretación silenciosa:
+
+- la arquitectura aprobada de `SUPA-ARC-021`;
+- la recuperación y continuidad aprobadas de `SUPA-ARC-022`;
+- la gobernanza y drift aplicables de `SUPA-ARC-024` y `SUPA-ARC-025`;
+- los hallazgos vigentes de `SUPA-AUD-020`;
+- los controles consolidados de `SUPA-AUD-024`;
+- las transiciones y migraciones aprobadas en `SUPA-TRANS-*`;
+- las fundaciones R0 y R1 aplicables;
+- el expediente E5 del `package_id`;
+- los contratos de los dominios y consumidores afectados;
+- los controles de seguridad, RLS, autorización y privacidad aplicables;
+- el estado remoto recapturado al iniciar la instancia.
+
+`AUTH-DB-025` no redefine las diez clases de workload, los siete planos de rendimiento, los perfiles de SLO ni los budgets aprobados en E3; los materializa y verifica en el paquete correspondiente.
+
+---
+
+#### 6. Identidad mínima de instancia
+
+Cada futura instancia conservará como mínimo:
+
+```text
+package_id
+auth_db_025_instance_id
+candidate_id
+commit_sha
+environment_scope
+owner_domains
+owner_schemas
+affected_relations
+affected_storage_surfaces
+workload_refs
+query_fingerprint_refs
+baseline_cutoff
+baseline_evidence_ref
+index_decision_refs
+maintenance_decision_refs
+retention_policy_refs
+growth_capacity_refs
+partition_archive_refs
+measurement_plan_refs
+test_plan_refs
+rollback_plan_refs
+evidence_bundle_id
+residual_risk_refs
+```
+
+`auth_db_025_instance_id` se deriva únicamente como `AUTH-DB-025::<package_id>`.
+
+---
+
+#### 7. Principio de baseline antes de optimizar
+
+Antes de proponer cualquier cambio, la instancia deberá congelar un baseline comparable que incluya, cuando aplique:
+
+- tamaño total de base;
+- tamaño por schema;
+- heap por relación;
+- tamaño de índices;
+- TOAST;
+- filas vivas y muertas;
+- actividad;
+- antigüedad de estadísticas;
+- autovacuum y autoanalyze observables;
+- bloqueos;
+- conexiones;
+- temporales;
+- WAL;
+- Storage en bytes y objetos;
+- fingerprints SQL redactados;
+- frecuencia y duración de consultas;
+- volumen y concurrencia del workload;
+- percentiles aplicables;
+- estado de configuración relevante.
+
+Una fotografía aislada puede describir estado, pero no demostrar tendencia.
+
+---
+
+#### 8. Corte remoto de referencia de la definición
+
+La lectura read-only realizada durante el desarrollo de esta definición registra como referencia, no como objetivo permanente:
+
+```text
+corte = 2026-08-24
+database_size = 139 MB
+business_partitioned_tables = 0
+managed_partitioned_relation = realtime.messages
+managed_partition_key = RANGE (inserted_at)
+```
+
+Entre las relaciones de mayor tamaño observadas aparecen superficies administradas o técnicas, además de tablas empresariales. Por tanto, tamaño bruto y posición en un ranking no autorizan una optimización.
+
+La instancia futura deberá recapturar su propio baseline y no reutilizar estas cifras como evidencia de ejecución.
+
+---
+
+#### 9. Decisión actual sobre particionamiento
+
+El estado observado no justifica particionar tablas empresariales por tamaño.
+
+Queda establecido:
+
+1. no se particiona por anticipación;
+2. no se particiona porque una tabla sea histórica por nombre;
+3. no se particiona únicamente por número de filas;
+4. no se particiona únicamente por tamaño de base;
+5. no se copia la estrategia interna de una tabla administrada por Supabase como patrón empresarial;
+6. cualquier particionamiento futuro requiere umbral aprobado y prueba en staging;
+7. la ausencia de particionamiento empresarial actual es un estado permitido.
+
+---
+
+#### 10. Unidad de decisión de índice
+
+Cada decisión de índice deberá vincular:
+
+```text
+package_id
+owner
+relation
+workload_ref
+query_fingerprint_ref
+current_plan_ref
+candidate_definition
+decision
+reason
+read_cost_before
+write_cost_before
+size_before
+dependency_analysis
+test_fixture_ref
+rollback_ref
+```
+
+La unidad de decisión es el índice dentro de un workload y un paquete, no el nombre del índice aislado.
+
+---
+
+#### 11. Estados conceptuales de una decisión de índice
+
+Una instancia deberá dejar una decisión inequívoca para cada índice o necesidad de índice incluida en su alcance:
+
+- conservar;
+- crear;
+- consolidar;
+- retirar;
+- diferir con razón.
+
+Estos términos describen la decisión del paquete y no crean un catálogo global nuevo.
+
+Toda decisión distinta de conservar o diferir requiere migración física posterior dentro de la instancia autorizada.
+
+---
+
+#### 12. Prohibición de índices especulativos
+
+Queda prohibido:
+
+- crear índices por intuición;
+- crear todos los índices sugeridos por una herramienta;
+- crear un índice solo porque una columna aparece en un filtro;
+- crear un índice sin workload propietario;
+- crear un índice sin fixture representativo;
+- crear un índice sin medir el coste de escritura;
+- crear índices redundantes con una constraint existente;
+- conservar duplicados por miedo a identificar dependencias;
+- eliminar un índice porque tenga pocos scans sin considerar ciclo de estadísticas y workload;
+- debilitar RLS, filtros o autorización para mejorar un plan.
+
+---
+
+#### 13. Índices duplicados
+
+La instancia deberá reconciliar los grupos duplicados que pertenezcan a su paquete usando el inventario vigente de `SUPA-AUD-020`.
+
+Antes de retirar un duplicado deberá comprobar:
+
+1. definición lógica;
+2. constraint asociada;
+3. dependencia;
+4. unicidad;
+5. scans;
+6. tamaño;
+7. escrituras;
+8. plan de consultas representativas;
+9. comportamiento de inserts, updates y deletes;
+10. rollback.
+
+La definición histórica identifica, entre otros hallazgos, duplicidad en asistencia y unicidad equivalente en stock. La lista ejecutable será siempre la vigente al corte de la instancia y no se reconstruirá por memoria.
+
+---
+
+#### 14. Índices fuera de banda y drift
+
+Un índice remoto sin procedencia migratoria aprobada no se normaliza eliminándolo ni recreándolo automáticamente.
+
+La secuencia será:
+
+```text
+detectar
+→ clasificar drift
+→ identificar workload y dependencias
+→ decidir adopción, consolidación o retiro
+→ producir migración forward-only
+→ probar
+→ reconciliar fingerprint
+```
+
+No se modifica historia migratoria aplicada para ocultar el drift.
+
+---
+
+#### 15. Prueba obligatoria antes y después
+
+Todo cambio de índice deberá comparar, como mínimo cuando la operación lo permita:
+
+- plan;
+- latencia p50, p95 y p99 cuando exista muestra suficiente;
+- filas estimadas frente a reales;
+- buffers;
+- temporales;
+- WAL;
+- locks;
+- tamaño;
+- inserts;
+- updates;
+- deletes;
+- HOT updates;
+- vacuum/analyze;
+- coste de mantenimiento.
+
+La mejora de lectura no se considera válida si introduce una degradación material no aceptada en escritura o mantenimiento.
+
+---
+
+#### 16. Fixtures y representatividad
+
+Las pruebas deberán usar datos y distribución representativos del paquete.
+
+No se aceptará como prueba concluyente:
+
+- una tabla casi vacía cuando producción no lo es;
+- un único registro;
+- un único usuario;
+- un solo sitio cuando el workload es multisede;
+- un plan sin parámetros representativos;
+- métricas tomadas antes y después con ventanas incompatibles.
+
+Cuando no exista dataset representativo, la decisión queda diferida.
+
+---
+
+#### 17. Planes y fingerprints
+
+Las consultas críticas deberán vincularse a fingerprints redactados y estables.
+
+La evidencia no almacenará parámetros, tokens, payloads sensibles ni PII innecesaria.
+
+El plan deberá conservar suficiente contexto para reproducir:
+
+- relación;
+- predicados;
+- orden;
+- cardinalidad;
+- proyección;
+- joins;
+- operador dominante;
+- estimación;
+- resultado de prueba.
+
+---
+
+#### 18. SLO y budgets
+
+Cada workload de la instancia reutilizará el perfil de SLO y budget aprobado que le corresponda en `SUPA-ARC-021`.
+
+La instancia no puede:
+
+- sustituir percentiles por promedios;
+- ampliar localmente un límite;
+- ocultar un incumplimiento aumentando timeout;
+- mezclar latencia de DB, API, red y proveedor como si fueran una sola medición;
+- declarar una consulta conforme sin la cardinalidad y paginación contractuales.
+
+Toda excepción deberá quedar versionada y justificada por el contrato propietario.
+
+---
+
+#### 19. Colecciones y paginación
+
+Las colecciones mantendrán las reglas aprobadas de:
+
+- orden total;
+- cursor estable;
+- tamaño de página;
+- máximo de página;
+- límites de `OFFSET`;
+- cardinalidad esperada.
+
+Un índice no compensa una colección sin límites ni convierte una consulta no paginada en contrato válido.
+
+---
+
+#### 20. Exports y cargas pesadas
+
+Cuando una operación supere la frontera síncrona aprobada por `SUPA-ARC-021`, la respuesta correcta será migrarla al mecanismo durable correspondiente.
+
+No se añadirán índices exclusivamente para mantener síncrono un workload que contractualmente debe ejecutarse como bulk o export durable.
+
+---
+
+#### 21. Mantenimiento de tablas
+
+La instancia evaluará:
+
+- dead tuples;
+- HOT updates;
+- últimas ejecuciones de vacuum;
+- últimas ejecuciones de analyze;
+- modificaciones desde analyze;
+- bloat cuando exista método aprobado;
+- churn;
+- tamaño;
+- locks;
+- duración de mantenimiento.
+
+No se ejecutará `VACUUM` manual por reflejo.
+
+---
+
+#### 22. Autovacuum y autoanalyze
+
+La configuración por tabla solo se modifica cuando la evidencia demuestre que los valores globales no mantienen la relación dentro de su objetivo.
+
+Toda modificación deberá registrar:
+
+- causa;
+- tabla;
+- workload;
+- baseline;
+- valor anterior;
+- valor candidato;
+- prueba;
+- impacto;
+- rollback.
+
+No se copiarán thresholds entre tablas por similitud nominal.
+
+---
+
+#### 23. Retención como contrato de dato
+
+Cada relación o clase de dato incluida en el paquete deberá resolver, cuando aplique:
+
+```text
+data_class
+owner
+authority
+business_or_legal_basis
+minimum_retention
+maximum_retention
+archive_policy
+purge_policy
+replay_requirement
+audit_requirement
+legal_hold_or_investigation_exception
+redaction_requirement
+cleanup_owner
+cleanup_schedule
+cleanup_idempotency
+recovery_requirement
+evidence_requirement
+```
+
+La ausencia de una decisión explícita impide automatizar la eliminación.
+
+---
+
+#### 24. Backups no son retención empresarial
+
+Queda separado:
+
+```text
+backup / PITR
+≠ archivo empresarial
+≠ historial operativo
+≠ retención legal
+≠ evidencia de auditoría
+≠ política de borrado
+```
+
+Una fila borrada de la base activa no se considera plenamente dispuesta si el contrato exige tratamiento adicional en copias, archivos, Storage u otros sistemas.
+
+---
+
+#### 25. Tablas de eventos y auditoría
+
+Las tablas de eventos, auditoría, movimientos, webhooks, borradores, runtime y otras superficies históricas deberán declarar:
+
+- finalidad;
+- autoridad;
+- ventana de consulta;
+- replay;
+- investigación;
+- retención;
+- archivo;
+- purga;
+- redacción;
+- excepciones.
+
+No se aplicará una única duración transversal a todas estas clases.
+
+---
+
+#### 26. Historial de cron
+
+`cron.job_run_details` permanece como superficie que exige control explícito de crecimiento.
+
+La instancia aplicable deberá definir y probar:
+
+- ventana de retención;
+- límite por edad o cantidad;
+- exportación cuando sea necesaria;
+- limpieza idempotente;
+- preservación de evidencia operativa;
+- observabilidad del propio cleanup;
+- recuperación o explicación de irreversibilidad.
+
+La existencia de historial acumulado no autoriza su purga inmediata.
+
+---
+
+#### 27. Cotizaciones y datos con expiración
+
+Cuando una tabla tenga `expires_at` u otra semántica contractual de expiración:
+
+1. la expiración lógica y la disposición física se distinguen;
+2. el job de cleanup deberá demostrar eficacia;
+3. se reconciliarán filas vencidas que sobrevivan;
+4. el fallo de cleanup será observable;
+5. la eliminación o archivo seguirá la política del dato;
+6. una ejecución de cron reportada como exitosa no basta para probar que no quedan residuos.
+
+---
+
+#### 28. Webhooks
+
+Los eventos de webhook deberán conservar una ventana compatible con:
+
+- idempotencia;
+- replay;
+- conciliación;
+- disputas;
+- auditoría;
+- investigación.
+
+El payload y la firma se minimizarán o redactarán según sensibilidad.
+
+La purga deberá demostrar que no elimina antes de tiempo la capacidad de reconstruir un efecto empresarial.
+
+---
+
+#### 29. Storage
+
+Cuando el paquete incluya Storage, cada bucket afectado deberá declarar:
+
+- propietario;
+- clasificación;
+- visibilidad;
+- tipos permitidos;
+- tamaño máximo;
+- retención;
+- versionado;
+- archivo;
+- borrado;
+- excepción legal;
+- referencia empresarial;
+- tratamiento de huérfanos.
+
+No se automatiza limpieza de objetos hasta disponer de esta matriz.
+
+---
+
+#### 30. Objetos huérfanos en Storage
+
+El reconciliador deberá poder detectar sin eliminación automática:
+
+- objeto sin referencia;
+- referencia sin objeto;
+- versión duplicada;
+- carga abandonada;
+- ownership inválido;
+- ruta no conforme.
+
+La detección y la eliminación son etapas distintas.
+
+---
+
+#### 31. Medios e imágenes
+
+Las superficies de imágenes deberán gobernar:
+
+- bytes máximos;
+- dimensiones;
+- formatos;
+- compresión;
+- deduplicación;
+- derivados;
+- versiones sustituidas;
+- retención del original;
+- eliminación de versiones obsoletas.
+
+Una imagen grande no se elimina ni recomprime sin preservar el contrato funcional y de evidencia del dominio propietario.
+
+---
+
+#### 32. Serie de crecimiento
+
+Cada instancia deberá registrar un punto comparable de crecimiento y vincularlo a la serie vigente.
+
+Cuando aplique se medirá:
+
+```text
+database_bytes
+schema_bytes
+heap_bytes
+index_bytes
+toast_bytes
+live_rows
+dead_rows
+storage_bytes
+storage_objects
+wal_volume
+temp_volume
+connections
+event_volume
+```
+
+Una sola medición no produce tasa de crecimiento.
+
+---
+
+#### 33. Horizontes de capacidad
+
+La proyección deberá trabajar con horizontes definidos por el paquete y la operación, y calcular cuando exista historia suficiente:
+
+- crecimiento absoluto;
+- crecimiento porcentual;
+- tasa por periodo;
+- tiempo estimado a umbral;
+- sensibilidad a picos;
+- capacidad residual.
+
+Si no existe historia suficiente, se declara falta de serie y se prioriza instrumentación antes de una decisión estructural.
+
+---
+
+#### 34. Alertas de capacidad
+
+Las alertas deberán considerar porcentaje y tendencia, no únicamente un valor absoluto.
+
+Como mínimo, cuando aplique:
+
+- base;
+- Storage;
+- conexiones;
+- temporales;
+- WAL;
+- backlog histórico;
+- tiempo de mantenimiento.
+
+Cada alerta tendrá owner, severidad, umbral, ventana, acción esperada y ruta de escalamiento.
+
+---
+
+#### 35. Gate de particionamiento
+
+Particionar, archivar o introducir sharding solo podrá aprobarse cuando exista evidencia de uno o más umbrales contractuales materialmente superados, por ejemplo:
+
+- tamaño;
+- filas;
+- crecimiento;
+- latencia;
+- ventana de mantenimiento;
+- ventana de retención;
+- coste;
+- limitación operativa.
+
+La selección del umbral concreto pertenece al workload y al paquete.
+
+---
+
+#### 36. Prueba de particionamiento
+
+Antes de materializar particionamiento se deberá probar en staging:
+
+- clave de partición;
+- distribución;
+- pruning;
+- planes;
+- escrituras;
+- updates que afecten clave;
+- constraints;
+- FKs;
+- RLS;
+- Realtime cuando aplique;
+- funciones;
+- triggers;
+- retención;
+- mantenimiento;
+- backfill;
+- cutover;
+- rollback;
+- observabilidad.
+
+Si la mejora no supera el coste y complejidad añadidos, la decisión será diferir.
+
+---
+
+#### 37. Datos administrados por Supabase
+
+Las superficies administradas por Supabase se clasifican separadamente.
+
+No se aplican cambios sobre `auth`, `realtime`, `storage`, `net`, `cron` u otras superficies administradas únicamente porque aparezcan en rankings de tamaño o actividad.
+
+Cualquier intervención sobre una superficie administrada exige contrato propietario, compatibilidad con la plataforma y autorización específica.
+
+---
+
+#### 38. Separación entre sistema y negocio
+
+El baseline deberá distinguir:
+
+```text
+business workload
+managed Supabase workload
+administration
+migration
+audit
+cron
+maintenance
+```
+
+Esta clasificación evita optimizar carga de plataforma como si fuera una consulta empresarial y evita adjudicar a un dominio objetos que no posee.
+
+---
+
+#### 39. Seguridad no negociable
+
+Ninguna optimización podrá:
+
+- desactivar RLS;
+- ampliar grants;
+- exponer schemas privados;
+- reducir filtros territoriales;
+- confiar en filtros cliente como frontera;
+- convertir `service_role` en solución de rendimiento;
+- exponer SQL sensible;
+- conservar PII innecesaria en telemetría;
+- retirar auditoría obligatoria;
+- omitir autorización server-side.
+
+Una mejora que requiere cualquiera de estas acciones se rechaza.
+
+---
+
+#### 40. Privacidad y minimización
+
+La telemetría de rendimiento conservará únicamente lo necesario para reproducir la evidencia.
+
+Se prefieren:
+
+- queryid;
+- fingerprint redactado;
+- métricas agregadas;
+- hashes;
+- ids técnicos no sensibles.
+
+No se persistirán parámetros completos, tokens, firmas, correos, coordenadas precisas ni payloads por conveniencia diagnóstica.
+
+---
+
+#### 41. Migraciones forward-only
+
+Los cambios físicos derivados de una futura instancia se versionarán mediante migraciones forward-only.
+
+No se editará una migración aplicada para:
+
+- adoptar un índice manual;
+- ocultar un duplicado;
+- cambiar retención;
+- añadir partición;
+- alterar tuning;
+- reconstruir historial.
+
+La remediación crea una nueva versión con prueba y rollback compatible.
+
+---
+
+#### 42. Construcción segura de índices
+
+Cuando PostgreSQL, el entorno y la naturaleza del cambio lo permitan, la estrategia deberá minimizar bloqueo y riesgo operacional.
+
+La decisión concreta de mecanismo de construcción deberá considerar:
+
+- tamaño;
+- tráfico;
+- lock esperado;
+- duración;
+- transacción;
+- compatibilidad del comando;
+- recuperación ante interrupción;
+- validación posterior.
+
+El contrato no impone una sintaxis única a todos los índices.
+
+---
+
+#### 43. Eliminación segura de índices
+
+Antes de retirar un índice se verificará que:
+
+- no sea constraint necesaria;
+- no sea backing index de una garantía requerida;
+- no tenga dependencia no tratada;
+- su workload tenga alternativa validada;
+- el cambio pueda revertirse;
+- exista observación posterior al cutover.
+
+El índice no se elimina solo por `idx_scan = 0`.
+
+---
+
+#### 44. Orden de ejecución dentro del paquete
+
+La secuencia lógica será:
+
+```text
+1. recapturar baseline y drift
+2. resolver alcance exacto del paquete
+3. clasificar workloads
+4. congelar fingerprints y fixtures
+5. decidir índices
+6. decidir mantenimiento
+7. decidir retención
+8. medir crecimiento y capacidad
+9. decidir partición, archivo o diferimiento
+10. preparar migraciones y automatizaciones autorizadas
+11. ensayar en staging
+12. ejecutar pruebas antes/después
+13. verificar seguridad y contratos
+14. verificar rollback
+15. materializar solo con gates abiertos
+16. observar post-cutover
+17. reconciliar evidencia y riesgo residual
+```
+
+No se salta directamente del hallazgo a DDL.
+
+---
+
+#### 45. Matriz de decisión por objeto
+
+Cada objeto afectado deberá poder resolverse mediante una fila equivalente a:
+
+| Campo | Contenido obligatorio |
+| --- | --- |
+| `object_ref` | identidad canónica |
+| `owner` | propietario contractual |
+| `workload_ref` | workload aplicable |
+| `baseline_ref` | corte comparable |
+| `index_decision_ref` | decisión de índices |
+| `maintenance_ref` | mantenimiento |
+| `retention_ref` | retención |
+| `growth_ref` | serie/capacidad |
+| `partition_archive_ref` | decisión estructural |
+| `security_ref` | controles preservados |
+| `test_ref` | evidencia |
+| `rollback_ref` | reversión/recuperación |
+| `residual_risk_ref` | riesgo pendiente |
+
+Una celda no aplicable deberá quedar justificada, no omitida.
+
+---
+
+#### 46. Readiness de índice
+
+Una decisión de crear, consolidar o retirar un índice está lista únicamente si:
+
+```text
+workload identificado
+AND baseline válido
+AND fixture representativo
+AND plan reproducible
+AND dependencia reconciliada
+AND coste de escritura medido
+AND seguridad preservada
+AND migration plan definido
+AND rollback definido
+```
+
+Si una condición falta, la decisión permanece diferida.
+
+---
+
+#### 47. Readiness de retención
+
+Una política de cleanup está lista únicamente si:
+
+```text
+owner identificado
+AND clase de dato definida
+AND autoridad definida
+AND base empresarial/legal resuelta
+AND ventana aprobada
+AND replay/auditoría preservados
+AND excepciones resueltas
+AND mecanismo idempotente
+AND observabilidad definida
+AND recovery/irreversibilidad aceptada
+```
+
+Una fecha antigua por sí sola no autoriza borrado.
+
+---
+
+#### 48. Readiness de particionamiento o archivo
+
+La decisión está lista únicamente si:
+
+```text
+serie de crecimiento suficiente
+AND umbral superado
+AND workload afectado demostrado
+AND estrategia candidata definida
+AND staging representativo
+AND pruning probado
+AND escritura probada
+AND seguridad probada
+AND mantenimiento probado
+AND cutover definido
+AND rollback definido
+```
+
+Sin estas condiciones, se conserva la estructura actual y se continúa observando.
+
+---
+
+#### 49. Post-cutover
+
+Después de una futura mutación, la instancia deberá comparar contra baseline:
+
+- percentiles;
+- throughput;
+- errores;
+- locks;
+- WAL;
+- writes;
+- dead tuples;
+- tamaño;
+- crecimiento;
+- mantenimiento;
+- alertas;
+- experiencia del workload;
+- cumplimiento de SLO.
+
+La validación no termina con el éxito de la sentencia DDL.
+
+---
+
+#### 50. Regresión y reversión
+
+Se considera regresión material cualquier incumplimiento del contrato de rendimiento, seguridad, disponibilidad, privacidad o mantenibilidad aplicable.
+
+La respuesta será una de:
+
+- rollback técnico;
+- forward-fix aprobado;
+- desactivación del cambio;
+- degradación controlada;
+- bloqueo del cutover.
+
+No se mantiene una optimización fallida para evitar una reversión.
+
+---
+
+#### 51. Riesgo residual
+
+Cada instancia cerrará con una lista explícita de riesgos residuales.
+
+Un riesgo residual deberá tener:
+
+- descripción;
+- superficie;
+- impacto;
+- control compensatorio;
+- owner;
+- fecha o condición de revisión;
+- tarea propietaria cuando corresponda.
+
+La ausencia de incidente observado no cierra el riesgo.
+
+---
+
+#### 52. Handoff hacia AUTH-DB-026
+
+`AUTH-DB-025` no genera ni publica tipos.
+
+`AUTH-DB-026` conserva íntegramente la responsabilidad sobre generación, publicación y reconciliación de tipos después del paquete aprobado.
+
+Cuando una instancia de 025 acompañe cambios de schema que afecten el contrato generado, deberá dejar identificada esa consecuencia para que 026 la procese. Los cambios puramente físicos que no alteren el contrato de tipos no se presentan como regeneración realizada.
+
+---
+
+#### 53. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+La cobertura necesaria ya existe en el Registro Canónico de Requisitos de Prueba para línea base de rendimiento, fingerprints redactados, índices duplicados, planes, amplificación de escritura, mantenimiento, crecimiento, capacidad, retención, Storage, particionamiento, SLO, budgets y gates de ciclo de vida.
+
+`AUTH-DB-025` materializa esa cobertura como contrato R2 por paquete y no introduce una obligación nueva que requiera modificar el registro.
+
+---
+
+#### 54. Cobertura de prueba vigente reutilizada
+
+La ejecución futura deberá satisfacer, según alcance, la cobertura vigente ya registrada, incluyendo:
+
+- `TREQ-SUPABASE-363` a `TREQ-SUPABASE-392` para rendimiento, índices, mantenimiento, crecimiento, retención y Storage;
+- `TREQ-SUPABASE-520` para evaluación de índices y planes con carga representativa;
+- `TREQ-SUPABASE-521` para retención, crecimiento, partición, archivo y purga;
+- `TREQ-SUPABASE-1383` a `TREQ-SUPABASE-1397` para planos, workloads, SLO, budgets, paginación, exports, timeouts y locks;
+- requisitos de seguridad, migración, recuperación y drift relacionados que resulten aplicables al objeto o paquete.
+
+La reutilización no cambia estado, texto ni identidad de esos requisitos.
+
+---
+
+#### 55. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecuta el build del repositorio; la validación integral corresponde al checkout actualizado tras insertar el bloque. |
+| LOCAL | PASS | Estructura del artefacto revisada contra el contrato documental vigente: metadatos obligatorios, secciones obligatorias, continuidad y declaración de cero requisitos nuevos. |
+| REMOTA | PASS | Consulta read-only del proyecto Supabase de referencia: base de 139 MB en el corte 2026-08-24; ninguna tabla empresarial particionada; `realtime.messages` aparece como relación administrada particionada por rango. |
+| OPERATIVA | NOT_EXECUTED | No existe instancia `AUTH-DB-025::<package_id>` autorizada en esta definición; benchmarks, cleanup, staging, canary y post-cutover quedan para cada paquete físico. |
+| FÍSICA | NOT_APPLICABLE | Esta tarea define el contrato y no autoriza cambios físicos. |
+
+---
+
+#### 56. Criterios de aceptación
+
+`AUTH-DB-025` queda aceptable cuando se compruebe documentalmente que:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. usa exclusivamente `AUTH-DB-025::<package_id>` para instancias;
+4. no autoriza una ejecución física global;
+5. exige baseline antes de optimizar;
+6. prohíbe índices especulativos;
+7. exige medir coste de lectura y escritura;
+8. trata índices duplicados con dependencias y constraints;
+9. preserva RLS, grants y fronteras de seguridad;
+10. separa workloads de negocio y administrados;
+11. gobierna mantenimiento y autovacuum por evidencia;
+12. define retención por clase de dato;
+13. separa backup de retención empresarial;
+14. gobierna cron, webhooks y Storage cuando pertenezcan al paquete;
+15. exige series para inferir crecimiento;
+16. define capacidad por porcentaje y tendencia;
+17. prohíbe particionamiento prematuro;
+18. exige staging y pruning antes de particionar;
+19. exige migraciones forward-only;
+20. exige rollback o recuperación;
+21. exige observación post-cutover;
+22. no invade la generación de tipos de `AUTH-DB-026`;
+23. declara cero requisitos de prueba creados o modificados;
+24. reutiliza la cobertura 04A vigente sin cambiarla;
+25. no ejecuta mutaciones físicas durante la aprobación documental.
+
+---
+
+#### 57. Límites
+
+`AUTH-DB-025` no:
+
+- crea índices en esta definición;
+- elimina índices;
+- consolida índices;
+- ejecuta `VACUUM`;
+- modifica autovacuum;
+- purga filas;
+- configura cron de cleanup;
+- borra objetos de Storage;
+- comprime imágenes;
+- crea particiones;
+- introduce sharding;
+- cambia timeouts remotos;
+- modifica RLS;
+- modifica grants;
+- altera esquemas por conveniencia;
+- reescribe migraciones aplicadas;
+- ejecuta benchmarks productivos;
+- cambia contratos de dominio;
+- genera tipos;
+- publica tipos;
+- ejecuta `AUTH-DB-026`;
+- declara como resueltos hallazgos que no hayan sido materializados por una instancia autorizada.
+
+---
+
+#### 58. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-025 — Implementar índices, retención y controles de crecimiento`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado`
+
+
 ### [ ] AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
 
 ### `AUTH-DB-020::VISO-SCHEDULE-MONTHLY-001`
