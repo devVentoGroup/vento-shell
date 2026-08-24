@@ -14,6 +14,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-004::GLOBAL` materializa internamente `Card` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-004`, sin publicar todavia una API npm, una version, un entrypoint CSS ni una adopcion por consumidores.
 
+`SHELL-UI-005::GLOBAL` materializa internamente `EmptyState` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-005`, sin publicar todavia una API npm, una version, un entrypoint CSS ni una adopcion por consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -41,6 +43,9 @@ Fronteras vinculantes:
 - `src/Card.tsx` como implementacion interna de `Card`.
 - `src/card.css` como estilos internos de `Card`.
 - `scripts/validate-card.mjs` como validador fisico de `SHELL-UI-004::GLOBAL`.
+- `src/EmptyState.tsx` como implementacion interna de `EmptyState`.
+- `src/empty-state.css` como estilos internos de `EmptyState`.
+- `scripts/validate-empty-state.mjs` como validador fisico de `SHELL-UI-005::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -129,6 +134,57 @@ Los nombres `.ui-card*` usados por la implementacion interna no constituyen un c
 
 Una tarjeta completamente activable debe componer semantica nativa de enlace o boton en su superficie propietaria. La Card base no convierte un `div onClick` en el patron canonico de accion. Los componentes `*Card` de dominio no se absorben por coincidencia nominal; pueden adoptar la primitiva internamente durante su migracion sin dejar de pertenecer a su dominio.
 
+## EmptyState
+
+`EmptyState` presenta una ausencia confirmada dentro de un alcance ya resuelto. No determina por que no existe contenido, no consulta datos, no evalua permisos y no transforma un resultado desconocido en una afirmacion de ausencia.
+
+Contrato interno materializado:
+
+- `title` requerido como contenido principal visible y significativo aportado por el consumidor;
+- `description` opcional;
+- `icon` opcional y sin icono global por defecto;
+- `action` opcional como nodo compuesto por el consumidor;
+- elemento HTML nativo no interactivo `div`;
+- atributos compatibles de `HTMLDivElement`, `aria-*`, `data-*`, `className` y `style` transferibles; el atributo HTML nativo `title` queda reservado por la prop principal `title`;
+- sin `role="alert"`, `aria-live`, `tabIndex`, captura de foco o movimiento de foco impuestos por defecto;
+- sin `variant`, `kind`, `status`, `size` ni `density`;
+- sin `cta`, `href`, `to` ni router propios;
+- sin Card interna obligatoria y sin dependencia obligatoria de Alert o Button;
+- sin Supabase, sesion, permisos, contexto, red, timers ni persistencia;
+- sin estado React obligatorio y compatible con SSR y composicion desde componentes cliente.
+
+El icono se trata como apoyo visual decorativo por defecto y queda fuera del nombre accesible de la primitiva; el significado debe seguir siendo comprensible mediante `title` y, cuando aplique, `description`. Una accion puede componer un `Button` o un enlace semantico del consumidor sin convertir `EmptyState` en Button, Link o router.
+
+La representacion visual interna usa una columna centrada de baja jerarquia, reflow, texto largo y el token existente `--ui-muted` para contenido secundario. No introduce superficie, borde, sombra, radio, altura minima ni ancho fijo propios de Card. Los valores fisicos actuales son detalles internos de esta materializacion y no se convierten en API publica.
+
+### Frontera semantica de vacio
+
+El vacio base solo corresponde cuando existe consulta o inicializacion exitosa, el alcance ya resuelto es conocido y la capa propietaria ha confirmado ausencia para ese alcance.
+
+Un vacio filtrado conserva los filtros activos o su alcance comprensible en la superficie propietaria y no afirma inexistencia global.
+
+Un error de carga no es EmptyState. `EmptyState` no representa carga o `loading`, resultado parcial, resultado desconocido, timeout sin conciliacion, cache stale sin certeza suficiente ni sincronizacion pendiente.
+
+Una denegacion de permiso no es una coleccion vacia. El masking no puede usar un mensaje vacio para revelar existencia o conteo de elementos ocultos.
+
+La ausencia de seleccion puede representarse como EmptyState cuando es una seleccion legitima dentro de una pantalla ya resuelta; no sustituye contexto operativo obligatorio como sede, area, turno, check-in, actor o permiso requeridos.
+
+Una cola despejada solo se presenta como tal cuando la consulta propietaria esta completa y suficientemente fresca. La ausencia de trabajo para el actor no implica ausencia global y `EmptyState` nunca crea ni autoasigna trabajo.
+
+Una accion de primer registro solo puede componerse cuando existe una accion real y el actor elegible ya fue determinado por el propietario funcional. El componente no fabrica autoridad ni ofrece CTAs automaticos.
+
+### Reconciliacion legacy y consumidores
+
+Las clases `.ui-empty-state` y `.ui-empty` permanecen legacy y no se convierten en selectores publicos del package. Esta materializacion utiliza una clase raiz interna distinta y deja sin migrar consumidores.
+
+`.ui-empty-state` requiere clasificacion semantica antes de cualquier adopcion. `.ui-empty` puede ser candidato title-only cuando realmente represente ausencia y la region no necesite composicion adicional.
+
+Los usos legacy que en realidad representen error requieren reclasificacion. Los usos que representen permiso o contexto tambien requieren reclasificacion antes de migrar.
+
+La evidencia de ORIGO proveedores conserva la diferencia entre vacio base y vacio filtrado. La evidencia de ORIGO ordenes exige distinguir filtros activos antes de afirmar ausencia global. FOGO demuestra que un estado title-only es valido sin icono obligatorio; VISO confirma que superficies administrativas densas pueden conservar una representacion compacta y separar error de vacio.
+
+La adopcion, paridad por consumidor, compatibilidad y rollback independiente permanecen en `SHELL-MIG-*` y `SHELL-CI-*`. La paridad por consumidor debe demostrarse antes de retiro legacy. Consumidores migrados: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -137,18 +193,20 @@ Una tarjeta completamente activable debe componer semantica nativa de enlace o b
 
 `Card` permanece fuera de la secuencia de tabulacion por defecto, no inventa roles ni foco, permite reflow de contenido de longitud variable y conserva la semantica de los elementos que el consumidor compone dentro de ella.
 
+`EmptyState` conserva `title` visible, mantiene iconografia decorativa fuera del nombre accesible, no impone region viva, no entra por defecto a la secuencia de tabulacion y conserva la semantica nativa de cualquier accion compuesta por el consumidor.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
 
-Esta instancia no modifica el manifest de `@vento/ui-web` y no crea `exports`, `main`, `types`, version npm, peer dependencies, publicacion ni entrypoints CSS publicos.
+Esta instancia no modifica el manifest de `@vento/ui-web` y no crea `exports`, `main`, `types`, version npm, peer dependencies, publicacion ni entrypoints CSS publicos. Los exports publicos permanecen diferidos.
 
 La habilitacion de una superficie publica versionada, compatibilidad, publicacion, adopcion de consumidores, rollback y retiro legacy permanecen gobernados por las tareas `SHELL-PKG-*`, `SHELL-CI-*` y `SHELL-MIG-*` que correspondan. El retiro legacy exige evidencia de uso residual cero o migracion certificada antes de eliminar una copia existente.
 
 ## Continuidad reservada
 
-`SHELL-UI-005` conserva la responsabilidad de `EmptyState`. `SHELL-UI-004::GLOBAL` no modifica `EmptyState`, contexto visual, AppShell, navegacion ni patrones compuestos posteriores.
+`SHELL-UI-006` conserva la responsabilidad del indicador de contexto. `SHELL-UI-005::GLOBAL` no materializa contexto visual, selectores de sede o area, diagnostico de contexto, estados de error recuperable, AppShell, navegacion ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, aplicaciones consumidoras, rutas, navegacion, autenticacion, autorizacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, aplicaciones consumidoras, rutas, navegacion, autenticacion, autorizacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni el registro 04A/TREQ.
