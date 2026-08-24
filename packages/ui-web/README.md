@@ -16,6 +16,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-005::GLOBAL` materializa internamente `EmptyState` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-005`, sin publicar todavia una API npm, una version, un entrypoint CSS ni una adopcion por consumidores.
 
+`SHELL-UI-006::GLOBAL` materializa internamente `ContextIndicator` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-006`, sin resolver contexto, publicar una API npm, una version, un entrypoint CSS ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -46,6 +48,9 @@ Fronteras vinculantes:
 - `src/EmptyState.tsx` como implementacion interna de `EmptyState`.
 - `src/empty-state.css` como estilos internos de `EmptyState`.
 - `scripts/validate-empty-state.mjs` como validador fisico de `SHELL-UI-005::GLOBAL`.
+- `src/ContextIndicator.tsx` como implementacion interna de `ContextIndicator`.
+- `src/context-indicator.css` como estilos internos de `ContextIndicator`.
+- `scripts/validate-context-indicator.mjs` como validador fisico de `SHELL-UI-006::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -185,6 +190,57 @@ La evidencia de ORIGO proveedores conserva la diferencia entre vacio base y vaci
 
 La adopcion, paridad por consumidor, compatibilidad y rollback independiente permanecen en `SHELL-MIG-*` y `SHELL-CI-*`. La paridad por consumidor debe demostrarse antes de retiro legacy. Consumidores migrados: 0.
 
+## ContextIndicator
+
+`ContextIndicator` representa una proyeccion humana, compacta y accesible de contexto efectivo o alcance aplicable ya resuelto por una capa propietaria. No resuelve contexto, no crea autoridad, no modifica sede, area, turno o rol y no habilita operaciones empresariales.
+
+Contrato interno materializado:
+
+- `state` obligatorio con los estados `resolving`, `active`, `changing`, `stale`, `invalid` y `unavailable`;
+- `stateLabel` obligatorio como texto humano visible;
+- `items` obligatorio como coleccion readonly de pares `label` y `value`;
+- orden de `items` preservado exactamente como lo entrega el consumidor;
+- cero items permitido sin inventar contexto ni copy de fallback;
+- raiz HTML `div` no interactiva;
+- dimensiones representadas mediante estructura descriptiva `dl`, `dt` y `dd`;
+- atributos compatibles de `HTMLDivElement`, `aria-*`, `data-*`, `className` y `style` transferibles;
+- sin `children` libre, `variant`, `tone`, enum visual de dimensiones ni API obligatoria de iconos;
+- sin `role="status"`, `aria-live`, `tabIndex`, foco automatico o movimiento de foco impuestos por defecto;
+- sin estado React obligatorio, efectos, timers, red, router, storage, Supabase, sesion o autorizacion;
+- compatible con SSR y composicion desde componentes cliente.
+
+El significado del estado permanece en `stateLabel` y no depende solo de color. Los estilos internos usan tokens visuales existentes y conservan reflow, zoom, valores largos y disposicion de una o varias columnas sin exigir scroll horizontal ordinario.
+
+### Frontera de autoridad y frescura
+
+`ContextIndicator` recibe decisiones de presentacion ya resueltas. No recibe ni interpreta `EffectiveContext`, `AccessContext` o `SimulationContext`, no evalua permisos y no deriva sede, area, rol, turno, check-in, actor, dispositivo o territorio desde URL, query parameters, storage, nombre de aplicacion o primera opcion disponible.
+
+`active` expresa que la capa propietaria declaro vigente la proyeccion; no significa permiso concedido. `stale` no prolonga autoridad. `invalid` no diagnostica la causa. `unavailable` no se transforma en EmptyState.
+
+Durante `changing`, una seleccion solicitada no equivale a contexto nuevo confirmado. El destino solicitado no se presenta como activo hasta que la capa propietaria entregue la proyeccion confirmada.
+
+### Contexto operativo y alcance administrativo
+
+Las etiquetas aportadas por el consumidor conservan las diferencias entre sede activa, filtro administrativo, area activa, rol base, rol operativo, turno, check-in, actor, dispositivo, estacion y territorio del recurso.
+
+El componente no convierte un filtro administrativo en contexto operativo, no convierte un turno programado en turno vigente y no convierte un dispositivo compartido en actor humano.
+
+### Composicion, simulacion y diagnostico
+
+`Alert` y `ContextIndicator` conservan responsabilidades distintas: el indicador resume contexto y `Alert` comunica mensajes que la composicion propietaria determine.
+
+Los selectores de sede y area permanecen separados. `ContextIndicator` puede coexistir con `SiteSelector`, `AreaSelector` y `SimulatedRoleNotice`, pero no lo absorbe ni implementa sus cambios de autoridad.
+
+La simulacion material permanece perceptible mediante la composicion propietaria. El diagnostico detallado de contexto tambien permanece fuera del indicador.
+
+### Privacidad, legacy y consumidores
+
+La minimizacion ocurre antes de renderizar. El indicador recibe lenguaje humano necesario para la tarea y no utiliza datos tecnicos o privados como UUID, correo, telefono, documento, token, identificador de sesion, nombres de tablas, RPC o permisos como sustituto del contenido humano.
+
+Las implementaciones `VentoChrome`, chips, menus, selectores y presentaciones de contexto actuales permanecen legacy hasta su migracion propietaria. No se copian firmas locales como API comun.
+
+La adopcion permanece en `SHELL-MIG-*` y `SHELL-CI-*`. Debe demostrarse paridad por consumidor antes de retiro legacy. Consumidores migrados: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -194,6 +250,8 @@ La adopcion, paridad por consumidor, compatibilidad y rollback independiente per
 `Card` permanece fuera de la secuencia de tabulacion por defecto, no inventa roles ni foco, permite reflow de contenido de longitud variable y conserva la semantica de los elementos que el consumidor compone dentro de ella.
 
 `EmptyState` conserva `title` visible, mantiene iconografia decorativa fuera del nombre accesible, no impone region viva, no entra por defecto a la secuencia de tabulacion y conserva la semantica nativa de cualquier accion compuesta por el consumidor.
+
+`ContextIndicator` conserva estado textual, relacion semantica entre etiquetas y valores, orden de lectura, reflow y atributos ARIA compatibles sin imponer una live region, tabulacion, foco automatico o interaccion sobre la raiz.
 
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
@@ -205,8 +263,8 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-`SHELL-UI-006` conserva la responsabilidad del indicador de contexto. `SHELL-UI-005::GLOBAL` no materializa contexto visual, selectores de sede o area, diagnostico de contexto, estados de error recuperable, AppShell, navegacion ni patrones compuestos posteriores.
+`SHELL-UI-007` conserva la responsabilidad del selector compartido de sede. `SHELL-UI-006::GLOBAL` no materializa selectores de sede o area, aviso especializado de rol simulado, diagnostico de contexto, AppShell, navegacion, migracion de consumidores ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, aplicaciones consumidoras, rutas, navegacion, autenticacion, autorizacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, aplicaciones consumidoras, rutas, navegacion, autenticacion, autorizacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni el registro 04A/TREQ.
