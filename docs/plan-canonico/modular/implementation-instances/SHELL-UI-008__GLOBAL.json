@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-008::GLOBAL",
   "task_id": "SHELL-UI-008",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/AreaSelector.tsx como implementacion interna client-boundary de AreaSelector, con AreaSelectorProps y AreaSelectorOption; label/confirmedAreaId/options/onRequestChange obligatorios; requestedAreaId/pending/pendingLabel/disabled/placeholderLabel opcionales; select nativo controlado; separacion entre area confirmada y solicitada; orden de opciones preservado; placeholder no accionable; supresion de solicitudes durante pending; sin autoeleccion, defaults, fallbacks, autoridad, elegibilidad, siteId, areaKind, red, router, cookies, storage, Supabase, os-context, roles, permisos, simulacion ni persistencia.",
+    "Crear packages/ui-web/src/area-selector.css como estilos internos de AreaSelector para label perceptible, select nativo, foco visible, objetivo tactil, reflow, zoom, texto largo, estado pending textual y disabled perceptible usando tokens visuales existentes, sin depender de hover ni convertir estilos internos o taxonomias funcionales en API publica.",
+    "Crear packages/ui-web/scripts/validate-area-selector.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, fronteras del package, API y client boundary, semantica nativa, separacion confirmed/requested, pending, orden y cardinalidad de opciones, ausencia de defaults/fallbacks/persistencia/red/Supabase/os-context/router/permisos/simulacion, coordinacion externa sede-area, estaciones compartidas, concurrencia, accesibilidad estructural, inmovilidad previa y mapa de 50 escenarios contractuales de SHELL-UI-008.",
+    "Actualizar packages/ui-web/README.md mediante reemplazo completo para documentar la materializacion interna de AreaSelector, API, area confirmada frente a solicitada, frontera de autoridad y elegibilidad, coordinacion con SiteSelector y ContextIndicator, separacion de filtro administrativo, estaciones compartidas, concurrencia, accesibilidad, prohibicion de persistencia/red/Supabase/os-context, evidencia actual sin inventar legacy homogeneo, rollback y consumidores diferidos, manteniendo exports npm, version, publicacion, adopcion y retiro legacy fuera de alcance.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los cambios y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-008__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, Alert/Button/Card/EmptyState/ContextIndicator/SiteSelector ni sus estilos o validadores, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, ProfileMenu, VentoChrome, consumidores, filtros administrativos, cookies, storage, settings, query params, rutas, navegacion, autenticacion, autorizacion, resolvers de contexto, roles, turnos, check-in, simulacion, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase, exports npm, versiones, dependencias, publicacion, migracion de consumidores, retiro legacy, SHELL-UI-009 ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-area-selector.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/AreaSelector.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T14:28:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "e6b6aaa5d5921590d846bef268d6b905c1e084b72143f22fbc46942ac02e16c2"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/AreaSelector.tsx created with native select semantics, controlled confirmed/requested separation, pending suppression and request-only callback",
+    "MATERIALIZATION packages/ui-web/src/area-selector.css created with native-control focus, touch target, reflow, pending text and existing ui tokens",
+    "MATERIALIZATION packages/ui-web/scripts/validate-area-selector.mjs and full README update completed without consumer, Supabase, package manifest, export, prior shared component, legacy or TREQ changes",
+    "SOURCE CONTRACT SHA256 e6b6aaa5d5921590d846bef268d6b905c1e084b72143f22fbc46942ac02e16c2",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION AreaSelector validator PASS; scenarios=50 native=select authority=request-only options=EXTERNAL consumers=NOT_MIGRATED legacy=NOT_INFERRED exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/AreaSelector.tsx",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-008::GLOBAL VERIFIED"
+  ]
 }
