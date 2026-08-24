@@ -22,6 +22,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-008::GLOBAL` materializa internamente `AreaSelector` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-008`, sin resolver elegibilidad, autoridad, persistencia, red, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-009::GLOBAL` materializa internamente `SimulatedRoleNotice` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-009`, como presentacion estatica de simulacion controlada por su propietario, sin resolver autoridad, lifecycle, persistencia, red, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -61,6 +63,9 @@ Fronteras vinculantes:
 - `src/AreaSelector.tsx` como implementacion interna de `AreaSelector`.
 - `src/area-selector.css` como estilos internos de `AreaSelector`.
 - `scripts/validate-area-selector.mjs` como validador fisico de `SHELL-UI-008::GLOBAL`.
+- `src/SimulatedRoleNotice.tsx` como implementacion interna de `SimulatedRoleNotice`.
+- `src/simulated-role-notice.css` como estilos internos de `SimulatedRoleNotice`.
+- `scripts/validate-simulated-role-notice.mjs` como validador fisico de `SHELL-UI-009::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -351,6 +356,46 @@ No se observo un patron homogeneo de `AreaSelector` en las siete firmas `Profile
 
 El inventario ejecutable completo, adopcion y retiro permanecen en `SHELL-MIG-*` y `SHELL-CI-*`. Cada consumidor requiere clasificacion, paridad y rollback verificable antes de retirar cualquier control existente. Consumidores migrados: 0.
 
+## SimulatedRoleNotice
+
+`SimulatedRoleNotice` presenta de forma perceptible una simulacion que ya fue determinada por una capa propietaria. El componente no detecta simulaciones, no decide cuando deben existir y no transforma una vista simulada en autoridad efectiva.
+
+Contrato interno materializado:
+
+- `title` obligatorio como titulo visible aportado por la composicion;
+- `simulatedRoleLabel` obligatorio como nombre humano visible del rol que se esta representando;
+- `description` obligatorio como explicacion visible del alcance de la vista;
+- `nonExecutableLabel` obligatorio como texto visible que mantiene perceptible la naturaleza no ejecutable de la representacion;
+- raiz HTML `div` no interactiva;
+- atributos compatibles de `HTMLDivElement`, `aria-*`, `data-*`, `className` y `style` transferibles; `children` queda controlado por la estructura del componente;
+- sin `use client`, estado React, effects, timers, autocierre, foco automatico, movimiento de foco ni listeners globales;
+- sin `role="alert"` ni live region impuestos por defecto;
+- compatible con SSR y con composicion desde componentes cliente.
+
+### Simulacion, autoridad y lifecycle
+
+La capa propietaria determina la existencia de una simulacion y renderiza solo cuando esa condicion ya fue resuelta. El componente no recibe `active` ni `isSimulated` para resolverla por su cuenta.
+
+El rol simulado no sustituye el rol real y la primitiva no modifica identidad, rol base, rol operativo, sesion, contexto efectivo ni permisos. La presentacion no es autoridad: mostrar una capacidad o alcance simulado no concede permisos, no transforma `WOULD_ALLOW` en `ALLOW` y no habilita operaciones reales.
+
+La permanencia visual depende del montaje decidido por la capa propietaria. La primitiva permanece sin dismiss y sin autocierre; no inicia ni termina simulaciones, no persiste sesiones, no audita el lifecycle y no hace enforcement de acciones. Tampoco ofrece selector de rol, salida de simulacion, modo solo lectura ni bloqueo de operaciones criticas.
+
+### Composicion y dependencias
+
+`ContextIndicator`, `SiteSelector`, `AreaSelector` y `SimulatedRoleNotice` conservan responsabilidades separadas. `ContextIndicator` puede resumir el contexto confirmado; los selectores emiten intenciones de cambio; el aviso hace perceptible una condicion simulada ya resuelta. Ninguno absorbe el contrato de los demas.
+
+El copy empresarial permanece externo. Los cuatro textos son entregados por la composicion y no existe un literal global obligatorio como `Modo prueba`, `Solo lectura` o `No ejecutable` congelado dentro de la primitiva.
+
+El componente no consulta `@vento/os-context`, `@vento/supabase`, Supabase, RPC, red, cookies, `localStorage`, `sessionStorage`, IndexedDB, URL, query params o router. No conoce tablas, settings, claims, grants, actor, empleado ni identificadores de sesion.
+
+AppShell permanece fuera de esta materializacion y su evaluacion corresponde a `SHELL-UI-010`.
+
+### Legacy, migracion y rollback
+
+Los usos legacy de `Modo prueba`, role overrides y avisos locales existentes no se canonizan por coincidencia nominal. Su clasificacion, adopcion, paridad y retiro permanecen en `SHELL-MIG-*` y `SHELL-CI-*`.
+
+Cada consumidor requiere paridad y rollback verificable antes de retirar una copia legacy. Consumidores migrados: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -367,6 +412,8 @@ El inventario ejecutable completo, adopcion y retiro permanecen en `SHELL-MIG-*`
 
 `AreaSelector` conserva semantica nativa de `label`, `select` y `option`, teclado del navegador, foco visible, objetivo tactil, reflow y estado pendiente textual cuando la composicion aporta `pendingLabel`; no depende de hover, no mueve foco por un receipt ordinario y no confunde area solicitada con area confirmada.
 
+`SimulatedRoleNotice` conserva los cuatro significados como texto visible, no depende solo de color o iconografia, no entra por defecto a la secuencia de tabulacion, no impone una region viva y permite reflow, zoom, viewport estrecho y contenido largo sin autocierre ni movimiento de foco.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -377,8 +424,14 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-`SHELL-UI-009` conserva la responsabilidad del aviso compartido de rol simulado. `SHELL-UI-008::GLOBAL` no materializa simulacion, diagnostico de contexto, AppShell, navegacion, migracion de consumidores ni patrones compuestos posteriores.
+ÚLTIMA TAREA APROBADA: `SHELL-UI-008`
+
+TAREA ACTUAL APROBADA: `SHELL-UI-009`
+
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-010`
+
+`SHELL-UI-010` conserva la responsabilidad de evaluar AppShell compartido. `SHELL-UI-009::GLOBAL` no materializa AppShell, navegacion, lifecycle o enforcement de simulacion, migracion de consumidores ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/ui-web/src/ContextIndicator.tsx`, `packages/ui-web/src/context-indicator.css`, `packages/ui-web/scripts/validate-context-indicator.mjs`, `packages/ui-web/src/SiteSelector.tsx`, `packages/ui-web/src/site-selector.css`, `packages/ui-web/scripts/validate-site-selector.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `VentoChrome`, aplicaciones consumidoras, cookies legacy, `employee_settings`, query params, rutas, navegacion, autenticacion, autorizacion, resolucion de contexto, roles, turnos, check-in, simulacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, Supabase, `SHELL-UI-009` ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/ui-web/src/ContextIndicator.tsx`, `packages/ui-web/src/context-indicator.css`, `packages/ui-web/scripts/validate-context-indicator.mjs`, `packages/ui-web/src/SiteSelector.tsx`, `packages/ui-web/src/site-selector.css`, `packages/ui-web/scripts/validate-site-selector.mjs`, `packages/ui-web/src/AreaSelector.tsx`, `packages/ui-web/src/area-selector.css`, `packages/ui-web/scripts/validate-area-selector.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `VentoChrome`, aplicaciones consumidoras, role overrides, cookies legacy, sesiones, roles reales o simulados, permisos, grants, contexto efectivo, inicio o salida de simulacion, auditoria de simulacion, modo solo lectura, bloqueo de acciones criticas, AppShell, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, Supabase, `SHELL-UI-010` ni el registro 04A/TREQ.
