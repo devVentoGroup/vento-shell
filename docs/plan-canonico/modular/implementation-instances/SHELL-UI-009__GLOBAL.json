@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-009::GLOBAL",
   "task_id": "SHELL-UI-009",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/SimulatedRoleNotice.tsx como implementacion interna puramente presentacional y compatible con SSR de SimulatedRoleNotice, con SimulatedRoleNoticeProps; title/simulatedRoleLabel/description/nonExecutableLabel obligatorios; atributos HTML compatibles del contenedor transferibles; cuatro significados visibles entregados por la composicion; sin use client, estado React, effects, timers, autocierre, dismiss, selector de rol, lifecycle de simulacion, autoridad, canOperate, wouldAllow, permisos, grants, red, router, cookies, storage, Supabase, RPC, os-context, persistencia ni auditoria.",
+    "Crear packages/ui-web/src/simulated-role-notice.css como estilos internos de SimulatedRoleNotice para jerarquia perceptible de simulacion, rol mostrado, explicacion y naturaleza no ejecutable; texto explicito, contraste por tokens existentes, reflow, zoom, viewport estrecho y texto largo, sin altura rigida, hover obligatorio ni variantes visuales de autoridad.",
+    "Crear packages/ui-web/scripts/validate-simulated-role-notice.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, fronteras del package, API exacta, SSR sin client boundary innecesario, ausencia de estado/timers/autocierre/dismiss/lifecycle/selector/autoridad/red/Supabase/RPC/cookies/storage/URL/router, semantica y accesibilidad no invasivas, coexistencia con ContextIndicator/SiteSelector/AreaSelector, separacion de AppShell, inmovilidad previa, consumidores no migrados y mapa de 50 escenarios contractuales de SHELL-UI-009.",
+    "Actualizar packages/ui-web/README.md para documentar la materializacion interna de SimulatedRoleNotice, API de cuatro textos, rol simulado distinto de rol real, presentacion distinta de autoridad, render controlado por propietario, copy externo, persistencia visual mientras este montado, ausencia de dismiss/autocierre/inicio/salida/auditoria/enforcement, relacion con ContextIndicator, separacion de SiteSelector y AreaSelector, AppShell diferido a SHELL-UI-010, ausencia de Supabase/cookies/storage/router, legacy Modo prueba y role overrides no canonizados, consumidores migrados cero y continuidad reservada.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los cambios y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-009__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, Alert/Button/Card/EmptyState/ContextIndicator/SiteSelector/AreaSelector ni sus estilos o validadores, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, ProfileMenu, VentoChrome, consumidores, role-override, cookies legacy, sesiones, roles reales o simulados, permisos, grants, contexto efectivo, lifecycle o auditoria de simulacion, modo solo lectura, bloqueo de acciones criticas, AppShell, SHELL-UI-010, Supabase, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-simulated-role-notice.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/SimulatedRoleNotice.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T15:01:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "7e2fd3c04f81d337dc72a9b42babae6ea03c1fd0eeb238c6e1107b34bde2db2d"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/SimulatedRoleNotice.tsx created as presentational simulated-role notice with externally supplied copy and no authority or simulation lifecycle ownership",
+    "MATERIALIZATION packages/ui-web/src/simulated-role-notice.css created using existing ui tokens with reflow, long-text handling and non-color-only non-executable presentation",
+    "MATERIALIZATION packages/ui-web/scripts/validate-simulated-role-notice.mjs and full README update completed without consumer, Supabase, package manifest, export, prior shared component, AppShell, legacy or TREQ changes",
+    "SOURCE CONTRACT SHA256 7e2fd3c04f81d337dc72a9b42babae6ea03c1fd0eeb238c6e1107b34bde2db2d",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION SimulatedRoleNotice validator PASS; scenarios=50 presentation=STATIC authority=NONE lifecycle=OWNER_CONTROLLED consumers=NOT_MIGRATED exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/SimulatedRoleNotice.tsx",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-009::GLOBAL VERIFIED"
+  ]
 }
