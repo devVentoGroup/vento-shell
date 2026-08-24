@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-005::GLOBAL",
   "task_id": "SHELL-UI-005",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/EmptyState.tsx como implementacion interna server-safe del componente EmptyState, con title requerido, description/icon/action opcionales, div nativo no interactivo, atributos HTMLDivElement y ARIA compatibles transferibles, accion compuesta por el consumidor y sin fallback de copy, role, aria-live, foco, router, taxonomia paralela, Supabase, contexto ni logica empresarial.",
+    "Crear packages/ui-web/src/empty-state.css como estilos internos de EmptyState con presentacion centrada de baja jerarquia, reflow, texto largo, icono y descripcion secundarios mediante tokens ui existentes, sin Card interna, superficie, borde, sombra, altura fija, selector legacy exacto ni contrato CSS publico.",
+    "Crear packages/ui-web/scripts/validate-empty-state.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, fronteras del package, API runtime/SSR, composicion, accesibilidad estructural, separacion de vacio frente a error/loading/permiso/contexto, privacidad, inmovilidad legacy y mapa de 50 escenarios contractuales de SHELL-UI-005.",
+    "Actualizar packages/ui-web/README.md para documentar la materializacion interna de EmptyState, sus fronteras semanticas y legacy, y mantener explicitamente diferidos version npm, exports publicos, main/types, dependencias propias, entrypoint CSS publico, publicacion, consumidores, compatibilidad final, rollback y retiro legacy.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-005__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, componentes Alert/Button/Card ni sus estilos/validadores, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, SHELL-UI-006..020, exports npm, versiones, dependencias, consumidores, clases o componentes legacy, rutas, navegacion, autenticacion, autorizacion, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-empty-state.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/EmptyState.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T10:47:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "e97e013f81129982b309ef6aa0be712fa802ee7ffeb2b4cbc78025a9b361d8af"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/EmptyState.tsx created as internal server-safe EmptyState with required title, optional description/icon/action, native non-interactive div semantics and compatible HTMLDivElement/ARIA attributes",
+    "MATERIALIZATION packages/ui-web/src/empty-state.css created as internal low-hierarchy centered presentation with reflow and existing ui-muted token without Card surface semantics or legacy exact root selector",
+    "MATERIALIZATION packages/ui-web/scripts/validate-empty-state.mjs and README update completed without package manifest, lockfile, Alert, Button, Card, public exports, consumers, template, Supabase or TREQ changes",
+    "SOURCE CONTRACT SHA256 e97e013f81129982b309ef6aa0be712fa802ee7ffeb2b4cbc78025a9b361d8af",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION EmptyState validator PASS; scenarios=50 root=DIV title=REQUIRED description=OPTIONAL icon=OPTIONAL action=OPTIONAL ssr=SAFE consumers=NOT_MIGRATED legacy=UNCHANGED exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/EmptyState.tsx",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-005::GLOBAL VERIFIED"
+  ]
 }

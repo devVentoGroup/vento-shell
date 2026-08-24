@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `AUTH-DB-024` — Versionar Edge Functions, webhooks, cron y automatizaciones | `AUTH-DB-025` — Implementar índices, retención y controles de crecimiento | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-UI-005::GLOBAL` — Compartir EmptyState | `SHELL-UI-006::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-UI-006::GLOBAL` — Compartir indicador de contexto | `SHELL-UI-007::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1030/1594 aprobadas** | **563** no aprobadas (1 propuesta, 0 rechazadas) | `AUTH-DB-024` |
-| 🟧 **Implementación física conocida** | **59/95 VERIFIED** | **36** no terminales | `SHELL-UI-005::GLOBAL` |
+| 🟧 **Implementación física conocida** | **60/95 VERIFIED** | **35** no terminales | `SHELL-UI-006::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-UI-005::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **35**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-UI-006::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **34**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,18 +35,18 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `SHELL-UI-005::GLOBAL` | Compartir EmptyState | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `SHELL-UI-006::GLOBAL` | Compartir indicador de contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 3 | PENDIENTE | `SHELL-UI-007::GLOBAL` | Compartir selector de sede | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 4 | PENDIENTE | `SHELL-UI-008::GLOBAL` | Compartir selector de área | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 5 | PENDIENTE | `SHELL-UI-009::GLOBAL` | Compartir aviso de rol simulado | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 6 | PENDIENTE | `SHELL-UI-010::GLOBAL` | Evaluar AppShell compartido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 7 | PENDIENTE | `SHELL-UI-011::GLOBAL` | Compartir navegación orientada a tareas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 8 | PENDIENTE | `SHELL-UI-012::GLOBAL` | Compartir línea de estados de proceso | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 9 | PENDIENTE | `SHELL-UI-013::GLOBAL` | Compartir panel de acción principal | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 10 | PENDIENTE | `SHELL-UI-014::GLOBAL` | Compartir confirmaciones de acciones sensibles | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 11 | PENDIENTE | `SHELL-UI-015::GLOBAL` | Compartir diagnóstico de contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
-| 12 | PENDIENTE | `SHELL-UI-016::GLOBAL` | Compartir estados de error recuperable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-005::GLOBAL. |
+| 1 | **ACTUAL** | `SHELL-UI-006::GLOBAL` | Compartir indicador de contexto | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `SHELL-UI-007::GLOBAL` | Compartir selector de sede | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 3 | PENDIENTE | `SHELL-UI-008::GLOBAL` | Compartir selector de área | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 4 | PENDIENTE | `SHELL-UI-009::GLOBAL` | Compartir aviso de rol simulado | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 5 | PENDIENTE | `SHELL-UI-010::GLOBAL` | Evaluar AppShell compartido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 6 | PENDIENTE | `SHELL-UI-011::GLOBAL` | Compartir navegación orientada a tareas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 7 | PENDIENTE | `SHELL-UI-012::GLOBAL` | Compartir línea de estados de proceso | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 8 | PENDIENTE | `SHELL-UI-013::GLOBAL` | Compartir panel de acción principal | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 9 | PENDIENTE | `SHELL-UI-014::GLOBAL` | Compartir confirmaciones de acciones sensibles | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 10 | PENDIENTE | `SHELL-UI-015::GLOBAL` | Compartir diagnóstico de contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 11 | PENDIENTE | `SHELL-UI-016::GLOBAL` | Compartir estados de error recuperable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
+| 12 | PENDIENTE | `SHELL-UI-017::GLOBAL` | Compartir patrón para tablet | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-006::GLOBAL. |
 
 ## Modos de trabajo y materialización
 
