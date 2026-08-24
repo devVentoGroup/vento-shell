@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1034** |
+| Tareas aprobadas | **1035** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **560** |
+| Tareas no iniciadas | **559** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **64.87% (1034/1594)** |
+| Porcentaje de completamiento | **64.93% (1035/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado** |
-| Tarea actual | **DATA-NORM-DB-001 — Implementar almacenamiento de versiones de reglas y diccionarios** |
+| Última tarea aprobada | **DATA-NORM-DB-001 — Implementar almacenamiento de versiones de reglas y diccionarios** |
+| Tarea actual | **DATA-NORM-DB-002 — Implementar funciones SQL deterministas cuando sean necesarias** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-DB-002 — Implementar funciones SQL deterministas cuando sean necesarias** |
+| Siguiente tarea | **DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 33 de 51 aprobadas; DATA-NORM-DB-001 pendiente** |
+| Progreso del bloque | **BLOQUE R: 34 de 51 aprobadas; DATA-NORM-DB-002 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-UI-011::GLOBAL** |
-| Carril documental | **ACTIVO — DATA-NORM-DB-001** |
+| Carril documental | **ACTIVO — DATA-NORM-DB-002** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-UI-011::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-026` — Generar y publicar tipos después de cada paquete aprobado |
-| Tarea actual | `DATA-NORM-DB-001` — Implementar almacenamiento de versiones de reglas y diccionarios — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-DB-002` — Implementar funciones SQL deterministas cuando sean necesarias |
+| Última aprobada | `DATA-NORM-DB-001` — Implementar almacenamiento de versiones de reglas y diccionarios |
+| Tarea actual | `DATA-NORM-DB-002` — Implementar funciones SQL deterministas cuando sean necesarias — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-DB-003` — Implementar columnas o expresiones normalizadas de búsqueda |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 33 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 34 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-002** |
 | Implementación física | **SHELL-UI-011::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
-        ↓
-TAREA ACTUAL
 DATA-NORM-DB-001 — Implementar almacenamiento de versiones de reglas y diccionarios
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-DB-002 — Implementar funciones SQL deterministas cuando sean necesarias
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 33 de 51 tareas aprobadas
+BLOQUE R — 34 de 51 tareas aprobadas
 ```
