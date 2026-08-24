@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-003::GLOBAL",
   "task_id": "SHELL-UI-003",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/Button.tsx como implementacion interna server-safe del componente Button, con variantes primary/secondary/outline/ghost/danger, primary por defecto, tamanos sm/md/lg, md por defecto, button nativo, type=button por defecto, atributos y eventos HTML compatibles transferibles, disabled nativo y loading que deshabilita activacion repetida, expone aria-busy y conserva children sin literal Cargando....",
+    "Crear packages/ui-web/src/button.css como estilos internos de Button con cinco variantes y tres tamanos diferenciados, foco visible, estados disabled/loading, reflow y spinner decorativo compatible con prefers-reduced-motion, sin materializar brand, success, fullWidth ni un contrato CSS publico.",
+    "Crear packages/ui-web/scripts/validate-button.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, fronteras de package, contrato runtime/SSR, cinco variantes, tres tamanos, semantica nativa, loading/disabled, accesibilidad estructural, inmovilidad legacy y mapa de 50 escenarios contractuales de SHELL-UI-003.",
+    "Actualizar packages/ui-web/README.md para documentar la materializacion interna de Button y mantener explicitamente diferidos version npm, exports publicos, main/types, peer dependencies propias, entrypoint CSS publico, publicacion, consumidores, compatibilidad final, rollback y retiro legacy.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-003__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, packages/ui-web/src/Alert.tsx, packages/ui-web/src/alert.css, packages/ui-web/scripts/validate-alert.mjs, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, SHELL-UI-004..020, exports npm, versiones, dependencias, consumidores, rutas, navegacion, autenticacion, autorizacion, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-button.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/Button.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T01:44:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "d8bcd7ff87d51d7651bd0b946bd487fdc9db81c55af16e6b88a674f4ecbf74c6"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/Button.tsx created as internal server-safe Button with five canonical variants, three canonical sizes, native button semantics, type=button default, native disabled and loading that preserves action identity",
+    "MATERIALIZATION packages/ui-web/src/button.css created as internal component styles with focus, disabled/loading, reflow and reduced-motion treatment without public CSS surface",
+    "MATERIALIZATION packages/ui-web/scripts/validate-button.mjs and README update completed without package manifest, lockfile, Alert, public exports, consumers, template, Supabase or TREQ changes",
+    "SOURCE CONTRACT SHA256 d8bcd7ff87d51d7651bd0b946bd487fdc9db81c55af16e6b88a674f4ecbf74c6",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION Button validator PASS; scenarios=50 variants=5 sizes=3 loading=SAFE ssr=SAFE consumers=NOT_MIGRATED legacy=UNCHANGED exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/Button.tsx",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-003::GLOBAL VERIFIED"
+  ]
 }

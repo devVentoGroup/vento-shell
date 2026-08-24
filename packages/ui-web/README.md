@@ -8,7 +8,9 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-001::GLOBAL` materializo la identidad fisica del workspace `@vento/ui-web` autorizada por la reconciliacion `GLOBAL_ENABLE_ONCE` / `PRE_E5_FOUNDATION`.
 
-`SHELL-UI-002::GLOBAL` materializa internamente `Alert` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-002`, sin publicar todavia una API npm, una version, un entrypoint CSS ni una adopcion por consumidores.
+`SHELL-UI-002::GLOBAL` materializo internamente `Alert` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-002`.
+
+`SHELL-UI-003::GLOBAL` materializa internamente `Button` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-003`, sin publicar todavia una API npm, una version, un entrypoint CSS ni una adopcion por consumidores.
 
 ## Responsabilidad canonica
 
@@ -29,8 +31,11 @@ Fronteras vinculantes:
 - `package.json` privado de workspace.
 - Este `README.md`.
 - `src/Alert.tsx` como implementacion interna de `Alert`.
-- `src/alert.css` como estilos internos del componente.
+- `src/alert.css` como estilos internos de `Alert`.
 - `scripts/validate-alert.mjs` como validador fisico de `SHELL-UI-002::GLOBAL`.
+- `src/Button.tsx` como implementacion interna de `Button`.
+- `src/button.css` como estilos internos de `Button`.
+- `scripts/validate-button.mjs` como validador fisico de `SHELL-UI-003::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -61,9 +66,42 @@ Los nombres `.ui-alert*` usados por la implementacion interna no constituyen un 
 
 La implementacion normaliza las variantes futuras a `warning` y `danger`. Las variantes legacy `.ui-alert--warn` y `.ui-alert--error` permanecen intactas en el template historico y en consumidores hasta su migracion propietaria; no se copian como variantes nuevas de la API.
 
+## Button
+
+`Button` representa una accion e interaccion entregada por el consumidor. No decide que acciones existen, quien puede ejecutarlas, que operacion empresarial corresponde ni si una mutacion fue confirmada.
+
+Contrato interno materializado:
+
+- variantes `primary`, `secondary`, `outline`, `ghost` y `danger`;
+- `primary` por defecto;
+- tamanos `sm`, `md` y `lg`;
+- `md` por defecto;
+- elemento HTML nativo `button`;
+- `type="button"` por defecto, con `submit` y `reset` transferibles cuando el consumidor los declara;
+- atributos nativos compatibles, eventos, `aria-*`, `data-*`, `className` y `style` transferibles;
+- estado `disabled` basado en semantica nativa;
+- `loading` deshabilita activacion repetida equivalente y expone `aria-busy="true"`;
+- `loading` conserva `children` y por tanto la identidad visible y accesible de la accion;
+- indicador visual de carga decorativo y compatible con `prefers-reduced-motion`;
+- sin literal global `Cargando...` ni `loadingLabel` impuesto;
+- sin prop especifica `fullWidth`;
+- sin variante `brand` ni `success`;
+- sin props especificas de icono;
+- sin polimorfismo Link, `href`, router o navegacion;
+- sin estado React obligatorio, efectos, timers, red, Supabase, sesion o autorizacion;
+- compatible con SSR y con composicion desde componentes cliente.
+
+Los nombres `.ui-button*` usados por la implementacion interna no constituyen un contrato CSS publico del package mientras no exista un entrypoint CSS publicado.
+
+La variante `danger` expresa riesgo visual solamente. No sustituye confirmacion, step-up, permiso, validacion de recurso, idempotencia, receipt ni auditoria. El patron compuesto de confirmaciones sensibles permanece reservado a `SHELL-UI-014`.
+
+La ocupacion de ancho permanece responsabilidad de layout o composicion. La implementacion legacy local con `fullWidth`, el literal `Cargando...` y el boundary `use client`, asi como la variante historica `brand` de `vento/standard`, permanecen intactos hasta su migracion propietaria; no se copian como contrato nuevo.
+
 ## Accesibilidad
 
-La apariencia visual de `Alert` no implica una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige. El componente no captura ni mueve foco por defecto y el icono nunca sustituye el contenido textual.
+`Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
+
+`Button` conserva semantica nativa, foco visible, estados `disabled` y `loading` perceptibles, identidad de accion durante carga, reflow de contenido y soporte de nombre accesible aportado por el consumidor para botones de solo icono. La semantica nativa no se reemplaza por `role="button"` sobre elementos no interactivos.
 
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
@@ -75,8 +113,8 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-`SHELL-UI-003` conserva la responsabilidad de `Button`. `SHELL-UI-002::GLOBAL` no modifica `Button`, `Card`, `EmptyState`, contexto visual, AppShell, navegacion ni patrones compuestos posteriores.
+`SHELL-UI-004` conserva la responsabilidad de `Card`. `SHELL-UI-003::GLOBAL` no modifica `Card`, `EmptyState`, contexto visual, AppShell, navegacion ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/contracts`, `packages/os-context`, `packages/supabase`, aplicaciones consumidoras, rutas, navegacion, autenticacion, autorizacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, aplicaciones consumidoras, rutas, navegacion, autenticacion, autorizacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni el registro 04A/TREQ.
