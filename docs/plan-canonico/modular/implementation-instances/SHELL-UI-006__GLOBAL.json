@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-006::GLOBAL",
   "task_id": "SHELL-UI-006",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/ContextIndicator.tsx como implementacion interna server-safe y puramente presentacional de ContextIndicator, con ContextIndicatorProps, ContextIndicatorState y ContextIndicatorItem; state/stateLabel/items obligatorios; estados resolving/active/changing/stale/invalid/unavailable; pares label/value humanos en orden del consumidor; raiz div no interactiva; estructura descriptiva dl/dt/dd; atributos HTMLDivElement y ARIA compatibles transferibles; sin children libre, selectores, fallbacks autoritativos, estado React, red, router, storage, timers, Supabase, contexto runtime ni autorizacion.",
+    "Crear packages/ui-web/src/context-indicator.css como estilos internos de ContextIndicator para estado textual perceptible, seis estados visualmente distinguibles, resumen compacto, reflow, zoom, valores largos y disposicion adaptable sin depender de hover, sin hardcodear colores de tema y sin convertir estilos internos o selectores legacy en contrato CSS publico.",
+    "Crear packages/ui-web/scripts/validate-context-indicator.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, fronteras del package, API runtime/SSR, seis estados, stateLabel, semantica label/value, orden, cero o multiples items, ausencia de fallbacks e inferencias, separacion de autoridad/selectores/simulacion/diagnostico, accesibilidad estructural, privacidad, inmovilidad legacy y mapa de 40 escenarios contractuales de SHELL-UI-006.",
+    "Actualizar packages/ui-web/README.md para documentar la materializacion interna de ContextIndicator, sus seis estados, fronteras de autoridad y frescura, contexto operativo frente a alcance administrativo, accesibilidad, separacion de selectores/simulacion/diagnostico, legacy y consumidores diferidos, manteniendo exports npm, version, publicacion, adopcion y retiro legacy fuera de alcance.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los cambios y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-006__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, Alert/Button/Card/EmptyState ni sus estilos o validadores, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, SHELL-UI-007..020, exports npm, versiones, dependencias, consumidores, VentoChrome, rutas, navegacion, autenticacion, autorizacion, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-context-indicator.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/ContextIndicator.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T12:34:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "1c3683ab3c8542b98e0a75062165b4091a9e92653b07794a086e389894ad6fe1"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/ContextIndicator.tsx created as internal server-safe ContextIndicator with required state/stateLabel/items, six presentation states, preserved item order, native non-interactive div root and dl/dt/dd descriptive semantics",
+    "MATERIALIZATION packages/ui-web/src/context-indicator.css created with textual state presentation, responsive reflow and existing ui tokens without public CSS exports or legacy selector migration",
+    "MATERIALIZATION packages/ui-web/scripts/validate-context-indicator.mjs and README update completed without package manifest, lockfile, existing shared components, consumers, template, Supabase or TREQ changes",
+    "SOURCE CONTRACT SHA256 1c3683ab3c8542b98e0a75062165b4091a9e92653b07794a086e389894ad6fe1",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION ContextIndicator validator PASS; scenarios=40 states=6 root=DIV list=DL order=PRESERVED ssr=SAFE consumers=NOT_MIGRATED legacy=UNCHANGED exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/ContextIndicator.tsx",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-006::GLOBAL VERIFIED"
+  ]
 }
