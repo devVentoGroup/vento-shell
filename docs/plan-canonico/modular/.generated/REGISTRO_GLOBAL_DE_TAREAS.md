@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1030** |
+| Aprobadas | **1031** |
 | En propuesta | **0** |
-| No iniciadas | **564** |
+| No iniciadas | **563** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **64.62% (1030/1594)** |
+| Porcentaje de completamiento | **64.68% (1031/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DB-022` — Implementar gobierno y políticas de Storage | ✅ APROBADA |
-| Tarea actual | `AUTH-DB-023` — Implementar canales y contratos Realtime aprobados | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DB-024` — Versionar Edge Functions, webhooks, cron y automatizaciones | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DB-023` — Implementar canales y contratos Realtime aprobados | ✅ APROBADA |
+| Tarea actual | `AUTH-DB-024` — Versionar Edge Functions, webhooks, cron y automatizaciones | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DB-025` — Implementar índices, retención y controles de crecimiento | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1240,7 +1240,7 @@
 | ✅ APROBADA | `AUTH-DB-021` | Implementar políticas RLS y grants canónicos por esquema | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ✅ APROBADA | `AUTH-DB-011` | Aplicar constraints después de backfills y reconciliación | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ✅ APROBADA | `AUTH-DB-022` | Implementar gobierno y políticas de Storage | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
-| ⬜ NO INICIADA | `AUTH-DB-023` | Implementar canales y contratos Realtime aprobados | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
+| ✅ APROBADA | `AUTH-DB-023` | Implementar canales y contratos Realtime aprobados | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-024` | Versionar Edge Functions, webhooks, cron y automatizaciones | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-025` | Implementar índices, retención y controles de crecimiento | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ⬜ NO INICIADA | `AUTH-DB-026` | Generar y publicar tipos después de cada paquete aprobado | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |

@@ -12846,7 +12846,514 @@ Esta tarea no:
 `AUTH-DB-023 — Implementar canales y contratos Realtime aprobados`
 
 
-### [ ] AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
+### ✅ AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-022 — Implementar gobierno y políticas de Storage
+**Tarea siguiente:** AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para materializar publicaciones, canales, señales y consumidores Realtime únicamente desde contratos ya aprobados y con recuperación, autorización, compatibilidad y capacidad verificadas
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `REALTIME-CHANNELS-PACKAGE-023@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-023::package_id` permanece no ejecutada hasta satisfacer R0/R1 aplicables, el paquete E5 correspondiente, `E5-GATE-008::package_id`, `SHELL-CI-020::package_id` y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Cerrar el contrato documental que gobierna cómo un paquete de implementación podrá materializar Realtime sin convertir una publicación, una conexión abierta, un cambio de fila, un canal, Broadcast o Presence en fuente de verdad empresarial.
+
+La unidad de trabajo queda fijada así:
+
+```text
+package_id aprobado
+→ superficies Realtime requeridas por el paquete
+→ productores y consumidores reales reconciliados
+→ contrato de snapshot + señal + recovery
+→ autorización y minimización
+→ compatibilidad y capacidad
+→ materialización física posterior bajo gate explícito
+```
+
+Esta tarea define la plantilla repetible. No crea publicaciones, no agrega tablas a `supabase_realtime`, no altera `REPLICA IDENTITY`, no crea políticas sobre `realtime.messages`, no modifica consumidores, no habilita Broadcast o Presence y no ejecuta cutover.
+
+#### 2. Alcance y límites
+
+Cada futura instancia `AUTH-DB-023::package_id` deberá limitarse a las superficies que el paquete E5 haya declarado necesarias y deberá resolver, como mínimo:
+
+1. publicación o mecanismo de transporte seleccionado;
+2. relación, proyección, evento o señal fuente;
+3. owner empresarial del hecho o estado;
+4. productor técnico autorizado;
+5. consumidores reales y versiones desplegadas;
+6. actor, territorio y recurso que condicionan acceso;
+7. operaciones, columnas, payload y filtros mínimos;
+8. snapshot inicial y fuente durable de recuperación;
+9. deduplicación, orden y detección de gaps;
+10. lifecycle de conexión y cleanup;
+11. fallback y experiencia degradada;
+12. capacidad, rate, reconexión y observabilidad;
+13. compatibilidad temporal y criterio de retiro;
+14. rollback y evidencia de paridad.
+
+Queda fuera de esta tarea documental cualquier materialización global y cualquier cambio físico anterior al paquete correspondiente.
+
+#### 3. Resultado canónico
+
+Se establece:
+
+```text
+REALTIME-CHANNELS-PACKAGE-023@1.0.0
+```
+
+con cardinalidad:
+
+```text
+1 contrato documental global
+N instancias físicas futuras, como máximo 1 por package_id aplicable
+```
+
+La plantilla no presupone que todos los paquetes necesiten Realtime. Un paquete sin necesidad demostrable deberá declarar `NO_REALTIME_SURFACE_REQUIRED` y no materializar infraestructura por simetría.
+
+#### 4. Principio de autoridad
+
+La relación obligatoria es:
+
+```text
+FUENTE DURABLE / PROYECCIÓN AUTORIZADA
+        ↓
+SNAPSHOT O LECTURA DE RECUPERACIÓN
+        ↓
+SEÑAL REALTIME MINIMIZADA
+        ↓
+CONSUMIDOR AUTORIZADO
+        ↓
+RECONCILIACIÓN CONTRA FUENTE DURABLE
+```
+
+Reglas vinculantes:
+
+1. Realtime transporta señales o cambios; no adquiere autoridad empresarial.
+2. Un ACK de canal, publicación o suscripción no confirma un efecto de negocio.
+3. Un cambio de fila no se interpreta como evento empresarial salvo que exista una definición canónica durable que lo autorice.
+4. Broadcast permanece efímero y nunca es la única prueba de un hecho.
+5. Presence representa únicamente estado efímero de presencia o interacción y nunca asistencia, turno, pago, pedido, entrega, producción, aprobación o cierre.
+6. Todo efecto durable del consumidor se ejecuta mediante el comando y la autorización de su propio dominio.
+7. Replay y recovery parten de una fuente durable, nunca del canal efímero como única evidencia.
+
+#### 5. Contrato mínimo por superficie
+
+Toda superficie materializable deberá registrar:
+
+```text
+realtime_contract_id
+package_id
+owner_schema_id
+contract_key
+transport_mode
+source_kind
+source_qualified_name
+durable_recovery_source
+producer
+consumer_repository
+consumer_application
+consumer_runtime
+consumer_version
+actor_requirement
+resource_scope
+territory_scope
+operations_allowlist
+columns_or_projection_allowlist
+server_filter
+rls_requirement
+channel_authorization
+replica_identity_requirement
+topic_pattern
+payload_contract
+snapshot_contract
+buffer_contract
+recovery_contract
+deduplication_contract
+ordering_contract
+fallback_contract
+cleanup_contract
+capacity_profile
+observability_contract
+compatibility_contract
+rollback_contract
+lifecycle_status
+```
+
+No se permite declarar una superficie `ACTIVE` con campos esenciales desconocidos, consumidores supuestos o recovery narrativo.
+
+#### 6. Selección del modo de transporte
+
+La instancia deberá seleccionar únicamente un modo aprobado por `SUPABASE-REALTIME-EVENT-ARCHITECTURE-001@1.0.0` y justificar su uso contra semántica, sensibilidad, volumen, recuperación y compatibilidad.
+
+Criterios obligatorios:
+
+- `Postgres Changes` solo para estado o proyección acotados que sean compatibles con logical replication, tengan PK, seguridad, operaciones, minimización, snapshot y recovery aprobados.
+- `Broadcast` solo para señales efímeras, invalidaciones, actividad de interfaz o disponibilidad de un resultado durable.
+- `Presence` solo para presencia efímera y nunca para hechos empresariales.
+- evento durable, snapshot, polling o mecanismo alterno se utilizarán cuando la semántica o la recuperabilidad no permitan depender de una señal efímera.
+
+Una vista no se convierte en objetivo válido de Postgres Changes por ser consumible mediante Data API.
+
+#### 7. Publicaciones PostgreSQL
+
+Toda relación incluida por una futura instancia deberá demostrar antes de cambiar una publicación:
+
+1. owner y finalidad exactos;
+2. consumidor real confirmado;
+3. compatibilidad con logical replication;
+4. PK suficiente;
+5. `REPLICA IDENTITY` compatible con el payload realmente utilizado;
+6. operaciones estrictamente necesarias;
+7. columnas o proyección minimizadas;
+8. filtros de publicación cuando sean compatibles con el contrato;
+9. RLS y grants coherentes con la lectura equivalente;
+10. snapshot y recuperación independientes del stream;
+11. volumen y fan-out dentro del presupuesto;
+12. rollback que retire únicamente la superficie añadida por la instancia.
+
+`REPLICA IDENTITY FULL` es una excepción explícita; no se habilita para reparar consumidores que dependan indebidamente de `payload.old`.
+
+#### 8. Canales, topics y autorización
+
+Los canales empresariales son privados por defecto.
+
+La gramática objetivo es:
+
+```text
+vento:v1:owner_schema:contract_key:opaque_partition
+```
+
+Reglas:
+
+1. el topic no concede autorización;
+2. `opaque_partition` no contiene PII ni secretos;
+3. correo, teléfono, documento, dirección, token, cuerpo sensible o identificador humano innecesario quedan excluidos de nombres de canal y payload técnico;
+4. Broadcast y Presence requieren autorización de canal compatible con el actor, recurso y territorio;
+5. un canal público solo se admite para una señal deliberadamente pública, minimizada y sin autoridad empresarial;
+6. toda versión incompatible de topic o payload usa una versión mayor y conserva compatibilidad o cutover gobernado.
+
+#### 9. Snapshot, bootstrap y lifecycle del consumidor
+
+El bootstrap predeterminado es:
+
+```text
+SUBSCRIBE / BUFFER
+→ LOAD SNAPSHOT
+→ RECONCILE VERSION
+→ APPLY BUFFER
+→ LIVE
+```
+
+El consumidor deberá representar explícitamente:
+
+```text
+IDLE
+CONNECTING
+SUBSCRIBING
+SNAPSHOT_LOADING
+CATCHING_UP
+LIVE
+DEGRADED
+RECONNECTING
+RECOVERY_REQUIRED
+CLOSED
+```
+
+No se declara `LIVE` por el solo hecho de recibir `SUBSCRIBED`.
+
+Después de una desconexión con intervalo desconocido, cambio de actor, revocación, cambio territorial o pérdida de cursor, el consumidor debe reconciliar contra snapshot, cursor o fuente durable antes de volver a `LIVE`.
+
+#### 10. Duplicados, orden y gaps
+
+Realtime no ofrece una garantía empresarial de exactly-once.
+
+Cada contrato deberá:
+
+- deduplicar por identidad estable cuando la señal pueda repetirse;
+- rechazar o ignorar señales obsoletas;
+- detectar saltos de versión o predecessor ausente;
+- ordenar por agregado, versión o dependencia declarada, no por una supuesta secuencia global;
+- disparar recovery ante gap no resoluble;
+- impedir que duplicados o señales atrasadas retrocedan estado o repitan efectos;
+- usar inbox o mecanismo equivalente cuando el consumidor produzca un efecto durable.
+
+#### 11. Dispositivos compartidos y revocación
+
+Cuando el consumidor opere sobre dispositivo compartido, cada canal, buffer, snapshot, timer y recovery pertenece simultáneamente a la sesión técnica y al actor efectivo vigente.
+
+El cambio de actor, pérdida de permiso, cambio de sede o área, expiración, revocación o cierre de vínculo deberá:
+
+```text
+CERRAR RECURSOS ANTERIORES
+→ INVALIDAR BUFFER Y SNAPSHOT NO TRANSFERIBLES
+→ REVALIDAR AUTORIDAD
+→ CREAR NUEVA SUSCRIPCIÓN SI PROCEDE
+```
+
+Ninguna suscripción del actor anterior puede sobrevivir por reutilización del cliente Supabase o del dispositivo.
+
+#### 12. Fallback y degradación
+
+Toda superficie deberá declarar un fallback observable.
+
+Son válidos, según contrato:
+
+- refetch acotado;
+- polling con presupuesto;
+- snapshot manual o automático;
+- cursor durable;
+- estado `DEGRADED` con acción de recuperación.
+
+Queda prohibido ocultar pérdida de Realtime manteniendo una UI congelada como si estuviera actualizada.
+
+Polling, reconexión y retries deberán usar backoff, jitter y límites para evitar tormentas y cascadas de consultas.
+
+#### 13. Capacidad y observabilidad
+
+Antes de activar una instancia física, el paquete deberá declarar y probar:
+
+- canales activos esperados;
+- consumidores por partición;
+- tasa normal y burst;
+- tamaño máximo de señal o referencia a contenido mayor;
+- costo de snapshot y polling;
+- estrategia de reconexión;
+- límites de fan-out;
+- latencia de suscripción y frescura;
+- gaps, duplicados y recovery;
+- denegaciones de autorización;
+- bytes y errores de aplicación;
+- SLO, umbrales de alerta y owner operativo.
+
+Una conexión abierta no constituye éxito funcional.
+
+#### 14. Línea base remota verificada para esta definición
+
+La consulta read-only vigente sobre `vento-os-dev` confirma:
+
+```text
+supabase_realtime
+  6 relaciones empresariales publicadas
+
+public.order_conversations
+public.order_delivery_sessions
+public.order_messages
+public.order_status_events
+public.orders
+public.users
+```
+
+Las seis relaciones conservan RLS habilitado y `REPLICA IDENTITY DEFAULT`.
+
+También existe la publicación administrada `supabase_realtime_messages_publication`. Su infraestructura interna pertenece a la plataforma y no se convierte en superficie empresarial de Vento por aparecer en el catálogo PostgreSQL.
+
+En el corte remoto consultado existen cero políticas de Vento dentro del schema `realtime`.
+
+Esta línea base es evidencia del estado observado, no una aprobación automática de las seis relaciones ni una obligación de conservarlas.
+
+#### 15. Reconciliación obligatoria de consumidores actuales
+
+La auditoría histórica identificó catorce casos de superficie y diecisiete patrones de canal. Esos conteos se conservan como baseline de auditoría, no como cardinalidad perpetua.
+
+La revisión actual de código confirma que todavía existen consumidores `postgres_changes` en ANIMA y PULSO. La búsqueda actual de `postgres_changes` en PASS no devuelve coincidencias.
+
+Por tanto, cada `AUTH-DB-023::package_id` deberá reconciliar de nuevo:
+
+```text
+consumer_repository
++ commit observado
++ source_kind
++ table / schema / filter
++ channel name
++ handler
++ snapshot
++ fallback
++ cleanup
++ owner
++ package_id
+```
+
+Un consumidor histórico que ya no existe no se recrea para satisfacer un conteo antiguo. Un consumidor nuevo no inventariado se incorpora al contrato antes de cualquier cambio físico.
+
+#### 16. Casos bloqueantes heredados
+
+Permanecen como condiciones a reconciliar, no como instrucciones de cambio global:
+
+1. suscripciones históricas dirigidas a relaciones no publicadas;
+2. consumidores PULSO sobre vistas `public.pos_table_service_calls` y `public.pos_sessions`, que no pueden convertirse en targets válidos de Postgres Changes por ser vistas;
+3. `public.users` publicada sin necesidad automáticamente demostrada;
+4. dependencia de `payload.old` bajo `REPLICA IDENTITY DEFAULT`;
+5. filtros exclusivamente cliente sobre relaciones multiusuario;
+6. publicaciones amplias con columnas sensibles o innecesarias;
+7. canales sin registro, recovery o cleanup completo;
+8. ausencia de políticas empresariales sobre `realtime.messages` si un paquete pretende usar Broadcast o Presence privados.
+
+La instancia afectada permanece bloqueada mientras cualquiera de estas condiciones aplique sin resolución contractual y prueba E2E.
+
+#### 17. Gate de drift por package
+
+Antes de materializar, cada instancia clasifica toda diferencia entre arquitectura, remoto y consumidores como:
+
+```text
+MATCHES_APPROVED_CONTRACT
+APPROVED_PACKAGE_DELTA
+BLOCKING_DRIFT
+```
+
+`BLOCKING_DRIFT` incluye, entre otros:
+
+- consumidor sin superficie válida;
+- publicación sin consumidor confirmado;
+- vista suscrita como Postgres Changes;
+- canal no registrado;
+- operación o columna fuera de allowlist;
+- `payload.old` no garantizado;
+- recovery ausente;
+- canal público no aprobado;
+- PII o secreto en topic/payload;
+- diferencia no explicada entre ambientes;
+- consumer code diferente de la versión declarada por el package.
+
+La existencia de `BLOCKING_DRIFT` impide la mutación Realtime del subset afectado.
+
+#### 18. Secuencia de futura materialización por package
+
+La plantilla fija el orden lógico mínimo:
+
+```text
+1. PACKAGE E5 APROBADO
+2. INVENTARIO DE PRODUCTORES Y CONSUMIDORES ACTUALIZADO
+3. BASELINE REMOTO Y DRIFT CLASIFICADOS
+4. OWNER, ACTOR, RECURSO Y TERRITORIO RESUELTOS
+5. SNAPSHOT Y RECOVERY APROBADOS
+6. TRANSPORT MODE Y PAYLOAD APROBADOS
+7. RLS / CHANNEL AUTHORIZATION / FILTROS APROBADOS
+8. CAPACIDAD Y FALLBACK PROBADOS
+9. COMPATIBILIDAD Y ROLLBACK PROBADOS
+10. AUTORIZACIÓN FÍSICA EXPLÍCITA
+11. CAMBIO VERSIONADO DESDE vento-shell
+12. PRUEBA E2E Y OBSERVACIÓN
+13. RETIRO DE LA SUPERFICIE LEGACY SOLO DESPUÉS DE PARIDAD
+```
+
+Ningún paso posterior subsana retroactivamente un gate anterior omitido.
+
+#### 19. Evidencia mínima por instancia
+
+La futura instancia deberá producir un evidence bundle con:
+
+- `package_id` y versión del contrato;
+- commit de `vento-shell` y commits consumidores observados;
+- snapshot del catálogo remoto afectado;
+- publicaciones y relaciones antes/después;
+- `REPLICA IDENTITY` antes/después cuando aplique;
+- políticas y autorización de canal cuando aplique;
+- catálogo de consumidores y filtros;
+- pruebas de allowlist y denegación;
+- prueba snapshot-buffer-live;
+- prueba reconnect/recovery;
+- prueba duplicado, orden y gap;
+- prueba de revocación y cleanup;
+- prueba de fallback;
+- prueba de capacidad;
+- evidencia de compatibilidad y rollback;
+- estado final y residual de drift.
+
+La evidencia no puede reducirse a una captura de canal conectado.
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos obsoletos:** 0
+
+La tarea materializa por package reglas Realtime ya protegidas por el registro canónico vigente; no introduce una capacidad empresarial nueva.
+
+#### 21. Cobertura de prueba vigente reutilizada
+
+Esta sección es únicamente trazabilidad y no modifica el registro 04A.
+
+Se reutiliza especialmente la cobertura vigente sobre:
+
+- `TREQ-SUPABASE-009`;
+- `TREQ-SUPABASE-170` a `TREQ-SUPABASE-187`;
+- `TREQ-SUPABASE-514`;
+- `TREQ-SUPABASE-1269` a `TREQ-SUPABASE-1318`;
+- `TREQ-SUPABASE-1712`;
+- requisitos de autorización, integración y capacidad enlazados por esas filas.
+
+La cobertura existente ya exige publicación-consumidor, minimización, autorización, canales privados, recuperación, orden, deduplicación, capacidad, drift y paridad por ambiente.
+
+#### 22. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                |
+| --------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La tarea es documental y la batería de build/plan del checkout queda pendiente de ejecución local después de insertar el artefacto.                                                                                                                      |
+| LOCAL     | NOT_EXECUTED   | El formateo canónico, quality y validadores del checkout quedan pendientes de ejecución local sobre la rama de la tarea.                                                                                                                                 |
+| REMOTA    | PASS           | Consulta read-only a `vento-os-dev`: `supabase_realtime` contiene seis relaciones empresariales; todas conservan RLS habilitado y `REPLICA IDENTITY DEFAULT`; `pg_policies` reporta cero políticas en el schema `realtime`; no se ejecutaron mutaciones. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron pruebas E2E de consumidores, reconnect, recovery, fallback, Broadcast, Presence ni dispositivos compartidos en esta tarea documental.                                                                                                   |
+| FÍSICA    | NOT_APPLICABLE | La tarea autoriza cero cambios físicos; toda futura materialización pertenece a `AUTH-DB-023::package_id` después de sus gates y autorización explícita.                                                                                                 |
+
+#### 23. Criterios de aceptación
+
+La tarea queda documentalmente cerrada cuando:
+
+- existe un único contrato `REALTIME-CHANNELS-PACKAGE-023@1.0.0`;
+- la topología es `TEMPLATE_PER_PACKAGE` y no existe implementación global implícita;
+- cada futura instancia se identifica por `package_id`;
+- Realtime permanece separado de fuente de verdad y resultado empresarial;
+- cada superficie exige owner, productor, consumidor, autorización, minimización, snapshot, recovery, capacidad, compatibilidad y rollback;
+- Postgres Changes, Broadcast y Presence conservan sus fronteras semánticas;
+- las vistas no se presentan como targets válidos de logical replication;
+- `REPLICA IDENTITY FULL` permanece como excepción justificada;
+- canales y topics son privados y no contienen PII por defecto;
+- el lifecycle de diez estados y el bootstrap buffer-snapshot-reconcile quedan gobernados;
+- duplicados, gaps, orden, reconexión y revocación tienen tratamiento explícito;
+- la línea base remota vigente se registra sin convertirla en objetivo automático;
+- los conteos históricos de consumidores y canales no se congelan como actualidad;
+- el drift se clasifica fail-closed antes de mutar;
+- no se crean ni modifican requisitos de prueba;
+- se autorizan cero cambios físicos en esta tarea.
+
+#### 24. Límites
+
+Esta tarea no:
+
+- añade o retira relaciones de publicaciones;
+- crea o altera canales;
+- cambia `REPLICA IDENTITY`;
+- crea RLS sobre `realtime.messages`;
+- modifica hooks, listeners o clientes Supabase;
+- implementa Broadcast o Presence;
+- crea eventos durables u outbox;
+- cambia schemas, tablas, RPC, triggers, grants o configuración remota;
+- declara que las seis relaciones actuales deban conservarse;
+- declara que los consumidores históricos sigan existiendo;
+- ejecuta migraciones, despliegues, cutover o rollback;
+- invade `AUTH-DB-024` ni tareas posteriores de Edge Functions, webhooks, cron o automatizaciones.
+
+#### 25. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-022 — Implementar gobierno y políticas de Storage`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-023 — Implementar canales y contratos Realtime aprobados`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones`
+
+
 ### [ ] AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
 ### [ ] AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
 ### [ ] AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
