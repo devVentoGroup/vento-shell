@@ -11784,7 +11784,1068 @@ No ejecuta SQL; no crea migraciones, constraints, backfills, correcciones, merge
 `AUTH-DB-022 — Implementar gobierno y políticas de Storage`
 
 
-### [ ] AUTH-DB-022 — Implementar gobierno y políticas de Storage
+### ✅ AUTH-DB-022 — Implementar gobierno y políticas de Storage
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación
+**Tarea siguiente:** AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para materializar gobierno, exposición, autorización, referencias, integridad, ciclo de vida y rollback de Supabase Storage conforme a la arquitectura canónica aprobada
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato `STORAGE-GOVERNANCE-PACKAGE-022@1.0.0` cerrado como `TEMPLATE_PER_PACKAGE`; cada futura instancia `AUTH-DB-022::<package_id>` permanece no ejecutada hasta satisfacer fundaciones R0/R1 aplicables, `E5-GATE-008::<package_id>`, `SHELL-CI-020::<package_id>`, reconciliación de drift de Storage y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Cerrar el contrato R2 que gobierna cómo una unidad de implementación aprobada puede materializar cambios de Supabase Storage sin convertir el estado remoto observado, el nombre de un bucket, una URL pública, una política histórica ni una credencial técnica en fuente de verdad.
+
+La tarea transforma `SUPABASE-STORAGE-ARCHITECTURE-001@1.0.0` en una plantilla ejecutable por `package_id` y fija las condiciones que deberán cumplirse antes de crear, adoptar, endurecer, privatizar, dividir, consolidar, reubicar, versionar o retirar cualquier bucket, objeto, política, referencia o flujo de acceso incluido por un paquete.
+
+El resultado documental debe garantizar simultáneamente:
+
+1. identidad estable del objeto de Storage y de su registro empresarial;
+2. aislamiento exacto del alcance de cada paquete;
+3. privacidad por finalidad y sensibilidad;
+4. publicación pública deliberada, nunca inferida;
+5. autorización empresarial separada de autenticación y de privilegios técnicos;
+6. políticas de `storage.objects` trazables y versionadas;
+7. límites de tamaño, MIME y gramática de `object_path` verificables;
+8. referencias empresariales independientes de URLs derivadas;
+9. sustitución, versionado, retención, legal hold y disposición gobernados;
+10. reconciliación entre fila empresarial, objeto físico y consumidores;
+11. compatibilidad temporal y rollback antes de retirar el estado anterior;
+12. reproducción completa del cambio desde `vento-shell`;
+13. bloqueo ante drift no reconciliado;
+14. evidencia por paquete suficiente para certificar el cambio sin depender de una captura aislada.
+
+Esta tarea no materializa ningún cambio de Storage. Define el contrato que una futura instancia física deberá satisfacer.
+
+#### 2. Resultado canónico
+
+Se establece:
+
+```text
+STORAGE-GOVERNANCE-PACKAGE-022@1.0.0
+```
+
+como contrato R2 repetible por paquete para Storage.
+
+El contrato produce, por cada futura instancia física autorizada:
+
+```text
+AUTH-DB-022::<package_id>
+```
+
+y únicamente puede afectar el subconjunto de identidades de Storage incluido de forma explícita en ese `package_id`.
+
+La existencia de este contrato no autoriza por sí sola:
+
+- cambios en `storage.buckets`;
+- cambios en `storage.objects`;
+- creación o eliminación de buckets;
+- cambios de `public`;
+- cambios de `file_size_limit`;
+- cambios de `allowed_mime_types`;
+- creación, sustitución o eliminación de políticas;
+- copia, movimiento, renombre o eliminación de objetos;
+- modificación de referencias empresariales;
+- emisión o ampliación de acceso mediante URLs firmadas;
+- uso de `service_role` fuera de un contrato técnico aprobado;
+- limpieza, archivado o disposición;
+- despliegue o promoción a ambientes remotos.
+
+Cada una de esas acciones pertenece a una futura instancia física autorizada y cerrada por sus gates.
+
+#### 3. Topología vinculante
+
+`AUTH-DB-022` usa exclusivamente:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+cardinality = una instancia por package_id aplicable
+physical_identity = AUTH-DB-022::<package_id>
+```
+
+Consecuencias:
+
+1. no existe una instancia física global de `AUTH-DB-022`;
+2. un paquete no puede modificar identidades reservadas a otro paquete;
+3. un bucket compartido por varios dominios no autoriza una ejecución transversal automática;
+4. si una misma identidad participa en más de un paquete, deberá existir una decisión de ownership y secuencia que impida mutaciones competidoras;
+5. una instancia solo puede actuar sobre `included_storage_transition_keys` y artefactos derivados explícitamente asociados;
+6. Storage no se corrige oportunísticamente mientras se ejecuta otra tarea R2;
+7. una brecha detectada fuera del paquete se registra como bloqueo o carryover hacia su propietario canónico, sin absorberla.
+
+#### 4. Gate de materialización
+
+Una futura instancia `AUTH-DB-022::<package_id>` solo puede materializarse cuando estén verificadas, como mínimo, las siguientes condiciones:
+
+1. fundaciones R0 aplicables al paquete en estado verificable;
+2. fundaciones R1 aplicables al paquete en estado verificable;
+3. package E5 cerrado y coherente con el alcance real;
+4. `E5-GATE-008::<package_id>` en PASS;
+5. `SHELL-CI-020::<package_id>` abierto y vinculado al mismo candidato;
+6. inventario actual de Storage recapturado;
+7. drift entre arquitectura aprobada, repositorio y remoto clasificado;
+8. consumidores y referencias del subconjunto incluidos inventariados;
+9. estrategia de compatibilidad y rollback definida;
+10. pruebas negativas de seguridad definidas;
+11. candidato físico inmutable identificado;
+12. autorización física explícita para esa identidad.
+
+Si una condición no se cumple, el resultado es `BLOCKED`; no se degrada a una ejecución parcial silenciosa.
+
+#### 5. Fuentes vinculantes
+
+La futura instancia deberá consumir, sin reinterpretarlas por conveniencia:
+
+- `SUPABASE-STORAGE-ARCHITECTURE-001@1.0.0`;
+- la clasificación y ownership vigentes de objetos y capacidades;
+- el mapa de transición E3 y sus identidades estables;
+- las disposiciones aprobadas de transición;
+- el contrato R2 general de `AUTH-DB-020`;
+- las decisiones de autorización y privilegio vigentes;
+- las decisiones de constraints ya cerradas por `AUTH-DB-011`;
+- los contratos E5 del `package_id`;
+- el inventario remoto recapturado al momento de preparar el candidato;
+- el catálogo de consumidores y referencias empresariales aplicable;
+- las reglas de retención, auditoría, continuidad y recuperación ya aprobadas por sus tareas propietarias;
+- la cobertura de prueba vigente del registro 04A.
+
+El remoto describe el estado observado; no sustituye una decisión canónica. La arquitectura aprobada describe el objetivo; no sustituye la recaptura del remoto. La instancia física debe reconciliar ambos.
+
+#### 6. Frontera con tareas R2 vecinas
+
+La responsabilidad se distribuye así:
+
+| Tarea         | Responsabilidad                                                                                                 |
+| ------------- | --------------------------------------------------------------------------------------------------------------- |
+| `AUTH-DB-020` | transición general de objetos por dominio, coexistencia, subset por paquete y compatibilidad                    |
+| `AUTH-DB-021` | RLS y grants canónicos de objetos empresariales fuera de la responsabilidad específica de Storage               |
+| `AUTH-DB-011` | constraints posteriores a backfills y reconciliación                                                            |
+| `AUTH-DB-022` | buckets, políticas de `storage.objects`, acceso, referencias, límites, lifecycle y transición física de Storage |
+| `AUTH-DB-023` | canales y contratos Realtime aprobados                                                                          |
+| `AUTH-DB-024` | Edge Functions, webhooks, cron y automatizaciones                                                               |
+| `AUTH-DB-025` | índices, retención y crecimiento conforme a sus decisiones propietarias                                         |
+| `AUTH-DB-026` | generación y distribución de tipos para consumidores                                                            |
+
+`AUTH-DB-022` puede exigir como prerequisito una decisión de retención, un permiso, un consumidor, un job o un tipo; no puede redefinir su semántica si pertenece a otra tarea.
+
+#### 7. Línea base arquitectónica y recaptura obligatoria
+
+`SUPA-ARC-018` congeló como línea base arquitectónica un corte de catorce buckets, ocho públicos y seis privados, junto con objetos, referencias, clases, accesos y disposiciones.
+
+Ese corte es una identidad histórica aprobada de arquitectura, no una declaración eterna del remoto.
+
+La verificación read-only realizada durante el desarrollo de esta tarea confirmó que el proyecto remoto mantiene catorce buckets, pero su conjunto nominal, visibilidad y configuración ya no coincide de forma literal con el corte histórico de `SUPA-ARC-018`.
+
+Por tanto, cada futura instancia debe ejecutar una recaptura propia y clasificar cada diferencia como exactamente uno de estos estados:
+
+```text
+MATCHES_APPROVED_BASELINE
+APPROVED_DRIFT
+BLOCKING_DRIFT
+```
+
+Reglas:
+
+1. `MATCHES_APPROVED_BASELINE` exige identidad y propiedades compatibles con el contrato aprobado;
+2. `APPROVED_DRIFT` exige una transición, adopción, renombre, reemplazo o decisión posterior identificable que explique la diferencia;
+3. `BLOCKING_DRIFT` cubre todo bucket, política, configuración, objeto o referencia cuya diferencia no tenga procedencia y destino canónicos;
+4. un nombre parecido no demuestra continuidad de identidad;
+5. un bucket nuevo no hereda automáticamente el contrato del bucket histórico que parece reemplazar;
+6. un bucket histórico ausente no se considera retirado sin evidencia de consumidores, referencias, datos, reemplazo y rollback;
+7. una diferencia de `public`, límite, MIME o política es material aunque el nombre del bucket coincida;
+8. la mutación queda bloqueada mientras exista `BLOCKING_DRIFT` dentro del subconjunto.
+
+#### 8. Identidad y subset por paquete
+
+Cada instancia deberá producir una matriz cerrada de Storage con una fila por identidad incluida.
+
+La fila mínima contiene:
+
+```text
+package_id
+storage_transition_key
+current_bucket_id
+approved_identity_state
+storage_class
+lifecycle_status
+public_flag
+object_count
+total_bytes
+file_size_limit_bytes
+allowed_mime_types
+policy_fingerprint
+business_reference_count
+business_metadata_owner
+current_consumers
+target_disposition
+compatibility_gate
+rollback_contract
+verification_state
+```
+
+La matriz debe distinguir:
+
+- identidades incluidas;
+- identidades heredadas pero no modificadas;
+- identidades bloqueadas;
+- identidades fuera de alcance;
+- identidades observadas sin reconciliación.
+
+No se permite resumir varios buckets o políticas bajo una sola fila genérica si sus decisiones difieren.
+
+#### 9. Identidad estable de transición
+
+Las identidades aprobadas por E3 se conservan aunque cambie el nombre físico o exista una fase de coexistencia.
+
+Para buckets históricos mapeados por transición, la clave estable conserva el patrón lógico:
+
+```text
+TRANS::STORAGE_BUCKET::bucket_id_aprobado
+```
+
+Una identidad remota que no corresponda inequívocamente a una transición aprobada debe pasar por adopción o reconciliación explícita antes de ser tratada como continuidad del objeto histórico.
+
+Queda prohibido:
+
+- renombrar una transición por semejanza de nombre;
+- fusionar dos identidades sin decisión de transición;
+- reutilizar una transición retirada para un bucket nuevo;
+- ocultar una creación remota tratándola como simple rename;
+- modificar fuera del subset una identidad compartida.
+
+#### 10. Clases canónicas de Storage
+
+Toda identidad materializada debe resolver exactamente una clase primaria:
+
+```text
+PUBLIC_BRAND_MEDIA
+PUBLIC_CATALOG_MEDIA
+PUBLIC_REFERENCE_DOCUMENT
+PRIVATE_BUSINESS_RECORD
+PRIVATE_PERSONAL_RECORD
+PRIVATE_HIGHLY_RESTRICTED_RECORD
+PRIVATE_TECHNICAL_MEDIA
+PRIVATE_TRANSIENT_INGEST
+```
+
+La clase no se infiere del nombre del bucket, de la aplicación que lo usa, del flag `public`, de la extensión del archivo ni de una policy existente.
+
+La clase determina, como mínimo:
+
+- sensibilidad;
+- modos de acceso permitidos;
+- posibilidad o prohibición de publicación;
+- límites y MIME admisibles;
+- requisitos de auditoría;
+- tratamiento de derivados;
+- compatibilidad con retención y legal hold;
+- pruebas negativas obligatorias.
+
+#### 11. Modos de acceso
+
+Se conservan cuatro modos canónicos:
+
+| Modo                  | Uso contractual                                                                       |
+| --------------------- | ------------------------------------------------------------------------------------- |
+| `PRIVATE_SERVER_ONLY` | proceso confiable con principal técnico mínimo, owner y finalidad explícitos          |
+| `PRIVATE_AUTHORIZED`  | actor autenticado y autorizado para el recurso, territorio, sensibilidad y finalidad  |
+| `SIGNED_EPHEMERAL`    | capacidad temporal para objeto y operación exactos, con expiración y alcance acotados |
+| `PUBLIC_PUBLISHED`    | distribución abierta únicamente de una versión deliberadamente publicada              |
+
+Reglas:
+
+1. `SIGNED_EPHEMERAL` no vuelve público el bucket;
+2. `PUBLIC_PUBLISHED` no vuelve públicas las mutaciones;
+3. autenticación válida no equivale a `PRIVATE_AUTHORIZED`;
+4. una URL conocida no concede acceso;
+5. `service_role` no crea por sí mismo un modo de acceso empresarial;
+6. todo acceso efectivo debe ser compatible con la clase primaria del objeto.
+
+#### 12. Roles canónicos de objeto
+
+Todo objeto materializado debe resolver un rol:
+
+```text
+SOURCE_ORIGINAL
+PUBLISHED_DERIVATIVE
+PREVIEW_DERIVATIVE
+EVIDENCE_ATTACHMENT
+IMPORT_PAYLOAD
+EXPORT_RESULT
+TRANSIENT_UPLOAD
+```
+
+Reglas vinculantes:
+
+1. `SOURCE_ORIGINAL` permanece privado salvo decisión explícita en contrario;
+2. `PUBLISHED_DERIVATIVE` conserva vínculo con fuente, transformación y versión;
+3. `PREVIEW_DERIVATIVE` reduce exposición o detalle sin reemplazar la fuente;
+4. `EVIDENCE_ATTACHMENT` respalda un hecho empresarial y no lo sustituye;
+5. `IMPORT_PAYLOAD` y `EXPORT_RESULT` tienen lifecycle independiente;
+6. `TRANSIENT_UPLOAD` no se convierte en registro disponible hasta completar verificación y finalización;
+7. un objeto no cambia de rol silenciosamente por moverlo entre prefijos.
+
+#### 13. Contrato mínimo de bucket
+
+Cada bucket físico incluido deberá resolver una fila contractual con los campos aprobados por arquitectura:
+
+```text
+bucket_contract_id
+bucket_id
+storage_class
+lifecycle_status
+public_flag
+business_metadata_owner_schema_id
+participating_owner_schema_ids
+allowed_object_roles
+allowed_access_modes
+allowed_mime_types
+file_size_limit_bytes
+path_grammar_version
+upload_contract
+read_contract
+mutation_contract
+derivative_policy
+replacement_and_version_policy
+retention_class_allowlist
+legal_hold_policy
+disposition_policy
+current_consumers
+compatibility_gate
+observability_contract
+rollback_contract
+test_requirement_ids
+```
+
+Ningún campo puede quedar implícito en la UI, el SDK o el Dashboard.
+
+El bucket solo puede declararse conforme cuando el remoto, la definición versionada y la fila contractual sean compatibles.
+
+#### 14. Referencia empresarial canónica
+
+La identidad empresarial de un archivo no será una URL.
+
+La referencia mínima conserva:
+
+```text
+business_record_id
+record_version_id
+storage_provider
+bucket_id
+object_path
+object_role
+```
+
+Cuando aplique, también conserva clasificación, hash, tamaño, MIME, versión, actor, timestamps, procedencia, retención, hold, disposición y relación con derivados.
+
+Consecuencias:
+
+1. una URL pública es una presentación derivada;
+2. una signed URL es una capacidad efímera;
+3. cambiar dominio, CDN, bucket o mecanismo de entrega no debe cambiar la identidad empresarial;
+4. toda transición debe reconciliar referencias antes y después del cambio;
+5. una fila sin objeto y un objeto sin fila se tratan como estados de integridad, no como residuos ignorables.
+
+#### 15. Gramática de `object_path`
+
+La gramática canónica de nueva generación conserva la estructura lógica:
+
+```text
+v1/{owner_schema}/{entity_type}/{entity_id}/{record_type}/{record_id}/v{record_version}/{object_role}/{opaque_object_id}.{safe_extension}
+```
+
+Reglas:
+
+1. `bucket_id` usa minúsculas ASCII y guiones;
+2. segmentos semánticos usan tokens canónicos, no texto libre;
+3. `entity_id`, `record_id` y `opaque_object_id` son opacos y no contienen PII;
+4. el nombre original permanece metadata de presentación;
+5. un `object_path` reservado es inmutable;
+6. una nueva versión recibe una identidad nueva;
+7. `auth.uid()` puede participar en autorización, pero no es el único owner semántico;
+8. se prohíben `..`, backslash, slash inicial, doble slash, segmentos vacíos y extensiones fuera de allowlist;
+9. un cambio de gramática requiere versión y compatibilidad explícitas;
+10. un repath no puede romper referencias activas ni ocultar objetos huérfanos.
+
+#### 16. Contrato de carga
+
+Toda carga deberá resolver antes de aceptar bytes:
+
+1. actor o principal efectivo;
+2. finalidad;
+3. recurso empresarial propietario;
+4. `bucket_contract_id`;
+5. clase de Storage;
+6. `object_role`;
+7. `object_path` reservado;
+8. límite de bytes;
+9. allowlist MIME;
+10. cuota, frecuencia o concurrencia cuando aplique;
+11. política de sustitución;
+12. requerimiento de auditoría;
+13. condición de expiración si es temporal.
+
+Después de la carga se comprueba:
+
+- objeto exacto existente;
+- bytes;
+- MIME declarado y detectado;
+- extensión;
+- hash cuando aplique;
+- referencia empresarial;
+- estado de verificación;
+- ausencia de duplicado o colisión no aprobada.
+
+Un upload exitoso a nivel SDK no equivale a finalización empresarial.
+
+#### 17. Límites de tamaño y MIME
+
+Todo bucket activo debe declarar:
+
+```text
+file_size_limit_bytes
+allowed_mime_types
+```
+
+Reglas:
+
+1. la ausencia de límite o allowlist exige decisión explícita y no puede considerarse segura por omisión;
+2. UI y cliente no son el único control;
+3. extensión, MIME declarado y MIME detectado deben ser coherentes;
+4. PDF, SVG, imagen, video, archivo comprimido y documento se tratan según clase y riesgo;
+5. los objetos legacy fuera de límite se inventarían y clasifican antes de modificar el límite;
+6. reducir un límite no autoriza borrar objetos existentes;
+7. aumentar un límite exige justificación y prueba;
+8. nuevas cargas fuera del contrato deben fallar;
+9. los límites físicos remotos deben reconciliarse con la definición versionada.
+
+#### 18. Publicación pública
+
+El plano público se materializa únicamente mediante el flujo:
+
+```text
+SOURCE_ORIGINAL PRIVADO
+        ->
+APROBACION DE DOMINIO Y PRIVACIDAD
+        ->
+DERIVADO PUBLICABLE VERIFICADO
+        ->
+PUBLISHED_DERIVATIVE EN PLANO PUBLICO
+        ->
+REFERENCIA VERSIONADA Y REVERSIBLE
+```
+
+No se puede inferir publicación desde:
+
+- bucket actualmente público;
+- URL ya distribuida;
+- acceso anónimo histórico;
+- necesidad de CDN;
+- uso en una pantalla pública;
+- existencia de una policy SELECT abierta.
+
+Un bucket público debe mantener mutaciones protegidas por capacidad funcional. Leer públicamente no concede INSERT, UPDATE ni DELETE.
+
+#### 19. Privatización
+
+Cuando la disposición aprobada sea `PRIVATIZE_REQUIRED`, la instancia debe demostrar antes del corte:
+
+1. inventario completo de objetos;
+2. inventario completo de referencias;
+3. consumidores actuales e históricos relevantes;
+4. mecanismo privado de lectura;
+5. mecanismo de carga compatible;
+6. signed URLs o equivalente temporal cuando corresponda;
+7. paridad funcional;
+8. cero dependencia necesaria de URL pública;
+9. estrategia de rollback;
+10. observación posterior;
+11. eliminación de exposición residual únicamente después de probar compatibilidad.
+
+No se permite privatizar primero y reparar consumidores después.
+
+#### 20. Fuentes privadas y derivados públicos
+
+Para `SPLIT_PRIVATE_SOURCE_PUBLIC_DERIVATIVE`:
+
+1. la fuente original queda en plano privado;
+2. el derivado público tiene identidad, transformación y versión;
+3. la aplicación consumidora distingue fuente de presentación;
+4. el retiro de un derivado no elimina la fuente;
+5. la regeneración produce nueva versión o reemplazo auditable;
+6. privacidad, consentimiento o base aplicable se evalúan antes de publicar;
+7. cache/CDN no se convierte en fuente de verdad.
+
+#### 21. Políticas de `storage.objects`
+
+Toda política creada, adoptada o modificada por una instancia deberá estar versionada en `vento-shell` y declarar:
+
+```text
+bucket_id
+operation
+database_role
+authorization_contract
+resource_binding
+path_constraints
+using_expression
+with_check_expression
+owner
+consumers
+rollback
+test_cases
+```
+
+Reglas:
+
+1. SELECT, INSERT, UPDATE y DELETE se evalúan de forma independiente;
+2. `authenticated` por sí solo no concede mutación;
+3. el nombre de un rol base no sustituye un permiso funcional;
+4. conocer `bucket_id` o un prefijo no concede acceso;
+5. ownership técnico no equivale a ownership empresarial;
+6. una policy no puede depender de una condición cliente manipulable como única defensa;
+7. las capacidades para crear, sustituir y borrar deben ser coherentes o tener una asimetría aprobada;
+8. las policies remotas sin procedencia bloquean el cierre hasta adopción o reemplazo;
+9. el fingerprint del conjunto de policies se compara antes y después.
+
+#### 22. Autorización empresarial
+
+Las operaciones privadas y las mutaciones públicas deberán resolver autorización con el contrato canónico vigente para:
+
+- principal;
+- actor efectivo;
+- permiso exacto;
+- recurso;
+- sede cuando aplique;
+- área cuando aplique;
+- finalidad;
+- sensibilidad;
+- vigencia.
+
+Storage no define una segunda taxonomía de permisos.
+
+Cuando la operación dependa de un servicio o helper autorizado, el helper debe fallar cerrado y conservar la relación con el actor o principal que originó el comando.
+
+Una política RLS de Storage no puede conceder más de lo que el contrato empresarial permite para el mismo actor, recurso y contexto.
+
+#### 23. `service_role` y actores técnicos
+
+`service_role` es un mecanismo técnico privilegiado; no es una identidad empresarial ni una aprobación de acceso.
+
+Toda operación server-side privilegiada debe declarar:
+
+1. proceso propietario;
+2. caller técnico;
+3. finalidad;
+4. recurso afectado;
+5. actor humano o razón de ausencia cuando aplique;
+6. alcance de bucket y operación;
+7. idempotencia;
+8. auditoría;
+9. política de retry;
+10. rollback o compensación.
+
+Queda prohibido usar `service_role` para evitar diseñar autorización, ownership, auditoría o disposición.
+
+#### 24. Acceso firmado
+
+`SIGNED_EPHEMERAL` debe emitir una capacidad limitada a:
+
+```text
+object_identity
+operation
+authorized_subject_or_purpose
+expires_at
+issuance_context
+```
+
+Reglas:
+
+1. la autorización se verifica antes de emitir la capacidad;
+2. la capacidad no cambia `public_flag`;
+3. el TTL se define por sensibilidad y finalidad en el contrato aplicable;
+4. no se persiste la signed URL como fuente de verdad;
+5. no se amplía a un prefijo completo si el contrato requiere objeto exacto;
+6. renovación exige reevaluación cuando el contexto pueda haber cambiado;
+7. logs no exponen el token completo;
+8. revocación, sustitución o disposición del objeto invalida la continuidad de uso según el contrato.
+
+#### 25. Sustitución y versionado
+
+La sustitución de un archivo no se modela como sobrescritura opaca.
+
+Cada contrato debe definir uno de estos comportamientos:
+
+- nueva versión inmutable;
+- reemplazo controlado con historial;
+- derivado regenerable;
+- objeto temporal descartable;
+- publicación reversible.
+
+La instancia debe conservar:
+
+- versión anterior cuando el contrato lo exija;
+- vínculo entre versiones;
+- referencia activa;
+- hash o fingerprint;
+- actor y causa;
+- timestamps;
+- consumidores afectados;
+- rollback.
+
+Un `upsert` técnico no demuestra que la semántica empresarial de sustitución sea correcta.
+
+#### 26. Retención, legal hold y disposición
+
+`AUTH-DB-022` materializa los controles de Storage necesarios para respetar decisiones de retención; no inventa plazos legales ni políticas empresariales que pertenezcan a sus tareas propietarias.
+
+Cada bucket debe consumir:
+
+```text
+retention_class_allowlist
+legal_hold_policy
+disposition_policy
+```
+
+Reglas:
+
+1. un objeto bajo legal hold no se elimina por un cleanup genérico;
+2. expiración técnica y disposición autorizada no son sinónimos;
+3. archivo, backup y objeto activo son planos distintos;
+4. una policy DELETE no constituye por sí sola una política de disposición;
+5. la eliminación debe dejar evidencia suficiente de autorización, alcance y resultado;
+6. las excepciones de retención tienen owner, fundamento y condición de salida;
+7. limpieza automática solo se habilita cuando el contrato de retención aplicable ya está cerrado.
+
+#### 27. Integridad fila-objeto
+
+Para todo recurso con referencia empresarial se validan ambos sentidos:
+
+```text
+business_reference -> storage_object
+storage_object -> business_owner_or_explicit_orphan_state
+```
+
+La instancia debe detectar:
+
+- referencia sin objeto;
+- objeto sin referencia cuando se esperaba referencia;
+- duplicado activo;
+- versiones incompatibles;
+- carga abandonada;
+- ownership inválido;
+- bucket desconocido;
+- `object_path` no canónico;
+- referencia persistida como URL;
+- mismatch de hash, tamaño o MIME cuando esos campos sean contractuales.
+
+La detección no autoriza eliminación automática.
+
+#### 28. Reconciliación y objetos huérfanos
+
+Todo huérfano se clasifica antes de actuar y su registro debe indicar:
+
+- por qué existe;
+- si corresponde a una carga temporal esperada, una referencia faltante, un objeto legacy, una versión sustituida o un estado todavía desconocido;
+- owner responsable;
+- consumidores potenciales revisados;
+- retención y legal hold aplicables;
+- evidencia que permitiría conservarlo, reconciliarlo o disponerlo;
+- condición exacta de salida.
+
+La detección de un huérfano no equivale a autorización de borrado. La disposición depende del contrato de retención, consumidores, backups, legal hold, evidencia y autorización correspondiente.
+
+#### 29. Copia, movimiento, repath y consolidación
+
+Una transición de Storage no se implementa eliminando únicamente metadata SQL ni cambiando solo una referencia.
+
+Para mover, copiar, repath o consolidar se requiere:
+
+1. inventario fuente;
+2. destino aprobado;
+3. capacidad suficiente;
+4. copia verificable;
+5. hash o equivalencia adecuada;
+6. metadata empresarial reconciliada;
+7. referencias actualizadas de forma idempotente;
+8. compatibilidad temporal para consumidores;
+9. observación;
+10. rollback;
+11. retiro de la fuente únicamente al cerrar el gate.
+
+Si la operación queda en estado incierto, la instancia debe conservar ambas identidades y abrir reconciliación; no declara éxito por ausencia de error del cliente.
+
+#### 30. Disposiciones arquitectónicas
+
+Las disposiciones aprobadas que una instancia puede consumir son:
+
+```text
+KEEP_PUBLIC_CONTRACTED
+KEEP_PRIVATE_CONTRACTED
+PRIVATIZE_REQUIRED
+SPLIT_PRIVATE_SOURCE_PUBLIC_DERIVATIVE
+HARDEN_PRIVATE_POLICY
+HARDEN_PUBLIC_CONTRACT
+EMPTY_BUCKET_CONTRACT_REVIEW
+CONSOLIDATION_OR_REPATH_CANDIDATE
+```
+
+La disposición es una intención arquitectónica, no una operación automática.
+
+Cada uso debe resolver qué cambia, qué permanece, qué consumidores migran, cómo se prueba paridad y cómo se revierte.
+
+#### 31. Buckets vacíos
+
+Un bucket con cero objetos no se considera automáticamente inútil, seguro ni retirado.
+
+Antes de adoptar o retirar un bucket vacío se comprueba:
+
+- finalidad;
+- owner;
+- productor esperado;
+- consumidores;
+- configuración;
+- policies;
+- referencias potenciales;
+- contratos E5;
+- despliegues no ejercitados;
+- retención;
+- historial de uso;
+- transición aprobada.
+
+La ausencia temporal de objetos no sustituye esa evaluación.
+
+#### 32. Declaración versionada en `vento-shell`
+
+Toda configuración de Storage gobernada por Vento debe quedar representada de forma reproducible en `vento-shell`.
+
+La fuente versionada debe permitir reconstruir o comprobar, según corresponda:
+
+- buckets;
+- `public_flag`;
+- límites;
+- MIME;
+- policies;
+- funciones auxiliares de autorización;
+- contratos de referencia;
+- gramática de `object_path`;
+- seeds o configuración inicial aprobada;
+- manifiestos complementarios cuando `db diff` no represente el recurso;
+- rollback;
+- fingerprints de drift.
+
+El Dashboard remoto no es fuente canónica de cambios.
+
+#### 33. Migraciones de Supabase
+
+Toda mutación física de Supabase perteneciente a una instancia `AUTH-DB-022::<package_id>` debe:
+
+1. originarse en `vento-shell`;
+2. estar versionada;
+3. tener orden determinista;
+4. declarar objeto y operación;
+5. ser idempotente cuando el mecanismo lo permita;
+6. evitar depender de estado manual no registrado;
+7. preservar datos y referencias durante transición;
+8. incluir rollback o estrategia compensatoria;
+9. ejecutarse primero en el ambiente autorizado por el gate;
+10. demostrar paridad con el candidato aprobado.
+
+Cambios manuales detectados en remoto deben adoptarse o revertirse mediante una decisión versionada antes de cerrar la instancia.
+
+#### 34. Candidato físico
+
+La instancia debe congelar un candidato con, como mínimo:
+
+```text
+package_id
+source_commit
+storage_manifest_hash
+migration_set
+policy_set_hash
+bucket_contract_hash
+reference_snapshot_hash
+consumer_snapshot_hash
+remote_baseline_hash
+rollback_artifacts
+validation_plan
+```
+
+La evidencia de pruebas y la promoción deben referirse al mismo candidato.
+
+Si cambia una migración, policy, manifiesto, referencia contractual o artefacto que altere el comportamiento, el candidato cambia y las pruebas afectadas se repiten.
+
+#### 35. Pruebas negativas mínimas
+
+Toda instancia que afecte acceso debe demostrar, según su alcance:
+
+- `anon` denegado donde el objeto no sea público;
+- `authenticated` sin permiso denegado;
+- actor correcto con recurso incorrecto denegado;
+- sede incorrecta denegada cuando aplique;
+- área incorrecta denegada cuando aplique;
+- path manipulado denegado;
+- bucket alterno denegado;
+- extensión o MIME no permitido denegado;
+- objeto sobre límite denegado;
+- operación distinta a la firmada denegada;
+- signed URL vencida o inválida denegada;
+- mutación pública denegada sin permiso funcional;
+- borrado bajo hold denegado;
+- referencia a objeto inexistente detectada;
+- objeto no reconciliado no retirado.
+
+No basta probar solo el caso permitido.
+
+#### 36. Pruebas positivas mínimas
+
+Cuando el contrato lo permita, se demuestra:
+
+- upload autorizado;
+- lectura privada autorizada;
+- publicación deliberada;
+- signed access acotado;
+- sustitución o nueva versión;
+- reconciliación de referencia;
+- retry idempotente;
+- rollback;
+- lectura por consumidores autorizados;
+- paridad antes y después de la transición.
+
+El conjunto exacto depende del `package_id`; no se ejecutan casos irrelevantes para inflar evidencia.
+
+#### 37. Observabilidad y auditoría
+
+La instancia debe poder correlacionar:
+
+```text
+package_id
+candidate
+actor_or_principal
+business_record
+bucket_id
+object_path
+operation
+outcome
+correlation_id
+timestamp
+```
+
+La observabilidad no registra tokens firmados completos, secretos ni contenido sensible innecesario.
+
+Se debe distinguir:
+
+- intento;
+- aceptación técnica;
+- finalización empresarial;
+- compensación;
+- reconciliación;
+- disposición.
+
+Un log de éxito del SDK no sustituye la evidencia del resultado empresarial.
+
+#### 38. Rollback
+
+Antes de ejecutar una mutación se define el estado de retorno verificable.
+
+El rollback debe cubrir, según el cambio:
+
+- definición del bucket;
+- privacidad;
+- límites y MIME;
+- policies;
+- referencias;
+- consumidor;
+- objeto fuente y destino;
+- versión activa;
+- derivado público;
+- configuración server-side.
+
+Reglas:
+
+1. no se elimina la última copia válida antes de cerrar paridad;
+2. un rollback no puede reexponer contenido privado sin decisión explícita;
+3. si el cambio de consumidor ya fue promovido, la reversión incluye compatibilidad del consumidor;
+4. un objeto nuevo creado durante una ejecución fallida se clasifica antes de limpiarse;
+5. un resultado incierto abre reconciliación y bloquea nuevas mutaciones sobre la misma identidad.
+
+#### 39. Compatibilidad temporal
+
+Cuando existan consumidores desplegados de forma independiente, la transición debe soportar una ventana compatible.
+
+Mecanismos permitidos según el paquete:
+
+- lectura dual controlada;
+- referencia compatible;
+- alias temporal de identidad;
+- copia temporal;
+- derivado paralelo;
+- adapter server-side;
+- fallback explícito y medido.
+
+Todo mecanismo temporal declara:
+
+- owner;
+- consumidor;
+- condición de activación;
+- telemetría;
+- fecha o condición de retiro;
+- rollback.
+
+No se deja compatibilidad indefinida por omisión.
+
+#### 40. Frontera con el lifecycle físico
+
+Esta tarea no redefine los estados ni las transiciones de `implementation-control`.
+
+La futura instancia `AUTH-DB-022::<package_id>` deberá usar el lifecycle físico vigente y adjuntar a cada transición la evidencia de Storage exigida por este contrato.
+
+En particular:
+
+1. un estado físico no puede interpretarse como conformidad de Storage si el subset conserva drift bloqueante;
+2. una reversión física debe conservar causa, residual y evidencia del estado retornado;
+3. la certificación final debe referirse al mismo candidato, remoto y subset que superaron las pruebas;
+4. cualquier transición de lifecycle permanece subordinada al control físico canónico y no se inventa dentro de este documento.
+
+#### 41. Handoff de salida
+
+Al finalizar una instancia `AUTH-DB-022::<package_id>` se entrega a tareas posteriores y consumidores un handoff con:
+
+- identidades modificadas;
+- identidades heredadas;
+- contratos de bucket vigentes;
+- referencias canónicas vigentes;
+- public/private final;
+- policies y fingerprints;
+- compatibilidad aún activa;
+- consumidores migrados;
+- consumidores pendientes con owner;
+- rollback cerrado o todavía disponible;
+- drift residual;
+- evidencia de seguridad;
+- candidato verificado.
+
+La tarea siguiente no debe reconstruir este estado desde el remoto por inferencia.
+
+#### 42. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos obsoletos:** 0
+
+La tarea materializa en R2 obligaciones de Storage que ya están protegidas por el registro canónico; no introduce una capacidad empresarial ni una regla de prueba nueva.
+
+#### 43. Cobertura de prueba vigente reutilizada
+
+Esta sección es únicamente trazabilidad y no modifica el registro 04A.
+
+Se reutiliza especialmente la cobertura existente sobre:
+
+- `TREQ-SUPABASE-003`: ownership, consumidores, datos, reemplazo, rollback y gate antes de retirar o declarar operativo un bucket;
+- `TREQ-SUPABASE-004`: archivos sensibles privados y acceso temporal auditable;
+- `TREQ-SUPABASE-155`: contrato canónico por bucket;
+- `TREQ-SUPABASE-156` a `TREQ-SUPABASE-169`: privacidad, referencias, disposición, políticas, límites, paths e integridad de Storage;
+- `TREQ-SUPABASE-256`: recursos administrados o de configuración fuera de la cobertura completa de `db diff`;
+- `TREQ-SUPABASE-264`: declaración versionada y drift de buckets y policies;
+- `TREQ-SUPABASE-282`: procedencia y prueba de policies de imágenes;
+- `TREQ-SUPABASE-388` a `TREQ-SUPABASE-391`: retención, huérfanos, optimización y continuidad de Storage;
+- `TREQ-SUPABASE-418`: contrato tipado de bucket, path, metadata y referencia;
+- `TREQ-SUPABASE-428`: capacidad, owner, productores, consumidores, sensibilidad, visibilidad y lifecycle de los buckets;
+- `TREQ-SUPABASE-449`: coherencia entre sensibilidad, exposición, owner y consumidores;
+- `TREQ-SUPABASE-454`: integridad del mapa canónico que incluye Storage.
+
+La cobertura vigente es suficiente para verificar la plantilla y sus futuras instancias sin modificar 04A en esta tarea.
+
+#### 44. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                                                             |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La batería local del repositorio no se ejecutó durante la preparación documental; deberá ejecutarse sobre el checkout de la tarea.                                                                                                                                                                                                    |
+| LOCAL     | NOT_EXECUTED   | No se ejecutaron migraciones, emulador, stack local ni pruebas locales de Storage durante esta tarea documental.                                                                                                                                                                                                                      |
+| REMOTA    | PASS           | Se verificaron read-only el repositorio canónico vigente, la arquitectura Storage aprobada y el catálogo remoto de `vento-os-dev`; el remoto mantiene 14 buckets pero presenta drift nominal y de configuración respecto del corte histórico de `SUPA-ARC-018`, por lo que la plantilla exige recaptura y reconciliación fail-closed. |
+| OPERATIVA | NOT_APPLICABLE | La tarea no altera flujos operativos ni consumidores en ejecución.                                                                                                                                                                                                                                                                    |
+| FÍSICA    | NOT_EXECUTED   | No se creó, modificó, privatizó, movió, eliminó ni reconfiguró ningún bucket, objeto, policy, referencia o ajuste de Supabase.                                                                                                                                                                                                        |
+
+#### 45. Criterios de aceptación
+
+- [ ] Existe exactamente un contrato `STORAGE-GOVERNANCE-PACKAGE-022@1.0.0`.
+- [ ] La topología es `TEMPLATE_PER_PACKAGE`.
+- [ ] La identidad física válida es `AUTH-DB-022::<package_id>`.
+- [ ] El gate temporal es `POST_E5_PACKAGE`.
+- [ ] Ninguna instancia global está autorizada.
+- [ ] El subset de Storage se expresa mediante identidades estables y filas individualizadas.
+- [ ] El remoto se recaptura antes de cada candidato.
+- [ ] Todo drift se clasifica como `MATCHES_APPROVED_BASELINE`, `APPROVED_DRIFT` o `BLOCKING_DRIFT`.
+- [ ] `BLOCKING_DRIFT` impide mutaciones sobre el subconjunto afectado.
+- [ ] Toda identidad resuelve clase, acceso, rol de objeto, owner y consumidores.
+- [ ] Todo bucket incluido resuelve el contrato mínimo aprobado por `SUPA-ARC-018`.
+- [ ] Toda referencia empresarial separa identidad de objeto y URL derivada.
+- [ ] La gramática de `object_path` es versionada, opaca y sin PII.
+- [ ] Todo bucket activo declara límites y MIME o una excepción aprobada.
+- [ ] La publicación pública exige decisión y derivado publicable.
+- [ ] La lectura pública no concede mutación pública.
+- [ ] Las policies de `storage.objects` quedan versionadas, trazables y probadas por operación.
+- [ ] `service_role` no sustituye autorización ni auditoría empresarial.
+- [ ] `SIGNED_EPHEMERAL` permanece acotado a objeto, operación y expiración.
+- [ ] Sustitución y versionado conservan historia y rollback según contrato.
+- [ ] Retención y legal hold se consumen desde decisiones propietarias; no se inventan plazos en esta tarea.
+- [ ] Se valida integridad en ambos sentidos entre referencia y objeto.
+- [ ] Los huérfanos se clasifican antes de cualquier disposición.
+- [ ] Move, copy, repath y consolidación conservan compatibilidad y rollback.
+- [ ] Toda mutación Supabase se origina y versiona en `vento-shell`.
+- [ ] Candidato, fingerprints y evidencias pertenecen a la misma revisión.
+- [ ] Existen pruebas positivas y negativas proporcionales al paquete.
+- [ ] El handoff final identifica cambios, residual, compatibilidad y rollback.
+- [ ] La tarea crea 0 TREQ y modifica 0 TREQ.
+- [ ] La tarea no ejecuta cambios físicos durante su aprobación documental.
+
+#### 46. Límites
+
+Esta tarea no:
+
+- ejecuta una instancia `AUTH-DB-022::<package_id>`;
+- autoriza una instancia física;
+- decide qué package E5 debe ejecutarse primero;
+- convierte el corte histórico de `SUPA-ARC-018` en fotografía remota actual;
+- declara canónicos los nombres de buckets observados actualmente por el solo hecho de existir;
+- adopta automáticamente drift remoto;
+- cambia Auth, permisos o contexto canónico fuera de los contratos que consume;
+- redefine la responsabilidad general de RLS de `AUTH-DB-021`;
+- redefine constraints de `AUTH-DB-011`;
+- implementa Realtime de `AUTH-DB-023`;
+- implementa Edge Functions, webhooks o cron de `AUTH-DB-024`;
+- inventa plazos de retención o estrategia de crecimiento reservados a sus propietarios;
+- genera tipos de consumidor reservados a `AUTH-DB-026`;
+- elimina objetos huérfanos por detección;
+- convierte una signed URL en referencia permanente;
+- usa el Dashboard como fuente de cambios;
+- cambia Supabase fuera de `vento-shell`;
+- avanza a la tarea siguiente sin cierre documental válido.
+
+---
+
+#### 47. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-011 — Aplicar constraints después de backfills y reconciliación`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-022 — Implementar gobierno y políticas de Storage`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-023 — Implementar canales y contratos Realtime aprobados`
+
+
 ### [ ] AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
 ### [ ] AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
 ### [ ] AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
