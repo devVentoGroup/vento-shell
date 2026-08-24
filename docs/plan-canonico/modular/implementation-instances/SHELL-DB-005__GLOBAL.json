@@ -1,10 +1,51 @@
 {
   "instance_id": "SHELL-DB-005::GLOBAL",
   "task_id": "SHELL-DB-005",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/supabase/src/runtime.ts como politica runtime-neutral de configuracion, clasificacion de credenciales publicas/privilegiadas, validacion de URL, storage native y resolucion canonica de cookies/host para SHELL-DB-005::GLOBAL, sin lectura de process.env ni efectos secundarios.",
+    "Crear packages/supabase/src/browser.ts con createBrowserClient sobre @supabase/ssr, configuracion publica explicita, cookie policy canonica, isSingleton false y cero cache global interna del package.",
+    "Crear packages/supabase/src/server.ts con createServerClient request-scoped sobre @supabase/ssr, adapter getAll/setAll, modos READ_WRITE/READ_ONLY, ReadOnlyCookieWriteError observable y propagacion de fallos reales de escritura sin catch silencioso.",
+    "Crear packages/supabase/src/native.ts con createNativeClient sobre @supabase/supabase-js, storage persistente inyectado obligatorio, persistSession y autoRefreshToken activos, detectSessionInUrl false y sin dependencia de SSR, Next.js o cookies web.",
+    "Crear packages/supabase/src/privileged.ts con createPrivilegedClient server-only sobre @supabase/supabase-js, serviceRoleKey explicita, persistSession false, autoRefreshToken false y detectSessionInUrl false, sin sesion humana como autoridad ni cache global interna.",
+    "Crear packages/supabase/scripts/validate-supabase-runtime-clients.mjs para verificar SHA contractual, topologia GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, versiones bloqueadas @supabase/ssr 0.8.0 y @supabase/supabase-js 2.90.1, fronteras runtime, credenciales, cookie policy, storage native, inmovilidad de superficies fuera de alcance y cobertura foundation 50/50.",
+    "Actualizar packages/supabase/README.md para documentar la materializacion interna de SHELL-DB-005::GLOBAL y mantener explicitamente diferidos exports npm, publicacion y migracion de consumidores.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-DB-005__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/supabase/package.json, packages/supabase/src/errors.ts, exports, dependencias, middleware, proxy, routing, consumidores, clientes legacy, wrappers RPC, tipos generados, codegen, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase, VITAL ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/supabase/scripts/validate-supabase-runtime-clients.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler packages/supabase/src/runtime.ts packages/supabase/src/browser.ts packages/supabase/src/server.ts packages/supabase/src/native.ts packages/supabase/src/privileged.ts",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T18:15:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO PERO SIEMPRE DAME TODO EL PASO A PASO, REVISA MUY BIEN EL INICIADOR, NECESITO LA TAREA COMPLETA",
+    "source_contract_sha256": "c47ab647ac18a5aa87a731ea42cc30b7d2d0062054a6d4b74e0a27c1009bf49b"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/supabase/src/runtime.ts created as runtime-neutral explicit configuration, credential, native storage and canonical cookie/host policy",
+    "MATERIALIZATION packages/supabase/src/browser.ts created with @supabase/ssr createBrowserClient and isSingleton false; package owns no browser singleton",
+    "MATERIALIZATION packages/supabase/src/server.ts created request-scoped with explicit getAll/setAll adapter and READ_WRITE/READ_ONLY cookie modes without silent write catches",
+    "MATERIALIZATION packages/supabase/src/native.ts created with explicit persistent storage, persistSession true, autoRefreshToken true and detectSessionInUrl false",
+    "MATERIALIZATION packages/supabase/src/privileged.ts created server-only with explicit serviceRoleKey and user-session persistence/refresh disabled",
+    "MATERIALIZATION packages/supabase/scripts/validate-supabase-runtime-clients.mjs and README update completed without package exports dependencies consumers middleware SQL migrations Supabase VITAL or TREQ changes",
+    "DEPENDENCY BASELINE @supabase/ssr 0.8.0 and @supabase/supabase-js 2.90.1 preserved from current lockfile",
+    "SOURCE CONTRACT SHA256 c47ab647ac18a5aa87a731ea42cc30b7d2d0062054a6d4b74e0a27c1009bf49b",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION runtime client validator PASS; scenarios=50 ssr=0.8.0 supabase_js=2.90.1 boundaries=4 cookie_policy=PASS service_role=ISOLATED native_storage=EXPLICIT consumers=NOT_MIGRATED vital=EXCLUDED",
+    "VALIDATION TypeScript strict compile PASS for runtime browser server native privileged",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-DB-005::GLOBAL VERIFIED"
+  ]
 }

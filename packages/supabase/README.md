@@ -1,69 +1,96 @@
 # @vento/supabase
 
-Raíz privada de autoría para el acceso técnico compartido a Supabase de Vento OS.
+Raiz privada de autoria para el acceso tecnico compartido a Supabase de Vento OS.
 
-## Estado
+## Estado fisico
 
-`PRE_E5_FOUNDATION`
+Este package permanece en fundacion `PRE_E5_FOUNDATION` y no esta publicado como superficie npm consumible.
 
-`SHELL-DB-001::GLOBAL` materializa únicamente la identidad física del workspace. No publica una versión, no expone una API runtime y no migra consumidores.
+Materializacion acumulada:
 
-## Responsabilidades reservadas
+- `SHELL-DB-001::GLOBAL`: raiz privada `@vento/supabase`.
+- `SHELL-DB-004::GLOBAL`: normalizacion tecnica runtime-neutral en `src/errors.ts`.
+- `SHELL-DB-005::GLOBAL`: fronteras internas separadas de clientes Supabase en `src/browser.ts`, `src/server.ts`, `src/native.ts`, `src/privileged.ts` y politica runtime-neutral compartida en `src/runtime.ts`.
 
-El package conserva exactamente cuatro familias de responsabilidad, cuya implementación pertenece a sus tareas propietarias:
+Todavia no existen `exports` npm, version publica del package, publicacion de registry ni migracion de consumidores. Los subpaths canonicos estan materializados como archivos internos de autoria, pero su publicacion sigue diferida al lifecycle propietario de package.
 
-1. factories de clientes Supabase — `SHELL-DB-005`;
-2. tipos generados desde fuentes versionadas y aprobadas — `SHELL-DB-002` y `AUTH-DB-026`;
-3. wrappers tipados de RPC canónicas — `SHELL-DB-003`;
-4. errores normalizados de acceso a datos — `SHELL-DB-004`.
+## Fronteras runtime de SHELL-DB-005
 
-Esta raíz no materializa todavía ninguna de esas familias.
+| Frontera | Subpath canonico | Factory | Lifecycle |
+| --- | --- | --- | --- |
+| Browser | `@vento/supabase/browser` | `createBrowserClient` | una instancia propiedad de la aplicacion por realm/configuracion; la factory no cachea y fuerza `isSingleton: false` |
+| Server de sesion | `@vento/supabase/server` | `createServerClient` | cliente nuevo por request/contexto autoritativo equivalente |
+| Native | `@vento/supabase/native` | `createNativeClient` | una instancia propiedad de la aplicacion por runtime/configuracion con storage persistente inyectado |
+| Privileged | `@vento/supabase/privileged` | `createPrivilegedClient` | una instancia propiedad del backend por isolate/proceso y configuracion privilegiada |
 
-## Fronteras
+La raiz `@vento/supabase` permanece runtime-neutral y no reexporta ninguna de estas factories.
 
-- Browser, server, native y privileged permanecen capacidades separadas.
-- Privileged será exclusivamente server-only y nunca implicará autorización administrativa automática.
-- Middleware y proxies permanecen locales a sus consumidores hasta una migración gobernada.
-- El package no contiene lógica empresarial, decisiones de autorización ni reglas de identidad.
-- Los tipos y factories no sustituyen RLS ni otras protecciones server-side.
-- La configuración debe ser explícita y los secretos nunca se almacenan en este package.
-- Una importación no realiza conexiones, llamadas remotas, migraciones ni otros efectos secundarios.
+## Configuracion y credenciales
 
-## Superficie física actual
+Las factories reciben configuracion ya resuelta. No leen `process.env`, no aplican precedencia ambiental y no seleccionan aliases legacy.
 
-- Sin `exports`.
-- Sin versión npm.
-- Sin dependencias runtime propias.
-- `src/errors.ts` existe como infraestructura interna de normalización técnica; no es un export público del package.
-- Sin factories, tipos generados ni wrappers RPC.
-- Sin publicación, registry, tags o releases.
+- Browser, server de sesion y native aceptan exclusivamente `url` + `publicKey` y rechazan claves `sb_secret_*` y JWT con rol `service_role`.
+- Privileged acepta `url` + `serviceRoleKey` y exige una clave `sb_secret_*` o un JWT con rol `service_role`.
+- La sesion Supabase no concede permisos empresariales, sede, area, rol ni contexto operativo.
+- VITAL permanece fuera de esta frontera.
 
-## Fuera de alcance
+## Cookies browser/server
 
-Esta instancia no modifica consumidores, helpers legacy, SQL, migraciones, tablas, vistas, funciones, RPC, RLS, grants, triggers, índices, constraints, datos, secretos, configuración remota ni el proyecto Supabase.
+La politica compartida es host-aware y determinista:
 
-## Normalización técnica de errores
+- host-only por defecto;
+- dominio compartido solo cuando esta configurado, habilitado y el host pertenece exactamente a ese dominio o a un subdominio valido;
+- `localhost`, direcciones IP y hosts fuera del dominio quedan host-only;
+- no se infiere parent domain recortando el hostname;
+- `path=/`;
+- `sameSite=lax`;
+- `secure=true` en HTTPS;
+- HTTP inseguro exige `allowInsecureHttp: true` de forma explicita;
+- no se fuerzan `expires`, `maxAge`, `httpOnly` ni nombres de cookie desde la politica compartida, por lo que esas señales permanecen bajo la semantica compatible del proveedor.
 
-`SHELL-DB-004::GLOBAL` materializa la política interna y runtime-neutral:
+La factory server recibe un adapter `getAll/setAll` y un `cookieWriteMode`:
 
-`VENTO_SUPABASE_TECHNICAL_ERROR_NORMALIZATION@1.0.0`
+- `READ_WRITE`: `setAll` se propaga al adapter; una excepcion real no se silencia.
+- `READ_ONLY`: un intento de escritura produce `ReadOnlyCookieWriteError` con codigo tecnico `VENTO_SUPABASE_COOKIE_WRITE_READ_ONLY`; no se convierte en denegacion empresarial ni en exito silencioso.
 
-La política conserva:
+La factory server no importa `next/headers`, no contiene matchers, redirects, rewrites ni routing. Esos adapters y reglas permanecen locales a cada aplicacion.
 
-- 4/4 capas separadas: diagnóstico nativo, normalización técnica, outcome contractual y mensaje público;
-- 11/11 familias semánticas heredadas;
-- prioridad de un outcome contractual machine-readable válido;
-- mappings exactos y versionados por fuente, código, contrato y versión;
-- fallback cerrado para errores desconocidos o sin mapping;
-- resultado desconocido y reconciliación para commands despachados cuyo efecto sea incierto;
-- retry únicamente desde un contrato explícito;
-- correlación segura y diagnóstico técnico protegido;
-- redacción de SQLSTATE, stack, SQL, constraints, objetos físicos, secretos y PII en superficies públicas;
-- paridad semántica entre server, browser y native;
-- 36/36 coberturas conductuales contractuales.
+## Native
 
-La clasificación nunca depende de `Error.message`, `hint`, `details`, stack, idioma, copy, heurísticas textuales o un status HTTP aislado. Un fallo técnico nunca se transforma silenciosamente en `null`, lista vacía, `false` o éxito.
+`createNativeClient` usa `@supabase/supabase-js`, nunca `@supabase/ssr` ni Next.js.
 
-El detalle protegido completo solo se conserva en runtime `SERVER`. Browser y native reciben únicamente la representación pública redactada. VITAL permanece excluido de esta política transversal.
+La factory exige storage con `getItem`, `setItem` y `removeItem`; no degrada a memoria si falta. Configura sesion persistente, auto refresh habilitado y `detectSessionInUrl: false`. El owner nativo conserva la instancia y gobierna el ciclo activo de refresh/deep-link fuera de esta factory.
 
-La separación física de factories, configuración, cookies, secretos y capacidades browser/server/native/privileged continúa reservada a `SHELL-DB-005`.
+## Privileged
+
+`createPrivilegedClient` usa `@supabase/supabase-js` sin cookie humana, sin persistencia de sesion, sin auto refresh y sin deteccion de sesion en URL.
+
+`service_role` habilita una frontera tecnica privilegiada, pero nunca equivale a autorizacion empresarial. El secreto no se registra, serializa ni reexporta hacia browser/native/root.
+
+## Compatibilidad observada
+
+La implementacion se prepara contra las versiones bloqueadas actualmente en `vento-shell`:
+
+- `@supabase/ssr` `0.8.0`.
+- `@supabase/supabase-js` `2.90.1`.
+
+No se cambian `package.json`, `package-lock.json` ni `packages/supabase/package.json` en `SHELL-DB-005::GLOBAL`.
+
+## Validacion fisica
+
+`packages/supabase/scripts/validate-supabase-runtime-clients.mjs` valida la fundacion de las 50/50 coberturas definidas por `SHELL-DB-005` dentro del alcance de esta instancia: fronteras runtime, configuracion explicita, aislamiento de `service_role`, cookie policy, storage native, ausencia de cache interna, preservacion de middleware/consumidores y exclusion VITAL.
+
+La compatibilidad ejecutable contra consumidores y la migracion/retirada de variantes legacy permanecen diferidas a sus tareas propietarias; `SHELL-DB-005::GLOBAL` no declara consumidores migrados.
+
+## Fuera de alcance de esta instancia
+
+- exports npm o conditions de package;
+- version/publicacion del package;
+- migracion de SHELL, VISO, NEXO, FOGO, ORIGO, PULSO o NUMERA;
+- retiro de clientes legacy;
+- cambios de middleware/proxy/routing;
+- codegen o tipos generados;
+- wrappers RPC;
+- SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos o secretos;
+- VITAL;
+- registro 04A/TREQ.
