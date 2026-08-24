@@ -1,10 +1,79 @@
 {
   "instance_id": "SHELL-UI-012::GLOBAL",
   "task_id": "SHELL-UI-012",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/ProcessStatusLine.tsx",
+      "change": "CREATE",
+      "scope": "Materialize the approved ProcessStatusLine as a server-safe, read-only ordered projection of owner-supplied process positions with explicit REACHED, CURRENT and NOT_REACHED presentation states."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/process-status-line.css",
+      "change": "CREATE",
+      "scope": "Materialize responsive token-based horizontal-to-vertical status-line styling with non-color state distinctions and decorative connectors that do not imply process transitions."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/scripts/validate-process-status-line.mjs",
+      "change": "CREATE",
+      "scope": "Validate the approved SHELL-UI-012 presentation contract, explicit-state semantics, accessibility, responsive reflow, server-safe boundary, consumer non-migration and immutable adjacent scope."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/README.md",
+      "change": "REPLACE",
+      "scope": "Reconcile the private ui-web authoring README through SHELL-UI-012, documenting ProcessStatusLine ownership, explicit state taxonomy, accessibility, responsive behavior, consumer handoff and deferred exports/releases."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/SHELL-UI-012__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, physical lifecycle transitions and consolidated evidence only for SHELL-UI-012::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after materialization and before IMPLEMENTED; require repair scope PASS and READY_FOR_VALIDATION without adding manual fixed-scope postconditions."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-process-status-line.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/ProcessStatusLine.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T17:30:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "569a18962615f050186b9f6f516aefe10a473cc7fe7c16d5427d68ee4aa597ae"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/ProcessStatusLine.tsx created as server-safe read-only ordered process status projection with explicit REACHED/CURRENT/NOT_REACHED states and no transition inference",
+    "MATERIALIZATION packages/ui-web/src/process-status-line.css created with responsive horizontal-to-vertical reflow and non-color state distinctions using existing ui tokens",
+    "MATERIALIZATION packages/ui-web/scripts/validate-process-status-line.mjs and full README update completed without consumer, Supabase, package manifest, export, process-transition, router, offline/sync or TREQ changes",
+    "SOURCE CONTRACT SHA256 569a18962615f050186b9f6f516aefe10a473cc7fe7c16d5427d68ee4aa597ae",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION ProcessStatusLine validator PASS scenarios=68 server_safe=YES authority=NONE transitions=EXTERNAL consumers=0/7 exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/ProcessStatusLine.tsx",
+    "VALIDATION quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-012::GLOBAL VERIFIED"
+  ]
 }
