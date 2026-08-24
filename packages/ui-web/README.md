@@ -18,6 +18,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-006::GLOBAL` materializa internamente `ContextIndicator` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-006`, sin resolver contexto, publicar una API npm, una version, un entrypoint CSS ni migrar consumidores.
 
+`SHELL-UI-007::GLOBAL` materializa internamente `SiteSelector` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-007`, sin resolver contexto, persistir sede, consultar red, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -51,6 +53,9 @@ Fronteras vinculantes:
 - `src/ContextIndicator.tsx` como implementacion interna de `ContextIndicator`.
 - `src/context-indicator.css` como estilos internos de `ContextIndicator`.
 - `scripts/validate-context-indicator.mjs` como validador fisico de `SHELL-UI-006::GLOBAL`.
+- `src/SiteSelector.tsx` como implementacion interna de `SiteSelector`.
+- `src/site-selector.css` como estilos internos de `SiteSelector`.
+- `scripts/validate-site-selector.mjs` como validador fisico de `SHELL-UI-007::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -241,6 +246,51 @@ Las implementaciones `VentoChrome`, chips, menus, selectores y presentaciones de
 
 La adopcion permanece en `SHELL-MIG-*` y `SHELL-CI-*`. Debe demostrarse paridad por consumidor antes de retiro legacy. Consumidores migrados: 0.
 
+## SiteSelector
+
+`SiteSelector` presenta candidatas de sede ya preparadas por la capa propietaria y emite una solicitud de cambio. El componente no resuelve contexto, no confirma la transicion y no produce autoridad.
+
+Contrato interno materializado:
+
+- frontera cliente aislada mediante `use client` exclusivamente para capturar la interaccion del control;
+- `label` obligatorio y visible;
+- `confirmedSiteId` obligatorio y nullable como sede confirmada entregada por la capa propietaria;
+- `requestedSiteId` opcional como destino solicitado todavia no confirmado;
+- `options` readonly de `SiteSelectorOption` con `id` estable y `label` humano;
+- `onRequestChange(siteId)` como emision de intencion, no como receipt ni confirmacion;
+- `pending`, `pendingLabel`, `disabled` y `placeholderLabel` como estado de presentacion e interaccion;
+- control nativo `select` asociado a un `label`, con opciones nativas y orden preservado;
+- placeholder no accionable cuando la composicion aporta `placeholderLabel` o no existe una opcion seleccionable confirmada;
+- sin `defaultSiteId`, `primarySiteId`, `lastSiteId`, `activeSiteId`, `canSwitchRole`, `canOperate`, `permissionCode`, `role`, `siteCookie`, `queryParam`, `supabaseClient` ni `employeeId`;
+- sin taxonomia publica `variant`, `tone`, `size`, `fullWidth`, `compact`, `kiosk`, `admin` u `operational`;
+- sin combobox buscable, listeners globales, autofocus, navegacion o persistencia propios.
+
+### Sede confirmada y solicitud pendiente
+
+`confirmedSiteId` representa exclusivamente la sede confirmada recibida. `requestedSiteId` representa una solicitud en curso y solo puede ocupar el valor visual del control mientras `pending=true`; no sustituye `confirmedSiteId` como autoridad.
+
+Durante una transicion, la composicion puede mantener `ContextIndicator state="changing"` mientras `SiteSelector` muestra la candidata solicitada y el texto de `pendingLabel`. La nueva sede solo se trata como confirmada cuando la capa propietaria vuelve a renderizar con el nuevo `confirmedSiteId`.
+
+El selector no autoelige la primera opcion, no autoemite cuando existe una sola opcion, no inventa opciones cuando la lista esta vacia y no crea una opcion universal `Sin sede`. Una sede confirmada que no figure en `options` tampoco se sintetiza como opcion nueva.
+
+### Autoridad, revalidacion y concurrencia
+
+La presencia de una opcion solo significa que puede mostrarse como candidata. El servidor revalida elegibilidad, autoridad y estado fresco antes de la confirmacion. Despues de un cambio confirmado, la capa propietaria debe invalidar el contexto anterior y publicar la nueva proyeccion autoritativa.
+
+La concurrencia puede volver obsoleta una lista de opciones entre render y solicitud. `SiteSelector` no mantiene cache autoritativo de elegibilidad, no reintenta por su cuenta y no transforma una seleccion offline en cambio confirmado. Mientras `pending=true`, el control impide solicitudes concurrentes o equivalentes desde la misma instancia.
+
+### Fronteras de composicion
+
+`SiteSelector` no es un filtro administrativo: un filtro administrativo limita una consulta y no cambia contexto operativo. Tampoco contiene `AreaSelector`; el selector de area permanece reservado a `SHELL-UI-008`. Simulacion, diagnostico, recuperacion, confirmaciones sensibles y AppShell conservan sus tareas propietarias.
+
+El componente no consulta `@vento/supabase`, no abre cliente Supabase, no conoce `employee_settings`, no escribe `selected_site_id`, no lee ni escribe cookies o storage, no consume `site_id` desde query params, no usa router, no ejecuta RPC y no realiza llamadas de red. Las opciones visibles y la disponibilidad se preparan fuera del componente y nunca sustituyen enforcement de servidor.
+
+### Legacy, migracion y rollback
+
+El selector del template historico y las seis copias runtime observadas en NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen legacy. Sus cookies, query params, escrituras cliente y gating local de roles no se copian a la API compartida.
+
+La adopcion permanece en `SHELL-MIG-*` y `SHELL-CI-*`, por lotes reversibles con paridad y rollback antes de retirar cada copia legacy. Consumidores migrados: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -253,6 +303,8 @@ La adopcion permanece en `SHELL-MIG-*` y `SHELL-CI-*`. Debe demostrarse paridad 
 
 `ContextIndicator` conserva estado textual, relacion semantica entre etiquetas y valores, orden de lectura, reflow y atributos ARIA compatibles sin imponer una live region, tabulacion, foco automatico o interaccion sobre la raiz.
 
+`SiteSelector` conserva semantica nativa de `label`, `select` y `option`, teclado del navegador, foco visible, objetivo tactil, reflow y estado pendiente textual cuando la composicion aporta `pendingLabel`; no depende de hover ni mueve foco por una confirmacion ordinaria.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -263,8 +315,8 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-`SHELL-UI-007` conserva la responsabilidad del selector compartido de sede. `SHELL-UI-006::GLOBAL` no materializa selectores de sede o area, aviso especializado de rol simulado, diagnostico de contexto, AppShell, navegacion, migracion de consumidores ni patrones compuestos posteriores.
+`SHELL-UI-008` conserva la responsabilidad del selector compartido de area. `SHELL-UI-007::GLOBAL` no materializa `AreaSelector`, aviso especializado de rol simulado, diagnostico de contexto, AppShell, navegacion, migracion de consumidores ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, aplicaciones consumidoras, rutas, navegacion, autenticacion, autorizacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/ui-web/src/ContextIndicator.tsx`, `packages/ui-web/src/context-indicator.css`, `packages/ui-web/scripts/validate-context-indicator.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `VentoChrome`, aplicaciones consumidoras, cookies legacy, `employee_settings`, query params, rutas, navegacion, autenticacion, autorizacion, resolucion de contexto, roles, turnos, check-in, simulacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, Supabase, `SHELL-UI-008` ni el registro 04A/TREQ.
