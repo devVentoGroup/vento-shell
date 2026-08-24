@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1037** |
+| Aprobadas | **1038** |
 | En propuesta | **0** |
-| No iniciadas | **557** |
+| No iniciadas | **556** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.06% (1037/1594)** |
+| Porcentaje de completamiento | **65.12% (1038/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-DB-003` — Implementar columnas o expresiones normalizadas de búsqueda | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-DB-004` — Ejecutar dry-runs y reportes de colisiones | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-NORM-DB-005` — Ejecutar backfills aprobados por dominio | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-DB-004` — Ejecutar dry-runs y reportes de colisiones | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-DB-005` — Ejecutar backfills aprobados por dominio | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-NORM-DB-006` — Implementar constraints después de reconciliar datos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1247,7 +1247,7 @@
 | ✅ APROBADA | `DATA-NORM-DB-001` | Implementar almacenamiento de versiones de reglas y diccionarios | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-002` | Implementar funciones SQL deterministas cuando sean necesarias | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-003` | Implementar columnas o expresiones normalizadas de búsqueda | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
-| ⬜ NO INICIADA | `DATA-NORM-DB-004` | Ejecutar dry-runs y reportes de colisiones | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
+| ✅ APROBADA | `DATA-NORM-DB-004` | Ejecutar dry-runs y reportes de colisiones | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-005` | Ejecutar backfills aprobados por dominio | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-006` | Implementar constraints después de reconciliar datos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-007` | Implementar índices de búsqueda y unicidad normalizada | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |

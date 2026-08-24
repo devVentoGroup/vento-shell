@@ -3487,7 +3487,1641 @@ Estos requisitos se reutilizan como trazabilidad y no cambian su contenido, iden
 `DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones`
 
 
-### [ ] DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones
+### ✅ DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones
+
+**Estado:** APROBADA
+**Tarea anterior:** DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda
+**Tarea siguiente:** DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para ejecutar y certificar dry-runs de normalización y búsqueda, detectar y clasificar colisiones sin inferir identidad, producir evidencia reproducible y resolver la elegibilidad de cada fila antes de cualquier backfill, sin ejecutar DDL, DML, backfills, constraints, índices, triggers, fusiones, desactivaciones, reasignaciones ni cambios remotos durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md`
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `DATA-NORM-DB-004::<package_id>`, condicionadas a `POST_E5_PACKAGE`, paquete aprobado, fuentes y versiones fijadas, reconciliación de drift, ejecución estrictamente read-only y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+`DATA-NORM-DB-004` define cómo deberá ejecutarse, por cada paquete aprobado, el último análisis de solo lectura que separa una transformación propuesta de una transformación apta para backfill.
+
+La futura instancia deberá responder de manera reproducible, sin modificar datos:
+
+1. qué universo exacto fue evaluado;
+2. qué reglas, perfiles, catálogos, algoritmos y versiones se utilizaron;
+3. qué resultado habría producido cada evaluación autorizada;
+4. qué filas no cambian;
+5. qué filas producirían un cambio candidato;
+6. qué filas quedan bloqueadas por política, versión, scope, conflicto, revisión, estructura o fallo técnico;
+7. qué derivaciones de búsqueda convergen;
+8. qué colisiones exactas o tolerantes aparecen;
+9. qué colisiones son falsos positivos por scope, ciclo de vida, estructura o frontera funcional;
+10. qué grupos permanecen abiertos para revisión o resolución estructural;
+11. qué consumidores y relaciones pueden verse afectados;
+12. qué conjunto exacto puede pasar a `DATA-NORM-DB-005`;
+13. qué conjunto exacto debe permanecer excluido;
+14. si el paquete no requiere backfill;
+15. qué evidencia permite repetir el análisis bajo el mismo corte.
+
+La tarea no ejecuta todavía el dry-run físico de ningún `package_id`. Define el contrato que deberá satisfacer cada futura ejecución autorizada.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+DATA-NORM-DB-004
+→ contrato documental único y reutilizable
+
+DATA-NORM-DB-004::<package_id>
+→ futura instancia física read-only por paquete
+
+paquete aprobado
++ baseline recapturado
++ reglas y versiones fijadas
++ algoritmo y perfil fijados
++ universo y scope exactos
++ evaluación sin mutación
++ detección de colisiones
++ clasificación y evidencia
++ partición de elegibilidad
++ manifiesto de readiness
+→ handoff cerrado hacia DATA-NORM-DB-005
+```
+
+La definición global no se reabre por cada paquete.
+
+Cada instancia conserva su propio `package_id`, corte, universo, reglas, versiones, scopes, consultas, resultados, colisiones, bloqueos, consumidores, evidencia y disposición de backfill.
+
+---
+
+#### 3. Topología vinculante
+
+La topología aplicable es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = DATA-NORM-DB-004::<package_id>
+```
+
+Consecuencias:
+
+1. no existe `DATA-NORM-DB-004::GLOBAL`;
+2. aprobar este contrato no ejecuta consultas masivas ni dry-runs físicos;
+3. dos paquetes no comparten una instancia anónima;
+4. una consulta o helper reutilizable no amplía el scope de un paquete;
+5. una colisión encontrada en un paquete no autoriza analizar ni modificar otro dominio;
+6. la evidencia de un paquete no se presenta como certificación global de Vento OS;
+7. cada `package_id` conserva su propio corte y digest de evidencia;
+8. el marcador documental global no se modifica para registrar cada ejecución física futura.
+
+---
+
+#### 4. Gate temporal
+
+Una futura instancia solo podrá ejecutar el dry-run físico cuando el mismo `package_id` haya alcanzado las puertas exigidas por R2 y por su paquete E5.
+
+Como mínimo deberá demostrarse:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+DELIV-PKG aplicable = CLOSED
+E5-GATE-008::<package_id> = PASS
+SHELL-CI-020::<package_id> = OPENED
+drift aplicable = RECONCILED
+physical_authorization = EXPLICIT
+```
+
+Además deberán estar resueltas las decisiones aplicables de `DATA-NORM-DB-001`, `DATA-NORM-DB-002` y `DATA-NORM-DB-003` para el mismo paquete, sin asumir que todas deban materializar objetos físicos cuando su disposición sea no aplicable.
+
+La ausencia de una puerta mantiene la instancia sin ejecución física.
+
+---
+
+#### 5. Fuentes vinculantes
+
+Cada futura instancia deberá consumir sin reinterpretación silenciosa:
+
+- `DATA-NORM-ARC-001` a `DATA-NORM-ARC-007` para resolución, clases, capitalización, conectores, excepciones, diccionario y revisión;
+- `DATA-NORM-ARC-008` para representaciones, perfiles y modos de búsqueda;
+- `DATA-NORM-ARC-009` para versiones, digests, auditoría, idempotencia y replay;
+- `DATA-NORM-ARC-010` para identidad, scope, taxonomía de colisiones y prohibición de inferir duplicidad;
+- `DATA-NORM-ARC-011` para autoridad por capas y evaluación semántica;
+- `DATA-NORM-ARC-012` cuando existan originales, mappings o referencias externas;
+- `DATA-NORM-TRANS-001` para el baseline histórico aprobado;
+- `DATA-NORM-TRANS-002` para el contrato analítico de dry-run y sus estados;
+- `DATA-NORM-TRANS-003` para clasificación, evidencia y no transitividad de colisiones;
+- `DATA-NORM-DB-001` para versiones persistidas cuando sean aplicables;
+- `DATA-NORM-DB-002` para primitivas SQL deterministas cuando hayan sido aprobadas;
+- `DATA-NORM-DB-003` para representaciones físicas derivadas y las métricas que entrega al dry-run;
+- las definiciones vigentes de `@vento/data-normalization`;
+- el expediente E5, consumidores y alcance del `package_id`;
+- constraints, índices, relaciones y objetos legacy que puedan afectar el resultado actual;
+- el estado remoto recapturado inmediatamente antes de la ejecución;
+- la cobertura vigente del registro canónico de requisitos de prueba.
+
+Una discrepancia material entre fuente, versión, código, contrato y remoto se clasifica como drift y bloquea la certificación del run afectado.
+
+---
+
+#### 6. Handoff recibido de `DATA-NORM-DB-003`
+
+`DATA-NORM-DB-003` exige que cada representación candidata entregue información suficiente para medir, como mínimo:
+
+- cantidad de fuentes;
+- cantidad de derivaciones;
+- colisiones exactas;
+- colisiones por tolerancia;
+- `NULL`;
+- vacíos;
+- duplicados de clave;
+- falsos positivos por scope;
+- diferencias legacy/canónico;
+- registros bloqueados;
+- cobertura por perfil;
+- distribución de longitud;
+- impacto potencial en consumidores.
+
+`DATA-NORM-DB-004` convierte ese handoff en evidencia ejecutada de solo lectura y no puede rebajar ninguna de esas dimensiones a una observación opcional.
+
+Si la estrategia aprobada por `DATA-NORM-DB-003` es `QUERY_TIME_ONLY` o no materializa una columna, el dry-run evalúa la representación lógica mediante el mismo oracle y versión; no crea una columna ficticia para poder medirla.
+
+---
+
+#### 7. Baseline histórico de referencia
+
+`DATA-NORM-TRANS-001` y `DATA-NORM-TRANS-002` conservan un baseline histórico aprobado y un replay analítico preimplementación.
+
+Entre sus señales históricas se encuentran:
+
+- 4.030 filas en el corpus comparativo de búsqueda;
+- 26 grupos y 52 filas bajo comparación `LOWER_TRIM`;
+- 27 grupos y 54 filas bajo comparación tolerante a tildes;
+- 17 grupos tolerantes formados únicamente por filas activas;
+- 26 grupos y 52 filas bajo `_vento_slugify`;
+- 27 grupos y 54 filas bajo `_navigation_slugify`;
+- 2.730 de 4.030 filas con divergencia entre ambos helpers legacy;
+- 72 posiciones `Nivel 1` a `Nivel 6` que son falsos positivos cuando se omite el scope jerárquico;
+- grupos de UOM con etiquetas iguales y estructura distinta;
+- pares activo/inactivo de catálogo;
+- homónimos funcionales de producto;
+- nombres de persona que no constituyen identidad.
+
+Estos datos son una referencia histórica para detectar regresiones o cambios de magnitud. No certifican el remoto presente y no se reutilizan como si fueran un snapshot actual.
+
+---
+
+#### 8. Estado técnico verificado de partida
+
+El package `@vento/data-normalization` ya expone contratos puros relevantes para esta tarea:
+
+- preview no vinculante;
+- evaluación semántica inyectada;
+- estados `NO_CHANGE`, `PROPOSED_CHANGE`, `BLOCKED_POLICY`, `BLOCKED_CONFLICT`, `REVIEW_REQUIRED`, `ESCALATED_STRUCTURAL` y `TECHNICAL_FAILURE`;
+- `commit_authority = false` en preview;
+- `mutation_performed = false` en preview;
+- `uniqueness_certified = false` en preview;
+- `identity_decided = false` en preview;
+- obligación de revalidación transaccional posterior;
+- contratos de auditoría, versiones, `version_set_digest`, procedencia de algoritmo, replay y concurrencia.
+
+La recaptura remota de metadatos realizada durante esta definición encontró objetos legacy con nombres relacionados con normalización, pero no evidenció una infraestructura canónica global de dry-run, registro de colisiones o `review_case` que pueda adoptarse por coincidencia nominal.
+
+Por tanto, la futura instancia deberá construir su evidencia desde el contrato vigente del paquete y el scope aprobado, no desde una tabla o función legacy inferida como autoridad.
+
+---
+
+#### 9. Principio de cero mutación
+
+El dry-run de esta tarea es analítico y no vinculante.
+
+Invariantes:
+
+1. no ejecuta `INSERT`, `UPDATE`, `DELETE`, `MERGE`, DDL ni comandos equivalentes;
+2. no crea tablas temporales, persistentes o auxiliares dentro del proyecto observado;
+3. no crea índices ni constraints para acelerar el análisis;
+4. no ejecuta triggers mediante escrituras simuladas como mecanismo normal de dry-run;
+5. no actualiza derivaciones existentes;
+6. no crea review cases ni decisiones;
+7. no corrige valores;
+8. no fusiona registros;
+9. no desactiva filas;
+10. no reasigna relaciones;
+11. no altera secuencias;
+12. no cambia configuración de sesión persistente;
+13. no considera un rollback posterior como sustituto de un diseño read-only cuando existe una alternativa de solo lectura.
+
+Un intento de escritura que falle por estar dentro de una transacción read-only se registra como violación del runner y no como una forma aceptable de completar el dry-run.
+
+---
+
+#### 10. Frontera de transacción read-only
+
+Cuando la ejecución use PostgreSQL directamente, las consultas del mismo snapshot deberán ejecutarse, cuando sea técnicamente posible, dentro de una transacción de solo lectura con aislamiento suficiente para conservar una vista consistente del universo analizado.
+
+La configuración de solo lectura deberá ser transaccional y no una característica de sesión que pueda contaminar una conexión reutilizada por un pool.
+
+Reglas:
+
+1. la evidencia declara `transaction_read_only` cuando la vía de ejecución permita observarlo;
+2. la evidencia declara el aislamiento usado;
+3. una ejecución distribuida entre snapshots distintos no se presenta como una única captura atómica;
+4. si el runner requiere múltiples conexiones, cada fragmento conserva su propio corte y la agregación declara la limitación;
+5. un mecanismo de rollback de una única petición no se interpreta como transacción multi-request;
+6. funciones SQL llamadas por el dry-run deberán estar aprobadas para el propósito y no podrán introducir efectos laterales;
+7. cualquier función que intente escribir hace fallar la ejecución afectada.
+
+---
+
+#### 11. Identidad mínima del run
+
+Cada futura instancia deberá producir una identidad inmutable del run con, como mínimo:
+
+```text
+instance_id
+package_id
+dry_run_id
+environment
+source_revision_or_commit
+baseline_reference
+capture_started_at
+capture_completed_at
+snapshot_or_cut_reference
+policy_coordinate_set
+resolved_version_set
+version_set_digest
+algorithm_provenance
+profile_set
+locale_set
+scope_set
+source_population_digest
+runner_identity
+runner_version
+runner_digest
+authorization_reference
+drift_state
+result_digest
+```
+
+Ninguno de estos campos puede derivarse de la hora actual como único identificador semántico.
+
+Repetir el mismo universo, versiones, algoritmo, configuración y snapshot deberá producir el mismo resultado lógico y el mismo digest canónico, salvo metadatos operativos expresamente excluidos del digest.
+
+---
+
+#### 12. Modos de ejecución permitidos
+
+La instancia podrá declarar únicamente uno de estos modos lógicos:
+
+```text
+CURRENT_READ_ONLY_FULL_SCOPE
+CURRENT_READ_ONLY_PARTITIONED_SCOPE
+APPROVED_BASELINE_REPLAY
+BLOCKED_BEFORE_EXECUTION
+```
+
+Significado:
+
+- `CURRENT_READ_ONLY_FULL_SCOPE`: recaptura y evalúa la totalidad del scope autorizado actual;
+- `CURRENT_READ_ONLY_PARTITIONED_SCOPE`: cubre el scope completo mediante particiones disjuntas y reconciliables;
+- `APPROVED_BASELINE_REPLAY`: reproduce evidencia histórica aprobada para comprobar determinismo, no para certificar el remoto actual;
+- `BLOCKED_BEFORE_EXECUTION`: una precondición impide ejecutar y no se fabrican resultados parciales como certificación.
+
+Una muestra estadística puede utilizarse para diagnóstico o rendimiento, pero nunca habilita por sí sola filas no examinadas para backfill.
+
+---
+
+#### 13. Universo material del dry-run
+
+Antes de evaluar valores deberá fijarse el universo exacto mediante una matriz por fuente.
+
+Cada entrada declara:
+
+- dominio propietario;
+- entidad propietaria;
+- tabla, vista o fuente física observada;
+- campo o trayectoria estructurada;
+- representación;
+- rol de fuente;
+- perfil;
+- scope;
+- criterios de estado o vigencia;
+- política y versión;
+- cantidad esperada;
+- cantidad observada;
+- exclusiones justificadas;
+- consumidor o propósito;
+- mecanismo de paginación o partición cuando aplique.
+
+No se agrega al universo una columna porque sea `text`, porque contenga `name`, porque un helper legacy la procese o porque otra aplicación la consulte.
+
+---
+
+#### 14. Frontera VITAL
+
+VITAL permanece fuera de cualquier dry-run transversal de Vento OS.
+
+La evidencia deberá demostrar una de estas condiciones:
+
+```text
+VITAL_NOT_REFERENCED
+VITAL_BOUNDARY_OBSERVED_WITHOUT_DATA_EVALUATION
+```
+
+Una dependencia relacional que cruce la frontera puede registrarse como impacto o bloqueo, pero no autoriza leer ni evaluar datos propios de VITAL como parte del universo de Vento OS.
+
+La ausencia de filas VITAL en un resultado no basta si la consulta, vista o función usada pudo incorporarlas antes del filtro.
+
+---
+
+#### 15. Elegibilidad previa a evaluación
+
+Cada coordenada debe pasar, como mínimo, estos gates antes de derivar un candidato:
+
+1. dominio resuelto;
+2. entidad resuelta;
+3. campo semántico resuelto;
+4. representación resuelta;
+5. rol de fuente resuelto;
+6. clase semántica resuelta;
+7. política activa compatible;
+8. `version_set_digest` completo;
+9. algoritmo y artefacto fijados;
+10. locale explícito cuando aplique;
+11. scope completo;
+12. fuente y versión o hash observables cuando el contrato lo exija;
+13. autorización para leer la evidencia;
+14. ausencia de drift bloqueante;
+15. ausencia de material protegido excluido del mecanismo.
+
+Fallar un gate produce bloqueo explícito; nunca se usa una regla genérica de fallback.
+
+---
+
+#### 16. Evaluación fila por fila o unidad por unidad
+
+La unidad lógica de evaluación es la coordenada autorizada de una entidad, no una cadena aislada.
+
+Cada resultado deberá poder vincular:
+
+```text
+entity_type
+entity_id_or_protected_reference
+source_field_coordinate
+source_value_version_or_hash
+policy_coordinate
+semantic_class
+representation_role
+source_role
+scope_ref
+resolved_version_set
+version_set_digest
+algorithm_provenance
+preview_result
+proposed_or_preserved_reference_or_hash
+derivation_set
+match_set
+blocking_detail
+```
+
+El resultado puede minimizar valores sensibles mediante referencias o hashes siempre que preserve reproducibilidad suficiente.
+
+---
+
+#### 17. Estados de evaluación reutilizados
+
+El dry-run reutiliza el contrato actual del preview compartido y no crea otra taxonomía incompatible.
+
+Estados de fila:
+
+```text
+NO_CHANGE
+PROPOSED_CHANGE
+BLOCKED_POLICY
+BLOCKED_CONFLICT
+REVIEW_REQUIRED
+ESCALATED_STRUCTURAL
+TECHNICAL_FAILURE
+```
+
+Lectura obligatoria:
+
+- `NO_CHANGE` no significa que el campo esté globalmente certificado;
+- `PROPOSED_CHANGE` no significa que el cambio esté autorizado para persistencia;
+- `BLOCKED_POLICY` no se convierte en `NO_CHANGE`;
+- `BLOCKED_CONFLICT` exige resolver el conflicto propietario;
+- `REVIEW_REQUIRED` conserva el valor sin decisión automática;
+- `ESCALATED_STRUCTURAL` no se resuelve mediante normalización textual;
+- `TECHNICAL_FAILURE` invalida la cobertura de la unidad afectada.
+
+---
+
+#### 18. Resultado `NO_CHANGE`
+
+Una unidad `NO_CHANGE` deberá demostrar que:
+
+1. fue realmente evaluada bajo la versión declarada;
+2. el valor fuente no fue omitido por filtro accidental;
+3. no fue clasificada como bloqueo;
+4. no depende de un helper legacy diferente;
+5. la comparación usa el mismo algoritmo y serialización del oracle;
+6. `NULL`, vacío y estados especiales conservaron su semántica;
+7. el resultado es idempotente bajo el mismo contexto.
+
+`NO_CHANGE` entra al manifiesto final como `NO_CHANGE`, no como fila de backfill con escritura redundante.
+
+---
+
+#### 19. Resultado `PROPOSED_CHANGE`
+
+Una unidad `PROPOSED_CHANGE` es únicamente candidata.
+
+Antes de poder entrar al conjunto `BACKFILL_ELIGIBLE` deberá superar:
+
+- resolución completa de política;
+- versión y digest vigentes;
+- ausencia de drift;
+- clasificación de cualquier colisión producida;
+- compatibilidad con scope e identidad;
+- restricciones actuales relevantes;
+- revisión de consumidores y relaciones aplicables;
+- ausencia de bloqueo humano o estructural;
+- evidencia suficiente para rollback;
+- pertenencia exacta al `package_id`.
+
+Una transformación correcta de texto puede quedar bloqueada para persistencia si sus efectos estructurales no están resueltos.
+
+---
+
+#### 20. Bloqueos y fallos
+
+Los bloqueos deberán conservar causa estable y owner.
+
+Como mínimo se distinguen:
+
+- política ausente o incompatible;
+- versión ausente, suspendida, retirada o incompatible;
+- scope incompleto;
+- fuente obsoleta;
+- derivación obsoleta;
+- diferencia entre oracle y implementación;
+- colisión no resuelta;
+- identidad posible;
+- estructura incompatible;
+- evidencia insuficiente;
+- consumidor no reconciliado;
+- relación desconocida;
+- autorización insuficiente;
+- dato protegido no apto para el runner;
+- drift no reconciliado;
+- fallo técnico.
+
+Cada causa deberá indicar la tarea o autoridad propietaria que puede resolverla. DB-004 no cierra por conveniencia una decisión perteneciente a identidad, revisión, backfill, constraints, índices o transición.
+
+---
+
+#### 21. Derivaciones de búsqueda
+
+Cuando el paquete incluya representaciones de búsqueda, query y valor deberán evaluarse con el mismo:
+
+```text
+search_profile
+locale
+algorithm_key
+algorithm_version
+artifact_digest
+version_set_digest
+scope
+representation
+```
+
+`SEARCH_FORM_KEY`, `SEARCH_ACCENT_KEY`, tokens, aliases aprobados, componentes estructurados y otras representaciones permanecen separadas.
+
+Una colisión en una representación de búsqueda no convierte la representación en clave empresarial ni en política de unicidad.
+
+---
+
+#### 22. Detección de colisiones
+
+La detección se ejecuta después de derivar resultados comparables y antes de declarar elegibilidad de backfill.
+
+Una colisión significa que dos o más miembros convergen bajo una comparación declarada dentro de un scope declarado.
+
+No significa por sí sola:
+
+- misma entidad;
+- duplicado;
+- error de datos;
+- mismo ciclo de vida;
+- mismo producto funcional;
+- mismo padre;
+- mismo emisor;
+- misma estructura;
+- misma vigencia;
+- autorización para fusionar;
+- autorización para bloquear por unicidad.
+
+---
+
+#### 23. Identidad reproducible de grupo
+
+Cada grupo deberá conservar una identidad derivable de:
+
+```text
+policy_key
+policy_version
+comparison_representation
+profile
+locale
+algorithm_version
+entity_family
+scope_coordinate
+ordered_member_set
+evidence_digest
+```
+
+Los miembros se ordenan de forma determinista antes del digest.
+
+Si cambia un miembro, scope, representación, política, versión, algoritmo o evidencia material, cambia la revisión del grupo; no se reescribe silenciosamente el grupo anterior.
+
+---
+
+#### 24. Taxonomía obligatoria de colisiones
+
+Toda colisión material deberá clasificarse con exactamente una clase primaria de la taxonomía vigente:
+
+```text
+EXACT_VALUE_COLLISION
+FORM_VARIANT_COLLISION
+SEARCH_KEY_COLLISION
+PROBABLE_SAME_ENTITY
+STRUCTURAL_DUPLICATE_CANDIDATE
+LIFECYCLE_OR_VERSION_PAIR
+CROSS_LAYER_HOMONYM
+LABEL_COLLISION_DIFFERENT_STRUCTURE
+SCOPE_FALSE_POSITIVE
+AMBIGUOUS_COLLISION
+```
+
+Pueden conservarse señales secundarias, pero la clase primaria debe ser única para una revisión determinada.
+
+Ninguna clase, incluida `PROBABLE_SAME_ENTITY`, equivale a `CONFIRMED_DUPLICATE_DECISION`.
+
+---
+
+#### 25. Colisiones exactas
+
+El reporte separa como mínimo:
+
+- igualdad literal dentro del mismo scope;
+- igualdad de valor mostrado con estructura distinta;
+- igualdad de derivación con fuente distinta;
+- igualdad de clave legacy;
+- igualdad bajo una política de unicidad realmente aprobada, cuando exista.
+
+Dos strings iguales no se agregan automáticamente si pertenecen a dominios, padres, emisores, roles, ciclos o estructuras incompatibles.
+
+---
+
+#### 26. Colisiones por tolerancia
+
+Las colisiones tolerantes se reportan por representación y nunca como un total indistinto.
+
+Como mínimo se separan:
+
+- forma equivalente;
+- tolerancia de tildes;
+- aliases aprobados;
+- frase o token;
+- prefijo controlado;
+- transliteración cuando alguna versión futura la habilite;
+- similitud candidata cuando alguna política futura la habilite.
+
+Si una capacidad está deshabilitada por política, el reporte conserva `NOT_APPLICABLE` o bloqueo correspondiente y no ejecuta una versión local alternativa.
+
+---
+
+#### 27. No transitividad
+
+La detección no aplica transitividad implícita.
+
+```text
+A coincide con B
+B coincide con C
+```
+
+no implica:
+
+```text
+A = C
+A, B y C forman una sola entidad
+```
+
+Una agrupación por componentes conectados solo será válida si el contrato específico define esa operación y demuestra que la relación usada es apropiada para esa agregación.
+
+La similitud, prefijos, tokens y señales difusas se conservan como pares o grafos reproducibles, no como identidad transitiva.
+
+---
+
+#### 28. `NULL`, vacío y estados especiales
+
+El dry-run deberá contabilizar y preservar por separado:
+
+- `NULL`;
+- string vacío;
+- solo espacios cuando el contrato aún no los haya transformado;
+- desconocido;
+- no aplicable;
+- pendiente;
+- placeholder;
+- clave parcial;
+- valor inválido;
+- valor protegido no inspeccionable.
+
+Ninguno se convierte automáticamente en otro para simplificar conteos o agrupaciones.
+
+Una política puede declarar múltiples `NULL` permitidos o un comportamiento específico, pero el dry-run debe demostrarlo desde la política, no inferirlo del motor actual.
+
+---
+
+#### 29. Ciclo de vida y temporalidad
+
+Actividad, vigencia, supersesión y estado histórico forman parte del scope.
+
+Reglas:
+
+1. activo/inactivo no significa duplicado;
+2. retirar una fila no libera automáticamente una identidad o código;
+3. dos versiones históricas no se agrupan como conflicto presente sin política temporal compatible;
+4. el reporte distingue colisión simultánea de par de lifecycle;
+5. los intervalos efectivos se conservan cuando participan en identidad o unicidad;
+6. un backfill no reescribe historia fuera de su alcance temporal aprobado.
+
+---
+
+#### 30. Scope estructural
+
+Para entidades estructuradas, el detector debe incorporar todas las dimensiones aprobadas.
+
+Ejemplos de dimensiones relevantes según familia:
+
+- sede;
+- ubicación;
+- padre o camino jerárquico;
+- producto;
+- cantidad;
+- unidad de entrada;
+- unidad de stock;
+- multiplicador;
+- contexto de uso;
+- proveedor;
+- fuente;
+- categoría funcional;
+- emisor externo;
+- vigencia.
+
+El texto visible es una dimensión de evidencia, no un sustituto del scope.
+
+---
+
+#### 31. Falsos positivos por scope
+
+Los 72 registros históricos `Nivel 1` a `Nivel 6` constituyen una prueba negativa canónica: agruparlos por etiqueta sin padre, camino o código produce un falso positivo.
+
+Una futura instancia deberá detectar esta familia de error mediante corpus equivalente y mediante el scope real del paquete.
+
+Una colisión que desaparece al aplicar el scope correcto se clasifica como `SCOPE_FALSE_POSITIVE` y no se usa para modificar los datos legítimos.
+
+---
+
+#### 32. Estructura frente a etiqueta
+
+UOM, presentaciones, políticas y entidades compuestas no pueden deduplicarse por una etiqueta normalizada.
+
+El dry-run deberá conservar, cuando apliquen:
+
+- cantidad de entrada;
+- unidad de entrada;
+- cantidad de stock;
+- unidad de stock;
+- factor o multiplicador;
+- empaque;
+- contexto;
+- fuente;
+- proveedor;
+- estado;
+- vigencia.
+
+Dos etiquetas iguales con huellas estructurales distintas se clasifican como `LABEL_COLLISION_DIFFERENT_STRUCTURE` y permanecen distintas.
+
+---
+
+#### 33. Productos y homónimos funcionales
+
+Los productos deberán evaluarse con su contexto funcional.
+
+Insumo, preparación y artículo de venta pueden compartir nombre sin compartir identidad.
+
+El reporte no podrá colapsar por nombre:
+
+- abastecimiento;
+- recetas;
+- inventario;
+- catálogo;
+- venta;
+- remisión;
+- unidad;
+- categoría;
+- dependencias consumidoras.
+
+Un homónimo legítimo se conserva como `CROSS_LAYER_HOMONYM`.
+
+---
+
+#### 34. Personas y datos sensibles
+
+Una coincidencia de nombre de persona es una señal restringida y no una clave de identidad.
+
+Para personas, trabajadores, usuarios o invitados:
+
+1. no se publica el nombre completo dentro de evidencia general si no es necesario;
+2. se priorizan referencias protegidas y hashes;
+3. documento, autenticación, contacto, estado y procedencia solo se consultan bajo finalidad autorizada;
+4. el resultado no confirma identidad por nombre normalizado;
+5. muestras y reportes deben minimizar datos personales;
+6. un análisis que no pueda preservar finalidad y minimización queda bloqueado.
+
+---
+
+#### 35. Referencias externas
+
+Una referencia externa se evalúa con emisor, tipo, ambiente, contrato, valor original, scope y vigencia.
+
+Valores iguales emitidos por sistemas distintos no colisionan globalmente por defecto.
+
+El original externo, su mapping y cualquier derivación interna permanecen separados.
+
+Un dry-run nunca reescribe el original recibido para hacerlo coincidir con la forma interna.
+
+---
+
+#### 36. Métricas obligatorias por instancia
+
+Cada ejecución deberá producir, cuando aplique, como mínimo:
+
+| Métrica | Regla |
+| --- | --- |
+| fuentes esperadas | universo aprobado del paquete |
+| fuentes observadas | fuentes efectivamente leídas |
+| filas o unidades observadas | total antes de elegibilidad |
+| unidades elegibles | contexto completo y política resoluble |
+| `NO_CHANGE` | evaluación completa sin cambio |
+| `PROPOSED_CHANGE` | cambio candidato antes de readiness |
+| bloqueadas por política | sin fallback |
+| bloqueadas por conflicto | separadas de error técnico |
+| revisión requerida | no autoaprobada |
+| escaladas estructuralmente | fuera de normalización textual |
+| fallos técnicos | restan cobertura válida |
+| `NULL` | conteo propio |
+| vacíos | conteo propio |
+| derivaciones esperadas | según estrategia de DB-003 |
+| derivaciones observadas | existentes o calculadas |
+| derivaciones obsoletas | no participan como activas |
+| colisiones exactas | por representación y scope |
+| colisiones tolerantes | por representación, perfil y scope |
+| grupos por clase | diez clases canónicas |
+| miembros por clase | sin doble conteo global artificial |
+| falsos positivos por scope | separados |
+| diferencias legacy/canónico | por helper o algoritmo |
+| consumidores registrados | conjunto aplicable |
+| consumidores afectados | evidencia por consumidor |
+| relaciones relevantes | con y sin FK cuando el riesgo lo exija |
+| filas aptas para backfill | conjunto cerrado |
+| filas bloqueadas para backfill | conjunto cerrado |
+| filas sin backfill | `NO_CHANGE` o `NOT_APPLICABLE` |
+
+Una métrica no aplicable se declara como tal; no se convierte en cero sin explicación.
+
+---
+
+#### 37. Cobertura por perfil
+
+La cobertura se reporta por perfil y no solo como porcentaje global.
+
+Cada perfil declara:
+
+```text
+expected_units
+observed_units
+evaluated_units
+blocked_units
+technical_failure_units
+not_applicable_units
+coverage_ratio
+valid_evaluation_ratio
+```
+
+`coverage_ratio` responde si el universo previsto fue observado.
+
+`valid_evaluation_ratio` responde qué fracción obtuvo una evaluación válida sin fallo técnico.
+
+Una fila bloqueada por política puede contar como observada y correctamente bloqueada, pero no como candidata ejecutable.
+
+---
+
+#### 38. Distribución de longitud
+
+Cuando `DATA-NORM-DB-003` produzca o proponga representaciones persistibles, la ejecución medirá longitud de fuente y derivación con una distribución reproducible.
+
+Como mínimo:
+
+- mínimo;
+- máximo;
+- percentil 50;
+- percentil 95;
+- percentil 99;
+- cantidad que excede cualquier límite físico aplicable;
+- cantidad cuyo crecimiento respecto del fuente sea material para almacenamiento o índice posterior.
+
+La distribución se calcula sobre el mismo universo y versión del dry-run; no mezcla cortes históricos y actuales.
+
+Esta métrica informa `DATA-NORM-DB-005` y `DATA-NORM-DB-007`, pero no crea un índice ni fija por sí sola su estrategia.
+
+---
+
+#### 39. Duplicados de clave y constraints existentes
+
+Antes de un backfill deberán identificarse las restricciones actuales que podrían reaccionar al resultado propuesto.
+
+El dry-run reporta:
+
+- claves empresariales existentes;
+- índices únicos existentes;
+- constraints actuales;
+- claves derivadas legacy;
+- posibles convergencias producidas por el candidato;
+- scope efectivo de cada restricción;
+- nulos y temporalidad aplicables.
+
+Una clave de búsqueda no se convierte en constraint de unicidad.
+
+`DATA-NORM-DB-006` conserva la creación o modificación posterior de constraints; DB-004 únicamente reporta la compatibilidad previa necesaria.
+
+---
+
+#### 40. Consumidores y relaciones
+
+La instancia deberá cruzar el resultado con los consumidores registrados del paquete.
+
+Para cada consumidor afectado se conserva:
+
+- identidad;
+- campo o contrato consumido;
+- representación esperada;
+- tolerancia de formato;
+- dependencia de valor literal o derivado;
+- dependencia de orden o ranking cuando aplique;
+- impacto potencial;
+- evidencia de compatibilidad disponible;
+- bloqueo pendiente si la compatibilidad no está demostrada.
+
+La ausencia de FK no demuestra ausencia de dependencia.
+
+Consultas, RPC, vistas, jobs, integraciones, exports, caches y código pueden constituir consumidores aunque PostgreSQL no tenga una relación declarativa.
+
+---
+
+#### 41. Reporte de brechas de evidencia
+
+Toda brecha deberá convertirse en una fila gobernada, no en una nota libre.
+
+Cada brecha declara:
+
+```text
+gap_key
+package_id
+scope
+missing_evidence
+risk
+blocking
+owner
+owner_task_or_authority
+exit_condition
+affected_units
+```
+
+Una brecha bloqueante impide certificar como elegibles las unidades afectadas.
+
+Una brecha no bloqueante deberá justificar por qué no puede alterar la disposición del conjunto afectado.
+
+---
+
+#### 42. Seguridad y minimización del reporte
+
+Los artefactos de evidencia deben ser útiles para reproducibilidad sin convertirse en una extracción paralela de datos empresariales.
+
+Reglas:
+
+1. secretos y firmas no se incluyen;
+2. datos personales se minimizan;
+3. valores externos probatorios se referencian cuando sea posible;
+4. muestras contienen solo la mínima información necesaria;
+5. IDs estables pueden sustituirse por referencias protegidas cuando la exposición no sea necesaria;
+6. digests no se presentan como anonimización si permiten ataques por diccionario sobre dominios pequeños;
+7. permisos de lectura del dry-run no conceden permisos de escritura;
+8. un service role no convierte una consulta fuera de finalidad en autorizada;
+9. los reportes no mezclan VITAL con Vento OS.
+
+---
+
+#### 43. Reproducibilidad
+
+Una ejecución reproducible deberá conservar:
+
+- fuente o snapshot;
+- universo;
+- versiones de reglas;
+- `version_set_digest`;
+- configuración;
+- algoritmo y artifact digest;
+- locale;
+- Unicode y tokenizer cuando apliquen;
+- orden canónico de miembros;
+- consultas o runner versionados;
+- resultado esperado cuando sea replay;
+- resultado real;
+- clasificación de diferencias;
+- digest del bundle de evidencia.
+
+Cambiar una dependencia semántica crea otro run; no se actualiza silenciosamente el digest anterior.
+
+---
+
+#### 44. Determinismo y orden
+
+Los conteos y digests no pueden depender de:
+
+- orden físico de filas;
+- primer resultado recibido;
+- plan de ejecución;
+- reloj no declarado;
+- configuración de sesión no versionada;
+- locale implícito;
+- caché local;
+- aleatoriedad;
+- paginación inestable;
+- concurrencia incidental.
+
+Toda lista que alimente un digest se ordena mediante una clave determinista declarada.
+
+La paginación debe tener una frontera estable; `OFFSET` sin orden total no constituye una partición reproducible.
+
+---
+
+#### 45. Comparación con baseline histórico
+
+La ejecución actual puede comparar sus métricas con `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-003`, pero deberá etiquetar las diferencias como variación entre cortes.
+
+No se interpretan automáticamente como error:
+
+- más o menos filas;
+- más o menos grupos;
+- nuevos scopes;
+- cambios legítimos de ciclo de vida;
+- nuevas versiones de reglas.
+
+Sí exigen explicación:
+
+- desaparición inesperada de una fuente requerida;
+- cambio de algoritmo bajo la misma versión;
+- colisiones nuevas sin cambio de universo o versión que las explique;
+- cambios de scope no aprobados;
+- pérdida de miembros o evidencia;
+- divergencia de paridad bajo entradas equivalentes.
+
+---
+
+#### 46. No agregación de universos solapados
+
+Los reportes pueden contener múltiples cortes analíticos sobre las mismas filas.
+
+Por tanto:
+
+1. grupos de productos no se suman a grupos de búsqueda si se solapan;
+2. grupos UOM amplios no se suman a su subconjunto activo;
+3. comparaciones de forma, acento y slug no se suman como si fueran entidades distintas;
+4. pares activo/inactivo pueden aparecer en más de una representación sin aumentar el número de registros fuente;
+5. cada métrica declara su denominador y scope;
+6. un total global solo existe cuando los conjuntos son demostrablemente disjuntos o se deduplican por identidad estable.
+
+La ausencia de un total único puede ser el resultado correcto.
+
+---
+
+#### 47. Partición final de filas
+
+Al finalizar, cada unidad del universo aprobado deberá quedar en exactamente una disposición de handoff:
+
+```text
+NO_CHANGE
+BACKFILL_ELIGIBLE
+BLOCKED
+NOT_APPLICABLE
+```
+
+Reglas:
+
+- `NO_CHANGE`: evaluación válida; no requiere escritura;
+- `BACKFILL_ELIGIBLE`: cambio candidato que superó todas las puertas de DB-004 para la unidad y el scope;
+- `BLOCKED`: falta resolver una condición antes de cualquier persistencia;
+- `NOT_APPLICABLE`: la regla o representación no corresponde a la unidad.
+
+Una unidad no puede aparecer simultáneamente en dos disposiciones dentro del mismo run y misma operación.
+
+La suma de las cuatro particiones deberá reconciliar el universo evaluable fijado por la instancia, después de las exclusiones explícitas previas al universo.
+
+---
+
+#### 48. `BACKFILL_ELIGIBLE`
+
+Una unidad solo puede clasificarse como `BACKFILL_ELIGIBLE` si:
+
+1. produjo `PROPOSED_CHANGE` válido;
+2. pertenece al `package_id`;
+3. policy coordinate y versiones están resueltas;
+4. `version_set_digest` está fijado;
+5. fuente o hash esperado está fijado;
+6. algoritmo y artifact digest están fijados;
+7. scope está completo;
+8. no presenta fallo técnico;
+9. no presenta bloqueo de política;
+10. no presenta conflicto pendiente;
+11. no requiere revisión humana pendiente;
+12. no requiere resolución estructural pendiente;
+13. toda colisión relevante fue clasificada y su disposición permite modificar esa unidad;
+14. constraints existentes relevantes no producirán un conflicto no resuelto;
+15. consumidores aplicables fueron reconciliados en el nivel exigido por el paquete;
+16. existe estrategia de rollback o reversibilidad aplicable;
+17. el baseline no está obsoleto al cierre del run;
+18. no depende de VITAL;
+19. no contiene evidencia protegida fuera de finalidad;
+20. el resultado puede revalidarse antes de persistir.
+
+`BACKFILL_ELIGIBLE` no certifica identidad ni autoriza el backfill por sí solo; es la entrada técnica de `DATA-NORM-DB-005`.
+
+---
+
+#### 49. `BLOCKED`
+
+Una unidad `BLOCKED` conserva el valor fuente y queda fuera del backfill.
+
+El bloqueo deberá declarar:
+
+- razón estable;
+- evidencia;
+- owner;
+- tarea o autoridad propietaria;
+- condición de salida;
+- si requiere repetir todo el run o solo la partición afectada;
+- qué digest queda invalidado al resolverlo.
+
+No se permite excluir silenciosamente filas bloqueadas para mejorar el porcentaje de éxito.
+
+---
+
+#### 50. `NO_BACKFILL_REQUIRED`
+
+Una instancia puede concluir que el paquete no necesita modificar datos.
+
+`NO_BACKFILL_REQUIRED` es válido únicamente cuando:
+
+- el universo aplicable fue cubierto;
+- no existen `PROPOSED_CHANGE` elegibles;
+- los bloqueos existentes, si los hay, no ocultan cambios que deberían evaluarse antes de cerrar esa conclusión;
+- las capacidades `NOT_APPLICABLE` están justificadas;
+- el resultado es reproducible.
+
+No se crea una escritura vacía para demostrar progreso.
+
+El handoff hacia `DATA-NORM-DB-005` deberá permitir registrar explícitamente que el backfill del paquete es no aplicable o no requerido, según el contrato físico vigente de esa tarea.
+
+---
+
+#### 51. Backfill parcial
+
+Un paquete solo podrá proponer backfill parcial cuando la separación sea explícita y segura.
+
+La parte elegible deberá formar un conjunto cerrado mediante identidad o digest de miembros.
+
+La parte bloqueada deberá permanecer excluida mediante una condición reproducible, no mediante una lista manual mutable.
+
+No se admite backfill parcial cuando:
+
+- las filas elegibles y bloqueadas comparten una restricción que puede cambiar el resultado;
+- el resultado depende de resolver primero identidad o estructura;
+- la partición altera el scope de las filas bloqueadas;
+- una ejecución parcial impediría rollback coherente;
+- los consumidores no toleran el estado mixto;
+- la regla exige atomicidad del conjunto.
+
+---
+
+#### 52. Manifiesto de readiness para `DATA-NORM-DB-005`
+
+Cada instancia deberá cerrar con un manifiesto lógico que contenga:
+
+```text
+package_id
+dry_run_id
+result_digest
+source_population_digest
+version_set_digest
+eligible_member_set_digest
+blocked_member_set_digest
+no_change_member_set_digest
+not_applicable_member_set_digest
+collision_report_digest
+evidence_gap_digest
+consumer_impact_digest
+backfill_required
+backfill_readiness
+blocking_reasons
+revalidation_required_before_write
+```
+
+`backfill_readiness` solo puede ser:
+
+```text
+READY
+BLOCKED
+NOT_REQUIRED
+```
+
+`READY` no constituye ejecución ni autorización de escritura.
+
+`DATA-NORM-DB-005` deberá revalidar fuente, versión, scope y precondiciones antes de cualquier efecto.
+
+---
+
+#### 53. Handoff hacia `DATA-NORM-DB-005`
+
+El handoff mínimo es:
+
+1. run y digest de DB-004;
+2. universo de fuente;
+3. miembros `BACKFILL_ELIGIBLE` fijados;
+4. miembros bloqueados fijados;
+5. miembros `NO_CHANGE` fijados;
+6. reglas y versiones;
+7. algoritmo y procedencia;
+8. colisiones y disposición;
+9. consumers/relaciones relevantes;
+10. restricciones actuales relevantes;
+11. brechas de evidencia;
+12. rollback previsto;
+13. partición o atomicidad requerida;
+14. condición de revalidación antes de escritura;
+15. `backfill_readiness`.
+
+DB-005 no podrá recalcular silenciosamente el universo con otra versión y conservar el mismo `dry_run_id`.
+
+Si la fuente cambia materialmente antes del backfill, deberá reevaluarse la partición afectada o repetirse el dry-run según el alcance del drift.
+
+---
+
+#### 54. Fronteras con tareas posteriores
+
+La responsabilidad permanece separada:
+
+| Materia | Propietario |
+| --- | --- |
+| ejecutar escrituras de backfill aprobadas | `DATA-NORM-DB-005` |
+| crear o reforzar constraints después de reconciliar | `DATA-NORM-DB-006` |
+| crear índices de búsqueda o unicidad normalizada | `DATA-NORM-DB-007` |
+| crear triggers como barrera defensiva final | `DATA-NORM-DB-008` |
+| persistir auditoría operacional de valores y efectos | `DATA-NORM-DB-009` |
+
+DB-004 puede medir riesgo y preparar evidencia para esas tareas, pero no absorbe su materialización.
+
+---
+
+#### 55. Reanudación y repetición
+
+Una ejecución interrumpida no se declara completa.
+
+Si el runner usa particiones, cada partición conserva:
+
+- identidad;
+- frontera determinista;
+- snapshot o corte;
+- digest de entrada;
+- digest de salida;
+- estado;
+- errores;
+- relación con el run raíz.
+
+Solo se combinan particiones compatibles.
+
+Una partición repetida bajo entrada idéntica deberá producir la misma salida lógica.
+
+Una partición repetida después de drift se registra como otra revisión del run o como recaptura explícita, nunca como continuación invisible de la evidencia anterior.
+
+---
+
+#### 56. Fallos que invalidan el run
+
+Invalidan la certificación del run, como mínimo:
+
+- se detectó una mutación remota;
+- el runner no puede demostrar el scope evaluado;
+- faltan miembros esperados sin explicación;
+- se mezclaron snapshots incompatibles como uno solo;
+- cambió una versión durante el run;
+- se utilizó `latest` implícito;
+- el algoritmo no coincide con su digest;
+- query y valor usaron perfiles incompatibles;
+- se mezcló VITAL;
+- se perdió la separación `NULL`/vacío;
+- se usó transitividad no autorizada;
+- se confirmó duplicidad por colisión textual;
+- se ocultaron fallos técnicos como `NO_CHANGE`;
+- el total final no reconcilia el universo;
+- el reporte expone material protegido sin finalidad;
+- un consumidor bloqueante quedó sin owner o condición de salida.
+
+Un run inválido no entrega miembros a DB-005 como elegibles.
+
+---
+
+#### 57. Evidencia histórica frente a evidencia actual
+
+Los artefactos `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-003` permanecen válidos como historia aprobada.
+
+La ejecución física de DB-004 deberá distinguir:
+
+```text
+HISTORICAL_REFERENCE
+CURRENT_REMOTE_CAPTURE
+CONTROLLED_REPLAY
+```
+
+Una cifra histórica nunca se etiqueta como observación actual.
+
+Una observación actual no reescribe el baseline histórico.
+
+Un replay no afirma que el remoto continúe igual.
+
+---
+
+#### 58. Contrato de reportes
+
+Cada futura instancia deberá producir cuatro familias lógicas de evidencia:
+
+```text
+DRY_RUN_RUN_MANIFEST
+DRY_RUN_EVALUATION_REPORT
+NORMALIZED_COLLISION_REPORT
+BACKFILL_READINESS_MANIFEST
+```
+
+Cuando existan brechas se agrega:
+
+```text
+EVIDENCE_GAP_REPORT
+```
+
+Estas identidades son contratos lógicos de contenido. Esta tarea no fija nombres de tablas, buckets, archivos físicos ni rutas de implementación que todavía no hayan sido autorizados por el paquete correspondiente.
+
+---
+
+#### 59. `DRY_RUN_RUN_MANIFEST`
+
+El manifiesto de run conserva:
+
+- identidad de instancia;
+- package;
+- ambiente;
+- autorización;
+- fuente y commit;
+- baseline;
+- snapshot/corte;
+- políticas y versiones;
+- algoritmo;
+- runner;
+- scopes;
+- población;
+- VITAL exclusion proof;
+- inicio y fin;
+- modo de ejecución;
+- estado global;
+- digests de artefactos hijos.
+
+No contiene valores empresariales masivos.
+
+---
+
+#### 60. `DRY_RUN_EVALUATION_REPORT`
+
+El reporte de evaluación conserva resultados por unidad o agregados trazables a sus miembros.
+
+Debe permitir reconstruir:
+
+- qué fue evaluado;
+- por qué era elegible;
+- qué versión se aplicó;
+- qué resultado produjo;
+- qué cambio habría ocurrido;
+- por qué quedó bloqueado cuando aplique;
+- qué derivaciones o matches fueron relevantes;
+- qué membresía final recibió.
+
+Los agregados no sustituyen el member set cuando DB-005 necesita identificar filas concretas.
+
+---
+
+#### 61. `NORMALIZED_COLLISION_REPORT`
+
+El reporte de colisiones conserva:
+
+- algoritmo y representación;
+- profile y locale;
+- scope;
+- miembros ordenados;
+- señales;
+- clase primaria;
+- evidencia positiva;
+- evidencia negativa;
+- consumidores/relaciones relevantes;
+- disposición;
+- owner cuando queda abierto;
+- condición de salida;
+- digest.
+
+No contiene una columna de “sobreviviente” salvo que exista una decisión canónica previa de la tarea propietaria; DB-004 no la inventa.
+
+---
+
+#### 62. `EVIDENCE_GAP_REPORT`
+
+El reporte de brechas es obligatorio cuando una ausencia puede afectar clasificación, cobertura o readiness.
+
+No se permite representar brechas como:
+
+```text
+TODO
+pendiente revisar
+ver luego
+por confirmar
+```
+
+sin owner y condición de salida.
+
+La existencia de una brecha no obliga a bloquear todo el paquete si su alcance está demostrado como independiente; sí bloquea las unidades que puedan verse afectadas.
+
+---
+
+#### 63. `BACKFILL_READINESS_MANIFEST`
+
+El manifiesto final es la única salida de DB-004 que DB-005 puede usar para decidir su universo inicial.
+
+Debe reconciliar:
+
+```text
+NO_CHANGE
++ BACKFILL_ELIGIBLE
++ BLOCKED
++ NOT_APPLICABLE
+= universo evaluable del run
+```
+
+También deberá declarar:
+
+- `READY`, `BLOCKED` o `NOT_REQUIRED`;
+- exactitud del member set;
+- necesidad de revalidación;
+- dependencia de resolución humana o estructural;
+- si el backfill puede ser parcial;
+- condiciones que invalidan la evidencia antes de escribir.
+
+---
+
+#### 64. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** el dry-run reproducible, la separación de representaciones, la fijación de versiones y algoritmos, los scopes, los estados especiales, la no transitividad, la taxonomía de colisiones, la evidencia positiva y negativa, la prohibición de inferir identidad, la preservación de historia, la seguridad, la paridad, el replay y la ausencia de efectos de escritura ya están protegidos por requisitos DATA vigentes. Esta tarea los materializa como contrato físico por `package_id` sin introducir una nueva semántica empresarial.
+
+---
+
+#### 65. Cobertura de prueba vigente reutilizada
+
+La cobertura existente aplicable incluye, entre otros:
+
+- `TREQ-DATA-116` para agrupación exacta y prohibición de aprobar por muestra elementos no examinados;
+- `TREQ-DATA-122` para exigir dry-run, compatibilidad y rollback antes de transición;
+- `TREQ-DATA-123` para separación entre fuente, mostrado y derivaciones;
+- `TREQ-DATA-124` para paridad de profile, locale, algoritmo y versión;
+- `TREQ-DATA-125` para vínculo, vigencia y procedencia de derivaciones;
+- `TREQ-DATA-126` y `TREQ-DATA-127` para las claves de forma y acento;
+- `TREQ-DATA-159` para replay controlado y no mutación;
+- `TREQ-DATA-165` para separar identidad, unicidad, comparación, colisión y decisión;
+- `TREQ-DATA-167` para scopes explícitos;
+- `TREQ-DATA-168` para impedir que representaciones de búsqueda se conviertan en unicidad;
+- `TREQ-DATA-169` para distinguir nulos, vacíos, placeholders y claves parciales;
+- `TREQ-DATA-170` para ciclo de vida e historia;
+- `TREQ-DATA-171` para pipeline reproducible y no transitividad;
+- `TREQ-DATA-172` para las diez clases de colisión;
+- `TREQ-DATA-173` para evidencia positiva, negativa, relaciones y consumidores;
+- `TREQ-DATA-175` para los falsos positivos jerárquicos;
+- `TREQ-DATA-176` para estructura UOM;
+- `TREQ-DATA-177` para homónimos funcionales de producto;
+- `TREQ-DATA-178` para identidad personal restringida;
+- `TREQ-DATA-179` para referencias externas por emisor;
+- `TREQ-DATA-180` para identidad y revisión de casos;
+- `TREQ-DATA-181` para separar disposición de ejecución;
+- `TREQ-DATA-183` y `TREQ-DATA-184` para impedir consolidación y pérdida de historia desde una coincidencia;
+- `TREQ-DATA-187` para atribución completa, replay y rectificación;
+- `TREQ-DATA-188` para gates previos a enforcement;
+- `TREQ-DATA-189` para paridad y exclusión de VITAL;
+- `TREQ-DATA-190` para corpus integral, privacidad y ausencia de efectos de escritura.
+
+Esta trazabilidad no modifica el registro 04A.
+
+---
+
+#### 66. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería de build y validadores integrales corresponde al checkout documental después de incorporar el contrato en su archivo propietario. |
+| LOCAL | PASS | Artefacto sometido a comprobación estática de título, metadata, secciones obligatorias, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y reglas semánticas reproducibles aplicables al archivo aislado. |
+| REMOTA | PASS | Fuentes canónicas de `main`, package `@vento/data-normalization`, contratos de transición, registro DATA y metadatos de `vento-os-dev` fueron contrastados; la recaptura de Supabase se ejecutó dentro de transacciones `READ ONLY` y no realizó mutaciones. |
+| OPERATIVA | NOT_EXECUTED | Los dry-runs masivos, clasificación física de colisiones, rendimiento, cobertura de consumidores y readiness por `package_id` pertenecen a futuras instancias autorizadas. |
+| FÍSICA | NOT_APPLICABLE | Esta aprobación documental no ejecuta DDL, DML, backfills, constraints, índices, triggers, fusiones ni cambios de datos. |
+
+---
+
+#### 67. Decisiones vinculantes
+
+1. DB-004 es `TEMPLATE_PER_PACKAGE`.
+2. No existe instancia `GLOBAL`.
+3. La ejecución física es posterior al E5 del paquete.
+4. La aprobación documental no ejecuta dry-runs físicos.
+5. Todo run físico es read-only.
+6. Una escritura intentada invalida el runner afectado.
+7. La configuración read-only no debe contaminar sesiones pooled.
+8. El snapshot o corte debe quedar explícito.
+9. Baselines históricos no certifican el remoto presente.
+10. Replay histórico no equivale a captura actual.
+11. El universo se fija antes de evaluar.
+12. El tipo SQL o el nombre de columna no definen elegibilidad.
+13. VITAL queda fuera del universo transversal.
+14. Policy coordinate y versiones son obligatorias.
+15. `latest` implícito está prohibido.
+16. Algoritmo, artifact digest y configuración quedan fijados.
+17. Query y valor usan el mismo profile, locale, algoritmo y versión.
+18. Se reutilizan los estados del preview compartido.
+19. `PROPOSED_CHANGE` no equivale a escritura autorizada.
+20. `BLOCKED_POLICY` no se degrada a `NO_CHANGE`.
+21. Fallos técnicos restan cobertura válida.
+22. `NULL` y vacío permanecen separados.
+23. La derivación no sustituye el fuente.
+24. Una colisión no define identidad.
+25. Una colisión no confirma duplicidad.
+26. La taxonomía usa diez clases primarias.
+27. `PROBABLE_SAME_ENTITY` sigue siendo candidato.
+28. La similitud no aplica transitividad implícita.
+29. Scope estructural prevalece sobre etiqueta.
+30. Los 72 niveles históricos son corpus negativo de scope.
+31. UOM y presentaciones conservan estructura.
+32. Homónimos funcionales permanecen separados.
+33. Nombres de persona no son claves de identidad.
+34. Referencias externas conservan emisor y original.
+35. Los universos solapados no se suman artificialmente.
+36. Toda métrica declara denominador y scope.
+37. El dry-run reporta fuentes, derivaciones, colisiones, bloqueos, perfiles, longitud y consumidores.
+38. Brechas tienen owner y condición de salida.
+39. Evidencia sensible se minimiza.
+40. Digests usan orden determinista.
+41. Paginación sin orden total no es reproducible.
+42. Cada unidad termina en una de cuatro disposiciones de handoff.
+43. Las cuatro disposiciones reconcilian el universo evaluable.
+44. `BACKFILL_ELIGIBLE` exige ausencia de bloqueos aplicables.
+45. `BACKFILL_ELIGIBLE` no autoriza por sí solo la escritura.
+46. `NO_CHANGE` no produce escritura redundante.
+47. `NOT_APPLICABLE` no se transforma en cero implícito.
+48. `BLOCKED` no se oculta para mejorar métricas.
+49. Un paquete puede concluir `NOT_REQUIRED` para backfill.
+50. El backfill parcial exige member sets disjuntos y seguros.
+51. DB-005 revalida antes de escribir.
+52. Drift material invalida la evidencia afectada.
+53. DB-004 no crea constraints.
+54. DB-004 no crea índices.
+55. DB-004 no crea triggers.
+56. DB-004 no persiste auditoría operacional de efectos.
+57. DB-004 no elige sobrevivientes.
+58. DB-004 no reasigna relaciones.
+59. DB-004 no corrige datos.
+60. DB-004 produce evidencia reproducible y un manifiesto de readiness.
+
+---
+
+#### 68. Criterios de aceptación
+
+`DATA-NORM-DB-004` queda documentalmente aceptada cuando:
+
+1. define una sola plantilla por `package_id`;
+2. conserva `POST_E5_PACKAGE`;
+3. distingue definición documental de ejecución física;
+4. define cero mutación como invariante;
+5. define transacción read-only sin estado de sesión persistente;
+6. fija identidad completa del run;
+7. diferencia captura actual, baseline histórico y replay;
+8. fija universo y scope antes del cálculo;
+9. consume el handoff completo de DB-003;
+10. conserva la exclusión de VITAL;
+11. exige policy coordinate, versión y algoritmo;
+12. reutiliza los estados vigentes de preview;
+13. separa cambio candidato de elegibilidad;
+14. define detector de colisiones reproducible;
+15. conserva las diez clases canónicas;
+16. prohíbe identidad por colisión;
+17. prohíbe transitividad implícita;
+18. conserva `NULL`, vacíos y estados especiales;
+19. cubre ciclo de vida y temporalidad;
+20. cubre scopes jerárquicos y estructurales;
+21. cubre productos, UOM, personas y externos con sus fronteras;
+22. define métricas obligatorias del handoff de DB-003;
+23. define cobertura por perfil;
+24. define distribución de longitud;
+25. revisa constraints existentes sin crear otros;
+26. incluye consumidores y relaciones;
+27. gobierna brechas de evidencia;
+28. minimiza datos sensibles;
+29. define reproducibilidad y orden determinista;
+30. prohíbe agregaciones falsas de universos solapados;
+31. particiona cada unidad en cuatro disposiciones exclusivas;
+32. define gates para `BACKFILL_ELIGIBLE`;
+33. define conducta `BLOCKED`;
+34. admite `NO_BACKFILL_REQUIRED`;
+35. gobierna backfill parcial;
+36. produce un manifiesto cerrado para DB-005;
+37. define invalidadores del run;
+38. conserva responsabilidades de DB-005 a DB-009;
+39. no introduce TREQ nuevos ni modifica 04A;
+40. deja `DATA-NORM-DB-005` únicamente como siguiente tarea reservada.
+
+---
+
+#### 69. Límites
+
+Esta tarea no:
+
+- ejecuta un dry-run físico de ningún paquete;
+- modifica Supabase;
+- crea migraciones;
+- crea tablas o vistas;
+- crea funciones;
+- crea columnas o expresiones;
+- crea índices;
+- crea constraints;
+- crea triggers;
+- ejecuta backfills;
+- corrige valores;
+- crea aliases;
+- activa reglas;
+- crea review cases;
+- decide duplicados;
+- elige sobrevivientes;
+- fusiona registros;
+- desactiva registros;
+- reasigna relaciones;
+- reescribe historia;
+- modifica VITAL;
+- desarrolla `DATA-NORM-DB-005`.
+
+---
+
+#### 70. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda`
+
+**TAREA ACTUAL APROBADA**
+`DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones`
+
+**SIGUIENTE TAREA RESERVADA**
+`DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio`
+
+
 ### [ ] DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio
 ### [ ] DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos
 ### [ ] DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada
