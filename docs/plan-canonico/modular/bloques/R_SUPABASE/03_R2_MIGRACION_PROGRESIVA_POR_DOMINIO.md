@@ -13729,17 +13729,28 @@ El bundle de evidencia de `AUTH-DB-024::<package_id>` deberá incluir, según ap
 
 #### Handoff hacia AUTH-DB-025
 
-AUTH-DB-025 podrá generar tipos y alinear clientes únicamente sobre contratos ya versionados y reconciliados por esta tarea. El handoff incluye:
+`AUTH-DB-024` entrega a `AUTH-DB-025` la caracterización de persistencia, patrones de consulta, volumen y ciclo de vida de automatizaciones para la implementación de índices, retención y controles de crecimiento:
+
+- tablas, schemas y estructuras persistentes de receipts, outcomes, jobs, attempts, leases y retries;
+- patrones de acceso y consulta por `correlation_id`, `idempotency_key`, `package_id`, estado, actor y marcas temporales;
+- tasas de inserción y acumulación esperadas en tablas de ejecución, auditoría y logs de automatización;
+- políticas de retención, purga, archiving y límites de crecimiento requeridos para evitar degradación de rendimiento.
+
+`AUTH-DB-025` conservará la responsabilidad exclusiva sobre índices, particionamiento, retención y controles de crecimiento.
+
+#### Handoff hacia AUTH-DB-026
+
+`AUTH-DB-026` podrá generar tipos y alinear clientes únicamente sobre contratos ya versionados y reconciliados por esta tarea. El handoff incluye:
 
 - identidades Edge, webhook, cron y job con contrato registrado;
-- schemas y versiones permitidos;
+- schemas de request, response, webhook y job payloads con versiones permitidas;
 - clases de ingreso y workload;
-- outcomes, receipts, jobs, attempts, leases y retries como conceptos distintos;
+- outcomes, receipts, jobs, attempts, leases y retries como conceptos y modelos tipados distintos;
 - límites de exposición por consumidor;
-- referencias de configuración y secrets sin valores;
+- referencias de configuración e interfaces tipadas sin secretos;
 - estados de compatibilidad y retiro.
 
-AUTH-DB-025 no podrá convertir una función existente en API estable por inferencia ni tipar como aprobado un contrato que permanezca bloqueado o sin procedencia.
+`AUTH-DB-026` no podrá convertir una función existente en API estable por inferencia ni tipar como aprobado un contrato que permanezca bloqueado o sin procedencia.
 
 #### Requisitos de prueba derivados
 
