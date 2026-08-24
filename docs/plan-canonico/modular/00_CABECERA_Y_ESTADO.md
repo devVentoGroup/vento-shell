@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1036** |
+| Tareas aprobadas | **1037** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **558** |
+| Tareas no iniciadas | **557** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **64.99% (1036/1594)** |
+| Porcentaje de completamiento | **65.06% (1037/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-DB-002 — Implementar funciones SQL deterministas cuando sean necesarias** |
-| Tarea actual | **DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda** |
+| Última tarea aprobada | **DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda** |
+| Tarea actual | **DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones** |
+| Siguiente tarea | **DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 35 de 51 aprobadas; DATA-NORM-DB-003 pendiente** |
+| Progreso del bloque | **BLOQUE R: 36 de 51 aprobadas; DATA-NORM-DB-004 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-UI-012::GLOBAL** |
-| Carril documental | **ACTIVO — DATA-NORM-DB-003** |
+| Carril documental | **ACTIVO — DATA-NORM-DB-004** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-UI-012::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-DB-002` — Implementar funciones SQL deterministas cuando sean necesarias |
-| Tarea actual | `DATA-NORM-DB-003` — Implementar columnas o expresiones normalizadas de búsqueda — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-DB-004` — Ejecutar dry-runs y reportes de colisiones |
+| Última aprobada | `DATA-NORM-DB-003` — Implementar columnas o expresiones normalizadas de búsqueda |
+| Tarea actual | `DATA-NORM-DB-004` — Ejecutar dry-runs y reportes de colisiones — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-DB-005` — Ejecutar backfills aprobados por dominio |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 35 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 36 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-004** |
 | Implementación física | **SHELL-UI-012::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-DB-002 — Implementar funciones SQL deterministas cuando sean necesarias
-        ↓
-TAREA ACTUAL
 DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 35 de 51 tareas aprobadas
+BLOQUE R — 36 de 51 tareas aprobadas
 ```

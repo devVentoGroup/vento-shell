@@ -2336,7 +2336,1157 @@ La reutilización no cambia texto, identidad, estado ni relaciones de esos requi
 `DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda`
 
 
-### [ ] DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda
+### ✅ DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda
+
+**Estado:** APROBADA
+**Tarea anterior:** DATA-NORM-DB-002 — Implementar funciones SQL deterministas cuando sean necesarias
+**Tarea siguiente:** DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para decidir, diseñar y materializar representaciones físicas derivadas de búsqueda únicamente cuando un campo, perfil y consumidor aprobados lo requieran, preservando paridad con `@vento/data-normalization`, versionado, procedencia, frescura, mínimo privilegio y rollback, sin crear columnas, expresiones, migraciones, índices, funciones, triggers, datos ni cambios remotos durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md`
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `DATA-NORM-DB-003::<package_id>`, condicionadas a `POST_E5_PACKAGE`, reconciliación de drift, paquete aprobado y autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+`DATA-NORM-DB-003` define cómo un paquete aprobado decide si necesita una representación física derivada para búsqueda y, cuando la necesita, qué modalidad puede usar sin convertir una clave de búsqueda en dato empresarial, identidad, regla semántica ni fuente de verdad.
+
+La futura materialización deberá resolver de forma explícita:
+
+1. qué campo y representación de origen se derivan;
+2. qué perfil de búsqueda gobierna el campo;
+3. qué representación de búsqueda se necesita;
+4. qué algoritmo, locale y versiones producen la derivación;
+5. si la derivación puede calcularse de forma pura e inmutable dentro de PostgreSQL;
+6. si debe almacenarse como resultado materializado calculado por el servicio;
+7. cómo se vincula con la versión o hash del valor fuente;
+8. cómo se detecta una derivación huérfana, obsoleta o incompatible;
+9. cómo consulta el consumidor usando exactamente el mismo contrato;
+10. qué condiciones deben cumplirse antes de que un índice posterior pueda consumirla;
+11. cómo se migra y compara contra helpers o índices legacy;
+12. cómo se revierte el uso sin reinterpretar historia ni alterar el valor fuente.
+
+La tarea no crea todavía ninguna representación física.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+DATA-NORM-DB-003
+→ contrato documental único y reutilizable
+
+DATA-NORM-DB-003::<package_id>
+→ futura instancia física por paquete
+
+campo y perfil aprobados
+→ necesidad de búsqueda demostrada
+→ representación canónica seleccionada
+→ estrategia física clasificada
+→ derivación versionada
+→ vínculo con fuente
+→ paridad query/valor
+→ verificación de frescura
+→ handoff indexable a DATA-NORM-DB-007 cuando corresponda
+```
+
+Una representación física es una proyección derivada. Nunca sustituye el valor fuente ni la representación mostrada.
+
+---
+
+#### 3. Topología vinculante
+
+La topología aplicable es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = DATA-NORM-DB-003::<package_id>
+```
+
+Consecuencias:
+
+1. no existe `DATA-NORM-DB-003::GLOBAL`;
+2. una aprobación documental no crea columnas ni expresiones;
+3. cada paquete materializa únicamente representaciones de su alcance;
+4. una representación reusable no autoriza modificar campos de otro paquete;
+5. cada instancia conserva fuente, algoritmo, consumidores, backfill, pruebas y rollback propios;
+6. el marcador global no se reabre para registrar cada ejecución física.
+
+---
+
+#### 4. Gate temporal
+
+Una futura instancia solo podrá materializarse cuando el mismo `package_id` haya satisfecho las puertas R2 aplicables.
+
+Como mínimo deberá demostrarse:
+
+```text
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+DELIV-PKG aplicable = CLOSED
+E5-GATE-008::<package_id> = PASS
+SHELL-CI-020::<package_id> = OPENED
+drift aplicable = RECONCILED
+physical_authorization = EXPLICIT
+```
+
+Además, la instancia deberá tener resueltos el campo, perfil, algoritmo, representación, consumidores y estrategia de compatibilidad que justifican la materialización.
+
+---
+
+#### 5. Fuentes vinculantes
+
+Cada futura instancia deberá consumir sin reinterpretación silenciosa:
+
+- `DATA-NORM-ARC-001` para coordenada de política;
+- `DATA-NORM-ARC-002` para clase semántica y roles de representación y fuente;
+- `DATA-NORM-ARC-007` para decisiones humanas y revisión;
+- `DATA-NORM-ARC-008` para las representaciones y el pipeline de búsqueda;
+- `DATA-NORM-ARC-009` para versiones, procedencia, `resolved_version_set`, `version_set_digest`, idempotencia y auditoría;
+- `DATA-NORM-ARC-010` para mantener búsqueda separada de identidad, unicidad, selección y fusión;
+- `DATA-NORM-ARC-011` para colocación entre aplicación, servicio, RPC y defensa de base;
+- `DATA-NORM-ARC-012` para valores externos y preservación de originales;
+- `DATA-NORM-DB-001` para almacenamiento de versiones de reglas y catálogos;
+- `DATA-NORM-DB-002` para primitivas SQL deterministas cuando realmente existan;
+- `DATA-NORM-DB-007` como propietario posterior de índices;
+- `DATA-NORM-DB-008` como propietario posterior de triggers;
+- `DATA-NORM-DB-009` como propietario posterior de auditoría operacional;
+- `@vento/data-normalization` como contrato ejecutable compartido;
+- las migraciones, package y expediente E5 del `package_id`;
+- los consumidores registrados aplicables;
+- el estado remoto recapturado al iniciar la instancia;
+- la cobertura canónica de pruebas vigente.
+
+---
+
+#### 6. Contrato de búsqueda heredado
+
+El contrato vigente de búsqueda expone siete representaciones lógicas:
+
+```text
+SEARCH_FORM_KEY
+SEARCH_ACCENT_KEY
+SEARCH_TOKEN_STREAM
+SEARCH_APPROVED_ALIAS_SET
+SEARCH_TRANSLITERATION_KEY
+SEARCH_STRUCTURED_COMPONENT_SET
+SEARCH_FREE_TEXT_TERMS
+```
+
+Y seis perfiles:
+
+```text
+STRICT_TECHNICAL_LOOKUP
+STANDARD_COMMERCIAL_NAME
+OFFICIAL_FORM_LOOKUP
+STRUCTURED_PRESENTATION_LOOKUP
+FREE_TEXT_DISCOVERY
+RESTRICTED_HUMAN_OR_LOCATION
+```
+
+La existencia de una representación en el vocabulario no obliga a persistirla.
+
+La decisión física depende del campo, perfil, volumen, patrón de consulta, necesidad de indexación, costo de derivación, seguridad, versionado y compatibilidad.
+
+---
+
+#### 7. Regla de necesidad física
+
+Una representación se materializa únicamente si existe una necesidad verificable.
+
+La instancia deberá clasificar cada candidata como:
+
+```text
+QUERY_TIME_ONLY
+GENERATED_STORED
+MATERIALIZED_STORED
+RELATIONAL_DERIVATION
+NOT_APPLICABLE
+BLOCKED
+```
+
+Criterios mínimos:
+
+- `QUERY_TIME_ONLY`: derivación barata y compatible con el plan de consulta sin persistencia;
+- `GENERATED_STORED`: expresión row-local, pura, inmutable y exacta respecto del contrato;
+- `MATERIALIZED_STORED`: resultado persistido porque depende de lógica o versiones que no pueden representarse de forma segura como generated expression;
+- `RELATIONAL_DERIVATION`: representación multivaluada o estructurada que no debe comprimirse en una columna escalar;
+- `NOT_APPLICABLE`: el perfil no requiere esa representación;
+- `BLOCKED`: faltan contrato, versión, paridad, seguridad o compatibilidad.
+
+No se crea una columna por anticipación.
+
+---
+
+#### 8. Fuente, mostrado y derivado
+
+La persistencia deberá mantener separados:
+
+```text
+SOURCE_VALUE
+DISPLAY_VALUE
+SEARCH_DERIVATION
+```
+
+Reglas:
+
+1. una clave derivada no sobrescribe el valor fuente;
+2. una clave derivada no se muestra como contenido empresarial;
+3. una derivación no se convierte en evidencia de identidad;
+4. una derivación no corrige el valor de origen;
+5. la pérdida de una derivación no autoriza reconstruir el fuente desde ella;
+6. originales, snapshots y evidencia conservan sus propias derivaciones cuando corresponda;
+7. una derivación histórica no se resincroniza con el valor actual.
+
+---
+
+#### 9. Coordenada física mínima
+
+Toda representación física deberá poder atribuirse como mínimo a:
+
+- entidad o registro estable;
+- dominio;
+- entidad propietaria;
+- campo semántico;
+- representación de origen;
+- rol de fuente;
+- clase semántica;
+- perfil de búsqueda;
+- locale;
+- algoritmo;
+- versión de algoritmo;
+- versión o hash del valor fuente;
+- `version_set_digest`;
+- estado de vigencia;
+- package de origen.
+
+Si la estrategia física no puede conservar esta atribución de forma directa o reconstruible, no puede declararse canónica.
+
+---
+
+#### 10. `SEARCH_FORM_KEY`
+
+`SEARCH_FORM_KEY` solo puede representar la derivación aprobada por el contrato vigente.
+
+Para `es-CO`, la derivación deberá conservar las reglas exactas del adapter canónico:
+
+- composición NFC;
+- casefold del perfil;
+- recorte de borde únicamente cuando el campo lo autorice;
+- compactación de espacios ASCII internos únicamente cuando el campo lo autorice;
+- conservación de tildes;
+- conservación de `ñ`;
+- conservación de signos y fronteras significativas;
+- ausencia de diccionario;
+- ausencia de capitalización empresarial;
+- ausencia de aliases;
+- ausencia de corrección ortográfica;
+- ausencia de similitud.
+
+Una función de slug no es `SEARCH_FORM_KEY`.
+
+---
+
+#### 11. `SEARCH_ACCENT_KEY`
+
+`SEARCH_ACCENT_KEY` es una derivación de recuperación tolerante, no una forma canónica del dato.
+
+Para `es-CO` deberá:
+
+1. partir del mismo `SEARCH_FORM_KEY` compatible;
+2. plegar únicamente los acentos autorizados por el perfil;
+3. plegar diéresis solo cuando la política lo permita;
+4. preservar `ñ` frente a `n`;
+5. preservar otros diacríticos y alfabetos fuera del contrato;
+6. conservar signos y fronteras;
+7. servir solo para matching;
+8. no modificar el valor mostrado;
+9. no definir identidad ni unicidad.
+
+Una función genérica de transliteración o `unaccent` no se adopta por similitud.
+
+---
+
+#### 12. `SEARCH_TOKEN_STREAM`
+
+`SEARCH_TOKEN_STREAM` no se modela por defecto como una columna escalar generada.
+
+Cuando un paquete demuestre necesidad de persistirlo deberá conservar:
+
+- cada token;
+- clase de token;
+- fronteras;
+- orden;
+- signos y separadores requeridos;
+- versión del tokenizer;
+- locale;
+- hash o versión de fuente;
+- perfil;
+- `version_set_digest`.
+
+La estrategia deberá impedir que una serialización textual pierda fronteras o vuelva indistinguibles secuencias diferentes.
+
+Puede requerir almacenamiento multivaluado o relacional, sujeto al contrato del paquete.
+
+---
+
+#### 13. `SEARCH_APPROVED_ALIAS_SET`
+
+Los aliases aprobados permanecen gobernados por su catálogo versionado.
+
+Reglas:
+
+1. no se copian como fuente de verdad dentro de cada fila empresarial;
+2. no se generan desde frecuencia, clics, casefold, tildes, diccionario o similitud;
+3. solo participan aliases activos, acotados y autorizados;
+4. un alias conflictivo bloquea el nivel correspondiente;
+5. materializar una ayuda de consulta no cambia la autoridad del catálogo;
+6. una invalidación o nueva versión deberá poder retirar la derivación anterior sin editar historia.
+
+Por defecto esta representación se resuelve como `RELATIONAL_DERIVATION` o en tiempo de consulta, no como una columna escalar universal.
+
+---
+
+#### 14. `SEARCH_TRANSLITERATION_KEY`
+
+La transliteración permanece deshabilitada en la política vigente.
+
+Por tanto:
+
+```text
+SEARCH_TRANSLITERATION_KEY
+→ NOT_APPLICABLE
+```
+
+para las instancias que consuman la política actual.
+
+Una política futura deberá aprobar explícitamente script, mapeo direccional, versión, colisiones, ranking y rollback antes de materializarla.
+
+No se utiliza una función de slug para anticipar esa capacidad.
+
+---
+
+#### 15. `SEARCH_STRUCTURED_COMPONENT_SET`
+
+Las presentaciones y otras entidades estructuradas deberán conservar sus componentes como datos tipados y consultables.
+
+No se construirá una clave concatenada que pierda:
+
+- producto;
+- cantidad;
+- unidad de entrada;
+- cantidad o unidad de stock;
+- multiplicador;
+- tipo de empaque;
+- contexto;
+- proveedor o fuente;
+- vigencia;
+- estado;
+- etiqueta visible.
+
+Una equivalencia textual o cuantitativa no establece identidad.
+
+La materialización podrá usar columnas existentes, relaciones o una proyección explícita, según el package.
+
+---
+
+#### 16. `SEARCH_FREE_TEXT_TERMS`
+
+`SEARCH_FREE_TEXT_TERMS` solo se materializa para perfiles que permitan descubrimiento libre y cuando exista una necesidad de consulta demostrada.
+
+La derivación deberá fijar:
+
+- tokenizer;
+- locale;
+- versión;
+- reglas de frontera;
+- exclusiones;
+- fuente;
+- `version_set_digest`.
+
+No se aplicará a secretos, firmas, identificadores técnicos ni campos `UNCLASSIFIED_PRESERVE`.
+
+La estrategia física no puede convertirse en una copia normalizada del contenido sensible.
+
+---
+
+#### 17. Decisión entre expresión y columna generada
+
+Una expresión o columna generated stored solo es admisible cuando su cálculo es:
+
+```text
+ROW_LOCAL
+AND PURE
+AND DETERMINISTIC
+AND IMMUTABLE
+AND VERSION_FIXED
+AND CATALOG_INDEPENDENT
+AND AUTH_INDEPENDENT
+AND TIME_INDEPENDENT
+AND EXACT_WITH_SHARED_CONTRACT
+```
+
+No puede depender implícitamente de:
+
+- tablas de reglas;
+- catálogo mutable;
+- alias activo consultado al vuelo;
+- `now()`;
+- timezone de sesión;
+- locale implícito;
+- orden físico;
+- caché;
+- red;
+- autorización;
+- configuración local;
+- proveedor mutable.
+
+Si una condición falla, se selecciona otra estrategia.
+
+---
+
+#### 18. Dependencia de `DATA-NORM-DB-002`
+
+Una representación que requiera una primitiva SQL debe usar únicamente una función previamente certificada bajo el contrato de `DATA-NORM-DB-002`.
+
+La función deberá:
+
+- tener identidad y versión gobernadas;
+- reproducir el contrato compartido;
+- declarar volatilidad correcta;
+- conservar `NULL`, vacío y errores según contrato;
+- ser segura para la modalidad física elegida;
+- no cambiar semántica bajo la misma identidad.
+
+La ausencia de una primitiva válida no autoriza recrear el algoritmo ad hoc dentro de la expresión.
+
+---
+
+#### 19. Caso de `unaccent`
+
+El helper `unaccent(text)` observado actualmente en PostgreSQL está declarado `STABLE`.
+
+Además, el contrato canónico de `SEARCH_ACCENT_KEY` es más estrecho que una eliminación genérica de diacríticos.
+
+Por tanto:
+
+1. no se adopta `unaccent(text)` como implementación canónica de `SEARCH_ACCENT_KEY`;
+2. no se usa directamente como fundamento de una generated column que exija inmutabilidad;
+3. no se asume equivalencia semántica por producir resultados parecidos;
+4. cualquier futura primitiva deberá tener reglas, diccionario, versión y corpus propios;
+5. la preservación de `ñ` es obligatoria.
+
+---
+
+#### 20. Materialización calculada por servicio
+
+Una derivación deberá usar `MATERIALIZED_STORED` cuando dependa de:
+
+- policy coordinate;
+- tokenizer versionado;
+- aliases;
+- catálogo;
+- reglas de campo;
+- version set;
+- decisión semántica;
+- estructura que no pueda expresarse fielmente en SQL inmutable.
+
+En ese caso:
+
+```text
+DOMAIN_NORMALIZATION_SERVICE
+→ calcula derivación
+
+TRANSACTIONAL_RPC_BOUNDARY
+→ revalida
+→ persiste fuente y derivaciones sincrónicas compatibles
+→ confirma resultado
+```
+
+La base puede verificar invariantes, pero no redecide la semántica.
+
+---
+
+#### 21. Atomicidad y estado activo
+
+Una derivación sincrónica requerida para consultas inmediatas deberá confirmarse de manera coherente con su fuente.
+
+La operación deberá impedir:
+
+- fuente nueva con clave antigua marcada activa;
+- clave nueva vinculada a fuente antigua;
+- `version_set_digest` diferente al usado en la evaluación;
+- commit parcial presentado como exitoso.
+
+Una derivación asincrónica solo podrá participar cuando su estado declare que corresponde a la versión actual de la fuente.
+
+Hasta entonces queda fuera del conjunto activo de búsqueda.
+
+---
+
+#### 22. Frescura
+
+Toda derivación materializada deberá ser verificable contra la fuente que la originó.
+
+Como mínimo se conserva o reconstruye:
+
+```text
+source_value_version_or_hash
+algorithm_version
+profile
+locale
+version_set_digest
+```
+
+Una derivación es inválida para consulta activa cuando:
+
+- cambió el valor fuente;
+- cambió el algoritmo;
+- cambió una dependencia aplicable;
+- cambió el perfil;
+- cambió el scope;
+- fue retirada su versión;
+- perdió procedencia;
+- no puede demostrarse equivalencia.
+
+La ausencia de certeza produce bloqueo o exclusión explícita, no fallback.
+
+---
+
+#### 23. `NULL`, vacío y contenido no buscable
+
+La estrategia física deberá preservar semánticas distintas.
+
+Reglas:
+
+1. `NULL` fuente no se convierte automáticamente en `''`;
+2. vacío no se convierte en una clave empresarial;
+3. whitespace-only que el perfil reduce a vacío no crea una derivación activa;
+4. un campo no buscable no recibe una clave por defecto;
+5. un secreto no recibe una clave derivada;
+6. un bloqueo de política no se representa como cadena vacía;
+7. una derivación ausente debe distinguirse de una derivación válida cuyo resultado textual sea vacío, si tal resultado estuviera permitido.
+
+---
+
+#### 24. Identificadores técnicos
+
+SKU, códigos, códigos de barras, referencias, modelos, emails, teléfonos y otros identificadores conservan contratos de comparación propios.
+
+La instancia deberá demostrar qué representación les corresponde.
+
+No se les aplica por defecto:
+
+- `SEARCH_ACCENT_KEY`;
+- diccionario;
+- alias comercial;
+- slug;
+- similitud;
+- capitalización comercial.
+
+`document_number_normalized` observado en `public.employees` se conserva como normalización técnica específica de documento y no se declara `SEARCH_FORM_KEY` universal.
+
+---
+
+#### 25. Baseline remoto observado
+
+La consulta read-only del proyecto de referencia identificó:
+
+```text
+generated columns totales observadas = 7
+columnas candidatas por nombre relacionado con búsqueda/normalización = 21
+índices con expresiones o patrones relacionados = 20
+funciones candidatas por filtro amplio de búsqueda/normalización = 103
+```
+
+Este inventario es de descubrimiento, no una declaración de equivalencia.
+
+Entre los objetos relevantes:
+
+- `public.employees.document_number_normalized` es generated stored y responde a un contrato técnico de documento;
+- `pass.catalog_option_visual_assets.normalized_option_name` es una columna ordinary legacy;
+- existen varios índices `lower(...)`, `trim(...)` o `btrim(...)`;
+- existen `_vento_norm`, `_vento_slugify` y `_navigation_slugify`;
+- existe `unaccent(text)` con volatilidad `STABLE`.
+
+Ninguno se adopta como representación canónica solo por nombre o parecido.
+
+---
+
+#### 26. Disposición de helpers legacy
+
+La disposición inicial es:
+
+| Objeto | Disposición |
+| --- | --- |
+| `_vento_norm(text)` | LEGACY_NO_EQUIVALENTE; compacta whitespace global y colapsa `NULL` a vacío |
+| `_vento_slugify(text)` | LEGACY_NO_EQUIVALENTE; produce slug ASCII |
+| `_navigation_slugify(text)` | LEGACY_NO_EQUIVALENTE; translitera y colapsa `ñ` a `n` |
+| `unaccent(text)` | LEGACY_NO_EQUIVALENTE; `STABLE` y semántica más amplia que `SEARCH_ACCENT_KEY` |
+| `document_number_normalized` | CONTRATO_TÉCNICO_ESPECÍFICO; no se generaliza |
+| `normalized_option_name` | CANDIDATO_LEGACY_A_RECONCILIAR; requiere procedencia y paridad |
+| índices `lower/trim/btrim` | LEGACY_HASTA_CERTIFICAR; no equivalen por similitud |
+
+La instancia de cada paquete podrá preservar, coexistir, sustituir o retirar únicamente con evidencia y tarea propietaria.
+
+---
+
+#### 27. Paridad query/valor
+
+La consulta y el valor almacenado deberán derivarse usando exactamente:
+
+- mismo perfil;
+- mismo locale;
+- mismo algoritmo;
+- misma versión;
+- mismas reglas de espacios;
+- mismas reglas de acentos;
+- mismo scope;
+- dependencias compatibles.
+
+Una consulta derivada por un helper distinto no puede buscar contra una columna canónica bajo el mismo nombre contractual.
+
+La incompatibilidad se bloquea o se declara como degradación explícita.
+
+---
+
+#### 28. Compatibilidad con índices
+
+`DATA-NORM-DB-003` prepara representaciones indexables, pero no crea índices.
+
+Antes del handoff a `DATA-NORM-DB-007` deberá existir una especificación verificable de:
+
+```text
+representation_identity
+query_expression
+storage_expression_or_column
+algorithm_version
+profile
+locale
+null_semantics
+collation_or_comparison_semantics
+version_compatibility
+```
+
+El índice posterior solo podrá activarse cuando su expresión y la consulta real sean compatibles con esa especificación.
+
+---
+
+#### 29. Colisiones y dry-run
+
+Esta tarea no ejecuta el análisis masivo de colisiones.
+
+Sin embargo, toda representación candidata deberá entregar a `DATA-NORM-DB-004` suficiente información para medir:
+
+- cantidad de fuentes;
+- cantidad de derivaciones;
+- colisiones exactas;
+- colisiones por tolerancia;
+- `NULL`;
+- vacíos;
+- duplicados de clave;
+- falsos positivos por scope;
+- diferencias legacy/canónico;
+- registros bloqueados;
+- cobertura por perfil;
+- distribución de longitud;
+- impacto potencial en consumidores.
+
+`DATA-NORM-DB-004` conserva la ejecución de dry-runs y reportes.
+
+---
+
+#### 30. Bootstrap y backfill
+
+La futura instancia puede crear estructura antes de llenar datos, pero una representación no se declara lista hasta certificar su población.
+
+La carga inicial deberá:
+
+1. fijar corte de fuente;
+2. fijar algoritmo y versiones;
+3. fijar perfil y scope;
+4. calcular la derivación con la capa autorizada;
+5. conservar vínculo de fuente;
+6. ser reanudable;
+7. ser idempotente;
+8. separar errores de bloqueos;
+9. producir evidencia de conteos;
+10. permanecer fuera de cutover hasta superar dry-run y paridad.
+
+El backfill material pertenece a `DATA-NORM-DB-005`.
+
+---
+
+#### 31. Migraciones forward-only
+
+Toda estructura física futura se crea mediante migraciones versionadas de `vento-shell`.
+
+Queda prohibido:
+
+- crear columnas manualmente en remoto como estado final;
+- editar migraciones aplicadas;
+- corregir valores derivados directamente para hacerlos coincidir;
+- cambiar una expresión generated en sitio sin nueva migración;
+- reutilizar una identidad de algoritmo con semántica nueva;
+- borrar una representación anterior antes de comprobar consumidores.
+
+Una corrección produce una migración posterior y evidencia de transición.
+
+---
+
+#### 32. Seguridad
+
+Una derivación de búsqueda no amplía acceso.
+
+Reglas:
+
+1. RLS y autorización se aplican antes de exponer resultados;
+2. una clave derivada no convierte un campo privado en buscable;
+3. no se materializan secretos ni firmas;
+4. valores personales requieren finalidad y scope;
+5. una clave no debe facilitar enumeración transversal;
+6. browser y mobile no reciben internals por conveniencia;
+7. una representación física no concede capacidad de escritura;
+8. la consulta servidor conserva mínimo privilegio;
+9. hashes o huellas sensibles requieren diseño resistente a enumeración cuando aplique.
+
+---
+
+#### 33. Escrituras directas
+
+Las representaciones materializadas no se editan como campos empresariales.
+
+Para `MATERIALIZED_STORED`:
+
+- el consumidor ordinario no escribe la derivación directamente;
+- la RPC confirma la operación;
+- el servicio calcula el valor;
+- el estado de fuente se revalida;
+- la derivación se persiste bajo el mismo contexto versionado;
+- un bypass administrativo requiere contrato separado y evidencia.
+
+Para `GENERATED_STORED`, PostgreSQL deriva el valor y no existe autoridad de escritura independiente.
+
+---
+
+#### 34. Concurrencia
+
+Antes de materializar o reemplazar una derivación deberá revalidarse:
+
+```text
+source_value_version_or_hash
+policy_coordinate
+version_set_digest
+current_derivation_state
+```
+
+Una expectativa obsoleta bloquea.
+
+No se permite que:
+
+- último escritor gane silenciosamente;
+- un retry use una versión nueva de reglas;
+- un job antiguo sobrescriba una derivación reciente;
+- una respuesta perdida provoque una segunda materialización incompatible.
+
+---
+
+#### 35. Versionado de representaciones
+
+Una representación física deberá tener una identidad de contrato independiente del nombre físico de columna.
+
+Cambios en cualquiera de estos elementos pueden requerir una nueva versión:
+
+- algoritmo;
+- locale;
+- perfil;
+- reglas de espacios;
+- reglas de acento;
+- tokenizer;
+- estructura;
+- dependencia de catálogo;
+- serialización;
+- semántica de `NULL`;
+- digest de configuración.
+
+Renombrar una columna no demuestra compatibilidad.
+
+Mantener el mismo nombre tampoco demuestra identidad semántica.
+
+---
+
+#### 36. Coexistencia
+
+Durante transición podrán coexistir representación legacy y representación canónica.
+
+La coexistencia deberá declarar uno de los modos autorizados por el contrato de versionado.
+
+Para shadow comparison:
+
+1. el resultado canónico no muta el valor fuente;
+2. no existe dual write empresarial;
+3. las diferencias se registran para análisis;
+4. consumidores continúan sobre el contrato vigente hasta el gate;
+5. un mismatch no se resuelve eligiendo automáticamente el resultado más frecuente.
+
+---
+
+#### 37. Rollback
+
+El rollback deberá conservar:
+
+- valor fuente;
+- representación canónica anterior cuando exista;
+- expresión o columna anterior;
+- consumidores que aún la soportan;
+- algoritmo y versión;
+- índices asociados posteriores;
+- estado de backfill;
+- evidencia de divergencias.
+
+Reglas:
+
+1. una representación defectuosa se retira del path activo sin borrar evidencia;
+2. el valor fuente no se reconstruye desde la clave;
+3. no se elimina una columna anterior mientras un consumidor la necesite;
+4. el rollback de índice pertenece a `DATA-NORM-DB-007`;
+5. el rollback de trigger pertenece a `DATA-NORM-DB-008`;
+6. la corrección estructural se hace forward-only.
+
+---
+
+#### 38. Paquete sin necesidad de materialización
+
+Una instancia puede concluir:
+
+```text
+representaciones físicas nuevas = 0
+```
+
+si demuestra que:
+
+- consulta en tiempo de ejecución es suficiente;
+- no hay consumidor que requiera almacenamiento;
+- no existe requisito de indexación pendiente;
+- el costo es aceptable;
+- no se necesita replay material;
+- la seguridad no mejora con persistencia.
+
+No se crea una columna vacía para satisfacer la existencia de la tarea.
+
+---
+
+#### 39. Readiness de diseño físico
+
+La instancia está lista para diseñar una representación cuando:
+
+```text
+package_id identificado
+AND campo identificado
+AND clase semántica resuelta
+AND perfil resuelto
+AND representación requerida
+AND fuente y mostrado separados
+AND algoritmo/versiones fijados
+AND estrategia física clasificada
+AND seguridad resuelta
+AND legacy reconciliado
+AND consumidores identificados
+```
+
+Si falta una condición, la representación permanece `BLOCKED`.
+
+---
+
+#### 40. Readiness de activación
+
+Una representación física solo puede entrar al path activo cuando:
+
+```text
+estructura materializada
+AND fuente/backfill completos cuando apliquen
+AND paridad query/valor comprobada
+AND corpus aprobado
+AND frescura verificable
+AND colisiones analizadas
+AND seguridad comprobada
+AND consumidores compatibles
+AND plan de consulta medido
+AND rollback disponible
+AND gates de package abiertos
+```
+
+La mera existencia de una columna no satisface esta puerta.
+
+---
+
+#### 41. Evidencia mínima por futura instancia
+
+El expediente deberá permitir responder:
+
+- qué `package_id` originó la representación;
+- qué campo y scope gobierna;
+- cuál es el valor fuente;
+- qué perfil aplica;
+- qué representación se materializa;
+- qué modalidad física se eligió;
+- qué algoritmo y versión se usaron;
+- qué `version_set_digest` aplica;
+- cómo se trata `NULL`;
+- qué legacy coexistió;
+- qué backfill se ejecutó;
+- qué colisiones aparecieron;
+- qué pruebas de paridad pasaron;
+- qué consumidores fueron validados;
+- qué índice posterior la consume;
+- qué rollback está disponible;
+- qué riesgo residual permanece.
+
+---
+
+#### 42. Secuencia obligatoria por instancia
+
+La secuencia lógica será:
+
+```text
+1. verificar package_id y gates
+2. recapturar drift
+3. inventariar campos y consumidores
+4. resolver clase, perfil y representación
+5. demostrar necesidad física
+6. clasificar estrategia
+7. fijar algoritmo y versiones
+8. reconciliar helpers y columnas legacy
+9. definir estructura y procedencia
+10. preparar migración forward-only
+11. materializar estructura
+12. poblar únicamente por el mecanismo autorizado
+13. verificar frescura e idempotencia
+14. comparar con oracle compartido
+15. entregar datos a dry-run de DATA-NORM-DB-004
+16. ejecutar backfill bajo DATA-NORM-DB-005 cuando corresponda
+17. validar seguridad y consumidores
+18. medir query plan con estrategia de DATA-NORM-DB-007
+19. habilitar path activo únicamente con gates completos
+20. registrar evidencia, rollback y drift final
+```
+
+---
+
+#### 43. Handoffs
+
+| Materia | Propietario | Handoff |
+| --- | --- | --- |
+| persistencia de reglas y versiones | `DATA-NORM-DB-001` | `version_set_digest`, estados y procedencia disponibles |
+| primitivas SQL deterministas | `DATA-NORM-DB-002` | función certificada solo cuando la estrategia la necesita |
+| dry-runs y colisiones | `DATA-NORM-DB-004` | representación candidata, baseline y métricas requeridas |
+| backfills | `DATA-NORM-DB-005` | estructura preparada y estrategia idempotente |
+| constraints | `DATA-NORM-DB-006` | únicamente después de reconciliar datos |
+| índices | `DATA-NORM-DB-007` | expresión/columna indexable y contrato de query compatibles |
+| triggers | `DATA-NORM-DB-008` | únicamente barrera defensiva final |
+| auditoría operacional | `DATA-NORM-DB-009` | fuente, derivación, versión y resultado atribuibles |
+
+`DATA-NORM-DB-003` no absorbe ninguno de estos owners.
+
+---
+
+#### 44. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** las obligaciones de separación entre fuente y derivaciones, paridad de query, algoritmos versionados, frescura, preservación de `ñ`, seguridad, compatibilidad de índices, idempotencia, concurrencia, colocación por capas y rollback ya están definidas y cubiertas por la arquitectura y el registro canónico DATA. Esta tarea materializa esas obligaciones por `package_id` sin introducir una nueva semántica empresarial.
+
+---
+
+#### 45. Cobertura de prueba vigente reutilizada
+
+La cobertura existente aplicable incluye:
+
+- `TREQ-DATA-123` para separación de fuente, mostrado y derivaciones;
+- `TREQ-DATA-124` para paridad de perfil, locale, algoritmo y versión;
+- `TREQ-DATA-125` para vínculo, vigencia y derivaciones huérfanas;
+- `TREQ-DATA-126` para `SEARCH_FORM_KEY`;
+- `TREQ-DATA-127` para `SEARCH_ACCENT_KEY` y preservación de `ñ`;
+- `TREQ-DATA-128` para tokenización y fronteras;
+- `TREQ-DATA-129` para aliases aprobados;
+- `TREQ-DATA-130` para transliteración deshabilitada;
+- `TREQ-DATA-131` para similitud candidata;
+- `TREQ-DATA-134` para perfiles y campos no buscables;
+- `TREQ-DATA-135` para componentes estructurados;
+- `TREQ-DATA-136` para identificadores y contactos;
+- `TREQ-DATA-140` para compatibilidad entre representación, consulta e índice;
+- `TREQ-DATA-141` para frontera frente a identidad;
+- `TREQ-DATA-144` para `resolved_version_set` y `version_set_digest`;
+- `TREQ-DATA-157` para concurrencia y fuente obsoleta;
+- `TREQ-DATA-158` para determinismo;
+- `TREQ-DATA-193` para autoridad del servicio;
+- `TREQ-DATA-203` para colocación de normalización determinista;
+- `TREQ-DATA-204` para reglas léxicas y revisión.
+
+Estos requisitos se reutilizan como trazabilidad y no cambian su contenido, identidad, estado ni relaciones.
+
+---
+
+#### 46. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | El build del checkout del usuario corresponde a la batería documental posterior al reemplazo del marcador. |
+| LOCAL | PASS | Artefacto comprobado contra metadata, secciones, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y heurísticas semánticas vigentes; hallazgos bloqueantes: 0. |
+| REMOTA | PASS | Fuentes canónicas de `main`, package compartido y baseline read-only de `vento-os-dev` revisados; inventario físico contrastado y mutaciones remotas observadas: 0. |
+| OPERATIVA | NOT_EXECUTED | Pruebas de consulta, dry-run, backfill, plan, carga, concurrencia y cutover pertenecen a futuras instancias físicas autorizadas. |
+| FÍSICA | NOT_APPLICABLE | Esta aprobación documental no materializa columnas, expresiones, funciones, índices, triggers, migraciones ni datos. |
+
+---
+
+#### 47. Decisiones vinculantes
+
+1. `DATA-NORM-DB-003` es una plantilla por `package_id`.
+2. Su gate físico es `POST_E5_PACKAGE`.
+3. No existe instancia global.
+4. Una representación física es derivada y no autoritativa.
+5. Fuente, mostrado y derivado permanecen separados.
+6. Persistir una representación requiere necesidad demostrada.
+7. Las estrategias son `QUERY_TIME_ONLY`, `GENERATED_STORED`, `MATERIALIZED_STORED`, `RELATIONAL_DERIVATION`, `NOT_APPLICABLE` o `BLOCKED`.
+8. `SEARCH_FORM_KEY` conserva tildes, `ñ`, signos y fronteras.
+9. `SEARCH_ACCENT_KEY` preserva `ñ` frente a `n`.
+10. Un slug no equivale a `SEARCH_FORM_KEY`.
+11. `unaccent(text)` observado no se adopta como `SEARCH_ACCENT_KEY`.
+12. `SEARCH_TOKEN_STREAM` no se reduce a una cadena escalar por defecto.
+13. Los aliases conservan catálogo propio.
+14. La transliteración permanece no aplicable bajo la política vigente.
+15. Componentes estructurados no se concatenan de forma destructiva.
+16. Free text solo se materializa bajo perfil y necesidad aprobados.
+17. Una generated expression debe ser row-local, pura, inmutable y exacta.
+18. Catálogos mutables y decisiones semánticas excluyen generated expressions.
+19. Una primitiva SQL debe provenir de `DATA-NORM-DB-002`.
+20. La ausencia de una primitiva certificada no autoriza SQL ad hoc.
+21. Materialización compleja pertenece al servicio y RPC.
+22. Una derivación activa debe corresponder a la fuente actual.
+23. `NULL` no se colapsa automáticamente a vacío.
+24. Identificadores técnicos conservan contratos propios.
+25. Legacy se reconcilia, no se adopta por parecido.
+26. Query y valor comparten perfil, locale, algoritmo y versión.
+27. `DATA-NORM-DB-003` no crea índices.
+28. `DATA-NORM-DB-004` ejecuta dry-runs y reportes de colisiones.
+29. `DATA-NORM-DB-005` ejecuta backfills aprobados.
+30. `DATA-NORM-DB-006` conserva constraints posteriores.
+31. `DATA-NORM-DB-007` conserva índices.
+32. `DATA-NORM-DB-008` conserva triggers.
+33. `DATA-NORM-DB-009` conserva auditoría operacional.
+34. Toda estructura física futura se crea mediante migración forward-only.
+35. Una clave derivada no amplía permisos.
+36. Derivaciones materializadas no admiten escritura empresarial directa.
+37. Concurrencia valida fuente, versiones y estado esperado.
+38. Cambiar semántica de derivación requiere versión nueva.
+39. Coexistencia legacy/canónica no implica dual write.
+40. Rollback no reconstruye fuente desde una clave.
+41. Una instancia puede cerrar con cero representaciones físicas nuevas.
+42. Activación exige paridad, frescura, colisiones, seguridad, consumidores y rollback.
+43. La definición documental no modifica Supabase.
+44. La definición documental no modifica 04A.
+
+---
+
+#### 48. Criterios de aceptación
+
+`DATA-NORM-DB-003` queda documentalmente aceptable cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. usa `DATA-NORM-DB-003::<package_id>`;
+4. distingue las siete representaciones del contrato;
+5. no obliga a persistir todas las representaciones;
+6. define una clasificación cerrada de estrategia física;
+7. separa fuente, mostrado y derivación;
+8. fija procedencia mínima;
+9. preserva el contrato exacto de `SEARCH_FORM_KEY`;
+10. preserva `ñ` en `SEARCH_ACCENT_KEY`;
+11. excluye transliteración bajo la política vigente;
+12. mantiene aliases en su autoridad propietaria;
+13. conserva componentes estructurados;
+14. limita free text por perfil;
+15. exige inmutabilidad real para generated expressions;
+16. mantiene la dependencia con `DATA-NORM-DB-002`;
+17. rechaza helpers legacy no equivalentes;
+18. conserva semántica de `NULL`;
+19. exige paridad query/valor;
+20. exige frescura;
+21. separa la tarea de índices;
+22. entrega baseline y métricas a dry-run;
+23. separa backfill;
+24. exige migraciones forward-only;
+25. aplica mínimo privilegio;
+26. protege concurrencia;
+27. versiona cambios semánticos;
+28. define coexistencia y rollback;
+29. permite cero materializaciones;
+30. conserva handoffs exactos;
+31. declara cero requisitos creados o modificados;
+32. no ejecuta cambios físicos durante la aprobación documental.
+
+---
+
+#### 49. Límites
+
+`DATA-NORM-DB-003` no:
+
+- crea columnas durante esta definición;
+- crea generated columns;
+- crea expresiones físicas;
+- crea funciones;
+- crea índices;
+- crea constraints;
+- crea triggers;
+- crea RPC;
+- crea migraciones;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta backfills;
+- corrige datos;
+- crea aliases;
+- activa transliteración;
+- activa similitud;
+- cambia el diccionario;
+- cambia conectores;
+- cambia excepciones;
+- decide identidad;
+- decide duplicidad;
+- crea unicidad empresarial;
+- fusiona registros;
+- ejecuta dry-runs;
+- ejecuta reportes de colisiones;
+- migra consumidores;
+- modifica Supabase;
+- modifica configuración remota;
+- modifica secretos;
+- modifica 04A;
+- desarrolla `DATA-NORM-DB-004`.
+
+---
+
+#### 50. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DATA-NORM-DB-002 — Implementar funciones SQL deterministas cuando sean necesarias`
+
+**TAREA ACTUAL APROBADA**
+`DATA-NORM-DB-003 — Implementar columnas o expresiones normalizadas de búsqueda`
+
+**SIGUIENTE TAREA RESERVADA**
+`DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones`
+
+
 ### [ ] DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones
 ### [ ] DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio
 ### [ ] DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos
