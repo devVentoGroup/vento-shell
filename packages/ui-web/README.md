@@ -26,6 +26,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-010::GLOBAL` materializa internamente `AppShell` como marco interactivo de composicion y sus estilos de chrome bajo el contrato aprobado de `SHELL-UI-010`, con navegacion preparada externamente y disclosure local, sin resolver identidad, autoridad, contexto, datos, rutas empresariales, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-011::GLOBAL` materializa internamente `TaskNavigation` como superficie server-safe de grupos y destinos orientados a trabajo bajo el contrato aprobado de `SHELL-UI-011`, con identidad semantica preparada externamente, cinco estados renderizables y composicion dentro de `AppShell.navigation`, sin resolver permisos, contexto, prioridad, router, datos, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -71,6 +73,9 @@ Fronteras vinculantes:
 - `src/AppShell.tsx` como implementacion interna de `AppShell`.
 - `src/app-shell.css` como estilos internos del marco y disclosure responsive de `AppShell`.
 - `scripts/validate-app-shell.mjs` como validador fisico de `SHELL-UI-010::GLOBAL`.
+- `src/TaskNavigation.tsx` como implementacion interna de `TaskNavigation`.
+- `src/task-navigation.css` como estilos internos de grupos, destinos y estados de `TaskNavigation`.
+- `scripts/validate-task-navigation.mjs` como validador fisico de `SHELL-UI-011::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -462,6 +467,65 @@ Consumidores migrados: 0/7. Copias legacy retiradas: 0. Releases publicadas por 
 
 La adopcion, paridad, compatibilidad, observacion y rollback por consumidor permanecen en `SHELL-MIG-*`, `SHELL-CI-*` y los packages propietarios antes de cualquier retiro legacy.
 
+## TaskNavigation
+
+`TaskNavigation` presenta una proyeccion de navegacion ya resuelta y organizada alrededor de trabajo, obligacion, resultado y siguiente paso. Conserva estructura, identidad y estados presentacionales, pero no descubre permisos, no resuelve contexto, no calcula prioridad empresarial, no fabrica rutas y no convierte navegacion en una cola de tareas.
+
+Contrato interno materializado:
+
+- `TaskNavigationProps` exige `ariaLabel` humano y localizable, `groups` ya preparados y permite `currentNavigationId` ya resuelto;
+- `TaskNavigationGroup` conserva `groupId`, `label`, `description` opcional e `items` en el orden recibido;
+- `TaskNavigationItem` conserva `navigationId`, `intentCode`, `label`, `description`, `href`, `state`, `statusLabel`, `ownerLabel` e `icon` sin payloads de autorizacion;
+- `TaskNavigationPresentationState` contiene exactamente `PRIMARY`, `SECONDARY`, `DISCOVERABLE`, `CONTEXTUAL_DISABLED` y `REQUIRED_BLOCKED`;
+- `HIDDEN` queda fuera de la union renderizable: la capa propietaria excluye esos destinos antes de construir las props;
+- `navigationId` es la identidad estable del destino y permanece separado de `href`, `label`, permiso, componente y proceso;
+- `intentCode` permanece como identidad semantica para instrumentacion o adaptacion y no se presenta como copy ordinario;
+- `currentNavigationId` marca el destino actual mediante `aria-current` cuando existe coincidencia y no se deriva de pathname, query params, hash, storage o historial;
+- `href` se conserva como destino ya preparado y no implica autoridad para ejecutar la operacion de destino;
+- grupos e items conservan estrictamente el orden recibido y la primitiva no realiza sorting autonomo;
+- `CONTEXTUAL_DISABLED` y `REQUIRED_BLOCKED` permanecen visibles pero no accionables aunque reciban `href`;
+- cualquier item sin `href` se presenta como no accionable sin inventar una causa;
+- `statusLabel`, `ownerLabel`, `description` e `icon` permanecen opcionales y preparados externamente;
+- iconos se tratan como decorativos por defecto y no sustituyen `label`;
+- `groups` vacio no genera mensajes automaticos como ausencia de permisos, ausencia de trabajo o inexistencia de pantallas;
+- duplicados de `groupId` o `navigationId` fallan cerrado para impedir identidad visual ambigua;
+- atributos compatibles de `HTMLDivElement`, `aria-*`, `data-*`, `className` y `style` pueden transferirse a la raiz, mientras `children` y `aria-label` permanecen controlados por el contrato de la primitiva;
+- sin `use client`, estado React, efectos, timers, red, browser storage, Supabase, sesion, router o lectura de contexto, por lo que la superficie base permanece server-safe.
+
+### AppShell y landmarks
+
+La composicion primaria es `AppShell.navigation -> TaskNavigation`. `AppShell` conserva el unico landmark de navegacion y su `navigationLabel`; `TaskNavigation` usa una raiz `role="group"` con `ariaLabel` para nombrar la estructura interna sin crear un segundo `<nav>` o `role="navigation"` anidado. La aplicacion debe mantener `AppShell.navigationLabel` y `TaskNavigation.ariaLabel` semanticamente coherentes para la misma finalidad localizada.
+
+`AppShell` sigue siendo propietario del marco, disclosure responsive y tab order de la navegacion cerrada. `TaskNavigation` solo organiza grupos, listas, destinos, estado actual y estado no accionable dentro del contenido que recibe ese slot.
+
+### Identidad, autoridad y trabajo
+
+La presencia de un destino no concede acceso. La capa propietaria debe resolver previamente autorizacion, relevancia, visibilidad, descubribilidad, enabled, accionabilidad y obligatoriedad, y entregar a `TaskNavigation` solo la proyeccion presentable.
+
+La API no recibe `permissionCode`, `requiredPermissions`, `anyOfPermissions`, roles, `AccessContext`, `AuthorizationDecision`, `canAccess`, `canExecute`, Supabase ni objetos de sesion. Tampoco interpreta `navigationId`, `intentCode`, `href`, label, grupo, icono o estado como autoridad.
+
+Seleccionar un destino no equivale a claim, start, accept, approve, execute o complete. Los estados `PRIMARY`, `SECONDARY`, `DISCOVERABLE`, `CONTEXTUAL_DISABLED` y `REQUIRED_BLOCKED` describen presentacion y descubribilidad, no estados de work item, proceso o autorizacion.
+
+### Router, datos y adapters
+
+La superficie base no importa `next/link`, `next/navigation`, `usePathname`, `useSearchParams` ni router imperativo. Cada consumidor puede mantener un adapter local pequeno para resolver `currentNavigationId`, mapear iconos a `ReactNode`, localizar labels, excluir destinos `HIDDEN` y construir el orden ya resuelto.
+
+Ese adapter no puede trasladar permisos, contexto autoritativo, prioridad o una taxonomia divergente dentro de la primitiva. `TaskNavigation` tampoco consulta `app_navigation_items`, Supabase, RPC, red, cookies o storage.
+
+### Estados, accesibilidad y responsive
+
+Los destinos accionables usan enlaces semanticos. Los destinos no accionables permanecen fuera de la activacion y exponen `aria-disabled`. El destino actual expone `aria-current="page"` sin depender solo de color. Los estados visuales utilizan estructura, borde, peso y contenido secundario ademas de color; `statusLabel` o una descripcion equivalente sigue siendo responsabilidad de la proyeccion cuando sea necesario explicar un bloqueo.
+
+La estructura utiliza grupo, listas e items en orden recibido, conserva foco visible, objetivos tactiles de al menos 44 px para destinos accionables, reflow, `min-width: 0`, wrapping y viewport reducido sin scroll horizontal estructural. No depende de hover, animacion o transicion para comunicar significado.
+
+### Consumidores, migracion y rollback
+
+La materializacion global no migra aplicaciones. La reconciliacion documental mantiene siete consumidores evaluados: `SHELL`, `NEXO`, `FOGO`, `ORIGO`, `VISO`, `PULSO` y `NUMERA`. `SHELL` conserva su launcher actual como composicion elegible sin equivalente lateral obligatorio; los otros seis permanecen `CANDIDATO_A_MIGRAR` por conservar familias locales `NavGroup` / `NavItem` dentro de chrome.
+
+Los adapters, paridad de rutas y estados, compatibilidad, observacion y rollback por consumidor permanecen en `SHELL-MIG-*` y `SHELL-CI-*`. El template `app-shell-standard` permanece evidencia historica y no define la API de `TaskNavigation`.
+
+Consumidores migrados por UI011: 0/7. Copias legacy retiradas por UI011: 0. Releases publicadas por UI011: 0. Cambios Supabase por UI011: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -482,6 +546,8 @@ La adopcion, paridad, compatibilidad, observacion y rollback por consumidor perm
 
 `AppShell` conserva un unico `main`, skip link con copy externo, navegacion con nombre accesible, control nativo con `aria-expanded`, disclosure movil fuera del tab order cuando esta cerrado, foco visible, retorno de foco al cerrar por `Escape`, reflow y chrome operable por teclado sin convertir presentacion en autoridad.
 
+`TaskNavigation` conserva grupos e items en orden recibido, nombres humanos, destino actual mediante `aria-current`, estados no accionables mediante semantica perceptible, iconografia decorativa fuera del nombre accesible, foco visible, objetivos tactiles, reflow y composicion dentro del landmark de `AppShell` sin crear un segundo landmark de navegacion.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -492,14 +558,14 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-009`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-010`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-010`
+TAREA ACTUAL APROBADA: `SHELL-UI-011`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-011`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-012`
 
-`SHELL-UI-011` conserva la navegacion orientada a tareas. `SHELL-UI-010::GLOBAL` materializa solamente el marco composicional, landmarks, responsive y disclosure local; no define items, rutas, permisos, agrupacion empresarial, migracion de consumidores ni patrones compuestos posteriores.
+`SHELL-UI-011::GLOBAL` materializa solamente la superficie presentacional de grupos y destinos ya resueltos. `SHELL-UI-012` conserva la linea compartida de estados de proceso; UI011 no adelanta estados empresariales, work items, proceso, migracion de consumidores ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/ui-web/src/ContextIndicator.tsx`, `packages/ui-web/src/context-indicator.css`, `packages/ui-web/scripts/validate-context-indicator.mjs`, `packages/ui-web/src/SiteSelector.tsx`, `packages/ui-web/src/site-selector.css`, `packages/ui-web/scripts/validate-site-selector.mjs`, `packages/ui-web/src/AreaSelector.tsx`, `packages/ui-web/src/area-selector.css`, `packages/ui-web/scripts/validate-area-selector.mjs`, `packages/ui-web/src/SimulatedRoleNotice.tsx`, `packages/ui-web/src/simulated-role-notice.css`, `packages/ui-web/scripts/validate-simulated-role-notice.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, navegacion orientada a tareas, items o grupos de navegacion, rutas empresariales, catalogos de aplicaciones, role overrides, cookies legacy, sesiones, roles reales o simulados, permisos, grants, contexto efectivo, `OperatingGate`, inicio o salida de simulacion, auditoria de simulacion, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, Supabase, `SHELL-UI-011` ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, componentes, estilos o validadores previos de `packages/ui-web` incluido `AppShell`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, `app_navigation_items`, rutas empresariales, catalogos de aplicaciones, permission codes, roles reales o simulados, permisos, grants, contexto efectivo, `OperatingGate`, work items, claims, prioridades, inicio o finalizacion de trabajo, router cross-app, busqueda, favoritos, recientes, breadcrumbs, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, adopcion de consumidores, retiro legacy, Supabase, `SHELL-UI-012` ni el registro 04A/TREQ.

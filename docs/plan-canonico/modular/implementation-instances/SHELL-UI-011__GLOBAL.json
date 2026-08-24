@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-011::GLOBAL",
   "task_id": "SHELL-UI-011",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/TaskNavigation.tsx como implementacion interna server-safe de TaskNavigation, TaskNavigationProps, TaskNavigationGroup, TaskNavigationItem y TaskNavigationPresentationState; grupos e items conservan el orden recibido, navigationId e intentCode mantienen identidad separada de copy/href/permisos, currentNavigationId llega resuelto, HIDDEN no forma parte de la API renderizable, estados bloqueados permanecen visibles pero no accionables, y la superficie no resuelve autorizacion, contexto, prioridad, router, datos, Supabase, red ni transiciones empresariales.",
+    "Crear packages/ui-web/src/task-navigation.css como estilos internos de TaskNavigation para grupos, destinos, estados PRIMARY/SECONDARY/DISCOVERABLE/CONTEXTUAL_DISABLED/REQUIRED_BLOCKED, destino actual, foco visible, objetivos tactiles, reflow, zoom y texto largo mediante tokens visuales existentes, sin colores hardcodeados, motion obligatorio, clipping estructural ni semantica de autoridad.",
+    "Crear packages/ui-web/scripts/validate-task-navigation.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, identidad y superficie diferida del package, API semantica, orden, unicidad de navigationId, cinco estados renderizables, exclusion de HIDDEN, currentNavigationId, href preparado, server-safety, ausencia de permisos/roles/contexto/Supabase/red/router/storage/sorting/transiciones empresariales, integracion sin landmarks competidores con AppShell, accesibilidad, disposicion de consumidores, handoff de migracion y 50 escenarios contractuales.",
+    "Actualizar packages/ui-web/README.md mediante reemplazo completo para documentar la materializacion interna de TaskNavigation, su API por grupos y destinos, cinco estados renderizables, exclusion de HIDDEN, separacion navigationId/intentCode/href/label/permiso, currentNavigationId externo, server-safety, integracion con AppShell.navigation sin landmarks competidores, accesibilidad, fronteras de autoridad/datos/router, disposicion 7/7 de consumidores, cero migraciones y continuidad hacia SHELL-UI-012.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los cambios y antes de registrar IMPLEMENTED; aceptar como alcance inicial del repair todos los archivos ya modificados por docs:implementation:start mas los cuatro archivos de materializacion y confiar en REPAIR_SCOPE: PASS del propio repair para detectar expansion real.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-011__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, componentes/estilos/validadores previos de ui-web incluido AppShell, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, AppSwitcher, ProfileMenu, VentoShell, VentoChrome, aplicaciones consumidoras, app_navigation_items, rutas empresariales, permisos, roles, contexto autoritativo, OperatingGate, Supabase, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, busqueda, favoritos, recientes, breadcrumbs ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-task-navigation.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/TaskNavigation.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T17:00:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "deb966aa36911398405e13a62adbfb5b49c7efa421fa061c2e4685fd68664755"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/TaskNavigation.tsx created as server-safe grouped task navigation with stable navigationId and intentCode identities and external currentNavigationId",
+    "MATERIALIZATION packages/ui-web/src/task-navigation.css created with existing ui tokens, keyboard focus, touch targets, reflow and presentation states without authority semantics",
+    "MATERIALIZATION packages/ui-web/scripts/validate-task-navigation.mjs and full README update completed without AppShell, consumer, Supabase, package manifest, export, template, router-domain or TREQ changes",
+    "SOURCE CONTRACT SHA256 deb966aa36911398405e13a62adbfb5b49c7efa421fa061c2e4685fd68664755",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION TaskNavigation validator PASS scenarios=50 server_safe=YES authority=NONE router=EXTERNAL consumers=0/7 exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/TaskNavigation.tsx",
+    "VALIDATION quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-011::GLOBAL VERIFIED"
+  ]
 }
