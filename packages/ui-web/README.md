@@ -28,6 +28,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-011::GLOBAL` materializa internamente `TaskNavigation` como superficie server-safe de grupos y destinos orientados a trabajo bajo el contrato aprobado de `SHELL-UI-011`, con identidad semantica preparada externamente, cinco estados renderizables y composicion dentro de `AppShell.navigation`, sin resolver permisos, contexto, prioridad, router, datos, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-012::GLOBAL` materializa internamente `ProcessStatusLine` como linea server-safe de lectura para posiciones de proceso ya resueltas bajo el contrato aprobado de `SHELL-UI-012`, con orden y estados explicitos `REACHED`, `CURRENT` y `NOT_REACHED`, sin inferir transiciones, autoridad, sincronizacion, router, datos, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -76,6 +78,9 @@ Fronteras vinculantes:
 - `src/TaskNavigation.tsx` como implementacion interna de `TaskNavigation`.
 - `src/task-navigation.css` como estilos internos de grupos, destinos y estados de `TaskNavigation`.
 - `scripts/validate-task-navigation.mjs` como validador fisico de `SHELL-UI-011::GLOBAL`.
+- `src/ProcessStatusLine.tsx` como implementacion interna de `ProcessStatusLine`.
+- `src/process-status-line.css` como estilos internos de estados, conectores y reflow de `ProcessStatusLine`.
+- `scripts/validate-process-status-line.mjs` como validador fisico de `SHELL-UI-012::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -526,6 +531,58 @@ Los adapters, paridad de rutas y estados, compatibilidad, observacion y rollback
 
 Consumidores migrados por UI011: 0/7. Copias legacy retiradas por UI011: 0. Releases publicadas por UI011: 0. Cambios Supabase por UI011: 0.
 
+## ProcessStatusLine
+
+`ProcessStatusLine` presenta una proyeccion visible y ordenada de posiciones principales de proceso que ya fue preparada por la aplicacion propietaria. La primitiva conserva orden, copy humano y estado explicito por paso; no calcula el estado empresarial, no valida transiciones y no escribe proceso.
+
+Contrato interno materializado:
+
+- `ProcessStatusLineProps` exige `ariaLabel` humano y localizable y `steps` ya preparados;
+- `ProcessStatusLineStep` conserva `stepId`, `label`, `description` opcional y `state` sin payloads de autorizacion o persistencia;
+- `ProcessStatusLineStepState` contiene exactamente `REACHED`, `CURRENT` y `NOT_REACHED`;
+- `REACHED` significa solamente que el propietario confirma que esa posicion visible fue alcanzada y no declara completitud empresarial;
+- `CURRENT` identifica la posicion principal actual preparada por el propietario y se expone mediante `aria-current="step"`;
+- `NOT_REACHED` significa solamente que la posicion visible aun no fue alcanzada y no promete elegibilidad, siguiente destino ni transicion futura;
+- cada estado llega explicitamente por paso; la primitiva no infiere estados desde indice, proximidad, ruta, timestamp, color ni posicion de `CURRENT`;
+- `steps` conserva estrictamente el orden recibido y la primitiva no realiza sorting autonomo;
+- `stepId` identifica la ocurrencia renderizada y no se interpreta como state code, transition ID, permiso o comando;
+- la estructura base usa una lista ordenada con items no interactivos, sin botones, enlaces ni tab stops artificiales;
+- los conectores son decorativos y no representan una arista autorizada del grafo de proceso;
+- `label`, `description` y `ariaLabel` permanecen preparados externamente para lenguaje humano y localizacion;
+- sin `use client`, hooks, efectos, timers, red, browser storage, Supabase, sesion, router o lectura de contexto, por lo que la superficie base permanece server-safe.
+
+### Proceso, estado y transiciones
+
+La direccion permitida es `proceso autoritativo -> proyeccion propietaria -> ProcessStatusLine`. La primitiva no recibe `processId`, `instanceId`, `currentStateCode`, `transitionId`, `nextAllowedStates`, permisos, roles, `canOperate`, guards ni callbacks empresariales. Tampoco contiene una tabla de transiciones, calcula la siguiente accion o habilita CTAs.
+
+Una proyeccion valida de una instancia resuelta contiene una unica posicion `CURRENT`, pero esa verdad se prepara fuera del componente. Si la fuente no permite resolver una posicion valida, el consumidor no fabrica una linea ni un estado actual para conservar estetica. Ramificaciones, ciclos, reingresos y estados omitidos siguen siendo responsabilidad de la capa propietaria.
+
+### Condiciones, offline y sincronizacion
+
+Bloqueo, espera, riesgo, SLA, evidencia pendiente, `OFFLINE`, `QUEUED`, `SYNCING`, conflicto y reconciliacion no forman parte de `ProcessStatusLineStepState`. Pueden coexistir en superficies propietarias separadas sin reemplazar la posicion principal del proceso.
+
+Una operacion local pendiente no cambia visualmente `CURRENT` como si el servidor hubiera confirmado una transicion. La linea tampoco sustituye un timeline de auditoria: actor, timestamp, before/after, receipt, evidencia y correlation ID permanecen fuera de su API base.
+
+### TaskNavigation, AppShell y composicion
+
+`TaskNavigation` responde que trabajo puede descubrirse o abrirse; `ProcessStatusLine` comunica la posicion principal de una instancia y sus posiciones visibles relacionadas. Navegacion activa no equivale a `CURRENT`, y una posicion de proceso no cambia por abrir una ruta.
+
+`AppShell` no incorpora la linea como estado global. La composicion ordinaria permanece `AppShell -> children -> superficie propietaria de proceso -> ProcessStatusLine`, de modo que el chrome transversal no conoce proceso, instancia o etapa.
+
+### Accesibilidad, responsive y movimiento
+
+La lista conserva orden de lectura, nombre accesible y `aria-current="step"` para la posicion actual. Los marcadores y conectores decorativos quedan fuera del nombre accesible. `REACHED`, `CURRENT` y `NOT_REACHED` usan diferencias estructurales de borde, relleno y peso ademas de color; la linea no agrega interaccion ni roba foco.
+
+En ancho suficiente la secuencia usa disposicion horizontal. En viewport estrecho refluye verticalmente sin cambiar orden ni semantica y sin requerir scroll horizontal estructural. La implementacion no usa animaciones o transiciones que puedan simular confirmacion de servidor y no depende de movimiento para comunicar estado.
+
+### Consumidores, migracion y rollback
+
+La materializacion global no migra aplicaciones. La reconciliacion documental mantiene siete consumidores evaluados: `SHELL`, `NEXO`, `FOGO`, `ORIGO`, `VISO`, `PULSO` y `NUMERA`. `NEXO` permanece `CANDIDATO_A_MIGRAR`; FOGO, ORIGO, VISO, PULSO y NUMERA permanecen `CANDIDATO_A_ADOPTAR`; SHELL conserva composicion elegible sin equivalente runtime global confirmado.
+
+Los adapters futuros deben construir `ProcessStatusLineStep[]` desde fuentes propietarias sin trasladar reglas empresariales al package ni inferir transiciones por indice. Paridad, adopcion, compatibilidad, observacion y rollback por consumidor permanecen en `SHELL-MIG-*`, `SHELL-CI-*` y los propietarios correspondientes.
+
+Consumidores migrados por UI012: 0/7. Copias legacy retiradas por UI012: 0. Releases publicadas por UI012: 0. Cambios Supabase por UI012: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -548,6 +605,8 @@ Consumidores migrados por UI011: 0/7. Copias legacy retiradas por UI011: 0. Rele
 
 `TaskNavigation` conserva grupos e items en orden recibido, nombres humanos, destino actual mediante `aria-current`, estados no accionables mediante semantica perceptible, iconografia decorativa fuera del nombre accesible, foco visible, objetivos tactiles, reflow y composicion dentro del landmark de `AppShell` sin crear un segundo landmark de navegacion.
 
+`ProcessStatusLine` conserva lista ordenada, copy humano, una posicion `CURRENT` ya resuelta mediante `aria-current="step"`, marcadores y conectores decorativos fuera del nombre accesible, diferencias perceptibles que no dependen solo de color, ausencia de tab stops artificiales, reflow horizontal a vertical y ausencia de movimiento que simule confirmacion empresarial.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -558,14 +617,14 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-010`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-011`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-011`
+TAREA ACTUAL APROBADA: `SHELL-UI-012`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-012`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-013`
 
-`SHELL-UI-011::GLOBAL` materializa solamente la superficie presentacional de grupos y destinos ya resueltos. `SHELL-UI-012` conserva la linea compartida de estados de proceso; UI011 no adelanta estados empresariales, work items, proceso, migracion de consumidores ni patrones compuestos posteriores.
+`SHELL-UI-012::GLOBAL` materializa solamente la linea presentacional de posiciones de proceso ya resueltas. `SHELL-UI-013` conserva el panel compartido de accion principal; UI012 no adelanta seleccion de accion, autorizacion, guards, transiciones, efectos empresariales, sincronizacion, migracion de consumidores ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, componentes, estilos o validadores previos de `packages/ui-web` incluido `AppShell`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, `app_navigation_items`, rutas empresariales, catalogos de aplicaciones, permission codes, roles reales o simulados, permisos, grants, contexto efectivo, `OperatingGate`, work items, claims, prioridades, inicio o finalizacion de trabajo, router cross-app, busqueda, favoritos, recientes, breadcrumbs, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, adopcion de consumidores, retiro legacy, Supabase, `SHELL-UI-012` ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, componentes, estilos o validadores previos de `packages/ui-web` incluidos `AppShell` y `TaskNavigation`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, estados o transiciones de proceso, tablas de transicion, guards, comandos, callbacks empresariales, seleccion de accion principal, `app_navigation_items`, rutas empresariales, catalogos de aplicaciones, permission codes, roles reales o simulados, permisos, grants, contexto efectivo, `OperatingGate`, offline, sincronizacion, reconciliacion, timeline de auditoria, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, adopcion de consumidores, retiro legacy, Supabase, `SHELL-UI-013` ni el registro 04A/TREQ.
