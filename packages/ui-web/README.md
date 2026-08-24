@@ -20,6 +20,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-007::GLOBAL` materializa internamente `SiteSelector` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-007`, sin resolver contexto, persistir sede, consultar red, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-008::GLOBAL` materializa internamente `AreaSelector` y sus estilos de componente bajo el contrato aprobado de `SHELL-UI-008`, sin resolver elegibilidad, autoridad, persistencia, red, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -56,6 +58,9 @@ Fronteras vinculantes:
 - `src/SiteSelector.tsx` como implementacion interna de `SiteSelector`.
 - `src/site-selector.css` como estilos internos de `SiteSelector`.
 - `scripts/validate-site-selector.mjs` como validador fisico de `SHELL-UI-007::GLOBAL`.
+- `src/AreaSelector.tsx` como implementacion interna de `AreaSelector`.
+- `src/area-selector.css` como estilos internos de `AreaSelector`.
+- `scripts/validate-area-selector.mjs` como validador fisico de `SHELL-UI-008::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -281,7 +286,7 @@ La concurrencia puede volver obsoleta una lista de opciones entre render y solic
 
 ### Fronteras de composicion
 
-`SiteSelector` no es un filtro administrativo: un filtro administrativo limita una consulta y no cambia contexto operativo. Tampoco contiene `AreaSelector`; el selector de area permanece reservado a `SHELL-UI-008`. Simulacion, diagnostico, recuperacion, confirmaciones sensibles y AppShell conservan sus tareas propietarias.
+`SiteSelector` no es un filtro administrativo: un filtro administrativo limita una consulta y no cambia contexto operativo. Tampoco contiene `AreaSelector`; ambos selectores conservan contratos separados y su coordinacion pertenece a la capa propietaria. Simulacion, diagnostico, recuperacion, confirmaciones sensibles y AppShell conservan sus tareas propietarias.
 
 El componente no consulta `@vento/supabase`, no abre cliente Supabase, no conoce `employee_settings`, no escribe `selected_site_id`, no lee ni escribe cookies o storage, no consume `site_id` desde query params, no usa router, no ejecuta RPC y no realiza llamadas de red. Las opciones visibles y la disponibilidad se preparan fuera del componente y nunca sustituyen enforcement de servidor.
 
@@ -290,6 +295,61 @@ El componente no consulta `@vento/supabase`, no abre cliente Supabase, no conoce
 El selector del template historico y las seis copias runtime observadas en NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen legacy. Sus cookies, query params, escrituras cliente y gating local de roles no se copian a la API compartida.
 
 La adopcion permanece en `SHELL-MIG-*` y `SHELL-CI-*`, por lotes reversibles con paridad y rollback antes de retirar cada copia legacy. Consumidores migrados: 0.
+
+## AreaSelector
+
+`AreaSelector` presenta candidatas de area ya preparadas por la capa propietaria y emite una solicitud de cambio. El componente no resuelve elegibilidad, no confirma la transicion, no persiste preferencias y no produce autoridad.
+
+Contrato interno materializado:
+
+- frontera cliente aislada mediante `use client` exclusivamente para capturar la interaccion del control;
+- `label` obligatorio y visible;
+- `confirmedAreaId` obligatorio y nullable como area confirmada entregada por la capa propietaria;
+- `requestedAreaId` opcional y nullable como destino solicitado todavia no confirmado;
+- `options` readonly de `AreaSelectorOption` con `id` estable y `label` humano;
+- `onRequestChange(areaId)` como emision de intencion, no como receipt ni confirmacion;
+- `pending`, `pendingLabel`, `disabled` y `placeholderLabel` como estado de presentacion e interaccion;
+- control nativo `select` asociado a un `label`, con opciones nativas y orden preservado;
+- placeholder no accionable cuando la composicion aporta `placeholderLabel` o no existe una opcion confirmada visible;
+- sin `defaultAreaId`, `primaryAreaId`, `lastAreaId`, `preferredAreaId`, `deviceAreaId`, `firstEligibleAreaId`, `siteId`, `areaKind`, permisos, grants, scopes ni contexto runtime como API publica;
+- sin taxonomia publica `variant`, `tone`, `size`, `fullWidth`, `compact`, `kiosk`, `admin` u `operational`;
+- sin combobox buscable, listeners globales, autofocus, navegacion, persistencia o estado autoritativo propios.
+
+### Area confirmada y solicitud pendiente
+
+`confirmedAreaId` representa exclusivamente el area confirmada recibida. `requestedAreaId` representa una intencion en curso y solo puede ocupar el valor visual del control mientras `pending=true`; no sustituye `confirmedAreaId` como autoridad.
+
+Durante una transicion, la composicion puede mantener `ContextIndicator state="changing"` mientras `AreaSelector` muestra la candidata solicitada y el texto de `pendingLabel`. `ContextIndicator` conserva el contexto confirmado hasta que exista un receipt autoritativo. La nueva area solo se trata como confirmada cuando la capa propietaria vuelve a renderizar con el nuevo `confirmedAreaId`.
+
+El selector no autoelige la primera opcion, no autoemite cuando existe una sola opcion, no inventa una causa cuando la lista esta vacia y no crea una opcion universal `Sin area`. Un area confirmada que no figure en `options` tampoco se sintetiza como opcion nueva.
+
+### Sede, elegibilidad y estaciones compartidas
+
+`AreaSelector` no recibe `siteId` para calcular pertenencia ni elegibilidad. La capa propietaria prepara `options` contra la sede y el contexto territorial vigentes. Un cambio confirmado de sede puede invalidar el area anterior; el selector no la conserva como fallback ni autoelige la primera area del nuevo conjunto.
+
+`SiteSelector` y `AreaSelector` pueden coexistir, pero la coordinacion sede-area, la invalidacion de solicitudes incompatibles y cualquier transicion conjunta permanecen fuera de ambos componentes.
+
+En estaciones compartidas o multi-area, la interseccion entre dispositivo, actor, turno, permiso, proceso y territorio se calcula externamente. Las allowed areas del dispositivo son un limite externo, no una concesion de autoridad. Al cambiar de actor, la composicion descarta cualquier intencion de area incompatible y entrega una proyeccion nueva.
+
+### Autoridad, filtros y concurrencia
+
+Un filtro administrativo de area limita una consulta y no cambia contexto operativo. `AreaSelector` tampoco interpreta `area_kind`, nombre humano, URL, orden de opciones o configuracion del dispositivo como autoridad.
+
+La presencia de una opcion solo significa que puede mostrarse como candidata. La autorizacion empresarial y la compatibilidad territorial se revalidan fuera del componente con contexto y recurso vigentes. Una superficie de bloqueo que prohiba corregir area localmente no puede reutilizar el selector como bypass.
+
+La concurrencia puede volver obsoleta una solicitud si cambian actor, sede, turno, check-in, rol, dispositivo, simulacion, pertenencia area-sede, permiso, recurso o trabajo en curso. `AreaSelector` no conserva estado autoritativo interno, no aplica resultados obsoletos por su cuenta, no mantiene cache de elegibilidad y no crea una cola offline de cambios. Mientras `pending=true`, el control impide solicitudes concurrentes desde la misma instancia.
+
+### Dependencias, persistencia y efectos
+
+El componente no depende directamente de `@vento/os-context` ni recibe `EffectiveContext` como prop publica. Tampoco consulta `@vento/supabase`, abre cliente Supabase, ejecuta RPC, evalua permisos, lee o escribe cookies, `localStorage`, `sessionStorage`, IndexedDB, query parameters, URL, settings del trabajador o base de datos.
+
+No inventa una columna o contrato `selected_area_id`, no navega para confirmar una seleccion y no ejecuta mutaciones de negocio. Borradores, claims, custodia, operaciones pendientes, confirmaciones sensibles, diagnostico y recuperacion permanecen bajo sus propietarios funcionales.
+
+### Evidencia actual, migracion y rollback
+
+No se observo un patron homogeneo de `AreaSelector` en las siete firmas `ProfileMenu` revisadas por el contrato: template historico mas NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA. Tampoco existe una primitiva local dedicada `AreaSelector` entre Button, Card, Chip, Input y Modal. Esa evidencia no autoriza a afirmar ausencia de controles de area en todo el ecosistema.
+
+El inventario ejecutable completo, adopcion y retiro permanecen en `SHELL-MIG-*` y `SHELL-CI-*`. Cada consumidor requiere clasificacion, paridad y rollback verificable antes de retirar cualquier control existente. Consumidores migrados: 0.
 
 ## Accesibilidad
 
@@ -305,6 +365,8 @@ La adopcion permanece en `SHELL-MIG-*` y `SHELL-CI-*`, por lotes reversibles con
 
 `SiteSelector` conserva semantica nativa de `label`, `select` y `option`, teclado del navegador, foco visible, objetivo tactil, reflow y estado pendiente textual cuando la composicion aporta `pendingLabel`; no depende de hover ni mueve foco por una confirmacion ordinaria.
 
+`AreaSelector` conserva semantica nativa de `label`, `select` y `option`, teclado del navegador, foco visible, objetivo tactil, reflow y estado pendiente textual cuando la composicion aporta `pendingLabel`; no depende de hover, no mueve foco por un receipt ordinario y no confunde area solicitada con area confirmada.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -315,8 +377,8 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-`SHELL-UI-008` conserva la responsabilidad del selector compartido de area. `SHELL-UI-007::GLOBAL` no materializa `AreaSelector`, aviso especializado de rol simulado, diagnostico de contexto, AppShell, navegacion, migracion de consumidores ni patrones compuestos posteriores.
+`SHELL-UI-009` conserva la responsabilidad del aviso compartido de rol simulado. `SHELL-UI-008::GLOBAL` no materializa simulacion, diagnostico de contexto, AppShell, navegacion, migracion de consumidores ni patrones compuestos posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/ui-web/src/ContextIndicator.tsx`, `packages/ui-web/src/context-indicator.css`, `packages/ui-web/scripts/validate-context-indicator.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `VentoChrome`, aplicaciones consumidoras, cookies legacy, `employee_settings`, query params, rutas, navegacion, autenticacion, autorizacion, resolucion de contexto, roles, turnos, check-in, simulacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, Supabase, `SHELL-UI-008` ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, `packages/ui-web/src/Alert.tsx`, `packages/ui-web/src/alert.css`, `packages/ui-web/scripts/validate-alert.mjs`, `packages/ui-web/src/Button.tsx`, `packages/ui-web/src/button.css`, `packages/ui-web/scripts/validate-button.mjs`, `packages/ui-web/src/Card.tsx`, `packages/ui-web/src/card.css`, `packages/ui-web/scripts/validate-card.mjs`, `packages/ui-web/src/EmptyState.tsx`, `packages/ui-web/src/empty-state.css`, `packages/ui-web/scripts/validate-empty-state.mjs`, `packages/ui-web/src/ContextIndicator.tsx`, `packages/ui-web/src/context-indicator.css`, `packages/ui-web/scripts/validate-context-indicator.mjs`, `packages/ui-web/src/SiteSelector.tsx`, `packages/ui-web/src/site-selector.css`, `packages/ui-web/scripts/validate-site-selector.mjs`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `VentoChrome`, aplicaciones consumidoras, cookies legacy, `employee_settings`, query params, rutas, navegacion, autenticacion, autorizacion, resolucion de contexto, roles, turnos, check-in, simulacion, SQL, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy, Supabase, `SHELL-UI-009` ni el registro 04A/TREQ.
