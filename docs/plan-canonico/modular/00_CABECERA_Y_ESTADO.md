@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1030** |
+| Tareas aprobadas | **1031** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **564** |
+| Tareas no iniciadas | **563** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **64.62% (1030/1594)** |
+| Porcentaje de completamiento | **64.68% (1031/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DB-022 — Implementar gobierno y políticas de Storage** |
-| Tarea actual | **AUTH-DB-023 — Implementar canales y contratos Realtime aprobados** |
+| Última tarea aprobada | **AUTH-DB-023 — Implementar canales y contratos Realtime aprobados** |
+| Tarea actual | **AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones** |
+| Siguiente tarea | **AUTH-DB-025 — Implementar índices, retención y controles de crecimiento** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 29 de 51 aprobadas; AUTH-DB-023 pendiente** |
+| Progreso del bloque | **BLOQUE R: 30 de 51 aprobadas; AUTH-DB-024 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-UI-005::GLOBAL** |
-| Carril documental | **ACTIVO — AUTH-DB-023** |
+| Carril documental | **ACTIVO — AUTH-DB-024** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-UI-005::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DB-022` — Implementar gobierno y políticas de Storage |
-| Tarea actual | `AUTH-DB-023` — Implementar canales y contratos Realtime aprobados — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DB-024` — Versionar Edge Functions, webhooks, cron y automatizaciones |
+| Última aprobada | `AUTH-DB-023` — Implementar canales y contratos Realtime aprobados |
+| Tarea actual | `AUTH-DB-024` — Versionar Edge Functions, webhooks, cron y automatizaciones — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DB-025` — Implementar índices, retención y controles de crecimiento |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 29 DE 51 APROBADAS — ACTUAL AUTH-DB-023** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 30 DE 51 APROBADAS — ACTUAL AUTH-DB-024** |
 | Implementación física | **SHELL-UI-005::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DB-022 — Implementar gobierno y políticas de Storage
-        ↓
-TAREA ACTUAL
 AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 29 de 51 tareas aprobadas
+BLOQUE R — 30 de 51 tareas aprobadas
 ```
