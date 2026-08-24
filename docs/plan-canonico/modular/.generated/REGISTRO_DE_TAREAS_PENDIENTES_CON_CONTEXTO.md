@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `DATA-NORM-DB-001` — Implementar almacenamiento de versiones de reglas y diccionarios | `DATA-NORM-DB-002` — Implementar funciones SQL deterministas cuando sean necesarias | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-UI-010::GLOBAL` — Evaluar AppShell compartido | `SHELL-UI-011::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-UI-011::GLOBAL` — Compartir navegación orientada a tareas | `SHELL-UI-012::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1033/1594 aprobadas** | **560** no aprobadas (1 propuesta, 0 rechazadas) | `DATA-NORM-DB-001` |
-| 🟧 **Implementación física conocida** | **64/95 VERIFIED** | **31** no terminales | `SHELL-UI-010::GLOBAL` |
+| 🟧 **Implementación física conocida** | **65/95 VERIFIED** | **30** no terminales | `SHELL-UI-011::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-UI-010::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **30**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-UI-011::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **29**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,18 +35,18 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `SHELL-UI-010::GLOBAL` | Evaluar AppShell compartido | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `SHELL-UI-011::GLOBAL` | Compartir navegación orientada a tareas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 3 | PENDIENTE | `SHELL-UI-012::GLOBAL` | Compartir línea de estados de proceso | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 4 | PENDIENTE | `SHELL-UI-013::GLOBAL` | Compartir panel de acción principal | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 5 | PENDIENTE | `SHELL-UI-014::GLOBAL` | Compartir confirmaciones de acciones sensibles | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 6 | PENDIENTE | `SHELL-UI-015::GLOBAL` | Compartir diagnóstico de contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 7 | PENDIENTE | `SHELL-UI-016::GLOBAL` | Compartir estados de error recuperable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 8 | PENDIENTE | `SHELL-UI-017::GLOBAL` | Compartir patrón para tablet | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 9 | PENDIENTE | `SHELL-UI-018::GLOBAL` | Compartir patrón para kiosco | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 10 | PENDIENTE | `SHELL-UI-019::GLOBAL` | Compartir patrón de proceso interrumpido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 11 | PENDIENTE | `SHELL-UI-020::GLOBAL` | Compartir patrón de traspaso entre aplicaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
-| 12 | PENDIENTE | `AUTH-DB-015::GLOBAL` | Documentar y versionar todas las migraciones en vento-shell | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-010::GLOBAL. |
+| 1 | **ACTUAL** | `SHELL-UI-011::GLOBAL` | Compartir navegación orientada a tareas | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `SHELL-UI-012::GLOBAL` | Compartir línea de estados de proceso | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 3 | PENDIENTE | `SHELL-UI-013::GLOBAL` | Compartir panel de acción principal | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 4 | PENDIENTE | `SHELL-UI-014::GLOBAL` | Compartir confirmaciones de acciones sensibles | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 5 | PENDIENTE | `SHELL-UI-015::GLOBAL` | Compartir diagnóstico de contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 6 | PENDIENTE | `SHELL-UI-016::GLOBAL` | Compartir estados de error recuperable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 7 | PENDIENTE | `SHELL-UI-017::GLOBAL` | Compartir patrón para tablet | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 8 | PENDIENTE | `SHELL-UI-018::GLOBAL` | Compartir patrón para kiosco | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 9 | PENDIENTE | `SHELL-UI-019::GLOBAL` | Compartir patrón de proceso interrumpido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 10 | PENDIENTE | `SHELL-UI-020::GLOBAL` | Compartir patrón de traspaso entre aplicaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 11 | PENDIENTE | `AUTH-DB-015::GLOBAL` | Documentar y versionar todas las migraciones en vento-shell | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
+| 12 | PENDIENTE | `AUTH-DB-027::GLOBAL` | Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-011::GLOBAL. |
 
 ## Modos de trabajo y materialización
 

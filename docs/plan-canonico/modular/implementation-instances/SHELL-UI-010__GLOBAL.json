@@ -1,10 +1,46 @@
 {
   "instance_id": "SHELL-UI-010::GLOBAL",
   "task_id": "SHELL-UI-010",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/AppShell.tsx como implementacion interna interactiva de AppShell y AppShellProps; children, brand y skipToContentLabel obligatorios; navigation/context/notices/headerActions como slots presentacionales; relacion tipada navigation presente -> navigationLabel obligatorio; landmarks header/nav/main, skip link y disclosure movil con estado local, aria-expanded, Escape y retorno de foco; sin autenticacion, autorizacion, contexto autoritativo, datos, Supabase, RPC, router empresarial, catalogos de aplicaciones, OperatingGate, persistencia o logica de dominio.",
+    "Crear packages/ui-web/src/app-shell.css como estilos internos de AppShell para marco header/navigation/main, sidebar persistente en escritorio, disclosure de navegacion en viewport reducido, skip link visible al foco, foco perceptible, objetivo tactil, reflow, zoom y texto largo mediante tokens visuales existentes, sin colores hardcodeados, scroll horizontal estructural, motion obligatorio ni clases de autoridad empresarial.",
+    "Crear packages/ui-web/scripts/validate-app-shell.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, identidad y superficie diferida del package, API composicional, landmarks, navegacion opcional, navigationLabel, skip link, disclosure local, foco, responsividad, ausencia de Supabase/Auth/permisos/contexto autoritativo/router/storage/red/gating, disposicion de consumidores, handoff a SHELL-UI-011, inmovilidad de superficies previas y mapa de 50 escenarios contractuales de SHELL-UI-010.",
+    "Actualizar packages/ui-web/README.md mediante reemplazo completo para documentar la materializacion interna de AppShell, la API por slots, skipToContentLabel como refinamiento fisico de accesibilidad, navegacion externa con navigationLabel obligatorio, disclosure puramente visual, landmarks, responsividad, fronteras de autoridad/datos/contexto/routing, composicion con ContextIndicator/SiteSelector/AreaSelector/SimulatedRoleNotice, disposicion 7/7 de consumidores, cero migraciones y continuidad hacia SHELL-UI-011.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los cambios y antes de registrar IMPLEMENTED; aceptar como alcance inicial del repair todos los archivos ya modificados por docs:implementation:start mas los cuatro archivos de materializacion, y confiar en REPAIR_SCOPE: PASS del propio repair para detectar expansion real, sin imponer una segunda lista fija incompatible con derivados del lifecycle.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-010__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, componentes/estilos/validadores previos de ui-web, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, AppSwitcher, ProfileMenu, VentoChrome, aplicaciones consumidoras, navegacion orientada a tareas de SHELL-UI-011, rutas empresariales, permisos, roles, contexto autoritativo, OperatingGate, Supabase, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, exports npm, versionado, publicacion, migracion de consumidores, retiro legacy ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-app-shell.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/AppShell.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T16:00:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "d015d322f8f1aff853f8bc450c81e745a2c248a8156c5b639af18257798fa1d6"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/AppShell.tsx created as shared compositional AppShell without business authority, data access or consumer migration",
+    "MATERIALIZATION packages/ui-web/src/app-shell.css created for responsive shell layout, chrome composition, reflow and accessible focus treatment",
+    "MATERIALIZATION packages/ui-web/scripts/validate-app-shell.mjs and packages/ui-web/README.md completed within SHELL-UI-010 authorized scope",
+    "SOURCE CONTRACT SHA256 d015d322f8f1aff853f8bc450c81e745a2c248a8156c5b639af18257798fa1d6",
+    "RECOVERY initial quality:repair attempt FAIL due react/no-children-prop in validate-app-shell.mjs",
+    "RECOVERY owner explicitly authorized one corrective quality:repair retry after lint correction",
+    "PRE_VALIDATION_GATE quality:repair corrective retry PASS",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION node packages/ui-web/scripts/validate-app-shell.mjs PASS",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/AppShell.tsx",
+    "VALIDATION quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-010::GLOBAL VERIFIED"
+  ]
 }
