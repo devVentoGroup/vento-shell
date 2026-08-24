@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-004::GLOBAL",
   "task_id": "SHELL-UI-004",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/Card.tsx como implementacion interna server-safe del componente Card, con variantes surface/soft/raised, surface por defecto, paddings sm/md/lg, md por defecto, div nativo no interactivo, children opcional y atributos/eventos HTMLDivElement compatibles transferibles, sin role, tabIndex, foco, navegacion, estados empresariales ni subcomponentes estructurales impuestos.",
+    "Crear packages/ui-web/src/card.css como estilos internos de Card con tres variantes y tres paddings diferenciados, separacion visual, elevacion exclusiva de raised, reflow y ausencia de backdrop blur, sin materializar un contrato CSS publico ni convertir valores fisicos o nombres de tokens en API publica.",
+    "Crear packages/ui-web/scripts/validate-card.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, fronteras de package, contrato runtime/SSR, tres variantes, tres paddings, semantica div no interactiva, atributos nativos, composicion, accesibilidad estructural, inmovilidad legacy y mapa de 50 escenarios contractuales de SHELL-UI-004.",
+    "Actualizar packages/ui-web/README.md para documentar la materializacion interna de Card y mantener explicitamente diferidos version npm, exports publicos, main/types, peer dependencies propias, entrypoint CSS publico, publicacion, consumidores, compatibilidad final, rollback y retiro legacy.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-004__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, packages/ui-web/src/Alert.tsx, packages/ui-web/src/alert.css, packages/ui-web/scripts/validate-alert.mjs, packages/ui-web/src/Button.tsx, packages/ui-web/src/button.css, packages/ui-web/scripts/validate-button.mjs, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, SHELL-UI-005..020, exports npm, versiones, dependencias, consumidores, rutas, navegacion, autenticacion, autorizacion, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-card.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/Card.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T02:09:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS IMPLEMENTANDO",
+    "source_contract_sha256": "440686eee94d886a1e73f1606d4a79cffa5c5b311fe5743838ea64ea562a5822"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/Card.tsx created as internal server-safe Card with three canonical variants, three canonical paddings, native non-interactive div semantics, optional children and compatible HTMLDivElement attributes/events",
+    "MATERIALIZATION packages/ui-web/src/card.css created as internal component styles with surface separation, raised elevation, density and reflow without backdrop blur or public CSS surface",
+    "MATERIALIZATION packages/ui-web/scripts/validate-card.mjs and README update completed without package manifest, lockfile, Alert, Button, public exports, consumers, template, Supabase or TREQ changes",
+    "SOURCE CONTRACT SHA256 440686eee94d886a1e73f1606d4a79cffa5c5b311fe5743838ea64ea562a5822",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION Card validator PASS; scenarios=50 variants=3 paddings=3 root=DIV ssr=SAFE consumers=NOT_MIGRATED legacy=UNCHANGED exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/Card.tsx",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-004::GLOBAL VERIFIED"
+  ]
 }
