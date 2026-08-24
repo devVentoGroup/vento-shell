@@ -1,10 +1,44 @@
 {
   "instance_id": "SHELL-UI-002::GLOBAL",
   "task_id": "SHELL-UI-002",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    "Crear packages/ui-web/src/Alert.tsx como implementacion interna server-safe del componente Alert, con variantes neutral/success/warning/danger, neutral por defecto, children requerido, icon opcional, className y atributos HTML/ARIA transferibles, sin role=alert ni aria-live forzados, sin estado obligatorio, efectos, foco, red, router, Supabase, sesion ni autorizacion.",
+    "Crear packages/ui-web/src/alert.css como estilos internos de Alert, conservando la intencion visual legacy mediante variables existentes y normalizando los modificadores nuevos a warning/danger sin modificar ni retirar .ui-alert--warn o .ui-alert--error del template o consumidores legacy.",
+    "Crear packages/ui-web/scripts/validate-alert.mjs para verificar SHA contractual, reconciliacion GLOBAL_ENABLE_ONCE/PRE_E5_FOUNDATION, fronteras de package, contrato runtime/SSR/ARIA, cuatro variantes, estilos internos, inmovilidad legacy y mapa de 50 escenarios contractuales de SHELL-UI-002.",
+    "Actualizar packages/ui-web/README.md para documentar la materializacion interna de Alert y mantener explicitamente diferidos version npm, exports publicos, main/types, peer dependencies propias, entrypoint CSS publico, publicacion, consumidores, compatibilidad final, rollback y retiro legacy.",
+    "Ejecutar exactamente una vez npm run quality:repair despues de materializar todos los archivos y antes de registrar IMPLEMENTED; solo se permiten reparaciones deterministas dentro del alcance autorizado.",
+    "Modificar docs/plan-canonico/modular/implementation-instances/SHELL-UI-002__GLOBAL.json exclusivamente para autorizacion, lifecycle y evidencia de esta instancia.",
+    "No modificar package.json raiz, package-lock.json, packages/ui-web/package.json, src/components/ui, templates/app-shell-standard, packages/contracts, packages/os-context, packages/supabase, SHELL-UI-003..020, exports npm, versiones, dependencias, consumidores, rutas, navegacion, autenticacion, autorizacion, SQL, DDL, DML, migraciones, RLS, grants, RPC, Storage, Realtime, Edge Functions, datos, secretos, configuracion remota, Supabase ni registro 04A/TREQ."
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-alert.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/Alert.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-23T20:59:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "47ec05f49c60c6adec070d48a07669372254299e15541b23523c37386cf67497"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/Alert.tsx created as internal server-safe Alert with neutral/success/warning/danger variants, required content, optional icon and explicit HTML/ARIA passthrough",
+    "MATERIALIZATION packages/ui-web/src/alert.css created as internal component styles using existing visual variables and canonical warning/danger modifiers without changing legacy template or consumers",
+    "MATERIALIZATION packages/ui-web/scripts/validate-alert.mjs and README update completed without package manifest, lockfile, public exports, consumers, template, Supabase or TREQ changes",
+    "SOURCE CONTRACT SHA256 47ec05f49c60c6adec070d48a07669372254299e15541b23523c37386cf67497",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION Alert validator PASS; scenarios=50 variants=4 ssr=SAFE aria_defaults=NONE consumers=NOT_MIGRATED legacy=UNCHANGED exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/Alert.tsx",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-002::GLOBAL VERIFIED"
+  ]
 }
