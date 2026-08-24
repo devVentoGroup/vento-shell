@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1035** |
+| Aprobadas | **1036** |
 | En propuesta | **0** |
-| No iniciadas | **559** |
+| No iniciadas | **558** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **64.93% (1035/1594)** |
+| Porcentaje de completamiento | **64.99% (1036/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-DB-001` — Implementar almacenamiento de versiones de reglas y diccionarios | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-DB-002` — Implementar funciones SQL deterministas cuando sean necesarias | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-NORM-DB-003` — Implementar columnas o expresiones normalizadas de búsqueda | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-DB-002` — Implementar funciones SQL deterministas cuando sean necesarias | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-DB-003` — Implementar columnas o expresiones normalizadas de búsqueda | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-NORM-DB-004` — Ejecutar dry-runs y reportes de colisiones | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1245,7 +1245,7 @@
 | ✅ APROBADA | `AUTH-DB-025` | Implementar índices, retención y controles de crecimiento | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ✅ APROBADA | `AUTH-DB-026` | Generar y publicar tipos después de cada paquete aprobado | `bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md` |
 | ✅ APROBADA | `DATA-NORM-DB-001` | Implementar almacenamiento de versiones de reglas y diccionarios | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
-| ⬜ NO INICIADA | `DATA-NORM-DB-002` | Implementar funciones SQL deterministas cuando sean necesarias | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
+| ✅ APROBADA | `DATA-NORM-DB-002` | Implementar funciones SQL deterministas cuando sean necesarias | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-003` | Implementar columnas o expresiones normalizadas de búsqueda | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-004` | Ejecutar dry-runs y reportes de colisiones | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-005` | Ejecutar backfills aprobados por dominio | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
