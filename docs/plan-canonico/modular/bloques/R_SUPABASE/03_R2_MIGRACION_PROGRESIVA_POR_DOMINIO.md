@@ -13354,7 +13354,473 @@ Esta tarea no:
 `AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones`
 
 
-### [ ] AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
+### ✅ AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-023 — Implementar canales y contratos Realtime aprobados
+**Tarea siguiente:** AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para versionar Edge Functions, webhooks, cron y automatizaciones desde contratos aprobados, con procedencia, autorización, idempotencia, reintentos, resultado durable, observabilidad, compatibilidad y rollback verificables
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato canónico `TEMPLATE_PER_PACKAGE` cerrado; cada futura instancia `AUTH-DB-024::<package_id>` permanece no ejecutada hasta satisfacer las fundaciones R0/R1 aplicables, el paquete E5 correspondiente, `E5-GATE-008::<package_id>`, `SHELL-CI-020::<package_id>`, la reconciliación de drift aplicable y la autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### Propósito
+
+Cerrar el contrato documental repetible que deberá aplicar cada paquete R2 cuando materialice Edge Functions, webhooks, cron jobs o automatizaciones de VENTO. La tarea conserva como autoridad la arquitectura aprobada `SUPA-ARC-020` y convierte sus decisiones en una plantilla ejecutable por `package_id`, sin desplegar funciones, modificar schedules, rotar secretos, crear jobs, cambiar webhooks, alterar configuración hosted ni ejecutar efectos remotos.
+
+El objetivo no es declarar conforme el estado existente por el solo hecho de que una función o job esté activo. Cada superficie incluida en un paquete deberá demostrar identidad, procedencia versionada, productor, consumidor, owner semántico, autenticación, autorización, contrato de entrada y salida, idempotencia, concurrencia, reintentos, resultado durable, observabilidad, compatibilidad, rollback y paridad con el ambiente objetivo.
+
+#### Alcance contractual y topología
+
+1. `AUTH-DB-024` define una sola vez la plantilla documental global.
+2. La unidad materializable futura es `AUTH-DB-024::<package_id>`.
+3. El modo de trabajo es `TEMPLATE_PER_PACKAGE`.
+4. El gate temporal es `POST_E5_PACKAGE`.
+5. La existencia de una función, un webhook, un cron o una automatización en el remoto no crea por sí sola una instancia física autorizada.
+6. Una instancia solo puede abarcar superficies que pertenezcan al `package_id` aprobado y que estén trazadas por las decisiones E3/E5 correspondientes.
+7. Ninguna instancia puede absorber trabajo perteneciente a otro paquete, otro owner, otra ruta de transición o una tarea posterior.
+8. El contrato se aplica tanto a superficies que se conservan como a las que se rediseñan, consolidan, dividen, retiran o ponen en cuarentena.
+9. La reconciliación de drift es obligatoria antes de modificar una superficie; el remoto nunca sustituye la decisión arquitectónica aprobada.
+10. Los cambios físicos quedan expresamente fuera de esta tarea documental.
+
+#### Fuentes y herencia obligatoria
+
+Cada instancia deberá consumir sin reinterpretar:
+
+- la arquitectura de automatización aprobada en `SUPA-ARC-020`;
+- la correspondencia objeto-capacidad-owner-consumidor vigente;
+- los mapas de transición, disposición, compatibilidad y rollback aplicables al paquete;
+- el modelo de autorización canónico para actor, capacidad, recurso y territorio;
+- los contratos de eventos, Realtime, Storage y datos que la automatización produzca o consuma;
+- el manifiesto de ambiente y la política de secretos vigente;
+- los consumidores reales del repositorio y del remoto observables al momento de ejecutar la instancia;
+- los requisitos de prueba vigentes ya registrados para Edge Functions, webhooks, cron, jobs, secretos, idempotencia, observabilidad y drift.
+
+Una discrepancia entre arquitectura, repositorio, configuración y remoto se registra como drift y bloquea únicamente la materialización afectada hasta resolver su causa. No se elige silenciosamente una fuente competidora.
+
+#### Separación obligatoria de los seis planos
+
+La materialización futura deberá mantener separados los seis planos canónicos definidos por `SUPA-ARC-020`:
+
+1. **Ingreso:** valida autenticidad, identidad técnica o humana, esquema, versión, replay y límites de entrada.
+2. **Scheduler:** expresa cuándo debe intentarse trabajo; no confirma que el efecto empresarial haya ocurrido.
+3. **Trabajo durable:** registra intención, estado, lease, intento, retry, deduplicación y resultado recuperable cuando el flujo lo requiera.
+4. **Efecto de dominio:** solo el owner semántico confirma o rechaza la transición empresarial.
+5. **Proveedor:** representa la interacción con terceros y sus receipts; un ACK externo no se convierte automáticamente en verdad del dominio.
+6. **Control:** concentra observabilidad, SLO, alertas, auditoría, conciliación, drift, compatibilidad y rollback.
+
+No se autoriza fusionar estos planos de modo que un scheduler, un transporte HTTP, una Edge Function o un proveedor externo adquiera autoridad empresarial por conveniencia técnica.
+
+#### Contrato mínimo por `package_id`
+
+Toda superficie Edge, webhook, cron o automatización incluida en una instancia deberá registrar, como mínimo:
+
+| Campo contractual | Regla |
+| --- | --- |
+| `package_id` | paquete E5 propietario de la materialización |
+| identidad actual | slug, job, trigger, productor, consumidor o ruta observable sin renombrar el objeto existente |
+| identidad objetivo | contrato aprobado al que deberá converger la superficie |
+| owner semántico | aplicación o dominio que controla el resultado empresarial |
+| custodio técnico | runtime, repositorio o componente que ejecuta sin adquirir ownership empresarial |
+| clase de workload | exactamente una clase compatible con el efecto; si mezcla responsabilidades incompatibles debe dividirse |
+| clase de ingreso | mecanismo técnico por el que entra el trabajo |
+| clase de caller | actor humano, servicio, scheduler, proveedor o capacidad pública que origina la invocación |
+| productor | componente autorizado que emite la solicitud, evento, webhook o dispatch |
+| consumidor | función, worker, RPC, dominio o adaptador que procesa la entrada |
+| audiencia | consumidoras y alcances permitidos |
+| método y endpoint | contrato técnico de invocación cuando aplique |
+| autenticación | mecanismo verificable de identidad del caller |
+| autorización | capacidad, actor efectivo, recurso, territorio y precondiciones server-side |
+| `verify_jwt` | valor explícito y justificado; debe coincidir con caller, gateway y headers reales |
+| request schema | esquema versionado, validado antes de cualquier efecto |
+| response schema | respuesta o receipt versionado, sin confundir aceptación con éxito empresarial |
+| datos sensibles | clasificación, minimización, redacción y política de logs |
+| DB/RPC/Storage/Realtime | lecturas, mutaciones, eventos, archivos y canales utilizados |
+| efecto externo | proveedor, timeout, rate limit, circuit breaker o degradación aplicable |
+| idempotencia | scope, clave, hash de request, deduplicación y tratamiento de colisiones |
+| concurrencia | locking, compare-and-set, lease o exclusión aplicable |
+| timeout | presupuesto por operación y relación con el transporte |
+| retry | errores reintentables, backoff, jitter, máximo de intentos y condición de abandono |
+| resultado durable | estado consultable, receipt, outcome o reconciliación necesaria |
+| observabilidad | correlation ID, request ID, run, attempt, métricas, logs, trazas y alertas |
+| SLO | objetivo y presupuesto definidos por la política vigente; no se inventan valores |
+| procedencia | repositorio, ruta relativa, commit, dependencias, runtime, import map y bundle SHA cuando aplique |
+| ambiente | project ref, URLs, callback, schedule, secretos, proveedores e idempotency scope aislados |
+| compatibilidad | consumidores coexistentes, versión, ventana y criterio de retiro |
+| rollback | mecanismo para revertir código/configuración sin borrar trabajo durable, receipts ni efectos ya confirmados |
+| disposición | decisión aprobada heredada de arquitectura/transición; no se infiere desde el estado remoto |
+| evidencia | pruebas, paridad, métricas, hashes y resultado de gates necesarios para cerrar la instancia |
+
+#### Registro individual de Edge Functions
+
+La instancia que toque una Edge Function deberá conservar un manifiesto completo y versionado. La procedencia aceptable se expresa únicamente mediante repositorio y ruta relativa canónica más commit, dependencias, runtime, import map y bundle SHA verificables. Una ruta absoluta de una estación de trabajo, un directorio temporal de despliegue o una copia histórica no prueba procedencia canónica.
+
+El lifecycle permitido por la arquitectura permanece:
+
+- `DRAFT`
+- `ACTIVE`
+- `BLOCKED_SECURITY`
+- `DEPRECATED`
+- `RETIRED`
+
+La disposición primaria heredada debe conservarse hasta que una decisión canónica posterior la sustituya. Ninguna función se considera conforme por nombre, versión, estado `ACTIVE` o valor de `verify_jwt` aislado.
+
+##### Universo Edge observado y disposición heredada
+
+El corte remoto verificado el 2026-08-24 contiene 24 Edge Functions activas. Los 24 slugs coinciden nominalmente con el universo individualizado por `SUPA-ARC-020`; esto prueba cobertura de identidad, no conformidad de implementación.
+
+| Edge Function | Versión remota observada | `verify_jwt` remoto | Clase objetivo heredada | Disposición primaria heredada |
+| --- | ---: | --- | --- | --- |
+| `wallet-pass` | 33 | `true` | `PROVIDER_ADAPTER` | `KEEP_RECONTRACT` |
+| `attendance-report` | 50 | `true` | `CLIENT_QUERY_OR_REPORT` | `KEEP_RECONTRACT` |
+| `staff-invitations-create` | 46 | `true` | `CLIENT_COMMAND` | `KEEP_RECONTRACT` |
+| `request-account-deletion` | 28 | `true` | `CLIENT_COMMAND` | `KEEP_RECONTRACT` |
+| `account-deletion` | 29 | `true` | `CLIENT_COMMAND` | `SPLIT_REQUEST_AND_WORKER` |
+| `payments-create-intent` | 21 | `true` | `PROVIDER_ADAPTER` | `KEEP_RECONTRACT` |
+| `shift-publish-notify` | 14 | `true` | `INTERNAL_EVENT_CONSUMER` | `REMOVE_CLIENT_TRIGGER_AND_ROUTE_DURABLY` |
+| `pass-delivery-quote` | 15 | `true` | `PROVIDER_ADAPTER` | `KEEP_RECONTRACT` |
+| `pass-address-search` | 11 | `true` | `PROVIDER_ADAPTER` | `KEEP_RECONTRACT` |
+| `support-message-notify` | 3 | `true` | `INTERNAL_EVENT_CONSUMER` | `FIX_GATEWAY_AND_MINIMIZE` |
+| `pass-register-push-token` | 3 | `true` | `CLIENT_COMMAND` | `KEEP_RECONTRACT` |
+| `order-message-notify` | 3 | `true` | `INTERNAL_EVENT_CONSUMER` | `CONVERT_EVENT_DRIVEN` |
+| `staff-invitations-accept` | 36 | `false` | `CLIENT_COMMAND` | `BLOCK_AND_REWRITE_SECURITY` |
+| `document-alerts` | 33 | `false` | `DURABLE_ASYNC_WORKER` | `REBUILD_DURABLE_WORKER` |
+| `process-account-deletions` | 29 | `false` | `DURABLE_ASYNC_WORKER` | `REBUILD_LEASED_WORKER` |
+| `register-push-token` | 24 | `false` | `CLIENT_COMMAND` | `CONSOLIDATE_OR_RETIRE_DUPLICATE` |
+| `announcement-notify` | 23 | `false` | `INTERNAL_EVENT_CONSUMER` | `REMOVE_HARDCODED_AUTHORIZATION` |
+| `employee-delete` | 15 | `false` | `CLIENT_COMMAND` | `BLOCK_FIXED_IDENTITY_AUTHORIZATION` |
+| `payments-webhook` | 19 | `false` | `SIGNED_EXTERNAL_WEBHOOK` | `HARDEN_SIGNED_WEBHOOK` |
+| `staff-invitations-resend` | 15 | `false` | `CLIENT_COMMAND` | `REMOVE_HARDCODED_AUTHORIZATION` |
+| `staff-invitations-cancel` | 14 | `false` | `CLIENT_COMMAND` | `REMOVE_HARDCODED_AUTHORIZATION` |
+| `shift-runtime-processor` | 21 | `false` | `DURABLE_ASYNC_WORKER` | `REBUILD_DURABLE_WORKER` |
+| `payments-return` | 3 | `false` | `PUBLIC_RETURN_ADAPTER` | `KEEP_NO_MUTATION_REVALIDATE` |
+| `delivery-portal` | 1 | `false` | `CAPABILITY_PORTAL` | `HARDEN_CAPABILITY_PORTAL` |
+
+**Control cuantitativo del corte:** 24 activas, 24 identidades únicas, 12 con `verify_jwt=true` y 12 con `verify_jwt=false`.
+
+#### Clases de workload e ingreso
+
+Cada Edge Function deberá declarar exactamente una clase de workload compatible con su responsabilidad. Si mezcla portal, comando, worker, webhook, adaptador o reporte con políticas de autorización, retry o consistencia incompatibles, la salida correcta es dividir el contrato, no ocultar la mezcla.
+
+Las nueve clases de workload heredadas son:
+
+- `AUTH_SYNC`
+- `PAYMENT_SYNC`
+- `PAYMENT_WEBHOOK`
+- `WALLET_PROVIDER_SYNC`
+- `REFUND_ASYNC`
+- `LOYALTY_COMMAND`
+- `LOYALTY_REDEMPTION`
+- `MESSAGING_SYNC`
+- `OPS_BACKGROUND`
+
+Las siete clases técnicas de ingreso heredadas son:
+
+- `HTTP_DIRECT`
+- `RPC_ADAPTER`
+- `DB_WEBHOOK`
+- `SIGNED_PROVIDER_WEBHOOK`
+- `CRON`
+- `QUEUE_WORKER`
+- `EVENT_CONSUMER`
+
+La instancia deberá además distinguir el caller real entre cliente autenticado, webhook firmado, servicio interno, dispatch programado, worker con claim, capacidad pública o retorno público. Clase de ingreso y caller no son conceptos intercambiables.
+
+#### Autenticación y autorización de Edge
+
+1. `verify_jwt` debe declararse explícitamente para cada función materializada y no depender de un default implícito.
+2. Un `verify_jwt=true` no demuestra autorización empresarial; el handler debe resolver actor, capacidad, recurso y territorio vigentes.
+3. Un `verify_jwt=false` solo es admisible cuando la clase de ingreso requiere otro mecanismo aprobado y probado de autenticidad.
+4. Ausencia, vacío, error de lectura o configuración incompleta de un secreto propio debe fallar cerrado.
+5. `raw_user_meta_data`, `user_metadata`, roles, `site_id`, owner o scope aportados libremente por el cliente no pueden decidir autorización.
+6. Acciones administrativas o destructivas no pueden depender de UID humano fijo ni de listas hardcoded de roles.
+7. La prueba debe atravesar gateway, autenticación, autorización, handler y efecto, incluyendo denegaciones previas al código cuando apliquen.
+8. Secretos y principales técnicos se referencian por identidad y custodia; su valor nunca forma parte del manifiesto documental ni de la evidencia compartida.
+
+#### Webhooks y entradas externas
+
+Todo webhook externo deberá:
+
+- validar el cuerpo original antes de cualquier transformación destructiva;
+- verificar firma, timestamp, tolerancia temporal y prevención de replay cuando el proveedor lo soporte;
+- identificar de forma estable el evento del proveedor;
+- registrar receipt o inbox durable antes de ejecutar un efecto que deba sobrevivir a reintentos;
+- deduplicar de manera determinista;
+- separar autenticidad del proveedor de autorización del comando empresarial;
+- minimizar el payload enviado al dominio propietario;
+- clasificar errores reintentables y terminales;
+- registrar resultado consultable y conciliable;
+- definir rotación de credenciales y rollback;
+- no afirmar éxito empresarial porque el endpoint haya respondido `2xx`.
+
+Un webhook o trigger de base de datos representa una señal posterior al commit. No prolonga la atomicidad de la transacción original hacia HTTP, un proveedor o una Edge Function. Cuando el efecto sea crítico o requiera recuperación, deberá mediar un outbox, inbox o job durable aprobado.
+
+#### Cron y scheduler
+
+Cada cron job incluido en una instancia deberá tener manifiesto con owner, intención local, schedule, timezone, target, principal técnico, fuente de credencial, idempotencia, política de overlap, lock o lease, timeout, retry, backoff, jitter, resultado durable, observabilidad, SLO, compatibilidad, retiro y rollback.
+
+El schedule remoto observado se preserva como baseline de comparación. Cambiarlo requiere una decisión explícita; no puede alterarse para “corregir” una diferencia documental.
+
+##### Universo cron observado y disposición heredada
+
+El corte remoto verificado el 2026-08-24 contiene siete jobs activos y coincide nominalmente y en schedule con el universo individualizado por `SUPA-ARC-020`.
+
+| Cron job | Schedule remoto observado | Disposición primaria heredada |
+| --- | --- | --- |
+| `document-alerts-daily` | `0 14 * * *` | `HARDEN_SECRETLESS_EDGE_DISPATCH` |
+| `auto-close-attendance` | `59 4 * * *` | `CONSOLIDATE_SINGLE_SCHEDULE` |
+| `anima_shift_runtime_processor_every_5m` | `*/5 * * * *` | `REBUILD_DURABLE_DISPATCH` |
+| `pass_delivery_quotes_cleanup_hourly` | `17 * * * *` | `KEEP_DB_LOCAL_CONTRACTED` |
+| `anima_attendance_day_end_close_0005` | `5 0 * * *` | `RETIRE_INCORRECT_OR_DUPLICATE` |
+| `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *` | `KEEP_DB_LOCAL_CONTRACTED` |
+| `pass_payment_checkout_expiry_reconciliation` | `*/5 * * * *` | `KEEP_DB_LOCAL_CONTRACTED` |
+
+Los jobs de cierre de asistencia no se declaran equivalentes ni retirables solo por compartir dominio. Su transición debe demostrar intención, ventana, precondiciones, filas afectadas, consumidores y paridad antes de retirar uno.
+
+#### Rutas productor–transporte–consumidor heredadas
+
+Las siete rutas individualizadas por `SUPA-ARC-020` conservan su disposición; ninguna ruta adicional queda autorizada por omisión.
+
+| Productor | Transporte | Consumidor | Disposición heredada |
+| --- | --- | --- | --- |
+| `document-alerts-daily` | `pg_net` | `document-alerts` | `MIGRATE_TO_DURABLE_SECRETLESS_DISPATCH` |
+| `anima_shift_runtime_processor_every_5m` | función SQL + `pg_net` | `shift-runtime-processor` | `MIGRATE_TO_DURABLE_LEASED_WORK` |
+| trigger de `support_messages` | `pg_net` | `support-message-notify` | `REPLACE_WITH_MINIMAL_OUTBOX_EVENT` |
+| cliente ANIMA | `functions.invoke` | `shift-publish-notify` | `REMOVE_CLIENT_SIDE_RELIABILITY_PATH` |
+| GitHub Actions diario | HTTPS | `process-account-deletions` | `KEEP_ONLY_AS_EXTERNAL_SCHEDULER_WITH_ATOMIC_CLAIM` |
+| Wompi | webhook HTTPS | `payments-webhook` | `KEEP_SIGNED_WEBHOOK_WITH_DURABLE_INBOX` |
+| repartidor externo | capability URL | `delivery-portal` | `HARDEN_CAPABILITY_EXCHANGE_AND_RATE_LIMIT` |
+
+Cada paquete que toque una de estas rutas deberá volver a comprobar productor real, headers, autenticación, payload, correlación, retry, outcome, consumidores y fallback antes de ejecutarla.
+
+#### Jobs durables y automatizaciones
+
+La arquitectura define un modelo durable para trabajo asíncrono; su existencia conceptual no permite afirmar que una tabla física específica ya esté creada. La instancia deberá reutilizar un mecanismo durable aprobado o materializar el que corresponda al paquete solo cuando el flujo lo exija.
+
+Los estados de trabajo durable permanecen:
+
+- `QUEUED`
+- `LEASED`
+- `RUNNING`
+- `WAITING_RETRY`
+- `SUCCEEDED`
+- `FAILED_RETRYABLE`
+- `FAILED_TERMINAL`
+- `QUARANTINED`
+- `CANCELLED`
+
+Un worker con efecto durable deberá soportar claim atómico, lease, heartbeat cuando aplique, contador de intentos, recuperación de lease vencido, deduplicación, estado final y conciliación. Un request HTTP en vuelo o un mensaje de log no sustituyen ese estado.
+
+#### Idempotencia, concurrencia, retry y outcome
+
+1. La idempotency key debe estar acotada por ambiente, owner, operación y versión cuando corresponda.
+2. La misma idempotency key con hash de request diferente debe rechazarse o entrar en cuarentena; no puede reutilizar silenciosamente el resultado anterior.
+3. Reintentos concurrentes no pueden crear efectos nuevos cuando representan la misma intención.
+4. Los efectos sobre terceros con resultado desconocido no se reintentan a ciegas; primero se concilian mediante identificador, receipt o consulta del proveedor.
+5. Validación, autenticación, autorización y rechazo empresarial no son errores transitorios.
+6. `429`, indisponibilidad temporal, conflictos recuperables y fallos de transporte pueden ser reintentables solo bajo una política explícita.
+7. El backoff debe incluir jitter cuando exista riesgo de sincronización de reintentos.
+8. `accepted`, `queued`, `processing`, `sent`, `provider_received` y `business_succeeded` son resultados distintos.
+9. El resultado empresarial solo puede confirmarlo el owner semántico o una conciliación aprobada.
+10. Rollback de código o configuración no borra jobs, attempts, receipts, outcomes ni efectos de proveedor ya materializados.
+
+#### Secretos, principales técnicos y aislamiento por ambiente
+
+Cada ambiente deberá aislar project ref, URLs, callbacks, schedules, queues, secretos, proveedores, capability tokens, provider event IDs e idempotency scopes. No se reutilizan secretos o claves lógicas entre ambientes, owners o versiones incompatibles.
+
+El manifiesto solo registra identificador, propósito, owner técnico, consumidores, ambiente, política de rotación, evidencia de revocación y mecanismo de lectura. Nunca registra el valor del secreto.
+
+Credenciales embebidas en SQL persistido, `cron.job.command`, configuración legible por clientes, código fuente o logs se consideran una condición de seguridad que debe corregirse mediante el paquete propietario antes de materializar la ruta afectada.
+
+#### Procedencia, configuración y paridad
+
+La fuente canónica de cualquier modificación VENTO de Supabase permanece en `vento-shell`.
+
+Para Edge Functions, la instancia deberá demostrar correspondencia entre:
+
+- directorio versionado de la función;
+- `supabase/config.toml` o el manifiesto de ambiente aprobado;
+- commit y blobs del repositorio;
+- dependencias, runtime e import map;
+- bundle SHA esperado y remoto;
+- slug, versión, estado y `verify_jwt` remotos;
+- productores y consumidores reales.
+
+Una función remota sin fuente canónica, una función de repositorio sin disposición, un bloque de configuración sin función remota o un valor remoto que difiera del contrato se clasifica como drift y bloquea el release afectado hasta su adopción, retiro o reconciliación explícita.
+
+#### Corte remoto de referencia del 2026-08-24
+
+La auditoría read-only ejecutada para esta tarea establece el siguiente baseline de contraste; no constituye implementación ni aprobación física:
+
+1. existen 24 Edge Functions activas;
+2. las 24 identidades remotas coinciden nominalmente con las 24 funciones individualizadas por la disposición de `SUPA-ARC-020`;
+3. la distribución remota es 12 con `verify_jwt=true` y 12 con `verify_jwt=false`;
+4. existen siete cron jobs activos y sus nombres y schedules coinciden con la matriz de `SUPA-ARC-020`;
+5. `supabase/config.toml` existe actualmente en `vento-shell`, por lo que la observación histórica de arquitectura que registraba su ausencia ya no describe el repositorio vigente;
+6. el archivo de configuración contiene once bloques explícitos con `verify_jwt=false`; diez corresponden a funciones activas del corte, uno corresponde a una función no activa en el remoto observado y catorce funciones activas no tienen bloque explícito propio en el archivo, incluidas dos funciones remotas con `verify_jwt=false`;
+7. por tanto, el conteo remoto 12/12 no demuestra por sí solo paridad declarativa completa entre fuente y remoto;
+8. metadatos de despliegue remotos observados incluyen rutas temporales de bundle y rutas absolutas históricas de estaciones de trabajo; esas rutas no son procedencia canónica y deben reconciliarse contra repo, commit y bundle antes de materializar la función afectada;
+9. `document-alerts-daily` contiene material de credencial literal en el comando persistido observado; el valor se excluye deliberadamente de esta documentación y la condición permanece bloqueante para cualquier materialización física de esa ruta hasta rotación, indirection segura y prueba de paridad;
+10. están instaladas `pg_cron` y `pg_net` en el remoto observado;
+11. no se observó una tabla VENTO denominada `automation_jobs`; el modelo durable de arquitectura no se declara físicamente existente por inferencia;
+12. estos hallazgos no modifican disposiciones arquitectónicas: determinan qué reconciliaciones deberá probar el `package_id` que toque cada superficie.
+
+#### Clasificación y tratamiento de drift
+
+La instancia deberá usar la taxonomía canónica vigente para todo hallazgo:
+
+- cambio fuera de banda confirmado;
+- objeto sin procedencia;
+- diferencia declarativa;
+- componente gestionado por plataforma;
+- deuda legacy;
+- falso positivo.
+
+Cada hallazgo debe incluir evidencia, nivel de certeza, superficie afectada, impacto, owner de resolución y condición exacta de salida. Una diferencia crítica de autenticación, secreto, autorización, procedencia, idempotencia, outcome o consumidor es bloqueante para la materialización afectada.
+
+No se corrige un drift cambiando documentación para que coincida con el remoto. Primero se determina si el remoto debe adoptarse, modificarse, retirarse o conservarse mediante la decisión canónica aplicable.
+
+#### Secuencia de materialización futura por paquete
+
+Cuando una instancia física sea autorizada después de E5, deberá ejecutar conceptualmente la siguiente secuencia, adaptada al alcance real del paquete:
+
+1. congelar identidad de paquete, ambiente, commit y corte remoto;
+2. resolver todas las superficies Edge, webhook, cron y automatización pertenecientes al paquete;
+3. aplicar la disposición heredada a cada identidad sin omisiones ni duplicados;
+4. reconciliar fuente, config, remoto, productores y consumidores;
+5. cerrar drift bloqueante de procedencia, autenticación, autorización y secretos;
+6. fijar schemas, versión, idempotencia, concurrencia, timeout, retry y resultado durable;
+7. materializar cambios versionados únicamente desde `vento-shell`;
+8. validar gateway, handler, persistencia, provider, outcome y recuperación end-to-end;
+9. ejecutar pruebas negativas, de duplicado, retry, replay, timeout, concurrencia y revocación según la superficie;
+10. demostrar observabilidad, SLO, alertas y runbook aplicables;
+11. comparar nuevamente repo/config/remoto y consumidores para descartar drift posterior;
+12. ejecutar compatibilidad, coexistencia, retiro o rollback según la disposición;
+13. conservar evidencia reproducible por ambiente y commit;
+14. cerrar la instancia solo con gates de package, CI y evidencia física aprobados.
+
+#### Evidencia mínima de una futura instancia
+
+El bundle de evidencia de `AUTH-DB-024::<package_id>` deberá incluir, según aplique:
+
+- `package_id`, ambiente, project ref y commit;
+- lista completa de superficies incluidas y prueba de ausencia de duplicados;
+- disposición heredada por identidad;
+- repo path relativo y hashes de procedencia;
+- configuración declarativa y comparación con remoto;
+- slug/job/ruta, versión, `verify_jwt`, schedule o trigger observado;
+- productores, consumidores y owner semántico;
+- pruebas de autenticación y autorización permitida/denegada;
+- schemas de request, response, webhook, event o job;
+- evidencia de idempotencia, deduplicación y concurrencia;
+- pruebas de timeout, retry, jitter, lease, replay y recuperación cuando apliquen;
+- receipts y outcomes durables sin secretos;
+- métricas, trazas, logs redactados, correlation IDs y alertas;
+- evidencia de integración con proveedor y conciliación cuando aplique;
+- pruebas de compatibilidad y consumidores coexistentes;
+- comparación final de drift;
+- rollback ejecutable o prueba controlada de reversión conforme al riesgo;
+- evidencia de que ningún secreto o ruta local personal quedó incorporado al artefacto versionado.
+
+#### Handoff hacia AUTH-DB-025
+
+AUTH-DB-025 podrá generar tipos y alinear clientes únicamente sobre contratos ya versionados y reconciliados por esta tarea. El handoff incluye:
+
+- identidades Edge, webhook, cron y job con contrato registrado;
+- schemas y versiones permitidos;
+- clases de ingreso y workload;
+- outcomes, receipts, jobs, attempts, leases y retries como conceptos distintos;
+- límites de exposición por consumidor;
+- referencias de configuración y secrets sin valores;
+- estados de compatibilidad y retiro.
+
+AUTH-DB-025 no podrá convertir una función existente en API estable por inferencia ni tipar como aprobado un contrato que permanezca bloqueado o sin procedencia.
+
+#### Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+- Requisitos creados: 0.
+- Requisitos modificados: 0.
+- La tarea reutiliza cobertura contractual ya registrada para inventario, procedencia, autenticación, autorización, secretos, cron, jobs, idempotencia, retries, observabilidad, drift, compatibilidad y tipos.
+- El registro 04A no requiere actualización por esta tarea.
+
+#### Cobertura de prueba vigente reutilizada
+
+La siguiente referencia es trazabilidad de cobertura existente y no constituye creación ni modificación del registro:
+
+- `TREQ-SUPABASE-010` cubre versionado y paridad de Edge Functions, webhooks, cron, triggers y automatizaciones.
+- `TREQ-SUPABASE-188` a `TREQ-SUPABASE-211` cubren inventario Edge, contratos de invocación, autorización, secretos, cron, proveedores, push, procedencia, observabilidad e integridad del baseline.
+- `TREQ-SUPABASE-256` a `TREQ-SUPABASE-262` cubren recursos fuera de `db diff`, configuración, fuente-remoto, bundle, drift y declaración explícita de `verify_jwt`.
+- `TREQ-SUPABASE-430` cubre owner, productor, consumidor, autenticación, efecto e idempotencia para Edge, cron, webhooks y automatizaciones.
+- `TREQ-SUPABASE-1319` a `TREQ-SUPABASE-1378` cubren los seis planos, workloads, manifiestos, caller classes, autorización, jobs, retries, cron, rutas, ambientes, disposiciones y observabilidad definidos por `SUPA-ARC-020`.
+- `TREQ-SUPABASE-1557` a `TREQ-SUPABASE-1559` cubren tipado de ejecución asíncrona, validación runtime y separación de job, attempt, lease, retry, receipt, outcome y deployment manifest.
+- `TREQ-SUPABASE-1713` a `TREQ-SUPABASE-1715` cubren correspondencia objetivo de Edge Functions, cron e integraciones externas.
+
+#### Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | PASS | Artefacto documental construido con metadata, secciones sustantivas, matrices de identidad, evidencia, límites y continuidad requeridos; validación estructural del entregable ejecutada antes de su entrega. |
+| LOCAL | NOT_EXECUTED | No se ejecutaron validadores npm sobre el checkout local del usuario desde esta tarea documental. |
+| REMOTA | PASS | Estado canónico de GitHub, arquitectura, topología, políticas, configuración y registro 04A revisados; inventario read-only de Edge Functions y consultas read-only de cron/extensiones ejecutados sobre `vento-os-dev` sin mutaciones. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron webhooks, cron jobs, workers, proveedores, consumers ni flujos de negocio. |
+| FÍSICA | NOT_APPLICABLE | La tarea no autoriza despliegues, cambios de Supabase, rotación de secretos, creación de jobs ni modificación de automatizaciones. |
+
+#### Criterios de aceptación
+
+- [ ] La tarea queda definida como `TEMPLATE_PER_PACKAGE` y no como ejecución global inmediata.
+- [ ] La unidad futura `AUTH-DB-024::<package_id>` queda sujeta al gate `POST_E5_PACKAGE` y a los gates de package/CI aplicables.
+- [ ] Los seis planos de automatización permanecen separados.
+- [ ] Toda superficie futura tiene contrato mínimo de identidad, owner, caller, productor, consumidor, autenticación, autorización, schemas, idempotencia, retry, outcome, observabilidad, procedencia, compatibilidad y rollback.
+- [ ] El universo observado de 24 Edge Functions queda cubierto una vez, con 12 `verify_jwt=true` y 12 `verify_jwt=false`, sin declarar conformidad por esa distribución.
+- [ ] Las disposiciones individuales de las 24 funciones se conservan sin inferir decisiones nuevas.
+- [ ] Los siete cron jobs y sus schedules observados quedan cubiertos una vez y conservan disposición heredada.
+- [ ] Las siete rutas productor–consumidor heredadas quedan gobernadas y ninguna ruta adicional se autoriza por omisión.
+- [ ] `verify_jwt` se trata como configuración de gateway y no como sustituto de autorización empresarial.
+- [ ] Webhooks y triggers separan receipt, autenticidad, dominio, idempotencia y resultado.
+- [ ] Trabajo asíncrono crítico dispone de estado durable, claim/lease, retry y recuperación cuando el flujo lo requiere.
+- [ ] ACK de transporte o proveedor no se confunde con éxito empresarial.
+- [ ] Procedencia remota temporal o absoluta no se acepta como evidencia canónica sin reconciliación con repo/commit/bundle.
+- [ ] La diferencia entre `supabase/config.toml` y el remoto queda registrada y debe reconciliarse por los paquetes afectados.
+- [ ] El material de credencial literal observado en el cron de alertas permanece redactado y bloquea la materialización afectada hasta su resolución segura.
+- [ ] No se afirma la existencia física de `automation_jobs` ni de otro mecanismo no observado.
+- [ ] No se crea ni modifica ningún requisito 04A.
+- [ ] No se realiza ningún cambio físico de Supabase ni de aplicaciones en esta tarea.
+
+#### Límites
+
+1. Esta tarea no despliega ni actualiza Edge Functions.
+2. Esta tarea no activa, desactiva, crea, modifica ni elimina cron jobs.
+3. Esta tarea no cambia triggers, `pg_net`, webhooks, GitHub Actions ni productores de aplicaciones.
+4. Esta tarea no crea una tabla de jobs ni selecciona una implementación física única de cola o scheduler.
+5. Esta tarea no rota secretos ni publica valores de credenciales.
+6. Esta tarea no modifica `verify_jwt` remoto ni `supabase/config.toml`.
+7. Esta tarea no corrige la autorización interna de funciones concretas; conserva los gates arquitectónicos para la instancia propietaria.
+8. Esta tarea no declara éxito empresarial a partir de status HTTP, ACK, receipt o ejecución de scheduler.
+9. Esta tarea no cambia las disposiciones aprobadas de `SUPA-ARC-020`.
+10. Esta tarea no elimina funciones o jobs considerados duplicados antes de demostrar paridad, ausencia de consumidores y rollback.
+11. Esta tarea no modifica 04A porque la cobertura requerida ya existe.
+12. Esta tarea no autoriza trabajo físico antes de E5 ni sustituye `E5-GATE-008::<package_id>`, `SHELL-CI-020::<package_id>` o la autorización física explícita.
+13. Esta tarea no desarrolla AUTH-DB-025.
+
+#### Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-023 — Implementar canales y contratos Realtime aprobados`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-024 — Versionar Edge Functions, webhooks, cron y automatizaciones`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-025 — Implementar índices, retención y controles de crecimiento`
+
+
 ### [ ] AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
 ### [ ] AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
 
