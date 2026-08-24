@@ -13420,41 +13420,41 @@ No se autoriza fusionar estos planos de modo que un scheduler, un transporte HTT
 
 Toda superficie Edge, webhook, cron o automatización incluida en una instancia deberá registrar, como mínimo:
 
-| Campo contractual | Regla |
-| --- | --- |
-| `package_id` | paquete E5 propietario de la materialización |
-| identidad actual | slug, job, trigger, productor, consumidor o ruta observable sin renombrar el objeto existente |
-| identidad objetivo | contrato aprobado al que deberá converger la superficie |
-| owner semántico | aplicación o dominio que controla el resultado empresarial |
-| custodio técnico | runtime, repositorio o componente que ejecuta sin adquirir ownership empresarial |
-| clase de workload | exactamente una clase compatible con el efecto; si mezcla responsabilidades incompatibles debe dividirse |
-| clase de ingreso | mecanismo técnico por el que entra el trabajo |
-| clase de caller | actor humano, servicio, scheduler, proveedor o capacidad pública que origina la invocación |
-| productor | componente autorizado que emite la solicitud, evento, webhook o dispatch |
-| consumidor | función, worker, RPC, dominio o adaptador que procesa la entrada |
-| audiencia | consumidoras y alcances permitidos |
-| método y endpoint | contrato técnico de invocación cuando aplique |
-| autenticación | mecanismo verificable de identidad del caller |
-| autorización | capacidad, actor efectivo, recurso, territorio y precondiciones server-side |
-| `verify_jwt` | valor explícito y justificado; debe coincidir con caller, gateway y headers reales |
-| request schema | esquema versionado, validado antes de cualquier efecto |
-| response schema | respuesta o receipt versionado, sin confundir aceptación con éxito empresarial |
-| datos sensibles | clasificación, minimización, redacción y política de logs |
-| DB/RPC/Storage/Realtime | lecturas, mutaciones, eventos, archivos y canales utilizados |
-| efecto externo | proveedor, timeout, rate limit, circuit breaker o degradación aplicable |
-| idempotencia | scope, clave, hash de request, deduplicación y tratamiento de colisiones |
-| concurrencia | locking, compare-and-set, lease o exclusión aplicable |
-| timeout | presupuesto por operación y relación con el transporte |
-| retry | errores reintentables, backoff, jitter, máximo de intentos y condición de abandono |
-| resultado durable | estado consultable, receipt, outcome o reconciliación necesaria |
-| observabilidad | correlation ID, request ID, run, attempt, métricas, logs, trazas y alertas |
-| SLO | objetivo y presupuesto definidos por la política vigente; no se inventan valores |
-| procedencia | repositorio, ruta relativa, commit, dependencias, runtime, import map y bundle SHA cuando aplique |
-| ambiente | project ref, URLs, callback, schedule, secretos, proveedores e idempotency scope aislados |
-| compatibilidad | consumidores coexistentes, versión, ventana y criterio de retiro |
-| rollback | mecanismo para revertir código/configuración sin borrar trabajo durable, receipts ni efectos ya confirmados |
-| disposición | decisión aprobada heredada de arquitectura/transición; no se infiere desde el estado remoto |
-| evidencia | pruebas, paridad, métricas, hashes y resultado de gates necesarios para cerrar la instancia |
+| Campo contractual       | Regla                                                                                                       |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `package_id`            | paquete E5 propietario de la materialización                                                                |
+| identidad actual        | slug, job, trigger, productor, consumidor o ruta observable sin renombrar el objeto existente               |
+| identidad objetivo      | contrato aprobado al que deberá converger la superficie                                                     |
+| owner semántico         | aplicación o dominio que controla el resultado empresarial                                                  |
+| custodio técnico        | runtime, repositorio o componente que ejecuta sin adquirir ownership empresarial                            |
+| clase de workload       | exactamente una clase compatible con el efecto; si mezcla responsabilidades incompatibles debe dividirse    |
+| clase de ingreso        | mecanismo técnico por el que entra el trabajo                                                               |
+| clase de caller         | actor humano, servicio, scheduler, proveedor o capacidad pública que origina la invocación                  |
+| productor               | componente autorizado que emite la solicitud, evento, webhook o dispatch                                    |
+| consumidor              | función, worker, RPC, dominio o adaptador que procesa la entrada                                            |
+| audiencia               | consumidoras y alcances permitidos                                                                          |
+| método y endpoint       | contrato técnico de invocación cuando aplique                                                               |
+| autenticación           | mecanismo verificable de identidad del caller                                                               |
+| autorización            | capacidad, actor efectivo, recurso, territorio y precondiciones server-side                                 |
+| `verify_jwt`            | valor explícito y justificado; debe coincidir con caller, gateway y headers reales                          |
+| request schema          | esquema versionado, validado antes de cualquier efecto                                                      |
+| response schema         | respuesta o receipt versionado, sin confundir aceptación con éxito empresarial                              |
+| datos sensibles         | clasificación, minimización, redacción y política de logs                                                   |
+| DB/RPC/Storage/Realtime | lecturas, mutaciones, eventos, archivos y canales utilizados                                                |
+| efecto externo          | proveedor, timeout, rate limit, circuit breaker o degradación aplicable                                     |
+| idempotencia            | scope, clave, hash de request, deduplicación y tratamiento de colisiones                                    |
+| concurrencia            | locking, compare-and-set, lease o exclusión aplicable                                                       |
+| timeout                 | presupuesto por operación y relación con el transporte                                                      |
+| retry                   | errores reintentables, backoff, jitter, máximo de intentos y condición de abandono                          |
+| resultado durable       | estado consultable, receipt, outcome o reconciliación necesaria                                             |
+| observabilidad          | correlation ID, request ID, run, attempt, métricas, logs, trazas y alertas                                  |
+| SLO                     | objetivo y presupuesto definidos por la política vigente; no se inventan valores                            |
+| procedencia             | repositorio, ruta relativa, commit, dependencias, runtime, import map y bundle SHA cuando aplique           |
+| ambiente                | project ref, URLs, callback, schedule, secretos, proveedores e idempotency scope aislados                   |
+| compatibilidad          | consumidores coexistentes, versión, ventana y criterio de retiro                                            |
+| rollback                | mecanismo para revertir código/configuración sin borrar trabajo durable, receipts ni efectos ya confirmados |
+| disposición             | decisión aprobada heredada de arquitectura/transición; no se infiere desde el estado remoto                 |
+| evidencia               | pruebas, paridad, métricas, hashes y resultado de gates necesarios para cerrar la instancia                 |
 
 #### Registro individual de Edge Functions
 
@@ -13474,32 +13474,32 @@ La disposición primaria heredada debe conservarse hasta que una decisión canó
 
 El corte remoto verificado el 2026-08-24 contiene 24 Edge Functions activas. Los 24 slugs coinciden nominalmente con el universo individualizado por `SUPA-ARC-020`; esto prueba cobertura de identidad, no conformidad de implementación.
 
-| Edge Function | Versión remota observada | `verify_jwt` remoto | Clase objetivo heredada | Disposición primaria heredada |
-| --- | ---: | --- | --- | --- |
-| `wallet-pass` | 33 | `true` | `PROVIDER_ADAPTER` | `KEEP_RECONTRACT` |
-| `attendance-report` | 50 | `true` | `CLIENT_QUERY_OR_REPORT` | `KEEP_RECONTRACT` |
-| `staff-invitations-create` | 46 | `true` | `CLIENT_COMMAND` | `KEEP_RECONTRACT` |
-| `request-account-deletion` | 28 | `true` | `CLIENT_COMMAND` | `KEEP_RECONTRACT` |
-| `account-deletion` | 29 | `true` | `CLIENT_COMMAND` | `SPLIT_REQUEST_AND_WORKER` |
-| `payments-create-intent` | 21 | `true` | `PROVIDER_ADAPTER` | `KEEP_RECONTRACT` |
-| `shift-publish-notify` | 14 | `true` | `INTERNAL_EVENT_CONSUMER` | `REMOVE_CLIENT_TRIGGER_AND_ROUTE_DURABLY` |
-| `pass-delivery-quote` | 15 | `true` | `PROVIDER_ADAPTER` | `KEEP_RECONTRACT` |
-| `pass-address-search` | 11 | `true` | `PROVIDER_ADAPTER` | `KEEP_RECONTRACT` |
-| `support-message-notify` | 3 | `true` | `INTERNAL_EVENT_CONSUMER` | `FIX_GATEWAY_AND_MINIMIZE` |
-| `pass-register-push-token` | 3 | `true` | `CLIENT_COMMAND` | `KEEP_RECONTRACT` |
-| `order-message-notify` | 3 | `true` | `INTERNAL_EVENT_CONSUMER` | `CONVERT_EVENT_DRIVEN` |
-| `staff-invitations-accept` | 36 | `false` | `CLIENT_COMMAND` | `BLOCK_AND_REWRITE_SECURITY` |
-| `document-alerts` | 33 | `false` | `DURABLE_ASYNC_WORKER` | `REBUILD_DURABLE_WORKER` |
-| `process-account-deletions` | 29 | `false` | `DURABLE_ASYNC_WORKER` | `REBUILD_LEASED_WORKER` |
-| `register-push-token` | 24 | `false` | `CLIENT_COMMAND` | `CONSOLIDATE_OR_RETIRE_DUPLICATE` |
-| `announcement-notify` | 23 | `false` | `INTERNAL_EVENT_CONSUMER` | `REMOVE_HARDCODED_AUTHORIZATION` |
-| `employee-delete` | 15 | `false` | `CLIENT_COMMAND` | `BLOCK_FIXED_IDENTITY_AUTHORIZATION` |
-| `payments-webhook` | 19 | `false` | `SIGNED_EXTERNAL_WEBHOOK` | `HARDEN_SIGNED_WEBHOOK` |
-| `staff-invitations-resend` | 15 | `false` | `CLIENT_COMMAND` | `REMOVE_HARDCODED_AUTHORIZATION` |
-| `staff-invitations-cancel` | 14 | `false` | `CLIENT_COMMAND` | `REMOVE_HARDCODED_AUTHORIZATION` |
-| `shift-runtime-processor` | 21 | `false` | `DURABLE_ASYNC_WORKER` | `REBUILD_DURABLE_WORKER` |
-| `payments-return` | 3 | `false` | `PUBLIC_RETURN_ADAPTER` | `KEEP_NO_MUTATION_REVALIDATE` |
-| `delivery-portal` | 1 | `false` | `CAPABILITY_PORTAL` | `HARDEN_CAPABILITY_PORTAL` |
+| Edge Function               | Versión remota observada | `verify_jwt` remoto | Clase objetivo heredada   | Disposición primaria heredada             |
+| --------------------------- | -----------------------: | ------------------- | ------------------------- | ----------------------------------------- |
+| `wallet-pass`               |                       33 | `true`              | `PROVIDER_ADAPTER`        | `KEEP_RECONTRACT`                         |
+| `attendance-report`         |                       50 | `true`              | `CLIENT_QUERY_OR_REPORT`  | `KEEP_RECONTRACT`                         |
+| `staff-invitations-create`  |                       46 | `true`              | `CLIENT_COMMAND`          | `KEEP_RECONTRACT`                         |
+| `request-account-deletion`  |                       28 | `true`              | `CLIENT_COMMAND`          | `KEEP_RECONTRACT`                         |
+| `account-deletion`          |                       29 | `true`              | `CLIENT_COMMAND`          | `SPLIT_REQUEST_AND_WORKER`                |
+| `payments-create-intent`    |                       21 | `true`              | `PROVIDER_ADAPTER`        | `KEEP_RECONTRACT`                         |
+| `shift-publish-notify`      |                       14 | `true`              | `INTERNAL_EVENT_CONSUMER` | `REMOVE_CLIENT_TRIGGER_AND_ROUTE_DURABLY` |
+| `pass-delivery-quote`       |                       15 | `true`              | `PROVIDER_ADAPTER`        | `KEEP_RECONTRACT`                         |
+| `pass-address-search`       |                       11 | `true`              | `PROVIDER_ADAPTER`        | `KEEP_RECONTRACT`                         |
+| `support-message-notify`    |                        3 | `true`              | `INTERNAL_EVENT_CONSUMER` | `FIX_GATEWAY_AND_MINIMIZE`                |
+| `pass-register-push-token`  |                        3 | `true`              | `CLIENT_COMMAND`          | `KEEP_RECONTRACT`                         |
+| `order-message-notify`      |                        3 | `true`              | `INTERNAL_EVENT_CONSUMER` | `CONVERT_EVENT_DRIVEN`                    |
+| `staff-invitations-accept`  |                       36 | `false`             | `CLIENT_COMMAND`          | `BLOCK_AND_REWRITE_SECURITY`              |
+| `document-alerts`           |                       33 | `false`             | `DURABLE_ASYNC_WORKER`    | `REBUILD_DURABLE_WORKER`                  |
+| `process-account-deletions` |                       29 | `false`             | `DURABLE_ASYNC_WORKER`    | `REBUILD_LEASED_WORKER`                   |
+| `register-push-token`       |                       24 | `false`             | `CLIENT_COMMAND`          | `CONSOLIDATE_OR_RETIRE_DUPLICATE`         |
+| `announcement-notify`       |                       23 | `false`             | `INTERNAL_EVENT_CONSUMER` | `REMOVE_HARDCODED_AUTHORIZATION`          |
+| `employee-delete`           |                       15 | `false`             | `CLIENT_COMMAND`          | `BLOCK_FIXED_IDENTITY_AUTHORIZATION`      |
+| `payments-webhook`          |                       19 | `false`             | `SIGNED_EXTERNAL_WEBHOOK` | `HARDEN_SIGNED_WEBHOOK`                   |
+| `staff-invitations-resend`  |                       15 | `false`             | `CLIENT_COMMAND`          | `REMOVE_HARDCODED_AUTHORIZATION`          |
+| `staff-invitations-cancel`  |                       14 | `false`             | `CLIENT_COMMAND`          | `REMOVE_HARDCODED_AUTHORIZATION`          |
+| `shift-runtime-processor`   |                       21 | `false`             | `DURABLE_ASYNC_WORKER`    | `REBUILD_DURABLE_WORKER`                  |
+| `payments-return`           |                        3 | `false`             | `PUBLIC_RETURN_ADAPTER`   | `KEEP_NO_MUTATION_REVALIDATE`             |
+| `delivery-portal`           |                        1 | `false`             | `CAPABILITY_PORTAL`       | `HARDEN_CAPABILITY_PORTAL`                |
 
 **Control cuantitativo del corte:** 24 activas, 24 identidades únicas, 12 con `verify_jwt=true` y 12 con `verify_jwt=false`.
 
@@ -13570,15 +13570,15 @@ El schedule remoto observado se preserva como baseline de comparación. Cambiarl
 
 El corte remoto verificado el 2026-08-24 contiene siete jobs activos y coincide nominalmente y en schedule con el universo individualizado por `SUPA-ARC-020`.
 
-| Cron job | Schedule remoto observado | Disposición primaria heredada |
-| --- | --- | --- |
-| `document-alerts-daily` | `0 14 * * *` | `HARDEN_SECRETLESS_EDGE_DISPATCH` |
-| `auto-close-attendance` | `59 4 * * *` | `CONSOLIDATE_SINGLE_SCHEDULE` |
-| `anima_shift_runtime_processor_every_5m` | `*/5 * * * *` | `REBUILD_DURABLE_DISPATCH` |
-| `pass_delivery_quotes_cleanup_hourly` | `17 * * * *` | `KEEP_DB_LOCAL_CONTRACTED` |
-| `anima_attendance_day_end_close_0005` | `5 0 * * *` | `RETIRE_INCORRECT_OR_DUPLICATE` |
-| `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *` | `KEEP_DB_LOCAL_CONTRACTED` |
-| `pass_payment_checkout_expiry_reconciliation` | `*/5 * * * *` | `KEEP_DB_LOCAL_CONTRACTED` |
+| Cron job                                             | Schedule remoto observado | Disposición primaria heredada     |
+| ---------------------------------------------------- | ------------------------- | --------------------------------- |
+| `document-alerts-daily`                              | `0 14 * * *`              | `HARDEN_SECRETLESS_EDGE_DISPATCH` |
+| `auto-close-attendance`                              | `59 4 * * *`              | `CONSOLIDATE_SINGLE_SCHEDULE`     |
+| `anima_shift_runtime_processor_every_5m`             | `*/5 * * * *`             | `REBUILD_DURABLE_DISPATCH`        |
+| `pass_delivery_quotes_cleanup_hourly`                | `17 * * * *`              | `KEEP_DB_LOCAL_CONTRACTED`        |
+| `anima_attendance_day_end_close_0005`                | `5 0 * * *`               | `RETIRE_INCORRECT_OR_DUPLICATE`   |
+| `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *`              | `KEEP_DB_LOCAL_CONTRACTED`        |
+| `pass_payment_checkout_expiry_reconciliation`        | `*/5 * * * *`             | `KEEP_DB_LOCAL_CONTRACTED`        |
 
 Los jobs de cierre de asistencia no se declaran equivalentes ni retirables solo por compartir dominio. Su transición debe demostrar intención, ventana, precondiciones, filas afectadas, consumidores y paridad antes de retirar uno.
 
@@ -13586,15 +13586,15 @@ Los jobs de cierre de asistencia no se declaran equivalentes ni retirables solo 
 
 Las siete rutas individualizadas por `SUPA-ARC-020` conservan su disposición; ninguna ruta adicional queda autorizada por omisión.
 
-| Productor | Transporte | Consumidor | Disposición heredada |
-| --- | --- | --- | --- |
-| `document-alerts-daily` | `pg_net` | `document-alerts` | `MIGRATE_TO_DURABLE_SECRETLESS_DISPATCH` |
-| `anima_shift_runtime_processor_every_5m` | función SQL + `pg_net` | `shift-runtime-processor` | `MIGRATE_TO_DURABLE_LEASED_WORK` |
-| trigger de `support_messages` | `pg_net` | `support-message-notify` | `REPLACE_WITH_MINIMAL_OUTBOX_EVENT` |
-| cliente ANIMA | `functions.invoke` | `shift-publish-notify` | `REMOVE_CLIENT_SIDE_RELIABILITY_PATH` |
-| GitHub Actions diario | HTTPS | `process-account-deletions` | `KEEP_ONLY_AS_EXTERNAL_SCHEDULER_WITH_ATOMIC_CLAIM` |
-| Wompi | webhook HTTPS | `payments-webhook` | `KEEP_SIGNED_WEBHOOK_WITH_DURABLE_INBOX` |
-| repartidor externo | capability URL | `delivery-portal` | `HARDEN_CAPABILITY_EXCHANGE_AND_RATE_LIMIT` |
+| Productor                                | Transporte             | Consumidor                  | Disposición heredada                                |
+| ---------------------------------------- | ---------------------- | --------------------------- | --------------------------------------------------- |
+| `document-alerts-daily`                  | `pg_net`               | `document-alerts`           | `MIGRATE_TO_DURABLE_SECRETLESS_DISPATCH`            |
+| `anima_shift_runtime_processor_every_5m` | función SQL + `pg_net` | `shift-runtime-processor`   | `MIGRATE_TO_DURABLE_LEASED_WORK`                    |
+| trigger de `support_messages`            | `pg_net`               | `support-message-notify`    | `REPLACE_WITH_MINIMAL_OUTBOX_EVENT`                 |
+| cliente ANIMA                            | `functions.invoke`     | `shift-publish-notify`      | `REMOVE_CLIENT_SIDE_RELIABILITY_PATH`               |
+| GitHub Actions diario                    | HTTPS                  | `process-account-deletions` | `KEEP_ONLY_AS_EXTERNAL_SCHEDULER_WITH_ATOMIC_CLAIM` |
+| Wompi                                    | webhook HTTPS          | `payments-webhook`          | `KEEP_SIGNED_WEBHOOK_WITH_DURABLE_INBOX`            |
+| repartidor externo                       | capability URL         | `delivery-portal`           | `HARDEN_CAPABILITY_EXCHANGE_AND_RATE_LIMIT`         |
 
 Cada paquete que toque una de estas rutas deberá volver a comprobar productor real, headers, autenticación, payload, correlación, retry, outcome, consumidores y fallback antes de ejecutarla.
 
@@ -13775,13 +13775,13 @@ La siguiente referencia es trazabilidad de cobertura existente y no constituye c
 
 #### Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | PASS | Artefacto documental construido con metadata, secciones sustantivas, matrices de identidad, evidencia, límites y continuidad requeridos; validación estructural del entregable ejecutada antes de su entrega. |
-| LOCAL | NOT_EXECUTED | No se ejecutaron validadores npm sobre el checkout local del usuario desde esta tarea documental. |
-| REMOTA | PASS | Estado canónico de GitHub, arquitectura, topología, políticas, configuración y registro 04A revisados; inventario read-only de Edge Functions y consultas read-only de cron/extensiones ejecutados sobre `vento-os-dev` sin mutaciones. |
-| OPERATIVA | NOT_EXECUTED | No se ejecutaron webhooks, cron jobs, workers, proveedores, consumers ni flujos de negocio. |
-| FÍSICA | NOT_APPLICABLE | La tarea no autoriza despliegues, cambios de Supabase, rotación de secretos, creación de jobs ni modificación de automatizaciones. |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                               |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | PASS           | Artefacto documental construido con metadata, secciones sustantivas, matrices de identidad, evidencia, límites y continuidad requeridos; validación estructural del entregable ejecutada antes de su entrega.                           |
+| LOCAL     | NOT_EXECUTED   | No se ejecutaron validadores npm sobre el checkout local del usuario desde esta tarea documental.                                                                                                                                       |
+| REMOTA    | PASS           | Estado canónico de GitHub, arquitectura, topología, políticas, configuración y registro 04A revisados; inventario read-only de Edge Functions y consultas read-only de cron/extensiones ejecutados sobre `vento-os-dev` sin mutaciones. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron webhooks, cron jobs, workers, proveedores, consumers ni flujos de negocio.                                                                                                                                             |
+| FÍSICA    | NOT_APPLICABLE | La tarea no autoriza despliegues, cambios de Supabase, rotación de secretos, creación de jobs ni modificación de automatizaciones.                                                                                                      |
 
 #### Criterios de aceptación
 
@@ -14695,21 +14695,21 @@ No se salta directamente del hallazgo a DDL.
 
 Cada objeto afectado deberá poder resolverse mediante una fila equivalente a:
 
-| Campo | Contenido obligatorio |
-| --- | --- |
-| `object_ref` | identidad canónica |
-| `owner` | propietario contractual |
-| `workload_ref` | workload aplicable |
-| `baseline_ref` | corte comparable |
-| `index_decision_ref` | decisión de índices |
-| `maintenance_ref` | mantenimiento |
-| `retention_ref` | retención |
-| `growth_ref` | serie/capacidad |
-| `partition_archive_ref` | decisión estructural |
-| `security_ref` | controles preservados |
-| `test_ref` | evidencia |
-| `rollback_ref` | reversión/recuperación |
-| `residual_risk_ref` | riesgo pendiente |
+| Campo                   | Contenido obligatorio   |
+| ----------------------- | ----------------------- |
+| `object_ref`            | identidad canónica      |
+| `owner`                 | propietario contractual |
+| `workload_ref`          | workload aplicable      |
+| `baseline_ref`          | corte comparable        |
+| `index_decision_ref`    | decisión de índices     |
+| `maintenance_ref`       | mantenimiento           |
+| `retention_ref`         | retención               |
+| `growth_ref`            | serie/capacidad         |
+| `partition_archive_ref` | decisión estructural    |
+| `security_ref`          | controles preservados   |
+| `test_ref`              | evidencia               |
+| `rollback_ref`          | reversión/recuperación  |
+| `residual_risk_ref`     | riesgo pendiente        |
 
 Una celda no aplicable deberá quedar justificada, no omitida.
 
@@ -14870,13 +14870,13 @@ La reutilización no cambia estado, texto ni identidad de esos requisitos.
 
 #### 55. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La definición documental no ejecuta el build del repositorio; la validación integral corresponde al checkout actualizado tras insertar el bloque. |
-| LOCAL | PASS | Estructura del artefacto revisada contra el contrato documental vigente: metadatos obligatorios, secciones obligatorias, continuidad y declaración de cero requisitos nuevos. |
-| REMOTA | PASS | Consulta read-only del proyecto Supabase de referencia: base de 139 MB en el corte 2026-08-24; ninguna tabla empresarial particionada; `realtime.messages` aparece como relación administrada particionada por rango. |
-| OPERATIVA | NOT_EXECUTED | No existe instancia `AUTH-DB-025::<package_id>` autorizada en esta definición; benchmarks, cleanup, staging, canary y post-cutover quedan para cada paquete físico. |
-| FÍSICA | NOT_APPLICABLE | Esta tarea define el contrato y no autoriza cambios físicos. |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                             |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La definición documental no ejecuta el build del repositorio; la validación integral corresponde al checkout actualizado tras insertar el bloque.                                                                     |
+| LOCAL     | PASS           | Estructura del artefacto revisada contra el contrato documental vigente: metadatos obligatorios, secciones obligatorias, continuidad y declaración de cero requisitos nuevos.                                         |
+| REMOTA    | PASS           | Consulta read-only del proyecto Supabase de referencia: base de 139 MB en el corte 2026-08-24; ninguna tabla empresarial particionada; `realtime.messages` aparece como relación administrada particionada por rango. |
+| OPERATIVA | NOT_EXECUTED   | No existe instancia `AUTH-DB-025::<package_id>` autorizada en esta definición; benchmarks, cleanup, staging, canary y post-cutover quedan para cada paquete físico.                                                   |
+| FÍSICA    | NOT_APPLICABLE | Esta tarea define el contrato y no autoriza cambios físicos.                                                                                                                                                          |
 
 ---
 
@@ -14953,7 +14953,1071 @@ La reutilización no cambia estado, texto ni identidad de esos requisitos.
 `AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado`
 
 
-### [ ] AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
+### ✅ AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-025 — Implementar índices, retención y controles de crecimiento
+**Tarea siguiente:** DATA-NORM-DB-001 — Implementar almacenamiento de versiones de reglas y diccionarios
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para generar, verificar, versionar, promover y publicar los tipos derivados de Supabase después de cada paquete de base de datos aprobado, preservando procedencia, determinismo, compatibilidad, seguridad, distribución mínima, evidencia y rollback, sin ejecutar codegen, publicar releases, modificar código, SQL, migraciones, datos, configuración remota ni Supabase durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/03_R2_MIGRACION_PROGRESIVA_POR_DOMINIO.md`
+**Estado físico resultante:** Contrato canónico `TEMPLATE_PER_PACKAGE` cerrado; cada futura instancia `AUTH-DB-026::<package_id>` permanece no ejecutada hasta satisfacer el paquete E5 aplicable, las puertas de implementación y publicación correspondientes, la reconciliación de drift y la autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+`AUTH-DB-026` define el contrato repetible que materializa la sincronización entre cada paquete de base de datos aprobado y la capa L1 de tipos generados gobernada por `@vento/supabase`.
+
+La tarea cierra cómo una futura instancia deberá:
+
+1. identificar el paquete de base de datos que origina el cambio;
+2. fijar una fuente versionada y reproducible;
+3. resolver las superficies tipables autorizadas;
+4. generar tipos de forma determinista;
+5. demostrar que el resultado representa exactamente la fuente certificada;
+6. clasificar el cambio respecto del corte tipado anterior;
+7. probar los consumidores aplicables antes de promoción;
+8. versionar y promover el artefacto sin edición manual;
+9. publicar únicamente mediante el lifecycle de package y CI autorizado;
+10. conservar rollback y evidencia suficientes para reconstruir cada corte.
+
+La tarea no convierte el estado remoto más reciente en fuente contractual y no convierte un archivo TypeScript generado en autoridad empresarial.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+AUTH-DB-026
+→ contrato documental único y reutilizable
+
+AUTH-DB-026::<package_id>
+→ futura instancia física por paquete
+
+paquete DB aprobado
+→ candidate versionado
+→ generación determinista
+→ artefacto tipado derivado
+→ verificación de integridad
+→ clasificación del diff
+→ pruebas aplicables
+→ promoción controlada
+→ publicación por lifecycle autorizado
+→ evidencia y rollback
+```
+
+La definición global no se reabre por cada paquete.
+
+Cada instancia futura conserva identidad, fuente, artefactos, pruebas, decisión de promoción, publicación y rollback propios.
+
+---
+
+#### 3. Topología vinculante
+
+La topología aplicable es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = AUTH-DB-026::<package_id>
+```
+
+Consecuencias:
+
+1. no existe `AUTH-DB-026::GLOBAL`;
+2. la aprobación documental no genera tipos;
+3. la aprobación documental no publica packages;
+4. cada `package_id` conserva una instancia independiente;
+5. una instancia no puede publicar tipos de otro paquete;
+6. una ejecución posterior no reinterpreta silenciosamente una versión histórica;
+7. el marcador documental no se modifica para registrar ejecuciones futuras.
+
+---
+
+#### 4. Gate temporal
+
+Una futura instancia solo puede materializar el trabajo cuando el `package_id` aplicable haya alcanzado las puertas exigidas por R2 y por el lifecycle de package.
+
+Como mínimo deberá estar demostrado:
+
+```text
+paquete DB aplicable = APROBADO Y VERSIONADO
+R0 aplicable = VERIFIED
+R1 aplicable = VERIFIED
+DELIV-PKG aplicable = CLOSED
+E5-GATE-008::<package_id> = PASS
+SHELL-CI-020::<package_id> = OPENED
+drift aplicable = RECONCILED
+physical_authorization = EXPLICIT
+```
+
+La generación puede prepararse únicamente dentro del carril físico autorizado. La promoción o publicación no se declara satisfecha mientras falte una puerta de package, compatibilidad, release o CI exigible al corte.
+
+---
+
+#### 5. Fuentes vinculantes
+
+Cada instancia deberá consumir sin reinterpretación silenciosa:
+
+- `SHELL-DB-002` como contrato propietario del gobierno de tipos generados;
+- `SHELL-DB-003` para la frontera posterior de wrappers tipados de RPC;
+- `SHELL-DB-004` para normalización de errores técnicos;
+- `SHELL-DB-005` para separación de clientes server, browser, native y privileged;
+- `SUPA-TRANS-014` para actualización material de tipos y documentación;
+- la arquitectura Supabase aprobada que gobierne schemas, seguridad, compatibilidad y transición;
+- las migraciones y manifests versionados del paquete;
+- las fundaciones R0 y R1 aplicables;
+- el expediente E5 del `package_id`;
+- las reglas de package, release, compatibilidad y CI vigentes;
+- los consumidores registrados aplicables;
+- el estado de drift recapturado al iniciar la instancia;
+- la cobertura de pruebas vigente.
+
+Una discrepancia entre candidate, migraciones, schema observado, artefacto generado, package o consumidor bloquea únicamente la promoción afectada hasta resolver su causa.
+
+---
+
+#### 6. Handoff recibido de `SHELL-DB-002`
+
+`SHELL-DB-002` ya define que:
+
+1. los tipos físicos generados pertenecen lógicamente a `@vento/supabase`;
+2. las migraciones y el candidate versionado permanecen como fuente autoritativa;
+3. los tipos son una proyección derivada y no una fuente alternativa de verdad;
+4. la generación parte de un paquete o candidate versionado y aprobado;
+5. cada corte conserva procedencia reproducible;
+6. la generación es determinista;
+7. el resultado generado es de solo lectura;
+8. la selección de schemas y superficies es explícita;
+9. la capa física generada permanece separada de DTO y contratos empresariales;
+10. los tipos se distribuyen según mínimo privilegio;
+11. browser y mobile no reciben internals o superficies privilegiadas;
+12. `Row`, `Insert`, `Update`, enums, composites, vistas y firmas físicas conservan la semántica de la fuente;
+13. `Args` y `Returns` crudos pueden derivarse de funciones aprobadas;
+14. los wrappers RPC pertenecen a `SHELL-DB-003`;
+15. un tipo no concede permisos, grants, RLS ni autorización;
+16. los escapes y overrides requieren gobierno explícito;
+17. los cambios se clasifican antes de promoción;
+18. los consumidores aplicables se prueban antes de promover;
+19. el rollback conserva versiones tipadas anteriores;
+20. `AUTH-DB-026` es el punto físico incremental de generación y publicación.
+
+`AUTH-DB-026` materializa estas reglas por paquete y no las redefine con una taxonomía paralela.
+
+---
+
+#### 7. Estado físico verificado de partida
+
+En el corte remoto revisado durante esta definición:
+
+```text
+@vento/supabase = PACKAGE FÍSICO PRIVADO EXISTENTE
+package version = NO DECLARADA
+main/types/exports = NO DECLARADOS
+scripts propios de package = NO DECLARADOS
+codegen canónico de Database = NO MATERIALIZADO
+release npm de @vento/supabase = NO CONFIRMADA
+consumidores migrados mediante tipos generados = NO CONFIRMADOS
+```
+
+La ausencia actual de una superficie pública de package impide inferir nombres de exports, versión inicial, rutas de artefactos o un canal de publicación que todavía no estén autorizados por su lifecycle propietario.
+
+Una futura instancia deberá resolver esos elementos desde el estado canónico vigente en ese momento y las tareas propietarias de package; no podrá inventarlos para forzar el cierre.
+
+---
+
+#### 8. Disparador exacto por paquete
+
+Una instancia `AUTH-DB-026::<package_id>` se activa únicamente cuando el paquete aprobado introduce o confirma una superficie que debe reflejarse en la capa L1.
+
+El análisis deberá distinguir:
+
+```text
+CAMBIO DE SCHEMA TIPABLE
+→ regeneración requerida
+
+CAMBIO DE FIRMA TIPABLE
+→ regeneración requerida
+
+CAMBIO DE ENUM / COMPOSITE / VIEW TIPABLE
+→ regeneración requerida
+
+CAMBIO PURAMENTE OPERACIONAL SIN IMPACTO TIPADO
+→ regeneración no obligatoria, con evidencia de no impacto
+
+CAMBIO CON FUENTE AMBIGUA
+→ promoción bloqueada
+```
+
+No se ejecuta codegen por rutina si el paquete no altera la superficie tipada. En ese caso la instancia deberá demostrar reproduciblemente que el digest lógico aplicable permanece equivalente.
+
+---
+
+#### 9. Identidad mínima de instancia
+
+Cada futura instancia deberá conservar como mínimo:
+
+- `package_id`;
+- identidad `AUTH-DB-026::<package_id>`;
+- candidate o fuente versionada;
+- revisión o commit fuente;
+- migraciones y manifests aplicables;
+- digest del schema o candidate;
+- conjunto explícito de schemas y superficies incluidos;
+- herramienta de generación y versión exacta;
+- opciones de generación;
+- artefacto o bundle resultante;
+- digest del resultado;
+- corte tipado anterior compatible;
+- clasificación del diff;
+- consumidores registrados aplicables;
+- pruebas ejecutadas;
+- decisión de promoción;
+- identidad de release o publicación cuando exista;
+- evidencia de package y CI;
+- estrategia de rollback;
+- riesgo residual;
+- evidencia de cierre.
+
+Los nombres físicos concretos de archivos, exports y manifests deben provenir del estado canónico del package vigente al ejecutar la primera materialización que los autorice; después quedan sujetos a compatibilidad y no pueden cambiar por conveniencia.
+
+---
+
+#### 10. Fuente autorizada de generación
+
+El codegen solo puede partir de una fuente que cumpla simultáneamente:
+
+1. pertenece al flujo versionado gobernado por `vento-shell`;
+2. corresponde al `package_id` aprobado;
+3. conserva una revisión reproducible;
+4. identifica las migraciones y manifests que construyen el candidate;
+5. alcanzó la paridad o certificación exigida antes de promoción;
+6. declara explícitamente las superficies incluidas;
+7. utiliza una toolchain identificable;
+8. puede reconstruirse sin depender de un remoto incidental.
+
+No son fuente contractual suficiente:
+
+- producción observada casualmente;
+- staging sin identidad de candidate;
+- un dump sin procedencia;
+- un artefacto generado antiguo sin fuente asociada;
+- un archivo mantenido manualmente;
+- el resultado que compile en un único consumidor;
+- un snapshot de `public` tratado como modelo completo por conveniencia.
+
+---
+
+#### 11. Recaptura de drift antes del codegen
+
+Antes de generar, la instancia deberá comparar:
+
+```text
+candidate esperado
+vs
+migraciones versionadas
+vs
+schema objetivo verificable
+vs
+artefacto tipado anterior
+vs
+estado del package compartido
+```
+
+Si el schema objetivo contiene drift no reconciliado respecto de la fuente aprobada:
+
+- no se toma el remoto como nueva autoridad;
+- no se genera una versión contractual desde ese drift;
+- no se edita el artefacto anterior para aparentar paridad;
+- la promoción se bloquea hasta reconciliar la fuente propietaria.
+
+---
+
+#### 12. Selección explícita de schemas y superficies
+
+La instancia hereda de `SHELL-DB-002` que `public` no es una raíz universal y que la inclusión se decide por arquitectura y consumo autorizado.
+
+La selección deberá:
+
+1. partir del allowlist vigente;
+2. conservar el tier aplicable;
+3. excluir internals y superficies administradas que no formen parte del contrato tipado;
+4. mantener VITAL separado del bundle ordinario de Vento OS;
+5. impedir que la simple existencia de un objeto lo convierta en API pública;
+6. registrar adiciones o retiros de superficie como cambios clasificables.
+
+La capacidad de generar un objeto no autoriza su distribución.
+
+---
+
+#### 13. Tiers de distribución
+
+Todo artefacto o recorte generado pertenece exactamente a uno de estos tiers:
+
+```text
+CONSUMER_SAFE
+SERVER_ONLY
+PRIVILEGED_TOOLING
+```
+
+Reglas:
+
+- `CONSUMER_SAFE` solo contiene superficies aprobadas para browser o mobile;
+- `SERVER_ONLY` conserva el recorte mínimo requerido por servidores o Edge;
+- `PRIVILEGED_TOOLING` se limita a tooling segregado, migración, recuperación o administración autorizada;
+- no se crea un cuarto tier por conveniencia;
+- un consumidor no asciende de tier para resolver un error de compilación;
+- un bundle privilegiado no se convierte en dependencia ordinaria.
+
+---
+
+#### 14. Toolchain reproducible
+
+Cada instancia fija la versión exacta del generador y las opciones que afectan el resultado.
+
+La evidencia deberá permitir reconstruir:
+
+```text
+fuente
++ toolchain
++ schemas
++ opciones
+= artefacto lógico
+```
+
+Cambiar de versión del generador constituye un cambio de entrada y deberá distinguirse de un cambio del schema.
+
+Una actualización de toolchain que produzca diferencias deberá clasificarse y validarse antes de promoción incluso cuando el candidate de base de datos no cambie.
+
+---
+
+#### 15. Determinismo
+
+La generación debe satisfacer:
+
+```text
+MISMA FUENTE VERSIONADA
++ MISMOS SCHEMAS
++ MISMA TOOLCHAIN
++ MISMAS OPCIONES
+= MISMO RESULTADO LÓGICO
++ MISMO DIGEST
+```
+
+Un digest diferente con entradas equivalentes se considera fallo de reproducibilidad.
+
+La instancia deberá evitar que timestamps, rutas de máquina, orden incidental, locale, EOL u otra representación ambiental introduzcan drift no semántico.
+
+Toda transformación posterior al generador deberá ser explícita, determinista, versionada y verificable.
+
+---
+
+#### 16. Inmutabilidad del generado
+
+El artefacto derivado se trata como solo lectura.
+
+Queda prohibido:
+
+- corregir campos directamente en el generado;
+- cambiar nullability para satisfacer un consumidor;
+- añadir o retirar propiedades manualmente;
+- modificar una firma para compilar;
+- renombrar enums localmente;
+- ocultar una discrepancia mediante casts masivos;
+- conservar una divergencia manual después de regenerar.
+
+Un defecto de fuente vuelve a la tarea propietaria del schema. Una limitación legítima del codegen se resuelve mediante una capa separada y gobernada, con owner, prueba, riesgo y condición de retiro.
+
+---
+
+#### 17. Fidelidad de `Row`, `Insert` y `Update`
+
+La instancia deberá comprobar que el resultado conserva la distinción entre:
+
+- forma de lectura;
+- forma válida de inserción;
+- forma válida de actualización;
+- columnas generadas;
+- defaults;
+- identity;
+- campos server-owned;
+- obligatoriedad;
+- nullability física;
+- mutabilidad derivable.
+
+`Row`, `Insert` y `Update` no se normalizan a una shape única para simplificar consumidores.
+
+Las pruebas de tipos deberán incluir casos positivos y negativos cuando el cambio afecte estas fronteras.
+
+---
+
+#### 18. Vistas, enums, composites y funciones
+
+El codegen deberá conservar, cuando la fuente certificada lo permita:
+
+- shape y nullability de vistas;
+- enums físicos exactos;
+- composites;
+- relaciones tipables;
+- firmas de funciones;
+- argumentos;
+- retornos;
+- distinción suficiente de overloads.
+
+Una firma generada no expresa por sí sola autorización, idempotencia, retry, errores empresariales ni efectos.
+
+La capa de wrappers de invocación continúa fuera de esta tarea.
+
+---
+
+#### 19. JSON y tipos insuficientemente expresivos
+
+Cuando un tipo físico no pueda expresar por sí solo la semántica necesaria de JSONB, metadata, dominios, dinero, unidades, IDs nominales, payloads externos u otra estructura:
+
+1. el generado permanece intacto;
+2. el contrato adicional se ubica en una capa separada;
+3. la insuficiencia queda documentada;
+4. la capa adicional conserva owner y lifecycle;
+5. existe validación runtime cuando el dato no es confiable;
+6. no se utiliza TypeScript como sustituto de validación de entrada.
+
+---
+
+#### 20. Seguridad y autorización
+
+La generación y publicación no pueden:
+
+- conceder grants;
+- modificar RLS;
+- ampliar permisos;
+- exponer owner schemas por conveniencia;
+- incluir secrets;
+- incluir tokens;
+- incluir connection strings;
+- incorporar filas reales;
+- incorporar payloads de evidencia;
+- exponer superficies privilegiadas a browser o mobile;
+- convertir `service_role` en contrato tipado ordinario.
+
+Un tipo compila; no autoriza.
+
+Las pruebas de seguridad permanecen independientes de las pruebas de TypeScript.
+
+---
+
+#### 21. Clasificación obligatoria del diff
+
+Antes de promoción, todo cambio se clasifica exactamente con la taxonomía vigente de `SHELL-DB-002`:
+
+```text
+NON_BREAKING
+REVIEW_REQUIRED
+BREAKING
+INVALID
+```
+
+Criterios de ejemplo:
+
+- una adición nullable puede ser `NON_BREAKING` solo después de comprobar contrato y consumidores;
+- una nueva obligación sin default requiere revisión y puede ser `BREAKING`;
+- retirar una columna es `BREAKING`;
+- cambiar nullability requiere revisión;
+- retirar o reinterpretar un valor de enum es `BREAKING`;
+- una firma nueva puede ser compatible si no altera contratos existentes;
+- cambiar argumentos o retorno de una función exige revisión;
+- un override sin evidencia es `INVALID`;
+- un digest distinto con entradas equivalentes es `INVALID`;
+- exponer una superficie privilegiada a un tier no permitido es `INVALID`.
+
+No se introduce una segunda taxonomía de compatibilidad.
+
+---
+
+#### 22. Comparación contra el corte tipado anterior
+
+Cada instancia deberá resolver un baseline tipado anterior identificable.
+
+La comparación deberá distinguir:
+
+- objetos añadidos;
+- objetos retirados;
+- propiedades añadidas o retiradas;
+- nullability;
+- defaults;
+- identity;
+- mutabilidad;
+- enums;
+- vistas;
+- relaciones;
+- composites;
+- firmas y overloads;
+- schemas;
+- tiers;
+- toolchain;
+- metadata de procedencia.
+
+La ausencia de una versión anterior se trata como bootstrap explícito, no como diff vacío.
+
+---
+
+#### 23. Compatibilidad de consumidores antes de promoción
+
+Una versión candidata no es promovible únicamente porque compile en `vento-shell`.
+
+Antes de promoción deberán comprobarse los consumidores registrados aplicables al tier o contrato afectado.
+
+La evidencia considera, cuando corresponda:
+
+- versión tipada candidata;
+- runtime;
+- TypeScript;
+- Supabase JS;
+- SSR;
+- Next.js;
+- Expo;
+- Edge;
+- contratos consumidos;
+- release efectivo;
+- ambiente;
+- typecheck;
+- contract tests;
+- pruebas semánticas;
+- pruebas de seguridad.
+
+Un consumidor se incluye por registro y contrato, no por inferencia nominal.
+
+---
+
+#### 24. Frontera con wrappers RPC
+
+`AUTH-DB-026` puede generar `Args` y `Returns` crudos derivados de la firma física aprobada.
+
+No crea por ese hecho:
+
+- wrappers públicos;
+- nombres de métodos;
+- traducción de argumentos;
+- mapeo de retornos;
+- política de retry;
+- taxonomía de errores;
+- idempotencia;
+- semántica empresarial.
+
+La centralización y evolución de wrappers permanece bajo el contrato de `SHELL-DB-003` y sus instancias aplicables.
+
+---
+
+#### 25. Significado de publicación
+
+La palabra `publicar` en esta tarea no autoriza inventar un registry, una versión npm, `exports`, `main`, `types`, tags o un canal de distribución que no exista canónicamente.
+
+La instancia distingue:
+
+```text
+GENERADO
+→ artefacto reproducible producido
+
+VERIFICADO
+→ determinismo, integridad, diff y pruebas aplicables satisfechos
+
+PROMOVIDO
+→ artefacto incorporado al corte canónico del package compartido
+
+PUBLICADO
+→ release o distribución ejecutada por el lifecycle de package autorizado
+```
+
+Solo puede declararse `PUBLICADO` cuando el package y el carril de CI/release vigentes tengan una identidad y un canal de publicación ya autorizados.
+
+Si el package aún carece de una superficie distribuible autorizada, la instancia no simula publicación mediante un commit ordinario ni inventa metadata. La falta de esa puerta mantiene pendiente únicamente la fase de publicación.
+
+---
+
+#### 26. Versionado
+
+El versionado debe respetar el gobierno de package compartido.
+
+La clasificación semántica mínima heredada es:
+
+```text
+PATCH
+MINOR
+MAJOR
+```
+
+La versión concreta solo se asigna cuando existe un package/release físico gobernado que la soporte.
+
+Reglas:
+
+1. una versión publicada es inmutable;
+2. conserva digest y procedencia;
+3. no reinterpreta una versión histórica;
+4. los consumidores registran la versión exacta resuelta;
+5. el lockfile del consumidor forma parte de reproducibilidad;
+6. un rango compatible no sustituye la identidad realmente desplegada;
+7. el bootstrap no inventa una versión antes de que el lifecycle propietario la habilite.
+
+---
+
+#### 27. Concurrencia entre paquetes
+
+Dos paquetes pueden alterar la superficie tipada en ventanas cercanas.
+
+Reglas:
+
+1. cada instancia parte del último corte compatible y verificado disponible;
+2. un paquete no publica desde un baseline obsoleto;
+3. si otra instancia promueve primero un nuevo corte, la instancia pendiente recaptura fuente, baseline y diff;
+4. no se mezclan cambios de dos `package_id` bajo una única evidencia anónima;
+5. la promoción siempre identifica qué package originó cada delta;
+6. un conflicto no se resuelve editando manualmente el generado;
+7. la secuencia final debe ser reproducible desde el historial versionado.
+
+---
+
+#### 28. Drift posterior a generación
+
+Entre generación y promoción puede cambiar:
+
+- candidate;
+- migración;
+- schema objetivo;
+- toolchain;
+- package;
+- consumidor;
+- gate;
+- release.
+
+Antes de promover se revalida que las entradas utilizadas continúan vigentes.
+
+Si una entrada material cambió, la evidencia anterior queda stale para la promoción y se regenera o revalida lo afectado.
+
+No se promueve un artefacto correcto para una fuente que ya dejó de ser la fuente del paquete.
+
+---
+
+#### 29. Paquete sin impacto tipado
+
+Cuando el análisis demuestre que un paquete no altera ninguna superficie tipable autorizada:
+
+```text
+schema_digest_lógico = equivalente
+diff tipado = NONE
+regeneración material = NO REQUERIDA
+publicación nueva = NO REQUERIDA
+```
+
+La instancia deberá conservar evidencia de esa conclusión y no producir una release vacía por obligación ritual.
+
+Una diferencia de representación sin cambio lógico se normaliza antes de concluir impacto.
+
+---
+
+#### 30. Paquete con cambio incompatible
+
+Cuando el diff sea `BREAKING`:
+
+1. se identifica el contrato y los consumidores afectados;
+2. se detiene promoción incompatible;
+3. se aplica la transición propietaria;
+4. se prepara sucesor compatible cuando corresponda;
+5. se migra consumo bajo sus tareas propietarias;
+6. se conserva deprecación y ventana de coexistencia;
+7. se exige evidencia de sustitución antes de retirar la versión anterior;
+8. la publicación final ocurre solo cuando el gate de compatibilidad permita el corte.
+
+No se incrementa versión y se continúa como si SemVer resolviera por sí mismo la transición.
+
+---
+
+#### 31. Resultado `INVALID`
+
+Un candidato se clasifica `INVALID` cuando, entre otros casos:
+
+- las entradas equivalentes generan digest distinto sin explicación;
+- la procedencia no es reproducible;
+- la fuente no corresponde al paquete;
+- se detecta edición manual del generado;
+- aparece una superficie fuera del tier permitido;
+- se incorpora VITAL al bundle ordinario;
+- se intenta publicar desde drift no reconciliado;
+- se incluye material sensible;
+- la toolchain no puede identificarse;
+- el artefacto contradice la forma certificada.
+
+`INVALID` bloquea promoción y publicación.
+
+---
+
+#### 32. Rollback
+
+El rollback conserva una identidad tipada anterior compatible.
+
+La instancia deberá registrar:
+
+- último corte compatible;
+- digest;
+- procedencia;
+- release o identidad de promoción;
+- consumidores que lo soportan;
+- schema compatible;
+- condición de restauración;
+- limitaciones;
+- estrategia forward-fix cuando la reversión física no sea segura.
+
+Reglas:
+
+1. no se regenera historia desde el estado `current`;
+2. no se restaura un bundle más privilegiado para resolver incompatibilidad;
+3. no se pierden datos o auditoría por conveniencia del contrato tipado;
+4. el rollback de tipos se coordina con el rollback o forward-fix del schema;
+5. las versiones históricas permanecen inmutables.
+
+---
+
+#### 33. Evidencia mínima por promoción
+
+La evidencia de una promoción deberá permitir responder sin adivinación:
+
+- qué `package_id` originó el cambio;
+- qué candidate se usó;
+- qué revisión lo identifica;
+- qué migraciones lo componen;
+- qué digest representa la fuente;
+- qué schemas entraron;
+- qué generador y versión se usaron;
+- qué opciones se aplicaron;
+- qué digest produjo el artefacto;
+- cuál era el corte anterior;
+- qué cambió;
+- cómo se clasificó;
+- qué consumidores eran aplicables;
+- qué pruebas pasaron o bloquearon;
+- qué gate autorizó promoción;
+- qué release o identidad de publicación resultó;
+- cuál es el rollback;
+- qué riesgo residual permanece.
+
+La evidencia no contiene secrets ni datos empresariales innecesarios.
+
+---
+
+#### 34. Secuencia obligatoria por instancia
+
+La secuencia lógica será:
+
+```text
+1. verificar package_id y gates
+2. recapturar drift
+3. resolver candidate versionado
+4. congelar procedencia
+5. resolver schemas y tiers
+6. fijar toolchain y opciones
+7. generar
+8. repetir generación para comprobar determinismo cuando aplique
+9. calcular digests
+10. comparar contra el corte anterior
+11. clasificar diff
+12. validar fidelidad estructural
+13. ejecutar pruebas de tipos
+14. ejecutar pruebas de seguridad aplicables
+15. validar consumidores registrados aplicables
+16. confirmar gates de promoción
+17. promover el artefacto
+18. confirmar gates de release/publicación
+19. publicar mediante el lifecycle autorizado
+20. registrar evidencia y rollback
+21. verificar ausencia de drift post-promoción
+22. cerrar riesgo residual
+```
+
+No se salta desde `package_id aprobado` directamente a `PUBLICADO`.
+
+---
+
+#### 35. Readiness de generación
+
+La generación está lista únicamente si:
+
+```text
+package_id identificado
+AND fuente versionada
+AND candidate reproducible
+AND drift reconciliado
+AND schemas explícitos
+AND tiers resueltos
+AND toolchain fijada
+AND autorización física válida
+```
+
+Si falta una condición, no se genera un artefacto contractual.
+
+---
+
+#### 36. Readiness de promoción
+
+La promoción está lista únicamente si:
+
+```text
+generación determinista
+AND digest estable
+AND procedencia completa
+AND fidelidad verificada
+AND diff clasificado
+AND seguridad preservada
+AND consumidores aplicables validados
+AND rollback disponible
+AND gates de package/CI abiertos
+```
+
+Compilar dentro del repositorio propietario no satisface por sí solo esta puerta.
+
+---
+
+#### 37. Readiness de publicación
+
+La publicación está lista únicamente si:
+
+```text
+promoción válida
+AND identidad de release resuelta
+AND canal de distribución autorizado
+AND versión compatible con el lifecycle
+AND checks de release aplicables PASS
+AND consumidores objetivo y rollout identificados
+AND rollback de release disponible
+```
+
+La ausencia actual de versión o exports públicos de `@vento/supabase` no se corrige desde esta definición documental.
+
+---
+
+#### 38. Fallo y reanudación
+
+Ante un fallo:
+
+- se conserva evidencia del punto alcanzado;
+- no se reetiqueta un artefacto fallido como válido;
+- no se modifica manualmente el generado;
+- no se omiten consumidores que fallaron;
+- no se cambia la fuente para obtener un resultado verde;
+- no se repite una publicación ya confirmada;
+- la reanudación parte de las entradas que sigan vigentes;
+- una evidencia stale se regenera solo en la porción afectada.
+
+---
+
+#### 39. Relación con `SUPA-TRANS-014`
+
+Cuando el paquete corresponda a una transición que consume `SUPA-TRANS-014`, la instancia deberá conservar el handoff:
+
+```text
+schema/candidate aprobado
+→ tipos actualizados
+→ consumidores verificables
+→ documentación alineada
+→ ausencia de drift contractual
+```
+
+Si se pierde confianza en el corte tipado o documental, el release/cutover afectado se detiene y se conserva el último contrato tipado conocido compatible.
+
+---
+
+#### 40. Handoffs posteriores
+
+| Materia                           | Propietario                                    | Condición de salida                                                  |
+| --------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
+| wrappers canónicos de RPC         | `SHELL-DB-003`                                 | tipos físicos y firmas disponibles sin edición manual                |
+| errores Supabase normalizados     | `SHELL-DB-004`                                 | errores técnicos reconciliados sin absorber dominio o autorización   |
+| clientes por runtime              | `SHELL-DB-005`                                 | tipos compatibles con la separación server/browser/native/privileged |
+| package/release                   | tareas `SHELL-PKG-*` y `SHELL-CI-*` aplicables | identidad, compatibilidad, publicación y rollback verificables       |
+| migración de consumidores         | tareas propietarias de adopción                | compatibilidad, paridad y rollback por consumidor                    |
+| transición de tipos/documentación | `SUPA-TRANS-014` cuando aplique                | contrato material actualizado y evidencia reconciliada               |
+
+`AUTH-DB-026` no absorbe las responsabilidades de estos owners.
+
+---
+
+#### 41. Cobertura de prueba vigente reutilizada
+
+La cobertura canónica vigente ya protege:
+
+- generación desde superficies aprobadas;
+- procedencia reproducible;
+- determinismo;
+- integridad de tipos físicos;
+- separación entre tipos y contratos empresariales;
+- mínimo privilegio tipado;
+- fidelidad de `Row`, `Insert` y `Update`;
+- vistas, enums, composites y firmas;
+- validación runtime independiente de TypeScript;
+- clasificación de diffs;
+- compatibilidad de consumidores;
+- sincronización entre migraciones y tipos;
+- rollout;
+- deprecación;
+- rollback;
+- drift;
+- seguridad de packages y releases.
+
+`AUTH-DB-026` convierte esa cobertura en una plantilla física por paquete y no altera el registro de requisitos.
+
+---
+
+#### 42. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea materializa por `package_id` obligaciones de generación, procedencia, determinismo, compatibilidad, seguridad, versionado, promoción, publicación y rollback ya definidas y cubiertas por la arquitectura de Supabase, `SHELL-DB-002`, transición, packages y CI. No introduce una nueva superficie empresarial, una nueva operación de datos, un nuevo modelo de autorización ni un gate semántico independiente que requiera modificar el registro.
+
+---
+
+#### 43. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                               |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | No se ejecutó el build del repositorio sobre el checkout local del usuario durante esta definición documental.                                                                          |
+| LOCAL     | PASS           | El artefacto fue comprobado estructuralmente contra metadatos, secciones obligatorias, continuidad, cero cambios de requisitos y prohibiciones del contrato de entrega.                 |
+| REMOTA    | PASS           | Se revisaron en modo read-only el owner R2, topología, continuidad, `SHELL-DB-002`, `SUPA-TRANS-014`, el package físico `@vento/supabase`, su manifest, README y scripts raíz vigentes. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutó codegen, typecheck de consumidores, release, registry, rollout ni rollback.                                                                                               |
+| FÍSICA    | NOT_APPLICABLE | Esta tarea documental no autoriza mutaciones de código, package, Supabase, CI, releases, datos ni consumidores.                                                                         |
+
+---
+
+#### 44. Decisiones vinculantes
+
+1. `AUTH-DB-026` es una plantilla por `package_id`.
+2. Su identidad física es `AUTH-DB-026::<package_id>`.
+3. Su gate es `POST_E5_PACKAGE`.
+4. No existe instancia global.
+5. `SHELL-DB-002` gobierna la semántica de tipos.
+6. Cada corte parte de fuente versionada y reproducible.
+7. El remoto incidental no se convierte en fuente contractual.
+8. Drift no reconciliado bloquea promoción.
+9. La selección de schemas y superficies es explícita.
+10. `public` no se asume como modelo universal.
+11. Los tiers son exactamente `CONSUMER_SAFE`, `SERVER_ONLY` y `PRIVILEGED_TOOLING`.
+12. VITAL permanece separado del bundle ordinario.
+13. La toolchain se fija por corte.
+14. La generación es determinista.
+15. El generado es de solo lectura.
+16. Un digest diferente con entradas equivalentes es inválido.
+17. `Row`, `Insert` y `Update` conservan semánticas distintas.
+18. Enums, vistas, composites, relaciones y firmas preservan la fuente.
+19. `Args` y `Returns` crudos no crean wrappers.
+20. JSON y entradas no confiables conservan validación runtime separada.
+21. Un tipo no concede autorización.
+22. La clasificación del diff usa `NON_BREAKING`, `REVIEW_REQUIRED`, `BREAKING` o `INVALID`.
+23. No se crea una taxonomía paralela.
+24. Cada candidato se compara contra un corte anterior identificable.
+25. El bootstrap se declara explícitamente.
+26. Los consumidores registrados aplicables se validan antes de promoción.
+27. Compilar solo en `vento-shell` no basta.
+28. La publicación no inventa registry, versión, exports o canal.
+29. `GENERADO`, `VERIFICADO`, `PROMOVIDO` y `PUBLICADO` son estados conceptualmente distintos.
+30. Solo el lifecycle autorizado puede declarar publicación.
+31. Un package sin impacto tipado no crea una release vacía.
+32. Un cambio `BREAKING` requiere transición compatible.
+33. `INVALID` bloquea promoción y publicación.
+34. Paquetes concurrentes recapturan baseline cuando otro corte se promueve primero.
+35. El rollback conserva un corte anterior compatible.
+36. No se regenera historia desde `current`.
+37. La publicación no muta schema, RLS, grants, datos ni secretos.
+38. La evidencia identifica fuente, toolchain, digest, diff, pruebas, release y rollback.
+39. La reanudación no repite efectos ya confirmados.
+40. `SUPA-TRANS-014` se consume cuando corresponda.
+41. Los owners posteriores conservan sus responsabilidades.
+42. La definición documental no ejecuta codegen.
+43. La definición documental no publica releases.
+44. La definición documental no modifica Supabase.
+45. La definición documental no modifica consumidores.
+46. La definición documental no crea ni modifica requisitos de prueba.
+
+---
+
+#### 45. Criterios de aceptación
+
+`AUTH-DB-026` queda documentalmente aceptable cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. usa exclusivamente `AUTH-DB-026::<package_id>`;
+4. no autoriza una ejecución global;
+5. identifica una fuente versionada;
+6. exige reconciliación de drift;
+7. exige schemas y tiers explícitos;
+8. conserva el gobierno de `SHELL-DB-002`;
+9. exige toolchain exacta;
+10. exige determinismo;
+11. prohíbe edición manual del generado;
+12. conserva fidelidad de shapes físicos;
+13. separa tipos de contratos empresariales;
+14. separa tipos de autorización;
+15. conserva validación runtime para datos no confiables;
+16. usa la taxonomía de diff vigente;
+17. compara contra un corte anterior identificable;
+18. prueba consumidores registrados aplicables antes de promoción;
+19. distingue promoción de publicación;
+20. no inventa una versión npm o exports inexistentes;
+21. publica solo mediante lifecycle autorizado;
+22. maneja paquetes sin impacto tipado sin release artificial;
+23. bloquea cambios incompatibles o inválidos;
+24. gobierna concurrencia entre paquetes;
+25. conserva rollback reproducible;
+26. no muta Supabase como efecto de codegen;
+27. conserva evidencia suficiente para reproducir el corte;
+28. mantiene handoffs exactos;
+29. declara cero requisitos creados o modificados;
+30. no ejecuta ninguna mutación física durante la aprobación documental.
+
+---
+
+#### 46. Límites
+
+`AUTH-DB-026` no:
+
+- ejecuta codegen durante esta definición;
+- modifica archivos TypeScript durante esta definición;
+- crea scripts durante esta definición;
+- asigna una versión npm durante esta definición;
+- inventa `main`, `types` o `exports`;
+- inventa un registry;
+- publica una release durante esta definición;
+- altera tablas;
+- altera vistas;
+- altera funciones;
+- altera RPC;
+- altera enums;
+- altera composites;
+- altera RLS;
+- altera grants;
+- ejecuta DDL;
+- ejecuta DML;
+- ejecuta backfills;
+- modifica datos;
+- modifica Storage;
+- modifica Realtime;
+- modifica Edge Functions;
+- modifica secretos;
+- modifica configuración remota;
+- incorpora VITAL al bundle ordinario;
+- crea wrappers RPC;
+- redefine errores;
+- redefine factories por runtime;
+- migra consumidores;
+- declara compatibilidad sin pruebas;
+- edita manualmente un artefacto generado;
+- absorbe el lifecycle de package o CI;
+- desarrolla `DATA-NORM-DB-001`.
 
 ### `AUTH-DB-020::VISO-SCHEDULE-MONTHLY-001`
 
@@ -14967,3 +16031,16 @@ La reutilización no cambia estado, texto ni identidad de esos requisitos.
 8. Baseline antes/después.
 9. Rollback.
 10. Tipos actualizados.
+
+---
+
+#### 47. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-025 — Implementar índices, retención y controles de crecimiento`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-026 — Generar y publicar tipos después de cada paquete aprobado`
+
+**SIGUIENTE TAREA RESERVADA**
+`DATA-NORM-DB-001 — Implementar almacenamiento de versiones de reglas y diccionarios`
