@@ -34,6 +34,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-014::GLOBAL` materializa internamente `SensitiveActionConfirmation` como superficie server-safe de confirmacion explicita para una accion sensible ya clasificada por su propietario, con identidad estable, cuatro estados presentacionales y controles compuestos externamente, sin clasificar riesgo, resolver autoridad, ejecutar efectos empresariales, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-015::GLOBAL` materializa internamente `ContextDiagnostic` como superficie server-safe de diagnostico humano para una condicion contextual ya resuelta y minimizada por su propietario, con cinco estados compatibles con `ContextIndicator`, condiciones ordenadas, contexto preservado, impacto y resolucion segura, sin resolver contexto, evaluar autoridad, ejecutar recuperacion, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -91,6 +93,9 @@ Fronteras vinculantes:
 - `src/SensitiveActionConfirmation.tsx` como implementacion interna de `SensitiveActionConfirmation`.
 - `src/sensitive-action-confirmation.css` como estilos internos de consecuencia, estados, controles y reflow de `SensitiveActionConfirmation`.
 - `scripts/validate-sensitive-action-confirmation.mjs` como validador fisico de `SHELL-UI-014::GLOBAL`.
+- `src/ContextDiagnostic.tsx` como implementacion interna de `ContextDiagnostic`.
+- `src/context-diagnostic.css` como estilos internos de diagnostico, condiciones, contexto preservado, impacto, resolucion y reflow de `ContextDiagnostic`.
+- `scripts/validate-context-diagnostic.mjs` como validador fisico de `SHELL-UI-015::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -673,6 +678,39 @@ Consumidores esperados: 7. Consumidores materializados en la matriz: 7. Faltante
 
 Paridad, adopcion, compatibilidad, observacion y rollback permanecen en `SHELL-MIG-*`, `SHELL-CI-*` y propietarios correspondientes.
 
+## ContextDiagnostic
+
+`ContextDiagnostic` presenta una explicacion humana de una condicion contextual ya resuelta y minimizada por la capa propietaria. Conserva titulo, resumen, condiciones, contexto confirmado relevante, nombres humanos de acciones afectadas y el siguiente paso seguro; no resuelve contexto, permisos, recuperacion ni efectos empresariales.
+
+Contrato interno materializado:
+
+- `ContextDiagnosticState` deriva de `ContextIndicatorState` excluyendo `active` y admite exactamente `resolving`, `changing`, `stale`, `invalid` y `unavailable`;
+- `title` y `summary` permanecen obligatorios y preparados externamente;
+- `conditions` conserva estrictamente el orden recibido y cada entrada usa `label` y `message` humanos;
+- `preservedContext` reutiliza `ContextIndicatorItem` y no fabrica fallbacks para dimensiones ausentes;
+- `blockedActions` contiene solamente nombres humanos ya determinados por el adapter propietario; una lista vacia no concede autorizacion;
+- `resolution.instruction` es obligatorio, mientras `ownerLabel`, `reviewCondition` y `supportReference` son opcionales y solo se muestran cuando llegan preparados;
+- la referencia de soporte debe ser opaca, correlacionable, no secreta e incapaz de conceder autoridad;
+- la raiz es una `section` informativa, sin interaccion, foco, `role="alert"` o `aria-live` universales;
+- sin `use client`, hooks, timers, red, router, storage, Supabase, `EffectiveContext`, permisos, reason codes, callbacks empresariales ni recuperacion;
+- compatible con SSR y con controles o patrones especializados compuestos fuera de la superficie.
+
+### Contexto, autoridad y privacidad
+
+La direccion permitida es `resolvers y autorizacion propietarios -> adapter seguro y minimizado -> ContextDiagnostic`. El componente no recibe `EffectiveContext`, `can_operate`, `blocked_reasons`, `metadata`, permission keys ni identificadores internos como fuente visual. No deriva sede activa desde sede primaria, filtros, URL o ultimo valor; tampoco mezcla actor con dispositivo, turno con check-in, rol base con rol operativo o contexto administrativo con contexto territorial.
+
+`resolving` no afirma ausencia real; `changing` no presenta el destino solicitado como confirmado; `stale` no prolonga autoridad; `invalid` conserva solamente la dimension segura ya clasificada; `unavailable` no se convierte en `EmptyState`. Una denegacion con contexto valido permanece en autorizacion y un fallo tecnico recuperable permanece en `SHELL-UI-016`.
+
+La minimizacion ocurre antes del render. La superficie no serializa metadata, no imprime reason codes o `blocked_reasons`, no muestra traces, SQL, RLS, tokens, secretos ni datos del actor anterior y no usa ocultamiento CSS como control de privacidad.
+
+### Composicion, consumidores y rollback
+
+`ContextIndicator` conserva el resumen persistente de contexto; `Alert` conserva mensajes genericos; `EmptyState` conserva ausencia real; `SiteSelector` y `AreaSelector` conservan seleccion; `PrimaryActionPanel` conserva jerarquia de accion; `SensitiveActionConfirmation` conserva confirmacion sensible; `SHELL-UI-016` conserva recuperacion tecnica. `ContextDiagnostic` no absorbe esas responsabilidades.
+
+SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen evaluados 7/7 y sin adopcion fisica. Los adapters futuros deben preparar copy humano y datos minimizados dentro de cada propietario. Se exige paridad por consumidor, compatibilidad, observacion y rollback antes de retirar legacy.
+
+Consumidores migrados por UI015: 0/7. Copias legacy retiradas por UI015: 0. Releases publicadas por UI015: 0. Cambios Supabase por UI015: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -701,6 +739,8 @@ Paridad, adopcion, compatibilidad, observacion y rollback permanecen en `SHELL-M
 
 `SensitiveActionConfirmation` conserva nombre accesible mediante `ariaLabel`, titulo, descripcion y consecuencia visibles, estado ocupado en `PENDING`, copy de bloqueo o incertidumbre cuando el propietario lo aporta y controles explicitos de cancelacion y confirmacion. La primitiva no implementa focus trap, portal, backdrop ni cierre por `Escape`; el contenedor propietario conserva foco seguro, teclado completo y retorno de foco cuando la modalidad lo requiera.
 
+`ContextDiagnostic` conserva titulo y resumen antes de los detalles, listas semanticas para condiciones, contexto preservado y acciones afectadas, diferencias estructurales entre los cinco estados, reflow sin perdida de contenido y ausencia de tab stops artificiales. La composicion propietaria controla anuncio y foco cuando un bloqueo critico aparece como resultado directo de una accion.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -711,13 +751,13 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-013`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-014`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-014`
+TAREA ACTUAL APROBADA: `SHELL-UI-015`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-015`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-016`
 
-`SHELL-UI-014::GLOBAL` materializa solamente la superficie presentacional de confirmacion para una accion sensible ya clasificada y preparada por su propietario. `SHELL-UI-015` conserva el diagnostico compartido de contexto; UI014 no adelanta diagnostico, clasificacion de sensibilidad, autorizacion, reautenticacion, ejecucion autoritativa, mutaciones, migracion de consumidores ni patrones posteriores.
+`SHELL-UI-015::GLOBAL` materializa solamente la superficie presentacional de diagnostico para una condicion contextual ya clasificada y minimizada por su propietario. `SHELL-UI-016` conserva los estados de error recuperable; UI015 no adelanta recuperacion, retry, seleccion de contexto, autorizacion, mutaciones, migracion de consumidores ni patrones posteriores.
 
 ## Fuera de alcance
 
