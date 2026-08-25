@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `DATA-NORM-DB-006` — Implementar constraints después de reconciliar datos | `DATA-NORM-DB-007` — Implementar índices de búsqueda y unicidad normalizada | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-UI-013::GLOBAL` — Compartir panel de acción principal | `SHELL-UI-014::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-UI-014::GLOBAL` — Compartir confirmaciones de acciones sensibles | `SHELL-UI-015::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1038/1594 aprobadas** | **555** no aprobadas (1 propuesta, 0 rechazadas) | `DATA-NORM-DB-006` |
-| 🟧 **Implementación física conocida** | **67/95 VERIFIED** | **28** no terminales | `SHELL-UI-013::GLOBAL` |
+| 🟧 **Implementación física conocida** | **68/95 VERIFIED** | **27** no terminales | `SHELL-UI-014::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-UI-013::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **27**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-UI-014::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **26**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,18 +35,18 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `SHELL-UI-013::GLOBAL` | Compartir panel de acción principal | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `SHELL-UI-014::GLOBAL` | Compartir confirmaciones de acciones sensibles | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 3 | PENDIENTE | `SHELL-UI-015::GLOBAL` | Compartir diagnóstico de contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 4 | PENDIENTE | `SHELL-UI-016::GLOBAL` | Compartir estados de error recuperable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 5 | PENDIENTE | `SHELL-UI-017::GLOBAL` | Compartir patrón para tablet | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 6 | PENDIENTE | `SHELL-UI-018::GLOBAL` | Compartir patrón para kiosco | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 7 | PENDIENTE | `SHELL-UI-019::GLOBAL` | Compartir patrón de proceso interrumpido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 8 | PENDIENTE | `SHELL-UI-020::GLOBAL` | Compartir patrón de traspaso entre aplicaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 9 | PENDIENTE | `AUTH-DB-015::GLOBAL` | Documentar y versionar todas las migraciones en vento-shell | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 10 | PENDIENTE | `AUTH-DB-027::GLOBAL` | Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 11 | PENDIENTE | `AUTH-DB-028::GLOBAL` | Establecer baseline y control de drift entre local, staging y producción | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
-| 12 | PENDIENTE | `AUTH-DB-029::GLOBAL` | Validar respaldo, restauración y rollback antes del primer paquete | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-013::GLOBAL. |
+| 1 | **ACTUAL** | `SHELL-UI-014::GLOBAL` | Compartir confirmaciones de acciones sensibles | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `SHELL-UI-015::GLOBAL` | Compartir diagnóstico de contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 3 | PENDIENTE | `SHELL-UI-016::GLOBAL` | Compartir estados de error recuperable | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 4 | PENDIENTE | `SHELL-UI-017::GLOBAL` | Compartir patrón para tablet | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 5 | PENDIENTE | `SHELL-UI-018::GLOBAL` | Compartir patrón para kiosco | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 6 | PENDIENTE | `SHELL-UI-019::GLOBAL` | Compartir patrón de proceso interrumpido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 7 | PENDIENTE | `SHELL-UI-020::GLOBAL` | Compartir patrón de traspaso entre aplicaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 8 | PENDIENTE | `AUTH-DB-015::GLOBAL` | Documentar y versionar todas las migraciones en vento-shell | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 9 | PENDIENTE | `AUTH-DB-027::GLOBAL` | Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 10 | PENDIENTE | `AUTH-DB-028::GLOBAL` | Establecer baseline y control de drift entre local, staging y producción | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 11 | PENDIENTE | `AUTH-DB-029::GLOBAL` | Validar respaldo, restauración y rollback antes del primer paquete | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
+| 12 | PENDIENTE | `AUTH-DB-001::GLOBAL` | Corregir tablas sin RLS identificadas en SUPA-AUD | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-014::GLOBAL. |
 
 ## Modos de trabajo y materialización
 

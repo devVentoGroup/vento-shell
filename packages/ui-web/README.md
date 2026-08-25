@@ -30,6 +30,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-012::GLOBAL` materializa internamente `ProcessStatusLine` como linea server-safe de lectura para posiciones de proceso ya resueltas bajo el contrato aprobado de `SHELL-UI-012`, con orden y estados explicitos `REACHED`, `CURRENT` y `NOT_REACHED`, sin inferir transiciones, autoridad, sincronizacion, router, datos, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-013::GLOBAL` materializa internamente `PrimaryActionPanel` como superficie server-safe de jerarquia para una unica accion principal ya resuelta, con identidad estable, cuatro estados presentacionales y controles compuestos externamente, sin seleccionar acciones, resolver autoridad, ejecutar efectos empresariales, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -81,6 +83,9 @@ Fronteras vinculantes:
 - `src/ProcessStatusLine.tsx` como implementacion interna de `ProcessStatusLine`.
 - `src/process-status-line.css` como estilos internos de estados, conectores y reflow de `ProcessStatusLine`.
 - `scripts/validate-process-status-line.mjs` como validador fisico de `SHELL-UI-012::GLOBAL`.
+- `src/PrimaryActionPanel.tsx` como implementacion interna de `PrimaryActionPanel`.
+- `src/primary-action-panel.css` como estilos internos de jerarquia, estados y reflow de `PrimaryActionPanel`.
+- `scripts/validate-primary-action-panel.mjs` como validador fisico de `SHELL-UI-013::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -583,6 +588,46 @@ Los adapters futuros deben construir `ProcessStatusLineStep[]` desde fuentes pro
 
 Consumidores migrados por UI012: 0/7. Copias legacy retiradas por UI012: 0. Releases publicadas por UI012: 0. Cambios Supabase por UI012: 0.
 
+## PrimaryActionPanel
+
+`PrimaryActionPanel` presenta una unica accion principal ya resuelta por la superficie propietaria. Conserva identidad, copy, jerarquia y estado presentacional; no selecciona candidatos, no concede autoridad, no decide transiciones y no declara resultados empresariales.
+
+Contrato interno materializado:
+
+- `ariaLabel` nombra la region de accion de forma humana y localizable;
+- `actionId` conserva la identidad estable suministrada por el propietario y se expone solo como dato estructural, no como copy ordinario;
+- `label` mantiene visible el nombre humano de la accion;
+- `description` y `statusLabel` permanecen opcionales y preparados externamente;
+- `PrimaryActionPresentationState` contiene exactamente `READY`, `PENDING`, `CONTEXTUAL_DISABLED` y `REQUIRED_BLOCKED`;
+- `HIDDEN` no forma parte de la union renderizable y debe filtrarse antes de construir las props;
+- `primaryControl` es obligatorio y ocupa el primer slot de control;
+- `secondaryControl` es opcional, unico como slot adyacente y perceptivamente subordinado;
+- la raiz `section` usa `aria-label`, `data-action-id` y `data-state`; `PENDING` expone `aria-busy` sin declarar exito ni fracaso;
+- sin `use client`, hooks, timers, red, router, storage, Supabase, sesion, permisos, roles, contexto autoritativo, callbacks empresariales ni motor de transiciones;
+- compatible con SSR y con controles cliente compuestos por la superficie propietaria.
+
+### Estados y ejecucion
+
+`READY` indica solamente que la proyeccion propietaria presenta la accion como disponible para interaccion; no concede permiso irrevocable ni garantiza resultado. `PENDING` expresa una ejecucion equivalente ya iniciada cuyo resultado autoritativo sigue pendiente. `CONTEXTUAL_DISABLED` conserva visible una accion relevante mientras una precondicion externa impide actuar. `REQUIRED_BLOCKED` conserva visible una obligacion material bloqueada y permite que el propietario aporte explicacion o recuperacion.
+
+La primitiva no recibe `actions[]`, no ordena candidatos, no promueve una secundaria por viewport, dispositivo, rol o estado disabled y no vuelve automaticamente a `READY` ante un resultado incierto.
+
+### Button, sensibilidad y confirmacion
+
+`primaryControl` puede componer el `Button` compartido. El panel no redefine variantes, tamanos, `disabled`, `loading`, `aria-busy`, tipo nativo ni foco del `Button`. Cuando la accion esta pendiente, la superficie propietaria mantiene coherentes `PrimaryActionPanel.state` y el `loading` del control.
+
+La variante `danger` conserva significado visual y no clasifica sensibilidad. Confirmacion, reautenticacion, doble control, reason code, evidencia y politicas de acciones sensibles permanecen reservadas a `SHELL-UI-014`.
+
+### Composicion, accesibilidad y consumidores
+
+`ProcessStatusLine` comunica posicion de proceso, `TaskNavigation` comunica destinos de trabajo y `PrimaryActionPanel` comunica la accion dominante dentro de una superficie ya abierta. AppShell permanece como marco y no absorbe la accion principal de cada pagina.
+
+La region conserva `ariaLabel`, label visible, estado ocupado cuando corresponde, copy de bloqueo preparado por el propietario y orden semantico primary-then-secondary. No fuerza foco, no crea live region universal y refluye a una columna en viewport estrecho sin scroll horizontal estructural ni movimiento obligatorio.
+
+La materializacion global no migra aplicaciones. Consumidores conceptualmente elegibles: `SHELL`, `NEXO`, `FOGO`, `ORIGO`, `VISO`, `PULSO` y `NUMERA`. Paridad, adopcion, compatibilidad, observacion y rollback permanecen en `SHELL-MIG-*`, `SHELL-CI-*` y propietarios correspondientes.
+
+Consumidores migrados por UI013: 0/7. Copias legacy retiradas por UI013: 0. Releases publicadas por UI013: 0. Cambios Supabase por UI013: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -607,6 +652,8 @@ Consumidores migrados por UI012: 0/7. Copias legacy retiradas por UI012: 0. Rele
 
 `ProcessStatusLine` conserva lista ordenada, copy humano, una posicion `CURRENT` ya resuelta mediante `aria-current="step"`, marcadores y conectores decorativos fuera del nombre accesible, diferencias perceptibles que no dependen solo de color, ausencia de tab stops artificiales, reflow horizontal a vertical y ausencia de movimiento que simule confirmacion empresarial.
 
+`PrimaryActionPanel` conserva region nombrada mediante `ariaLabel`, label principal visible, estado ocupado en `PENDING`, copy material de bloqueo cuando el propietario lo aporta, orden primary-then-secondary, reflow y jerarquia no dependiente solo de color; no fuerza foco ni crea una region viva universal.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -617,14 +664,14 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-011`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-012`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-012`
+TAREA ACTUAL APROBADA: `SHELL-UI-013`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-013`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-014`
 
-`SHELL-UI-012::GLOBAL` materializa solamente la linea presentacional de posiciones de proceso ya resueltas. `SHELL-UI-013` conserva el panel compartido de accion principal; UI012 no adelanta seleccion de accion, autorizacion, guards, transiciones, efectos empresariales, sincronizacion, migracion de consumidores ni patrones compuestos posteriores.
+`SHELL-UI-013::GLOBAL` materializa solamente la superficie presentacional de una accion principal ya resuelta. `SHELL-UI-014` conserva confirmaciones de acciones sensibles; UI013 no adelanta politicas de confirmacion, reautenticacion, ejecucion autoritativa, mutaciones, migracion de consumidores ni patrones posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, componentes, estilos o validadores previos de `packages/ui-web` incluidos `AppShell` y `TaskNavigation`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, estados o transiciones de proceso, tablas de transicion, guards, comandos, callbacks empresariales, seleccion de accion principal, `app_navigation_items`, rutas empresariales, catalogos de aplicaciones, permission codes, roles reales o simulados, permisos, grants, contexto efectivo, `OperatingGate`, offline, sincronizacion, reconciliacion, timeline de auditoria, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, adopcion de consumidores, retiro legacy, Supabase, `SHELL-UI-013` ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, componentes, estilos o validadores previos de `packages/ui-web` incluidos `Button`, `AppShell`, `TaskNavigation` y `ProcessStatusLine`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, seleccion empresarial de accion principal, registros de acciones, rutas empresariales, permission codes, roles, permisos, grants, contexto efectivo, `OperatingGate`, estados o transiciones de proceso, guards, Server Actions, endpoints, mutaciones, idempotencia, confirmaciones sensibles de `SHELL-UI-014`, reautenticacion, reason codes, offline, sincronizacion, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, adopcion de consumidores, retiro legacy, Supabase ni el registro 04A/TREQ.
