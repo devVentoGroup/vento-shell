@@ -38,6 +38,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-016::GLOBAL` materializa internamente `RecoverableErrorState` como superficie server-safe de recuperacion humana para una condicion ya clasificada y una politica de recuperacion resuelta externamente, con tres categorias canonicas, cinco estados de preservacion, detalles seguros, siguiente paso y controles aportados por el consumidor, sin clasificar errores, decidir retries, resolver autoridad, ejecutar efectos empresariales, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-017::GLOBAL` materializa internamente `TabletTaskSurface` como superficie server-safe de composicion tactil para una semantica de trabajo ya resuelta en tablet personal o compartida, con dos clases canonicas, siete slots ordenados, reflow responsive, ergonomia tactil y controles aportados por el consumidor, sin detectar dispositivo, resolver actor o autoridad, decidir densidad, ejecutar efectos empresariales, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -101,6 +103,9 @@ Fronteras vinculantes:
 - `src/RecoverableErrorState.tsx` como implementacion interna de `RecoverableErrorState`.
 - `src/recoverable-error-state.css` como estilos internos de categoria, estado preservado, detalle, siguiente paso, controles y reflow de `RecoverableErrorState`.
 - `scripts/validate-recoverable-error-state.mjs` como validador fisico de `SHELL-UI-016::GLOBAL`.
+- `src/TabletTaskSurface.tsx` como implementacion interna de `TabletTaskSurface`.
+- `src/tablet-task-surface.css` como estilos internos de estructura semantica, reflow, ergonomia tactil, separacion de acciones y presentacion responsive de `TabletTaskSurface`.
+- `scripts/validate-tablet-task-surface.mjs` como validador fisico de `SHELL-UI-017::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -739,6 +744,64 @@ SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen evaluados 7/7 y sin ad
 
 Consumidores migrados por UI016: 0/7. Copias legacy retiradas por UI016: 0. Releases publicadas por UI016: 0. Cambios Supabase por UI016: 0.
 
+## TabletTaskSurface
+
+`TabletTaskSurface` organiza una composicion semantica de trabajo ya resuelta para una superficie tablet autorizada. Materializa `TABLET-TASK-SURFACE-CONTRACT-001` dentro de la raiz privada de autoria de `@vento/ui-web`; no detecta dispositivos, no decide elegibilidad empresarial y no convierte presentacion en autoridad.
+
+Contrato interno materializado:
+
+- `TabletSurfaceClass` contiene exactamente `PERSONAL_TABLET` y `SHARED_TABLET`;
+- `surfaceClass`, `ariaLabel`, `persistentContext`, `workIdentity` y `stepContent` son obligatorios;
+- `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt` son slots opcionales;
+- los siete slots semanticos se preservan en el orden `PERSISTENT_CONTEXT`, `BLOCKING_STATE`, `WORK_IDENTITY`, `STEP_CONTENT`, `PRIMARY_ACTION`, `SECONDARY_SUPPORT`, `RESULT_AND_RECEIPT`;
+- puede existir como maximo una instancia de `PRIMARY_ACTION` y el slot puede faltar cuando no existe una accion segura;
+- la raiz es una `section` nombrada mediante `ariaLabel`, conserva atributos HTML compatibles y no impone `role="application"` ni una live region universal;
+- los hijos interactivos permanecen compuestos externamente y conservan sus contratos propietarios;
+- sin `deviceId`, `actorId`, `permissionCode`, `roleCode`, `siteId`, `areaId`, `shiftId`, `checkinId`, `canOperate`, `canExecute`, `isAuthorized`, `isOffline`, `orientation`, `breakpoint`, `viewportWidth` ni `userAgent` como API propia;
+- sin `window`, `document`, storage, listeners globales, timers, red, router, Supabase o APIs de hardware, por lo que la superficie base permanece server-safe.
+
+### Reflow, ergonomia tactil y modalidades
+
+La semantica no cambia entre retrato y paisaje. En ancho reducido la superficie mantiene una columna principal; en espacio horizontal suficiente puede separar contenido del paso y rail de acciones sin duplicar slots ni crear dos superficies operativas competidoras. El componente no recibe orientacion o breakpoint como contrato de elegibilidad y no exige scroll horizontal ordinario para su estructura minima.
+
+Los controles interactivos compuestos dentro de la superficie reciben un objetivo tactil base de al menos 48 x 48 unidades logicas mediante una minima de 48 CSS px, superando el piso web de 24 x 24 CSS px. El rail de acciones mantiene separacion estructural y los hit areas propios de la superficie no se superponen. La composicion propietaria sigue siendo responsable de no introducir controles hijos incompatibles o solapados.
+
+El foco visible no se elimina y los controles enfocados conservan margen de desplazamiento para permanecer alcanzables ante teclado virtual. UI017 no abre ni cierra el teclado del sistema y cerrar el teclado no confirma ninguna operacion.
+
+Ninguna funcion esencial del patron depende de hover, swipe oculto, drag preciso, long press, doble toque o gesto de borde. Teclado, mouse, stylus, switch access y tecnologias de asistencia permanecen compatibles cuando el navegador y los controles compuestos los soportan.
+
+### Actor, privacidad, conectividad y resultado
+
+`PERSONAL_TABLET` y `SHARED_TABLET` son clases presentacionales ya resueltas externamente y no conceden autoridad permanente. `persistentContext` es obligatorio en ambas; en una tablet compartida la composicion propietaria mantiene perceptible el actor humano y el contexto material sin convertir el dispositivo tecnico en actor.
+
+El componente no transfiere borradores, claims, permisos, sesion o datos personales entre actores. La minimizacion ocurre antes del render y los slots no requieren IDs tecnicos, secretos, tokens, permisos internos completos ni datos de un actor anterior.
+
+Conectividad, frescura, politica offline y estado autoritativo llegan ya proyectados por sus propietarios cuando sean materiales. Guardado local no equivale a confirmacion de servidor, stale read-only no habilita mutaciones y `resultAndReceipt` recibe solamente un resultado o estado ya resuelto; UI017 no fabrica receipts ni decide retries.
+
+### Composicion y fronteras
+
+`ContextIndicator`, `ContextDiagnostic`, `RecoverableErrorState`, `EmptyState`, `Alert`, `TaskNavigation`, `ProcessStatusLine`, `PrimaryActionPanel`, `SensitiveActionConfirmation` y `SimulatedRoleNotice` pueden ser compuestos por sus propietarios sin que `TabletTaskSurface` absorba sus contratos. `AppShell` conserva chrome y navegacion global.
+
+`SHELL-UI-018` conserva la especializacion `FIXED_KIOSK` y queda fuera de UI017. `SHELL-UI-019` conserva checkpoint, reconstruccion y reanudacion de procesos interrumpidos. `SHELL-UI-020` conserva handoff cross-app y autoridad de traspaso entre aplicaciones.
+
+### Consumidores, migracion y prueba fisica posterior
+
+La disposicion vigente de consumidores permanece:
+
+- SHELL: `ELEGIBILIDAD_TABLET_CONDICIONADA_A_SUPERFICIE_Y_PERFIL`;
+- NEXO: `CANDIDATO_OPERATIVO_TABLET`;
+- FOGO: `CANDIDATO_OPERATIVO_TABLET`;
+- ORIGO: `CANDIDATO_OPERATIVO_TABLET`;
+- VISO: `CANDIDATO_TABLET_ACOTADO_SIN_CONVERTIR_BACKOFFICE_DENSO`;
+- PULSO: `CANDIDATO_OPERATIVO_TABLET`;
+- NUMERA: `CANDIDATO_TABLET_ACOTADO_SIN_CONVERTIR_BACKOFFICE_DENSO`.
+
+SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen evaluados 7/7. Faltantes: 0. Duplicados: 0. La materializacion global no adopta ninguna aplicacion.
+
+La migracion posterior permanece reversible por consumidor y exige paridad, compatibilidad, observacion y rollback antes de retirar legacy. La adopcion debe probarse en un dispositivo representativo del perfil real antes de despliegue amplio; la emulacion de escritorio no sustituye esa evidencia fisica.
+
+Consumidores migrados por UI017: 0/7. Copias legacy retiradas por UI017: 0. Releases publicadas por UI017: 0. Cambios Supabase por UI017: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -769,6 +832,8 @@ Consumidores migrados por UI016: 0/7. Copias legacy retiradas por UI016: 0. Rele
 
 `ContextDiagnostic` conserva titulo y resumen antes de los detalles, listas semanticas para condiciones, contexto preservado y acciones afectadas, diferencias estructurales entre los cinco estados, reflow sin perdida de contenido y ausencia de tab stops artificiales. La composicion propietaria controla anuncio y foco cuando un bloqueo critico aparece como resultado directo de una accion.
 
+`TabletTaskSurface` conserva nombre accesible de superficie, orden DOM estable de los siete slots, foco visible de controles hijos, objetivos tactiles amplios, reflow sin clipping, alternativa a gestos y estructura server-safe sin robar foco ni usar color, sonido o movimiento como unico significado.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -779,13 +844,13 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-014`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-016`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-015`
+TAREA ACTUAL APROBADA: `SHELL-UI-017`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-016`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-018`
 
-`SHELL-UI-015::GLOBAL` materializa solamente la superficie presentacional de diagnostico para una condicion contextual ya clasificada y minimizada por su propietario. `SHELL-UI-016` conserva los estados de error recuperable; UI015 no adelanta recuperacion, retry, seleccion de contexto, autorizacion, mutaciones, migracion de consumidores ni patrones posteriores.
+`SHELL-UI-017::GLOBAL` materializa solamente la superficie compartida de composicion tactil para tablet ya clasificada externamente. `SHELL-UI-018` conserva kiosco; UI017 no adelanta modo kiosco, reanudacion, handoff cross-app, autoridad, mutaciones, migracion de consumidores ni patrones posteriores.
 
 ## Fuera de alcance
 
