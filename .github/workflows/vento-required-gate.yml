@@ -93,6 +93,9 @@ jobs:
       - name: Instalar dependencias bloqueadas
         run: npm ci
 
+      - name: Verificar manifiesto de migraciones
+        run: npm run supabase:migrations:manifest:check
+
       - name: Ejecutar fachada pública de pruebas
         run: npm test --silent
 
