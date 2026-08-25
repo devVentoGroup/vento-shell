@@ -42,6 +42,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-018::GLOBAL` materializa internamente `KioskTaskSurface` como superficie server-safe de composicion operativa exclusivamente para un perfil `FIXED_KIOSK` ya resuelto, con siete slots ordenados, contexto persistente, ergonomia tactil y controles aportados por el consumidor, sin detectar kiosco, resolver actor o autoridad, administrar el dispositivo, ejecutar mantenimiento, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-019::GLOBAL` materializa internamente `InterruptedProcessState` como superficie server-safe de continuidad humana para un proceso ya reconstruido y clasificado externamente, con diecisiete estados canonicos, seis campos de resumen y siete slots ordenados, sin reconstruir autoridad desde checkpoints, decidir retries, renovar claims, transferir custodia, persistir estado, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -111,6 +113,9 @@ Fronteras vinculantes:
 - `src/KioskTaskSurface.tsx` como implementacion interna de `KioskTaskSurface`.
 - `src/kiosk-task-surface.css` como estilos internos de estructura semantica, reflow, ergonomia tactil, separacion de acciones y presentacion enfocada de `KioskTaskSurface`.
 - `scripts/validate-kiosk-task-surface.mjs` como validador fisico de `SHELL-UI-018::GLOBAL`.
+- `src/InterruptedProcessState.tsx` como implementacion interna de `InterruptedProcessState`.
+- `src/interrupted-process-state.css` como estilos internos de continuidad, resumen, bloqueos, acciones, resultado y reflow de `InterruptedProcessState`.
+- `scripts/validate-interrupted-process-state.mjs` como validador fisico de `SHELL-UI-019::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -879,6 +884,64 @@ La migracion posterior permanece reversible por consumidor y exige paridad, comp
 
 Consumidores migrados por UI018: 0/7. Copias legacy retiradas por UI018: 0. Releases publicadas por UI018: 0. Cambios Supabase por UI018: 0.
 
+## InterruptedProcessState
+
+`InterruptedProcessState` presenta un proceso interrumpido despues de que su propietario reconstruyo el estado autoritativo y clasifico externamente la posibilidad de reanudacion. Materializa `INTERRUPTED-PROCESS-PRESENTATION-CONTRACT-001` dentro de la raiz privada de autoria de `@vento/ui-web`; no persiste checkpoints, no reconstruye autoridad, no decide retries y no ejecuta efectos empresariales.
+
+Contrato interno materializado:
+
+- `InterruptedProcessStatus` contiene exactamente `NO_CHECKPOINT`, `DRAFT_ONLY`, `CHECKPOINT_AVAILABLE`, `VALIDATING`, `RESUMABLE`, `RESUMABLE_WITH_REVIEW`, `WAITING_FOR_DEPENDENCY`, `HANDOFF_REQUIRED`, `REASSIGNMENT_REQUIRED`, `CONFLICT`, `RESULT_UNKNOWN`, `REAUTH_REQUIRED`, `RECONCILIATION_REQUIRED`, `SUPERSEDED`, `COMPLETED`, `EXPIRED` e `INVALID`;
+- no existen aliases `READY_TO_RESUME`, `PAUSED`, `RESTORABLE`, `STALE_DRAFT`, `AUTO_RESUME` ni `RETRYABLE_INTERRUPTION`;
+- `InterruptedProcessSummary` conserva solamente las proyecciones presentacionales `lastProgress`, `preservedWork`, `changesSinceInterruption`, `pendingOrUnknownResults`, `claimAndCustodySummary` y `expiryOrDependencySummary`;
+- `status`, `ariaLabel`, `persistentContext`, `workIdentity` e `interruptionSummary` son obligatorios;
+- `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt` son slots opcionales;
+- los siete slots conservan el orden `PERSISTENT_CONTEXT`, `BLOCKING_STATE`, `WORK_IDENTITY`, `STEP_CONTENT`, `PRIMARY_ACTION`, `SECONDARY_SUPPORT`, `RESULT_AND_RECEIPT`;
+- puede existir como maximo una instancia de `PRIMARY_ACTION` y su ausencia es valida;
+- la raiz es una `section` nombrada mediante `ariaLabel`; no impone `role="application"`, `role="alert"` ni `aria-live` universal;
+- sin `use client`, hooks, timers, red, router, storage, Supabase, queues, Service Worker, APIs de hardware o listeners globales, por lo que la superficie base permanece server-safe.
+
+### Checkpoint, continuidad y autoridad
+
+La direccion permitida es `checkpoint y estado propietarios -> reconstruccion y revalidacion -> proyeccion humana segura -> InterruptedProcessState`. `ProcessCheckpoint` crudo no entra como prop publica y el componente no recibe `checkpointId`, `processInstanceId`, `actorId`, `principalId`, `deviceId`, `contextId`, `siteId`, `areaId`, `shiftId`, `checkinId`, `claimId`, `custodyRef`, `draftRef`, `pendingOperationIds`, `permissionCode`, `roleCode`, `idempotencyKey`, `receiptId`, `resourceVersion`, `canResume`, `isAuthorized`, `resumeUrl` ni `returnTo`.
+
+URL, historial del navegador y estado React no constituyen checkpoint ni autoridad. `localStorage`, `sessionStorage`, una pestana abierta, un modal o un snapshot visual tampoco sustituyen reconstruccion autoritativa. La separacion permanece `BORRADOR != CHECKPOINT != OPERACION PENDIENTE != RECEIPT != ESTADO EMPRESARIAL`.
+
+`CHECKPOINT_AVAILABLE` informa un punto todavia no validado y no habilita continuacion empresarial. `VALIDATING` mantiene la continuacion empresarial ausente mientras el propietario comprueba vigencia. `RESUMABLE` solo llega despues de elegibilidad externa completa. `RESUMABLE_WITH_REVIEW` conserva cambios visibles antes de continuar y no aplica `last write wins`. `RESULT_UNKNOWN` bloquea retry ciego y no fabrica una nueva idempotency key. `COMPLETED`, `EXPIRED`, `SUPERSEDED` e `INVALID` no convierten el punto anterior en reanudable por fallback visual.
+
+### Actor, contexto, claims, custodia y resultados
+
+Cambiar actor no transfiere borrador, claim, custodia ni autoridad. Cambiar sede, area, turno, check-in, rol operativo, delegacion, simulacion o dispositivo exige una resolucion externa nueva. Un cambio de dispositivo no promete disponibilidad de datos local-only y un reinicio, background, recarga o actualizacion no ejecuta operaciones pendientes automaticamente ni restaura autoridad stale.
+
+Claims y leases llegan como conclusion humana ya resuelta; UI019 no renueva, libera, toma ni fuerza ownership. La custodia no se infiere de una pantalla abierta, un borrador o un comando enviado. `REASSIGNMENT_REQUIRED`, `HANDOFF_REQUIRED`, `CONFLICT`, `REAUTH_REQUIRED` y `RECONCILIATION_REQUIRED` conservan sus efectos en propietarios externos. Un handoff requerido no equivale a handoff aceptado.
+
+Acciones sensibles vuelven a validar estado actual y reautorizacion cuando corresponda; `SensitiveActionConfirmation` conserva confirmacion proporcional. Un archivo local no equivale a evidencia vinculada y un comando de periferico no equivale a ejecucion fisica confirmada. Los lotes reconstruidos no vuelven a promover elementos ya confirmados como pendientes.
+
+### Composicion, privacidad y accesibilidad
+
+`TaskNavigation` conserva navegacion de trabajo y `ProcessStatusLine` conserva avance de proceso. `ContextDiagnostic` conserva diagnostico contextual y `RecoverableErrorState` recuperacion de fallos observados. `PrimaryActionPanel` conserva jerarquia de accion y `SensitiveActionConfirmation` confirmacion sensible. `TabletTaskSurface` y `KioskTaskSurface` conservan sus clases fisicas exteriores. `SHELL-UI-020` conserva handoff cross-app, deep links y autoridad de traspaso; UI019 no crea deep links ni transporta autoridad entre aplicaciones.
+
+En dispositivo compartido la lista recuperable se filtra por actor antes de construir la superficie. No se expone automaticamente checkpoint, borrador, claim, filtros, busquedas o datos privados del actor anterior. Retencion, expiracion, revocacion, supersesion y borrado seguro permanecen politicas externas; UI019 no usa timers autoritativos. Cerrar la superficie no descarta trabajo y guardar para despues no congela autoridad.
+
+El copy ordinario usa lenguaje humano de trabajo y no codigos de infraestructura. El foco visible no se elimina, la superficie no fuerza foco en cada actualizacion y no crea traps de teclado. Los controles compuestos conservan objetivos tactiles de al menos 48 x 48 CSS px, reflow, zoom, lector de pantalla y navegacion por teclado sin requerir hover, movimiento o scroll horizontal estructural.
+
+### Consumidores, migracion y prueba fisica posterior
+
+La disposicion vigente de consumidores permanece:
+
+- SHELL: `ELEGIBILIDAD_CONDICIONADA_A_REANUDACION_RESUELTA`;
+- NEXO: `CANDIDATO_OPERATIVO_PARA_REANUDACION`;
+- FOGO: `CANDIDATO_OPERATIVO_PARA_REANUDACION`;
+- ORIGO: `CANDIDATO_OPERATIVO_PARA_REANUDACION`;
+- VISO: `CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA`;
+- PULSO: `CANDIDATO_OPERATIVO_PARA_REANUDACION`;
+- NUMERA: `CANDIDATO_ADMINISTRATIVO_PARA_REANUDACION_CONTROLADA`.
+
+SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen evaluados 7/7. Faltantes: 0. Duplicados: 0. La materializacion global no adopta ninguna aplicacion, no crea checkpoints persistidos y no modifica Supabase.
+
+La migracion posterior permanece reversible por consumidor y exige paridad, compatibilidad, observacion y rollback antes de retirar legacy. La certificacion posterior debe cubrir recarga, background, reinicio, perdida de energia, expiracion, revocacion, cambio de actor, cambio de area, cambio de dispositivo, claim tomado, recurso cambiado, resultado desconocido, esquema anterior, archivo local, periferico incierto, handoff, custodia, lotes parciales, concurrencia entre dispositivos, accesibilidad y privacidad.
+
+Consumidores migrados por UI019: 0/7. Copias legacy retiradas por UI019: 0. Releases publicadas por UI019: 0. Cambios Supabase por UI019: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -923,13 +986,13 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-017`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-018`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-018`
+TAREA ACTUAL APROBADA: `SHELL-UI-019`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-019`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-020`
 
-`SHELL-UI-018::GLOBAL` materializa solamente la superficie compartida de composicion operativa para un perfil `FIXED_KIOSK` ya resuelto externamente. `SHELL-UI-019` conserva proceso interrumpido; UI018 no adelanta checkpoint, reanudacion, handoff cross-app, autoridad, administracion del dispositivo, mutaciones, migracion de consumidores ni patrones posteriores.
+`SHELL-UI-019::GLOBAL` materializa solamente la superficie compartida de presentacion para un proceso interrumpido ya reconstruido y clasificado externamente. `SHELL-UI-020` conserva handoff cross-app; UI019 no adelanta deep links autoritativos, transferencia entre aplicaciones, persistencia, autoridad, mutaciones, migracion de consumidores ni patrones posteriores.
 
 ## Fuera de alcance
 
