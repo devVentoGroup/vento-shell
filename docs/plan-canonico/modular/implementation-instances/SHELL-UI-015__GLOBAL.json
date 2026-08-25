@@ -1,10 +1,85 @@
 {
   "instance_id": "SHELL-UI-015::GLOBAL",
   "task_id": "SHELL-UI-015",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/ContextDiagnostic.tsx",
+      "change": "CREATE",
+      "scope": "Materialize the approved ContextDiagnostic as a server-safe presentational surface for a human, minimized and already-resolved contextual diagnosis with the five canonical diagnostic states, ordered conditions, preserved ContextIndicatorItem values, externally determined blocked action labels and a safe human resolution."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/context-diagnostic.css",
+      "change": "CREATE",
+      "scope": "Materialize token-based responsive presentation with structural state distinctions, semantic condition and context groups, narrow-screen reflow and no modal, recovery or authority behavior."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/scripts/validate-context-diagnostic.mjs",
+      "change": "CREATE",
+      "scope": "Validate the approved SHELL-UI-015 API, five-state compatibility, ordered runtime rendering, privacy, server-safety, authorization and recovery boundaries, responsive styling, consumer non-migration and immutable adjacent scope."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/README.md",
+      "change": "MODIFY",
+      "scope": "Reconcile the private ui-web authoring README through SHELL-UI-015, documenting ContextDiagnostic ownership, state taxonomy, projection and privacy boundaries, composition boundaries, accessibility handoff, consumer dispositions and deferred exports and releases."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/SHELL-UI-015__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, physical lifecycle transitions and consolidated evidence only for SHELL-UI-015::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after materialization and before IMPLEMENTED; require REPAIR_SCOPE PASS and READY_FOR_VALIDATION SI without editing the repair implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-context-diagnostic.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/ContextDiagnostic.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-25T09:17:40-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Ayúdame con la última tarea de implementación; terminar desde donde se quedó",
+    "source_contract_sha256": "fc2e0b744a47240025472f329a91d3e57e4728096b9c6da18050fb7afc03bca2"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/ContextDiagnostic.tsx created as an internal server-safe presentational diagnosis surface with five ContextIndicator-compatible states, ordered human conditions, preserved context, externally determined blocked action labels and safe resolution content without context, authority or recovery ownership",
+    "MATERIALIZATION packages/ui-web/src/context-diagnostic.css created with existing ui tokens, structural state distinctions, narrow-screen reflow and no interaction or fixed geometry",
+    "MATERIALIZATION packages/ui-web/scripts/validate-context-diagnostic.mjs and packages/ui-web/README.md completed within the authorized SHELL-UI-015 scope",
+    "SOURCE CONTRACT SHA256 fc2e0b744a47240025472f329a91d3e57e4728096b9c6da18050fb7afc03bca2",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VISUAL_I18N_AUDIT npm run audit:i18n attempted and NOT_AVAILABLE because vento-shell does not define the audit:i18n script; package.json remained unchanged as out of scope",
+    "VALIDATION ContextDiagnostic validator PASS; scenarios=54 states=5 server_safe=YES authority=NONE recovery=EXTERNAL consumers=0/7 exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/ContextDiagnostic.tsx",
+    "VALIDATION quality:lint:ratchet PASS with 7 touched files clean; 10 errors and 11 warnings remain historical",
+    "VALIDATION git --no-pager diff --check PASS with only the existing Windows LF to CRLF working-copy warning for packages/ui-web/README.md",
+    "VALIDATION docs:plan:build PASS; next physical instance SHELL-UI-016::GLOBAL materialized as an empty PENDING_AUTHORIZATION draft",
+    "VALIDATION docs:plan:check PASS; implementation control advanced to AUTORIZAR_IMPLEMENTACION SHELL-UI-016::GLOBAL",
+    "VALIDATION docs:plan:test PASS; 249 tests, 0 failures",
+    "VALIDATION docs:treq:check PASS; 7066 requirements, 19 domains, 21 fragments, 0 duplicates and 0 unresolved relations",
+    "VALIDATION docs:treq:test PASS; 56 tests, 0 failures",
+    "RESULT SHELL-UI-015::GLOBAL VERIFIED"
+  ]
 }
