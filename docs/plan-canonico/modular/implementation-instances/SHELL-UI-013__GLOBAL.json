@@ -1,10 +1,79 @@
 {
   "instance_id": "SHELL-UI-013::GLOBAL",
   "task_id": "SHELL-UI-013",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/PrimaryActionPanel.tsx",
+      "change": "CREATE",
+      "scope": "Materialize the approved PrimaryActionPanel as a server-safe presentational surface for one owner-resolved primary action with stable actionId, human copy and explicit READY, PENDING, CONTEXTUAL_DISABLED and REQUIRED_BLOCKED states."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/primary-action-panel.css",
+      "change": "CREATE",
+      "scope": "Materialize token-based responsive hierarchy for primary and optional secondary controls with non-color structural distinctions for pending and blocked presentation states."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/scripts/validate-primary-action-panel.mjs",
+      "change": "CREATE",
+      "scope": "Validate the approved SHELL-UI-013 API, presentation-state semantics, Button composition boundary, accessibility, server-safe behavior, consumer non-migration and immutable adjacent scope."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/README.md",
+      "change": "MODIFY",
+      "scope": "Reconcile the private ui-web authoring README through SHELL-UI-013, documenting PrimaryActionPanel ownership, state taxonomy, Button boundary, accessibility, consumer handoff and deferred exports/releases."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/SHELL-UI-013__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, physical lifecycle transitions and consolidated evidence only for SHELL-UI-013::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after materialization and before IMPLEMENTED; require repair scope PASS and READY_FOR_VALIDATION without adding manual fixed-scope postconditions."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-primary-action-panel.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/PrimaryActionPanel.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T19:03:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "7ce826f3e35f3e7c6516d42400171ddbcb830b518b80ecec7619d42d09015d1c"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/PrimaryActionPanel.tsx created as server-safe presentational hierarchy for one owner-resolved primary action with stable actionId and explicit READY/PENDING/CONTEXTUAL_DISABLED/REQUIRED_BLOCKED states",
+    "MATERIALIZATION packages/ui-web/src/primary-action-panel.css created with token-based responsive hierarchy and non-color structural distinctions for pending and blocked states",
+    "MATERIALIZATION packages/ui-web/scripts/validate-primary-action-panel.mjs and full README update completed without prior ui-web component, package manifest, consumer, Supabase, action-selection, sensitive-confirmation or TREQ changes",
+    "SOURCE CONTRACT SHA256 7ce826f3e35f3e7c6516d42400171ddbcb830b518b80ecec7619d42d09015d1c",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION PrimaryActionPanel validator PASS scenarios=72 server_safe=YES authority=NONE action_selection=EXTERNAL consumers=0/7 exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/PrimaryActionPanel.tsx",
+    "VALIDATION quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-013::GLOBAL VERIFIED"
+  ]
 }
