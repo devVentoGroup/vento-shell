@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1042** |
+| Aprobadas | **1043** |
 | En propuesta | **0** |
-| No iniciadas | **552** |
+| No iniciadas | **551** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.37% (1042/1594)** |
+| Porcentaje de completamiento | **65.43% (1043/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-DB-008` — Implementar triggers únicamente como barrera defensiva final | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-DB-009` — Registrar valor previo, valor resultante y versión de regla | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-DB-009` — Registrar valor previo, valor resultante y versión de regla | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-DB-001` — Crear registro de sistemas e integraciones externas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1252,7 +1252,7 @@
 | ✅ APROBADA | `DATA-NORM-DB-006` | Implementar constraints después de reconciliar datos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-007` | Implementar índices de búsqueda y unicidad normalizada | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-008` | Implementar triggers únicamente como barrera defensiva final | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
-| ⬜ NO INICIADA | `DATA-NORM-DB-009` | Registrar valor previo, valor resultante y versión de regla | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
+| ✅ APROBADA | `DATA-NORM-DB-009` | Registrar valor previo, valor resultante y versión de regla | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-010` | Probar idempotencia, rollback y ausencia de cambios semánticos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `INT-DB-001` | Crear registro de sistemas e integraciones externas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-002` | Crear referencias de credenciales sin almacenar secretos en tablas expuestas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |

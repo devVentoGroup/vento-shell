@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1042** |
+| Tareas aprobadas | **1043** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **552** |
+| Tareas no iniciadas | **551** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **65.37% (1042/1594)** |
+| Porcentaje de completamiento | **65.43% (1043/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final** |
-| Tarea actual | **DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla** |
+| Última tarea aprobada | **DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla** |
+| Tarea actual | **DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos** |
+| Siguiente tarea | **INT-DB-001 — Crear registro de sistemas e integraciones externas** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 41 de 51 aprobadas; DATA-NORM-DB-009 pendiente** |
+| Progreso del bloque | **BLOQUE R: 42 de 51 aprobadas; DATA-NORM-DB-010 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-UI-018::GLOBAL** |
-| Carril documental | **ACTIVO — DATA-NORM-DB-009** |
+| Carril documental | **ACTIVO — DATA-NORM-DB-010** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-UI-018::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-DB-008` — Implementar triggers únicamente como barrera defensiva final |
-| Tarea actual | `DATA-NORM-DB-009` — Registrar valor previo, valor resultante y versión de regla — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos |
+| Última aprobada | `DATA-NORM-DB-009` — Registrar valor previo, valor resultante y versión de regla |
+| Tarea actual | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos — **NO INICIADA** |
+| Siguiente tarea | `INT-DB-001` — Crear registro de sistemas e integraciones externas |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 41 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-009** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 42 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-010** |
 | Implementación física | **SHELL-UI-018::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
-        ↓
-TAREA ACTUAL
 DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-DB-001 — Crear registro de sistemas e integraciones externas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 41 de 51 tareas aprobadas
+BLOQUE R — 42 de 51 tareas aprobadas
 ```

@@ -2183,13 +2183,13 @@ La reutilización no cambia texto, identidad, estado ni relaciones de esos requi
 
 #### 44. Evidencia de validación
 
-| Clase     | Estado         | Evidencia                                                                                                                                                                                                                      |
-| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| BUILD     | NOT_EXECUTED   | La batería npm del checkout completo no pudo ejecutarse en este entorno de preparación porque no existe un checkout integral accesible desde el runtime; no se declara build como aprobado.                                    |
-| LOCAL     | PASS           | El artefacto fue comprobado contra formato canónico, metadata obligatoria, secciones, continuidad, cero TREQ en la sección de cambios, UTF-8, LF, ausencia de BOM, whitespace final, placeholders y contenido prohibido.       |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                        |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED   | La batería npm del checkout completo no pudo ejecutarse en este entorno de preparación porque no existe un checkout integral accesible desde el runtime; no se declara build como aprobado.                                                      |
+| LOCAL     | PASS           | El artefacto fue comprobado contra formato canónico, metadata obligatoria, secciones, continuidad, cero TREQ en la sección de cambios, UTF-8, LF, ausencia de BOM, whitespace final, placeholders y contenido prohibido.                         |
 | REMOTA    | PASS           | Se verificaron `main`, continuidad, topología, owner, políticas y scripts vigentes por GitHub; además se inspeccionó read-only el proyecto Supabase de referencia y las funciones legacy relacionadas. La revisión remota no produjo DDL ni DML. |
-| OPERATIVA | NOT_EXECUTED   | No se ejecutaron consumidores, corpus TypeScript-vs-SQL, benchmarks, cutover, coexistencia ni rollback porque esta tarea no materializa funciones.                                                                             |
-| FÍSICA    | NOT_APPLICABLE | Esta definición documental no autoriza crear, cambiar, retirar ni desplegar funciones SQL, migraciones, grants, datos o configuración remota.                                                                                  |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron consumidores, corpus TypeScript-vs-SQL, benchmarks, cutover, coexistencia ni rollback porque esta tarea no materializa funciones.                                                                                               |
+| FÍSICA    | NOT_APPLICABLE | Esta definición documental no autoriza crear, cambiar, retirar ni desplegar funciones SQL, migraciones, grants, datos o configuración remota.                                                                                                    |
 
 ---
 
@@ -2924,15 +2924,15 @@ Ninguno se adopta como representación canónica solo por nombre o parecido.
 
 La disposición inicial es:
 
-| Objeto | Disposición |
-| --- | --- |
-| `_vento_norm(text)` | LEGACY_NO_EQUIVALENTE; compacta whitespace global y colapsa `NULL` a vacío |
-| `_vento_slugify(text)` | LEGACY_NO_EQUIVALENTE; produce slug ASCII |
-| `_navigation_slugify(text)` | LEGACY_NO_EQUIVALENTE; translitera y colapsa `ñ` a `n` |
-| `unaccent(text)` | LEGACY_NO_EQUIVALENTE; `STABLE` y semántica más amplia que `SEARCH_ACCENT_KEY` |
-| `document_number_normalized` | CONTRATO_TÉCNICO_ESPECÍFICO; no se generaliza |
-| `normalized_option_name` | CANDIDATO_LEGACY_A_RECONCILIAR; requiere procedencia y paridad |
-| índices `lower/trim/btrim` | LEGACY_HASTA_CERTIFICAR; no equivalen por similitud |
+| Objeto                       | Disposición                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| `_vento_norm(text)`          | LEGACY_NO_EQUIVALENTE; compacta whitespace global y colapsa `NULL` a vacío     |
+| `_vento_slugify(text)`       | LEGACY_NO_EQUIVALENTE; produce slug ASCII                                      |
+| `_navigation_slugify(text)`  | LEGACY_NO_EQUIVALENTE; translitera y colapsa `ñ` a `n`                         |
+| `unaccent(text)`             | LEGACY_NO_EQUIVALENTE; `STABLE` y semántica más amplia que `SEARCH_ACCENT_KEY` |
+| `document_number_normalized` | CONTRATO_TÉCNICO_ESPECÍFICO; no se generaliza                                  |
+| `normalized_option_name`     | CANDIDATO_LEGACY_A_RECONCILIAR; requiere procedencia y paridad                 |
+| índices `lower/trim/btrim`   | LEGACY_HASTA_CERTIFICAR; no equivalen por similitud                            |
 
 La instancia de cada paquete podrá preservar, coexistir, sustituir o retirar únicamente con evidencia y tarea propietaria.
 
@@ -3282,16 +3282,16 @@ La secuencia lógica será:
 
 #### 43. Handoffs
 
-| Materia | Propietario | Handoff |
-| --- | --- | --- |
-| persistencia de reglas y versiones | `DATA-NORM-DB-001` | `version_set_digest`, estados y procedencia disponibles |
-| primitivas SQL deterministas | `DATA-NORM-DB-002` | función certificada solo cuando la estrategia la necesita |
-| dry-runs y colisiones | `DATA-NORM-DB-004` | representación candidata, baseline y métricas requeridas |
-| backfills | `DATA-NORM-DB-005` | estructura preparada y estrategia idempotente |
-| constraints | `DATA-NORM-DB-006` | únicamente después de reconciliar datos |
-| índices | `DATA-NORM-DB-007` | expresión/columna indexable y contrato de query compatibles |
-| triggers | `DATA-NORM-DB-008` | únicamente barrera defensiva final |
-| auditoría operacional | `DATA-NORM-DB-009` | fuente, derivación, versión y resultado atribuibles |
+| Materia                            | Propietario        | Handoff                                                     |
+| ---------------------------------- | ------------------ | ----------------------------------------------------------- |
+| persistencia de reglas y versiones | `DATA-NORM-DB-001` | `version_set_digest`, estados y procedencia disponibles     |
+| primitivas SQL deterministas       | `DATA-NORM-DB-002` | función certificada solo cuando la estrategia la necesita   |
+| dry-runs y colisiones              | `DATA-NORM-DB-004` | representación candidata, baseline y métricas requeridas    |
+| backfills                          | `DATA-NORM-DB-005` | estructura preparada y estrategia idempotente               |
+| constraints                        | `DATA-NORM-DB-006` | únicamente después de reconciliar datos                     |
+| índices                            | `DATA-NORM-DB-007` | expresión/columna indexable y contrato de query compatibles |
+| triggers                           | `DATA-NORM-DB-008` | únicamente barrera defensiva final                          |
+| auditoría operacional              | `DATA-NORM-DB-009` | fuente, derivación, versión y resultado atribuibles         |
 
 `DATA-NORM-DB-003` no absorbe ninguno de estos owners.
 
@@ -3339,13 +3339,13 @@ Estos requisitos se reutilizan como trazabilidad y no cambian su contenido, iden
 
 #### 46. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | El build del checkout del usuario corresponde a la batería documental posterior al reemplazo del marcador. |
-| LOCAL | PASS | Artefacto comprobado contra metadata, secciones, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y heurísticas semánticas vigentes; hallazgos bloqueantes: 0. |
-| REMOTA | PASS | Fuentes canónicas de `main`, package compartido y baseline read-only de `vento-os-dev` revisados; inventario físico contrastado y mutaciones remotas observadas: 0. |
-| OPERATIVA | NOT_EXECUTED | Pruebas de consulta, dry-run, backfill, plan, carga, concurrencia y cutover pertenecen a futuras instancias físicas autorizadas. |
-| FÍSICA | NOT_APPLICABLE | Esta aprobación documental no materializa columnas, expresiones, funciones, índices, triggers, migraciones ni datos. |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                               |
+| --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El build del checkout del usuario corresponde a la batería documental posterior al reemplazo del marcador.                                                                                                              |
+| LOCAL     | PASS           | Artefacto comprobado contra metadata, secciones, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y heurísticas semánticas vigentes; hallazgos bloqueantes: 0. |
+| REMOTA    | PASS           | Fuentes canónicas de `main`, package compartido y baseline read-only de `vento-os-dev` revisados; inventario físico contrastado y mutaciones remotas observadas: 0.                                                     |
+| OPERATIVA | NOT_EXECUTED   | Pruebas de consulta, dry-run, backfill, plan, carga, concurrencia y cutover pertenecen a futuras instancias físicas autorizadas.                                                                                        |
+| FÍSICA    | NOT_APPLICABLE | Esta aprobación documental no materializa columnas, expresiones, funciones, índices, triggers, migraciones ni datos.                                                                                                    |
 
 ---
 
@@ -4274,36 +4274,36 @@ Un dry-run nunca reescribe el original recibido para hacerlo coincidir con la fo
 
 Cada ejecución deberá producir, cuando aplique, como mínimo:
 
-| Métrica | Regla |
-| --- | --- |
-| fuentes esperadas | universo aprobado del paquete |
-| fuentes observadas | fuentes efectivamente leídas |
-| filas o unidades observadas | total antes de elegibilidad |
-| unidades elegibles | contexto completo y política resoluble |
-| `NO_CHANGE` | evaluación completa sin cambio |
-| `PROPOSED_CHANGE` | cambio candidato antes de readiness |
-| bloqueadas por política | sin fallback |
-| bloqueadas por conflicto | separadas de error técnico |
-| revisión requerida | no autoaprobada |
-| escaladas estructuralmente | fuera de normalización textual |
-| fallos técnicos | restan cobertura válida |
-| `NULL` | conteo propio |
-| vacíos | conteo propio |
-| derivaciones esperadas | según estrategia de DB-003 |
-| derivaciones observadas | existentes o calculadas |
-| derivaciones obsoletas | no participan como activas |
-| colisiones exactas | por representación y scope |
-| colisiones tolerantes | por representación, perfil y scope |
-| grupos por clase | diez clases canónicas |
-| miembros por clase | sin doble conteo global artificial |
-| falsos positivos por scope | separados |
-| diferencias legacy/canónico | por helper o algoritmo |
-| consumidores registrados | conjunto aplicable |
-| consumidores afectados | evidencia por consumidor |
-| relaciones relevantes | con y sin FK cuando el riesgo lo exija |
-| filas aptas para backfill | conjunto cerrado |
-| filas bloqueadas para backfill | conjunto cerrado |
-| filas sin backfill | `NO_CHANGE` o `NOT_APPLICABLE` |
+| Métrica                        | Regla                                  |
+| ------------------------------ | -------------------------------------- |
+| fuentes esperadas              | universo aprobado del paquete          |
+| fuentes observadas             | fuentes efectivamente leídas           |
+| filas o unidades observadas    | total antes de elegibilidad            |
+| unidades elegibles             | contexto completo y política resoluble |
+| `NO_CHANGE`                    | evaluación completa sin cambio         |
+| `PROPOSED_CHANGE`              | cambio candidato antes de readiness    |
+| bloqueadas por política        | sin fallback                           |
+| bloqueadas por conflicto       | separadas de error técnico             |
+| revisión requerida             | no autoaprobada                        |
+| escaladas estructuralmente     | fuera de normalización textual         |
+| fallos técnicos                | restan cobertura válida                |
+| `NULL`                         | conteo propio                          |
+| vacíos                         | conteo propio                          |
+| derivaciones esperadas         | según estrategia de DB-003             |
+| derivaciones observadas        | existentes o calculadas                |
+| derivaciones obsoletas         | no participan como activas             |
+| colisiones exactas             | por representación y scope             |
+| colisiones tolerantes          | por representación, perfil y scope     |
+| grupos por clase               | diez clases canónicas                  |
+| miembros por clase             | sin doble conteo global artificial     |
+| falsos positivos por scope     | separados                              |
+| diferencias legacy/canónico    | por helper o algoritmo                 |
+| consumidores registrados       | conjunto aplicable                     |
+| consumidores afectados         | evidencia por consumidor               |
+| relaciones relevantes          | con y sin FK cuando el riesgo lo exija |
+| filas aptas para backfill      | conjunto cerrado                       |
+| filas bloqueadas para backfill | conjunto cerrado                       |
+| filas sin backfill             | `NO_CHANGE` o `NOT_APPLICABLE`         |
 
 Una métrica no aplicable se declara como tal; no se convierte en cero sin explicación.
 
@@ -4698,12 +4698,12 @@ Si la fuente cambia materialmente antes del backfill, deberá reevaluarse la par
 
 La responsabilidad permanece separada:
 
-| Materia | Propietario |
-| --- | --- |
-| ejecutar escrituras de backfill aprobadas | `DATA-NORM-DB-005` |
-| crear o reforzar constraints después de reconciliar | `DATA-NORM-DB-006` |
-| crear índices de búsqueda o unicidad normalizada | `DATA-NORM-DB-007` |
-| crear triggers como barrera defensiva final | `DATA-NORM-DB-008` |
+| Materia                                              | Propietario        |
+| ---------------------------------------------------- | ------------------ |
+| ejecutar escrituras de backfill aprobadas            | `DATA-NORM-DB-005` |
+| crear o reforzar constraints después de reconciliar  | `DATA-NORM-DB-006` |
+| crear índices de búsqueda o unicidad normalizada     | `DATA-NORM-DB-007` |
+| crear triggers como barrera defensiva final          | `DATA-NORM-DB-008` |
 | persistir auditoría operacional de valores y efectos | `DATA-NORM-DB-009` |
 
 DB-004 puede medir riesgo y preparar evidencia para esas tareas, pero no absorbe su materialización.
@@ -4959,13 +4959,13 @@ Esta trazabilidad no modifica el registro 04A.
 
 #### 66. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La batería de build y validadores integrales corresponde al checkout documental después de incorporar el contrato en su archivo propietario. |
-| LOCAL | PASS | Artefacto sometido a comprobación estática de título, metadata, secciones obligatorias, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y reglas semánticas reproducibles aplicables al archivo aislado. |
-| REMOTA | PASS | Fuentes canónicas de `main`, package `@vento/data-normalization`, contratos de transición, registro DATA y metadatos de `vento-os-dev` fueron contrastados; la recaptura de Supabase se ejecutó dentro de transacciones `READ ONLY` y no realizó mutaciones. |
-| OPERATIVA | NOT_EXECUTED | Los dry-runs masivos, clasificación física de colisiones, rendimiento, cobertura de consumidores y readiness por `package_id` pertenecen a futuras instancias autorizadas. |
-| FÍSICA | NOT_APPLICABLE | Esta aprobación documental no ejecuta DDL, DML, backfills, constraints, índices, triggers, fusiones ni cambios de datos. |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                          |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED   | La batería de build y validadores integrales corresponde al checkout documental después de incorporar el contrato en su archivo propietario.                                                                                                                       |
+| LOCAL     | PASS           | Artefacto sometido a comprobación estática de título, metadata, secciones obligatorias, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y reglas semánticas reproducibles aplicables al archivo aislado. |
+| REMOTA    | PASS           | Fuentes canónicas de `main`, package `@vento/data-normalization`, contratos de transición, registro DATA y metadatos de `vento-os-dev` fueron contrastados; la recaptura de Supabase se ejecutó dentro de transacciones `READ ONLY` y no realizó mutaciones.       |
+| OPERATIVA | NOT_EXECUTED   | Los dry-runs masivos, clasificación física de colisiones, rendimiento, cobertura de consumidores y readiness por `package_id` pertenecen a futuras instancias autorizadas.                                                                                         |
+| FÍSICA    | NOT_APPLICABLE | Esta aprobación documental no ejecuta DDL, DML, backfills, constraints, índices, triggers, fusiones ni cambios de datos.                                                                                                                                           |
 
 ---
 
@@ -5243,11 +5243,11 @@ Una ausencia, digest incompatible o miembro sin clasificación bloquea la ejecuc
 
 Solo se aceptan:
 
-| Estado | Conducta de DB-005 |
-| --- | --- |
-| `READY` | puede preparar la instancia física, pero debe revalidar todas las precondiciones antes del primer efecto |
-| `BLOCKED` | no ejecuta DML; conserva la causa, owner y condición de salida |
-| `NOT_REQUIRED` | cierra como `NOT_REQUIRED`; no crea escrituras vacías, updates neutrales ni lotes artificiales |
+| Estado         | Conducta de DB-005                                                                                       |
+| -------------- | -------------------------------------------------------------------------------------------------------- |
+| `READY`        | puede preparar la instancia física, pero debe revalidar todas las precondiciones antes del primer efecto |
+| `BLOCKED`      | no ejecuta DML; conserva la causa, owner y condición de salida                                           |
+| `NOT_REQUIRED` | cierra como `NOT_REQUIRED`; no crea escrituras vacías, updates neutrales ni lotes artificiales           |
 
 `READY` no equivale a autorización física, no confirma identidad y no elimina la revalidación.
 
@@ -5875,13 +5875,13 @@ Estas referencias son trazabilidad de cobertura vigente; no representan cambios 
 
 #### 43. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | El build documental completo corresponde al checkout de la rama de tarea después de incorporar el bloque. |
-| LOCAL | PASS | Artefacto contrastado contra contrato de entrega, política de formato, política de desarrollo, metadata obligatoria, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF y reglas de higiene del entregable. |
-| REMOTA | PASS | `main`, owner R, contratos de transición, 04A DATA, package `@vento/data-normalization` y metadatos read-only de `vento-os-dev` fueron contrastados; PostgreSQL 17.6 y ausencia de infraestructura canónica ya materializada de backfill/checkpoint/crosswalk fueron observados sin mutaciones. |
-| OPERATIVA | NOT_EXECUTED | Lotes, locks, throughput, writers, reanudación, reconciliación y recuperación pertenecen a futuras instancias físicas autorizadas. |
-| FÍSICA | NOT_APPLICABLE | Esta aprobación documental no ejecuta DDL, DML, migraciones, backfills, merges, constraints, índices, triggers ni cambios remotos. |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                       |
+| --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | El build documental completo corresponde al checkout de la rama de tarea después de incorporar el bloque.                                                                                                                                                                                       |
+| LOCAL     | PASS           | Artefacto contrastado contra contrato de entrega, política de formato, política de desarrollo, metadata obligatoria, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF y reglas de higiene del entregable.                                                               |
+| REMOTA    | PASS           | `main`, owner R, contratos de transición, 04A DATA, package `@vento/data-normalization` y metadatos read-only de `vento-os-dev` fueron contrastados; PostgreSQL 17.6 y ausencia de infraestructura canónica ya materializada de backfill/checkpoint/crosswalk fueron observados sin mutaciones. |
+| OPERATIVA | NOT_EXECUTED   | Lotes, locks, throughput, writers, reanudación, reconciliación y recuperación pertenecen a futuras instancias físicas autorizadas.                                                                                                                                                              |
+| FÍSICA    | NOT_APPLICABLE | Esta aprobación documental no ejecuta DDL, DML, migraciones, backfills, merges, constraints, índices, triggers ni cambios remotos.                                                                                                                                                              |
 
 #### 44. Decisiones vinculantes
 
@@ -6097,17 +6097,17 @@ Drift material invalida la parte de la evidencia que dependa de ese estado.
 
 Cada candidato termina exactamente en una de estas disposiciones:
 
-| Disposición | Significado |
-| --- | --- |
-| `NO_CONSTRAINT_REQUIRED` | el estado correcto no exige un nuevo constraint declarativo |
-| `CHECK_CONSTRAINT` | invariante de fila expresable de forma declarativa y acotada |
-| `FOREIGN_KEY_CONSTRAINT` | relación estable con identidad referencial explícita |
-| `NOT_NULL_CONSTRAINT` | ausencia prohibida por contrato y datos reconciliados |
-| `DIRECT_UNIQUE_CONSTRAINT` | unicidad certificada sobre columnas directas y scope completo |
-| `PRIMARY_KEY_CONSTRAINT` | identidad material estable, no nula y certificada |
-| `HANDOFF_TO_DB_007` | enforcement requiere índice de expresión, predicado, representación normalizada o estrategia de índice especializada |
-| `SERVICE_OR_RPC_INVARIANT` | la regla requiere semántica, estado externo, revisión, fuzzy matching, autorización contextual o workflow |
-| `BLOCKED` | falta una precondición material para decidir o aplicar de forma segura |
+| Disposición                | Significado                                                                                                          |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `NO_CONSTRAINT_REQUIRED`   | el estado correcto no exige un nuevo constraint declarativo                                                          |
+| `CHECK_CONSTRAINT`         | invariante de fila expresable de forma declarativa y acotada                                                         |
+| `FOREIGN_KEY_CONSTRAINT`   | relación estable con identidad referencial explícita                                                                 |
+| `NOT_NULL_CONSTRAINT`      | ausencia prohibida por contrato y datos reconciliados                                                                |
+| `DIRECT_UNIQUE_CONSTRAINT` | unicidad certificada sobre columnas directas y scope completo                                                        |
+| `PRIMARY_KEY_CONSTRAINT`   | identidad material estable, no nula y certificada                                                                    |
+| `HANDOFF_TO_DB_007`        | enforcement requiere índice de expresión, predicado, representación normalizada o estrategia de índice especializada |
+| `SERVICE_OR_RPC_INVARIANT` | la regla requiere semántica, estado externo, revisión, fuzzy matching, autorización contextual o workflow            |
+| `BLOCKED`                  | falta una precondición material para decidir o aplicar de forma segura                                               |
 
 Ninguna disposición se infiere únicamente a partir del nombre actual de un índice o de la existencia de valores repetidos.
 
@@ -6717,13 +6717,13 @@ Esta enumeración es trazabilidad de cobertura vigente y no modifica esos requis
 
 #### 44. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario. |
-| LOCAL | PASS | El artefacto fue contrastado contra estructura canónica, metadata obligatoria, orden de cabecera, secciones requeridas, cardinalidad de evidencia, continuidad, declaración TREQ cero, UTF-8, LF, whitespace y reglas semánticas reproducibles del entregable aislado. |
-| REMOTA | PASS | Se contrastaron `main`, owner R, contratos de transición, 04A DATA, package `@vento/data-normalization`, documentación vigente de PostgreSQL 17 y metadatos read-only de `vento-os-dev`; la recaptura confirmó PostgreSQL 17.6 y el baseline actual de constraints, nulabilidad e índices únicos. |
-| OPERATIVA | NOT_EXECUTED | Locks, scans, writers concurrentes, staging, validación física, rendimiento, rollback y comportamiento por `package_id` pertenecen a futuras instancias físicas autorizadas. |
-| FÍSICA | NOT_APPLICABLE | Esta definición documental no autoriza DDL, DML, migraciones, constraints, índices, triggers ni cambios remotos. |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                         |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario.                                                                                                                                                                         |
+| LOCAL     | PASS           | El artefacto fue contrastado contra estructura canónica, metadata obligatoria, orden de cabecera, secciones requeridas, cardinalidad de evidencia, continuidad, declaración TREQ cero, UTF-8, LF, whitespace y reglas semánticas reproducibles del entregable aislado.                            |
+| REMOTA    | PASS           | Se contrastaron `main`, owner R, contratos de transición, 04A DATA, package `@vento/data-normalization`, documentación vigente de PostgreSQL 17 y metadatos read-only de `vento-os-dev`; la recaptura confirmó PostgreSQL 17.6 y el baseline actual de constraints, nulabilidad e índices únicos. |
+| OPERATIVA | NOT_EXECUTED   | Locks, scans, writers concurrentes, staging, validación física, rendimiento, rollback y comportamiento por `package_id` pertenecen a futuras instancias físicas autorizadas.                                                                                                                      |
+| FÍSICA    | NOT_APPLICABLE | Esta definición documental no autoriza DDL, DML, migraciones, constraints, índices, triggers ni cambios remotos.                                                                                                                                                                                  |
 
 #### 45. Decisiones vinculantes
 
@@ -7039,19 +7039,19 @@ Drift material invalida la evidencia que dependa de ese estado.
 
 Cada candidato deberá terminar exactamente en una disposición:
 
-| Disposición | Significado |
-| --- | --- |
-| `NO_INDEX_REQUIRED` | el plan y la carga no justifican un índice nuevo |
-| `REUSE_EQUIVALENT_INDEX` | existe un índice física y semánticamente equivalente, válido y listo |
-| `BTREE_LOOKUP_INDEX` | igualdad, rango u orden compatible sobre columnas o representación exacta |
-| `BTREE_PREFIX_INDEX` | búsqueda de prefijo compatible con collation, operator class y query real |
-| `COMPOSITE_SCOPE_INDEX` | filtros de scope y clave requieren orden compuesto medido |
-| `PARTIAL_SEARCH_INDEX` | el workload consulta un subconjunto estable y el predicado es compatible con el query |
-| `GIN_REPRESENTATION_INDEX` | una representación multivaluada o estructurada usa operadores GIN compatibles sin alterar semántica |
-| `NORMALIZED_UNIQUE_INDEX` | una comparación normalizada certificada requiere protección única mediante índice |
-| `PARTIAL_NORMALIZED_UNIQUE_INDEX` | la unicidad certificada aplica únicamente al subconjunto definido por un predicado estable |
-| `REPLACE_LEGACY_INDEX` | el objeto vigente no es equivalente y existe transición aprobada hacia otro índice |
-| `BLOCKED` | falta evidencia, compatibilidad, seguridad, paridad, reconciliación o recovery suficiente |
+| Disposición                       | Significado                                                                                         |
+| --------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `NO_INDEX_REQUIRED`               | el plan y la carga no justifican un índice nuevo                                                    |
+| `REUSE_EQUIVALENT_INDEX`          | existe un índice física y semánticamente equivalente, válido y listo                                |
+| `BTREE_LOOKUP_INDEX`              | igualdad, rango u orden compatible sobre columnas o representación exacta                           |
+| `BTREE_PREFIX_INDEX`              | búsqueda de prefijo compatible con collation, operator class y query real                           |
+| `COMPOSITE_SCOPE_INDEX`           | filtros de scope y clave requieren orden compuesto medido                                           |
+| `PARTIAL_SEARCH_INDEX`            | el workload consulta un subconjunto estable y el predicado es compatible con el query               |
+| `GIN_REPRESENTATION_INDEX`        | una representación multivaluada o estructurada usa operadores GIN compatibles sin alterar semántica |
+| `NORMALIZED_UNIQUE_INDEX`         | una comparación normalizada certificada requiere protección única mediante índice                   |
+| `PARTIAL_NORMALIZED_UNIQUE_INDEX` | la unicidad certificada aplica únicamente al subconjunto definido por un predicado estable          |
+| `REPLACE_LEGACY_INDEX`            | el objeto vigente no es equivalente y existe transición aprobada hacia otro índice                  |
+| `BLOCKED`                         | falta evidencia, compatibilidad, seguridad, paridad, reconciliación o recovery suficiente           |
 
 La disposición no fija automáticamente el nombre, las columnas ni el método físico antes de evaluar el candidato concreto.
 
@@ -7656,13 +7656,13 @@ Estas referencias son trazabilidad de cobertura vigente y no representan cambios
 
 #### 51. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario. |
-| LOCAL | PASS | El artefacto fue comprobado estáticamente contra metadata obligatoria, secciones requeridas, cardinalidad de evidencia, continuidad, declaración TREQ cero, UTF-8, LF, whitespace y reglas de contenido del contrato de entrega. |
-| REMOTA | PASS | Se contrastaron `main`, owner R, topología, contratos DB-003 y DB-006, 04A DATA, `@vento/data-normalization`, documentación vigente de PostgreSQL 17 y el baseline read-only de `vento-os-dev`; la auditoría remota se ejecutó en transacción READ ONLY y produjo cero mutaciones. |
-| OPERATIVA | NOT_EXECUTED | Query plans, builds, locks, carga, writers concurrentes, consumo, cutover y recovery corresponden a futuras instancias físicas autorizadas. |
-| FÍSICA | NOT_APPLICABLE | Esta definición documental no crea, reemplaza, elimina ni reconstruye índices, extensiones, constraints, triggers, migraciones o datos. |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                          |
+| --------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario.                                                                                                                                                          |
+| LOCAL     | PASS           | El artefacto fue comprobado estáticamente contra metadata obligatoria, secciones requeridas, cardinalidad de evidencia, continuidad, declaración TREQ cero, UTF-8, LF, whitespace y reglas de contenido del contrato de entrega.                                                   |
+| REMOTA    | PASS           | Se contrastaron `main`, owner R, topología, contratos DB-003 y DB-006, 04A DATA, `@vento/data-normalization`, documentación vigente de PostgreSQL 17 y el baseline read-only de `vento-os-dev`; la auditoría remota se ejecutó en transacción READ ONLY y produjo cero mutaciones. |
+| OPERATIVA | NOT_EXECUTED   | Query plans, builds, locks, carga, writers concurrentes, consumo, cutover y recovery corresponden a futuras instancias físicas autorizadas.                                                                                                                                        |
+| FÍSICA    | NOT_APPLICABLE | Esta definición documental no crea, reemplaza, elimina ni reconstruye índices, extensiones, constraints, triggers, migraciones o datos.                                                                                                                                            |
 
 #### 52. Decisiones vinculantes
 
@@ -7950,12 +7950,12 @@ Por tanto:
 
 Cada operación tendrá exactamente uno de estos modos:
 
-| Modo | Función permitida | Resultado normal |
-| --- | --- | --- |
-| `NO_TRIGGER` | ninguna defensa física adicional por trigger | la operación depende de servicio, RPC y controles declarativos suficientes |
-| `ASSERT_AND_REJECT` | comprobar un invariante local ya aprobado | aceptar la fila o abortar la operación de forma cerrada |
-| `DERIVE_BOUNDED_REPRESENTATION` | producir una derivación local, determinista y no ambigua ya autorizada | derivación coherente con fuente y versiones o rechazo |
-| `STAMP_DEFENSIVE_METADATA` | estampar metadata técnica acotada de la operación defensiva | metadata técnica coherente sin alterar semántica empresarial |
+| Modo                            | Función permitida                                                      | Resultado normal                                                           |
+| ------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `NO_TRIGGER`                    | ninguna defensa física adicional por trigger                           | la operación depende de servicio, RPC y controles declarativos suficientes |
+| `ASSERT_AND_REJECT`             | comprobar un invariante local ya aprobado                              | aceptar la fila o abortar la operación de forma cerrada                    |
+| `DERIVE_BOUNDED_REPRESENTATION` | producir una derivación local, determinista y no ambigua ya autorizada | derivación coherente con fuente y versiones o rechazo                      |
+| `STAMP_DEFENSIVE_METADATA`      | estampar metadata técnica acotada de la operación defensiva            | metadata técnica coherente sin alterar semántica empresarial               |
 
 No existen modos implícitos adicionales.
 
@@ -8827,13 +8827,13 @@ Estas referencias son trazabilidad de cobertura vigente; no modifican el registr
 
 #### 53. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario. |
-| LOCAL | PASS | Artefacto contrastado contra estructura canónica, metadata obligatoria, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y reglas semánticas reproducibles del entregable aislado. |
-| REMOTA | PASS | Se contrastaron `main`, owner R, contrato ARC-011, 04A DATA, topología, scripts documentales y un baseline read-only de `vento-os-dev`; PostgreSQL 17.6 y 173 triggers no internos fueron observados sin mutaciones remotas. |
-| OPERATIVA | NOT_EXECUTED | Costo de escritura, locks, ordering, recursión, particiones, concurrencia, bypass y rollback pertenecen a futuras instancias físicas autorizadas. |
-| FÍSICA | NOT_APPLICABLE | Esta definición documental no crea, reemplaza, habilita, deshabilita ni elimina funciones, triggers, migraciones, constraints, índices, RLS, grants o datos. |
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                   |
+| --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario.                                                                                                                   |
+| LOCAL     | PASS           | Artefacto contrastado contra estructura canónica, metadata obligatoria, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y reglas semánticas reproducibles del entregable aislado. |
+| REMOTA    | PASS           | Se contrastaron `main`, owner R, contrato ARC-011, 04A DATA, topología, scripts documentales y un baseline read-only de `vento-os-dev`; PostgreSQL 17.6 y 173 triggers no internos fueron observados sin mutaciones remotas.                |
+| OPERATIVA | NOT_EXECUTED   | Costo de escritura, locks, ordering, recursión, particiones, concurrencia, bypass y rollback pertenecen a futuras instancias físicas autorizadas.                                                                                           |
+| FÍSICA    | NOT_APPLICABLE | Esta definición documental no crea, reemplaza, habilita, deshabilita ni elimina funciones, triggers, migraciones, constraints, índices, RLS, grants o datos.                                                                                |
 
 #### 54. Decisiones vinculantes
 
@@ -8954,5 +8954,1222 @@ Esta tarea documental no:
 `DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla`
 
 
-### [ ] DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
+### ✅ DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
+
+**Estado:** APROBADA
+**Tarea anterior:** DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
+**Tarea siguiente:** DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para materializar auditoría operacional de normalización con valor previo o referencia protegida, valor resultante o referencia protegida, conjunto exacto de versiones, procedencia algorítmica, operación lógica, causalidad, idempotencia, concurrencia, resultado, sensibilidad, reversibilidad y evidencia de commit, preservando una sola auditoría raíz por mutación y separando evaluación, efecto persistido, evidencia defensiva hija y propagación posterior, sin materializar DDL, DML, migraciones, tablas, funciones, triggers, políticas, grants, RLS ni cambios remotos durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `DATA-NORM-DB-009::<package_id>`, sujetas a `POST_E5_PACKAGE`, al handoff aplicable de `DATA-NORM-DB-008::<package_id>`, al expediente E5 del paquete, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Fecha de corte:** 2026-08-25
+
+---
+
+#### 1. Propósito
+
+`DATA-NORM-DB-009` define cómo deberá persistirse la evidencia operacional de una normalización cuando una futura instancia física por paquete produzca, confirme, derive, preserve, bloquee, someta a revisión, compense o reconstruya un efecto gobernado.
+
+El objetivo no es crear un log genérico. El objetivo es que, para cada operación aplicable, pueda demostrarse de forma inequívoca:
+
+1. cuál era el valor o estado fuente observado;
+2. cuál fue el valor o estado resultante;
+3. qué regla, conjunto de versiones y algoritmo produjeron la decisión;
+4. qué operación lógica originó el efecto;
+5. qué intento técnico lo ejecutó;
+6. qué actor o servicio actuó y bajo qué contexto de autorización;
+7. qué expectativa de concurrencia se revalidó;
+8. cuál fue el resultado real;
+9. si existió commit, rollback, compensación o solo evaluación;
+10. qué evidencia pertenece a la raíz y cuál es un efecto hijo;
+11. qué datos sensibles se conservaron por referencia o huella;
+12. cómo podrá reconstruirse, reconciliarse o investigarse el hecho sin reinterpretar la historia.
+
+La definición documental no crea todavía persistencia física.
+
+#### 2. Resultado canónico
+
+Queda definido el siguiente contrato:
+
+```text
+DATA-NORM-DB-009
+→ contrato documental único y reutilizable
+
+DATA-NORM-DB-009::<package_id>
+→ futura instancia física por paquete
+
+operación lógica
+→ evaluación semántica
+→ revalidación transaccional
+→ valor fuente o referencia
+→ valor resultante o referencia
+→ conjunto exacto de versiones
+→ procedencia de algoritmo
+→ auditoría raíz única
+→ evidencia hija correlacionada
+→ commit o resultado no mutante
+→ historia aditiva
+```
+
+La definición global no se reabre por paquete.
+
+Una infraestructura compartida creada por una instancia podrá ser reutilizable técnicamente, pero no crea una instancia `GLOBAL` ni autoriza a registrar operaciones de paquetes no cubiertos.
+
+#### 3. Topología vinculante
+
+La topología aplicable es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = DATA-NORM-DB-009::<package_id>
+```
+
+Consecuencias:
+
+1. no existe `DATA-NORM-DB-009::GLOBAL`;
+2. cada paquete conserva identidad física propia;
+3. la aprobación documental no crea objetos ni registros;
+4. una tabla reutilizable no mezcla ownership de paquetes;
+5. cada evento deberá conservar lineage suficiente hacia el `package_id` que lo origina;
+6. un paquete sin gate físico válido no puede materializar auditoría mediante esta tarea;
+7. una ejecución de otro paquete no satisface la instancia actual.
+
+#### 4. Gate temporal
+
+Una futura instancia solo podrá materializarse cuando se cumpla, para el mismo `package_id`, el gate `POST_E5_PACKAGE`.
+
+Como mínimo deberá existir:
+
+```text
+package_id propietario válido
+E5-GATE-008::<package_id> = PASS
+handoffs físicos aplicables = válidos
+drift = RECONCILIADO
+autorización física = EXPLÍCITA
+```
+
+La existencia de contratos TypeScript, tablas de auditoría legacy o triggers actuales no sustituye estas condiciones.
+
+#### 5. Fuentes vinculantes
+
+Cada futura instancia deberá consumir, sin reinterpretación silenciosa:
+
+- `DATA-NORM-ARC-009` como autoridad del contrato lógico de auditoría, versionado, idempotencia, concurrencia, semántica temporal y reproducibilidad;
+- `DATA-NORM-ARC-011` como autoridad sobre capas, auditoría raíz de RPC y evidencia defensiva hija;
+- `DATA-NORM-ARC-012` cuando existan originales externos, mappings, ACK, transportes o evidencia protegida;
+- `DATA-NORM-TRANS-008` para before-images, rollback, recuperación, compensación y preservación del estado anterior;
+- `DATA-NORM-TRANS-009` para bundles de evidencia y aprobaciones por dominio;
+- `DATA-NORM-DB-001` para almacenamiento y vigencia de versiones de reglas;
+- `DATA-NORM-DB-005` para backfills y lotes que produzcan efectos auditables;
+- `DATA-NORM-DB-008` para eventos defensivos hijos cuando un trigger intervenga;
+- `DATA-NORM-DB-010` como propietario de la certificación física final de idempotencia, rollback y ausencia de cambios semánticos;
+- `@vento/data-normalization` como contrato puro de formas, campos, eventos, resultados, idempotencia y replay;
+- las migraciones, contratos, consumidores y expediente E5 del paquete;
+- el estado remoto recapturado al iniciar la futura instancia.
+
+#### 6. Frontera con DATA-NORM-DB-001
+
+`DATA-NORM-DB-001` persiste gobierno y versiones de reglas.
+
+`DATA-NORM-DB-009` persiste evidencia de operaciones y efectos.
+
+Por tanto:
+
+```text
+RULE_GOVERNANCE_RECORD
+→ identidad y ciclo de vida de la regla
+
+PERSISTED_MUTATION_RECORD
+→ evidencia del efecto empresarial confirmado
+
+DERIVATION_MATERIALIZATION_RECORD
+→ evidencia de una derivación materializada
+
+operational ledger
+→ correlación, antes, después, versiones, resultado y causalidad
+```
+
+Una fila de datos empresariales no se convierte en almacenamiento de la regla, y una fila de gobierno de regla no sustituye la evidencia de un cambio empresarial.
+
+#### 7. Frontera con DATA-NORM-DB-008
+
+DB-008 entrega, cuando interviene una defensa:
+
+```text
+package_id
+logical_operation_reference
+trigger_identity
+trigger_function_identity
+trigger_contract_version_or_digest
+trigger_mode
+owned_invariant
+table_and_event
+intervention_class
+expected_source_or_version_reference
+outcome
+child_evidence_required
+sensitivity_class
+```
+
+DB-009 deberá poder persistir esa evidencia como hija de la misma operación lógica.
+
+El trigger no crea una segunda auditoría raíz.
+
+#### 8. Autoridad de la auditoría raíz
+
+La autoridad se distribuye así:
+
+| Capa                 | Autoridad                                                             |
+| -------------------- | --------------------------------------------------------------------- |
+| aplicación           | intención y telemetría de experiencia; nunca certifica commit         |
+| servicio de dominio  | evaluación semántica y evidencia lógica                               |
+| RPC transaccional    | única auditoría raíz de una mutación confirmada                       |
+| trigger defensivo    | evidencia hija cuando interviene, rechaza o deriva de forma defensiva |
+| efectos asincrónicos | eventos hijos posteriores al commit                                   |
+
+Una misma mutación no puede generar varias raíces canónicas independientes.
+
+#### 9. Familias lógicas cerradas
+
+El sistema conserva exactamente estas seis familias lógicas:
+
+```text
+RULE_GOVERNANCE_RECORD
+RULE_EVALUATION_RECORD
+PERSISTED_MUTATION_RECORD
+DERIVATION_MATERIALIZATION_RECORD
+REVIEW_DECISION_RECORD
+PROPAGATION_OR_TRANSITION_RECORD
+```
+
+DB-009 no duplica el almacenamiento canónico de gobierno perteneciente a DB-001 ni convierte una decisión humana en otra copia de autoridad.
+
+Su persistencia deberá:
+
+1. materializar la evidencia operacional de evaluación, mutación, derivación y transición que corresponda al paquete;
+2. correlacionar decisiones de revisión sin reescribir su autoridad propietaria;
+3. referenciar identidades de gobierno y versiones almacenadas bajo DB-001;
+4. conservar compatibilidad con las seis familias para reconstruir el grafo lógico completo.
+
+La distribución física podrá separar registros o compartir infraestructura si conserva discriminación, permisos, retención, integridad, ownership y semántica.
+
+No se crea una séptima familia por conveniencia local.
+
+#### 10. Doce clases de evento
+
+Las clases canónicas son exactamente:
+
+```text
+RULE_VERSION_PROPOSED
+RULE_VERSION_APPROVED
+RULE_VERSION_ACTIVATED
+RULE_VERSION_SUSPENDED
+RULE_VERSION_SUPERSEDED
+RULE_VERSION_RETIRED
+RULE_EVALUATED
+RULE_MUTATION_COMMITTED
+RULE_DERIVATION_MATERIALIZED
+RULE_BLOCK_OR_REVIEW_EMITTED
+RULE_REPLAY_OR_RECONCILIATION_RECORDED
+RULE_COMPENSATION_OR_ROLLBACK_RECORDED
+```
+
+Cada evento deberá corresponder a una familia lógica compatible y a una transición real.
+
+#### 11. Diez resultados cerrados
+
+La evidencia operacional distinguirá exactamente:
+
+```text
+APPLIED_CHANGE
+NO_CHANGE_ALREADY_CANONICAL
+DERIVED
+PRESERVED
+NOT_APPLICABLE
+BLOCKED_POLICY
+BLOCKED_CONFLICT
+REVIEW_REQUIRED
+ESCALATED_STRUCTURAL
+FAILED_TECHNICAL
+```
+
+Reglas:
+
+1. `NO_CHANGE_ALREADY_CANONICAL` no es una mutación ficticia;
+2. `PRESERVED` no significa que la política no se evaluó;
+3. `BLOCKED_POLICY` no se presenta como no-op;
+4. `BLOCKED_CONFLICT` no se presenta como éxito;
+5. `REVIEW_REQUIRED` no materializa una corrección;
+6. `FAILED_TECHNICAL` no se degrada a ausencia de cambio.
+
+#### 12. Contrato mínimo de registro operacional
+
+Todo registro aplicable deberá poder expresar:
+
+```text
+audit_event_id
+logical_operation_id
+attempt_id
+correlation_id
+causation_id
+event_kind
+event_time
+recorded_at
+actor_or_service_identity
+authorization_context
+reason_code
+policy_coordinate
+entity_type
+entity_id
+source_field_coordinate
+source_value_version_or_hash
+before_value_reference_or_hash
+after_value_reference_or_hash
+requested_operation
+resolved_version_set
+version_set_digest
+algorithm_provenance
+idempotency_key
+idempotency_payload_digest
+expected_source_version_or_hash
+outcome
+outcome_reason
+review_case_or_decision_reference
+propagation_or_transition_reference
+environment
+```
+
+Los campos no aplicables deberán representarse como no aplicables de forma explícita según el contrato físico, no desaparecer por conveniencia.
+
+#### 13. Envelope físico por paquete
+
+Toda fila o conjunto físico deberá quedar atribuible al paquete que autorizó su materialización.
+
+El envelope deberá conservar como mínimo:
+
+```text
+package_id
+record_family
+audit_record
+retention_class
+reproducibility_level
+semantic_times
+storage_contract_version
+```
+
+`package_id` es lineage de ejecución, no una regla semántica nueva.
+
+#### 14. Campos de primer nivel frente a payload estructurado
+
+No se autoriza esconder todo el contrato dentro de un JSON opaco.
+
+Deberán ser consultables y gobernables como campos de primer nivel o equivalentes tipados, como mínimo:
+
+- identidad del evento;
+- identidad de operación;
+- intento;
+- correlación;
+- causación;
+- familia;
+- clase de evento;
+- entidad y campo;
+- resultado;
+- versión o digest efectivo;
+- tiempos críticos;
+- ambiente;
+- retención;
+- sensibilidad o referencia de protección cuando aplique.
+
+Los conjuntos de versiones, procedencia algorítmica y contextos estructurados podrán conservar forma estructurada siempre que:
+
+1. tengan schema versionado;
+2. tengan digest determinista;
+3. no oculten campos requeridos para seguridad o lookup;
+4. no permitan contenido arbitrario no gobernado;
+5. puedan validarse independientemente.
+
+#### 15. Identidad de operación e intento
+
+`logical_operation_id` identifica una sola decisión o mutación lógica.
+
+`attempt_id` identifica una ejecución técnica.
+
+Reglas:
+
+1. un retry compatible conserva `logical_operation_id`;
+2. cada intento nuevo obtiene `attempt_id` distinto;
+3. una respuesta perdida no crea otra operación lógica;
+4. un timeout no prueba ausencia de commit;
+5. antes de reintentar debe resolverse el estado de la operación previa;
+6. el ledger debe permitir distinguir operación, intento y efecto.
+
+#### 16. Correlación y causación
+
+`correlation_id` agrupa el proceso de extremo a extremo.
+
+`causation_id` enlaza cada evento con su causa inmediata.
+
+La estructura mínima deberá permitir:
+
+```text
+operación raíz
+├── evaluación
+├── mutación confirmada
+├── evidencia defensiva hija
+├── derivación hija
+├── propagación hija
+└── compensación o reconciliación posterior
+```
+
+La causalidad no se deduce por proximidad temporal ni por orden físico de filas.
+
+#### 17. Valor previo y valor resultante
+
+El registro deberá diferenciar:
+
+```text
+source_value_version_or_hash
+before_value_reference_or_hash
+after_value_reference_or_hash
+```
+
+No existe una obligación universal de persistir plaintext completo.
+
+La evidencia deberá ser suficiente para demostrar qué se evaluó y qué se confirmó, respetando sensibilidad, reversibilidad y propósito.
+
+#### 18. PRIMARY_VALUE
+
+Para una mutación de `PRIMARY_VALUE`:
+
+1. la before-image se liga a PK o identidad estable, campo, versión o hash y corte observado;
+2. el resultado se liga a la misma identidad y a la operación confirmada;
+3. el antes y el después no se reconstruyen por heurística;
+4. una escritura legítima posterior no se pisa durante recuperación;
+5. si la sensibilidad impide almacenar el valor completo, se usa referencia protegida o huella gobernada;
+6. la operación conserva `expected_source_version_or_hash`.
+
+#### 19. Derivaciones
+
+Para `SEARCH_DERIVATION`, `STRUCTURAL_DERIVATION` u otra derivación reproducible:
+
+1. se conserva fuente o huella de fuente;
+2. se conserva algoritmo y conjunto de versiones;
+3. se conserva representación y huella o referencia del resultado;
+4. se conserva la vigencia de la materialización;
+5. el estado anterior puede ser una derivación reproducible y no necesariamente bytes históricos copiados;
+6. una reconstrucción futura parte de la fuente válida y de la versión seleccionada, no de una clave obsoleta sin contexto.
+
+#### 20. Originales externos y snapshots
+
+`EXTERNAL_ORIGINAL` y `HISTORICAL_SNAPSHOT` no se sobrescriben para simplificar auditoría.
+
+Cuando una operación los consume:
+
+- se referencia el original o snapshot;
+- se conserva procedencia;
+- se conserva digest cuando aplique;
+- se preserva su política de acceso y retención;
+- la derivación interna no adquiere autoridad sobre el original.
+
+La ausencia de un original que debía preservarse es un incidente de integridad, no un caso normal de normalización.
+
+#### 21. Conjunto efectivo de versiones
+
+Cada evaluación y efecto deberá fijar el mismo `resolved_version_set` aplicable y su `version_set_digest`.
+
+No se permite:
+
+- `latest` implícito;
+- mezcla silenciosa de versiones;
+- fallback a una versión retirada;
+- recomputar el digest con orden no determinista;
+- atribuir una mutación a un conjunto distinto del revalidado en la transacción.
+
+#### 22. Procedencia algorítmica
+
+La evidencia deberá conservar, cuando aplique:
+
+```text
+algorithm_key
+algorithm_version
+artifact_identity
+artifact_digest
+source_revision_or_commit
+runtime_contract_version
+language_profile
+unicode_version
+tokenizer_version
+catalog_version_set
+configuration_digest
+```
+
+El mismo identificador de algoritmo no puede representar contenidos ejecutables distintos.
+
+#### 23. Idempotencia
+
+Cuando la operación sea idempotente, el ledger deberá conservar:
+
+```text
+idempotency_key
+idempotency_payload_digest
+logical_operation_id
+outcome
+effect_confirmation_reference
+```
+
+Reglas:
+
+1. misma clave y payload compatible reutilizan el resultado previo;
+2. misma clave con payload incompatible produce conflicto;
+3. la clave no se deriva solo del texto;
+4. un retry no repite una mutación confirmada;
+5. una operación compuesta conserva efectos hijos individualmente reanudables.
+
+#### 24. Expectativas de concurrencia
+
+Antes de confirmar un efecto deberán poder conservarse:
+
+```text
+expected_source_version_or_hash
+expected_policy_coordinate
+expected_version_set_digest
+expected_current_state
+```
+
+Un mismatch bloquea o obliga a reevaluar según el contrato propietario.
+
+No se resuelve concurrencia por último escritor.
+
+#### 25. Semántica temporal
+
+La persistencia deberá distinguir:
+
+```text
+observed_at
+requested_at
+evaluated_at
+effect_committed_at
+effective_from
+effective_to
+recorded_at
+```
+
+Reglas:
+
+1. `recorded_at` no reemplaza el tiempo efectivo;
+2. la llegada tardía de evidencia no reescribe el tiempo del hecho;
+3. la vigencia usa una semántica temporal explícita;
+4. zona u offset original se preservan cuando sean relevantes;
+5. el orden causal prevalece sobre inferencias por timestamp.
+
+#### 26. Actor y autorización
+
+Una mutación confirmada deberá quedar atribuida a actor o servicio y al contexto de autorización aplicable.
+
+El registro no confiará en un actor libre enviado por cliente.
+
+Cuando una operación use privilegios elevados:
+
+- conserva identidad del servicio o actor efectivo;
+- conserva referencia al contexto de autorización;
+- no expone secretos de sesión;
+- no convierte privilegio técnico en autoridad empresarial.
+
+#### 27. Auditoría raíz de mutación
+
+`PERSISTED_MUTATION_RECORD` representa un efecto confirmado.
+
+Para existir deberá cumplirse:
+
+```text
+evaluación válida
+AND autorización válida
+AND estado actual revalidado
+AND versiones fijadas
+AND persistencia de fuente aplicable
+AND derivaciones sincrónicas aplicables
+AND auditoría raíz persistida
+AND trigger defensivo satisfecho cuando aplique
+AND COMMIT confirmado
+```
+
+Si una condición obligatoria falla, no existe una mutación confirmada.
+
+#### 28. Atomicidad
+
+La auditoría raíz obligatoria se persiste en la misma transacción que el efecto fuente y sus derivaciones sincrónicas requeridas.
+
+Consecuencias:
+
+1. dato confirmado sin auditoría raíz obligatoria es inválido;
+2. auditoría que afirma commit sin efecto confirmado es inválida;
+3. error al persistir evidencia mínima obligatoria aborta la transacción;
+4. un trigger que rechaza la escritura aborta el efecto;
+5. un rollback de la transacción elimina la afirmación de commit de esa transacción.
+
+#### 29. Evaluación sin mutación
+
+`RULE_EVALUATION_RECORD` puede existir sin `PERSISTED_MUTATION_RECORD`.
+
+Casos válidos incluyen:
+
+- valor ya canónico;
+- preservación;
+- no aplicable;
+- política bloqueada;
+- conflicto;
+- revisión requerida;
+- escalamiento estructural;
+- fallo técnico que deba quedar registrado.
+
+La evaluación nunca se presenta como prueba de persistencia.
+
+#### 30. Trigger defensivo y evidencia hija
+
+Cuando DB-008 intervenga:
+
+1. usa la misma operación lógica;
+2. conserva identidad y versión o digest del trigger y su función;
+3. conserva invariante defendido;
+4. conserva evento, tabla y clase de intervención;
+5. conserva resultado;
+6. conserva sensibilidad;
+7. genera evidencia hija cuando el contrato lo exige;
+8. no crea otra raíz.
+
+`NO_TRIGGER` no genera una evidencia artificial para aparentar cobertura.
+
+#### 31. Escrituras rechazadas y transacciones revertidas
+
+Una escritura rechazada o revertida no puede producir un `RULE_MUTATION_COMMITTED`.
+
+Cuando sea necesario conservar diagnóstico durable de un rechazo:
+
+- se registra fuera de la afirmación de commit;
+- se correlaciona con la operación e intento;
+- se clasifica como evaluación, bloqueo o diagnóstico según el contrato;
+- no contiene un after-value presentado como persistido si nunca se confirmó;
+- no transforma un rollback en éxito;
+- si el rechazo abortó la transacción que lo originó, la evidencia durable se registra después del rollback mediante una operación diagnóstica separada y causalmente vinculada, no mediante un side effect que pretenda sobrevivir dentro de la transacción abortada.
+
+La evidencia técnica transitoria que desaparece con el rollback no se presenta como registro persistido.
+
+#### 32. Backfills y lotes
+
+Cuando `DATA-NORM-DB-005::<package_id>` produzca efectos auditables, DB-009 deberá soportar:
+
+```text
+run_id
+batch_id
+logical_operation_id
+source_cut_reference
+member_or_member_set_reference
+before_evidence
+after_evidence
+version_set_digest
+algorithm_provenance
+outcome
+row_or_member_count
+failure_or_blocker_summary
+```
+
+No se exige duplicar plaintext sensible fila por fila si una referencia, manifest y digest preservan evidencia suficiente y verificable.
+
+Una agregación no sustituye evidencia individual cuando el riesgo o la recuperación requieren before-image por miembro.
+
+#### 33. Propagación posterior al commit
+
+Una propagación, notificación o sincronización asincrónica es un efecto hijo.
+
+Reglas:
+
+1. la raíz se confirma antes de iniciar el efecto externo salvo atomicidad local explícitamente aprobada;
+2. cada destino tiene identidad e idempotencia propias;
+3. éxito parcial se conserva como parcial;
+4. un destino fallido no reescribe el commit raíz como inexistente;
+5. la reanudación omite destinos ya confirmados;
+6. ACK técnico y efecto empresarial permanecen separados.
+
+#### 34. Rollback y compensación
+
+Rollback, compensación y forward-fix son nuevas operaciones vinculadas.
+
+No se actualiza ni borra el evento original para que parezca que el efecto nunca ocurrió.
+
+La evidencia deberá permitir:
+
+```text
+operación original
+→ efecto original
+→ motivo de recuperación
+→ clase de recuperación
+→ operación correctiva
+→ resultado correctivo
+→ reconciliación final
+```
+
+El rollback de esquema o código no equivale por sí solo a rollback de datos.
+
+#### 35. Integridad aditiva
+
+Los registros de mutación, decisión, rectificación, compensación y reconstrucción son append-only a nivel lógico.
+
+Queda prohibido:
+
+- editar evidencia anterior para corregir una narrativa;
+- borrar eventos para ocultar un error;
+- reutilizar una identidad de evento para otro contenido;
+- cambiar un digest histórico;
+- reatribuir una operación a otra versión;
+- sobrescribir un before-value histórico con el estado actual.
+
+Una rectificación crea otro evento con motivo y relación causal.
+
+#### 36. Sensibilidad y minimización
+
+El valor completo se almacena únicamente cuando sea necesario, autorizado y protegido.
+
+Por defecto, la persistencia favorece:
+
+- referencias protegidas;
+- hashes contextualizados;
+- digests;
+- identificadores internos opacos;
+- metadata mínima suficiente.
+
+Personas, direcciones, nombres legales, payloads externos, secretos, firmas, tokens y material probatorio reciben controles de finalidad y acceso.
+
+#### 37. Huellas y hashes
+
+Cuando se use una huella deberá quedar definido:
+
+- algoritmo;
+- versión;
+- canonicalización previa permitida;
+- salt o clave cuando aplique;
+- versión de salt o clave cuando aplique;
+- propósito;
+- sensibilidad;
+- estrategia de rotación cuando aplique.
+
+No se crea una huella reversible por diccionario sobre secretos o valores de baja entropía.
+
+#### 38. Clases de retención
+
+La persistencia deberá distinguir exactamente:
+
+```text
+GOVERNANCE_IMMUTABLE
+MUTATION_EVIDENCE
+DERIVATION_REPRODUCIBILITY
+OPERATIONAL_DIAGNOSTIC
+SENSITIVE_REFERENCE
+```
+
+La clase de retención no concede acceso.
+
+La ausencia de un plazo físico definitivo no autoriza ni borrado prematuro ni conservación indefinida de datos sensibles.
+
+#### 39. Niveles de reproducibilidad
+
+Cada registro aplicable deberá declarar exactamente uno de:
+
+```text
+FULL_REPLAYABLE
+REFERENCE_REPLAYABLE
+DECISION_RECONSTRUCTABLE
+```
+
+El nivel declara qué puede reconstruirse y con qué evidencia.
+
+No se declara `FULL_REPLAYABLE` si falta fuente, versión, algoritmo o entorno necesario.
+
+#### 40. Replay y reconciliación
+
+Un replay controlado:
+
+1. fija eventos o decisiones fuente;
+2. fija snapshot o referencia;
+3. fija conjunto de versiones;
+4. fija procedencia algorítmica;
+5. fija ambiente;
+6. define resultados esperados;
+7. registra resultados observados;
+8. clasifica diferencias;
+9. no muta producción por defecto;
+10. no reescribe evidencia anterior.
+
+#### 41. Seguridad de escritura
+
+La persistencia de auditoría no será escribible directamente por clientes ordinarios.
+
+La futura instancia deberá resolver:
+
+- propietario de tabla;
+- roles de escritura;
+- roles de lectura;
+- acceso de RPC;
+- acceso de funciones defensivas cuando aplique;
+- grants explícitos;
+- RLS cuando la superficie sea accesible por una ruta que la requiera;
+- separación de consulta, exportación y administración.
+
+Un token de cliente no debe poder fabricar eventos de commit.
+
+#### 42. Funciones privilegiadas
+
+La regla predeterminada es mínimo privilegio.
+
+Si una función física requiere `SECURITY DEFINER`, deberá:
+
+1. estar justificada;
+2. fijar `search_path` seguro;
+3. usar referencias calificadas;
+4. revocar ejecución general;
+5. conceder ejecución solo a roles necesarios;
+6. no aceptar identidad de actor como autoridad suficiente desde input libre;
+7. no exponer secretos;
+8. permanecer versionada por migración.
+
+`SECURITY DEFINER` no es un atajo para evitar RLS o autorización.
+
+#### 43. Lectura y privacidad
+
+La capacidad de consultar auditoría se separa de:
+
+- ejecutar normalización;
+- aprobar revisión;
+- activar reglas;
+- modificar catálogos;
+- exportar evidencia;
+- operar recuperación.
+
+Las vistas de consulta deberán minimizar campos sensibles y no convertir la existencia del ledger en un canal de enumeración.
+
+#### 44. Baseline remoto observado
+
+El corte remoto de `vento-os-dev` usado como contexto documental presenta múltiples relaciones de auditoría, historia o eventos pertenecientes a dominios existentes.
+
+La revisión nominal identificó cuarenta y cuatro relaciones candidatas por nombre o propósito aparente, incluyendo familias de eventos, historiales, ledgers y vistas de auditoría.
+
+Sin embargo, la búsqueda exacta de los campos estructurales del contrato de normalización mostró:
+
+```text
+complete_contract_relation_count = 0
+```
+
+No se observó una relación que materialice de forma completa el contrato de auditoría operacional definido para normalización.
+
+#### 45. Regla de adopción de estructuras existentes
+
+Una relación existente solo podrá reutilizarse si la futura instancia demuestra compatibilidad semántica completa.
+
+La evaluación deberá cubrir:
+
+1. ownership;
+2. familia lógica;
+3. identidad de evento;
+4. operación e intento;
+5. correlación y causación;
+6. antes y después;
+7. conjunto de versiones;
+8. procedencia de algoritmo;
+9. idempotencia;
+10. concurrencia;
+11. resultado;
+12. semántica temporal;
+13. integridad aditiva;
+14. sensibilidad;
+15. retención;
+16. reproducibilidad;
+17. seguridad;
+18. transacción propietaria;
+19. consumidores;
+20. rollback.
+
+Nombre similar no equivale a compatibilidad.
+
+#### 46. Estructuras legacy observadas
+
+La existencia de estructuras como eventos de dominio, historiales, snapshots antes/después o ledgers financieros demuestra patrones locales útiles como evidencia de estado actual, pero no los convierte en ledger canónico de normalización.
+
+Por tanto:
+
+```text
+ADOPTAR_POR_NOMBRE = prohibido
+ADOPTAR_POR_COMPATIBILIDAD_DEMOSTRADA = permitido
+CREAR_ESTRUCTURA_NUEVA = permitido cuando la compatibilidad no exista
+```
+
+La decisión se toma por paquete y queda versionada.
+
+#### 47. Requisitos físicos mínimos de almacenamiento
+
+Cuando la instancia requiera una nueva estructura, deberá definir como mínimo:
+
+- identidad primaria estable;
+- package lineage;
+- familia de registro;
+- identidad de operación;
+- correlación y causación;
+- entidad y campo;
+- referencias before/after;
+- versiones y digests;
+- resultado;
+- actor y autorización;
+- tiempos;
+- retención y sensibilidad;
+- integridad de relaciones;
+- acceso;
+- capacidad de replay o reconstrucción;
+- índices estrictamente necesarios para operación del propio ledger;
+- estrategia de crecimiento y mantenimiento;
+- rollback de la estructura.
+
+Los detalles físicos dependen del paquete y no se fijan globalmente por esta definición.
+
+#### 48. Constraints e índices internos del ledger
+
+DB-009 puede requerir constraints e índices estrictamente internos para garantizar la integridad y operabilidad de su propia estructura.
+
+Eso no transfiere a DB-009 la propiedad de:
+
+- constraints de negocio sobre datos normalizados de `DATA-NORM-DB-006`;
+- índices de búsqueda o unicidad normalizada de `DATA-NORM-DB-007`.
+
+Los objetos internos deberán justificar su necesidad exclusivamente por la persistencia de auditoría.
+
+#### 49. Rendimiento y crecimiento
+
+La futura instancia deberá medir:
+
+- eventos por operación;
+- eventos por paquete;
+- tasa de escritura;
+- tamaño de registro;
+- tamaño de payload estructurado;
+- índices;
+- latencia adicional del commit;
+- locks;
+- crecimiento;
+- consultas operativas;
+- retención;
+- archivado cuando corresponda.
+
+Queda prohibido realizar scans globales o agregaciones costosas dentro del camino de escritura para completar auditoría.
+
+#### 50. Particionado y archivado
+
+No se impone particionado por anticipación.
+
+Solo se adoptará cuando el volumen, retención, mantenimiento o patrón de acceso lo justifiquen con evidencia.
+
+Una política de archivado deberá conservar:
+
+- integridad causal;
+- referencias;
+- permisos;
+- digests;
+- capacidad de investigación;
+- capacidad de recuperación requerida.
+
+Archivar no equivale a borrar la historia.
+
+#### 51. Migraciones y source of truth
+
+Toda estructura física deberá crearse y evolucionar mediante migraciones versionadas desde `vento-shell`.
+
+Queda prohibido:
+
+- aceptar una modificación manual remota como source of truth final;
+- editar una migración aplicada;
+- corregir drift alterando silenciosamente el contrato;
+- crear columnas ad hoc sin ownership;
+- perder historia por simplificar una migración.
+
+Las correcciones son forward-only.
+
+#### 52. Drift
+
+La instancia deberá comparar repositorio y remoto para detectar, como mínimo:
+
+- estructura ausente;
+- objeto remoto sin migración propietaria;
+- definición distinta;
+- tipos distintos;
+- nullability distinta;
+- constraints distintos;
+- índices distintos;
+- RLS distinta;
+- grants distintos;
+- owner distinto;
+- función de escritura distinta;
+- `search_path` distinto;
+- consumidores inesperados.
+
+Drift de integridad o seguridad bloquea activación.
+
+#### 53. Salidas de una instancia física
+
+Cada `DATA-NORM-DB-009::<package_id>` deberá producir, cuando aplique:
+
+```text
+AUDIT_STORAGE_MANIFEST
+AUDIT_CONTRACT_MAPPING
+AUDIT_SECURITY_MANIFEST
+AUDIT_DRIFT_REPORT
+AUDIT_EVIDENCE_BUNDLE
+DB010_AUDIT_HANDOFF
+```
+
+Los nombres representan familias lógicas de evidencia; el package podrá materializarlas en artefactos versionados compatibles con su expediente E5.
+
+#### 54. Estados de readiness
+
+La instancia termina en exactamente uno de:
+
+```text
+AUDIT_READY
+AUDIT_BLOCKED
+AUDIT_NOT_REQUIRED
+```
+
+`AUDIT_NOT_REQUIRED` solo es válido cuando el paquete no materializa ninguna operación gobernada que exija persistencia operacional bajo este contrato.
+
+Si el paquete modifica valores, materializa derivaciones, ejecuta backfill auditable, registra una decisión con efecto o requiere evidencia defensiva persistente, `AUDIT_NOT_REQUIRED` es inválido.
+
+#### 55. Evidencia mínima de la instancia
+
+El bundle deberá poder demostrar:
+
+```text
+package_id
+audit_contract_version
+storage_identity
+storage_definition_digest
+migration_digest
+security_definition_digest
+record_family_coverage
+event_kind_coverage
+outcome_coverage
+root_operation_count
+child_event_count
+before_evidence_coverage
+after_evidence_coverage
+version_set_coverage
+algorithm_provenance_coverage
+idempotency_coverage
+concurrency_expectation_coverage
+trigger_child_correlation_coverage
+sensitive_reference_controls
+retention_mapping
+reproducibility_mapping
+rollback_or_compensation_lineage
+drift_status
+blockers
+```
+
+Una métrica agregada no sustituye evidencia individual cuando el caso requiere trazabilidad por operación.
+
+#### 56. Handoff hacia DATA-NORM-DB-010
+
+DB-009 entrega a DB-010 la evidencia necesaria para certificar físicamente idempotencia, rollback y ausencia de cambios semánticos.
+
+El handoff mínimo deberá declarar:
+
+```text
+package_id
+audit_contract_version
+audit_storage_identity
+audit_storage_definition_digest
+migration_digest
+root_event_set_digest
+record_family_counts
+event_kind_counts
+outcome_counts
+before_evidence_coverage
+after_evidence_coverage
+version_set_digest_coverage
+idempotency_coverage
+concurrency_coverage
+trigger_child_correlation_coverage
+sensitive_reference_controls
+rollback_or_compensation_lineage
+replay_capability
+drift_status
+open_blockers
+```
+
+DB-010 conserva la responsabilidad de ejecutar y certificar las pruebas físicas finales.
+
+DB-009 no adelanta esa certificación.
+
+#### 57. Conductas no conformes
+
+Queda prohibido:
+
+1. tratar logs de aplicación como prueba de commit;
+2. registrar un evento de mutación confirmada antes del commit;
+3. crear múltiples raíces para una sola mutación;
+4. omitir el conjunto de versiones;
+5. elegir una versión implícita;
+6. usar plaintext sensible por comodidad;
+7. convertir un hash enumerable en protección suficiente;
+8. confiar en actor enviado libremente por cliente;
+9. aceptar una tabla existente por nombre;
+10. registrar un rollback como borrado del evento original;
+11. editar evidencia histórica;
+12. usar el trigger como auditoría raíz;
+13. ocultar fallos como no-change;
+14. confundir evaluación con persistencia;
+15. atribuir una derivación a una fuente distinta de la que la produjo;
+16. mezclar paquetes sin lineage;
+17. aplicar reglas Vento OS a VITAL;
+18. crear una dependencia de red dentro de la transacción de auditoría;
+19. afirmar idempotencia sin identidad lógica y payload digest;
+20. declarar replay completo sin evidencia suficiente.
+
+#### 58. Límites
+
+Esta tarea no:
+
+- crea tablas;
+- crea migraciones;
+- crea funciones;
+- crea triggers;
+- crea policies;
+- modifica grants;
+- activa RLS;
+- registra eventos reales;
+- ejecuta backfills;
+- modifica datos;
+- ejecuta rollback;
+- ejecuta replay;
+- define retención empresarial definitiva fuera de las clases lógicas existentes;
+- certifica rendimiento;
+- certifica seguridad;
+- certifica idempotencia;
+- certifica rollback;
+- certifica ausencia de cambios semánticos;
+- cambia VITAL;
+- modifica consumidores.
+
+Esas acciones pertenecen a las futuras instancias físicas y a sus tareas propietarias.
+
+#### 59. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+La cobertura exigida por esta tarea ya existe en el registro canónico de pruebas para auditoría, versionado, idempotencia, concurrencia, seguridad, atomicidad, triggers, rollback, replay y correlación entre capas. La tarea materializa el contrato físico documental correspondiente sin cambiar esas obligaciones.
+
+#### 60. Cobertura de prueba vigente reutilizada
+
+La futura instancia deberá demostrar la cobertura existente aplicable, en particular:
+
+- `TREQ-DATA-144` — conjunto efectivo de versiones y digest;
+- `TREQ-DATA-148` — procedencia algorítmica;
+- `TREQ-DATA-149` — familias, eventos y contrato mínimo de auditoría;
+- `TREQ-DATA-150` — integridad aditiva e inmutable;
+- `TREQ-DATA-151` — resultados cerrados;
+- `TREQ-DATA-152` — minimización y referencias sensibles;
+- `TREQ-DATA-153` — semántica temporal;
+- `TREQ-DATA-154` a `TREQ-DATA-157` — idempotencia y concurrencia;
+- `TREQ-DATA-159` y `TREQ-DATA-160` — replay, rectificación y rollback lógico;
+- `TREQ-DATA-163` — correlación entre capas;
+- `TREQ-DATA-194` — frontera RPC transaccional;
+- `TREQ-DATA-198` — atomicidad de efecto y auditoría raíz;
+- `TREQ-DATA-199` y `TREQ-DATA-200` — versiones e idempotencia entre capas;
+- `TREQ-DATA-202` — direct writes y bypass controlado;
+- `TREQ-DATA-209` — una sola auditoría raíz;
+- `TREQ-DATA-211` — autorización y mínimo privilegio;
+- `TREQ-DATA-214` — corpus integral de capas;
+- `TREQ-DATA-235` — persistencia y auditoría transaccional de entradas externas.
+
+Esta enumeración es trazabilidad hacia requisitos vigentes; no altera el registro.
+
+#### 61. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                  |
+| --------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La definición documental no ejecuta el build del checkout; la comprobación integral corresponde al flujo local posterior a su incorporación.                                                               |
+| LOCAL     | PASS           | Estructura del artefacto, metadata, continuidad, UTF-8, LF, secciones obligatorias, ausencia de placeholders y separación de la sección de cero requisitos fueron comprobadas sobre el archivo de entrega. |
+| REMOTA    | PASS           | `main`, el archivo propietario, topología, contratos de auditoría, package compartido, registro DATA y catálogo remoto de `vento-os-dev` fueron recapturados como fuentes de esta definición.              |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutó una operación de normalización ni una instancia operacional de auditoría durante esta definición documental.                                                                                 |
+| FÍSICA    | NOT_APPLICABLE | Esta definición autoriza cero cambios físicos y no materializa objetos ni datos de Supabase.                                                                                                               |
+
+#### 62. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva exactamente `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. define una sola auditoría raíz por mutación;
+4. separa evaluación, mutación, derivación, revisión y propagación;
+5. conserva las seis familias lógicas;
+6. conserva las doce clases de evento;
+7. conserva los diez resultados;
+8. conserva valor previo y resultante mediante valor, referencia o hash según sensibilidad;
+9. fija conjunto de versiones y procedencia algorítmica;
+10. conserva operación, intento, correlación y causación;
+11. conserva idempotencia y expectativas de concurrencia;
+12. conserva semántica temporal;
+13. impide que una transacción revertida figure como mutación confirmada;
+14. integra evidencia defensiva de DB-008 como hija;
+15. preserva historia mediante append-only lógico;
+16. minimiza datos sensibles;
+17. gobierna funciones privilegiadas y acceso;
+18. prohíbe adopción legacy por nombre;
+19. permite reutilización solo por compatibilidad demostrada;
+20. preserva `vento-shell` como source of truth de migraciones;
+21. entrega un handoff verificable a DB-010;
+22. no crea ni modifica requisitos de prueba;
+23. no realiza cambios físicos durante esta definición;
+24. mantiene VITAL fuera del alcance transversal.
+
+#### 63. Decisiones finales
+
+1. DB-009 es una plantilla por paquete.
+2. No existe instancia global.
+3. El gate físico es posterior al E5 del paquete.
+4. El ledger operacional no reemplaza el almacenamiento de reglas de DB-001.
+5. La RPC conserva una única raíz de mutación.
+6. El servicio conserva evaluación semántica.
+7. El trigger conserva evidencia hija únicamente cuando interviene.
+8. El cliente no certifica commit.
+9. Un rollback transaccional no produce mutación confirmada.
+10. La falla de evidencia mínima obligatoria bloquea el commit.
+11. Valor previo y resultante se conservan con protección proporcional.
+12. Las versiones y algoritmos se fijan explícitamente.
+13. Los retries conservan operación lógica y distinguen intentos.
+14. La historia es aditiva.
+15. Las correcciones son nuevos eventos.
+16. Las estructuras legacy se evalúan por contrato, no por nombre.
+17. La infraestructura física se gobierna por migraciones forward-only.
+18. El remoto actual no demuestra una implementación completa del ledger de normalización.
+19. DB-010 conserva la certificación física final.
+20. La tarea no cambia 04A.
+
+---
+
+#### 64. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final`
+
+**TAREA ACTUAL APROBADA**
+`DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla`
+
+**SIGUIENTE TAREA RESERVADA**
+`DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos`
+
+
 ### [ ] DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
