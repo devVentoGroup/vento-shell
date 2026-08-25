@@ -12,7 +12,8 @@ const RESULT_START = '=== RESULTADO PARA CHATGPT ===';
 const RESULT_END = '=== FIN RESULTADO PARA CHATGPT ===';
 const CHECK_REGISTRATION_ATTEMPTS = 24;
 const CHECK_REGISTRATION_INTERVAL_MS = 5000;
-const CHECK_WATCH_INTERVAL_SECONDS = 5;
+const CHECK_COMPLETION_ATTEMPTS = 720;
+const CHECK_COMPLETION_INTERVAL_MS = 5000;
 const MERGE_CONFIRM_ATTEMPTS = 24;
 const MERGE_CONFIRM_INTERVAL_MS = 5000;
 
@@ -94,10 +95,23 @@ function sleep(milliseconds) {
   Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, delay);
 }
 
+export function isTransientPrChecksFailure({ stdout, stderr }) {
+  const combined = [stdout, stderr]
+    .map((entry) => String(entry ?? '').trim())
+    .filter(Boolean)
+    .join('\n');
+  if (!combined) return false;
+  return /(?:HTTP\s+(?:408|425|429|499|500|502|503|504)\b|ECONNRESET|ECONNREFUSED|ETIMEDOUT|EAI_AGAIN|ENETUNREACH|socket hang up|connection reset|temporarily unavailable|timed?\s*out|Something went wrong while executing your query)/iu.test(combined);
+}
+
 export function classifyPrChecksProbe({ status, stdout, stderr }) {
   const rawStdout = String(stdout ?? '').trim();
   const rawStderr = String(stderr ?? '').trim();
   const combined = [rawStdout, rawStderr].filter(Boolean).join('\n');
+
+  if (isTransientPrChecksFailure({ stdout: rawStdout, stderr: rawStderr })) {
+    return { state: 'RETRY', count: 0, detail: combined };
+  }
 
   if (rawStdout.startsWith('[')) {
     try {
@@ -128,6 +142,71 @@ export function classifyPrChecksProbe({ status, stdout, stderr }) {
   };
 }
 
+export function classifyPrChecksCompletionProbe({ status, stdout, stderr }) {
+  const registration = classifyPrChecksProbe({ status, stdout, stderr });
+  if (registration.state === 'RETRY') return registration;
+  if (registration.state === 'WAIT') return registration;
+  if (registration.state === 'ERROR') return registration;
+
+  let rows;
+  try {
+    rows = JSON.parse(String(stdout ?? '').trim());
+  } catch {
+    return {
+      state: 'ERROR',
+      count: 0,
+      detail: 'gh pr checks devolvio JSON invalido durante la espera de CI.',
+    };
+  }
+
+  if (!Array.isArray(rows) || rows.length === 0) {
+    return { state: 'WAIT', count: 0, detail: '' };
+  }
+
+  const failed = [];
+  let pending = false;
+  for (const row of rows) {
+    const bucket = String(row?.bucket ?? '').trim().toLowerCase();
+    const state = String(row?.state ?? '').trim().toUpperCase();
+    const name = String(row?.name ?? 'CHECK_DESCONOCIDO').trim();
+
+    if (
+      ['fail', 'cancel'].includes(bucket)
+      || ['FAILURE', 'ERROR', 'CANCELLED', 'TIMED_OUT', 'ACTION_REQUIRED', 'STALE', 'STARTUP_FAILURE'].includes(state)
+    ) {
+      failed.push(`${name}:${state || bucket}`);
+      continue;
+    }
+
+    if (
+      bucket === 'pending'
+      || ['PENDING', 'QUEUED', 'IN_PROGRESS', 'WAITING', 'REQUESTED', 'EXPECTED'].includes(state)
+    ) {
+      pending = true;
+      continue;
+    }
+
+    if (
+      ['pass', 'skipping'].includes(bucket)
+      || ['SUCCESS', 'SKIPPED', 'NEUTRAL'].includes(state)
+    ) {
+      continue;
+    }
+
+    return {
+      state: 'ERROR',
+      count: rows.length,
+      detail: `Estado de check no reconocido: ${name}:${state || bucket || 'VACIO'}.`,
+    };
+  }
+
+  if (failed.length > 0) {
+    return { state: 'FAIL', count: rows.length, detail: failed.join(', ') };
+  }
+  if (pending) return { state: 'WAIT', count: rows.length, detail: '' };
+  return { state: 'PASS', count: rows.length, detail: '' };
+}
+
 function waitForPrChecksToRegister(root, prNumber, {
   attempts = CHECK_REGISTRATION_ATTEMPTS,
   intervalMs = CHECK_REGISTRATION_INTERVAL_MS,
@@ -150,6 +229,35 @@ function waitForPrChecksToRegister(root, prNumber, {
   fail(
     `PR #${prNumber} no registro checks despues de ${attempts} intentos; cierre detenido antes del merge.`,
   );
+}
+
+export function waitForPrChecksToComplete(root, prNumber, {
+  attempts = CHECK_COMPLETION_ATTEMPTS,
+  intervalMs = CHECK_COMPLETION_INTERVAL_MS,
+} = {}) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const probe = gh([
+      'pr', 'checks', String(prNumber),
+      '--json', 'name,state,bucket,link',
+    ], { cwd: root, allowFailure: true });
+    const classification = classifyPrChecksCompletionProbe(probe);
+
+    if (classification.state === 'PASS') return classification.count;
+    if (classification.state === 'FAIL') {
+      fail(`Checks de PR #${prNumber} fallaron: ${classification.detail}`, probe.status || 1);
+    }
+    if (classification.state === 'ERROR') {
+      fail(`No se pudieron consultar checks de PR #${prNumber}: ${classification.detail}`, probe.status || 1);
+    }
+    if (classification.state === 'RETRY') {
+      console.warn(`[CHECKS] PR #${prNumber} transient query failure; retrying (${attempt}/${attempts}).`);
+    } else if (classification.state === 'WAIT' && (attempt === 1 || attempt % 12 === 0)) {
+      console.log(`[CHECKS] PR #${prNumber} pending (${attempt}/${attempts}).`);
+    }
+    if (attempt < attempts) sleep(intervalMs);
+  }
+
+  fail(`PR #${prNumber} no completo checks despues de ${attempts} intentos; cierre detenido antes del merge.`);
 }
 
 function readOpenPrState(root, prNumber) {
@@ -777,12 +885,7 @@ export function finishTask({ taskId, root = ensureRepositoryRoot() }) {
   ensureOpenPrIdentity(prState, prNumber, headSha);
 
   const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);
-  gh([
-    'pr', 'checks', String(prNumber),
-    '--watch',
-    '--fail-fast',
-    '--interval', String(CHECK_WATCH_INTERVAL_SECONDS),
-  ], { cwd: root, inherit: true });
+  const completedCheckCount = waitForPrChecksToComplete(root, prNumber);
 
   prState = readOpenPrState(root, prNumber);
   ensureOpenPrIdentity(prState, prNumber, headSha);
@@ -841,6 +944,7 @@ export function finishTask({ taskId, root = ensureRepositoryRoot() }) {
     HEAD_VALIDATED: headSha,
     PR: prNumber,
     CHECKS_REGISTERED: registeredCheckCount,
+    CHECKS_COMPLETED: completedCheckCount,
     REQUIRED_CHECKS: 'PASS',
     MERGE: 'PASS',
     MERGE_COMMIT: merged.mergeCommitSha,
@@ -958,12 +1062,7 @@ export function publishInfraChange({ changeId, root = ensureRepositoryRoot() }) 
   ensureOpenPrIdentity(prState, prNumber, headSha);
 
   const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);
-  gh([
-    'pr', 'checks', String(prNumber),
-    '--watch',
-    '--fail-fast',
-    '--interval', String(CHECK_WATCH_INTERVAL_SECONDS),
-  ], { cwd: root, inherit: true });
+  const completedCheckCount = waitForPrChecksToComplete(root, prNumber);
 
   prState = readOpenPrState(root, prNumber);
   ensureOpenPrIdentity(prState, prNumber, headSha);
@@ -1019,6 +1118,7 @@ export function publishInfraChange({ changeId, root = ensureRepositoryRoot() }) 
     HEAD_VALIDATED: headSha,
     PR: prNumber,
     CHECKS_REGISTERED: registeredCheckCount,
+    CHECKS_COMPLETED: completedCheckCount,
     REQUIRED_CHECKS: 'PASS',
     MERGE: 'PASS',
     MERGE_COMMIT: merged.mergeCommitSha,
@@ -1129,12 +1229,7 @@ export function publishOpsChange({ changeId, root = ensureRepositoryRoot() }) {
   ensureOpenPrIdentity(prState, prNumber, headSha);
 
   const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);
-  gh([
-    'pr', 'checks', String(prNumber),
-    '--watch',
-    '--fail-fast',
-    '--interval', String(CHECK_WATCH_INTERVAL_SECONDS),
-  ], { cwd: root, inherit: true });
+  const completedCheckCount = waitForPrChecksToComplete(root, prNumber);
 
   prState = readOpenPrState(root, prNumber);
   ensureOpenPrIdentity(prState, prNumber, headSha);
@@ -1190,6 +1285,7 @@ export function publishOpsChange({ changeId, root = ensureRepositoryRoot() }) {
     HEAD_VALIDATED: headSha,
     PR: prNumber,
     CHECKS_REGISTERED: registeredCheckCount,
+    CHECKS_COMPLETED: completedCheckCount,
     REQUIRED_CHECKS: 'PASS',
     MERGE: 'PASS',
     MERGE_COMMIT: merged.mergeCommitSha,

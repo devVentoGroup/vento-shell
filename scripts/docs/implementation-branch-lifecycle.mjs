@@ -9,6 +9,7 @@ import {
   classifyTaskPath,
   parsePorcelainPaths,
   resolveNpmInvocation,
+  waitForPrChecksToComplete,
 } from './task-branch-lifecycle.mjs';
 import {
   instanceRecordRelativePath,
@@ -24,7 +25,6 @@ const RESULT_START = '=== RESULTADO PARA CHATGPT ===';
 const RESULT_END = '=== FIN RESULTADO PARA CHATGPT ===';
 const CHECK_REGISTRATION_ATTEMPTS = 60;
 const CHECK_REGISTRATION_INTERVAL_MS = 2000;
-const CHECK_WATCH_INTERVAL_SECONDS = 2;
 const MERGE_CONFIRM_ATTEMPTS = 60;
 const MERGE_CONFIRM_INTERVAL_MS = 2000;
 
@@ -293,6 +293,23 @@ export function assertStartWorktree(paths, recordPath) {
     );
   }
   return true;
+}
+
+export function resolveImplementationFinishMode({
+  dirtyPaths = [],
+  branchCommits = 0,
+} = {}) {
+  const dirty = [...new Set(
+    (dirtyPaths ?? []).map((entry) => String(entry).replaceAll('\\', '/')).filter(Boolean),
+  )];
+  if (dirty.length > 0) return 'CREATE_COMMIT';
+
+  const commits = Number(branchCommits);
+  if (Number.isFinite(commits) && commits > 0) return 'RESUME_POST_COMMIT';
+
+  fail(
+    'IMPLEMENTATION_FINISH no encontro cambios locales ni un commit de implementacion existente para reanudar.',
+  );
 }
 
 function writeInstanceStatus(root, instanceId, status) {
@@ -651,22 +668,29 @@ export async function finishImplementation({ instanceId, root = ensureRepository
   ]);
 
   const dirty = worktreePaths(root);
-  if (dirty.length === 0) {
-    fail('IMPLEMENTATION_FINISH no encontro cambios para cerrar despues de docs:plan:build.');
+  const preCommitBranchCommits = Number(
+    git(['rev-list', '--count', `origin/${DEFAULT_BRANCH}..HEAD`], { cwd: root }).stdout.trim(),
+  );
+  const finishMode = resolveImplementationFinishMode({
+    dirtyPaths: dirty,
+    branchCommits: preCommitBranchCommits,
+  });
+
+  if (finishMode === 'CREATE_COMMIT') {
+    ensureImplementationPaths(dirty);
+
+    git(['diff', '--check'], { cwd: root });
+    git(['add', '--', ...dirty], { cwd: root });
+    npm(['run', '--silent', 'docs:commit-scope:check', '--', '--staged'], { cwd: root });
+    git(['diff', '--cached', '--check'], { cwd: root });
+
+    const staged = git(['diff', '--cached', '--name-only', '--diff-filter=ACMRD'], { cwd: root })
+      .stdout.split(/\r?\n/u).map((entry) => entry.trim()).filter(Boolean);
+    ensureImplementationPaths(staged);
+    if (staged.length === 0) fail('No hay archivos staged para cerrar la implementacion.');
+
+    git(['commit', '-m', `implementation(${id}): verify`], { cwd: root });
   }
-  ensureImplementationPaths(dirty);
-
-  git(['diff', '--check'], { cwd: root });
-  git(['add', '--', ...dirty], { cwd: root });
-  npm(['run', '--silent', 'docs:commit-scope:check', '--', '--staged'], { cwd: root });
-  git(['diff', '--cached', '--check'], { cwd: root });
-
-  const staged = git(['diff', '--cached', '--name-only', '--diff-filter=ACMRD'], { cwd: root })
-    .stdout.split(/\r?\n/u).map((entry) => entry.trim()).filter(Boolean);
-  ensureImplementationPaths(staged);
-  if (staged.length === 0) fail('No hay archivos staged para cerrar la implementacion.');
-
-  git(['commit', '-m', `implementation(${id}): verify`], { cwd: root });
 
   const branchCommits = Number(
     git(['rev-list', '--count', `origin/${DEFAULT_BRANCH}..HEAD`], { cwd: root }).stdout.trim(),
@@ -692,12 +716,7 @@ export async function finishImplementation({ instanceId, root = ensureRepository
   ensureOpenPrIdentity(prState, prNumber, headSha);
 
   const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);
-  gh([
-    'pr', 'checks', String(prNumber),
-    '--watch',
-    '--fail-fast',
-    '--interval', String(CHECK_WATCH_INTERVAL_SECONDS),
-  ], { cwd: root, inherit: true });
+  const completedCheckCount = waitForPrChecksToComplete(root, prNumber);
 
   prState = readOpenPrState(root, prNumber);
   ensureOpenPrIdentity(prState, prNumber, headSha);
@@ -751,6 +770,7 @@ export async function finishImplementation({ instanceId, root = ensureRepository
     INSTANCE_ID: id,
     TASK_ID: instance.task_id,
     BRANCH: branch,
+    FINISH_MODE: finishMode,
     FILES: changedPaths.length,
     PHYSICAL_VALIDATIONS: 'REUSED_FROM_VERIFIED_EVIDENCE',
     DOCS_PLAN_BUILD: 'PASS_ONCE',
@@ -763,6 +783,7 @@ export async function finishImplementation({ instanceId, root = ensureRepository
     HEAD_VALIDATED: headSha,
     PR: prNumber,
     CHECKS_REGISTERED: registeredCheckCount,
+    CHECKS_COMPLETED: completedCheckCount,
     REQUIRED_CHECKS: 'PASS',
     MERGE: 'PASS',
     MERGE_COMMIT: merged.mergeCommitSha,
