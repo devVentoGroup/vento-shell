@@ -6831,7 +6831,963 @@ Esta tarea documental no:
 `DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada`
 
 
-### [ ] DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada
+### ✅ DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada
+
+**Estado:** APROBADA
+**Tarea anterior:** DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos
+**Tarea siguiente:** DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para clasificar, diseñar, materializar, validar y retirar índices de búsqueda y de unicidad normalizada únicamente cuando exista una representación, query contract o invariante certificado que los justifique, preservando identidad, scope, semántica de nulos, versiones, seguridad, rendimiento, rollback y fronteras con constraints, servicio/RPC, triggers y auditoría, sin materializar DDL, DML, migraciones, índices, triggers ni cambios remotos durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `DATA-NORM-DB-007::<package_id>`, sujetas a `POST_E5_PACKAGE`, a los handoffs válidos de DB-003 y/o DB-006 según el carril, al expediente E5 aplicable, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+Definir el contrato físico-documental que determina cuándo un paquete necesita un índice para ejecutar búsqueda canónica o para proteger una unicidad normalizada ya certificada, qué familia de índice es compatible con la semántica aprobada, qué evidencia debe existir antes de construirlo, cómo se valida contra el query real y el comportamiento concurrente, y cómo se retira o recupera sin convertir una optimización física en autoridad empresarial.
+
+DB-007 no declara que toda representación derivada de búsqueda deba indexarse ni que todo índice único existente sea correcto. Una futura instancia puede concluir que no se requiere índice, reutilizar uno equivalente, crear uno nuevo, reemplazar una estrategia legacy o quedar bloqueada.
+
+#### 2. Resultado canónico
+
+Cada futura instancia `DATA-NORM-DB-007::<package_id>` deberá producir dos inventarios separados cuando apliquen:
+
+```text
+SEARCH_INDEX_CANDIDATES
+NORMALIZED_UNIQUENESS_CANDIDATES
+```
+
+Cada candidato deberá terminar en una disposición cerrada y conservar la evidencia que demuestra por qué el objeto físico acelera o protege exactamente el contrato aprobado.
+
+La existencia de un índice nunca modifica por sí sola:
+
+- el valor fuente;
+- la representación mostrada;
+- la identidad de una entidad;
+- la clasificación de un duplicado;
+- el ranking empresarial;
+- la autorización;
+- la selección de versión;
+- la decisión de merge o supervivencia.
+
+#### 3. Topología y cardinalidad vinculantes
+
+DB-007 conserva:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = DATA-NORM-DB-007::<package_id>
+```
+
+No existe `DATA-NORM-DB-007::GLOBAL`.
+
+La aprobación documental define una plantilla reutilizable. Cada `package_id` materializa únicamente los índices justificados por sus propios campos, consultas, invariantes, consumidores, volumen, datos reconciliados, gates y rollback.
+
+#### 4. Gate temporal
+
+Una instancia física solo podrá evaluarse después de `POST_E5_PACKAGE`.
+
+Como mínimo deberá existir:
+
+```text
+package_id identificado
+AND E5-GATE-008::<package_id> = PASS
+AND candidate_commit_sha fijado
+AND migration history reconciliado
+AND source cut vigente
+AND consumidores identificados
+AND autorización física explícita
+AND drift recapturado
+```
+
+Además, cada candidato deberá poseer el handoff específico de su carril.
+
+#### 5. Dos carriles físicos separados
+
+DB-007 no mezcla búsqueda con identidad.
+
+##### 5.1. Carril de búsqueda
+
+Recibe de `DATA-NORM-DB-003::<package_id>` una representación indexable y un query contract compatible.
+
+Su propósito es acelerar recuperación, filtrado, prefijos, componentes o términos autorizados.
+
+Todo índice de este carril es no autoritativo respecto de identidad y duplicidad.
+
+##### 5.2. Carril de unicidad normalizada
+
+Recibe de `DATA-NORM-DB-006::<package_id>` únicamente candidatos clasificados `HANDOFF_TO_DB_007`.
+
+Su propósito es proteger atómicamente una unicidad empresarial ya certificada que no puede expresarse como `UNIQUE` directo porque depende de una expresión, predicado, comparación normalizada o estrategia de índice especializada.
+
+DB-007 no inventa la identidad que ese índice protege.
+
+#### 6. Fuentes vinculantes de una instancia
+
+Cada futura instancia deberá consumir, según corresponda:
+
+- el expediente E5 del `package_id`;
+- `DATA-NORM-ARC-008` para búsqueda, representaciones, modos y precedencia;
+- `DATA-NORM-ARC-009` para versiones, digests, idempotencia, evidencia y replay;
+- `DATA-NORM-ARC-010` para identidad, unicidad, scope, colisiones y enforcement certificado;
+- `DATA-NORM-ARC-011` para autoridad de servicio, RPC y defensa de base;
+- `DATA-NORM-DB-002` cuando una expresión necesite una primitiva SQL certificada;
+- `DATA-NORM-DB-003::<package_id>` para representación física y query contract de búsqueda;
+- `DATA-NORM-DB-005::<package_id>` como evidencia de reconciliación cuando exista población histórica afectada;
+- `DATA-NORM-DB-006::<package_id>` para candidatos de unicidad normalizada;
+- `@vento/data-normalization` como contrato ejecutable compartido;
+- migraciones y esquema vigentes del paquete;
+- query shapes y consumidores registrados;
+- estado remoto recapturado de tablas, columnas, índices, constraints, collations y extensiones;
+- requisitos de prueba vigentes;
+- rollback y recovery path aplicables.
+
+Un helper o índice legacy con nombre parecido no sustituye estas fuentes.
+
+#### 7. Handoff de búsqueda recibido de DB-003
+
+Un candidato de búsqueda deberá recibir al menos:
+
+```text
+package_id
+entity_or_table_coordinate
+source_field_coordinate
+search_profile
+search_representation
+representation_strategy
+query_expression_or_shape
+match_modes_served
+scope_filters
+status_or_validity_filters
+locale
+algorithm_version
+resolved_version_set
+version_set_digest
+source_value_version_or_hash_strategy
+consumer_set
+expected_cardinality
+baseline_query_plan
+security_scope
+rollback_reference
+```
+
+Si la representación está `BLOCKED`, `NOT_APPLICABLE` o no posee paridad query/valor, DB-007 no crea un índice para ocultar esa carencia.
+
+#### 8. Handoff de unicidad recibido de DB-006
+
+Un candidato de unicidad normalizada deberá recibir al menos:
+
+```text
+package_id
+invariant_id_or_coordinate
+entity_and_domain
+identity_coordinate
+scope_dimensions
+comparison_representation
+null_semantics
+status_and_validity_semantics
+predicate_if_any
+algorithm_and_versions
+resolved_version_set
+version_set_digest
+collision_resolution_evidence
+backfill_or_not_required_evidence
+consumer_set
+writer_set
+baseline_indexes
+reason_direct_unique_is_insufficient
+rollback_reference
+validation_condition
+```
+
+Si falta identidad, scope, semántica de nulos o reconciliación, el candidato termina `BLOCKED`.
+
+#### 9. Revalidación inmediatamente anterior al índice
+
+La evidencia anterior no reserva indefinidamente el estado físico.
+
+Antes de materializar una futura instancia se recaptura:
+
+1. ambiente y proyecto;
+2. commit candidato;
+3. migration history;
+4. tabla, columnas y tipos;
+5. collations;
+6. operator classes disponibles;
+7. índices vigentes y sus definiciones exactas;
+8. `indisvalid` e `indisready`;
+9. constraints respaldados por índices;
+10. tamaño y cardinalidad de tablas;
+11. estadística relevante;
+12. query shapes actuales;
+13. writers y consumidores;
+14. extensiones realmente instaladas;
+15. particionado;
+16. versiones de reglas y algoritmos;
+17. ausencia de nuevas colisiones o violaciones;
+18. rollback disponible;
+19. autorización física.
+
+Drift material invalida la evidencia que dependa de ese estado.
+
+#### 10. Disposiciones cerradas por candidato
+
+Cada candidato deberá terminar exactamente en una disposición:
+
+| Disposición | Significado |
+| --- | --- |
+| `NO_INDEX_REQUIRED` | el plan y la carga no justifican un índice nuevo |
+| `REUSE_EQUIVALENT_INDEX` | existe un índice física y semánticamente equivalente, válido y listo |
+| `BTREE_LOOKUP_INDEX` | igualdad, rango u orden compatible sobre columnas o representación exacta |
+| `BTREE_PREFIX_INDEX` | búsqueda de prefijo compatible con collation, operator class y query real |
+| `COMPOSITE_SCOPE_INDEX` | filtros de scope y clave requieren orden compuesto medido |
+| `PARTIAL_SEARCH_INDEX` | el workload consulta un subconjunto estable y el predicado es compatible con el query |
+| `GIN_REPRESENTATION_INDEX` | una representación multivaluada o estructurada usa operadores GIN compatibles sin alterar semántica |
+| `NORMALIZED_UNIQUE_INDEX` | una comparación normalizada certificada requiere protección única mediante índice |
+| `PARTIAL_NORMALIZED_UNIQUE_INDEX` | la unicidad certificada aplica únicamente al subconjunto definido por un predicado estable |
+| `REPLACE_LEGACY_INDEX` | el objeto vigente no es equivalente y existe transición aprobada hacia otro índice |
+| `BLOCKED` | falta evidencia, compatibilidad, seguridad, paridad, reconciliación o recovery suficiente |
+
+La disposición no fija automáticamente el nombre, las columnas ni el método físico antes de evaluar el candidato concreto.
+
+#### 11. Regla universal de compatibilidad query-index
+
+Un índice solo se considera útil o protector cuando el contrato de consulta y la definición física son compatibles.
+
+La instancia compara como mínimo:
+
+```text
+query expression
+index expression
+access method
+key column order
+operator class
+collation
+sort direction when material
+null ordering when material
+predicate
+included columns
+query operators
+parameterization
+scope filters
+status filters
+```
+
+Que dos expresiones produzcan resultados parecidos en una muestra no demuestra equivalencia.
+
+#### 12. Índices de expresión
+
+Un índice de expresión solo es elegible cuando todas las funciones y operadores usados por la definición cumplen la inmutabilidad requerida por PostgreSQL y reproducen exactamente la versión aprobada del contrato.
+
+Reglas:
+
+1. no se marca una función como `IMMUTABLE` para forzar su indexación si depende de estado externo;
+2. una primitiva SQL canónica requerida proviene de DB-002;
+3. un catálogo mutable, alias activo, reloj, locale implícito, timezone de sesión, autorización o red descalifican una expresión indexable directa;
+4. la query deberá usar una expresión compatible con la del índice;
+5. un cambio de algoritmo o semántica exige transición versionada, no modificación silenciosa bajo la misma identidad.
+
+#### 13. `SEARCH_FORM_KEY`
+
+Cuando DB-003 entregue una `SEARCH_FORM_KEY` físicamente indexable, DB-007 puede evaluar un B-tree no único para los modos compatibles.
+
+El índice no podrá:
+
+- declararse `UNIQUE` por el hecho de que la forma sea estable;
+- retirar tildes;
+- convertir `ñ` en `n`;
+- incorporar aliases;
+- reinterpretar signos;
+- convertirse en clave empresarial.
+
+La query deberá usar el mismo perfil, locale, algoritmo y versión que produjo la representación.
+
+#### 14. `SEARCH_ACCENT_KEY`
+
+`SEARCH_ACCENT_KEY` solo sirve para recuperación tolerante.
+
+Cualquier índice sobre esta representación será no único y deberá demostrar que el plegado implementado conserva el contrato `es-CO`, incluida la diferencia entre `ñ` y `n`.
+
+La extensión `unaccent` o un helper genérico de eliminación de diacríticos no adquieren equivalencia por disponibilidad técnica.
+
+#### 15. `SEARCH_TOKEN_STREAM`
+
+El token stream conserva clases, fronteras y orden aprobados.
+
+DB-007 no lo sustituye automáticamente por:
+
+- texto concatenado;
+- full-text search genérico;
+- stemming;
+- stopwords;
+- trigramas;
+- una serialización que pierda clases o fronteras.
+
+Un `GIN_REPRESENTATION_INDEX` solo procede si la representación física de DB-003 y los operadores consultados preservan el contrato exacto. De lo contrario permanece `BLOCKED` o `NO_INDEX_REQUIRED`.
+
+#### 16. `SEARCH_APPROVED_ALIAS_SET`
+
+Los aliases conservan su catálogo y vigencia propios.
+
+Un índice de aliases deberá operar sobre la estructura relacional o de consulta autorizada y preservar:
+
+- alias estable;
+- target estable;
+- scope;
+- clase semántica;
+- fuente de autoridad;
+- estado;
+- vigencia;
+- versión.
+
+No se crea una copia universal de aliases en cada fila empresarial para simplificar la indexación.
+
+#### 17. Transliteration y similitud
+
+Bajo la política vigente:
+
+```text
+SEARCH_TRANSLITERATION_KEY = NOT_APPLICABLE
+SIMILARITY_CANDIDATE_ONLY = DISABLED
+```
+
+Por tanto DB-007 no instala índices de transliteración ni infraestructura de similitud por anticipación.
+
+La ausencia actual de `pg_trgm` no es una brecha mientras la capacidad continúe deshabilitada.
+
+#### 18. Componentes estructurados
+
+`SEARCH_STRUCTURED_COMPONENT_SET` se indexa únicamente preservando sus componentes tipados y filtros reales.
+
+Una estrategia compuesta puede incluir dimensiones como:
+
+- producto;
+- cantidad;
+- unidad;
+- multiplicador;
+- empaque;
+- contexto;
+- proveedor o fuente;
+- estado;
+- vigencia.
+
+El orden de las columnas se deriva del query real, selectividad y cardinalidad. No se concatena una cadena universal para sustituir la estructura.
+
+#### 19. Free text
+
+`SEARCH_FREE_TEXT_TERMS` solo recibe un índice cuando el perfil autoriza descubrimiento libre, DB-003 materializó una representación compatible y el query contract demuestra utilidad.
+
+La estrategia no puede:
+
+- indexar secretos o firmas;
+- ampliar finalidad;
+- convertir texto sensible en un corpus enumerable;
+- introducir stemming, stopwords o similitud no aprobados;
+- reemplazar el control de autorización previo a búsqueda.
+
+#### 20. Precedencia de modos de búsqueda
+
+DB-007 no altera la precedencia canónica:
+
+```text
+EXACT_VALUE_MATCH
+FORM_EQUIVALENT_MATCH
+ACCENT_TOLERANT_MATCH
+APPROVED_ALIAS_MATCH
+ORDERED_PHRASE_MATCH
+ALL_TOKEN_MATCH
+LAST_TOKEN_PREFIX_MATCH
+TRANSLITERATION_FALLBACK_MATCH
+SIMILARITY_CANDIDATE_ONLY
+```
+
+Un índice puede acelerar uno o varios niveles, pero no elevar un modo inferior ni cambiar el orden de ranking.
+
+#### 21. Prefix matching
+
+`LAST_TOKEN_PREFIX_MATCH` exige demostrar que la combinación de collation, operator class, representación y operador de consulta permite utilizar el índice esperado.
+
+No se fija universalmente `text_pattern_ops`, otra operator class o un método especializado. La instancia deberá medir el query plan real y seleccionar únicamente una estrategia compatible con el contrato y el ambiente.
+
+#### 22. Índices parciales de búsqueda
+
+Un `PARTIAL_SEARCH_INDEX` solo procede cuando:
+
+1. el subconjunto relevante es estable y aprobado;
+2. el predicado no cambia semántica de visibilidad;
+3. la query que debe usarlo implica el predicado de forma reconocible por PostgreSQL;
+4. la parametrización real no impide esa implicación;
+5. filas excluidas pueden permanecer fuera del índice sin convertirse en invisibles para una búsqueda que debería recuperarlas;
+6. la ventaja de tamaño, selectividad o costo fue medida.
+
+Un conjunto grande de índices parciales no sustituye particionado ni un diseño compuesto correcto.
+
+#### 23. Índices compuestos
+
+El orden de un índice compuesto se deriva de:
+
+- igualdad y rangos;
+- filtros de autorización ya aplicados;
+- scope;
+- selectividad;
+- ordenamiento requerido;
+- joins;
+- cardinalidad;
+- reutilización real entre queries.
+
+No se agrega una dimensión al índice solo porque exista en el modelo ni se omite una dimensión del scope para hacerlo más pequeño.
+
+#### 24. `INCLUDE` y covering indexes
+
+Columnas `INCLUDE` son una optimización de lectura y nunca forman parte de la identidad o unicidad protegida.
+
+Su uso requiere medir:
+
+- posibilidad de index-only scan;
+- ancho de tupla;
+- bloat;
+- frecuencia de actualización;
+- costo de escritura;
+- beneficio sobre heap access.
+
+No se incluirán columnas anchas o sensibles por conveniencia.
+
+#### 25. Unicidad normalizada
+
+`NORMALIZED_UNIQUE_INDEX` y `PARTIAL_NORMALIZED_UNIQUE_INDEX` solo proceden desde un handoff válido de DB-006.
+
+La clave protegida deberá representar una `COMPARISON_REPRESENTATION` autorizada por la política de identidad y unicidad, no una derivación tolerante de búsqueda.
+
+Queda prohibido usar como identidad única por sí mismos:
+
+- `SEARCH_FORM_KEY`;
+- `SEARCH_ACCENT_KEY`;
+- token streams;
+- aliases;
+- transliteración;
+- similitud;
+- ranking;
+- slug legacy;
+- `lower` o `trim` no gobernados;
+- una etiqueta visible.
+
+#### 26. Índice único de expresión
+
+Un índice único de expresión exige simultáneamente:
+
+1. identidad y scope certificados;
+2. representación de comparación exacta;
+3. expresión inmutable y versionada;
+4. cero colisiones no resueltas;
+5. semántica de nulos explícita;
+6. comportamiento concurrente definido;
+7. writers compatibles;
+8. error esperado y manejo de conflicto conocidos;
+9. rollback disponible;
+10. paridad entre servicio, RPC e índice.
+
+Una expresión parecida a un índice legacy no satisface estas condiciones.
+
+#### 27. Índice único parcial
+
+Un índice único parcial solo procede cuando el invariante de unicidad aplica a un subconjunto empresarial real y estable, por ejemplo un estado o intervalo certificado por la política.
+
+La instancia deberá demostrar:
+
+- predicate exacto;
+- semántica de entrar y salir del subconjunto;
+- carreras durante cambios de estado;
+- cobertura de reactivación;
+- historia y supersesión;
+- query/writer compatibility;
+- ausencia de una solución declarativa directa más apropiada.
+
+El predicado no se usa para ocultar duplicados que deberían resolverse.
+
+#### 28. Semántica de nulos
+
+La semántica de `NULL` proviene de DB-006 y no se redefine en DB-007.
+
+Cuando un índice único necesite `NULLS NOT DISTINCT`, esa decisión deberá estar certificada por el dominio.
+
+Cuando la estrategia dependa de expresiones, predicados o valores estructurales, no se introducirán sentinels mediante `COALESCE` para alterar silenciosamente el significado de ausencia.
+
+#### 29. B-tree como base de unicidad
+
+La unicidad física de PostgreSQL se implementa únicamente mediante un método que soporte índices únicos para el caso concreto; en PostgreSQL 17 la base estándar de estos índices es B-tree.
+
+DB-007 no selecciona Hash, GIN, GiST, BRIN u otro método para declarar unicidad empresarial si el motor no soporta esa garantía con la semántica requerida.
+
+#### 30. Índices legacy
+
+Cada índice existente se clasifica por definición, no por nombre.
+
+El fingerprint mínimo incluye:
+
+```text
+schema
+table
+index_name
+access_method
+key_columns_or_expressions
+collations
+operator_classes
+sort_and_null_order
+predicate
+included_columns
+unique
+primary
+valid
+ready
+constraint_attachment
+```
+
+Las disposiciones legacy son:
+
+```text
+REUSE_EQUIVALENT_INDEX
+KEEP_UNRELATED_INDEX
+REPLACE_LEGACY_INDEX
+BLOCKED_PENDING_CONSUMER_MAP
+```
+
+`IF NOT EXISTS` no sustituye esta comprobación porque un objeto con el mismo nombre puede tener otra definición.
+
+#### 31. Baseline remoto observado
+
+La auditoría read-only de referencia sobre `vento-os-dev` observó PostgreSQL 17.6 en los schemas Vento OS auditados fuera de VITAL:
+
+```text
+indexes_total = 883
+btree_indexes = 882
+gin_indexes = 1
+unique_indexes = 432
+partial_indexes = 126
+expression_indexes = 24
+unaccent = INSTALLED 1.1
+pg_trgm = NOT_OBSERVED
+```
+
+Este baseline es evidencia de diseño, no una autorización ni un inventario congelado. Cada futura instancia lo recaptura.
+
+La coexistencia de expresiones `lower`, `btrim`, `COALESCE`, índices parciales y un único GIN observado demuestra diversidad física, no equivalencia con el contrato canónico.
+
+#### 32. Frontera con `unaccent`
+
+La disponibilidad de `unaccent` no autoriza usarlo como representación canónica de búsqueda ni como comparación de identidad.
+
+El contrato `es-CO` exige preservar `ñ` frente a `n` y limita el plegado de diacríticos.
+
+Cualquier primitiva SQL futura deberá cumplir DB-002, tener versión gobernada y superar corpus de paridad antes de participar en una expresión indexada.
+
+#### 33. Frontera con `pg_trgm`
+
+`pg_trgm` no fue observado en el baseline remoto auditado y la similitud permanece deshabilitada en la política vigente.
+
+Por tanto:
+
+1. DB-007 no instala la extensión;
+2. no crea índices trigram;
+3. no usa trigramas como fallback de búsqueda;
+4. una activación futura requeriría política, versión, umbrales, métricas, seguridad y transición propias.
+
+#### 34. Construcción concurrente
+
+Una futura instancia deberá clasificar cada build como:
+
+```text
+STANDARD_BUILD
+CONCURRENT_BUILD
+PARTITION_AWARE_BUILD
+```
+
+La selección depende de volumen, writers, ventana, locks, versión de PostgreSQL, particionado y mecanismo de migración.
+
+Para `CONCURRENT_BUILD` deberá recordarse que PostgreSQL realiza trabajo adicional, puede dejar un índice inválido tras fallo y no permite `CREATE INDEX CONCURRENTLY` dentro de un bloque de transacción.
+
+El ejecutor de migraciones deberá comprobarse antes de elegir esta modalidad.
+
+#### 35. Índice inválido o build fallido
+
+Un build fallido no se interpreta como ausencia de efecto.
+
+La recuperación deberá recapturar:
+
+- existencia del índice;
+- `indisvalid`;
+- `indisready`;
+- unicidad activa;
+- definición;
+- costo de mantenimiento residual;
+- writers afectados;
+- error original.
+
+La estrategia de recovery se decide desde el estado observado; no se reintenta ciegamente el mismo DDL.
+
+#### 36. Índice único concurrente
+
+La unicidad durante un build concurrente requiere tratamiento reforzado porque PostgreSQL puede empezar a rechazar duplicados antes de que el índice quede disponible como válido y un fallo puede dejar un índice inválido con efectos de enforcement.
+
+La instancia deberá definir:
+
+- ventana;
+- manejo de errores concurrentes;
+- comunicación a consumidores;
+- condición de aborto;
+- recovery;
+- validación posterior;
+- idempotencia del retry.
+
+#### 37. Tablas particionadas
+
+Antes de indexar una tabla particionada se recaptura su topología real.
+
+PostgreSQL 17 no permite construir concurrentemente el índice del parent particionado de la misma manera que una tabla ordinaria. Una estrategia futura podrá requerir índices por partición y posterior attachment del índice padre según soporte del motor.
+
+DB-007 no infiere esta estrategia sin evidencia del paquete.
+
+#### 38. Estadísticas y `ANALYZE`
+
+Después de materializar un índice de expresión, la evidencia de plan deberá considerar que las estadísticas de la expresión pueden requerir `ANALYZE` o la actualización correspondiente antes de evaluar su utilidad real.
+
+No se declara un índice inútil ni exitoso únicamente por el primer plan observado inmediatamente después del DDL.
+
+#### 39. Validación del query plan
+
+Cada índice de búsqueda deberá probarse contra las queries reales o fixtures contractuales equivalentes.
+
+La evidencia mínima incluye:
+
+```text
+query_shape_id
+parameters_or_parameter_classes
+row_count
+selectivity
+plan_before
+plan_after
+index_used_or_not
+estimated_cost_before
+estimated_cost_after
+actual_latency_when_safe
+buffers_when_safe
+rows_returned
+result_equivalence
+```
+
+La utilización del índice no es obligatoria en todos los tamaños de tabla: el planner puede elegir un sequential scan cuando sea más barato. El criterio es comportamiento correcto y costo medido, no forzar `Index Scan` artificialmente.
+
+#### 40. Rendimiento y costo de escritura
+
+La instancia medirá proporcionalmente:
+
+- tiempo de build;
+- locks y waits;
+- CPU;
+- I/O;
+- WAL cuando sea material;
+- tamaño del índice;
+- bloat inicial o crecimiento relevante;
+- latencia de lectura;
+- write amplification;
+- impacto sobre inserts y updates;
+- p50/p95/p99 cuando aplique;
+- throughput;
+- autovacuum/analyze relevante.
+
+Un índice que mejora una lectura pero degrada de forma inaceptable el path de escritura no supera el gate físico.
+
+#### 41. Seguridad y autorización
+
+Un índice nunca amplía acceso.
+
+Reglas:
+
+1. autorización y RLS se aplican antes de exposición de resultados;
+2. no se indexan secretos o firmas para habilitar descubrimiento;
+3. campos personales o de ubicación requieren finalidad y scope;
+4. un índice no convierte una tabla privada en API pública;
+5. service role o credenciales privilegiadas no sustituyen autorización semántica;
+6. query plan, logs y evidencia minimizan valores sensibles;
+7. índices auxiliares no justifican grants adicionales por conveniencia.
+
+#### 42. Idempotencia y drift
+
+La operación física deberá poseer una identidad lógica que incorpore al menos:
+
+```text
+package_id
+candidate_commit_sha
+table_identity
+index_contract_digest
+version_set_digest
+operation_kind
+```
+
+Antes de crear, reemplazar o retirar un índice, la instancia consulta el estado real.
+
+La misma operación compatible recupera su outcome anterior; una misma identidad con definición distinta produce conflicto y bloqueo.
+
+#### 43. Migraciones y procedencia
+
+Toda modificación futura de índices de Supabase se origina y versiona en `vento-shell`.
+
+La evidencia enlaza:
+
+- migration id;
+- commit;
+- package;
+- ambiente;
+- definición previa;
+- definición resultante;
+- digests;
+- executor y modalidad de build;
+- tiempos;
+- outcome.
+
+Una edición aislada en Dashboard no constituye estado canónico de implementación.
+
+#### 44. Coexistencia y transición
+
+Cuando un índice legacy deba reemplazarse, la transición deberá declarar:
+
+```text
+OLD_ONLY
+DUAL_INDEX_SHADOW
+NEW_PREFERRED
+OLD_RETIRED
+```
+
+`DUAL_INDEX_SHADOW` significa coexistencia física para comparación de plan y resultado; no significa dual write empresarial ni doble autoridad semántica.
+
+El índice anterior no se retira hasta demostrar compatibilidad de consumidores, resultado, rendimiento y recovery.
+
+#### 45. Rollback y recovery
+
+El rollback deberá preservar la fuente y el contrato lógico aunque cambie la estrategia física.
+
+Una futura instancia declara antes de ejecutar:
+
+- cómo dejar de usar el índice nuevo;
+- cómo recuperar de un índice inválido;
+- cómo restaurar el path previo;
+- qué consumidores dependen del índice;
+- qué ocurre con una unicidad ya expuesta a writers;
+- qué evidencia se conserva;
+- qué punto de no retorno existe;
+- cuándo corresponde forward-fix en lugar de rollback.
+
+Retirar un índice nunca revierte automáticamente los datos ni una decisión empresarial.
+
+#### 46. Observabilidad posterior
+
+Después del cutover, la instancia observa:
+
+- planes reales;
+- latencia;
+- errores;
+- conflictos de unicidad;
+- locks;
+- write cost;
+- crecimiento del índice;
+- uso del índice;
+- queries que dejaron de usarlo;
+- consumidores degradados.
+
+La ausencia de uso puede significar tabla pequeña, query incompatible, estadísticas insuficientes o diseño innecesario; se clasifica antes de retirar.
+
+#### 47. Handoff hacia DB-008
+
+DB-007 entrega a DB-008 únicamente defensas que realmente requieran trigger y no estén resueltas por constraints, índices, servicio o RPC.
+
+El handoff deberá explicar:
+
+- invariante;
+- por qué constraint o índice no bastan;
+- qué parte ya protege DB-007;
+- qué representación o campo debe defenderse;
+- costo esperado;
+- writers afectados;
+- rollback.
+
+Un índice no justifica crear un trigger para duplicar su enforcement.
+
+#### 48. Handoff hacia DB-009 y DB-010
+
+DB-007 conserva para DB-009 la atribución operacional necesaria de cambios físicos, versiones y resultados, sin implementar su persistencia propietaria.
+
+DB-010 recibirá:
+
+- definitions before/after;
+- digests;
+- query plans;
+- resultados de equivalencia;
+- comportamiento concurrente;
+- evidencia de recovery;
+- consumo real;
+- impacto de rollback;
+- ausencia de cambio semántico.
+
+#### 49. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea materializa documentalmente obligaciones ya registradas sobre búsqueda, representaciones, compatibilidad query-index, identidad, unicidad, scope, nulos, concurrencia, seguridad, rendimiento, versiones y rollback. No introduce una nueva semántica empresarial ni un riesgo sin cobertura canónica.
+
+#### 50. Cobertura de prueba vigente reutilizada
+
+La cobertura existente que gobierna esta plantilla incluye, entre otros:
+
+- `TREQ-DATA-123` a `TREQ-DATA-142` para representaciones, búsqueda, paridad, perfiles, seguridad, compatibilidad de índices y corpus;
+- `TREQ-DATA-143` a `TREQ-DATA-160` para versiones, digests, outcomes, idempotencia, concurrencia, replay y rollback;
+- `TREQ-DATA-165` a `TREQ-DATA-170` para separación de identidad, coordenada, scopes, frontera frente a búsqueda, nulos y temporalidad;
+- `TREQ-DATA-175` y `TREQ-DATA-176` para jerarquías y UOM estructural;
+- `TREQ-DATA-185` a `TREQ-DATA-190` para prevención, concurrencia, gates de enforcement, paridad y corpus de identidad;
+- `TREQ-DATA-191` a `TREQ-DATA-214` para colocación por capas, RPC, atomicidad, escritura directa, unicidad, seguridad, rendimiento, legacy y certificación.
+
+Estas referencias son trazabilidad de cobertura vigente y no representan cambios del registro.
+
+#### 51. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario. |
+| LOCAL | PASS | El artefacto fue comprobado estáticamente contra metadata obligatoria, secciones requeridas, cardinalidad de evidencia, continuidad, declaración TREQ cero, UTF-8, LF, whitespace y reglas de contenido del contrato de entrega. |
+| REMOTA | PASS | Se contrastaron `main`, owner R, topología, contratos DB-003 y DB-006, 04A DATA, `@vento/data-normalization`, documentación vigente de PostgreSQL 17 y el baseline read-only de `vento-os-dev`; la auditoría remota se ejecutó en transacción READ ONLY y produjo cero mutaciones. |
+| OPERATIVA | NOT_EXECUTED | Query plans, builds, locks, carga, writers concurrentes, consumo, cutover y recovery corresponden a futuras instancias físicas autorizadas. |
+| FÍSICA | NOT_APPLICABLE | Esta definición documental no crea, reemplaza, elimina ni reconstruye índices, extensiones, constraints, triggers, migraciones o datos. |
+
+#### 52. Decisiones vinculantes
+
+1. DB-007 es `TEMPLATE_PER_PACKAGE`, nunca global.
+2. El gate físico es `POST_E5_PACKAGE`.
+3. Existen dos carriles: búsqueda y unicidad normalizada.
+4. DB-003 es la entrada propietaria del carril de búsqueda.
+5. DB-006 es la entrada propietaria del carril de unicidad normalizada.
+6. Un índice de búsqueda nunca crea identidad.
+7. Una unicidad normalizada nunca se deriva de una clave tolerante de búsqueda.
+8. `SEARCH_FORM_KEY` puede ser indexable pero no única por esa condición.
+9. `SEARCH_ACCENT_KEY` es solo recuperación candidata y no se declara única.
+10. Token streams no se reducen automáticamente a full-text search.
+11. Aliases conservan catálogo y vigencia propios.
+12. Transliteration permanece no aplicable bajo la política vigente.
+13. Similarity permanece deshabilitada bajo la política vigente.
+14. DB-007 no instala `pg_trgm` por anticipación.
+15. `unaccent` instalado no equivale al contrato `SEARCH_ACCENT_KEY`.
+16. Índices de expresión exigen funciones y operadores compatibles con inmutabilidad.
+17. El query contract debe ser compatible con expresión, collation y operator class.
+18. Los índices parciales exigen que el query implique el predicado.
+19. La parametrización real se valida antes de confiar en un índice parcial.
+20. Índices compuestos se ordenan por workload y scope, no por estética del schema.
+21. `INCLUDE` es optimización, nunca parte de identidad.
+22. Un índice único normalizado exige handoff certificado de DB-006.
+23. `COMPARISON_REPRESENTATION` y `SEARCH_DERIVATION` permanecen separadas.
+24. Semántica de nulos se hereda de DB-006.
+25. Sentinels con `COALESCE` no alteran ausencia sin contrato estructural explícito.
+26. Un índice legacy se compara por fingerprint completo.
+27. El mismo nombre no demuestra equivalencia.
+28. `IF NOT EXISTS` no demuestra equivalencia.
+29. Build estándar, concurrente y partition-aware se clasifican por instancia.
+30. `CREATE INDEX CONCURRENTLY` no se asume compatible con el executor sin comprobarlo.
+31. Un build fallido puede dejar estado físico residual y exige recaptura.
+32. Un unique concurrent build requiere recovery reforzado.
+33. El planner puede elegir sequential scan legítimamente.
+34. Expresión, query e índice se certifican juntos.
+35. Resultado correcto prevalece sobre forzar un tipo de plan.
+36. Rendimiento de lectura y costo de escritura se evalúan conjuntamente.
+37. RLS, grants y autorización permanecen controles separados.
+38. VITAL permanece fuera del alcance transversal de Vento OS.
+39. Toda modificación futura de Supabase se origina y versiona en `vento-shell`.
+40. DB-008 conserva triggers defensivos.
+41. DB-009 conserva auditoría operacional física.
+42. DB-010 conserva certificación física final.
+43. Esta definición produce cero cambios TREQ.
+44. Esta definición produce cero cambios remotos.
+
+#### 53. Criterios de aceptación
+
+DB-007 queda documentalmente aceptable cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. separa búsqueda de unicidad normalizada;
+4. consume el handoff completo de DB-003 para búsqueda;
+5. consume el handoff completo de DB-006 para unicidad;
+6. exige recaptura de drift;
+7. clasifica todos los candidatos con disposiciones cerradas;
+8. exige compatibilidad query-index;
+9. protege fuente, display e identidad;
+10. conserva `SEARCH_FORM_KEY` y `SEARCH_ACCENT_KEY` con su semántica exacta;
+11. conserva tokenización, aliases y componentes estructurados;
+12. mantiene transliteración y similitud deshabilitadas;
+13. define criterios de índices de expresión;
+14. define criterios de índices parciales y compuestos;
+15. define prefix matching sin fijar operator class universal;
+16. define `INCLUDE` como optimización no semántica;
+17. define unicidad normalizada desde `COMPARISON_REPRESENTATION` certificada;
+18. hereda semántica de nulos de DB-006;
+19. clasifica índices legacy por fingerprint completo;
+20. contempla build concurrente e índices inválidos;
+21. contempla tablas particionadas;
+22. exige estadísticas y query-plan evidence;
+23. mide read benefit y write cost;
+24. conserva seguridad y RLS como controles independientes;
+25. define idempotencia, procedencia, coexistencia y rollback;
+26. deja handoff cerrado hacia DB-008, DB-009 y DB-010;
+27. mantiene cero cambios TREQ;
+28. contiene exactamente las cinco clases de evidencia requeridas;
+29. termina con continuidad canónica y no desarrolla DB-008.
+
+#### 54. Límites
+
+Esta tarea documental no:
+
+- crea ni modifica migraciones;
+- crea índices;
+- elimina índices;
+- reconstruye índices;
+- instala extensiones;
+- cambia collations;
+- cambia operator classes;
+- crea constraints;
+- crea triggers;
+- ejecuta backfills;
+- modifica valores fuente o derivados;
+- altera identidades;
+- confirma duplicados;
+- cambia rankings;
+- habilita similitud;
+- habilita transliteración;
+- modifica RPC;
+- modifica servicio de dominio;
+- modifica RLS o grants;
+- modifica Auth, Storage, Realtime, Edge Functions, cron o secretos;
+- modifica el registro 04A;
+- autoriza ninguna instancia física;
+- ejecuta cambios sobre VITAL;
+- desarrolla DB-008, DB-009 o DB-010.
+
+---
+
+#### 55. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos`
+
+**TAREA ACTUAL APROBADA**
+`DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada`
+
+**SIGUIENTE TAREA RESERVADA**
+`DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final`
+
+
 ### [ ] DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
 ### [ ] DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
 ### [ ] DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos

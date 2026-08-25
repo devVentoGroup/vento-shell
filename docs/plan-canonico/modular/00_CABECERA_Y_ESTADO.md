@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1040** |
+| Tareas aprobadas | **1041** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **554** |
+| Tareas no iniciadas | **553** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **65.24% (1040/1594)** |
+| Porcentaje de completamiento | **65.31% (1041/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos** |
-| Tarea actual | **DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada** |
+| Última tarea aprobada | **DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada** |
+| Tarea actual | **DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final** |
+| Siguiente tarea | **DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 39 de 51 aprobadas; DATA-NORM-DB-007 pendiente** |
+| Progreso del bloque | **BLOQUE R: 40 de 51 aprobadas; DATA-NORM-DB-008 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-UI-015::GLOBAL** |
-| Carril documental | **ACTIVO — DATA-NORM-DB-007** |
+| Carril documental | **ACTIVO — DATA-NORM-DB-008** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-UI-015::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-DB-006` — Implementar constraints después de reconciliar datos |
-| Tarea actual | `DATA-NORM-DB-007` — Implementar índices de búsqueda y unicidad normalizada — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-DB-008` — Implementar triggers únicamente como barrera defensiva final |
+| Última aprobada | `DATA-NORM-DB-007` — Implementar índices de búsqueda y unicidad normalizada |
+| Tarea actual | `DATA-NORM-DB-008` — Implementar triggers únicamente como barrera defensiva final — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-DB-009` — Registrar valor previo, valor resultante y versión de regla |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 39 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-007** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 40 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-008** |
 | Implementación física | **SHELL-UI-015::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos
-        ↓
-TAREA ACTUAL
 DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 39 de 51 tareas aprobadas
+BLOQUE R — 40 de 51 tareas aprobadas
 ```

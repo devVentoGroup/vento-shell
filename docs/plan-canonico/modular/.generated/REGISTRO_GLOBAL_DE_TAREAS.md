@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1040** |
+| Aprobadas | **1041** |
 | En propuesta | **0** |
-| No iniciadas | **554** |
+| No iniciadas | **553** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.24% (1040/1594)** |
+| Porcentaje de completamiento | **65.31% (1041/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-DB-006` — Implementar constraints después de reconciliar datos | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-DB-007` — Implementar índices de búsqueda y unicidad normalizada | ⬜ NO INICIADA |
-| Siguiente reservada | `DATA-NORM-DB-008` — Implementar triggers únicamente como barrera defensiva final | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-DB-007` — Implementar índices de búsqueda y unicidad normalizada | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-DB-008` — Implementar triggers únicamente como barrera defensiva final | ⬜ NO INICIADA |
+| Siguiente reservada | `DATA-NORM-DB-009` — Registrar valor previo, valor resultante y versión de regla | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1250,7 +1250,7 @@
 | ✅ APROBADA | `DATA-NORM-DB-004` | Ejecutar dry-runs y reportes de colisiones | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-005` | Ejecutar backfills aprobados por dominio | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-006` | Implementar constraints después de reconciliar datos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
-| ⬜ NO INICIADA | `DATA-NORM-DB-007` | Implementar índices de búsqueda y unicidad normalizada | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
+| ✅ APROBADA | `DATA-NORM-DB-007` | Implementar índices de búsqueda y unicidad normalizada | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-008` | Implementar triggers únicamente como barrera defensiva final | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-009` | Registrar valor previo, valor resultante y versión de regla | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `DATA-NORM-DB-010` | Probar idempotencia, rollback y ausencia de cambios semánticos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |

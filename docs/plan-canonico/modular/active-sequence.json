@@ -5,14 +5,14 @@
   "sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION",
   "block_code": "BLOQUE R",
   "block_title": "Fundación física, migraciones por dominio y normalización",
-  "previous_task_id": "DATA-NORM-DB-006",
+  "previous_task_id": "DATA-NORM-DB-007",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "ANIMA-AUTH-001",
   "handoff_sequence_id": "PHASE-04-F-ANIMA",
   "segments": [
     {
       "prefix": "DATA-NORM-DB",
-      "from": 7,
+      "from": 8,
       "to": 10
     },
     {
@@ -23,12 +23,12 @@
   ],
   "block_progress": {
     "total_tasks": 51,
-    "approved_tasks": 39,
-    "pending_tasks": 12
+    "approved_tasks": 40,
+    "pending_tasks": 11
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 554,
+    "pending_tasks": 553,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 13
