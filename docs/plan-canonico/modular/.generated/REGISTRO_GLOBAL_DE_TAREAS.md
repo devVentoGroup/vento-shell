@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1045** |
+| Aprobadas | **1046** |
 | En propuesta | **0** |
-| No iniciadas | **549** |
+| No iniciadas | **548** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.56% (1045/1594)** |
+| Porcentaje de completamiento | **65.62% (1046/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-DB-001` — Crear registro de sistemas e integraciones externas | ✅ APROBADA |
-| Tarea actual | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-DB-003` — Crear staging inmutable de payloads externos | ⬜ NO INICIADA |
+| Última aprobada | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas | ✅ APROBADA |
+| Tarea actual | `INT-DB-003` — Crear staging inmutable de payloads externos | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-DB-004` — Crear mapeos de identificadores externos y canónicos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1255,7 +1255,7 @@
 | ✅ APROBADA | `DATA-NORM-DB-009` | Registrar valor previo, valor resultante y versión de regla | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-010` | Probar idempotencia, rollback y ausencia de cambios semánticos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `INT-DB-001` | Crear registro de sistemas e integraciones externas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
-| ⬜ NO INICIADA | `INT-DB-002` | Crear referencias de credenciales sin almacenar secretos en tablas expuestas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
+| ✅ APROBADA | `INT-DB-002` | Crear referencias de credenciales sin almacenar secretos en tablas expuestas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-003` | Crear staging inmutable de payloads externos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-004` | Crear mapeos de identificadores externos y canónicos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-005` | Crear restricciones e índices de idempotencia | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
