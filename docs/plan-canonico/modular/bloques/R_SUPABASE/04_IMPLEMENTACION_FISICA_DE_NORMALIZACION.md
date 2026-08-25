@@ -7788,6 +7788,1171 @@ Esta tarea documental no:
 `DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final`
 
 
-### [ ] DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
+### ✅ DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
+
+**Estado:** APROBADA
+**Tarea anterior:** DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada
+**Tarea siguiente:** DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para clasificar, diseñar, materializar, validar, observar y retirar triggers estrictamente defensivos únicamente cuando un invariante local no quede suficientemente protegido por servicio, RPC, constraints o índices, preservando autoridad semántica, atomicidad, versiones, idempotencia, seguridad, costo acotado, rollback y frontera de auditoría, sin materializar DDL, DML, migraciones, triggers, funciones ni cambios remotos durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `DATA-NORM-DB-008::<package_id>`, sujetas a `POST_E5_PACKAGE`, al handoff válido de `DATA-NORM-DB-007::<package_id>`, al expediente E5 aplicable, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+Definir el contrato físico-documental que determina cuándo un paquete realmente necesita un trigger de base de datos como **última barrera defensiva**, qué puede comprobar o derivar, qué debe rechazar, qué responsabilidades no puede absorber y cómo deberá activarse, medirse y retirarse sin convertir PostgreSQL en una segunda autoridad semántica de Vento OS.
+
+DB-008 parte de una regla de mínima intervención:
+
+```text
+servicio de dominio
+→ autoridad semántica
+
+RPC transaccional
+→ autenticación, autorización, revalidación y commit
+
+constraints e índices
+→ enforcement declarativo o atómico cuando corresponda
+
+trigger defensivo
+→ última barrera local, acotada y fail-closed
+```
+
+La existencia de una tabla, función o trigger legacy no demuestra que un trigger sea necesario ni que su comportamiento sea compatible con este contrato.
+
+#### 2. Resultado canónico
+
+Cada futura instancia `DATA-NORM-DB-008::<package_id>` deberá producir una matriz cerrada de operaciones gobernadas y asignar exactamente un modo de trigger a cada una:
+
+```text
+NO_TRIGGER
+ASSERT_AND_REJECT
+DERIVE_BOUNDED_REPRESENTATION
+STAMP_DEFENSIVE_METADATA
+```
+
+El resultado válido de una instancia puede ser:
+
+- cero triggers nuevos porque las defensas existentes son suficientes;
+- adopción explícita de un trigger existente después de demostrar equivalencia completa;
+- reemplazo versionado de un trigger legacy incompatible;
+- creación de un trigger nuevo estrictamente defensivo;
+- bloqueo por falta de evidencia, seguridad, paridad, rendimiento o rollback.
+
+No existe una obligación de crear un trigger por cada campo, tabla, representación, índice o constraint.
+
+#### 3. Topología y cardinalidad vinculantes
+
+DB-008 conserva:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = DATA-NORM-DB-008::<package_id>
+```
+
+Consecuencias:
+
+1. no existe `DATA-NORM-DB-008::GLOBAL`;
+2. la aprobación documental define una plantilla reutilizable, no un trigger global;
+3. cada paquete evalúa únicamente sus operaciones, tablas, writers y riesgos;
+4. un trigger reutilizable creado en una instancia no autoriza extenderlo a otros paquetes sin lineage y decisión explícitos;
+5. cada instancia conserva migraciones, funciones, triggers, seguridad, mediciones, consumidores, evidencia y rollback propios;
+6. el marcador documental no se reabre por cada ejecución física futura.
+
+#### 4. Gate temporal
+
+Una futura instancia solo podrá materializarse después de satisfacer `POST_E5_PACKAGE` para el mismo `package_id`.
+
+Como mínimo deberá existir evidencia compatible de:
+
+```text
+package_id propietario identificado
+E5-GATE-008 del package = PASS
+handoff DB-007 = utilizable o NO_TRIGGER justificado
+writers inventariados
+servicio y RPC propietarios identificados
+constraints e índices aplicables reconciliados
+drift remoto recapturado
+seguridad resuelta
+rendimiento evaluable
+rollback preparado
+physical_authorization = EXPLICIT
+```
+
+Un trigger no puede utilizarse para completar retroactivamente decisiones de dominio, identidad, unicidad, versiones, autorización o transición que el paquete todavía no haya cerrado.
+
+#### 5. Fuentes vinculantes de una instancia
+
+Cada futura instancia deberá consumir sin reinterpretación silenciosa:
+
+1. el expediente E5 del `package_id`;
+2. `DATA-NORM-ARC-011` como autoridad de colocación entre aplicación, servicio, RPC y trigger;
+3. `DATA-NORM-ARC-009` para versiones, idempotencia, correlación y auditoría;
+4. `DATA-NORM-ARC-010` para identidad, unicidad, colisiones y prohibición de fusión por coincidencia;
+5. `DATA-NORM-ARC-012` cuando existan entradas o mappings externos;
+6. el handoff de `DATA-NORM-DB-007::<package_id>`;
+7. constraints vigentes y decisiones de `DATA-NORM-DB-006::<package_id>` cuando apliquen;
+8. representaciones físicas y contratos de `DATA-NORM-DB-003::<package_id>` cuando apliquen;
+9. primitivas SQL certificadas por `DATA-NORM-DB-002::<package_id>` cuando sean necesarias;
+10. contratos ejecutables de `@vento/data-normalization`;
+11. writers, RPC, jobs, imports, Edge Functions y consumidores del paquete;
+12. estado real de triggers y funciones recapturado en el ambiente objetivo;
+13. RLS, grants, ownership y `search_path` aplicables;
+14. cobertura de prueba vigente;
+15. plan de rollback y recuperación.
+
+Una discrepancia material entre estas fuentes bloquea únicamente la defensa afectada hasta resolver su autoridad propietaria.
+
+#### 6. Handoff obligatorio recibido de DB-007
+
+DB-008 solo recibe defensas que realmente requieran trigger y no estén resueltas de manera suficiente por constraints, índices, servicio o RPC.
+
+El handoff deberá declarar como mínimo:
+
+- invariante propietario;
+- `package_id`;
+- tabla y operación afectadas;
+- representación o campo gobernado;
+- por qué un constraint no basta;
+- por qué un índice no basta;
+- qué protección ya existe en DB-007;
+- writers afectados;
+- expectativa de versiones y fuente;
+- costo esperado de la defensa;
+- error esperado ante violación;
+- rollback.
+
+Un índice existente no justifica crear un trigger que duplique su enforcement.
+
+#### 7. Principio de última barrera
+
+El trigger defensivo no es la autoridad primaria de la operación.
+
+Su función es impedir que una escritura que haya alcanzado la relación viole un invariante local ya decidido o materialice una derivación estrictamente acotada que el contrato haya autorizado de antemano.
+
+Por tanto:
+
+1. la semántica se resuelve antes del trigger;
+2. la autorización se resuelve antes del trigger;
+3. la selección de versiones se resuelve antes del trigger;
+4. la identidad y unicidad se resuelven antes del trigger;
+5. el trigger no convierte una credencial privilegiada en autoridad empresarial;
+6. una violación se rechaza o se registra según el modo aprobado;
+7. el trigger no inventa una reparación para permitir que la escritura continúe.
+
+#### 8. Vocabulario cerrado de modos
+
+Cada operación tendrá exactamente uno de estos modos:
+
+| Modo | Función permitida | Resultado normal |
+| --- | --- | --- |
+| `NO_TRIGGER` | ninguna defensa física adicional por trigger | la operación depende de servicio, RPC y controles declarativos suficientes |
+| `ASSERT_AND_REJECT` | comprobar un invariante local ya aprobado | aceptar la fila o abortar la operación de forma cerrada |
+| `DERIVE_BOUNDED_REPRESENTATION` | producir una derivación local, determinista y no ambigua ya autorizada | derivación coherente con fuente y versiones o rechazo |
+| `STAMP_DEFENSIVE_METADATA` | estampar metadata técnica acotada de la operación defensiva | metadata técnica coherente sin alterar semántica empresarial |
+
+No existen modos implícitos adicionales.
+
+#### 9. `NO_TRIGGER`
+
+`NO_TRIGGER` es el modo predeterminado y una salida completamente válida.
+
+Se selecciona cuando:
+
+- el constraint declarativo protege íntegramente el invariante;
+- un índice único certificado protege la concurrencia requerida;
+- el servicio y la RPC ya garantizan la semántica sin una vía de bypass material;
+- la derivación corresponde a generated column u otra estructura más apropiada;
+- el costo del trigger excede el beneficio defensivo;
+- no existe un invariante local verificable sin semántica adicional;
+- cualquier trigger posible necesitaría red, workflow, scans globales o revisión humana;
+- el paquete no tiene writers alternos que justifiquen una barrera adicional.
+
+No se crea un trigger vacío para satisfacer la existencia de la tarea.
+
+#### 10. `ASSERT_AND_REJECT`
+
+Este modo se limita a invariantes que pueden evaluarse de forma determinista con el estado local permitido y cuyo resultado es binario para la escritura actual.
+
+Puede comprobar, cuando el descriptor lo exija:
+
+- presencia de contexto de operación;
+- compatibilidad entre política, versión, clase, fuente y representación;
+- expectativa de versión o hash de fuente;
+- coherencia entre una derivación persistida y su fuente;
+- prohibición de escritura directa sobre un campo gobernado;
+- relaciones locales necesarias para impedir un estado inválido no cubierto por constraint declarativo.
+
+Reglas:
+
+1. no corrige la fila para convertir un fallo en éxito;
+2. no selecciona otra versión;
+3. no consulta una cola humana;
+4. no ejecuta matching difuso;
+5. no decide identidad o sobreviviente;
+6. el rechazo aborta la operación dentro de la misma transacción;
+7. el error debe ser distinguible por la capa transaccional propietaria.
+
+#### 11. `DERIVE_BOUNDED_REPRESENTATION`
+
+Este modo solo es admisible para una derivación que sea simultáneamente:
+
+```text
+LOCAL
+DETERMINISTIC
+BOUNDED
+UNAMBIGUOUS
+VERSION_FIXED
+SOURCE_LINKED
+POLICY_AUTHORIZED
+NO_NETWORK
+NO_GLOBAL_SCAN
+NO_HUMAN_DECISION
+```
+
+La derivación no puede convertirse en valor empresarial mostrado, identidad, alias, decisión de revisión ni sustituto de la fuente.
+
+La función puede reutilizar una primitiva SQL certificada si existe, pero no recrear en PL/pgSQL una segunda implementación del servicio.
+
+Si el cálculo depende de catálogo mutable, diccionario, aliases, ranking, contexto externo, revisión, configuración implícita o selección dinámica de versión, la derivación pertenece al servicio/RPC y este modo queda bloqueado.
+
+#### 12. `STAMP_DEFENSIVE_METADATA`
+
+Este modo se limita a metadata técnica necesaria para defender o correlacionar la operación, por ejemplo:
+
+- versión de contrato defensivo aplicada;
+- digest ya resuelto por la capa propietaria;
+- marca técnica de intervención;
+- correlación con la operación lógica;
+- indicación de que una defensa local se ejecutó.
+
+La metadata:
+
+1. no reemplaza la auditoría raíz de la RPC;
+2. no inventa actor ni autorización;
+3. no constituye una decisión empresarial;
+4. no sustituye el registro operacional de DB-009;
+5. no puede transformar el valor fuente;
+6. debe ser idempotente para el mismo efecto lógico.
+
+#### 13. Matriz mínima de decisión
+
+Cada candidata deberá responder, en orden:
+
+```text
+¿Existe invariante aprobado?
+→ NO: NO_TRIGGER o BLOCKED
+
+¿Constraint o índice lo protegen completamente?
+→ SÍ: NO_TRIGGER
+
+¿Servicio/RPC lo protegen y no existe bypass material?
+→ SÍ: NO_TRIGGER
+
+¿La defensa solo necesita assert local?
+→ SÍ: ASSERT_AND_REJECT
+
+¿La defensa requiere derivación local exacta ya autorizada?
+→ SÍ: DERIVE_BOUNDED_REPRESENTATION
+
+¿Solo requiere metadata técnica defensiva?
+→ SÍ: STAMP_DEFENSIVE_METADATA
+
+¿Requiere semántica, red, workflow, fuzzy, ranking o scan global?
+→ BLOCKED; no pertenece a DB-008
+```
+
+La matriz debe producir una disposición por operación, no una conclusión genérica por tabla.
+
+#### 14. Frontera con constraints e índices
+
+DB-008 no recrea responsabilidades de DB-006 o DB-007.
+
+Reglas:
+
+1. un `CHECK`, FK, `NOT NULL`, PK o `UNIQUE` directo suficiente permanece declarativo;
+2. un índice único normalizado certificado permanece enforcement atómico de unicidad;
+3. el trigger no realiza una consulta previa para simular unicidad si existe una estrategia atómica disponible;
+4. el trigger no usa `SELECT ... LIMIT 1` para convertir ausencia observada en garantía concurrente;
+5. un índice parcial o de expresión no necesita un trigger duplicado por el solo hecho de ser especializado;
+6. un trigger no puede suavizar el error de un constraint o índice y persistir otra cosa silenciosamente.
+
+#### 15. Frontera con servicio y RPC
+
+El servicio de dominio continúa siendo la única autoridad semántica y la RPC la frontera transaccional de mutación.
+
+El trigger no puede:
+
+- seleccionar policy coordinate;
+- decidir qué regla es `latest`;
+- resolver capitalización, ortografía, aliases o marcas;
+- confirmar autorización;
+- aceptar un preview como decisión de commit;
+- reinterpretar un resultado bloqueado;
+- iniciar una mutación empresarial alternativa;
+- confirmar éxito al cliente.
+
+La RPC deberá tratar el rechazo del trigger como fallo de la misma operación lógica y no como un efecto secundario independiente.
+
+#### 16. Eventos permitidos y minimización de disparo
+
+Una instancia deberá seleccionar solo los eventos estrictamente necesarios entre:
+
+```text
+INSERT
+UPDATE
+DELETE
+```
+
+`TRUNCATE` no se usa como defensa normal de normalización por fila. Solo podría evaluarse bajo un contrato propietario explícito distinto que demuestre su necesidad y no invada responsabilidades de retención, seguridad o administración de datos.
+
+Reglas:
+
+1. no se crea un trigger `INSERT OR UPDATE OR DELETE` por comodidad;
+2. `UPDATE OF` se usa cuando el conjunto de columnas gobernadas está cerrado y su semántica es compatible;
+3. una defensa que solo importa ante cambio real deberá además distinguir `OLD` y `NEW` cuando corresponda;
+4. operaciones no gobernadas no pagan el costo del trigger sin justificación.
+
+#### 17. `BEFORE` como barrera de fila
+
+`BEFORE ROW` es la modalidad preferente cuando la defensa necesita:
+
+- rechazar la fila antes de persistirla;
+- inspeccionar `OLD`/`NEW` no generados;
+- derivar una representación acotada en `NEW`;
+- estampar metadata técnica antes de escribir.
+
+La función deberá devolver el registro esperado o rechazar explícitamente.
+
+Un `BEFORE` que devuelve `NULL` y omite silenciosamente una fila no se usa para esconder una violación empresarial. Si la operación debe rechazarse, el fallo deberá ser explícito y distinguible.
+
+#### 18. `AFTER` y visibilidad transaccional
+
+`AFTER` solo se utiliza cuando la defensa necesita observar el estado resultante que no está disponible correctamente en `BEFORE` o producir evidencia hija local que dependa de la fila ya procesada.
+
+`AFTER` continúa ejecutándose **dentro de la misma transacción**; no equivale a post-commit.
+
+Por tanto:
+
+1. no se ejecutan llamadas de red desde DB-008;
+2. no se asume que un sistema externo verá una operación que todavía puede revertirse;
+3. propagación externa o workflow asíncrono pertenece a mecanismos post-commit propietarios;
+4. un fallo de `AFTER` puede abortar la transacción y debe tratarse como tal.
+
+#### 19. Generated columns y orden de cálculo
+
+Una stored generated column se calcula después de los triggers `BEFORE` y antes de los triggers `AFTER`.
+
+Consecuencias:
+
+1. el valor nuevo de una generated column no se usa como entrada fiable dentro de `BEFORE`;
+2. un `BEFORE` no intenta escribir el valor generated como autoridad propia;
+3. si una defensa necesita inspeccionar el generated resultante, deberá evaluarse una modalidad posterior compatible;
+4. si la generated column ya garantiza la derivación necesaria, la operación puede terminar en `NO_TRIGGER`.
+
+DB-008 no convierte generated columns en valores editables.
+
+#### 20. `WHEN`, `UPDATE OF` y cambios reales
+
+La instancia deberá minimizar invocaciones usando el mecanismo más estrecho compatible con el invariante.
+
+Puede utilizar:
+
+- `UPDATE OF` para limitar columnas objetivo;
+- `WHEN` para evitar trabajo cuando la condición local demuestra que la defensa no aplica;
+- comparación `IS DISTINCT FROM` dentro del contrato cuando el cambio real de valor sea material.
+
+Debe recordarse que `UPDATE OF` se activa porque la columna aparece en la lista `SET`, aunque el valor final no cambie. La semántica de “columna mencionada” no se confunde con “valor efectivamente modificado”.
+
+#### 21. Orden entre múltiples triggers
+
+PostgreSQL ejecuta en orden alfabético por nombre los múltiples triggers de la misma clase para el mismo evento.
+
+DB-008 prohíbe depender de un orden accidental de nombres legacy.
+
+Si dos defensas del mismo paquete deben coexistir:
+
+1. se demuestra que son conmutativas; o
+2. se consolida la responsabilidad cuando sea correcto; o
+3. se fija una convención explícita de orden y se prueba la composición completa.
+
+Renombrar un trigger para alterar precedencia es un cambio contractual y requiere migración, pruebas y rollback.
+
+#### 22. Triggers en tablas particionadas
+
+Antes de crear un row-level trigger sobre una tabla particionada deberá recapturarse la topología de particiones.
+
+La instancia deberá considerar que PostgreSQL crea triggers clonados sobre las particiones existentes y futuras y gestiona esos clones al adjuntar o separar particiones.
+
+Por tanto se verificará:
+
+- nombres en particiones;
+- conflictos de nombre;
+- definición efectiva en cada partición;
+- impacto de attach/detach;
+- costo agregado de escritura;
+- rollback sobre parent y clones;
+- drift entre particiones.
+
+No se materializa un trigger sobre el parent sin esta reconciliación.
+
+#### 23. Statement triggers y transition relations
+
+La defensa DB-008 es row-local por defecto.
+
+Un statement-level trigger o transition relation solo es admisible si el package demuestra que:
+
+- el invariante no puede defenderse correctamente por fila;
+- el conjunto de transición es estrictamente acotado al statement actual;
+- no se convierte en scan global;
+- no ejecuta clustering, matching, workflow ni consolidación;
+- el costo y la visibilidad de datos están medidos;
+- la conducta bajo operaciones multirow es determinista.
+
+La posibilidad técnica de usar `OLD TABLE` o `NEW TABLE` no constituye necesidad de diseño.
+
+#### 24. Constraint triggers
+
+Un constraint trigger no se utiliza para evadir la frontera de DB-006.
+
+Como regla general, si el invariante es declarativo y debe comportarse como constraint, DB-006 conserva la propiedad.
+
+Una futura instancia solo podrá justificar un constraint trigger si existe un contrato específico que requiera su semántica diferida y no sea representable por un constraint declarativo ordinario. Esa excepción debe mantener las mismas puertas de seguridad, costo, evidencia y rollback.
+
+#### 25. Contrato de la función de trigger
+
+Toda función usada por DB-008 deberá declarar y permitir verificar:
+
+```text
+function_identity
+function_version_or_digest
+trigger_mode
+owned_invariant
+source_relation
+trigger_events
+trigger_timing
+row_or_statement_scope
+columns_or_when_filter
+relations_read
+relations_written
+security_mode
+search_path
+required_context
+expected_version_inputs
+failure_behavior
+idempotency_behavior
+recursion_behavior
+performance_budget
+rollback_reference
+```
+
+La función de trigger puede ser `VOLATILE` por la naturaleza de una función de trigger; esto no autoriza dependencia semántica de hora, aleatoriedad, red, configuración implícita ni fuentes mutables no declaradas.
+
+#### 26. Funciones puras reutilizadas
+
+Cuando un trigger reutilice una primitiva de normalización o comparación, esa primitiva deberá provenir del contrato propietario aplicable y conservar su identidad y versión.
+
+La primitiva reutilizada deberá permanecer:
+
+- local;
+- determinista respecto de sus entradas declaradas;
+- acotada;
+- sin red;
+- sin scans globales;
+- sin fuzzy matching;
+- sin revisión humana;
+- sin selección de registro;
+- sin propagación;
+- sin corrección semántica ambigua.
+
+No se marca una función como `IMMUTABLE` solo para satisfacer otra característica física.
+
+#### 27. Seguridad de funciones
+
+La función de trigger usará `SECURITY INVOKER` por defecto.
+
+`SECURITY DEFINER` solo será admisible cuando exista una necesidad explícita que no pueda resolverse con privilegios ordinarios y deberá acompañarse de:
+
+1. owner controlado;
+2. `search_path` fijo y seguro;
+3. referencias schema-qualified para objetos sensibles;
+4. mínimo privilegio;
+5. revisión de privilegios `EXECUTE`;
+6. revisión del efecto sobre RLS;
+7. ausencia de inputs libres usados como autoridad;
+8. pruebas negativas de bypass;
+9. plan de revocación y rollback.
+
+Una función definer observada en remoto no se adopta por existir.
+
+#### 28. RLS, grants y autorización
+
+El trigger no sustituye RLS, grants ni autorización RPC.
+
+Reglas:
+
+1. RLS controla acceso a filas según el contrato de la relación;
+2. grants controlan capacidades SQL;
+3. RPC revalida actor, finalidad y contexto;
+4. el trigger defiende el invariante local cuando la escritura alcanza la relación;
+5. el trigger no confía en un `actor_id` libre del payload;
+6. service-role o una función privilegiada no constituyen autorización semántica;
+7. una defensa no debe exponer un camino de función invocable que permita saltar la RPC.
+
+La seguridad se prueba como composición, no por control aislado.
+
+#### 29. Contexto de operación
+
+Cuando una defensa requiera contexto, la instancia deberá definir un mecanismo transaccional explícito y no falsificable dentro del modelo de privilegios aplicable.
+
+El contexto puede incluir, según el descriptor:
+
+- logical operation identity;
+- `package_id`;
+- policy/version set ya resuelto;
+- source expectation;
+- propósito o clase de operación;
+- referencia al comando propietario.
+
+No se acepta como prueba de autoridad:
+
+- un texto arbitrario enviado por cliente;
+- una variable de sesión escribible por el caller sin control;
+- un actor declarado sin revalidación;
+- una bandera booleana genérica de bypass.
+
+La ausencia o incompatibilidad del contexto requerido produce fallo cerrado.
+
+#### 30. Idempotencia y reintentos
+
+El trigger participa en la misma operación lógica que cliente, RPC, servicio y efectos hijos.
+
+Para un mismo efecto confirmado:
+
+1. no crea una segunda decisión;
+2. no duplica metadata defensiva;
+3. no emite dos eventos hijos equivalentes;
+4. no cambia el conjunto de versiones;
+5. no genera otra derivación si la fuente y versión siguen idénticas;
+6. no transforma un retry en una operación nueva por sí mismo.
+
+La recuperación de timeouts y respuestas perdidas pertenece a la frontera transaccional; el trigger no inventa una nueva clave idempotente.
+
+#### 31. Concurrencia y estado obsoleto
+
+El trigger puede verificar expectativas locales ya resueltas, pero no sustituye la revalidación completa de la RPC.
+
+Cuando el invariante dependa de fuente o versión deberá impedir que una operación obsoleta persista una derivación incompatible.
+
+El diseño declarará, cuando aplique:
+
+```text
+source_value_version_or_hash
+version_set_digest
+expected_row_version
+expected_derivation_state
+```
+
+Un mismatch produce rechazo o conflicto distinguible. No se aplica “último escritor gana” de forma silenciosa.
+
+#### 32. Fallo cerrado y taxonomía
+
+Toda intervención del trigger deberá terminar en un resultado distinguible entre, como mínimo:
+
+- contexto requerido ausente o incompatible;
+- versión o digest incompatible;
+- fuente obsoleta;
+- invariante local violado;
+- escritura directa no autorizada por el contrato;
+- derivación defensiva incompatible;
+- error técnico interno.
+
+La tarea no fija códigos físicos universales ni mensajes de usuario; cada package deberá mapear estas clases al contrato de errores propietario sin degradarlas a éxito.
+
+No existe fallback semántico dentro del trigger.
+
+#### 33. Auditoría y frontera con DB-009
+
+La RPC continúa siendo propietaria de una sola auditoría raíz por mutación.
+
+DB-008 puede producir únicamente evidencia hija cuando el trigger:
+
+- rechaza;
+- detecta drift de contexto;
+- deriva una representación acotada;
+- estampa metadata defensiva;
+- detecta una condición que requiere investigación.
+
+La evidencia hija deberá poder correlacionarse con la operación lógica y declarar la identidad/version del trigger o función que intervino.
+
+DB-008 no define todavía la persistencia completa de:
+
+- valor previo;
+- valor resultante;
+- versión de regla;
+- estructura definitiva del ledger operacional.
+
+Esa responsabilidad pertenece a DB-009.
+
+#### 34. Escrituras directas y bypass
+
+Los campos gobernados no admiten escrituras directas ordinarias que evadan el comando propietario.
+
+Un bypass futuro solo es válido si declara:
+
+```text
+actor autorizado
+finalidad
+scope
+ventana temporal
+versiones
+controles compensatorios
+evidencia
+rollback
+```
+
+Reglas:
+
+1. una credencial privilegiada no habilita bypass por sí misma;
+2. scripts, consola, imports y jobs usan el mismo contrato o un bypass explícito;
+3. deshabilitar temporalmente un trigger exige transición gobernada;
+4. las filas afectadas por una ventana sin defensa deben verificarse posteriormente;
+5. no se elimina una defensa para “hacer pasar” un backfill incompatible.
+
+#### 35. Recursión, reentrancia y cascadas
+
+Una función DB-008 deberá declarar si escribe la misma relación o cualquier relación que pueda volver a disparar la cadena.
+
+Por defecto:
+
+- no actualiza la misma fila mediante un segundo `UPDATE` cuando puede usar `NEW` en `BEFORE`;
+- no inicia cascadas de triggers como workflow oculto;
+- no propaga a agregados o copias;
+- no depende de profundidad de recursión como mecanismo de negocio;
+- no usa una guarda global que pueda ocultar efectos legítimos concurrentes.
+
+Cualquier cadena existente se inventaría y prueba como grafo antes de coexistencia o reemplazo.
+
+#### 36. Rendimiento y costo acotado
+
+Cada trigger deberá demostrar costo acotado para el workload del paquete.
+
+Quedan prohibidos dentro de DB-008:
+
+- scans globales;
+- fuzzy matching;
+- clustering;
+- selección del mejor candidato;
+- HTTP o red;
+- espera de workflow;
+- acceso a proveedores lingüísticos;
+- procesamiento masivo de corpus;
+- propagación multiagregado no acotada.
+
+La evaluación física futura medirá al menos:
+
+- writes por segundo;
+- latencia p50/p95/p99 de la escritura;
+- tiempo propio de la defensa cuando sea observable;
+- CPU e I/O relevantes;
+- lock waits;
+- deadlocks;
+- timeouts;
+- filas rechazadas por clase;
+- overhead frente al baseline sin trigger;
+- impacto de cascadas o funciones dependientes.
+
+Un trigger semánticamente correcto pero operacionalmente inseguro no se activa.
+
+#### 37. Baseline remoto observado
+
+El corte read-only de `vento-os-dev` observado durante esta definición reportó:
+
+```text
+PostgreSQL = 17.6
+non_internal_triggers = 173
+enabled_origin_triggers = 173
+trigger_functions_SECURITY_DEFINER = 30
+trigger_functions_VOLATILE = 173
+trigger_functions_STABLE = 0
+trigger_functions_IMMUTABLE = 0
+```
+
+Distribución observada de triggers no internos:
+
+```text
+public = 124
+pass = 28
+talento = 10
+club = 8
+pos = 2
+payments = 1
+```
+
+No se observaron triggers no internos en `app_private` ni `viso` dentro del corte consultado.
+
+Este inventario es baseline, no clasificación canónica.
+
+#### 38. Familias legacy observadas
+
+El remoto contiene, entre otras, familias nominales de:
+
+- `updated_at` / `touch_updated_at` / stamping;
+- `validate_*` y `enforce_*`;
+- `sync_*` y propagación;
+- validaciones de sitio, área, inventario, receta y operación;
+- funciones de trigger `SECURITY DEFINER` e invoker.
+
+DB-008 no adopta ninguna familia por nombre.
+
+En particular:
+
+1. un `updated_at` puede corresponder a stamping técnico, pero no adquiere automáticamente el contrato `STAMP_DEFENSIVE_METADATA`;
+2. un `validate_*` puede ser defensa legítima o lógica empresarial oculta;
+3. un `sync_*` puede implementar propagación y, por tanto, quedar fuera del alcance defensivo de DB-008;
+4. un trigger definer requiere revisión específica de seguridad;
+5. dos triggers con función parecida pueden tener scopes y contratos distintos.
+
+#### 39. Inventario obligatorio por trigger legacy
+
+Antes de coexistir, adoptar, sustituir o retirar un trigger existente, la futura instancia deberá registrar:
+
+```text
+schema
+table
+trigger_name
+events
+timing
+row_or_statement
+when_or_update_of_scope
+function_identity
+function_definition_digest
+security_mode
+function_owner
+search_path
+execute_privileges
+relations_read
+relations_written
+side_effects
+errors
+recursion_or_chain
+RLS_interaction
+callers_and_writers
+business_owner
+package_scope
+canonical_disposition
+rollback
+```
+
+La cardinalidad debe cerrarse contra el universo exacto del package; faltantes y duplicados bloquean la reconciliación.
+
+#### 40. Migraciones forward-only
+
+Toda modificación física futura de funciones o triggers Vento se origina y versiona en `vento-shell`.
+
+Queda prohibido:
+
+- crear o editar el trigger manualmente en Dashboard como estado final;
+- editar una migración ya aplicada;
+- reemplazar una función remota sin fuente versionada;
+- cambiar seguridad o `search_path` fuera de migración;
+- aceptar drift remoto como nueva verdad por conveniencia;
+- borrar el trigger anterior antes de validar consumidores y rollback.
+
+Una corrección posterior produce otra migración y conserva evidencia de transición.
+
+#### 41. Readiness de materialización
+
+Una defensa está lista para diseñarse físicamente solo cuando:
+
+```text
+package_id identificado
+AND invariante propietario aprobado
+AND operación identificada
+AND trigger_mode resuelto
+AND servicio propietario identificado
+AND RPC propietaria identificada
+AND controles declarativos reconciliados
+AND writers inventariados
+AND legacy reconciliado
+AND versión fijada
+AND contexto definido
+AND seguridad resuelta
+AND costo acotado
+AND pruebas preparadas
+AND rollback preparado
+AND drift reconciliado
+```
+
+Si falta una condición, el trigger permanece `BLOCKED` o la operación queda en `NO_TRIGGER` según corresponda.
+
+#### 42. Activación
+
+La mera existencia del trigger no permite declararlo activo de forma segura.
+
+La activación requiere:
+
+1. migración registrada;
+2. función y trigger con definición esperada;
+3. seguridad y privilegios verificados;
+4. writers compatibles;
+5. corpus positivo y negativo aprobado;
+6. reintentos y concurrencia probados;
+7. error mapping verificado;
+8. costo y locks dentro de presupuesto;
+9. orden con otros triggers verificado;
+10. particiones verificadas cuando apliquen;
+11. no existencia de workflow oculto;
+12. evidencia de que la semántica continúa en servicio/RPC;
+13. rollback disponible;
+14. gates del paquete abiertos.
+
+Un trigger creado pero no certificado permanece fuera del path aprobado.
+
+#### 43. Rollback y retiro
+
+El rollback de DB-008 no corrige datos ni reconstruye historia.
+
+Cada instancia deberá declarar una estrategia que pueda incluir:
+
+- retirar el trigger del path activo mediante migración posterior;
+- restaurar una función/trigger anterior compatible;
+- volver temporalmente a `NO_TRIGGER` únicamente si la seguridad del paquete lo permite;
+- mantener servicio, RPC, constraints e índices compatibles;
+- preservar evidencia de rechazos e intervenciones;
+- verificar filas afectadas durante la transición.
+
+No se reactiva una versión retirada sin reevaluación.
+
+El retiro definitivo exige demostrar que ningún writer depende ya de la defensa o que un control propietario equivalente la reemplazó.
+
+#### 44. Red, Webhooks y efectos externos
+
+Aunque Supabase puede implementar Database Webhooks sobre triggers y `pg_net` permite solicitudes asíncronas, esas capacidades quedan fuera de DB-008.
+
+Un trigger de normalización defensiva no:
+
+- llama HTTP;
+- llama Edge Functions;
+- emite webhooks;
+- contacta proveedores;
+- espera respuestas externas;
+- utiliza red como parte del invariante;
+- convierte un evento externo en condición de commit.
+
+Los efectos externos siguen la arquitectura de integración y propagación post-commit propietaria.
+
+#### 45. Búsqueda, similitud e identidad
+
+DB-008 no participa en consultas de búsqueda.
+
+El trigger no:
+
+- rankea;
+- pagina;
+- tokeniza para descubrir candidatos;
+- ejecuta similitud;
+- selecciona el primer resultado;
+- decide alias;
+- convierte una clave de búsqueda en identidad;
+- fusiona registros;
+- reasigna relaciones;
+- desactiva sobrevivientes.
+
+La existencia de un índice de DB-007 no cambia esta frontera.
+
+#### 46. Frontera VITAL
+
+VITAL permanece fuera del alcance transversal de Vento OS.
+
+La coexistencia en el mismo proyecto o infraestructura no autoriza:
+
+- instalar triggers DB-008 sobre objetos VITAL;
+- reutilizar sus triggers como patrón canónico;
+- aplicar políticas Vento a sus datos;
+- usar sus resultados como evidencia de paridad.
+
+Cualquier interacción explícita futura deberá conservar una frontera contractual separada.
+
+#### 47. Handoff hacia DB-009
+
+DB-008 entrega a DB-009 la información necesaria para persistir auditoría operacional sin duplicar la auditoría raíz de la RPC.
+
+El handoff deberá declarar, cuando aplique:
+
+```text
+package_id
+logical_operation_reference
+trigger_identity
+trigger_function_identity
+trigger_contract_version_or_digest
+trigger_mode
+owned_invariant
+table_and_event
+intervention_class
+expected_source_or_version_reference
+outcome
+child_evidence_required
+sensitivity_class
+```
+
+DB-009 conserva la definición y persistencia de valor previo, valor resultante, versión de regla y estructura operacional de auditoría.
+
+#### 48. Frontera con DB-010
+
+DB-008 define pruebas que una futura instancia deberá preparar, pero no absorbe la certificación final de DB-010.
+
+DB-010 conserva la prueba física final de:
+
+- idempotencia;
+- rollback;
+- ausencia de cambios semánticos;
+- paridad entre capas;
+- comportamiento ante reintentos y fallos;
+- evidencia de cierre del minibloque.
+
+DB-008 no se declara certificado globalmente por el solo hecho de que un trigger exista o rechace una fila de prueba.
+
+#### 49. Evidence bundle físico futuro
+
+Una futura instancia deberá conservar como mínimo:
+
+```text
+instance_id
+package_id
+environment_identity
+candidate_commit_sha
+migration_history_digest
+source_cut_reference
+DB007_handoff_reference
+operation_inventory
+trigger_mode_matrix
+legacy_trigger_inventory
+trigger_function_digests
+trigger_definitions
+security_mode_and_owner
+search_path_and_execute_grants
+RLS_and_grants_observation
+writer_registry_version
+version_set_digest
+context_contract
+error_contract
+recursion_and_chain_analysis
+partition_analysis
+ordering_analysis
+performance_baseline
+performance_observation
+validation_results
+rollback_plan_id
+trigger_inventory_after
+outcome
+```
+
+Campos materiales ausentes producen bloqueo, no asunción.
+
+#### 50. Secuencia obligatoria por futura instancia
+
+La secuencia física será:
+
+```text
+1. verificar package_id y gates
+2. recapturar drift y triggers actuales
+3. consumir handoff DB-007
+4. inventariar operaciones y writers
+5. reconciliar constraints, índices, servicio y RPC
+6. asignar un trigger_mode a cada operación
+7. cerrar NO_TRIGGER y BLOCKED antes de diseñar DDL
+8. reconciliar triggers y funciones legacy
+9. fijar versión, contexto, seguridad y errores
+10. analizar orden, recursión y particiones
+11. medir baseline de escritura
+12. preparar migración forward-only
+13. materializar función y trigger solo si corresponde
+14. verificar definición, ownership, grants, RLS y search_path
+15. ejecutar corpus positivo y negativo
+16. probar direct write, bypass, retries y concurrencia
+17. medir rendimiento y locks
+18. comprobar que no existe workflow, red o semántica oculta
+19. activar únicamente con gates completos
+20. entregar evidencia y handoff a DB-009
+```
+
+La plantilla no autoriza ejecutar esta secuencia desde la conversación documental.
+
+#### 51. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea materializa por `package_id` obligaciones ya aprobadas sobre capas, trigger defensivo, contexto, atomicidad, versiones, idempotencia, direct writes, seguridad, rendimiento, compatibilidad legacy, auditoría y rollback. No introduce una nueva semántica empresarial ni una nueva clase de riesgo sin cobertura.
+
+#### 52. Cobertura de prueba vigente reutilizada
+
+La cobertura existente aplicable incluye:
+
+- `TREQ-DATA-084` para paridad e idempotencia entre capas;
+- `TREQ-DATA-158` para determinismo y dependencias explícitas;
+- `TREQ-DATA-163` para correlación de operación entre capas;
+- `TREQ-DATA-191` para las cuatro capas y funciones no intercambiables;
+- `TREQ-DATA-193` para autoridad semántica del servicio;
+- `TREQ-DATA-194` para frontera RPC transaccional;
+- `TREQ-DATA-195` para los cuatro modos cerrados de trigger defensivo;
+- `TREQ-DATA-196` para el descriptor de colocación;
+- `TREQ-DATA-197` para secuencia transaccional canónica;
+- `TREQ-DATA-198` para atomicidad y efecto de rechazo;
+- `TREQ-DATA-199` para paridad de versiones;
+- `TREQ-DATA-200` para idempotencia y concurrencia entre capas;
+- `TREQ-DATA-202` para escrituras directas y bypass;
+- `TREQ-DATA-203` para normalización determinista y derivación acotada;
+- `TREQ-DATA-204` para reglas léxicas y prohibición de semántica en trigger;
+- `TREQ-DATA-205` para exclusión del trigger del path de búsqueda;
+- `TREQ-DATA-206` para unicidad y atomicidad sin fuzzy ni fusión;
+- `TREQ-DATA-208` para prohibición de propagación externa desde trigger;
+- `TREQ-DATA-209` para auditoría raíz única y evidencia hija;
+- `TREQ-DATA-210` para fallo cerrado;
+- `TREQ-DATA-211` para autorización y privilegio mínimo;
+- `TREQ-DATA-212` para costo acotado y límites de rendimiento;
+- `TREQ-DATA-213` para reconciliación de helpers y triggers legacy;
+- `TREQ-DATA-214` para corpus integral de conformidad.
+
+Estas referencias son trazabilidad de cobertura vigente; no modifican el registro.
+
+#### 53. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario. |
+| LOCAL | PASS | Artefacto contrastado contra estructura canónica, metadata obligatoria, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF, whitespace, contenido prohibido y reglas semánticas reproducibles del entregable aislado. |
+| REMOTA | PASS | Se contrastaron `main`, owner R, contrato ARC-011, 04A DATA, topología, scripts documentales y un baseline read-only de `vento-os-dev`; PostgreSQL 17.6 y 173 triggers no internos fueron observados sin mutaciones remotas. |
+| OPERATIVA | NOT_EXECUTED | Costo de escritura, locks, ordering, recursión, particiones, concurrencia, bypass y rollback pertenecen a futuras instancias físicas autorizadas. |
+| FÍSICA | NOT_APPLICABLE | Esta definición documental no crea, reemplaza, habilita, deshabilita ni elimina funciones, triggers, migraciones, constraints, índices, RLS, grants o datos. |
+
+#### 54. Decisiones vinculantes
+
+1. DB-008 es `TEMPLATE_PER_PACKAGE` y no global.
+2. El gate físico es `POST_E5_PACKAGE`.
+3. El trigger es la última barrera, no la autoridad semántica.
+4. Cada operación usa exactamente uno de cuatro modos cerrados.
+5. `NO_TRIGGER` es el modo predeterminado y una salida válida.
+6. Constraint o índice suficiente excluye un trigger duplicado.
+7. Servicio y RPC conservan semántica, autorización y commit.
+8. `ASSERT_AND_REJECT` falla cerrado y no repara silenciosamente.
+9. `DERIVE_BOUNDED_REPRESENTATION` exige derivación local, determinista y ya autorizada.
+10. `STAMP_DEFENSIVE_METADATA` no reemplaza auditoría raíz ni DB-009.
+11. `BEFORE ROW` es preferente para defensa local cuando corresponda.
+12. `AFTER` sigue dentro de la misma transacción y no significa post-commit.
+13. Generated columns se respetan según su orden de cálculo.
+14. `UPDATE OF` no demuestra que el valor realmente haya cambiado.
+15. El orden alfabético de triggers no se usa accidentalmente como lógica empresarial.
+16. Tablas particionadas requieren reconciliación de clones y drift.
+17. Statement triggers y transition relations no son el default.
+18. Constraint triggers no evaden la propiedad de DB-006.
+19. La función de trigger declara identidad, seguridad, dependencias y costo.
+20. `SECURITY INVOKER` es el default.
+21. `SECURITY DEFINER` exige necesidad explícita, `search_path` seguro y privilegio mínimo.
+22. RLS, grants y trigger son controles diferentes.
+23. El contexto requerido no puede ser una bandera libre del cliente.
+24. Reintentos no duplican efectos ni cambian versiones.
+25. Estado obsoleto produce rechazo o conflicto distinguible.
+26. No existe fallback semántico dentro del trigger.
+27. DB-009 conserva auditoría operacional completa.
+28. Bypass privilegiado requiere contrato, ventana, evidencia y rollback.
+29. Recursión y cadenas de triggers se inventarían y prueban antes de activación.
+30. El costo debe permanecer acotado.
+31. Los 173 triggers observados son baseline, no autoridad canónica.
+32. `updated_at`, `validate_*`, `enforce_*` y `sync_*` se clasifican por comportamiento real, no por nombre.
+33. Toda modificación física futura se versiona en `vento-shell`.
+34. Database Webhooks, `pg_net`, HTTP y llamadas externas quedan fuera de DB-008.
+35. El trigger no participa en búsqueda, similitud, ranking, fusión o reasignación.
+36. VITAL permanece fuera del alcance transversal.
+37. DB-010 conserva la certificación física final del minibloque.
+38. La tarea crea o modifica cero requisitos de prueba.
+
+#### 55. Criterios de aceptación
+
+DB-008 queda documentalmente aceptable cuando:
+
+1. conserva topología y gate vigentes;
+2. consume el handoff de DB-007 sin duplicar índices o constraints;
+3. define exactamente los cuatro modos de trigger;
+4. establece `NO_TRIGGER` como salida válida;
+5. conserva servicio como autoridad semántica y RPC como frontera transaccional;
+6. limita `ASSERT_AND_REJECT` a invariantes locales;
+7. limita derivaciones a resultados acotados y ya autorizados;
+8. separa stamping técnico de auditoría operacional;
+9. define eventos y timing sin catch-all innecesario;
+10. diferencia `BEFORE`, `AFTER` y post-commit;
+11. contempla generated columns, `WHEN` y `UPDATE OF`;
+12. controla ordering, particiones y transition relations;
+13. evita constraint triggers como atajo de DB-006;
+14. fija contrato de función y primitivas reutilizadas;
+15. define seguridad invoker/definer, `search_path`, grants y RLS;
+16. prohíbe contexto falsificable;
+17. cubre idempotencia, reintentos y concurrencia;
+18. exige fallo cerrado y errores distinguibles;
+19. mantiene auditoría raíz fuera del trigger;
+20. gobierna bypass y deshabilitación temporal;
+21. controla recursión y cadenas;
+22. exige costo acotado y medición;
+23. reconcilia el baseline legacy por package;
+24. mantiene migraciones forward-only;
+25. define readiness, activación y rollback;
+26. prohíbe red y workflow externo;
+27. mantiene búsqueda, identidad y VITAL fuera de alcance;
+28. entrega un handoff cerrado hacia DB-009;
+29. mantiene cero cambios TREQ;
+30. contiene exactamente cinco clases de evidencia;
+31. termina en continuidad canónica sin desarrollar DB-009.
+
+#### 56. Límites
+
+Esta tarea documental no:
+
+- crea o modifica triggers;
+- crea o modifica funciones;
+- crea migraciones;
+- ejecuta DDL o DML;
+- habilita o deshabilita triggers;
+- modifica constraints o índices;
+- ejecuta backfills;
+- cambia datos empresariales;
+- altera RLS, grants, ownership o `search_path` remoto;
+- crea Database Webhooks;
+- habilita `pg_net`;
+- llama Edge Functions;
+- implementa propagación;
+- implementa workflow;
+- decide normalización semántica;
+- decide identidad, unicidad o duplicidad;
+- ejecuta fuzzy matching, ranking o búsqueda;
+- crea auditoría operacional de DB-009;
+- ejecuta certificación física de DB-010;
+- modifica el registro 04A;
+- autoriza una instancia física;
+- modifica objetos VITAL;
+- desarrolla DB-009 o DB-010.
+
+---
+
+#### 57. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada`
+
+**TAREA ACTUAL APROBADA**
+`DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final`
+
+**SIGUIENTE TAREA RESERVADA**
+`DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla`
+
+
 ### [ ] DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
 ### [ ] DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
