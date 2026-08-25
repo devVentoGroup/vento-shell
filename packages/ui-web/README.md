@@ -44,6 +44,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-019::GLOBAL` materializa internamente `InterruptedProcessState` como superficie server-safe de continuidad humana para un proceso ya reconstruido y clasificado externamente, con diecisiete estados canonicos, seis campos de resumen y siete slots ordenados, sin reconstruir autoridad desde checkpoints, decidir retries, renovar claims, transferir custodia, persistir estado, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-020::GLOBAL` materializa internamente `CrossAppHandoff` como superficie server-safe de continuidad cross-app para un handoff ya resuelto externamente, con siete estados canonicos y siete slots ordenados, sin resolver relaciones, construir deep links, heredar autoridad, inferir aceptacion por navegacion, escribir cross-app, decidir idempotencia o retry, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -116,6 +118,9 @@ Fronteras vinculantes:
 - `src/InterruptedProcessState.tsx` como implementacion interna de `InterruptedProcessState`.
 - `src/interrupted-process-state.css` como estilos internos de continuidad, resumen, bloqueos, acciones, resultado y reflow de `InterruptedProcessState`.
 - `scripts/validate-interrupted-process-state.mjs` como validador fisico de `SHELL-UI-019::GLOBAL`.
+- `src/CrossAppHandoff.tsx` como implementacion interna de `CrossAppHandoff`.
+- `src/cross-app-handoff.css` como estilos internos de continuidad cross-app, bloqueos, acciones, resultado y reflow de `CrossAppHandoff`.
+- `scripts/validate-cross-app-handoff.mjs` como validador fisico de `SHELL-UI-020::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -942,6 +947,73 @@ La migracion posterior permanece reversible por consumidor y exige paridad, comp
 
 Consumidores migrados por UI019: 0/7. Copias legacy retiradas por UI019: 0. Releases publicadas por UI019: 0. Cambios Supabase por UI019: 0.
 
+## CrossAppHandoff
+
+`CrossAppHandoff` presenta un traspaso entre aplicaciones despues de que el productor resolvio externamente la relacion canonica, la misma instancia empresarial, el checkpoint y contexto vigentes, actor, recurso, autoridad, aplicacion propietaria, participante, estado y controles seguros. Materializa `CROSS-APP-HANDOFF-PRESENTATION-CONTRACT-001` dentro de la raiz privada de autoria de `@vento/ui-web`; no es router, command bus, orquestador empresarial ni fuente de verdad de proceso.
+
+Contrato interno materializado:
+
+- `CrossAppHandoffState` contiene exactamente `OFFERED`, `ACCEPTED`, `REJECTED`, `EXPIRED`, `CANCELLED`, `PARTIALLY_ACCEPTED` y `RECONCILIATION_REQUIRED`;
+- no existen estados paralelos `OPENED`, `NAVIGATED`, `DELIVERED`, `SUCCESS` ni `DONE` para sustituir lifecycle empresarial;
+- `state`, `ariaLabel`, `persistentContext`, `workIdentity` y `stepContent` son obligatorios;
+- `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt` son slots opcionales;
+- los siete slots conservan el orden `PERSISTENT_CONTEXT`, `BLOCKING_STATE`, `WORK_IDENTITY`, `STEP_CONTENT`, `PRIMARY_ACTION`, `SECONDARY_SUPPORT`, `RESULT_AND_RECEIPT`;
+- puede existir como maximo una instancia de `PRIMARY_ACTION` y su ausencia es valida cuando no existe salida segura;
+- la raiz es una `section` nombrada mediante `ariaLabel`; no impone `role="application"`, `role="alert"` ni `aria-live` universal;
+- sin `use client`, hooks, timers, red, router, storage, Supabase, RPC, Edge Functions, queues, brokers, workers o listeners globales, por lo que la superficie base permanece server-safe.
+
+### Handoff, navegacion y autoridad
+
+La direccion permitida es `relacion y estado propietarios -> transporte de continuidad gobernado -> proyeccion humana segura -> CrossAppHandoff`. La relacion canonica se resuelve antes del render y conserva la misma instancia empresarial. La receptora vuelve a resolver actor, contexto, recurso, estado y permiso antes de cualquier efecto protegido.
+
+El productor entrega origen y destino humanos, la misma instancia empresarial, recurso y trabajo pendiente perceptibles. El actor emisor permanece atribuible cuando aplique y el actor receptor se revalida en destino. Sede y area pueden preservarse como contexto humano sin ampliar autoridad.
+
+La API base no recibe `href`, `returnTo`, `deepLink`, `destinationUrl`, `sourceUrl`, `processId`, `processInstanceId`, `taskId`, `resourceId`, `actorId`, `principalId`, `permissionCode`, `siteId`, `areaId`, `shiftId`, `checkinId`, `claimId`, `custodyRef`, `idempotencyKey`, `accessToken`, `refreshToken`, `handoffSecret`, `isAuthorized`, `canAccept`, `canWrite`, `ownerAppCode` ni `participantAppCode`. `CrossAppHandoff` no genera, firma, analiza ni valida deep links. Un deep link opaco no transporta autoridad, actor autoritativo ni estado objetivo a imponer; el destino permitido se resuelve externamente.
+
+Abrir otra aplicacion no equivale a aceptar el handoff. Navegacion completada no equivale a responsabilidad transferida. Cerrar una ventana, volver atras, recargar o desmontar la superficie no equivale a rechazo, cancelacion, aceptacion, completitud ni liberacion de custodia. Un retorno valido conserva la instancia original y un retorno invalido falla cerrado fuera del componente.
+
+### Propietaria, participante, resultados e idempotencia
+
+La aplicacion propietaria conserva registro principal, reglas, estado, correccion y cierre. La participante solicita, recibe, acepta o ejecuta solamente su responsabilidad permitida. UI020 no habilita escritura directa de una tabla ajena, mutacion ajena sin contrato, transaccion cliente multi-propietaria ni SHELL como writer universal.
+
+`HANDOFF_REQUEST`, `HANDOFF_PROJECTION`, `HANDOFF_FACT` y `BusinessEventId` permanecen identidades distintas. Emitir, entregar tecnicamente, visualizar o abrir destino no equivale a aceptar. `AUTHORIZED != COMMITTED`, `PUBLISHED != DELIVERED`, `DELIVERED != APPLIED` y `ACK TECNICO != EFFECT_CONFIRMED`.
+
+`OFFERED` no transfiere responsabilidad. `ACCEPTED` requiere resultado propietario. `REJECTED` no cancela todo el proceso por inferencia. `EXPIRED` no reutiliza autoridad vencida. `CANCELLED` no se deriva del cierre visual. `PARTIALLY_ACCEPTED` no se presenta como exito global. `RECONCILIATION_REQUIRED` conserva incertidumbre sin correccion cross-app directa. `RESULT_UNKNOWN` se resuelve antes de retry y UI020 no genera idempotency keys, outbox, inbox, locks ni colas. Un replay de resultado previo conserva la identidad del efecto y no habilita un segundo efecto desde la presentacion.
+
+### Actor, contexto, claims, custodia y privacidad
+
+Cambiar actor no transfiere borrador, claim, custodia ni aceptacion. Cambiar dispositivo, sede, area, turno, check-in, rol operativo, delegacion o simulacion exige nueva resolucion externa cuando sea material. Claims y leases se revalidan fuera del componente y un handoff visual no demuestra transferencia de custodia fisica. Custodia digital y custodia fisica permanecen hechos distintos. Una sesion vencida no permite aceptar. Evidencia presente no equivale a resultado empresarial confirmado.
+
+En dispositivo compartido la proyeccion se minimiza antes del render. No se muestran secretos, tokens, credenciales, OTP, PIN, payloads completos innecesarios, permisos internos completos ni datos de otros actores o territorios. La receptora aplica nuevamente sus reglas de acceso y masking.
+
+Offline local no se presenta como recepcion remota; un mensaje en cola no se presenta como aceptacion; una vista cacheada no concede autoridad. La reconexion revalida sesion, contexto, contrato y resultado antes de actuar.
+
+### Composicion, accesibilidad y fronteras
+
+`InterruptedProcessState` conserva reconstruccion y reanudacion; un `HANDOFF_REQUIRED` puede conducir a UI020 solo despues de resolver relacion y estado de transferencia. `RecoverableErrorState` conserva fallo tecnico, `ContextDiagnostic` diagnostico contextual y `SensitiveActionConfirmation` confirmacion sensible. AppShell conserva navegacion transversal ordinaria y el `AppSwitcher` historico permanece launcher, no handoff.
+
+El foco visible no se elimina, la superficie no crea focus trap ni fuerza foco por actualizaciones tecnicas. Los controles compuestos conservan objetivos tactiles de al menos 48 x 48 CSS px, reflow, zoom, teclado y lector de pantalla sin depender de hover, gesto oculto, color o movimiento como unico significado. El productor mantiene origen, destino, trabajo y estado perceptibles mediante contenido humano ya preparado.
+
+### Consumidores, contrato externo y migracion posterior
+
+La disposicion vigente de consumidores web permanece:
+
+- SHELL: `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`;
+- VISO: `ELEGIBLE_COMO_PROPIETARIA_O_PARTICIPANTE_SIN_CEDER_AUTORIDAD_A_UI`;
+- NEXO: `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`;
+- FOGO: `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`;
+- ORIGO: `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`;
+- PULSO: `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`;
+- NUMERA: `ELEGIBLE_SOLO_CON_RELACION_HANDOFF_CANONICA_Y_REVALIDACION`.
+
+SHELL, VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA permanecen evaluados 7/7. Faltantes: 0. Duplicados: 0. ANIMA, AURA y PASS no se agregan artificialmente al conjunto web de `@vento/ui-web`.
+
+El universo contractual de handoff permanece externo: 69 procesos evaluados, 8 con handoff, 49 relaciones, 27 directas, 22 condicionales, VISO como propietaria en el corte, 9 aplicaciones participantes y 0 duplicados. UI020 no copia esas 49 relaciones dentro del package ni convierte la matriz visual en fuente contractual.
+
+La materializacion global no adopta ninguna aplicacion, no crea destinos tecnicos, no modifica `@vento/contracts/handoffs`, no modifica Supabase y no cambia requisitos TREQ. La compatibilidad de origen y destino se prueba antes de adopcion, existe rollback antes de retirar un patron legacy y el retiro exige uso residual cero. Inventario ejecutable, adapters, compatibilidad, rollback y retiro legacy permanecen en `SHELL-MIG-*` y `SHELL-CI-*`. Las migraciones posteriores deben conservar ausencia de escritura cross-app prohibida.
+
+Consumidores migrados por UI020: 0/7. Copias legacy retiradas por UI020: 0. Releases publicadas por UI020: 0. Cambios Supabase por UI020: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -976,6 +1048,8 @@ Consumidores migrados por UI019: 0/7. Copias legacy retiradas por UI019: 0. Rele
 
 `KioskTaskSurface` conserva nombre accesible de superficie, orden DOM estable de los siete slots, foco visible de controles hijos, objetivos tactiles amplios, reflow sin clipping, alternativas a gestos y estructura server-safe sin robar foco ni usar contencion de sistema, color, sonido o movimiento como unico significado.
 
+`CrossAppHandoff` conserva region nombrada, orden DOM estable de siete slots, foco visible de controles hijos, objetivos tactiles amplios, reflow, teclado y lector de pantalla sin inferir aceptacion, autoridad o efecto desde navegacion y sin imponer una live region universal.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -986,13 +1060,13 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-018`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-019`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-019`
+TAREA ACTUAL APROBADA: `SHELL-UI-020`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-020`
+SIGUIENTE TAREA RESERVADA: `SHELL-MIG-001`
 
-`SHELL-UI-019::GLOBAL` materializa solamente la superficie compartida de presentacion para un proceso interrumpido ya reconstruido y clasificado externamente. `SHELL-UI-020` conserva handoff cross-app; UI019 no adelanta deep links autoritativos, transferencia entre aplicaciones, persistencia, autoridad, mutaciones, migracion de consumidores ni patrones posteriores.
+`SHELL-UI-020::GLOBAL` materializa solamente la superficie compartida de presentacion para un handoff cross-app ya resuelto externamente. `SHELL-MIG-001` conserva el inventario ejecutable y la adopcion posterior; UI020 no adelanta migracion de consumidores, destinos tecnicos, autoridad, mutaciones cross-app, contratos, persistencia, Supabase ni patrones posteriores.
 
 ## Fuera de alcance
 

@@ -1,10 +1,79 @@
 {
   "instance_id": "SHELL-UI-020::GLOBAL",
   "task_id": "SHELL-UI-020",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/CrossAppHandoff.tsx",
+      "change": "CREATE",
+      "scope": "Materialize the approved CrossAppHandoff as a server-safe presentational surface for an externally resolved canonical handoff, preserving exactly seven canonical handoff states and seven semantic slots without deriving relationships, destinations, authority, acceptance, ownership, idempotency, retries, custody or business effects from navigation or client state."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/cross-app-handoff.css",
+      "change": "CREATE",
+      "scope": "Materialize token-based responsive presentation for persistent context, blocking state, work identity, step content, actions and result/receipt with reflow, touch-target support and focus reachability, without hidden overflow, hover-only behavior, motion-dependent meaning or navigation-derived authority."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/scripts/validate-cross-app-handoff.mjs",
+      "change": "CREATE",
+      "scope": "Validate the approved SHELL-UI-020 API, exactly seven canonical handoff states, seven semantic slots, all 76 canonical future evidence scenarios, navigation-versus-authority boundaries, owner/participant separation, privacy, accessibility, server-safety, consumer non-migration and immutable adjacent scope."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/README.md",
+      "change": "MODIFY",
+      "scope": "Reconcile the private ui-web authoring README through SHELL-UI-020, documenting CrossAppHandoff ownership, seven-state and seven-slot contracts, navigation/authority/acceptance/effect boundaries, owner/participant separation, actor/context/custody/privacy handling, consumer dispositions, external handoff universe and deferred exports, releases and migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/SHELL-UI-020__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, physical lifecycle transitions and consolidated evidence only for SHELL-UI-020::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after materialization and before IMPLEMENTED; require REPAIR_SCOPE PASS and READY_FOR_VALIDATION SI without editing the repair implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-cross-app-handoff.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/CrossAppHandoff.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-25T14:19:55-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO AHORA SI, SIGAMOS IMPLEMENTANDO PERO POR EL AMOR DE DIOS, REVISA LOS ARCHIVOS Y LOS COMANDOOOS, QUE PASEN TODAS LAS VALIDACIONES PARA YO NO TENER ERRORES EN CÓDIGO",
+    "source_contract_sha256": "1b396d5b715783ce415de3aa48eeb4c2d0cefb2dbbd42307c1ba57c3ca70b83c"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/CrossAppHandoff.tsx created as a server-safe cross-app handoff presentation surface with seven canonical states and seven ordered semantic slots without navigation-derived authority, acceptance, ownership, idempotency, retry or business-effect ownership",
+    "MATERIALIZATION packages/ui-web/src/cross-app-handoff.css created with token-based responsive reflow, preferred touch targets, focus reachability and structural separation without hidden overflow, hover-only or motion-dependent behavior",
+    "MATERIALIZATION packages/ui-web/scripts/validate-cross-app-handoff.mjs and packages/ui-web/README.md completed within the authorized SHELL-UI-020 scope",
+    "SOURCE CONTRACT SHA256 1b396d5b715783ce415de3aa48eeb4c2d0cefb2dbbd42307c1ba57c3ca70b83c",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION CrossAppHandoff validator PASS; scenarios=76 states=7 slots=7 ssr=SAFE authority=NONE navigation=EXTERNAL handoff=EXTERNAL consumers=0/7 exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/CrossAppHandoff.tsx",
+    "VALIDATION quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-020::GLOBAL VERIFIED"
+  ]
 }
