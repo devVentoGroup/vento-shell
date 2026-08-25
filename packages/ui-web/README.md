@@ -40,6 +40,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-017::GLOBAL` materializa internamente `TabletTaskSurface` como superficie server-safe de composicion tactil para una semantica de trabajo ya resuelta en tablet personal o compartida, con dos clases canonicas, siete slots ordenados, reflow responsive, ergonomia tactil y controles aportados por el consumidor, sin detectar dispositivo, resolver actor o autoridad, decidir densidad, ejecutar efectos empresariales, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-018::GLOBAL` materializa internamente `KioskTaskSurface` como superficie server-safe de composicion operativa exclusivamente para un perfil `FIXED_KIOSK` ya resuelto, con siete slots ordenados, contexto persistente, ergonomia tactil y controles aportados por el consumidor, sin detectar kiosco, resolver actor o autoridad, administrar el dispositivo, ejecutar mantenimiento, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -106,6 +108,9 @@ Fronteras vinculantes:
 - `src/TabletTaskSurface.tsx` como implementacion interna de `TabletTaskSurface`.
 - `src/tablet-task-surface.css` como estilos internos de estructura semantica, reflow, ergonomia tactil, separacion de acciones y presentacion responsive de `TabletTaskSurface`.
 - `scripts/validate-tablet-task-surface.mjs` como validador fisico de `SHELL-UI-017::GLOBAL`.
+- `src/KioskTaskSurface.tsx` como implementacion interna de `KioskTaskSurface`.
+- `src/kiosk-task-surface.css` como estilos internos de estructura semantica, reflow, ergonomia tactil, separacion de acciones y presentacion enfocada de `KioskTaskSurface`.
+- `scripts/validate-kiosk-task-surface.mjs` como validador fisico de `SHELL-UI-018::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -802,6 +807,78 @@ La migracion posterior permanece reversible por consumidor y exige paridad, comp
 
 Consumidores migrados por UI017: 0/7. Copias legacy retiradas por UI017: 0. Releases publicadas por UI017: 0. Cambios Supabase por UI017: 0.
 
+## KioskTaskSurface
+
+`KioskTaskSurface` organiza una composicion semantica de trabajo ya resuelta para una estacion fija gobernada externamente. Materializa `KIOSK-TASK-SURFACE-CONTRACT-001` dentro de la raiz privada de autoria de `@vento/ui-web`; no detecta kioscos, no administra el sistema operativo y no convierte presentacion o configuracion de estacion en autoridad empresarial.
+
+Contrato interno materializado:
+
+- `KioskTaskSurfaceProps.surfaceClass` acepta exclusivamente el literal `FIXED_KIOSK`;
+- `surfaceClass`, `ariaLabel`, `persistentContext`, `workIdentity` y `stepContent` son obligatorios;
+- `blockingState`, `primaryAction`, `secondarySupport` y `resultAndReceipt` son slots opcionales;
+- los siete slots semanticos se preservan en el orden `PERSISTENT_CONTEXT`, `BLOCKING_STATE`, `WORK_IDENTITY`, `STEP_CONTENT`, `PRIMARY_ACTION`, `SECONDARY_SUPPORT`, `RESULT_AND_RECEIPT`;
+- puede existir como maximo una instancia de `PRIMARY_ACTION` y el slot puede faltar cuando no existe una salida segura;
+- la raiz es una `section` nombrada mediante `ariaLabel`, conserva atributos HTML compatibles y no impone `role="application"`, live region universal, focus trap ni bloqueo global de teclado;
+- los hijos interactivos permanecen compuestos externamente y conservan sus contratos propietarios;
+- no existe un enum paralelo de clases de dispositivo dentro de UI018;
+- `PERSONAL_TABLET` y `SHARED_TABLET` permanecen fuera de UI018 y bajo `SHELL-UI-017`;
+- sin `deviceId`, `stationId`, `actorId`, `permissionCode`, `roleCode`, `siteId`, `areaId`, `shiftId`, `checkinId`, `canOperate`, `canExecute`, `isAuthorized`, `isKioskMode`, `isManaged`, `isLockedDown`, `allowedApps`, `allowedDomains`, `clipboardEnabled`, `downloadEnabled`, `maintenancePin`, `adminToken` ni `userAgent` como API propia;
+- sin `window`, `document`, storage, listeners globales, timers, red, router, Fullscreen API, Supabase, APIs MDM o drivers de hardware, por lo que la superficie base permanece server-safe.
+
+### Dispositivo, host y mantenimiento
+
+La composicion conserva tres capas separadas: dispositivo y sistema operativo; host o aplicacion; y `KioskTaskSurface`. Fullscreen no es una frontera de seguridad y PWA standalone no es modo kiosco seguro. `userAgent`, viewport, touch, CSS, URL, nombre del dispositivo u orientacion tampoco prueban elegibilidad `FIXED_KIOSK`.
+
+Las aplicaciones permitidas se limitan externamente y una aplicacion permitida no equivale a permiso empresarial. La navegacion del sistema, allowlist de enlaces externos, persistencia local de archivos, exportacion y portapapeles pertenecen al host y a sus contratos propietarios. Una navegacion externa no declara trabajo completado, y exportar permanece separado de visualizar o persistir localmente.
+
+La arquitectura host conserva una via autorizada de mantenimiento, pero esa via permanece fuera de `PRIMARY_ACTION` y fuera de `SECONDARY_SUPPORT` ordinario. No depende de una URL libre, un secreto embebido, `maintenancePin` o `adminToken`. El tecnico permanece separado del actor empresarial y el retorno desde mantenimiento reconstruye la autoridad operativa en vez de heredar autoridad administrativa.
+
+### Actor, estacion, privacidad y densidad
+
+`FIXED_KIOSK` identifica una clase de superficie ya resuelta y no un actor humano. La estacion puede restringir sede, area, aplicaciones o perifericos, pero una sede fijada al dispositivo no se convierte en sede activa, un area permitida no se convierte en contexto operativo, una aplicacion permitida no concede permiso y un periferico presente no autoriza una accion.
+
+Cuando una mutacion exige actor humano, la composicion propietaria exige actor valido, sesion vigente y revalidacion de servidor. Una sesion estandar no sustituye strong reauth; un PIN ligero no satisface reautenticacion fuerte por conveniencia y `NOT_ALLOWED` no se degrada a lectura parcial.
+
+El cambio de actor no hereda autoridad, borrador personal, strong reauth, filtros, busquedas ni datos sensibles. La presentacion permite limpiar datos del actor anterior sin borrar hechos empresariales autoritativos. Credenciales, tokens y secretos no pertenecen a `KioskTaskSurface`. La privacidad frente a terceros se resuelve mediante minimizacion previa al render.
+
+La densidad ordinaria permanece `D0_FOCUSED` o `D1_CONTEXTUAL`; `D2_COMPARATIVE` es excepcional y limitado; `D3_ANALYTICAL` y `D4_SPECIALIZED` permanecen fuera del flujo ordinario de kiosco. La captura favorece valores estructurados y no convierte texto libre innecesario en sustituto de actor, reason code, cantidad o unidad.
+
+### Ergonomia, accesibilidad y perifericos
+
+Los controles interactivos compuestos dentro de la superficie reciben un objetivo tactil base de al menos 48 x 48 unidades logicas mediante una minima de 48 CSS px, superando el piso web de 24 x 24 CSS px. El rail de acciones mantiene separacion estructural; hit areas no se superponen y acciones incompatibles conservan distancia suficiente.
+
+La presentacion mantiene objetivos estables bajo el dedo y no usa animacion o movimiento para sustituir confirmacion autoritativa. Ninguna funcion esencial depende de hover, swipe oculto, drag preciso, long press, doble toque o gesto de borde. Teclado, lector de pantalla, switch access, mouse y stylus permanecen compatibles cuando la estacion los soporta; la contencion del sistema nunca se simula rompiendo accesibilidad.
+
+Montaje, altura, inclinacion, postura y orientacion fijada se validan por la estacion propietaria. La orientacion no se infiere desde CSS ni concede semantica. La estructura permite zoom, texto aumentado y reflow sin exigir scroll horizontal ordinario para el contenido minimo.
+
+Los perifericos permanecen externos. Capacidad, comando, recepcion, ejecucion fisica y resultado verificado son estados distintos; un timeout de periferico no autoriza retry ciego. El host mantiene estado y alternativa cuando un periferico sea material para la tarea.
+
+### Conectividad, bloqueo y composicion
+
+Conectividad, frescura y ultimo punto confirmado llegan ya resueltos por sus propietarios y permanecen perceptibles cuando son materiales. En dispositivo compartido no se ejecutan mutaciones empresariales sin conectividad verificable; cache no es autorizacion, stale no se presenta como actual y reconectar exige revalidacion propietaria. Un borrador local no se presenta como confirmacion de servidor.
+
+Cuando el propietario determina que el dispositivo esta revocado, inactivo o incompatible, las mutaciones ordinarias permanecen bloqueadas y la superficie solo compone una salida humana segura. `ContextDiagnostic`, `RecoverableErrorState`, `EmptyState`, `Alert`, `PrimaryActionPanel`, `SensitiveActionConfirmation` y `SimulatedRoleNotice` conservan sus contratos propietarios y se componen externamente sin imports obligatorios desde `KioskTaskSurface`.
+
+La inactividad detiene nuevas mutaciones conforme al propietario sin borrar silenciosamente trabajo. `SHELL-UI-019` conserva checkpoint, reconstruccion y reanudacion de procesos interrumpidos. `SHELL-UI-020` conserva handoff cross-app y autoridad de traspaso entre aplicaciones.
+
+### Consumidores, migracion y prueba fisica posterior
+
+La disposicion vigente de consumidores permanece:
+
+- SHELL: `ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_SUPERFICIE_Y_HOST_GOBERNADOS`;
+- NEXO: `CANDIDATO_KIOSCO_BODEGA`;
+- FOGO: `ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PROCESO_ESTACION_Y_SEGURIDAD`;
+- ORIGO: `ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PROCESO_ESTACION_Y_SEGURIDAD`;
+- VISO: `ELEGIBILIDAD_KIOSCO_SOLO_PARA_SUPERFICIE_D0_D1_APROBADA`;
+- PULSO: `ELEGIBILIDAD_KIOSCO_CONDICIONADA_A_PRIVACIDAD_PERIFERICOS_Y_PROCESO`;
+- NUMERA: `ELEGIBILIDAD_KIOSCO_SOLO_PARA_SUPERFICIE_D0_D1_APROBADA`.
+
+SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen evaluados 7/7. Faltantes: 0. Duplicados: 0. La materializacion global no adopta ninguna aplicacion ni configura modo kiosco, MDM o hardware.
+
+La migracion posterior permanece reversible por consumidor y exige paridad, compatibilidad, observacion y rollback antes de retirar legacy. La adopcion debe probarse en una estacion representativa del kiosco real antes de despliegue amplio; fullscreen de escritorio no sustituye esa evidencia fisica.
+
+Consumidores migrados por UI018: 0/7. Copias legacy retiradas por UI018: 0. Releases publicadas por UI018: 0. Cambios Supabase por UI018: 0.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -834,6 +911,8 @@ Consumidores migrados por UI017: 0/7. Copias legacy retiradas por UI017: 0. Rele
 
 `TabletTaskSurface` conserva nombre accesible de superficie, orden DOM estable de los siete slots, foco visible de controles hijos, objetivos tactiles amplios, reflow sin clipping, alternativa a gestos y estructura server-safe sin robar foco ni usar color, sonido o movimiento como unico significado.
 
+`KioskTaskSurface` conserva nombre accesible de superficie, orden DOM estable de los siete slots, foco visible de controles hijos, objetivos tactiles amplios, reflow sin clipping, alternativas a gestos y estructura server-safe sin robar foco ni usar contencion de sistema, color, sonido o movimiento como unico significado.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -844,13 +923,13 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-016`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-017`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-017`
+TAREA ACTUAL APROBADA: `SHELL-UI-018`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-018`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-019`
 
-`SHELL-UI-017::GLOBAL` materializa solamente la superficie compartida de composicion tactil para tablet ya clasificada externamente. `SHELL-UI-018` conserva kiosco; UI017 no adelanta modo kiosco, reanudacion, handoff cross-app, autoridad, mutaciones, migracion de consumidores ni patrones posteriores.
+`SHELL-UI-018::GLOBAL` materializa solamente la superficie compartida de composicion operativa para un perfil `FIXED_KIOSK` ya resuelto externamente. `SHELL-UI-019` conserva proceso interrumpido; UI018 no adelanta checkpoint, reanudacion, handoff cross-app, autoridad, administracion del dispositivo, mutaciones, migracion de consumidores ni patrones posteriores.
 
 ## Fuera de alcance
 
