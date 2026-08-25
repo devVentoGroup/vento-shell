@@ -1,10 +1,79 @@
 {
   "instance_id": "SHELL-UI-014::GLOBAL",
   "task_id": "SHELL-UI-014",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/SensitiveActionConfirmation.tsx",
+      "change": "CREATE",
+      "scope": "Materialize the approved SensitiveActionConfirmation as a server-safe presentational surface for one already-classified sensitive action with stable actionId, explicit human copy, READY, PENDING, BLOCKED and RESULT_UNKNOWN states, and owner-supplied reason, cancel and confirm controls."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/sensitive-action-confirmation.css",
+      "change": "CREATE",
+      "scope": "Materialize token-based responsive presentation for consequence, status and controls with non-color structural distinctions for PENDING, BLOCKED and RESULT_UNKNOWN without owning modal geometry or business authority."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/scripts/validate-sensitive-action-confirmation.mjs",
+      "change": "CREATE",
+      "scope": "Validate the approved SHELL-UI-014 API, state and confirmation-policy semantics, server-safe and authority boundaries, runtime rendering, responsive styling, accessibility handoff, consumer non-migration and immutable adjacent scope."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/README.md",
+      "change": "MODIFY",
+      "scope": "Reconcile the private ui-web authoring README through SHELL-UI-014, documenting SensitiveActionConfirmation ownership, state taxonomy, policy boundaries, Button and Modal composition boundaries, accessibility handoff, consumer dispositions and deferred exports/releases."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/SHELL-UI-014__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, physical lifecycle transitions and consolidated evidence only for SHELL-UI-014::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after materialization and before IMPLEMENTED; require REPAIR_SCOPE PASS and READY_FOR_VALIDATION SI without editing the repair implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-sensitive-action-confirmation.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/SensitiveActionConfirmation.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-24T20:53:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "cab6f99042a3bf3097d5827b9f95369e1d628ae547e8ad8d19a61d2b6883e918"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/SensitiveActionConfirmation.tsx created as internal server-safe presentational confirmation surface with stable actionId, explicit copy, four presentation states and owner-supplied controls without authority or business execution",
+    "MATERIALIZATION packages/ui-web/src/sensitive-action-confirmation.css created with existing ui tokens, responsive reflow and non-color structural distinctions for PENDING, BLOCKED and RESULT_UNKNOWN",
+    "MATERIALIZATION packages/ui-web/scripts/validate-sensitive-action-confirmation.mjs and packages/ui-web/README.md completed within the authorized SHELL-UI-014 scope",
+    "SOURCE CONTRACT SHA256 cab6f99042a3bf3097d5827b9f95369e1d628ae547e8ad8d19a61d2b6883e918",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION SensitiveActionConfirmation validator PASS; scenarios=82 server_safe=YES authority=NONE confirmation_policy=EXTERNAL consumers=0/7 exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/SensitiveActionConfirmation.tsx",
+    "VALIDATION quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-014::GLOBAL VERIFIED"
+  ]
 }
