@@ -36,6 +36,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-015::GLOBAL` materializa internamente `ContextDiagnostic` como superficie server-safe de diagnostico humano para una condicion contextual ya resuelta y minimizada por su propietario, con cinco estados compatibles con `ContextIndicator`, condiciones ordenadas, contexto preservado, impacto y resolucion segura, sin resolver contexto, evaluar autoridad, ejecutar recuperacion, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-016::GLOBAL` materializa internamente `RecoverableErrorState` como superficie server-safe de recuperacion humana para una condicion ya clasificada y una politica de recuperacion resuelta externamente, con tres categorias canonicas, cinco estados de preservacion, detalles seguros, siguiente paso y controles aportados por el consumidor, sin clasificar errores, decidir retries, resolver autoridad, ejecutar efectos empresariales, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -96,6 +98,9 @@ Fronteras vinculantes:
 - `src/ContextDiagnostic.tsx` como implementacion interna de `ContextDiagnostic`.
 - `src/context-diagnostic.css` como estilos internos de diagnostico, condiciones, contexto preservado, impacto, resolucion y reflow de `ContextDiagnostic`.
 - `scripts/validate-context-diagnostic.mjs` como validador fisico de `SHELL-UI-015::GLOBAL`.
+- `src/RecoverableErrorState.tsx` como implementacion interna de `RecoverableErrorState`.
+- `src/recoverable-error-state.css` como estilos internos de categoria, estado preservado, detalle, siguiente paso, controles y reflow de `RecoverableErrorState`.
+- `scripts/validate-recoverable-error-state.mjs` como validador fisico de `SHELL-UI-016::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -710,6 +715,29 @@ La minimizacion ocurre antes del render. La superficie no serializa metadata, no
 SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen evaluados 7/7 y sin adopcion fisica. Los adapters futuros deben preparar copy humano y datos minimizados dentro de cada propietario. Se exige paridad por consumidor, compatibilidad, observacion y rollback antes de retirar legacy.
 
 Consumidores migrados por UI015: 0/7. Copias legacy retiradas por UI015: 0. Releases publicadas por UI015: 0. Cambios Supabase por UI015: 0.
+
+## RecoverableErrorState
+
+`RecoverableErrorState` presenta una condicion recuperable ya clasificada por su propietario y una politica de recuperacion preparada externamente. No clasifica errores tecnicos, no decide retries, no resuelve autoridad y no ejecuta efectos empresariales.
+
+Contrato interno materializado:
+
+- categorias `CONFLICT`, `TECHNICAL_FAILURE` y `VALIDATION_REQUIRED`;
+- estados preservados `NONE`, `LOCAL`, `SERVER`, `PARTIAL` y `UNKNOWN`;
+- titulo, resumen, etiqueta de estado preservado, detalles y siguiente paso preparados por el consumidor;
+- control primario de recuperacion opcional y controles secundarios opcionales aportados como composicion;
+- propietario y referencia de soporte opcionales;
+- `UNKNOWN` no autoriza retry ciego;
+- sin entrada generica `Error`;
+- sin `canRetry` publico;
+- sin Supabase, red, timers, idempotencia, politica de retry, autorizacion o efectos empresariales;
+- compatible con SSR y composicion desde componentes cliente.
+
+`ContextDiagnostic` conserva diagnostico contextual; `Alert` conserva mensajes genericos; `EmptyState` conserva ausencia real; `SensitiveActionConfirmation` conserva confirmacion sensible. `RecoverableErrorState` no absorbe esas responsabilidades.
+
+SHELL, NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA permanecen evaluados 7/7 y sin adopcion fisica.
+
+Consumidores migrados por UI016: 0/7. Copias legacy retiradas por UI016: 0. Releases publicadas por UI016: 0. Cambios Supabase por UI016: 0.
 
 ## Accesibilidad
 
