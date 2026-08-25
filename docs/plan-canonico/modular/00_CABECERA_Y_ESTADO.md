@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1044** |
+| Tareas aprobadas | **1045** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **550** |
+| Tareas no iniciadas | **549** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **65.50% (1044/1594)** |
+| Porcentaje de completamiento | **65.56% (1045/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos** |
-| Tarea actual | **INT-DB-001 — Crear registro de sistemas e integraciones externas** |
+| Última tarea aprobada | **INT-DB-001 — Crear registro de sistemas e integraciones externas** |
+| Tarea actual | **INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas** |
+| Siguiente tarea | **INT-DB-003 — Crear staging inmutable de payloads externos** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 43 de 51 aprobadas; INT-DB-001 pendiente** |
+| Progreso del bloque | **BLOQUE R: 44 de 51 aprobadas; INT-DB-002 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-015::GLOBAL** |
-| Carril documental | **ACTIVO — INT-DB-001** |
+| Carril documental | **ACTIVO — INT-DB-002** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-015::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos |
-| Tarea actual | `INT-DB-001` — Crear registro de sistemas e integraciones externas — **NO INICIADA** |
-| Siguiente tarea | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas |
+| Última aprobada | `INT-DB-001` — Crear registro de sistemas e integraciones externas |
+| Tarea actual | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas — **NO INICIADA** |
+| Siguiente tarea | `INT-DB-003` — Crear staging inmutable de payloads externos |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 43 DE 51 APROBADAS — ACTUAL INT-DB-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 44 DE 51 APROBADAS — ACTUAL INT-DB-002** |
 | Implementación física | **AUTH-DB-015::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
-        ↓
-TAREA ACTUAL
 INT-DB-001 — Crear registro de sistemas e integraciones externas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-DB-003 — Crear staging inmutable de payloads externos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 43 de 51 tareas aprobadas
+BLOQUE R — 44 de 51 tareas aprobadas
 ```
