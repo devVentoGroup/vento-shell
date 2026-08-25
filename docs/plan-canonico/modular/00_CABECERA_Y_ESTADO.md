@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1045** |
+| Tareas aprobadas | **1046** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **549** |
+| Tareas no iniciadas | **548** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **65.56% (1045/1594)** |
+| Porcentaje de completamiento | **65.62% (1046/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-DB-001 — Crear registro de sistemas e integraciones externas** |
-| Tarea actual | **INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas** |
+| Última tarea aprobada | **INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas** |
+| Tarea actual | **INT-DB-003 — Crear staging inmutable de payloads externos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-DB-003 — Crear staging inmutable de payloads externos** |
+| Siguiente tarea | **INT-DB-004 — Crear mapeos de identificadores externos y canónicos** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 44 de 51 aprobadas; INT-DB-002 pendiente** |
+| Progreso del bloque | **BLOQUE R: 45 de 51 aprobadas; INT-DB-003 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-027::GLOBAL** |
-| Carril documental | **ACTIVO — INT-DB-002** |
+| Carril documental | **ACTIVO — INT-DB-003** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-027::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-DB-001` — Crear registro de sistemas e integraciones externas |
-| Tarea actual | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas — **NO INICIADA** |
-| Siguiente tarea | `INT-DB-003` — Crear staging inmutable de payloads externos |
+| Última aprobada | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas |
+| Tarea actual | `INT-DB-003` — Crear staging inmutable de payloads externos — **NO INICIADA** |
+| Siguiente tarea | `INT-DB-004` — Crear mapeos de identificadores externos y canónicos |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 44 DE 51 APROBADAS — ACTUAL INT-DB-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 45 DE 51 APROBADAS — ACTUAL INT-DB-003** |
 | Implementación física | **AUTH-DB-027::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-DB-001 — Crear registro de sistemas e integraciones externas
-        ↓
-TAREA ACTUAL
 INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-DB-003 — Crear staging inmutable de payloads externos
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-DB-004 — Crear mapeos de identificadores externos y canónicos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 44 de 51 tareas aprobadas
+BLOQUE R — 45 de 51 tareas aprobadas
 ```

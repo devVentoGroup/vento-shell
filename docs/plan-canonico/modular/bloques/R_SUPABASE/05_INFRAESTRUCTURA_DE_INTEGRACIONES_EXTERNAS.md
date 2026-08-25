@@ -827,7 +827,1003 @@ Tampoco ejecuta webhooks, polling, jobs, modifica configuración remota, modific
 `INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas`
 
 
-### [ ] INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas
+### ✅ INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas
+
+**Estado:** APROBADA
+**Tarea anterior:** INT-DB-001 — Crear registro de sistemas e integraciones externas
+**Tarea siguiente:** INT-DB-003 — Crear staging inmutable de payloads externos
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para persistir referencias opacas y no secretas de credenciales externas, vinculadas al registro de integraciones de INT-DB-001 y al contrato compartido `ExternalCredentialRef` de SHELL-CON-018, sin persistir, revelar, resolver ni transportar valores de autenticación, secretos, rutas de secret store, locators runtime, staging de payloads, mappings, idempotencia, cuarentena, auditoría de procesamiento ni conciliación durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `INT-DB-002::<package_id>`, sujetas a `POST_E5_PACKAGE`, a un registro INT-DB-001 vigente del mismo paquete, al contrato estático verificado de SHELL-CON-018, al expediente E5 del paquete, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Fecha de corte:** 2026-08-25
+
+---
+
+#### 1. Propósito
+
+`INT-DB-002` define cómo deberá persistirse, por paquete aprobado, la identidad no secreta de una credencial externa sin convertir una tabla empresarial o expuesta en almacén de secretos.
+
+La tarea fija una frontera estricta:
+
+```text
+REFERENCIA DE CREDENCIAL
+≠ VALOR DE CREDENCIAL
+≠ PRINCIPAL TÉCNICO
+≠ PERMISO EMPRESARIAL
+≠ CUENTA DEL PROVEEDOR
+≠ ENDPOINT
+≠ RUTA DE SECRET STORE
+≠ MECANISMO RUNTIME DE RESOLUCIÓN
+```
+
+El resultado deberá permitir que una integración, una evidencia o un evento posterior apunten a la credencial lógica utilizada mediante `external_credential_id`, sin que el registro permita reconstruir, localizar operativamente o recuperar el material de autenticación.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el contrato documental de persistencia `VENTO-EXTERNAL-CREDENTIAL-REFERENCE-REGISTRY-001`.
+
+```text
+INT-DB-002
+→ contrato documental único y reutilizable
+
+INT-DB-002::<package_id>
+→ futura instancia física por paquete
+
+INT-DB-001::<package_id>
+→ sistema + integración + binding + ambiente
+→ principal técnico y ownership
+→ ExternalCredentialRef compatible con SHELL-CON-018
+→ referencia física no secreta
+→ historial y estado
+→ handoff estable hacia INT-DB-003
+```
+
+La definición global no se reabre por paquete. Cada paquete materializa únicamente sus propias referencias elegibles.
+
+Esta definición crea:
+
+- **21 decisiones de aplicabilidad heredadas y reconciliadas**;
+- **0 valores físicos de `ExternalCredentialId`**;
+- **0 valores secretos**;
+- **0 rutas de secret store**;
+- **0 locators runtime**;
+- **0 tablas, columnas, índices, constraints, RLS, RPC o migraciones ejecutadas**.
+
+---
+
+#### 3. Entradas canónicas vinculantes
+
+La tarea consume sin redefinir:
+
+1. `INT-DB-001`, incluido su registro de sistemas, integraciones, bindings por ambiente, ownership, estado, versión y digest;
+2. `INT-EXT-001` y las 21 identidades `EXT-SYS-001..021`;
+3. `INT-EXT-003` para procedencia de credenciales;
+4. `INT-EXT-004` para mecanismo de autenticación;
+5. `INT-EXT-005` para alcance mínimo;
+6. `INT-EXT-006` para separación por ambiente;
+7. `INT-EXT-007` para clasificación de material y custodia segura;
+8. `INT-EXT-008` para lifecycle, rotación, expiración y revocación;
+9. `INT-EXT-020` para segregación y prohibición de compartición entre bindings independientes;
+10. `SHELL-CON-018::GLOBAL`, ya verificada, y su contrato `ExternalCredentialId` + `ExternalCredentialRef`;
+11. el registro de requisitos vigente de integración y Supabase;
+12. la regla transversal de que toda modificación Supabase de VENTO se versiona y ejecuta desde `vento-shell`.
+
+`INT-DB-002` no sustituye ninguna de estas autoridades. Solo define su persistencia física posterior por paquete.
+
+---
+
+#### 4. Topología, cardinalidad y gate temporal
+
+La topología aplicable es:
+
+| Propiedad                             | Decisión                                          |
+| ------------------------------------- | ------------------------------------------------- |
+| `mode`                                | `TEMPLATE_PER_PACKAGE`                            |
+| identidad física                      | `INT-DB-002::<package_id>`                        |
+| instancia global propia               | ninguna                                           |
+| `execution_gate`                      | `POST_E5_PACKAGE`                                 |
+| prerrequisito temporal                | `E5-GATE-008::<package_id> = PASS`                |
+| prerrequisito registral               | `INT-DB-001::<package_id>` vigente y reconciliado |
+| contrato estático compartido          | `SHELL-CON-018::GLOBAL = VERIFIED`                |
+| cambio físico durante esta definición | ninguno                                           |
+
+No existe `INT-DB-002::GLOBAL`.
+
+---
+
+#### 5. Handoff obligatorio recibido de INT-DB-001
+
+La futura instancia de `INT-DB-002::<package_id>` deberá recibir, como mínimo:
+
+```text
+package_id
+external_system_id
+external_integration_id
+external_environment_binding_id
+external_instance_id
+environment_ref
+integration_principal_id
+provider_account_ref
+contract_version
+endpoint_ref
+business_owner_ref
+technical_owner_ref
+registry_version
+content_digest
+registry_status
+binding_evidence_state
+```
+
+Reglas:
+
+1. ninguna referencia de credencial puede existir sin `external_integration_id`;
+2. ninguna referencia puede cambiar de `external_environment_binding_id` por actualización;
+3. `external_system_id` se hereda del registro de INT-DB-001 y no se reidentifica por nombre de proveedor;
+4. `environment_ref` se hereda del binding y no se deduce desde una variable o URL;
+5. `integration_principal_id` sigue siendo identidad técnica, no credencial;
+6. `provider_account_ref` sigue siendo cuenta externa referenciada, no secreto;
+7. `contract_version` sigue perteneciendo al binding de integración y no se reutiliza como versión de credencial;
+8. un binding bloqueado por evidencia no habilita la creación especulativa de una referencia de credencial.
+
+---
+
+#### 6. Autoridad compartida de SHELL-CON-018
+
+`SHELL-CON-018::GLOBAL` ya materializa estáticamente `ExternalCredentialId` y `ExternalCredentialRef` dentro de `@vento/contracts/integrations`.
+
+`INT-DB-002` preserva literalmente estas propiedades:
+
+- `ExternalCredentialId` es estable, opaco y no secreto;
+- la serialización física del identificador no se deriva del contrato estático;
+- no se deriva del valor secreto;
+- no se deriva de `integration_principal_id`;
+- no se deriva de `external_system_id`;
+- no se deriva de `provider_account_ref`;
+- no se deriva del endpoint;
+- no se deriva del nombre de variable de ambiente;
+- conocer el identificador no concede acceso al secreto;
+- la referencia no contiene material de autenticación;
+- la referencia no contiene ruta de secret store;
+- la referencia no contiene locator runtime de secreto;
+- la referencia no implementa una API runtime de resolución;
+- no existe fallback a credencial global, legacy ni de otro ambiente.
+
+El contrato fuente estático consumido conserva SHA-256:
+
+```text
+b22094113048ee52d8ea8abe961af7fcb8be2b1924eabe69d0eb048d928bbb69
+```
+
+---
+
+#### 7. Identidad `external_credential_id`
+
+`external_credential_id` identifica una credencial lógica gobernada o una referencia aplicable, nunca el valor aceptado por el proveedor.
+
+Invariantes:
+
+1. es opaco;
+2. es estable mientras represente la misma credencial lógica;
+3. no codifica proveedor, cuenta, endpoint, ambiente, scope ni secreto;
+4. no contiene prefijos que revelen material de autenticación;
+5. no es hash del secreto;
+6. no es token, API key, JWT, certificado, private key ni password;
+7. no se reutiliza para una credencial sucesora independiente;
+8. no se reutiliza después del retiro para una nueva credencial;
+9. conocerlo no permite resolver el secreto;
+10. su comparación sirve para correlación y gobierno, no para autenticación.
+
+---
+
+#### 8. Familia lógica de persistencia
+
+La futura materialización por paquete se compone de cuatro familias lógicas.
+
+| Familia                                  | Responsabilidad                                                                             |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `EXTERNAL_CREDENTIAL_REFERENCE_RECORD`   | identidad, binding, superficie, ambiente, metadata no sensible y lifecycle de la referencia |
+| `EXTERNAL_CREDENTIAL_SCOPE_RECORD`       | proyección normalizada de `minimum_scope` y `scope_ceiling` cuando apliquen                 |
+| `EXTERNAL_CREDENTIAL_CONSUMER_BINDING`   | consumidores autorizados de una referencia, sin entregarles el secreto                      |
+| `EXTERNAL_CREDENTIAL_REFERENCE_REVISION` | historia inmutable de metadata y estado de la referencia                                    |
+
+Los nombres anteriores son identidades lógicas del contrato. La migración física posterior deberá escoger nombres SQL compatibles con el package_id y el modelo Supabase vigente sin alterar esta semántica.
+
+---
+
+#### 9. Shape mínimo de `EXTERNAL_CREDENTIAL_REFERENCE_RECORD`
+
+Cada referencia persistida deberá poder representar:
+
+| Campo lógico                         | Cardinalidad | Regla                                                             |
+| ------------------------------------ | -----------: | ----------------------------------------------------------------- |
+| `external_credential_id`             |            1 | identidad opaca no secreta                                        |
+| `package_id`                         |            1 | paquete propietario                                               |
+| `external_system_id`                 |            1 | heredado de INT-DB-001                                            |
+| `external_integration_id`            |            1 | integración propietaria                                           |
+| `external_environment_binding_id`    |            1 | binding exacto del ambiente                                       |
+| `integration_principal_id`           |            1 | principal técnico separado                                        |
+| `credential_surface`                 |            1 | superficie acreditada de la credencial                            |
+| `environment`                        |            1 | `DEVELOPMENT`, `STAGING` o `PRODUCTION` según contrato compartido |
+| `external_instance_id`               |         0..1 | instancia externa acreditada                                      |
+| `provider_account_ref`               |         0..1 | cuenta externa no secreta                                         |
+| `provenance`                         |         0..1 | procedencia aprobada por BLOQUE X                                 |
+| `mechanism`                          |         0..1 | mecanismo aprobado, sin material                                  |
+| `material_class`                     |         0..1 | clasificación documental, no valor                                |
+| `functional_owner_ref`               |         0..1 | owner funcional cuando aplique                                    |
+| `technical_custodian_ref`            |         0..1 | custodio técnico, no locator del secreto                          |
+| `lifecycle_state`                    |         0..1 | estado heredado del lifecycle aprobado                            |
+| `predecessor_external_credential_id` |         0..1 | referencia anterior cuando corresponda                            |
+| `successor_external_credential_id`   |         0..1 | referencia sucesora cuando corresponda                            |
+| `reference_revision`                 |            1 | revisión monotónica de metadata                                   |
+| `registry_version`                   |            1 | versión del registro INT-DB-001 consumida                         |
+| `recorded_at`                        |            1 | tiempo de persistencia de la revisión                             |
+| `recorded_by_ref`                    |            1 | principal o proceso que registró la revisión                      |
+| `evidence_ref`                       |         0..1 | referencia no sensible a evidencia                                |
+| `evidence_digest`                    |         0..1 | huella de evidencia, nunca del secreto                            |
+
+`minimum_scope`, `scope_ceiling`, `known_dates` y `authorized_consumers` conservan la semántica de `ExternalCredentialRef` mediante relaciones normalizadas o una representación físicamente equivalente.
+
+---
+
+#### 10. Correspondencia con `ExternalCredentialRef`
+
+La persistencia no redefine el contrato estático. Debe poder proyectar, sin pérdida y sin campos secretos:
+
+```text
+ExternalCredentialRef.external_credential_id
+ExternalCredentialRef.external_system_id
+ExternalCredentialRef.integration_principal_id
+ExternalCredentialRef.credential_surface
+ExternalCredentialRef.environment
+ExternalCredentialRef.external_instance_id
+ExternalCredentialRef.provider_account_ref
+ExternalCredentialRef.provenance
+ExternalCredentialRef.mechanism
+ExternalCredentialRef.minimum_scope
+ExternalCredentialRef.scope_ceiling
+ExternalCredentialRef.material_class
+ExternalCredentialRef.functional_owner_ref
+ExternalCredentialRef.technical_custodian_ref
+ExternalCredentialRef.lifecycle_state
+ExternalCredentialRef.predecessor_external_credential_id
+ExternalCredentialRef.successor_external_credential_id
+ExternalCredentialRef.known_dates
+ExternalCredentialRef.authorized_consumers
+```
+
+Los campos `package_id`, `external_integration_id`, `external_environment_binding_id`, `reference_revision`, `registry_version`, `recorded_at`, `recorded_by_ref`, `evidence_ref` y `evidence_digest` pertenecen al envelope físico de persistencia de `INT-DB-002` y no modifican el shape compartido de `ExternalCredentialRef`.
+
+---
+
+#### 11. Universo heredado y decisión por identidad externa
+
+La tarea conserva exactamente las 21 decisiones de aplicabilidad de `SHELL-CON-018`.
+
+| ID            | Sistema                                  | Estado heredado          | Decisión de persistencia de INT-DB-002                                             |
+| ------------- | ---------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------- |
+| `EXT-SYS-001` | Supabase                                 | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-002` | Wompi                                    | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-003` | RevenueCat                               | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-004` | Resend                                   | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-005` | Expo / EAS Update                        | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-006` | Expo Push Service                        | `NO_APLICA`              | no crear referencia de credencial externa para el binding observado                |
+| `EXT-SYS-007` | Sentry                                   | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-008` | Google Maps / Google Reviews             | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs            | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-010` | Vercel                                   | `PENDIENTE_DE_EVIDENCIA` | referencia elegible únicamente para superficies y bindings acreditados del paquete |
+| `EXT-SYS-011` | Zebra BrowserPrint                       | `NO_APLICA`              | no crear referencia de credencial externa para el binding observado                |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet      | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar binding y credencial aplicable                 |
+| `EXT-SYS-013` | POS externo vigente                      | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar proveedor, binding y credencial aplicable      |
+| `EXT-SYS-014` | Shopify / canal de comercio electrónico  | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar binding y credencial aplicable                 |
+| `EXT-SYS-015` | Rappi / marketplace                      | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar binding y credencial aplicable                 |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar binding y credencial aplicable                 |
+| `EXT-SYS-017` | WhatsApp                                 | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar proveedor/API, binding y credencial aplicable  |
+| `EXT-SYS-018` | Instagram / perfiles sociales            | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar binding y credencial aplicable                 |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales   | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar proveedor, binding y credencial aplicable      |
+| `EXT-SYS-020` | Telefonía / canal de voz                 | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar proveedor, binding y credencial aplicable      |
+| `EXT-SYS-021` | Transporte externo                       | `NO_APLICA_ACTUAL`       | no crear referencia hasta acreditar proveedor, binding y credencial aplicable      |
+
+La decisión no crea una referencia física para ninguna de las 21 identidades durante esta definición.
+
+---
+
+#### 12. Reconciliación cuantitativa del universo
+
+| Control                                         |    Resultado |
+| ----------------------------------------------- | -----------: |
+| identidades esperadas                           |       **21** |
+| decisiones materializadas documentalmente       | **21 de 21** |
+| faltantes                                       |        **0** |
+| duplicadas                                      |        **0** |
+| `PENDIENTE_DE_EVIDENCIA`                        |        **9** |
+| `NO_APLICA`                                     |        **2** |
+| `NO_APLICA_ACTUAL`                              |       **10** |
+| `external_credential_id` físicos creados        |        **0** |
+| referencias persistidas                         |        **0** |
+| secretos creados, copiados, movidos o revelados |        **0** |
+
+---
+
+#### 13. Separación obligatoria por ambiente
+
+Cada `external_credential_id` pertenece a exactamente un ambiente VENTO:
+
+```text
+DEVELOPMENT
+STAGING
+PRODUCTION
+```
+
+Reglas:
+
+1. una referencia no puede abarcar más de un ambiente;
+2. una referencia de `DEVELOPMENT` no puede servir de fallback a `STAGING` o `PRODUCTION`;
+3. una referencia de `STAGING` no puede servir de fallback a `PRODUCTION`;
+4. una referencia de `PRODUCTION` no se reutiliza para pruebas;
+5. la transición entre ambientes crea o enlaza referencias independientes conforme a la evidencia real;
+6. el ambiente proviene del binding de INT-DB-001;
+7. el nombre de una variable no demuestra ambiente;
+8. un mismo proveedor o cuenta externa no elimina la separación ambiental.
+
+---
+
+#### 14. Superficie y cardinalidad
+
+La cardinalidad se gobierna por `credential_surface` + ambiente, no solo por sistema externo.
+
+Por tanto:
+
+```text
+un external_system_id
+→ puede tener múltiples superficies
+→ cada superficie puede requerir una referencia independiente por ambiente
+```
+
+Ejemplos conceptuales preservados por BLOQUE X incluyen credenciales públicas, secretos de webhook, claves server-side, certificados, claves privadas o superficies sin credencial externa observada.
+
+Reglas:
+
+1. varias referencias por `external_system_id` están permitidas;
+2. una superficie independiente no hereda automáticamente la referencia de otra;
+3. un mismo `integration_principal_id` puede relacionarse con varias referencias sin fusionarlas;
+4. una credencial no se deduce por el nombre del sistema;
+5. una superficie `NO_APLICA` no recibe una referencia ficticia.
+
+---
+
+#### 15. Procedencia, mecanismo y alcance
+
+`provenance`, `mechanism`, `minimum_scope` y `scope_ceiling` solo se persisten cuando provienen de las decisiones canónicas de BLOQUE X o de evidencia acreditada posterior.
+
+Reglas:
+
+1. `provenance` no se inventa desde el nombre del proveedor;
+2. `mechanism` no contiene el secreto ni un header completo;
+3. `minimum_scope` expresa el mínimo alcance aprobado;
+4. `scope_ceiling` impide ampliar la credencial por conveniencia técnica;
+5. una solicitud de scope por encima del ceiling falla cerrada;
+6. `service_role` sigue siendo credencial privilegiada y no autoridad empresarial;
+7. una credencial publicable no se convierte en secreto por estar referenciada;
+8. una credencial secreta no se convierte en metadata publicable por estar cifrada.
+
+---
+
+#### 16. Material, custodia y frontera de resolución
+
+La persistencia distingue metadata no sensible de material de autenticación.
+
+La referencia puede conservar:
+
+- clase documental de material;
+- custodio técnico;
+- owner funcional;
+- procedencia;
+- mecanismo;
+- estado;
+- fechas conocidas;
+- scopes;
+- consumidores autorizados;
+- referencias de predecessor/successor.
+
+La referencia no puede conservar:
+
+- el valor secreto;
+- una copia cifrada recuperable del secreto;
+- una ruta operativa de secret store;
+- un locator runtime capaz de recuperar el secreto;
+- instrucciones para resolverlo;
+- un header reutilizable;
+- fragmentos suficientes para reconstruir material criptográfico.
+
+La ubicación y resolución runtime del secreto pertenecen al mecanismo de custodia autorizado, no al registro empresarial de `INT-DB-002`.
+
+---
+
+#### 17. Material prohibido dentro del registro
+
+Queda prohibido persistir como parte de la referencia cualquiera de estas clases del contrato compartido:
+
+```text
+operational_api_key
+secret_key
+service_role_key
+complete_jwt
+access_token
+refresh_token
+webhook_secret
+password
+client_secret
+private_key
+private_certificate_material
+recoverable_service_account_private_material
+reusable_session_cookie
+complete_authentication_header
+reusable_signature_credential
+recoverable_cryptographic_material
+secret_reconstruction_fragment
+operational_secret_store_locator
+runtime_secret_recovery_instruction
+```
+
+La prohibición aplica igualmente a:
+
+- campos principales;
+- JSON auxiliar;
+- metadata libre;
+- comentarios;
+- labels;
+- evidencias;
+- dumps;
+- fixtures;
+- logs;
+- traces;
+- errores;
+- exports.
+
+---
+
+#### 18. Regla de no derivación desde el secreto
+
+No se permite usar como `external_credential_id`:
+
+- el secreto completo;
+- una parte del secreto;
+- un prefijo o sufijo operativo del secreto;
+- un hash creado específicamente desde el secreto para sustituir su almacenamiento;
+- una codificación reversible;
+- un ciphertext recuperable;
+- un token de sesión;
+- un `Authorization` header;
+- una variable de ambiente cuyo nombre actúe como locator runtime.
+
+Cuando un proveedor exponga un identificador público de key, versión o certificado, ese dato podrá conservarse únicamente como metadata acreditada y no reemplaza `external_credential_id`.
+
+---
+
+#### 19. Relación con principal, cuenta, sistema y endpoint
+
+Las siguientes identidades permanecen separadas:
+
+```text
+external_system_id
+≠ external_integration_id
+≠ external_environment_binding_id
+≠ integration_principal_id
+≠ provider_account_ref
+≠ external_credential_id
+≠ endpoint_ref
+```
+
+Consecuencias:
+
+1. cambiar endpoint no cambia automáticamente la credencial;
+2. cambiar cuenta externa exige reconciliar referencias afectadas, no renombrarlas;
+3. una credencial no identifica al actor humano;
+4. una credencial no reemplaza al principal técnico;
+5. un principal técnico no concede acceso al secreto;
+6. una credencial válida no concede autoridad para ejecutar una acción empresarial;
+7. autenticidad técnica y autorización empresarial siguen siendo controles distintos.
+
+---
+
+#### 20. Lifecycle de la referencia
+
+El registro conserva el estado de lifecycle aprobado por la autoridad semántica de credenciales.
+
+La persistencia debe permitir distinguir, sin perder historia:
+
+- referencia aplicable y vigente;
+- referencia pendiente de evidencia;
+- referencia expirada;
+- referencia revocada;
+- referencia retirada;
+- referencia sucesora;
+- referencia no aplicable;
+- referencia bloqueada por falta de binding o evidencia.
+
+No se define un enum físico nuevo en esta tarea. La migración posterior deberá materializar únicamente los estados canónicos vigentes para la superficie afectada.
+
+---
+
+#### 21. Rotación y sucesión
+
+Cuando una rotación produzca una credencial sucesora independiente:
+
+1. se crea un `external_credential_id` nuevo;
+2. la referencia anterior no se renombra como la sucesora;
+3. se conserva `predecessor_external_credential_id`;
+4. se conserva `successor_external_credential_id`;
+5. historia de revocadas, expiradas y retiradas no se borra;
+6. el `integration_principal_id` no cambia únicamente por rotación ordinaria;
+7. una sucesora no puede cruzar de ambiente;
+8. los consumidores se migran de forma explícita;
+9. la ausencia del valor secreto en la tabla se mantiene antes, durante y después de la rotación.
+
+---
+
+#### 22. Segregación entre bindings
+
+`INT-EXT-020` permanece vinculante.
+
+Existe riesgo de compartición cuando la misma credencial material aceptada por una autoridad externa cruza bindings independientes.
+
+La persistencia de referencias deberá soportar los estados de aislamiento aprobados:
+
+- `ISOLATED_BY_BINDING`;
+- `EXCLUSIVITY_PENDING_EVIDENCE`;
+- `SHARED_CREDENTIAL_DETECTED`;
+- `SHARED_CREDENTIAL_REMEDIATION_IN_PROGRESS`;
+- `NO_CREDENTIAL_APPLICABLE`;
+- `BLOCKED_NO_BINDING`.
+
+Reglas:
+
+1. el estado nunca incluye el valor secreto;
+2. `EXCLUSIVITY_PENDING_EVIDENCE` no prueba incumplimiento ni conformidad;
+3. `ISOLATED_BY_BINDING` requiere evidencia;
+4. una compartición confirmada bloquea nuevos consumidores y ampliaciones de scope;
+5. no existe fallback a una credencial compartida global;
+6. la remediación crea sucesores independientes por binding.
+
+---
+
+#### 23. Materialización idempotente por paquete
+
+La futura materialización deberá ser repetible.
+
+Para una misma entrada lógica:
+
+```text
+package_id
++ external_integration_id
++ external_environment_binding_id
++ external_credential_id
++ reference_revision
+```
+
+la repetición compatible deberá converger al mismo registro y no crear duplicados.
+
+Una repetición incompatible deberá bloquearse si intenta cambiar:
+
+- sistema externo;
+- integración;
+- binding;
+- ambiente;
+- principal;
+- superficie;
+- identidad de la credencial;
+- contenido histórico ya aprobado.
+
+La idempotencia de procesamiento de eventos sigue reservada a `INT-DB-005`; esta sección solo gobierna la creación/reconciliación del registro de referencias.
+
+---
+
+#### 24. Concurrencia y revisión
+
+La persistencia deberá impedir `last writer wins` silencioso.
+
+Reglas:
+
+1. `reference_revision` es monotónica;
+2. una actualización parte de la revisión vigente esperada;
+3. una revisión stale no sobrescribe la vigente;
+4. una modificación incompatible genera conflicto;
+5. el cambio de metadata produce nueva revisión, no reescritura de historia;
+6. el cambio de identidad material no se simula con una revisión: usa sucesor;
+7. la concurrencia no puede alterar el ambiente o binding de una referencia existente.
+
+---
+
+#### 25. Exposición, RLS y mínimo privilegio
+
+Que una tabla contenga solo metadata no secreta no la convierte en pública.
+
+La futura materialización deberá:
+
+1. usar RLS, grants o aislamiento equivalente acorde con consumidores;
+2. negar acceso a roles cliente que no necesiten la metadata;
+3. impedir mutación desde frontends por conocimiento de `external_credential_id`;
+4. impedir que `anon` o `authenticated` obtengan autoridad administrativa por leer una referencia;
+5. evitar exponer scopes, cuentas o metadata operacional innecesaria;
+6. mantener `service_role` exclusivamente en backend autorizado;
+7. probar acceso permitido y denegado;
+8. tratar cualquier proyección cliente como contrato mínimo independiente.
+
+---
+
+#### 26. Consumidores autorizados
+
+`EXTERNAL_CREDENTIAL_CONSUMER_BINDING` conserva únicamente identidades de consumidores autorizados.
+
+No contiene:
+
+- secreto;
+- instrucciones de recuperación;
+- variables de entorno;
+- valor de header;
+- token;
+- clave;
+- contraseña.
+
+Un consumidor autorizado a conocer una referencia no queda automáticamente autorizado a resolver o usar el secreto.
+
+La autorización para usar material real se valida en la frontera runtime propietaria.
+
+---
+
+#### 27. Evidencia y frescura
+
+Cada referencia física futura deberá enlazar evidencia suficiente para demostrar:
+
+- sistema;
+- integración;
+- binding;
+- ambiente;
+- superficie;
+- procedencia cuando aplique;
+- principal;
+- owner;
+- custodio;
+- lifecycle;
+- aislamiento;
+- consumidores.
+
+`evidence_ref` y `evidence_digest` son referencias no sensibles.
+
+La evidencia:
+
+1. no contiene el secreto;
+2. no contiene un dump de variables;
+3. no contiene un header reutilizable;
+4. no contiene ruta operativa de secret store;
+5. conserva fecha o corte;
+6. se recaptura cuando cambie binding, cuenta, mecanismo, ambiente, lifecycle o consumidor.
+
+---
+
+#### 28. Drift y reconciliación de referencias
+
+Una futura instancia deberá detectar como drift, al menos:
+
+- referencia persistida sin integración vigente;
+- referencia ligada a binding retirado;
+- ambiente divergente;
+- principal divergente;
+- superficie desconocida;
+- consumidor no autorizado;
+- referencia retirada todavía marcada como vigente;
+- predecessor/successor incoherentes;
+- duplicidad material confirmada entre bindings;
+- metadata que contiene material prohibido;
+- referencia aplicable sin evidencia suficiente;
+- referencia `NO_APLICA` materializada sin una nueva decisión canónica.
+
+El drift no autoriza corregir el secreto desde la tabla.
+
+---
+
+#### 29. Bootstrap y backfill
+
+Si un paquete debe adoptar referencias preexistentes:
+
+1. parte del registro vigente de INT-DB-001;
+2. identifica superficies acreditadas sin leer o exportar valores secretos al artefacto de migración;
+3. asigna `external_credential_id` opaco;
+4. vincula ambiente y principal;
+5. registra metadata no sensible disponible;
+6. conserva procedencia y evidencia;
+7. clasifica ausencia de evidencia sin inventar datos;
+8. detecta compartición antes de declarar aislamiento;
+9. ejecuta dry-run y conteos;
+10. solo después materializa referencias elegibles.
+
+El backfill no copia secretos desde runtime, proveedor, logs o variables hacia tablas.
+
+---
+
+#### 30. Rollback
+
+El rollback de `INT-DB-002::<package_id>` no consiste en restaurar secretos dentro de una tabla.
+
+Debe permitir:
+
+1. detener nuevas referencias;
+2. restaurar la revisión anterior de metadata mediante nueva revisión compensatoria cuando sea seguro;
+3. retirar una referencia errónea sin borrar historia;
+4. revertir relaciones de consumidores;
+5. conservar predecessor/successor ya observados;
+6. reconstruir el estado registral previo desde evidencia;
+7. no reactivar una credencial revocada;
+8. no copiar un secreto antiguo para recuperar funcionamiento;
+9. escalar a la autoridad de lifecycle cuando la corrección implique rotación o revocación real.
+
+---
+
+#### 31. Política de fallo cerrado
+
+La referencia falla cerrada ante:
+
+- `external_credential_id` requerido ausente;
+- `external_system_id` incompatible;
+- `integration_principal_id` incompatible;
+- `credential_surface` incompatible;
+- ambiente incorrecto;
+- ambiente ambiguo;
+- mecanismo incompatible;
+- scope solicitado por encima del ceiling;
+- lifecycle no utilizable;
+- material requerido no resoluble por la frontera runtime autorizada;
+- necesidad de inferir datos para completar la referencia.
+
+Ninguno de estos casos permite fallback a una credencial global, legacy o de otro ambiente.
+
+---
+
+#### 32. Prohibición de fallback secreto
+
+Queda prohibido resolver una ausencia mediante:
+
+```text
+credential missing
+→ use default
+```
+
+```text
+credential missing
+→ use production credential
+```
+
+```text
+credential missing
+→ use legacy credential
+```
+
+```text
+credential missing
+→ use another integration credential
+```
+
+```text
+credential missing
+→ read secret from a business table
+```
+
+El fallo se conserva como fallo de configuración, evidencia o lifecycle.
+
+---
+
+#### 33. Logs, errores, exports y observabilidad
+
+La observabilidad puede registrar:
+
+- `external_credential_id`;
+- sistema;
+- integración;
+- binding;
+- ambiente;
+- superficie;
+- revisión;
+- lifecycle;
+- resultado de resolución en forma no sensible.
+
+No puede registrar:
+
+- valor secreto;
+- header completo;
+- JWT completo;
+- token;
+- password;
+- private key;
+- certificado privado;
+- material criptográfico recuperable;
+- variable de entorno con valor;
+- locator operativo de secret store.
+
+Los errores no deben ecoar inputs potencialmente secretos.
+
+---
+
+#### 34. Frontera con INT-DB-003
+
+`INT-DB-003` está reservado a staging inmutable de payloads externos.
+
+Puede consumir de `INT-DB-002` únicamente identidad y metadata no secreta necesarias para procedencia y autenticidad referenciada.
+
+No podrá recibir desde este registro:
+
+- secreto;
+- copia cifrada recuperable;
+- header;
+- token;
+- private key;
+- locator de secret store;
+- instrucción runtime de recuperación.
+
+Una referencia de credencial demuestra qué identidad lógica intervino; no prueba por sí sola autenticidad del payload ni éxito del efecto empresarial.
+
+---
+
+#### 35. Handoff obligatorio hacia INT-DB-003
+
+El handoff mínimo de `INT-DB-002::<package_id>` queda:
+
+```text
+package_id
+external_system_id
+external_integration_id
+external_environment_binding_id
+external_instance_id
+environment_ref
+integration_principal_id
+provider_account_ref
+external_credential_id
+credential_surface
+credential_reference_status
+reference_revision
+registry_version
+contract_version
+endpoint_ref
+business_owner_ref
+technical_owner_ref
+evidence_ref
+evidence_digest
+```
+
+Condiciones:
+
+1. `external_credential_id` puede ser nulo únicamente cuando el contrato de la superficie declare que no aplica credencial o el binding todavía no permita materializarla;
+2. el handoff no contiene valor secreto;
+3. el handoff no contiene locator runtime;
+4. la tarea siguiente no reidentifica credenciales por payload, URL, proveedor o variable;
+5. la autenticidad del payload se resuelve mediante los contratos de integración aplicables, no por la mera existencia de la referencia.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+Justificación: la tarea materializa en forma de persistencia posterior por paquete controles ya cubiertos por los contratos vigentes de credenciales, secretos, segregación ambiental, mínimo privilegio, ausencia de material sensible en tablas/configuración y referencia opaca. No introduce una conducta verificable nueva distinta de esas obligaciones; fija el shape, relaciones y handoff de la capa física futura.
+
+---
+
+#### 37. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza, sin modificarlos:
+
+- `TREQ-SUPABASE-117` — frontera de credenciales privilegiadas de backend;
+- `TREQ-SUPABASE-192` — prohibición de secretos en configuración legible por clientes;
+- `TREQ-SUPABASE-193` — retiro de credenciales desde SQL persistido;
+- `TREQ-SUPABASE-217` — registro canónico no sensible de secretos y credenciales;
+- `TREQ-SUPABASE-218` — prohibición de material secreto en tablas legibles, código, migraciones, logs y artefactos;
+- `TREQ-SUPABASE-219` — custodia server-side separada de tablas empresariales;
+- `TREQ-SUPABASE-220` — rotación coordinada posterior a exposición;
+- `TREQ-SUPABASE-222` — inventario de claves privadas sin almacenar el valor;
+- `TREQ-SUPABASE-226` — compatibilidad y separación ambiental;
+- `TREQ-SUPABASE-227` — mínimo privilegio de credenciales de terceros;
+- `TREQ-SUPABASE-239` — aislamiento de claves y secretos por ambiente;
+- `TREQ-SUPABASE-241` — secret scanning de código, documentación y fixtures;
+- `TREQ-INTEGRATION-051` — ausencia de secretos en contratos y ejemplos de integración;
+- `TREQ-INTEGRATION-213` — autenticación referenciada sin incrustar credenciales;
+- `TREQ-INTEGRATION-218` — minimización de auditoría sin secretos ni tokens;
+- `TREQ-INTEGRATION-306` — frontera del adaptador externo sin credencial transversal.
+
+Estas referencias son trazabilidad de cobertura existente y no constituyen actualización del registro de requisitos.
+
+---
+
+#### 38. Evidencia de validación
+
+| Clase     | Estado         | Evidencia                                                                                                                                                                                                                                                                                     |
+| --------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED   | La batería npm del checkout completo no se ejecutó durante la preparación del artefacto; no se declara build como aprobado.                                                                                                                                                                   |
+| LOCAL     | PASS           | El artefacto fue comprobado estructuralmente para título, metadata obligatoria, secciones requeridas, continuidad, cero requisitos en la sección de cambios, UTF-8, LF, ausencia de BOM, placeholders ejecutables, contenido de chat prohibido y correspondencia 21/21 de la matriz heredada. |
+| REMOTA    | PASS           | Se recapturó `main` en `ce93e86f0a4232224e690037928e9d8bd6e12fff` y se verificaron continuidad, owner, topología, contrato de entrega, políticas, 04A relevante, `package.json`, validators, `SHELL-CON-018::GLOBAL`, `ExternalCredentialRef` e INT-EXT-003..008/020.                         |
+| OPERATIVA | NOT_EXECUTED   | No se materializó ningún `INT-DB-002::<package_id>`, no se resolvió ninguna credencial runtime y no se ejercitaron consumidores.                                                                                                                                                              |
+| FÍSICA    | NOT_APPLICABLE | Esta tarea documental autoriza cero DDL, DML, migraciones, RLS, RPC, secretos, cambios Supabase o efectos remotos.                                                                                                                                                                            |
+
+---
+
+#### 39. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE` y `POST_E5_PACKAGE`;
+2. no crea instancia global propia;
+3. consume el handoff de INT-DB-001 sin reidentificar sistemas, bindings o ambientes;
+4. preserva `ExternalCredentialId` como estable, opaco y no secreto;
+5. conserva exactamente las 21 decisiones de aplicabilidad de SHELL-CON-018;
+6. reconcilia 9 pendientes de evidencia, 2 no aplicables y 10 no aplicables actuales;
+7. crea 0 valores físicos de credencial durante la definición;
+8. no introduce un secret store locator en la referencia;
+9. no permite recuperar material desde la metadata persistida;
+10. separa credencial, principal, cuenta, sistema, integración, binding y endpoint;
+11. conserva una sola identidad lógica por credencial y un solo ambiente por referencia;
+12. permite varias superficies por sistema sin fusionarlas;
+13. conserva scopes y consumidores sin convertirlos en autoridad empresarial;
+14. conserva historia de revisión y sucesión;
+15. bloquea fallback global, legacy o entre ambientes;
+16. soporta detección de compartición entre bindings;
+17. define bootstrap y rollback sin copiar secretos;
+18. entrega a INT-DB-003 solo identidad y metadata no sensible;
+19. declara cero requisitos nuevos con cobertura heredada fuera de la sección de cambios;
+20. no modifica 04A;
+21. no ejecuta cambios físicos.
+
+---
+
+#### 40. Límites
+
+Esta tarea no:
+
+- crea valores `ExternalCredentialId` operativos;
+- crea ni modifica secretos;
+- crea cuentas de proveedor;
+- rota, revoca o emite credenciales reales;
+- selecciona o cambia el secret store;
+- persiste rutas de secret store;
+- implementa resolución runtime;
+- crea tablas o migraciones;
+- aplica RLS o grants;
+- crea RPC o funciones;
+- modifica Supabase;
+- despliega configuración;
+- crea staging de payloads;
+- crea mappings externos;
+- implementa idempotencia de eventos;
+- crea cuarentena;
+- crea auditoría de procesamiento;
+- crea conciliación;
+- modifica contratos de SHELL-CON-018;
+- modifica requisitos de prueba;
+- avanza `INT-DB-003`.
+
+Toda materialización física posterior requiere `INT-DB-002::<package_id>` autorizado, `E5-GATE-008::<package_id> = PASS`, dependencias técnicas satisfechas y evidencia vigente.
+
+---
+
+#### 41. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INT-DB-001 — Crear registro de sistemas e integraciones externas`
+
+**TAREA ACTUAL APROBADA**
+`INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas`
+
+**SIGUIENTE TAREA RESERVADA**
+`INT-DB-003 — Crear staging inmutable de payloads externos`
+
+
 ### [ ] INT-DB-003 — Crear staging inmutable de payloads externos
 ### [ ] INT-DB-004 — Crear mapeos de identificadores externos y canónicos
 ### [ ] INT-DB-005 — Crear restricciones e índices de idempotencia
