@@ -5122,7 +5122,859 @@ Esta tarea no:
 `DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio`
 
 
-### [ ] DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio
+### ✅ DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio
+
+**Estado:** APROBADA
+**Tarea anterior:** DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones
+**Tarea siguiente:** DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para ejecutar únicamente los backfills previamente clasificados como elegibles, con corte de fuente fijado, revalidación antes del efecto, lotes deterministas, checkpoints poscommit, idempotencia, reconciliación, verificación poscommit y recuperación, sin ejecutar DDL, DML, migraciones, backfills, merges, constraints, índices, triggers, activaciones, cambios de consumidores ni modificaciones remotas durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `DATA-NORM-DB-005::<package_id>`, sujetas a `POST_E5_PACKAGE`, al handoff válido de `DATA-NORM-DB-004::<package_id>`, a reconciliación de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+Definir el contrato físico repetible que deberá gobernar cada backfill de normalización después de que `DATA-NORM-DB-004::<package_id>` haya fijado un universo de fuente, haya ejecutado el dry-run aplicable y haya clasificado de forma reproducible qué elementos requieren cambio, cuáles no cambian, cuáles están bloqueados y cuáles no aplican.
+
+El propósito de esta tarea es impedir que un backfill se convierta en una corrección masiva genérica. Cada efecto futuro deberá pertenecer a un `package_id`, utilizar exactamente el corte y conjunto de versiones autorizados, conservar la fuente y la historia exigidas por la semántica del dato, producir un outcome por elemento, poder reanudarse sin duplicar efectos y quedar reconciliado antes de habilitar cualquier restricción posterior.
+
+Esta definición no ejecuta el backfill. La ejecución material pertenece exclusivamente a una futura instancia física autorizada.
+
+#### 2. Resultado canónico
+
+Queda aprobado el contrato:
+
+```text
+DATA-NORM-BACKFILL-EXECUTION-CONTRACT-R2@1.0.0
+```
+
+Toda futura instancia deberá terminar en uno de estos estados de salida del backfill:
+
+```text
+VERIFIED
+BLOCKED
+FAILED_PARTIAL
+ROLLBACK_REQUIRED
+COMPENSATION_REQUIRED
+NOT_REQUIRED
+```
+
+`COMMITTED` no es un estado suficiente para cerrar la instancia: solo `VERIFIED` demuestra que el efecto fue confirmado y reconciliado contra las invariantes aplicables.
+
+#### 3. Topología vinculante
+
+La topología es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance = DATA-NORM-DB-005::<package_id>
+```
+
+Consecuencias:
+
+1. no existe una instancia `DATA-NORM-DB-005::GLOBAL`;
+2. la tarea documental define una sola plantilla;
+3. cada paquete físico conserva identidad, evidencia, ejecución, rollback y cierre propios;
+4. un runner reutilizable no convierte varios paquetes en una sola ejecución;
+5. ningún backfill puede incluir entidades o dominios ajenos al `package_id` por comodidad operacional.
+
+#### 4. Gate temporal y autorización
+
+Una instancia física solo podrá abrirse cuando:
+
+1. el `package_id` exista y esté aprobado por el flujo E5 aplicable;
+2. `E5-GATE-008::<package_id>` esté en `PASS`;
+3. las puertas R0/R1 y de paquete aplicables estén satisfechas;
+4. el candidato físico, sus dependencias y consumidores estén identificados;
+5. el drift aplicable haya sido recapturado y reconciliado;
+6. exista autorización física explícita para la instancia exacta;
+7. el handoff de `DATA-NORM-DB-004::<package_id>` sea íntegro;
+8. el `backfill_readiness` aplicable permita continuar.
+
+La existencia de este contrato documental no satisface ninguna de esas condiciones.
+
+#### 5. Fuentes vinculantes
+
+Cada instancia consume, como mínimo:
+
+- la política y arquitectura de `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`;
+- los contratos de transición de `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009` cuando sean aplicables al paquete;
+- la materialización vigente de `@vento/data-normalization`;
+- `DATA-NORM-DB-001` para versiones, vigencias y conjuntos efectivos;
+- `DATA-NORM-DB-002` cuando el paquete dependa de primitivas SQL certificadas;
+- `DATA-NORM-DB-003` cuando existan derivaciones físicas de búsqueda;
+- `DATA-NORM-DB-004` como autoridad del dry-run y de la partición previa;
+- el expediente E5 del `package_id`;
+- el estado remoto recapturado al iniciar la instancia;
+- los consumidores, relaciones, constraints y writers registrados para el alcance;
+- la cobertura vigente del registro canónico de requisitos de prueba.
+
+Una observación legacy o una función de nombre parecido no sustituye estas fuentes.
+
+#### 6. Handoff obligatorio recibido de DB-004
+
+Antes de planificar un efecto, la instancia deberá recibir exactamente:
+
+1. identidad y digest de la corrida de DB-004;
+2. universo de fuente fijado;
+3. miembros exactos de `BACKFILL_ELIGIBLE`;
+4. miembros exactos de `BLOCKED`;
+5. miembros exactos de `NO_CHANGE`;
+6. reglas y versiones resueltas;
+7. algoritmo y procedencia;
+8. colisiones y su disposición;
+9. consumidores y relaciones relevantes;
+10. restricciones actuales relevantes;
+11. brechas de evidencia;
+12. rollback previsto;
+13. partición o atomicidad requerida;
+14. condición de revalidación previa a escritura;
+15. `backfill_readiness`.
+
+Una ausencia, digest incompatible o miembro sin clasificación bloquea la ejecución.
+
+#### 7. Interpretación de `backfill_readiness`
+
+Solo se aceptan:
+
+| Estado | Conducta de DB-005 |
+| --- | --- |
+| `READY` | puede preparar la instancia física, pero debe revalidar todas las precondiciones antes del primer efecto |
+| `BLOCKED` | no ejecuta DML; conserva la causa, owner y condición de salida |
+| `NOT_REQUIRED` | cierra como `NOT_REQUIRED`; no crea escrituras vacías, updates neutrales ni lotes artificiales |
+
+`READY` no equivale a autorización física, no confirma identidad y no elimina la revalidación.
+
+#### 8. Identidad mínima de una corrida
+
+Cada corrida deberá declarar como mínimo:
+
+```text
+backfill_run_id
+backfill_plan_id
+package_id
+environment_identity
+candidate_commit_sha
+migration_history_digest
+dry_run_id
+dry_run_digest
+source_cut_reference
+baseline_bundle_digest
+policy_version_set
+mapping_version_set
+version_set_digest
+algorithm_provenance
+eligible_member_set_digest
+blocked_member_set_digest
+batch_contract_version
+reconciliation_profile
+rollback_plan_id
+owner_and_authorities
+authorization_reference
+```
+
+Los identificadores son inmutables dentro de la corrida. Cambiar corte, miembros, política, mapping, algoritmo o conjunto de versiones exige una nueva corrida o una revisión vinculada explícita.
+
+#### 9. Universo de ejecución cerrado
+
+La ejecución trabaja sobre el universo fijado por DB-004.
+
+Debe cumplirse:
+
+```text
+SOURCE_UNIVERSE
+=
+NO_CHANGE
++ BACKFILL_ELIGIBLE
++ BLOCKED
++ NOT_APPLICABLE
+```
+
+con miembros disjuntos después de las exclusiones explícitas previas al universo.
+
+Reglas:
+
+1. ningún elemento puede aparecer en dos particiones;
+2. ningún elemento evaluable puede quedar sin partición;
+3. una muestra no autoriza elementos no examinados;
+4. un lote posterior no puede ampliar el universo por similitud, texto, frecuencia ni nueva consulta ad hoc;
+5. un elemento nuevo detectado después del corte pertenece a reevaluación, no al backfill vigente.
+
+#### 10. Revalidación inmediatamente anterior al efecto
+
+Antes de modificar cada chunk, la instancia revalida:
+
+1. identidad estable del elemento;
+2. versión o hash actual de fuente;
+3. coordenada de dominio, entidad y campo;
+4. scope y jerarquía aplicables;
+5. estado y vigencia;
+6. `version_set_digest`;
+7. mapping y algoritmo;
+8. pertenencia a `BACKFILL_ELIGIBLE`;
+9. decisión estructural o de revisión cuando sea necesaria;
+10. relaciones y consumers críticos cuando puedan afectar atomicidad;
+11. constraints actuales que puedan rechazar el efecto;
+12. ausencia de drift material respecto del dry-run.
+
+Si una precondición cambió, el elemento o chunk queda bloqueado. No se recalcula silenciosamente con otra versión conservando el mismo `dry_run_id`.
+
+#### 11. Conducta por partición
+
+`NO_CHANGE`:
+
+- no recibe DML;
+- conserva evidencia de que la fuente ya satisface el resultado esperado;
+- no se contabiliza como fila transformada.
+
+`BLOCKED`:
+
+- no recibe DML;
+- mantiene causa, owner y condición de salida;
+- revisión, ambigüedad o fallo técnico nunca se degradan a no-op.
+
+`NOT_APPLICABLE`:
+
+- no recibe DML;
+- conserva razón contractual de exclusión.
+
+`BACKFILL_ELIGIBLE`:
+
+- es la única partición que puede producir efectos;
+- sigue su modo de mutación aprobado;
+- permanece sujeta a precheck, autorización, idempotencia y reconciliación.
+
+#### 12. Aislamiento por dominio y paquete
+
+Un backfill nunca se define como “normalizar todos los textos”.
+
+Cada plan declara:
+
+- dominio propietario;
+- entidad;
+- campo o componente estructurado;
+- representación;
+- rol de fuente;
+- scope;
+- operación;
+- regla y versión;
+- consumidor;
+- target;
+- rollback.
+
+Dos coordenadas que compartan función o algoritmo siguen siendo unidades separadas si cambian dominio, identidad, fuente, semántica, autoridad o estrategia de recuperación.
+
+#### 13. Corte de fuente y escrituras concurrentes
+
+Cada instancia deberá escoger y documentar una estrategia compatible con su dominio, por ejemplo:
+
+- snapshot estable;
+- high-watermark más delta;
+- fencing temporal de writers;
+- control optimista por versión/hash;
+- combinación explícita de las anteriores.
+
+No existe una estrategia universal.
+
+La estrategia debe demostrar que:
+
+1. una escritura legítima posterior al dry-run no será sobrescrita;
+2. la corrida puede distinguir source drift de fallo técnico;
+3. el delta concurrente tiene owner y destino;
+4. el backfill no crea doble autoridad;
+5. el cierre conoce qué universo fue realmente procesado.
+
+#### 14. Lotes, chunks y orden determinista
+
+Cada `batch_id` declara:
+
+```text
+stable_order_key
+lower_bound
+upper_bound
+expected_member_count
+chunk_size_policy
+version_set_digest
+source_cut_reference
+checkpoint_policy
+```
+
+Reglas:
+
+1. se usa keyset o una clave estable equivalente;
+2. `OFFSET` no es un mecanismo válido de reanudación;
+3. el orden no depende del plan físico ni del orden accidental de filas;
+4. un chunk no mezcla versiones, mappings ni modos de coexistencia;
+5. el tamaño se deriva de locks, latencia, WAL, carga y presupuesto del ambiente;
+6. el lote no asume que “más grande” equivale a “más eficiente”.
+
+#### 15. Máquina de estados del lote
+
+La secuencia canónica es:
+
+```text
+PLANNED
+-> PRECHECKED
+-> ELIGIBLE
+-> RUNNING
+-> RECONCILING
+-> COMMITTED
+-> VERIFIED
+```
+
+Salidas laterales:
+
+```text
+PRECHECKED -> BLOCKED
+RUNNING -> FAILED_PARTIAL
+RECONCILING -> ROLLBACK_REQUIRED
+COMMITTED -> COMPENSATION_REQUIRED
+```
+
+Una corrección de un estado terminal crea una corrida vinculada; no edita la historia del lote anterior.
+
+#### 16. Outcome obligatorio por elemento
+
+Cada miembro del universo termina exactamente en uno:
+
+```text
+NO_ACTION_REQUIRED
+PRESERVED_SOURCE
+TRANSFORMED_BY_VERSIONED_RULE
+REFERENCE_REMAPPED
+MERGED_BY_APPROVED_PLAN
+QUARANTINED
+REVIEW_REQUIRED
+REJECTED_FROM_TARGET
+FAILED_TECHNICALLY
+```
+
+No existe `SUCCESS` genérico.
+
+El outcome identifica lo ocurrido; no redefine identidad, autoridad de dominio ni estado de activación.
+
+#### 17. Checkpoints
+
+Un checkpoint solo avanza después del commit confirmado del chunk correspondiente.
+
+Debe conservar:
+
+```text
+batch_id
+chunk_id
+last_confirmed_stable_key
+source_cut_reference
+version_set_digest
+committed_member_count
+committed_outcome_digest
+committed_at
+```
+
+Reglas:
+
+1. un chunk fallido no adelanta checkpoint;
+2. un timeout consulta primero el resultado confirmado;
+3. reanudar comienza después de la última clave confirmada;
+4. el checkpoint no sustituye el ledger de outcomes;
+5. corregir un checkpoint no borra intentos anteriores.
+
+#### 18. Idempotencia y reintentos
+
+La clave de idempotencia vincula, como mínimo:
+
+- clase de operación;
+- actor o servicio;
+- entidad y campo;
+- identidad estable;
+- versión o hash de fuente;
+- acción;
+- `version_set_digest`;
+- correlación empresarial;
+- `backfill_run_id`;
+- `batch_id` y `chunk_id`.
+
+Misma clave y mismo payload devuelve el outcome ya confirmado sin repetir efectos.
+
+Misma clave con payload, fuente, versión o precondición incompatible produce conflicto y bloquea.
+
+Ningún timeout autoriza crear automáticamente otra operación lógica.
+
+#### 19. Fallo parcial y reanudación
+
+Un fallo de una fila no se presenta como rollback global de un lote ya parcialmente confirmado.
+
+La corrida deberá distinguir:
+
+- efectos confirmados;
+- efectos no iniciados;
+- outcomes desconocidos;
+- fallos técnicos;
+- bloqueos de política;
+- compensaciones requeridas.
+
+La reanudación:
+
+1. consulta resultados confirmados;
+2. omite efectos ya confirmados;
+3. conserva el mismo corte y versiones cuando sigan vigentes;
+4. bloquea si el corte o las versiones dejaron de ser compatibles;
+5. no convierte `FAILED_TECHNICALLY` en decisión empresarial.
+
+#### 20. Modos de efecto permitidos
+
+Una unidad física deberá declarar exactamente qué clase ejecuta:
+
+1. transformación versionada de un valor primario autorizado;
+2. materialización o reconstrucción de una derivación;
+3. remapeo de una referencia mediante plan explícito;
+4. merge con plan de consolidación aprobado;
+5. cuarentena o registro de revisión sin alterar el valor empresarial;
+6. preservación explícita sin mutación.
+
+La existencia de una forma “mejor” no selecciona automáticamente ninguno de estos modos.
+
+#### 21. Valores primarios y reglas léxicas
+
+Una corrección visible solo puede ejecutarse cuando:
+
+1. el campo resuelva una política elegible;
+2. la versión exacta esté fijada;
+3. la regla sea aplicable a esa coordenada;
+4. DB-004 haya clasificado el elemento como `BACKFILL_ELIGIBLE`;
+5. no exista revisión o bloqueo pendiente;
+6. el source hash continúe compatible.
+
+Las correcciones de diccionario, capitalización, conectores y excepciones no se expanden por coincidencia textual a otros campos o dominios.
+
+#### 22. Derivaciones
+
+Para claves de búsqueda u otras derivaciones:
+
+1. la fuente no se sobrescribe;
+2. la derivación enlaza identidad, campo, source hash, perfil, locale, algoritmo y versión;
+3. una derivación obsoleta deja de participar como vigente;
+4. reconstruir una derivación no crea identidad;
+5. las derivaciones históricas no reinterpretan snapshots;
+6. el rollback preferido es reconstruir desde la fuente bajo una versión compatible.
+
+#### 23. Remapeos y merges
+
+Un `REFERENCE_REMAPPED` o `MERGED_BY_APPROVED_PLAN` exige un plan explícito y vigente que declare:
+
+- miembros;
+- identidad;
+- autoridad por atributo;
+- sobreviviente cuando aplique;
+- relaciones;
+- crosswalk;
+- before-image;
+- reverse delta o compensación;
+- punto de no retorno;
+- aprobaciones.
+
+Un plan histórico concreto, incluido cualquier caso previamente analizado, solo puede ejecutarse si pertenece al `package_id` y supera revalidación fresca. No se extrapola a entidades similares.
+
+#### 24. Crosswalk, historia y hechos
+
+Cuando exista consolidación:
+
+1. el crosswalk es aditivo y trazable;
+2. hechos históricos no se reescriben por comodidad;
+3. referencias externas conservan procedencia;
+4. identificadores anteriores siguen interpretables;
+5. tombstones, aliases o redirecciones se usan solo por contrato;
+6. conteos, saldos, inventario, recetas, compras, producción, ventas, catálogo y remisiones se reconcilian cuando estén dentro del blast radius;
+7. no se elimina evidencia para “limpiar” el resultado.
+
+#### 25. Cuarentena y revisión
+
+Los elementos que requieren decisión humana:
+
+- no se transforman;
+- no se autoaprueban por volumen;
+- no se cierran por SLA vencido;
+- no se agrupan fuera de su `review_case_key`;
+- conservan fuente, evidencia y scope;
+- se entregan al workflow propietario con resultado distinguible.
+
+Una cuarentena no es un backfill exitoso sobre el valor empresarial.
+
+#### 26. Fuentes protegidas
+
+Permanecen fuera de corrección destructiva automática:
+
+- `EXTERNAL_ORIGINAL`;
+- snapshots históricos o inmutables;
+- evidencia de auditoría;
+- secretos y firmas;
+- materiales personales o legales sin autoridad explícita;
+- valores técnicos gobernados por contrato propio.
+
+Una derivación puede ser reconstruible; la fuente protegida no se sustituye por esa derivación.
+
+#### 27. Frontera VITAL
+
+VITAL permanece fuera del alcance transversal de Vento OS.
+
+La coexistencia en el mismo proyecto, schema, infraestructura o dependencia no autoriza:
+
+- aplicar reglas de Vento OS;
+- incluir datos VITAL en el universo;
+- crear crosswalks compartidos;
+- ejecutar backfills;
+- usar su comportamiento como evidencia de paridad.
+
+Cualquier interacción necesaria se trata como frontera explícita, no como extensión del paquete.
+
+#### 28. Frontera transaccional y seguridad
+
+Toda mutación futura deberá ocurrir bajo una frontera autorizada que:
+
+1. autentique actor o servicio;
+2. autorice finalidad y scope;
+3. valide idempotencia;
+4. cargue estado actual;
+5. resuelva la semántica mediante la autoridad correspondiente;
+6. revalide concurrencia, relaciones y restricciones aplicables;
+7. confirme efecto y auditoría raíz de forma compatible con el contrato;
+8. devuelva el outcome confirmado.
+
+Una credencial privilegiada no equivale a permiso semántico.
+
+Las escrituras directas ordinarias sobre campos gobernados permanecen prohibidas.
+
+#### 29. Objetos auxiliares, RLS y grants
+
+Si una instancia necesita persistencia auxiliar para ledger, checkpoints, crosswalks o outcomes:
+
+1. la necesidad se demuestra por paquete;
+2. el objeto se versiona en `vento-shell`;
+3. schema, ownership, grants, RLS y exposición se revisan explícitamente;
+4. una tabla en schema expuesto no queda abierta por defecto;
+5. un objeto auxiliar no se convierte en fuente empresarial;
+6. su retención y rollback se fijan antes de uso.
+
+Esta tarea no presupone que tales objetos ya existan ni fija nombres físicos universales.
+
+#### 30. Rendimiento y tamaño de chunk
+
+La instancia medirá al menos:
+
+- filas por segundo;
+- tiempo por chunk;
+- p50/p95/p99 cuando aplique;
+- lock wait;
+- deadlocks;
+- timeouts;
+- WAL o presión equivalente relevante;
+- error rate;
+- impacto sobre writers;
+- backlog y tiempo estimado de drenaje.
+
+El chunk size se ajusta dentro de límites aprobados sin cambiar orden, semántica, versiones ni resultados.
+
+Una optimización que cambie resultados exige nueva versión o reevaluación; no se acepta como ajuste operativo neutro.
+
+#### 31. Reconciliación poscommit
+
+Cada chunk y el conjunto completo deberán reconciliar:
+
+```text
+expected_members
+attempted_members
+committed_members
+verified_members
+outcomes_by_class
+blocked_members
+failed_members
+unknown_outcomes
+source_digest_before
+source_digest_after
+relationship_digest_before
+relationship_digest_after
+child_effects_pending
+```
+
+Invariantes:
+
+1. todo miembro tiene outcome;
+2. no existen efectos sobre miembros fuera del universo;
+3. no existen miembros confirmados dos veces;
+4. fuente protegida permanece intacta;
+5. los cambios observados son exactamente los autorizados;
+6. los conteos coinciden con los conjuntos de IDs, no solo con totales;
+7. diferencias inexplicadas bloquean `VERIFIED`.
+
+#### 32. Relaciones y consumidores
+
+La igualdad de filas antes y después no demuestra integridad.
+
+Cuando el backfill afecte referencias, se verifica:
+
+- FKs;
+- relaciones sin FK conocidas;
+- jerarquías;
+- crosswalks;
+- consumidores síncronos;
+- jobs/imports;
+- APIs/RPC;
+- integraciones;
+- proyecciones y copias;
+- eventos y efectos hijos.
+
+Una referencia huérfana, ambigua o duplicada impide cerrar como `VERIFIED`.
+
+#### 33. Verificación posbackfill
+
+La evidencia poscommit deberá cubrir los carriles aplicables de:
+
+1. fuente y outcomes;
+2. búsqueda y descubrimiento;
+3. relaciones y crosswalks;
+4. integraciones y contratos;
+5. propagación y proyecciones;
+6. seguridad y frontera;
+7. rendimiento y operabilidad.
+
+Para integridad autoritativa, seguridad, originales y relaciones críticas la tolerancia es cero.
+
+Una unidad `NOT_REQUIRED` demuestra ausencia de mutación; no omite la verificación de que el universo quedó correctamente excluido.
+
+#### 34. Rollback y recuperación
+
+Cada unidad declara antes de ejecutar una de las clases:
+
+```text
+REVERSIBLE_THEN_COMPENSATABLE
+REBUILD_DERIVATION
+NO_MUTATION_TO_ROLL_BACK
+ESCALATE_RECOVERY
+```
+
+La selección se deriva del tipo de efecto y del punto de no retorno.
+
+Rollback:
+
+- no borra decisiones, outcomes, checkpoints, crosswalks ni evidencia;
+- no reactiva versiones retiradas, inválidas o incompatibles;
+- no pisa escrituras legítimas posteriores;
+- no usa una clave derivada como sustituto de la fuente;
+- conserva causalidad entre efecto original y recuperación.
+
+#### 35. Punto de no retorno y compensación
+
+Antes del punto de no retorno puede ser válida una inversa exacta si la fuente, relaciones y hechos posteriores lo permiten.
+
+Después del punto de no retorno:
+
+1. se congela avance;
+2. se preservan efectos confirmados;
+3. se clasifican outcomes desconocidos;
+4. se evita dividir hechos por heurística;
+5. se utiliza compensación o forward-fix autorizado;
+6. el cierre exige nueva reconciliación.
+
+Rollback de código, rollback de configuración y recuperación de datos son operaciones distintas.
+
+#### 36. Separación frente a activación
+
+Completar un backfill no activa reglas sobre nuevas escrituras.
+
+DB-005 no:
+
+- cambia el modo de enforcement;
+- crea cohortes de rollout;
+- activa `OBSERVE_ONLY`, `WARN_EXPLICIT_CONFIRMATION`, `REVIEW_REQUIRED_BEFORE_WRITE` ni `ENFORCE_CERTIFIED_UNIQUENESS`;
+- convierte shadow en dual write;
+- promueve versiones por el hecho de haber corregido historia.
+
+La activación conserva su contrato y sus puertas independientes.
+
+#### 37. Separación frente a constraints
+
+`DATA-NORM-DB-006` conserva la implementación de constraints después de reconciliar datos.
+
+DB-005:
+
+- puede medir conflictos que impedirían un constraint;
+- puede producir evidencia de limpieza y reconciliación;
+- no crea, activa, valida como definitiva ni endurece una restricción de unicidad o integridad.
+
+El handoff a DB-006 solo puede declarar datos reconciliados, no constraint habilitado.
+
+#### 38. Separación frente a índices, triggers y auditoría operacional
+
+`DATA-NORM-DB-007` conserva índices.
+
+`DATA-NORM-DB-008` conserva triggers defensivos.
+
+`DATA-NORM-DB-009` conserva auditoría operacional física.
+
+DB-005 no absorbe esas responsabilidades por conveniencia. Los objetos auxiliares estrictamente necesarios para ejecutar el propio backfill deberán justificarse como parte del paquete y no adelantar el diseño propietario de las tareas posteriores.
+
+#### 39. Artefactos físicos futuros
+
+Cuando una instancia sea autorizada, toda modificación Vento sobre Supabase deberá:
+
+1. originarse en `vento-shell`;
+2. quedar versionada;
+3. declarar paquete y ambiente;
+4. conservar forward path y recovery path;
+5. incluir runner o migración solo cuando el tipo de efecto lo requiera;
+6. registrar parámetros, digests y precondiciones sin secretos;
+7. ser reproducible desde el repositorio;
+8. no depender de una edición manual aislada en el dashboard.
+
+Esta definición no fija nombres de migración, tablas, funciones o scripts que todavía no existan.
+
+#### 40. Handoff hacia DB-006
+
+Una instancia puede entregar continuidad a `DATA-NORM-DB-006::<package_id>` solo si:
+
+1. el backfill terminó `VERIFIED` o `NOT_REQUIRED`;
+2. los miembros de DB-004 están totalmente reconciliados;
+3. no quedan `unknown_outcomes`;
+4. no quedan efectos hijos críticos pendientes;
+5. integridad referencial y crosswalks aplicables están reconciliados;
+6. bloqueos restantes están explícitamente fuera del universo de enforcement;
+7. source cut, versiones, algoritmo y digests de cierre están registrados;
+8. el estado de constraints actuales fue recapturado;
+9. el rollback o recovery path continúa disponible;
+10. el paquete declara qué invariantes pueden evaluarse en DB-006.
+
+`FAILED_PARTIAL`, `ROLLBACK_REQUIRED`, `COMPENSATION_REQUIRED` o un `BLOCKED` material impiden el handoff.
+
+#### 41. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea materializa por `package_id` obligaciones ya aprobadas sobre separación decisión-ejecución, lifecycle, versionado, idempotencia, revalidación, lotes, backfills, outcomes, concurrencia, seguridad, relaciones, rollback y fronteras de activación y unicidad. No introduce una nueva semántica empresarial ni un nuevo riesgo sin cobertura.
+
+#### 42. Cobertura de prueba vigente reutilizada
+
+La cobertura existente aplicable incluye:
+
+- `TREQ-DATA-113` para separar decisión y ejecución;
+- `TREQ-DATA-145` a `TREQ-DATA-147` para lifecycle, activación y coexistencia;
+- `TREQ-DATA-149` a `TREQ-DATA-160` para auditoría, outcomes, idempotencia, concurrencia, replay y recuperación;
+- `TREQ-DATA-162` a `TREQ-DATA-164` para decisiones, correlación y corpus integral;
+- `TREQ-DATA-165` a `TREQ-DATA-190` para identidad, colisiones, relaciones, consolidación, modos y transición;
+- `TREQ-DATA-192` a `TREQ-DATA-214` para autoridad de capas, RPC, atomicidad, escrituras directas, lotes, seguridad, rendimiento, compatibilidad y certificación.
+
+Estas referencias son trazabilidad de cobertura vigente; no representan cambios del registro.
+
+#### 43. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | El build documental completo corresponde al checkout de la rama de tarea después de incorporar el bloque. |
+| LOCAL | PASS | Artefacto contrastado contra contrato de entrega, política de formato, política de desarrollo, metadata obligatoria, continuidad, cardinalidad de evidencia, declaración TREQ cero, UTF-8, LF y reglas de higiene del entregable. |
+| REMOTA | PASS | `main`, owner R, contratos de transición, 04A DATA, package `@vento/data-normalization` y metadatos read-only de `vento-os-dev` fueron contrastados; PostgreSQL 17.6 y ausencia de infraestructura canónica ya materializada de backfill/checkpoint/crosswalk fueron observados sin mutaciones. |
+| OPERATIVA | NOT_EXECUTED | Lotes, locks, throughput, writers, reanudación, reconciliación y recuperación pertenecen a futuras instancias físicas autorizadas. |
+| FÍSICA | NOT_APPLICABLE | Esta aprobación documental no ejecuta DDL, DML, migraciones, backfills, merges, constraints, índices, triggers ni cambios remotos. |
+
+#### 44. Decisiones vinculantes
+
+1. DB-005 es `TEMPLATE_PER_PACKAGE`, nunca global.
+2. El gate físico es `POST_E5_PACKAGE`.
+3. DB-004 fija el universo y DB-005 no lo amplía silenciosamente.
+4. Solo `BACKFILL_ELIGIBLE` puede producir efectos.
+5. `NOT_REQUIRED` produce cero escrituras artificiales.
+6. Toda escritura revalida fuente, scope, estado y versiones.
+7. El source drift bloquea o exige reevaluación.
+8. Los lotes usan orden estable y no `OFFSET`.
+9. El checkpoint avanza únicamente después de commit confirmado.
+10. Cada elemento tiene exactamente un outcome cerrado.
+11. No existe outcome genérico `SUCCESS`.
+12. Reintentos recuperan el resultado previo antes de repetir un efecto.
+13. Éxito parcial permanece explícito.
+14. `COMMITTED` no equivale a `VERIFIED`.
+15. La reconciliación compara identidades y digests, no solo conteos.
+16. Una derivación nunca adquiere autoridad sobre la fuente.
+17. Merge y remapeo requieren plan explícito y revalidado.
+18. Crosswalk e historia se preservan.
+19. Personas, originales, snapshots, secretos y VITAL conservan fronteras reforzadas.
+20. Credenciales privilegiadas no sustituyen autorización semántica.
+21. El backfill no activa writers ni enforcement.
+22. DB-006 conserva constraints.
+23. DB-007 conserva índices.
+24. DB-008 conserva triggers.
+25. DB-009 conserva auditoría operacional física.
+26. Rollback, configuración y compensación son operaciones distintas.
+27. Toda modificación futura de Supabase se origina y versiona en `vento-shell`.
+28. La tarea crea o modifica cero requisitos de prueba.
+
+#### 45. Criterios de aceptación
+
+La definición queda documentalmente aceptable cuando:
+
+1. conserva topología y gate vigentes;
+2. consume el handoff completo de DB-004;
+3. distingue `READY`, `BLOCKED` y `NOT_REQUIRED`;
+4. protege las cuatro particiones del universo;
+5. exige revalidación antes del efecto;
+6. fija corrida, lote, chunk, checkpoint e idempotencia;
+7. conserva los estados de lote aprobados;
+8. conserva los nueve outcomes por elemento;
+9. impide reintentos duplicados;
+10. trata fallos parciales sin falsear rollback global;
+11. diferencia transformación, derivación, remapeo, merge, cuarentena y preservación;
+12. protege fuente, originales, snapshots e historia;
+13. conserva aislamiento de VITAL;
+14. exige reconciliación poscommit y `VERIFIED`;
+15. declara rollback y punto de no retorno antes de ejecutar;
+16. no absorbe activación, constraints, índices, triggers ni auditoría operacional;
+17. deja un handoff cerrado hacia DB-006;
+18. mantiene cero cambios TREQ;
+19. contiene exactamente las cinco clases de evidencia requeridas;
+20. termina con la continuidad canónica y no desarrolla la siguiente tarea.
+
+#### 46. Límites
+
+Esta tarea documental no:
+
+- ejecuta backfills;
+- crea ni modifica migraciones;
+- ejecuta DDL o DML;
+- consulta o modifica datos empresariales como parte del artefacto;
+- materializa runners, ledgers, checkpoints o crosswalks;
+- decide nuevos duplicados;
+- selecciona sobrevivientes no aprobados;
+- corrige reglas o diccionarios;
+- activa reglas sobre writers;
+- crea constraints;
+- crea índices;
+- crea triggers;
+- implementa auditoría operacional;
+- modifica grants, RLS, Auth, Storage, Realtime, Edge Functions, cron o secretos;
+- modifica el registro 04A;
+- autoriza ninguna instancia física;
+- desarrolla `DATA-NORM-DB-006`.
+
+---
+
+#### 47. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DATA-NORM-DB-004 — Ejecutar dry-runs y reportes de colisiones`
+
+**TAREA ACTUAL APROBADA**
+`DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio`
+
+**SIGUIENTE TAREA RESERVADA**
+`DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos`
+
+
 ### [ ] DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos
 ### [ ] DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada
 ### [ ] DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
