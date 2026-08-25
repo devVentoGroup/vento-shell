@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos | `INT-DB-001` — Crear registro de sistemas e integraciones externas | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-UI-018::GLOBAL` — Compartir patrón para kiosco | `SHELL-UI-019::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-UI-019::GLOBAL` — Compartir patrón de proceso interrumpido | `SHELL-UI-020::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1042/1594 aprobadas** | **551** no aprobadas (1 propuesta, 0 rechazadas) | `DATA-NORM-DB-010` |
-| 🟧 **Implementación física conocida** | **72/95 VERIFIED** | **23** no terminales | `SHELL-UI-018::GLOBAL` |
+| 🟧 **Implementación física conocida** | **73/95 VERIFIED** | **22** no terminales | `SHELL-UI-019::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-UI-018::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **22**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-UI-019::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **21**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,18 +35,18 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `SHELL-UI-018::GLOBAL` | Compartir patrón para kiosco | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `SHELL-UI-019::GLOBAL` | Compartir patrón de proceso interrumpido | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 3 | PENDIENTE | `SHELL-UI-020::GLOBAL` | Compartir patrón de traspaso entre aplicaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 4 | PENDIENTE | `AUTH-DB-015::GLOBAL` | Documentar y versionar todas las migraciones en vento-shell | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 5 | PENDIENTE | `AUTH-DB-027::GLOBAL` | Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 6 | PENDIENTE | `AUTH-DB-028::GLOBAL` | Establecer baseline y control de drift entre local, staging y producción | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 7 | PENDIENTE | `AUTH-DB-029::GLOBAL` | Validar respaldo, restauración y rollback antes del primer paquete | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 8 | PENDIENTE | `AUTH-DB-001::GLOBAL` | Corregir tablas sin RLS identificadas en SUPA-AUD | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 9 | PENDIENTE | `AUTH-DB-002::GLOBAL` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 10 | PENDIENTE | `AUTH-DB-003::GLOBAL` | Endurecer funciones SECURITY DEFINER aprobadas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 11 | PENDIENTE | `AUTH-DB-004::GLOBAL` | Reducir grants innecesarios de authenticated | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
-| 12 | PENDIENTE | `AUTH-DB-005::GLOBAL` | Revocar grants innecesarios de anon | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-018::GLOBAL. |
+| 1 | **ACTUAL** | `SHELL-UI-019::GLOBAL` | Compartir patrón de proceso interrumpido | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `SHELL-UI-020::GLOBAL` | Compartir patrón de traspaso entre aplicaciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 3 | PENDIENTE | `AUTH-DB-015::GLOBAL` | Documentar y versionar todas las migraciones en vento-shell | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 4 | PENDIENTE | `AUTH-DB-027::GLOBAL` | Crear harness de pruebas de esquema, integridad, RLS, RPC y migraciones | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 5 | PENDIENTE | `AUTH-DB-028::GLOBAL` | Establecer baseline y control de drift entre local, staging y producción | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 6 | PENDIENTE | `AUTH-DB-029::GLOBAL` | Validar respaldo, restauración y rollback antes del primer paquete | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 7 | PENDIENTE | `AUTH-DB-001::GLOBAL` | Corregir tablas sin RLS identificadas en SUPA-AUD | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 8 | PENDIENTE | `AUTH-DB-002::GLOBAL` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 9 | PENDIENTE | `AUTH-DB-003::GLOBAL` | Endurecer funciones SECURITY DEFINER aprobadas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 10 | PENDIENTE | `AUTH-DB-004::GLOBAL` | Reducir grants innecesarios de authenticated | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 11 | PENDIENTE | `AUTH-DB-005::GLOBAL` | Revocar grants innecesarios de anon | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
+| 12 | PENDIENTE | `AUTH-DB-016::GLOBAL` | Crear esquemas empresariales aprobados | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero SHELL-UI-019::GLOBAL. |
 
 ## Modos de trabajo y materialización
 
