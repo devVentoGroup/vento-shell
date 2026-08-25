@@ -10172,4 +10172,1311 @@ La tarea queda documentalmente completa cuando:
 `DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos`
 
 
-### [ ] DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
+### ✅ DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
+
+**Estado:** APROBADA
+**Tarea anterior:** DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
+**Tarea siguiente:** INT-DB-001 — Crear registro de sistemas e integraciones externas
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para certificar físicamente idempotencia, reintentos, concurrencia, rollback o compensación y ausencia de cambios semánticos no autorizados sobre las instancias de normalización del paquete, consumiendo el ledger de DB-009, el contrato A/B/C de conformidad compartida, los planes de recuperación y los bundles de aprobación por dominio, sin ejecutar pruebas físicas, DDL, DML, migraciones, backfills, rollback, replay, cutover, cambios remotos ni modificaciones de Supabase durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `DATA-NORM-DB-010::<package_id>`, sujetas a `POST_E5_PACKAGE`, al handoff íntegro de `DATA-NORM-DB-009::<package_id>`, al expediente E5 del paquete, a evidencia ambiental vigente, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Fecha de corte:** 2026-08-25
+
+---
+
+#### 1. Propósito
+
+`DATA-NORM-DB-010` define la certificación física final del minibloque `DATA-NORM-DB-001..010` para cada paquete que materialice normalización.
+
+La certificación deberá demostrar, sobre la misma identidad física, el mismo entorno, el mismo candidato y el mismo corte contractual, que:
+
+1. repetir una evaluación no cambia su resultado;
+2. repetir un comando confirmado no duplica efectos;
+3. una respuesta perdida o un timeout no obliga a crear otra operación lógica;
+4. una clave de idempotencia reutilizada con payload incompatible falla de forma cerrada;
+5. dos ejecuciones concurrentes no pisan estado, versión o relaciones por último escritor;
+6. un rollback o una compensación recuperan el comportamiento autorizado sin reescribir historia;
+7. las representaciones derivadas pueden reconstruirse sin convertirlas en fuente;
+8. los valores protegidos, snapshots y originales permanecen protegidos;
+9. la normalización no altera identidad, unicidad, relaciones, historia, autoridad o frontera de producto fuera del delta expresamente autorizado;
+10. aplicación, servicio, RPC, base, jobs y efectos hijos permanecen correlacionados bajo una sola operación lógica;
+11. la evidencia de DB-009 permite reconstruir qué ocurrió antes, durante y después;
+12. cualquier diferencia no explicada bloquea la certificación.
+
+DB-010 no certifica que “la migración corrió”. Certifica que la materialización física conserva el contrato semántico y de recuperación del paquete.
+
+#### 2. Resultado canónico
+
+Queda definido el contrato:
+
+```text
+DATA-NORM-DB-010
+→ contrato documental único y reutilizable
+
+DATA-NORM-DB-010::<package_id>
+→ futura instancia de certificación física por paquete
+
+candidato + entorno + source cut + version set + migration digest
+→ baseline verificable
+→ pruebas de idempotencia
+→ pruebas de reintento y concurrencia
+→ pruebas de preservación semántica
+→ rollback drill o recuperación aplicable
+→ reconciliación post-rollback
+→ comparación final contra invariantes
+→ evidence bundle
+→ PASS o FAIL sin estado ambiguo
+```
+
+La definición documental no ejecuta ninguna de esas pruebas físicas.
+
+#### 3. Topología vinculante
+
+La topología es:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = DATA-NORM-DB-010::<package_id>
+```
+
+Consecuencias:
+
+1. no existe `DATA-NORM-DB-010::GLOBAL`;
+2. cada `package_id` conserva su propia evidencia y resultado;
+3. el PASS de un paquete no certifica otro paquete;
+4. una infraestructura compartida no elimina la identidad de paquete;
+5. la definición global no se reabre por cada ejecución;
+6. solo se certifican unidades materializadas o aplicables al paquete;
+7. una unidad no aplicable se registra como no aplicable, no como PASS;
+8. no se crea una certificación global implícita al cerrar documentalmente esta tarea.
+
+#### 4. Gate temporal
+
+Una futura instancia solo puede ejecutarse cuando, para el mismo `package_id`, existan:
+
+```text
+package_id propietario válido
+E5-GATE-008::<package_id> = PASS
+instancias físicas previas aplicables = cerradas o listas para prueba
+DATA-NORM-DB-009::<package_id> = disponible como handoff
+candidate_commit_sha = fijado
+migration_digest = fijado
+environment_identity = fijado
+source_cut_reference = fijado
+version_set_digest = fijado
+drift_status = RECONCILIADO
+rollback_plan = vigente
+autorización física = EXPLÍCITA
+```
+
+La ausencia de cualquiera de estas condiciones bloquea la ejecución afectada.
+
+#### 5. Fuentes vinculantes
+
+Cada futura instancia deberá consumir sin reinterpretación silenciosa:
+
+- `DATA-NORM-ARC-009` para versionado, auditoría, idempotencia, concurrencia, replay y determinismo;
+- `DATA-NORM-ARC-010` cuando existan identidad, unicidad, colisiones, sobrevivientes o relaciones;
+- `DATA-NORM-ARC-011` para colocación entre aplicación, servicio, RPC y trigger;
+- `DATA-NORM-ARC-012` cuando existan originales externos, mappings, archivos, ACK o payloads;
+- `DATA-NORM-TRANS-002` como corpus heredado de conformidad;
+- `DATA-NORM-TRANS-008` para rollback, recuperación del valor anterior, compensación y puntos de no retorno;
+- `DATA-NORM-TRANS-009` para evidence bundles, gates y aprobación por dominio;
+- `DATA-NORM-DB-001..009` como materialización física previa del mismo paquete;
+- `@vento/data-normalization` y su suite `VENTO_NORMALIZATION_IDEMPOTENCY_AND_SEMANTIC_PRESERVATION_CONFORMANCE@1.0.0` como oráculo puro compartido;
+- las migraciones, contratos, consumidores, tests y configuración del paquete;
+- el expediente E5 vigente;
+- el estado remoto recapturado al iniciar la instancia.
+
+Ninguna observación legacy sustituye estas fuentes.
+
+#### 6. Qué certifica DB-010
+
+DB-010 certifica cuatro propiedades principales:
+
+| Propiedad | Pregunta obligatoria | Resultado inválido |
+| --- | --- | --- |
+| `IDEMPOTENCY` | ¿la misma operación lógica repetida bajo el mismo corte produce el mismo resultado sin duplicar efectos? | segundo cambio, segundo efecto, resultado distinto o traza incompatible |
+| `RECOVERY` | ¿el rollback o la compensación aplicable recupera comportamiento, autoridad y relaciones dentro del contrato? | “rollback técnico” sin reconciliación o historia reescrita |
+| `SEMANTIC_PRESERVATION` | ¿solo cambió el delta autorizado y las dimensiones protegidas permanecen invariantes? | cambio de identidad, estructura, procedencia, historia o frontera no aprobado |
+| `NO_UNAUTHORIZED_SIDE_EFFECTS` | ¿no aparecieron efectos fuera del alcance de la operación? | escrituras, fusiones, propagaciones, eventos o mutaciones no autorizadas |
+
+Las cuatro deben quedar resueltas para cerrar una instancia.
+
+#### 7. Qué no certifica DB-010
+
+DB-010 no convierte en PASS, por sí solo:
+
+- que una migración tenga exit code cero;
+- que un trigger exista;
+- que una query devuelva filas;
+- que el conteo total permanezca igual;
+- que el texto visible “se vea bien”;
+- que el rollback de código compile;
+- que el historial de migraciones figure como revertido;
+- que una captura de pantalla muestre el resultado esperado;
+- que una sola ejecución no falle;
+- que una prueba unitaria pura pase;
+- que el servicio responda `2xx`;
+- que el número de filas afectadas sea cero;
+- que no existan errores visibles en logs.
+
+Cada señal debe estar vinculada a la propiedad que realmente demuestra.
+
+#### 8. Handoff obligatorio desde DB-009
+
+DB-010 consume como mínimo:
+
+```text
+package_id
+audit_contract_version
+audit_storage_identity
+audit_storage_definition_digest
+migration_digest
+root_event_set_digest
+record_family_counts
+event_kind_counts
+outcome_counts
+before_evidence_coverage
+after_evidence_coverage
+version_set_digest_coverage
+idempotency_coverage
+concurrency_coverage
+trigger_child_correlation_coverage
+sensitive_reference_controls
+rollback_or_compensation_lineage
+replay_capability
+drift_status
+open_blockers
+```
+
+Si el handoff declara `open_blockers` no vacíos, DB-010 no puede emitir PASS mientras el bloqueo siga materialmente vigente.
+
+#### 9. Identidad de una ejecución de certificación
+
+Cada ejecución física deberá conservar:
+
+```text
+certification_run_id
+instance_id
+package_id
+environment_identity
+candidate_commit_sha
+migration_digest
+audit_storage_definition_digest
+source_cut_reference
+source_cut_digest
+version_set_digest
+algorithm_or_artifact_digest
+applicable_unit_ids
+applicable_operation_classes
+baseline_bundle_id
+rollback_plan_ids
+domain_approval_bundle_refs
+started_at_utc
+completed_at_utc
+certification_outcome
+evidence_bundle_digest
+```
+
+La identidad deberá ser estable y no depender del texto normalizado.
+
+#### 10. Corte contractual fijo
+
+Toda prueba de idempotencia y preservación semántica deberá fijar antes de ejecutar:
+
+- candidato de código;
+- historial y digest de migraciones;
+- entorno y proyecto;
+- fuente o snapshot de entrada;
+- conjunto efectivo de versiones;
+- algoritmos y catálogos aplicables;
+- policies y mappings;
+- configuración relevante;
+- corpus;
+- writers habilitados;
+- consumidores evaluados;
+- modo de activación;
+- baseline de relaciones y datos protegidos.
+
+Cambiar cualquiera de estas entradas crea un corte diferente y exige otra ejecución o una clasificación explícita como corte distinto.
+
+`latest`, versión vacía, configuración implícita o dependencia no fijada bloquean la prueba.
+
+#### 11. Oráculo puro A/B/C reutilizado
+
+La suite compartida conserva:
+
+```text
+A = evaluación de la entrada bajo un corte contractual fijo
+B = repetición de la misma evaluación bajo el mismo corte
+C = reevaluación de la salida de A cuando la operación sea reaplicable
+```
+
+Para el mismo corte:
+
+1. A y B deben conservar resultado lógico, salida y snapshot protegido;
+2. C no puede introducir un segundo cambio semántico;
+3. las dimensiones protegidas deben permanecer invariantes;
+4. los side effects no autorizados deben ser cero.
+
+Una diferencia entre cortes de versión distintos no se clasifica como fallo de idempotencia del mismo contrato; debe registrarse como cambio de corte.
+
+#### 12. Límite del oráculo A/B/C
+
+El oráculo puro no certifica por sí solo:
+
+- persistencia;
+- commit;
+- RLS o grants;
+- constraints;
+- triggers;
+- retries de red;
+- locks;
+- carreras;
+- efectos hijos;
+- rollback de datos;
+- rollback de relaciones;
+- compensaciones;
+- consumidores;
+- drift ambiental.
+
+DB-010 agrega esas pruebas físicas por paquete sin cambiar el significado del oráculo.
+
+#### 13. Clases de operación idempotente
+
+La certificación deberá distinguir exactamente estas clases existentes:
+
+1. `PURE_EVALUATION`;
+2. `PERSISTED_MUTATION`;
+3. `DERIVATION_MATERIALIZATION`;
+4. `RULE_LIFECYCLE_TRANSITION`;
+5. `REVIEW_DECISION_RECORDING`;
+6. `PROPAGATION_OR_TRANSITION_COMMAND`.
+
+Cada clase conserva una garantía diferente; no se usa una misma aserción genérica para las seis.
+
+#### 14. Matriz mínima de idempotencia
+
+| Clase | Primera ejecución | Repetición compatible | Conflicto obligatorio |
+| --- | --- | --- | --- |
+| `PURE_EVALUATION` | produce resultado bajo corte fijo | mismo resultado y cero efectos | diferencia no explicada |
+| `PERSISTED_MUTATION` | confirma como máximo un efecto empresarial | devuelve resultado lógico previo sin segunda mutación | misma clave con payload o precondición incompatible |
+| `DERIVATION_MATERIALIZATION` | materializa derivación vinculada a fuente y versión | no duplica ni convierte derivación en autoridad | fuente o versión incompatibles |
+| `RULE_LIFECYCLE_TRANSITION` | crea transición/versionado autorizado | no duplica transición ni reabre versión terminal | estado esperado o versión incompatible |
+| `REVIEW_DECISION_RECORDING` | registra una decisión inmutable | recupera la misma decisión sin duplicarla | caso, evidencia, scope o versión incompatibles |
+| `PROPAGATION_OR_TRANSITION_COMMAND` | crea raíz e hijos causales permitidos | omite efectos ya confirmados y reanuda pendientes | payload, destino, expectativa o corte incompatibles |
+
+La matriz se evalúa por cada clase realmente materializada por el paquete.
+
+#### 15. Misma clave y mismo payload
+
+Para una operación con idempotency key:
+
+```text
+same_key
++ same_payload_digest
++ same_source_expectation
++ same_version_set_digest
++ compatible_current_state
+→ return_previous_logical_result
+→ do_not_repeat_confirmed_effects
+```
+
+La respuesta devuelta deberá poder vincularse al resultado previamente confirmado mediante el ledger de DB-009.
+
+#### 16. Misma clave y payload incompatible
+
+La condición:
+
+```text
+same_key
++ incompatible_payload_or_source_or_version_or_precondition
+→ BLOCKED_CONFLICT
+→ IDEMPOTENCY_PAYLOAD_CONFLICT
+→ zero_new_business_effects
+```
+
+es obligatoria.
+
+No se permite generar una clave nueva automáticamente para “resolver” el conflicto.
+
+#### 17. Timeout y respuesta perdida
+
+La batería física deberá cubrir, cuando aplique:
+
+1. timeout antes de commit;
+2. timeout durante estado desconocido;
+3. commit confirmado con respuesta perdida;
+4. retry posterior;
+5. consulta del resultado previo;
+6. reanudación de efectos hijos pendientes;
+7. ausencia de segunda raíz lógica;
+8. ausencia de segunda mutación.
+
+Ante estado desconocido se investiga la operación existente antes de crear otra.
+
+#### 18. Concurrencia
+
+La certificación deberá probar las expectativas de concurrencia aplicables:
+
+- versión o hash esperado de fuente;
+- coordenada;
+- `version_set_digest`;
+- estado actual;
+- miembros o relaciones cuando aplique.
+
+Una expectativa obsoleta deberá bloquear el efecto y exigir reevaluación.
+
+No se acepta `last writer wins` como política implícita para campos gobernados.
+
+#### 19. Carreras de unicidad y duplicidad
+
+Cuando el paquete incluya identidad o unicidad:
+
+1. dos candidatos concurrentes no pueden crear dos efectos incompatibles;
+2. una consulta previa no sustituye protección atómica;
+3. búsqueda o similitud no certifican identidad;
+4. un collision group no confirma duplicidad;
+5. una decisión estructural debe conservar su propia evidencia;
+6. un retry no puede ejecutar de nuevo una fusión o reasignación confirmada.
+
+DB-010 prueba la conducta física; no redefine la política de identidad.
+
+#### 20. Baseline de preservación semántica
+
+Antes de mutar deberán capturarse las dimensiones relevantes del estado fuente.
+
+La suite compartida protege diez dimensiones:
+
+```text
+COORDINATE
+SEMANTIC_CLASS
+REPRESENTATION
+SOURCE_ROLE
+STRUCTURE
+PROTECTED_FORM
+PROVENANCE
+IDENTITY
+HISTORY
+PRODUCT_BOUNDARY
+```
+
+DB-010 deberá extender el baseline físico con relaciones, conteos, estados y evidencia requerida por la unidad sin reducir estas diez dimensiones.
+
+#### 21. Delta semántico autorizado
+
+Cada caso deberá declarar antes de ejecutar:
+
+```text
+authorized_delta
+protected_dimensions
+protected_relations
+protected_source_values
+expected_derived_changes
+expected_audit_events
+expected_child_effects
+forbidden_effects
+```
+
+Solo el `authorized_delta` puede variar.
+
+Una diferencia no declarada no se acepta por ser “razonable” o visualmente correcta.
+
+#### 22. Ausencia de cambios semánticos
+
+La propiedad `SEMANTIC_PRESERVATION` queda en PASS solo si:
+
+1. las dimensiones protegidas coinciden con el baseline;
+2. el delta observado es subconjunto del delta autorizado;
+3. no cambian fuentes protegidas;
+4. no se reescriben snapshots;
+5. no se reinterpretan originales externos;
+6. no se crean identidades por texto;
+7. no se activan constraints no autorizados;
+8. no se fusionan registros no aprobados;
+9. no se reasignan relaciones fuera del plan;
+10. no se modifica historia para ocultar la transición;
+11. no se amplía scope, territorio o autoridad;
+12. no se filtra la política transversal a VITAL.
+
+#### 23. Valor visible no equivale a semántica
+
+Una salida textual correcta no basta.
+
+La certificación deberá detectar, entre otros:
+
+- mismo texto con identidad diferente;
+- mismo texto con source role diferente;
+- mismo texto con estructura diferente;
+- mismo texto con relación distinta;
+- mismo texto con versión distinta no registrada;
+- mismo texto producido por fallback;
+- mismo texto con snapshot alterado;
+- mismo texto con side effect adicional.
+
+La igualdad visual es una señal, no un oráculo completo.
+
+#### 24. Fuente, derivación y copia
+
+Se verificará que:
+
+- `PRIMARY_VALUE` conserve su autoridad definida;
+- `SEARCH_DERIVATION` permanezca derivación;
+- `OUTPUT_PROJECTION` no retroalimente la fuente;
+- `SYNCHRONIZED_COPY` no se convierta en autoridad local;
+- `EXTERNAL_ORIGINAL` permanezca original;
+- `HISTORICAL_SNAPSHOT` permanezca histórico;
+- `AUDIT_EVIDENCE` permanezca evidencia.
+
+Una derivación reconstruida no autoriza modificar la fuente.
+
+#### 25. Búsqueda
+
+Cuando existan representaciones de búsqueda, la certificación deberá comprobar:
+
+1. consulta y valor usan perfil, locale, algoritmo y versión compatibles;
+2. `SEARCH_FORM_KEY` no ejecuta diccionario o capitalización;
+3. tolerancias no convierten coincidencia en identidad;
+4. `ñ` y demás protecciones del perfil se conservan;
+5. ranking, filtros, scope y paginación no cambian silenciosamente;
+6. los índices consumen la misma semántica que la consulta;
+7. una representación reconstruida produce paridad con el oráculo;
+8. el rollback de derivación no copia una clave vieja sobre una fuente legítimamente cambiada.
+
+#### 26. Presentaciones, UOM y estructura
+
+Para unidades de UOM o presentaciones se preservan como mínimo:
+
+- producto;
+- cantidad;
+- unidad;
+- multiplicador;
+- empaque;
+- contexto;
+- fuente;
+- proveedor cuando aplique;
+- estado;
+- vigencia;
+- relaciones y factores de conversión.
+
+Una etiqueta igual o una equivalencia cuantitativa no autoriza fusión ni cambio de identidad.
+
+#### 27. Posiciones y jerarquías
+
+Para posiciones o ubicaciones se preservan:
+
+- organización;
+- sede;
+- almacén;
+- padre o camino;
+- código;
+- relaciones;
+- aislamiento territorial.
+
+Etiquetas como `Nivel 1` no se interpretan como identidad global.
+
+#### 28. Texto visible y diccionario
+
+Para texto visible, catálogos y diccionario:
+
+1. caja, ortografía y excepción permanecen operaciones separadas;
+2. una ambigüedad sigue siendo revisión, no corrección;
+3. una palabra no catalogada no se corrige por analogía;
+4. marcas, siglas, unidades y nombres legales conservan protección;
+5. una versión nueva no reinterpreta historia;
+6. una corrección no activa identidad, unicidad o fusión.
+
+#### 29. PASS e identidad personal
+
+Para unidades que deben preservar sin mutación:
+
+- PASS conserva catálogo, estado, vigencia, políticas y consumidores;
+- persona y trabajador conservan identidad y vínculos por identificadores autorizados;
+- el nombre no se usa como clave de identidad;
+- una mutación inesperada cambia la recuperación a incidente o escalamiento;
+- datos personales y evidencia se minimizan.
+
+Un “no change” solo es PASS si no encubre bloqueo, fallo o falta de ejecución.
+
+#### 30. Bloqueos de identidad
+
+Para candidatos de identidad no resueltos:
+
+1. los miembros permanecen distintos;
+2. el caso y su evidencia permanecen vinculados;
+3. no se selecciona sobreviviente por frecuencia, antigüedad, completitud o texto;
+4. no se reasignan relaciones;
+5. no se desactiva ningún miembro;
+6. el retry no cambia la disposición;
+7. una decisión posterior exige plan de transición separado.
+
+#### 31. Paridad entre capas
+
+Para la misma operación, corte y entrada, las capas participantes deberán concordar en:
+
+- coordenada;
+- versión;
+- resultado;
+- bloqueo;
+- algoritmo;
+- idempotencia;
+- expectativa de concurrencia;
+- operación lógica;
+- causalidad;
+- evidencia;
+- delta autorizado.
+
+La aplicación no adquiere autoridad de commit; el servicio no adquiere autoridad de persistencia; el trigger no adquiere autoridad semántica.
+
+#### 32. Preview frente a commit
+
+Una previsualización:
+
+```text
+binding = NON_BINDING
+commit_authority = false
+mutation_performed = false
+```
+
+La RPC deberá volver a evaluar al escribir.
+
+Si cambió fuente, scope, política, versión, unicidad o relaciones, la salida antigua no se aplica silenciosamente.
+
+#### 33. RPC, servicio y trigger
+
+La certificación deberá verificar la secuencia aplicable:
+
+```text
+comando
+→ autenticación y autorización
+→ carga de estado actual
+→ evaluación del servicio
+→ revalidación de concurrencia y unicidad
+→ persistencia atómica
+→ defensa de trigger
+→ commit
+→ efectos hijos posteriores
+```
+
+El trigger puede rechazar o derivar una representación acotada cuando su contrato lo permita; no puede corregir semántica ni ejecutar workflow oculto.
+
+#### 34. Escrituras directas y bypass
+
+Cuando existan campos gobernados:
+
+- la escritura ordinaria directa deberá quedar impedida o fuera del path aprobado;
+- un bypass controlado deberá tener actor, finalidad, scope, ventana, versiones, controles, evidencia y rollback;
+- service role no sustituye autorización;
+- una escritura manual no certifica paridad;
+- deshabilitar una defensa exige transición y verificación posterior.
+
+DB-010 debe incluir pruebas negativas cuando un bypass forme parte del paquete.
+
+#### 35. Auditoría raíz y evidencia hija
+
+Para una mutación confirmada deberá existir una sola raíz lógica.
+
+Se comprobará que:
+
+1. la RPC sea propietaria de la raíz cuando corresponda;
+2. la evaluación del servicio se vincule sin convertirse en otra raíz;
+3. la intervención del trigger se registre como evidencia hija;
+4. los efectos posteriores conserven causalidad;
+5. una transacción revertida no figure como mutación confirmada;
+6. un retry no cree otra raíz;
+7. una compensación cree nueva evidencia vinculada, no edite la anterior.
+
+#### 36. Before y after
+
+La cobertura de DB-009 deberá permitir resolver:
+
+```text
+before
+after
+source_or_reference
+rule_or_version
+algorithm_provenance
+logical_operation
+attempt
+outcome
+commit_status
+rollback_or_compensation_lineage
+```
+
+Cuando el valor sea sensible, la equivalencia se demuestra mediante la referencia o huella autorizada; no se exige plaintext.
+
+#### 37. Replay
+
+Un replay de certificación:
+
+- fija eventos, referencias, versiones y ambiente;
+- no modifica producción;
+- no reescribe evidencia;
+- distingue `FULL_REPLAYABLE`, `REFERENCE_REPLAYABLE` y `DECISION_RECONSTRUCTABLE`;
+- declara diferencias;
+- no convierte reconstrucción en nueva decisión;
+- no repite efectos confirmados.
+
+Replay y retry no son sinónimos.
+
+#### 38. Planes de rollback aplicables
+
+La certificación reutiliza las clases definidas por `DATA-NORM-TRANS-008`:
+
+| Clase | Uso |
+| --- | --- |
+| `REVERSIBLE_THEN_COMPENSATABLE` | puede revertirse antes del punto de no retorno y compensarse después |
+| `REBUILD_DERIVATION` | la fuente permanece intacta y la representación se reconstruye |
+| `NO_MUTATION_TO_ROLL_BACK` | la conducta correcta era no mutar; una mutación inesperada escala |
+| `ESCALATE_RECOVERY` | corrupción, fuente perdida o estado inseparable requieren recuperación mayor |
+
+No se inventa una quinta clase local.
+
+#### 39. Precondiciones del rollback drill
+
+Un rollback drill exige como mínimo:
+
+```text
+rollback_run_id
+rollback_plan_id
+backfill_plan_id
+validation_run_id
+environment_identity
+candidate_commit_sha
+migration_history_digest
+source_cut_reference
+recovery_point_id_and_digest
+before_image_manifest
+crosswalk_and_reverse_delta_manifest
+policy_mapping_and_algorithm_versions
+version_set_digest
+activation_event_id_and_previous_event_id
+writer_fence_plan
+ordered_steps
+verification_suite_id
+rpo_target
+rto_target
+point_of_no_return
+rollback_commander
+domain_owner_and_steward
+independent_approver
+evidence_bundle_id
+```
+
+Una precondición faltante mantiene el drill bloqueado.
+
+#### 40. Rollback no es restaurar texto a ciegas
+
+La recuperación deberá respetar:
+
+- escrituras legítimas posteriores;
+- nuevos hechos;
+- versiones;
+- owners;
+- vigencias;
+- crosswalks;
+- relaciones;
+- originales;
+- snapshots;
+- efectos externos.
+
+Si una inversa exacta dañaría información posterior legítima, se usa compensación o forward-fix según el plan aprobado.
+
+#### 41. Rollback lógico y rollback de código
+
+Se registran separadamente:
+
+```text
+rollback_logico
+rollback_de_datos
+rollback_de_derivacion
+rollback_de_configuracion
+rollback_de_codigo
+compensacion
+restore_selectivo
+PITR_extraordinario
+```
+
+Un rollback de código que no restituye datos, autoridad, relaciones o efectos no satisface `RECOVERY`.
+
+#### 42. Verificación post-rollback
+
+Después del drill o recuperación aplicable se repiten las verificaciones pertinentes de:
+
+1. fuente;
+2. derivaciones;
+3. relaciones;
+4. crosswalks;
+5. consumidores;
+6. búsqueda;
+7. autorización;
+8. RLS y grants;
+9. auditoría;
+10. efectos hijos;
+11. idempotencia;
+12. drift;
+13. rendimiento aplicable;
+14. VITAL;
+15. blockers.
+
+El resultado no cierra mientras exista un destino pendiente o desconocido materialmente relevante.
+
+#### 43. RPO, RTO y punto de no retorno
+
+La certificación no inventa RPO/RTO.
+
+Consume los objetivos y puntos de no retorno aprobados por el paquete.
+
+El evidence bundle deberá registrar:
+
+- objetivo;
+- medición;
+- resultado;
+- desviación;
+- autoridad que acepta o bloquea.
+
+Un RPO/RTO ausente cuando sea obligatorio mantiene el estado bloqueado.
+
+#### 44. Gates de evidencia por dominio
+
+La futura certificación deberá enlazar los gates aplicables de `DATA-NORM-TRANS-009`, incluyendo:
+
+- paquete físico y migraciones;
+- baseline, dry-run y colisiones;
+- backfill y outcomes;
+- activación y writers;
+- validación post-backfill;
+- seguridad, RLS y grants;
+- rendimiento y operabilidad;
+- rollback drill;
+- paridad ambiental y signoff.
+
+`PASS_DOCUMENTAL` no sustituye evidencia operacional.
+
+#### 45. Separación de ambientes
+
+La evidencia se clasifica por ambiente.
+
+Un PASS local no equivale a staging.
+
+Un PASS de staging no equivale a producción.
+
+Cada promoción deberá fijar el candidato y demostrar que la evidencia reutilizada sigue vigente para el entorno destino.
+
+DB-010 no autoriza promoción de ambiente por sí sola.
+
+#### 46. Drift
+
+Antes de iniciar y antes de cerrar se recaptura drift de:
+
+- migraciones;
+- schema;
+- funciones;
+- triggers;
+- constraints;
+- índices;
+- grants;
+- RLS;
+- configuración relevante;
+- contratos y consumidores;
+- artifacts de normalización.
+
+Drift no reconciliado invalida la comparación.
+
+#### 47. Seguridad y privacidad
+
+La certificación deberá conservar:
+
+- mínimo privilegio;
+- pruebas positivas y negativas aplicables;
+- referencias sensibles protegidas;
+- ausencia de secretos en bundles;
+- actor y contexto verificables;
+- separación entre lectura, preview, mutación, aprobación, activación, búsqueda sensible y exportación;
+- aislamiento territorial y de producto.
+
+Una fuga de evidencia sensible es FAIL aunque la normalización sea semánticamente correcta.
+
+#### 48. Frontera VITAL
+
+VITAL permanece excluido de la política transversal.
+
+La certificación deberá demostrar, cuando el entorno sea compartido, que:
+
+- no recibió reglas Vento OS;
+- no recibió backfill;
+- no recibió trigger transversal;
+- no recibió índices o constraints por herencia;
+- no recibió propagación;
+- no fue usado como corpus positivo.
+
+El oráculo compartido conserva `conformanceProductBoundaryDisposition('VITAL') = BLOCKED_VITAL`; cualquier efecto físico sobre VITAL produce FAIL.
+
+#### 49. Unidades de normalización heredadas
+
+La certificación reconoce las nueve unidades de transición existentes:
+
+```text
+GOUDA_ALIAS_MERGE
+UOM_STRUCTURAL_DERIVATION
+INVENTORY_POSITION_SCOPE
+SEARCH_REPRESENTATIONS
+VISIBLE_FORM_CANDIDATES
+DICTIONARY_CANDIDATES
+PASS_LIFECYCLE_PRESERVATION
+PERSON_NAME_PRESERVATION
+OPEN_IDENTITY_BLOCKERS
+```
+
+Una instancia prueba solo las unidades realmente incluidas en su `package_id`, pero debe declarar el universo aplicable y justificar cualquier exclusión.
+
+#### 50. Matriz mínima por unidad
+
+| Unidad | Evidencia semántica mínima | Recuperación dominante |
+| --- | --- | --- |
+| `GOUDA_ALIAS_MERGE` | relaciones, hechos, crosswalk, sobreviviente aprobado y cero referencias huérfanas | `REVERSIBLE_THEN_COMPENSATABLE` |
+| `UOM_STRUCTURAL_DERIVATION` | componentes, cantidades, unidades, multiplicadores y fuente intacta | `REBUILD_DERIVATION` |
+| `INVENTORY_POSITION_SCOPE` | sede, ubicación, padre/camino, código, relaciones y aislamiento | `REBUILD_DERIVATION` |
+| `SEARCH_REPRESENTATIONS` | corpus, paridad de derivación, scope, ranking y fuente intacta | `REBUILD_DERIVATION` |
+| `VISIBLE_FORM_CANDIDATES` | before/after, significado humano y ausencia de mutación no aprobada | `NO_MUTATION_TO_ROLL_BACK` |
+| `DICTIONARY_CANDIDATES` | catálogo/versiones, candidatos, bloqueos y cero autocorrección no aprobada | `NO_MUTATION_TO_ROLL_BACK` |
+| `PASS_LIFECYCLE_PRESERVATION` | estado, vigencia, políticas y consumidores sin mutación | `NO_MUTATION_TO_ROLL_BACK` |
+| `PERSON_NAME_PRESERVATION` | identidad, referencias, privacidad y nombre preservado | `NO_MUTATION_TO_ROLL_BACK` |
+| `OPEN_IDENTITY_BLOCKERS` | miembros, casos, evidencia, cero merge y cero reasignación | `NO_MUTATION_TO_ROLL_BACK` |
+
+La matriz no autoriza materializar una unidad que el package no posea.
+
+#### 51. Escenarios negativos obligatorios
+
+Según aplicabilidad, la batería deberá provocar y detectar:
+
+- misma key con payload distinto;
+- fuente obsoleta;
+- `version_set_digest` distinto;
+- versión ausente;
+- `latest` implícito;
+- retry después de respuesta perdida;
+- carrera concurrente;
+- segundo side effect;
+- segunda raíz de auditoría;
+- second semantic change;
+- dimensión protegida alterada;
+- relación huérfana;
+- trigger fuera de modo;
+- direct write no autorizado;
+- fallback legacy;
+- drift no reconciliado;
+- original o snapshot reescrito;
+- identidad inferida por texto;
+- efecto sobre VITAL.
+
+Un test negativo que no alcanza el control que pretende probar no cuenta como PASS.
+
+#### 52. Estados de una instancia
+
+Estados permitidos para la certificación:
+
+```text
+NOT_EXECUTED
+BLOCKED_INPUT_MISSING
+READY_FOR_CERTIFICATION
+CERTIFICATION_RUNNING
+PASS
+FAIL
+RECOVERY_ESCALATED
+```
+
+No existen:
+
+```text
+PARTIAL_PASS
+MOSTLY_PASS
+PASS_WITH_UNKNOWN_EFFECTS
+PASS_WITH_OPEN_BLOCKERS
+```
+
+Las excepciones ambientales pertenecen al bundle de aprobación por dominio y no convierten un FAIL de integridad en PASS.
+
+#### 53. Regla de PASS
+
+Una instancia solo puede emitir `PASS` cuando:
+
+1. identidad de paquete y entorno están fijadas;
+2. no existe drift no reconciliado;
+3. el corte contractual está completo;
+4. todas las unidades aplicables están cubiertas;
+5. idempotencia pasa por cada clase aplicable;
+6. conflictos de payload fallan cerrado;
+7. concurrencia y stale state fallan cerrado;
+8. no existen efectos duplicados;
+9. la preservación semántica pasa;
+10. no existen efectos no autorizados;
+11. rollback drill o recuperación aplicable pasa;
+12. la reconciliación post-rollback pasa;
+13. auditoría raíz e hijos son consistentes;
+14. before/after y versiones son reconstruibles;
+15. seguridad y privacidad aplicables pasan;
+16. VITAL permanece aislado;
+17. los gates ambientales requeridos están satisfechos;
+18. `open_blockers` está vacío;
+19. el evidence bundle es íntegro y su digest coincide;
+20. no queda outcome materialmente `UNKNOWN`.
+
+Un solo incumplimiento aplicable produce FAIL o bloqueo, nunca PASS parcial.
+
+#### 54. Regla de FAIL y bloqueo
+
+Se usa `BLOCKED_INPUT_MISSING` cuando no existe todavía una precondición que permita ejecutar válidamente.
+
+Se usa `FAIL` cuando la prueba se ejecutó y una invariante aplicable fue violada.
+
+Se usa `RECOVERY_ESCALATED` cuando la recuperación ordinaria no es segura y el plan requiere restore selectivo, PITR o compensación mayor.
+
+No se corrige evidencia para cambiar el estado.
+
+#### 55. Evidence bundle final
+
+El bundle de DB-010 deberá conservar como mínimo:
+
+```text
+certification_run_id
+instance_id
+package_id
+environment_identity
+candidate_commit_sha
+migration_digest
+source_cut_reference
+source_cut_digest
+version_set_digest
+algorithm_or_artifact_digest
+applicable_unit_ids
+applicable_operation_classes
+baseline_bundle_id
+db009_handoff_digest
+domain_approval_bundle_refs
+idempotency_matrix_results
+retry_and_timeout_results
+concurrency_results
+semantic_preservation_results
+unauthorized_side_effect_results
+rollback_plan_ids
+rollback_run_refs
+post_rollback_reconciliation
+audit_root_and_child_reconciliation
+security_privacy_results
+vital_boundary_result
+drift_before
+drift_after
+open_blockers
+certification_outcome
+evidence_bundle_digest
+```
+
+El bundle referencia evidencia durable; no incrusta secretos.
+
+#### 56. Evidencia insuficiente
+
+No son evidencia suficiente por sí solas:
+
+- logs sin operación lógica;
+- snapshots sin digest;
+- capturas de pantalla;
+- conteos sin baseline;
+- hashes sin contexto;
+- SQL aislado sin identidad de entorno;
+- resultados sin candidato;
+- pruebas sin version set;
+- rollback sin verificación posterior;
+- replay que muta;
+- ausencia de error;
+- una sola muestra positiva;
+- la salida del cliente sin confirmación de commit;
+- el estado de una tarea documental.
+
+#### 57. Secuencia física futura por paquete
+
+La ejecución física futura seguirá, conceptualmente:
+
+```text
+FREEZE_CERTIFICATION_CUT
+→ RECAPTURE_DRIFT
+→ VERIFY_DB009_HANDOFF
+→ VERIFY_DOMAIN_EVIDENCE_GATES
+→ CAPTURE_BASELINE
+→ RUN_PURE_CONFORMANCE_ORACLE
+→ RUN_IDEMPOTENCY_AND_RETRY_MATRIX
+→ RUN_CONCURRENCY_AND_STALE_STATE_MATRIX
+→ RUN_SEMANTIC_PRESERVATION_MATRIX
+→ RUN_NEGATIVE_AND_BOUNDARY_TESTS
+→ RUN_ROLLBACK_OR_RECOVERY_DRILL
+→ RUN_POST_ROLLBACK_RECONCILIATION
+→ RECAPTURE_DRIFT
+→ BUILD_EVIDENCE_BUNDLE
+→ VERIFY_BUNDLE_DIGEST
+→ EMIT_PASS_OR_FAIL
+```
+
+Esta secuencia es un contrato de certificación, no un comando ejecutable.
+
+#### 58. Relación con el cierre del minibloque
+
+DB-010 es la última tarea documental de `DATA-NORM-DB`.
+
+Su aprobación:
+
+- cierra la definición documental del contrato de certificación;
+- no ejecuta ninguna instancia física;
+- no declara `DATA-NORM-DB-010::<package_id>` en PASS;
+- no autoriza iniciar un package;
+- no autoriza modificar Supabase;
+- no sustituye los gates E5;
+- no convierte el bloque físico en implementado.
+
+La continuidad documental puede pasar a `INT-DB-001` solo después del cierre documental canónico y `NEXT_TASK_ALLOWED: SI`.
+
+#### 59. Handoff hacia INT-DB-001
+
+El handoff documental hacia `INT-DB-001` queda limitado a:
+
+```text
+normalization_db_contract_complete = true
+normalization_certification_template_defined = true
+normalization_physical_certification_executed = false
+normalization_physical_instances_remain_package_scoped = true
+external_integration_registry_not_started = true
+```
+
+INT-DB-001 no puede interpretar el cierre documental de DB-010 como permiso para crear integraciones o reutilizar credenciales, staging, mappings o jobs.
+
+#### 60. Conductas no conformes
+
+Queda prohibido:
+
+1. certificar por exit code;
+2. certificar por ausencia de error visible;
+3. omitir el corte de versiones;
+4. usar `latest`;
+5. crear otra operación tras un timeout sin consultar la anterior;
+6. reusar una key con payload distinto;
+7. aceptar segundo efecto en retry;
+8. aceptar last writer wins;
+9. tratar similitud como identidad;
+10. tratar mismo texto como misma semántica;
+11. restaurar bytes viejos sobre una fuente legítimamente nueva;
+12. borrar auditoría para “volver atrás”;
+13. reescribir snapshots;
+14. editar una decisión histórica;
+15. ocultar un fallo como no-change;
+16. usar el trigger como autoridad semántica;
+17. usar service role como sustituto de pruebas;
+18. usar un rollback de código como prueba de recuperación de datos;
+19. declarar PASS con destinos desconocidos;
+20. declarar PASS con blockers abiertos;
+21. certificar un paquete con evidencia de otro;
+22. mezclar ambientes;
+23. aplicar política Vento OS a VITAL;
+24. usar referencias dependientes del equipo del operador o secretos como evidencia canónica;
+25. modificar 04A para simular cobertura nueva.
+
+#### 61. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+**Justificación:** DB-010 no introduce una nueva regla de negocio ni una nueva semántica de normalización. Materializa como contrato de certificación física obligaciones de idempotencia, concurrencia, replay, rollback, atomicidad, paridad, preservación semántica y ausencia de efectos no autorizados que ya están protegidas por la arquitectura DATA-NORM y el registro canónico DATA.
+
+#### 62. Cobertura de prueba vigente reutilizada
+
+La futura instancia deberá demostrar la cobertura ya existente aplicable, en particular:
+
+- `TREQ-DATA-016` para idempotencia de reglas bajo el mismo corte;
+- `TREQ-DATA-051`, `TREQ-DATA-067`, `TREQ-DATA-084` y `TREQ-DATA-102` para determinismo, paridad e idempotencia entre capas y catálogos;
+- `TREQ-DATA-100` y `TREQ-DATA-160` para supersesión, rollback lógico, compensación e historia aditiva;
+- `TREQ-DATA-118` y `TREQ-DATA-120` para paridad, casos, reintentos y concurrencia;
+- `TREQ-DATA-124` para compatibilidad de algoritmo, locale y versión;
+- `TREQ-DATA-139` para paridad transversal de búsqueda;
+- `TREQ-DATA-144` para conjunto efectivo de versiones;
+- `TREQ-DATA-149` y `TREQ-DATA-150` para auditoría, causalidad e integridad aditiva;
+- `TREQ-DATA-151` para resultados cerrados;
+- `TREQ-DATA-154` a `TREQ-DATA-158` para claves de idempotencia, replay compatible, clases de operación, concurrencia y determinismo;
+- `TREQ-DATA-159` para replay controlado;
+- `TREQ-DATA-163` y `TREQ-DATA-164` para correlación entre capas y corpus integral;
+- `TREQ-DATA-186` para concurrencia e idempotencia en identidad y duplicidad;
+- `TREQ-DATA-189` y `TREQ-DATA-190` para paridad, VITAL y corpus de identidad;
+- `TREQ-DATA-198`, `TREQ-DATA-199` y `TREQ-DATA-200` para atomicidad, versiones e idempotencia entre capas;
+- `TREQ-DATA-209` y `TREQ-DATA-214` para auditoría raíz y corpus integral de capas;
+- `TREQ-DATA-225` y `TREQ-DATA-239` para idempotencia, replay y rollback de entradas externas.
+
+Esta enumeración es trazabilidad hacia requisitos vigentes y no altera el registro.
+
+#### 63. Evidencia de validación
+
+| Clase     | Estado         | Evidencia |
+| --- | --- | --- |
+| BUILD     | NOT_EXECUTED   | La batería npm del checkout completo no se ejecutó durante la preparación del artefacto; no se declara build como aprobado. |
+| LOCAL     | PASS           | El artefacto fue comprobado contra título, metadata, secciones obligatorias, continuidad, cero TREQ en la sección de cambios, UTF-8, LF, ausencia de BOM, whitespace final, placeholders ejecutables y contenido prohibido. |
+| REMOTA    | PASS           | Se recapturó `main` en el commit `2d231b133a30382d4249896f25b4611ab11eb1b9` y se verificaron continuidad, archivo propietario, topología, políticas, `package.json`, DB-009, registro DATA, contratos E3 y el oráculo físico compartido de `@vento/data-normalization` sin realizar escrituras remotas. |
+| OPERATIVA | NOT_EXECUTED   | No se ejecutaron paquetes físicos, corpus contra persistencia, concurrencia, retries, rollback drills, reconciliaciones ni consumidores porque esta tarea solo define la plantilla de certificación. |
+| FÍSICA    | NOT_APPLICABLE | Esta definición documental autoriza cero DDL, DML, migraciones, backfills, rollback, replay, cambios de configuración o modificaciones remotas. |
+
+#### 64. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. usa `DATA-NORM-DB-010::<package_id>`;
+4. no crea una instancia global;
+5. consume el handoff completo de DB-009;
+6. fija identidad de ejecución, candidato, entorno y digests;
+7. fija el corte contractual antes de probar;
+8. reutiliza el oráculo A/B/C sin convertirlo en autoridad de persistencia;
+9. distingue las seis clases idempotentes;
+10. prueba misma key/mismo payload;
+11. bloquea misma key/payload incompatible;
+12. cubre timeout y respuesta perdida;
+13. cubre concurrencia y stale state;
+14. protege las diez dimensiones semánticas;
+15. exige delta autorizado;
+16. impide que igualdad visual sustituya semántica;
+17. protege fuente, derivación, snapshot y original;
+18. protege identidad, unicidad y relaciones;
+19. cubre búsqueda y derivaciones cuando apliquen;
+20. cubre UOM y jerarquías cuando apliquen;
+21. cubre texto, PASS, personas y bloqueos cuando apliquen;
+22. exige paridad entre capas;
+23. separa preview y commit;
+24. valida RPC, servicio y trigger según sus responsabilidades;
+25. cubre direct writes y bypass cuando apliquen;
+26. exige una sola auditoría raíz;
+27. concilia before/after, versiones y causalidad;
+28. distingue replay de retry;
+29. reutiliza las cuatro clases de recuperación;
+30. exige precondiciones completas del rollback drill;
+31. prohíbe rollback textual ciego;
+32. separa rollback lógico, datos, derivación, configuración y código;
+33. exige verificación post-rollback;
+34. consume RPO/RTO sin inventarlos;
+35. consume gates de evidencia por dominio;
+36. separa ambientes;
+37. recaptura drift antes y después;
+38. conserva seguridad y privacidad;
+39. mantiene VITAL fuera del alcance;
+40. reconoce las nueve unidades heredadas;
+41. define escenarios negativos obligatorios;
+42. usa estados cerrados sin PASS parcial;
+43. define una regla de PASS exhaustiva;
+44. define FAIL, bloqueo y escalamiento;
+45. define evidence bundle final;
+46. rechaza evidencias insuficientes;
+47. entrega una secuencia física futura no ejecutable;
+48. delimita el cierre del minibloque;
+49. entrega handoff limitado a INT-DB-001;
+50. declara cero requisitos creados o modificados;
+51. no realiza cambios físicos durante esta definición.
+
+#### 65. Decisiones finales
+
+1. DB-010 es plantilla por paquete.
+2. No existe `DB-010::GLOBAL`.
+3. El gate es posterior al E5 del mismo paquete.
+4. Un PASS pertenece a una instancia, candidato y entorno concretos.
+5. Un cambio de corte crea otra ejecución o comparación explícita.
+6. El oráculo A/B/C puro se reutiliza, no se reinterpreta.
+7. Idempotencia de evaluación no sustituye idempotencia de persistencia.
+8. Idempotencia de persistencia no sustituye concurrencia.
+9. Misma key y mismo payload recuperan el resultado previo.
+10. Misma key con payload incompatible bloquea.
+11. Timeout no autoriza otra operación lógica.
+12. Last writer wins no es default.
+13. Igualdad visual no prueba preservación semántica.
+14. Las diez dimensiones protegidas permanecen vigentes.
+15. Solo el delta autorizado puede cambiar.
+16. Derivación no adquiere autoridad de fuente.
+17. Búsqueda no adquiere autoridad de identidad.
+18. Una colisión no confirma duplicidad.
+19. Un retry no repite fusiones ni reasignaciones.
+20. La aplicación no confirma commit.
+21. El servicio conserva autoridad semántica.
+22. La RPC conserva autoridad transaccional.
+23. El trigger conserva función defensiva acotada.
+24. Una mutación confirmada tiene una sola raíz.
+25. Evidencia hija no sustituye la raíz.
+26. Un rollback transaccional no genera mutación confirmada.
+27. Rollback de código y rollback lógico no son equivalentes.
+28. La recuperación preserva historia.
+29. Compensación y forward-fix son resultados válidos cuando la inversa es insegura.
+30. Un original perdido es incidente, no rollback normal.
+31. Los snapshots no se reescriben.
+32. Un rollback no pisa una escritura legítima posterior.
+33. El post-rollback se reconcilia antes de cerrar.
+34. VITAL permanece excluido.
+35. Un blocker abierto impide PASS.
+36. Un outcome desconocido material impide PASS.
+37. Evidencia de otro paquete no certifica la instancia.
+38. Evidencia de otro ambiente no certifica el destino.
+39. DB-010 no crea 04A.
+40. DB-010 no modifica Supabase.
+41. DB-010 no ejecuta pruebas físicas durante la aprobación documental.
+42. El cierre documental no equivale a certificación física.
+43. INT-DB-001 continúa únicamente después del cierre documental canónico.
+
+#### 66. Límites
+
+Esta tarea no:
+
+- ejecuta `DATA-NORM-DB-010::<package_id>`;
+- crea migraciones;
+- crea tablas;
+- crea columnas;
+- crea funciones;
+- crea triggers;
+- crea constraints;
+- crea índices;
+- crea policies;
+- crea grants;
+- modifica RLS;
+- ejecuta backfills;
+- ejecuta dry-runs físicos;
+- ejecuta retries;
+- ejecuta pruebas de concurrencia;
+- ejecuta rollback drills;
+- ejecuta replay;
+- ejecuta compensaciones;
+- restaura backups;
+- ejecuta PITR;
+- modifica datos;
+- adapta consumidores;
+- autoriza despliegues;
+- promueve ambientes;
+- crea identidades;
+- fusiona registros;
+- reasigna relaciones;
+- cambia diccionarios;
+- cambia catálogos;
+- cambia mappings;
+- cambia reglas;
+- cambia el corpus compartido;
+- cambia la suite de conformance;
+- modifica VITAL;
+- modifica el registro 04A;
+- desarrolla INT-DB-001.
+
+#### 67. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla`
+
+**TAREA ACTUAL APROBADA**
+`DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos`
+
+**SIGUIENTE TAREA RESERVADA**
+`INT-DB-001 — Crear registro de sistemas e integraciones externas`

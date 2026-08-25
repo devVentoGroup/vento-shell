@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1043** |
+| Aprobadas | **1044** |
 | En propuesta | **0** |
-| No iniciadas | **551** |
+| No iniciadas | **550** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.43% (1043/1594)** |
+| Porcentaje de completamiento | **65.50% (1044/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-DB-009` — Registrar valor previo, valor resultante y versión de regla | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-DB-001` — Crear registro de sistemas e integraciones externas | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos | ✅ APROBADA |
+| Tarea actual | `INT-DB-001` — Crear registro de sistemas e integraciones externas | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1253,7 +1253,7 @@
 | ✅ APROBADA | `DATA-NORM-DB-007` | Implementar índices de búsqueda y unicidad normalizada | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-008` | Implementar triggers únicamente como barrera defensiva final | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `DATA-NORM-DB-009` | Registrar valor previo, valor resultante y versión de regla | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
-| ⬜ NO INICIADA | `DATA-NORM-DB-010` | Probar idempotencia, rollback y ausencia de cambios semánticos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
+| ✅ APROBADA | `DATA-NORM-DB-010` | Probar idempotencia, rollback y ausencia de cambios semánticos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ⬜ NO INICIADA | `INT-DB-001` | Crear registro de sistemas e integraciones externas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-002` | Crear referencias de credenciales sin almacenar secretos en tablas expuestas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-003` | Crear staging inmutable de payloads externos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |

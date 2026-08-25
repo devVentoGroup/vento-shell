@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1043** |
+| Tareas aprobadas | **1044** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **551** |
+| Tareas no iniciadas | **550** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **65.43% (1043/1594)** |
+| Porcentaje de completamiento | **65.50% (1044/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla** |
-| Tarea actual | **DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos** |
+| Última tarea aprobada | **DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos** |
+| Tarea actual | **INT-DB-001 — Crear registro de sistemas e integraciones externas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-DB-001 — Crear registro de sistemas e integraciones externas** |
+| Siguiente tarea | **INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 42 de 51 aprobadas; DATA-NORM-DB-010 pendiente** |
+| Progreso del bloque | **BLOQUE R: 43 de 51 aprobadas; INT-DB-001 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-UI-020::GLOBAL** |
-| Carril documental | **ACTIVO — DATA-NORM-DB-010** |
+| Carril documental | **ACTIVO — INT-DB-001** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-UI-020::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-DB-009` — Registrar valor previo, valor resultante y versión de regla |
-| Tarea actual | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos — **NO INICIADA** |
-| Siguiente tarea | `INT-DB-001` — Crear registro de sistemas e integraciones externas |
+| Última aprobada | `DATA-NORM-DB-010` — Probar idempotencia, rollback y ausencia de cambios semánticos |
+| Tarea actual | `INT-DB-001` — Crear registro de sistemas e integraciones externas — **NO INICIADA** |
+| Siguiente tarea | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 42 DE 51 APROBADAS — ACTUAL DATA-NORM-DB-010** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 43 DE 51 APROBADAS — ACTUAL INT-DB-001** |
 | Implementación física | **SHELL-UI-020::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
-        ↓
-TAREA ACTUAL
 DATA-NORM-DB-010 — Probar idempotencia, rollback y ausencia de cambios semánticos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-DB-001 — Crear registro de sistemas e integraciones externas
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 42 de 51 tareas aprobadas
+BLOQUE R — 43 de 51 tareas aprobadas
 ```
