@@ -1,10 +1,79 @@
 {
   "instance_id": "SHELL-UI-016::GLOBAL",
   "task_id": "SHELL-UI-016",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/RecoverableErrorState.tsx",
+      "change": "CREATE",
+      "scope": "Materialize the approved RecoverableErrorState as a server-safe presentational surface for an already-classified recoverable condition with three canonical categories, five preserved-state values, ordered safe details, a human next step and externally supplied recovery controls without classifying failures, deciding retry safety, resolving authority or executing business effects."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/src/recoverable-error-state.css",
+      "change": "CREATE",
+      "scope": "Materialize token-based responsive presentation with structural category and preserved-state distinctions, safe detail and control layout, narrow-screen reflow and no hidden overflow, fixed interaction policy, authority behavior or color-only meaning."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/scripts/validate-recoverable-error-state.mjs",
+      "change": "CREATE",
+      "scope": "Validate the approved SHELL-UI-016 API, three-category compatibility, five preserved states, unknown and partial semantics, privacy, server-safety, recovery and authorization boundaries, responsive styling, consumer non-migration and immutable adjacent scope."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/ui-web/README.md",
+      "change": "MODIFY",
+      "scope": "Reconcile the private ui-web authoring README through SHELL-UI-016, documenting RecoverableErrorState ownership, category and preservation taxonomies, recovery-control boundaries, privacy, accessibility handoff, consumer dispositions and deferred exports, releases and migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/SHELL-UI-016__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, physical lifecycle transitions and consolidated evidence only for SHELL-UI-016::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after materialization and before IMPLEMENTED; require REPAIR_SCOPE PASS and READY_FOR_VALIDATION SI without editing the repair implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node packages/ui-web/scripts/validate-recoverable-error-state.mjs",
+    "node node_modules/typescript/bin/tsc --noEmit --strict --skipLibCheck --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx packages/ui-web/src/RecoverableErrorState.tsx",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-25T10:05:20-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "SIGAMOS IMPLEMENTANDO, RECUERDA HACER TODAS LAS VALIDACIONES ANTES DE DARME LOS ARCHIVOS, QUE PASEN TODAS LAS VALIDACIONES, NO QUIERO ERRORES",
+    "source_contract_sha256": "02c9d99d8d959762cedcb56979563e7844dcabddeb14a83347160329820536a6"
+  },
+  "evidence": [
+    "MATERIALIZATION packages/ui-web/src/RecoverableErrorState.tsx created as a server-safe presentational recovery surface with three canonical categories, five preserved-state values, safe details, human next step and externally supplied recovery controls without classification, authority or business-effect ownership",
+    "MATERIALIZATION packages/ui-web/src/recoverable-error-state.css created with existing ui tokens, structural category and preserved-state distinctions, narrow-screen reflow and no hidden overflow or color-only semantics",
+    "MATERIALIZATION packages/ui-web/scripts/validate-recoverable-error-state.mjs and packages/ui-web/README.md completed within the authorized SHELL-UI-016 scope",
+    "SOURCE CONTRACT SHA256 02c9d99d8d959762cedcb56979563e7844dcabddeb14a83347160329820536a6",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION RecoverableErrorState validator PASS; scenarios=50 categories=3 preserved_states=5 ssr=SAFE authority=NONE recovery=EXTERNAL consumers=0/7 exports=DEFERRED",
+    "VALIDATION TypeScript strict compile PASS for packages/ui-web/src/RecoverableErrorState.tsx",
+    "VALIDATION quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT SHELL-UI-016::GLOBAL VERIFIED"
+  ]
 }
