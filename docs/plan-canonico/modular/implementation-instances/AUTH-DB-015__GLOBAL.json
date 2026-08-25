@@ -1,10 +1,93 @@
 {
   "instance_id": "AUTH-DB-015::GLOBAL",
   "task_id": "AUTH-DB-015",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "CREATE",
+      "scope": "Create the deterministic inventory generated from every regular file under supabase/migrations/, preserving exact version, filename, sha256, bytes, kind, findings, lineage and notes without representing environment application state."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "CREATE",
+      "scope": "Build and validate the migration manifest from the physical tree, classify baseline/standard/manual/fixed history, detect empty files, duplicate content, repeated logical families and repeated versions, and enforce canonical names plus unique versions for newly added migrations without changing SQL or environment state."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.test.mjs",
+      "change": "CREATE",
+      "scope": "Test deterministic classification, hashing, findings, lineage, stale-manifest detection, environment-state exclusion, new-name/version guards and repository integration invariants."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "package.json",
+      "change": "MODIFY",
+      "scope": "Add supabase:migrations:manifest:build and supabase:migrations:manifest:check while preserving the canonical npm test facade unchanged."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": ".github/workflows/vento-required-gate.yml",
+      "change": "MODIFY",
+      "scope": "Run supabase:migrations:manifest:check in the Required Gate tests job after dependency installation and before the public npm test facade so stale migration inventory blocks merge."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md",
+      "change": "MODIFY",
+      "scope": "Reconcile migration architecture with AUTH-DB-015 by keeping vento-shell as the sole migration authority, removing remote-applied state from the manifest model, removing consumer-copy instructions and preserving AUTH-DB-027/AUTH-DB-028/AUTH-DB-029 boundaries."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-015__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, physical lifecycle transitions and consolidated evidence only for AUTH-DB-015::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after complete materialization and before IMPLEMENTED; require REPAIR_SCOPE PASS and READY_FOR_VALIDATION SI without editing the repair implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/supabase/migration-manifest.mjs",
+    "node --test scripts/supabase/migration-manifest.test.mjs",
+    "npm run supabase:migrations:manifest:check",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-25T16:05:48-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS IMPLEMENTANDO",
+    "source_contract_sha256": "44cb673515117743c3ddf804b5c76923e1450ee8286d3adc861367e19d1f13a9"
+  },
+  "evidence": [
+    "MATERIALIZATION supabase/MIGRATION_MANIFEST.md generated from the complete physical supabase/migrations tree with version, filename, sha256, bytes, kind, findings, lineage and notes",
+    "MATERIALIZATION scripts/supabase/migration-manifest.mjs and scripts/supabase/migration-manifest.test.mjs created for deterministic build, freshness validation and historical classification without SQL or environment mutation",
+    "MATERIALIZATION package.json, VENTO Required Gate and docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md reconciled within AUTH-DB-015 scope while preserving the canonical npm test facade",
+    "SOURCE CONTRACT SHA256 44cb673515117743c3ddf804b5c76923e1450ee8286d3adc861367e19d1f13a9",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION node --check scripts/supabase/migration-manifest.mjs PASS",
+    "VALIDATION node --test scripts/supabase/migration-manifest.test.mjs PASS",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RESULT AUTH-DB-015::GLOBAL VERIFIED"
+  ]
 }

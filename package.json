@@ -19,6 +19,8 @@
     "test:ci016": "node --test scripts/quality/repository-test-command-gate.test.mjs",
     "ci016:certify": "node scripts/quality/repository-test-command-gate.mjs certify --json --write-evidence",
     "generate-favicon": "node scripts/generate-favicon.mjs",
+    "supabase:migrations:manifest:build": "node scripts/supabase/migration-manifest.mjs build",
+    "supabase:migrations:manifest:check": "node scripts/supabase/migration-manifest.mjs check",
     "docs:plan:build": "node scripts/docs/build-plan-canonico.mjs",
     "docs:eol:check": "node scripts/docs/validate-eol-policy.mjs",
     "docs:plan:check": "node scripts/docs/sync-local-derived-artifacts.mjs && node scripts/docs/validate-eol-policy.mjs && node scripts/docs/audit-prospective-tasks.mjs && node scripts/docs/auto-prepare-canonical-task.mjs --check && node scripts/docs/validate-task-delivery.mjs && node scripts/docs/build-plan-canonico-core.mjs --check && node scripts/docs/sync-pending-task-context.mjs --check && node scripts/docs/normalize-retired-priority-route.mjs --check && node scripts/docs/validate-print-process-bindings.mjs && node scripts/docs/implementation-control.mjs --check && node scripts/docs/chatgpt-work-starter.mjs --check && node scripts/docs/implementation-readiness-artifacts.mjs --check",

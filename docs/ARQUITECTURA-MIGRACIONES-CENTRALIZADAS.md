@@ -1,311 +1,156 @@
 # Arquitectura de Migraciones Centralizadas
 
-## Estructura
+## Autoridad canónica
 
-```
+VENTO mantiene una única autoridad versionada de migraciones Supabase:
+
+```text
 vento-shell/
   supabase/
-    migrations/          ← Fuente canónica de todas las migraciones
-      00000000000000_baseline.sql
-      20260415000000_nexo_locations_validation.sql  ← Nueva migración
-      ...
-    MIGRATION_MANIFEST.md ← Inventario de migraciones
-
-vento-nexo/
-vento-fogo/
-vento-origo/
-vento-viso/
-vento-pulso/
-  (NO tienen migraciones locales - solo consumen desde vento-shell)
+    migrations/          -> fuente SQL canónica
+    MIGRATION_MANIFEST.md -> inventario verificable del historial físico
 ```
 
-## Flujo de Trabajo
+Los repositorios consumidores no crean, copian ni mantienen una autoridad paralela de migraciones. Cuando una aplicación necesita un cambio de base de datos, la migración se crea, versiona y documenta en `vento-shell`.
 
-### 1. Crear Nueva Migración
+`supabase/MIGRATION_MANIFEST.md` no sustituye los archivos SQL. Su función es demostrar, para el mismo checkout, qué archivos existen y cuál es su identidad física.
 
-**Siempre en vento-shell:**
+## Fuente SQL e inventario
 
-```bash
-cd vento-shell
+`supabase/migrations/` es el universo canónico de migraciones VENTO. Cada archivo regular contenido bajo ese directorio debe aparecer exactamente una vez en `supabase/MIGRATION_MANIFEST.md`.
 
-# Crear archivo en supabase/migrations/
-# Formato: YYYYMMDDHHMM_descripcion.sql
-# Ejemplo: 20260415000000_nexo_locations_validation.sql
+El manifiesto conserva estas columnas:
 
-# Contenido:
--- Comentario descriptivo
-CREATE TABLE ...;
-ALTER TABLE ...;
-INSERT INTO ...;
+| Campo | Regla |
+| --- | --- |
+| `version` | Prefijo de versión del nombre físico, o `UNVERSIONED` para una excepción histórica sin prefijo reconocible. |
+| `filename` | Nombre o ruta relativa exacta dentro de `supabase/migrations/`. |
+| `sha256` | SHA-256 del contenido versionado canonico; CRLF introducido por checkout se normaliza a LF antes del calculo. |
+| `bytes` | Tamano exacto en bytes del contenido versionado canonico despues de neutralizar solo CRLF de checkout. |
+| `kind` | `BASELINE`, `STANDARD`, `MANUAL_LEGACY` o `FIXED_LEGACY`. |
+| `findings` | Hallazgos verificables separados por coma; vacío cuando no existen. |
+| `lineage` | Relaciones demostrables por contenido, familia lógica o versión compartida. |
+| `notes` | Disposición documental del hallazgo. |
+
+Los hallazgos reconocidos inicialmente son:
+
+```text
+EMPTY_FILE
+CONTENT_DUPLICATE
+SAME_LOGICAL_FAMILY
+LEGACY_NAMING
 ```
 
-### 2. Registrar en Manifest
+Las disposiciones documentales usadas por el inventario son:
 
-Agregar a `vento-shell/supabase/MIGRATION_MANIFEST.md`:
-
-```markdown
-## applied_remote
-- 20260415000000_nexo_locations_validation.sql
+```text
+SIN_HALLAZGO
+HISTÓRICO_PRESERVADO
+RELACIÓN_DOCUMENTADA
+REQUIERE_TAREA_PROPIETARIA
 ```
 
-### 3. Hacer Push a GitHub
+Un hallazgo no autoriza a borrar, renombrar, reescribir ni declarar supersedida una migración histórica.
 
-```bash
-cd vento-shell
-git add supabase/migrations/20260415000000_nexo_locations_validation.sql
-git add supabase/MIGRATION_MANIFEST.md
-git commit -m "feat: nexo locations validation"
-git push origin main
+## Generación y validación
+
+El manifiesto se deriva mecánicamente del árbol físico; su cardinalidad no se mantiene a mano.
+
+```text
+npm run supabase:migrations:manifest:build
+npm run supabase:migrations:manifest:check
 ```
 
-### 4. Sincronizar en Otros Repos (Opcional)
+`build` recalcula filas, SHA-256, bytes, clasificación y relaciones verificables.
 
-Si otro repo necesita la misma migración (ej: vento-fogo también usa Supabase):
+`check` falla cerrado cuando ocurre cualquiera de estos casos:
 
-```bash
-# En vento-fogo
-git fetch upstream  # Si está configurado
-cp ../vento-shell/supabase/migrations/20260415000000_nexo_locations_validation.sql supabase/migrations/
-git add supabase/migrations/
-git commit -m "chore: sync migrations from vento-shell"
-git push origin main
+- archivo físico sin fila;
+- fila que ya no coincide con el archivo físico;
+- hash, bytes, clasificación, hallazgos o lineage obsoletos;
+- orden o cardinalidad inconsistentes;
+- manifiesto ausente;
+- una migración nueva incumple la convención de nombre;
+- el manifiesto intenta representar estado aplicado por entorno.
+
+El Required Gate ejecuta `supabase:migrations:manifest:check`, por lo que una migración nueva y su manifiesto forman una unidad de cambio.
+
+## Versionado de migraciones nuevas
+
+Las migraciones nuevas usan exclusivamente:
+
+```text
+^[0-9]{14}_[a-z0-9][a-z0-9_]*\.sql$
 ```
 
----
+Reglas:
 
-## Estructura de Nombres
+1. `00000000000000_baseline.sql` permanece reservado como baseline.
+2. El prefijo de catorce dígitos es la identidad ordenable de versión.
+3. El slug utiliza minúsculas, números y `_`.
+4. No se crean nuevos sufijos `.manual.sql` ni `.fixed.sql`.
+5. Los nombres históricos que no cumplen la convención actual se preservan y se clasifican; no se renombran retrospectivamente.
+6. Una coincidencia de nombre no demuestra por sí sola qué objetos SQL cambia ni si fue aplicada en un entorno.
 
-**Formato:** `YYYYMMDDHHMM_app_descripcion.sql`
+## Inmutabilidad del historial
 
-| Parte | Ejemplo | Descripción |
-|-------|---------|-------------|
-| `YYYYMMDDHHMM` | `202604150000` | Timestamp (año, mes, día, hora, minuto) |
-| `app` | `nexo`, `fogo`, `anima`, `vital` | App o módulo afectado |
-| `descripcion` | `locations_validation` | Descripción legible |
+La regla predeterminada de corrección es:
 
-**Ejemplos válidos:**
-- `20260415000000_nexo_locations_validation.sql`
-- `20260415100000_fogo_production_recipes_rls.sql`
-- `20260415110000_anima_attendance_sync.sql`
-
----
-
-## Política de Migraciones
-
-✅ **CENTRALIZAR en vento-shell:**
-- Todas las migraciones SQL nuevas
-- Cambios de schema
-- Permisos y RLS
-- Seeders de datos
-
-❌ **NO en repos individuales:**
-- Migraciones nunca van en vento-nexo, vento-fogo, etc.
-- Esos repos solo consumen desde vento-shell
-- Evita duplicados y conflictos
-
----
-
-## Aplicar Migraciones a Supabase
-
-### Opción A: Supabase CLI (recomendado)
-
-```bash
-cd vento-shell
-
-# Listar migraciones pendientes
-supabase migration list
-
-# Aplicar todas las pendientes
-supabase db push
-
-# O especificar una
-supabase db push --include-seed
+```text
+historial existente
+-> se preserva
+-> corrección mediante nueva migración forward
+-> relación documentada cuando exista evidencia verificable
 ```
 
-### Opción B: SQL Editor en Supabase Console
+Los archivos vacíos, los duplicados de contenido y las excepciones legacy permanecen dentro del universo canónico hasta que una decisión propietaria explícita autorice otra disposición.
 
-```bash
-# Copiar contenido del archivo SQL
-cat supabase/migrations/20260415000000_nexo_locations_validation.sql
+## Separación de estado por entorno
 
-# Pegar en Supabase -> SQL Editor -> Ejecutar
+El repositorio demuestra qué migraciones están versionadas. No demuestra, por sí solo, qué migraciones están aplicadas en local, staging o producción.
+
+Por tanto, `supabase/MIGRATION_MANIFEST.md` no utiliza estados como:
+
+```text
+applied_remote
+applied_staging
+applied_production
+pending_production
 ```
 
-### Opción C: API (para CI/CD)
+La medición de baseline y drift entre entornos pertenece a `AUTH-DB-028`.
 
-```bash
-curl -X POST https://api.supabase.co/v1/projects/{PROJECT_ID}/migrations \
-  -H "Authorization: Bearer {API_KEY}" \
-  --data-binary @supabase/migrations/20260415000000_nexo_locations_validation.sql
-```
+## Fronteras de responsabilidad
 
----
+| Tarea | Responsabilidad |
+| --- | --- |
+| `AUTH-DB-015` | Inventario y versionado verificable del historial físico de migraciones. |
+| `AUTH-DB-027` | Harness de pruebas de esquema, integridad, RLS, RPC y migraciones. |
+| `AUTH-DB-028` | Baseline y drift entre local, staging y producción. |
+| `AUTH-DB-029` | Respaldo, restauración y rollback. |
 
-## Validación Post-Aplicación
+Esta arquitectura no aplica migraciones, no ejecuta `supabase db push`, no consulta estado remoto y no modifica datos productivos.
 
-Después de aplicar una migración:
+## Flujo para una migración nueva
 
-```sql
--- Verificar tabla existe
-SELECT * FROM public.locations_validation LIMIT 0;
+1. Crear el archivo exclusivamente en `vento-shell/supabase/migrations/` con el nombre canónico.
+2. Implementar el SQL correspondiente según la tarea propietaria del cambio.
+3. Ejecutar `npm run supabase:migrations:manifest:build` en el mismo cambio.
+4. Ejecutar `npm run supabase:migrations:manifest:check`.
+5. Someter el cambio al Required Gate del repositorio.
+6. Tratar despliegue, drift y recuperación únicamente en sus carriles propietarios.
 
--- Verificar permisos
-SELECT * FROM public.app_permissions WHERE code = 'inventory.validation';
+No se copia el archivo a repositorios consumidores para crear una segunda historia de migraciones.
 
--- Verificar RLS policies
-SELECT * FROM pg_policies WHERE tablename = 'locations_validation';
+## Historial legacy
 
--- Verificar indices
-SELECT * FROM pg_indexes WHERE tablename = 'locations_validation';
-```
+El inventario conserva y clasifica las excepciones existentes, incluidas migraciones con sufijos `.manual.sql` o `.fixed.sql`, archivos vacíos, contenido idéntico bajo identidades distintas y familias lógicas repetidas.
 
----
-
-## Caso de Uso: Validación de LOCs (20260415)
-
-### Migration Flow
-
-1. **Creado en:** `vento-shell/supabase/migrations/20260415000000_nexo_locations_validation.sql`
-   - Tabla: `locations_validation`
-   - Permiso: `inventory.validation`
-   - RLS: Solo gerentes y propietarios
-   - Indices: 4 (para búsquedas rápidas)
-
-2. **Registrado en:** `vento-shell/supabase/MIGRATION_MANIFEST.md`
-   ```
-   - 20260415000000_nexo_locations_validation.sql
-   ```
-
-3. **Sincronizado en:** GitHub
-   ```
-   vento-shell main branch
-   └─ supabase/migrations/20260415000000_nexo_locations_validation.sql
-   ```
-
-4. **Eliminado de:** `vento-nexo`
-   ```
-   Removida: vento-nexo/supabase/migrations/20260415000000_locations_validation.sql
-   Commit: "chore: migrate locations_validation to vento-shell"
-   ```
-
-5. **Aplicado a:** Supabase remota
-   ```
-   supabase db push
-   → Tabla creada
-   → Permisos asignados
-   → RLS configurada
-   ```
-
----
-
-## Sincronización Multi-Repo
-
-Si múltiples apps usan la misma BD (caso de Vento OS):
-
-```
-Supabase Remota (Única)
-  ├─ Schema compartido (permisos, RLS, etc.)
-  └─ Apps específicas (nexo, fogo, viso, etc.)
-
-vento-shell (Fuente canónica)
-  └─ supabase/migrations/
-      ├─ 20260415000000_nexo_locations_validation.sql
-      ├─ 20260415100000_fogo_production_recipes.sql
-      └─ 20260415200000_vital_sports_profile.sql
-
-vento-nexo (Consume)
-  └─ (sin migraciones locales)
-
-vento-fogo (Consume)
-  └─ (sin migraciones locales)
-
-vento-viso (Consume)
-  └─ (sin migraciones locales)
-```
-
----
-
-## Checklist: Migración Nueva
-
-- [ ] Crear archivo en `vento-shell/supabase/migrations/YYYYMMDDHHMM_app_descripcion.sql`
-- [ ] Nombre sigue formato estándar
-- [ ] SQL es idempotente (`if not exists`, `on conflict`)
-- [ ] Incluye comentarios explicativos
-- [ ] Actualizar `MIGRATION_MANIFEST.md`
-- [ ] Commit y push en vento-shell
-- [ ] Aplicar a Supabase remota (`supabase db push`)
-- [ ] Validar en SQL Editor
-- [ ] Si otro repo la necesita, sincronizar (copiar + commit)
-- [ ] Documentar en PR/commits qué cambios hay
-
----
-
-## Troubleshooting
-
-### Error: "Migration already applied"
-
-```
-✗ Migration 20260415000000_nexo_locations_validation.sql already applied
-```
-
-**Solución:** Migration ya fue aplicada a Supabase. Ignorar.
-
-### Error: "Table already exists"
-
-```
-✗ relation "locations_validation" already exists
-```
-
-**Solución:** Usar `CREATE TABLE IF NOT EXISTS`:
-
-```sql
-CREATE TABLE IF NOT EXISTS public.locations_validation (
-  ...
-);
-```
-
-### Error: "Permission denied"
-
-```
-✗ permission denied for schema public
-```
-
-**Solución:** Usar `CREATE TABLE ... ENABLE ROW LEVEL SECURITY`:
-
-```sql
-ALTER TABLE public.locations_validation ENABLE ROW LEVEL SECURITY;
-```
-
-### Reversible Migrations (si se necesita deshacer)
-
-```sql
--- Down: revertir cambios
-DROP TABLE IF EXISTS public.locations_validation CASCADE;
-DELETE FROM public.app_permissions WHERE code = 'inventory.validation';
-```
-
-Pero en general, **no se deshacen migraciones** - en su lugar se crean migraciones nuevas que "arreglan" lo anterior.
-
----
-
-## Ejemplos de Migraciones Previas
-
-```
-vento-shell/supabase/migrations/
-├─ 20260117130000_permissions_core.sql     (roles, apps, permisos base)
-├─ 20260209120000_seed_sites_vento.sql     (datos iniciales de sedes)
-├─ 20260218000006_app_split_permissions.sql (limpieza de permisos)
-├─ 20260310120000_nexo_inventory_ai.sql    (schema para IA)
-├─ 20260315100000_employee_wallet.sql      (vento-pass)
-├─ 20260324190000_talento_foundation.sql   (talento new app)
-└─ 20260415000000_nexo_locations_validation.sql (validación de LOCs - NUEVA)
-```
-
----
+La clasificación es descriptiva. No equivale a error de base de datos, estado de despliegue, rollback ni permiso de eliminación.
 
 ## Referencias
 
-- [Supabase Migrations Docs](https://supabase.com/docs/guides/cli/managing-migrations)
-- [Migration Best Practices](https://supabase.com/docs/guides/database/migrations)
-- [Vento OS Schema](./supabase/schema.sql) - Vista completa del schema
-- [MIGRATION_MANIFEST.md](./supabase/MIGRATION_MANIFEST.md) - Inventario
+- `docs/plan-canonico/modular/bloques/R_SUPABASE/01_R0_PREPARACION_PRUEBAS_Y_CONTENCION_DE_RIESGOS.md`
+- `supabase/migrations/`
+- `supabase/MIGRATION_MANIFEST.md`
+- `scripts/supabase/migration-manifest.mjs`
