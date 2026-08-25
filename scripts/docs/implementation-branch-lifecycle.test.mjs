@@ -12,6 +12,7 @@ import {
   normalizeInstanceId,
   physicalLaneBlockers,
   readinessBlockers,
+  resolveImplementationFinishMode,
 } from './implementation-branch-lifecycle.mjs';
 
 test('normaliza instance_id y deriva rama fisica estable', () => {
@@ -82,6 +83,24 @@ test('start solo admite el registro fisico AUTHORIZED como cambio local previo',
   assert.throws(
     () => assertStartWorktree([], record),
     /unico cambio local/u,
+  );
+});
+
+test('finish crea commit con cambios y reanuda si el commit ya existe', () => {
+  assert.equal(
+    resolveImplementationFinishMode({
+      dirtyPaths: ['packages/ui-web/src/Test.tsx'],
+      branchCommits: 0,
+    }),
+    'CREATE_COMMIT',
+  );
+  assert.equal(
+    resolveImplementationFinishMode({ dirtyPaths: [], branchCommits: 1 }),
+    'RESUME_POST_COMMIT',
+  );
+  assert.throws(
+    () => resolveImplementationFinishMode({ dirtyPaths: [], branchCommits: 0 }),
+    /no encontro cambios locales ni un commit de implementacion existente para reanudar/u,
   );
 });
 
@@ -176,9 +195,11 @@ test('start abre carril fisico antes de reconciliar derivados versionados y no e
   assert.match(source, /DOCUMENTARY_LANE_FOR_PHYSICAL: 'ADVISORY_ONLY'/u);
 });
 
-test('finish conserva validadores y paraleliza el tramo local pesado antes de commit, push y CI', () => {
+test('finish conserva validadores, reanuda post-commit y usa polling reintentable antes del merge', () => {
   const source = fs.readFileSync('scripts/docs/implementation-branch-lifecycle.mjs', 'utf8');
   const finish = source.indexOf('export async function finishImplementation');
+  const finishEnd = source.indexOf('function parseArgs', finish);
+  const finishSource = source.slice(finish, finishEnd);
   const verified = source.indexOf('assertInstanceCanFinish(instance);', finish);
   const build = source.indexOf("npm(['run', '--silent', 'docs:plan:build']", verified);
   const planCheck = source.indexOf("npm(['run', '--silent', 'docs:plan:check']", build);
@@ -188,10 +209,12 @@ test('finish conserva validadores y paraleliza el tramo local pesado antes de co
   const treqTest = source.indexOf("npmAsync(['run', '--silent', 'docs:treq:test']", parallel);
   const lint = source.indexOf("npmAsync(['run', '--silent', 'quality:lint:ratchet']", parallel);
   const dirty = source.indexOf('const dirty = worktreePaths(root);', parallel);
-  const commitScope = source.indexOf("'docs:commit-scope:check'", dirty);
+  const finishMode = source.indexOf('const finishMode = resolveImplementationFinishMode({', dirty);
+  const commitScope = source.indexOf("'docs:commit-scope:check'", finishMode);
   const push = source.indexOf("git(['push', '-u', 'origin', branch]", commitScope);
-  const checks = source.indexOf('waitForPrChecksToRegister(root, prNumber)', push);
-  const merge = source.indexOf("'pr', 'merge'", checks);
+  const registration = source.indexOf('waitForPrChecksToRegister(root, prNumber)', push);
+  const completion = source.indexOf('waitForPrChecksToComplete(root, prNumber)', registration);
+  const merge = source.indexOf("'pr', 'merge'", completion);
   const mainPull = source.indexOf("git(['pull', '--ff-only', 'origin', DEFAULT_BRANCH]", merge);
   const localDerivedSync = source.indexOf('syncLocalDerivedArtifacts({ root, quiet: true });', mainPull);
   const cleanup = source.indexOf('cleanupBranch(root, branch)', localDerivedSync);
@@ -209,10 +232,12 @@ test('finish conserva validadores y paraleliza el tramo local pesado antes de co
   assert.ok(treqCheck > parallel && treqCheck < dirty);
   assert.ok(treqTest > parallel && treqTest < dirty);
   assert.ok(lint > parallel && lint < dirty);
-  assert.ok(commitScope > dirty);
+  assert.ok(finishMode > dirty);
+  assert.ok(commitScope > finishMode);
   assert.ok(push > commitScope);
-  assert.ok(checks > push);
-  assert.ok(merge > checks);
+  assert.ok(registration > push);
+  assert.ok(completion > registration);
+  assert.ok(merge > completion);
   assert.ok(mainPull > merge);
   assert.ok(localDerivedSync > mainPull);
   assert.ok(cleanup > localDerivedSync);
@@ -220,12 +245,14 @@ test('finish conserva validadores y paraleliza el tramo local pesado antes de co
   assert.ok(main >= 0);
   assert.ok(awaitedFinish > main);
   assert.ok(awaitedMain > awaitedFinish);
+  assert.equal(finishSource.includes("'--watch'"), false);
   assert.match(source, /import \{ spawn, spawnSync \} from 'node:child_process';/u);
   assert.match(source, /const CHECK_REGISTRATION_ATTEMPTS = 60;/u);
   assert.match(source, /const CHECK_REGISTRATION_INTERVAL_MS = 2000;/u);
-  assert.match(source, /const CHECK_WATCH_INTERVAL_SECONDS = 2;/u);
   assert.match(source, /const MERGE_CONFIRM_ATTEMPTS = 60;/u);
   assert.match(source, /const MERGE_CONFIRM_INTERVAL_MS = 2000;/u);
+  assert.match(source, /FINISH_MODE: finishMode/u);
+  assert.match(source, /CHECKS_COMPLETED: completedCheckCount/u);
   assert.match(source, /LOCAL_DERIVED_SYNC: 'PASS_AFTER_MERGE'/u);
 });
 

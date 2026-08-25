@@ -8,9 +8,11 @@ import {
   buildPrBody,
   classifyInfraPath,
   classifyOpsPath,
+  classifyPrChecksCompletionProbe,
   classifyPrChecksProbe,
   classifyTaskPath,
   infraBranchName,
+  isTransientPrChecksFailure,
   opsBranchName,
   parsePorcelainPaths,
   parseTaskTreqDeclaration,
@@ -158,6 +160,35 @@ test('falla cerrado si metadata TREQ y seccion derivada contradicen', () => {
 });
 
 test('distingue checks aun no registrados de errores reales de gh', () => {
+  assert.equal(
+    isTransientPrChecksFailure({
+      status: 1,
+      stdout: '',
+      stderr: 'HTTP 499: 499 (https://api.github.com/graphql)',
+    }),
+    true,
+  );
+  assert.equal(
+    isTransientPrChecksFailure({
+      status: 1,
+      stdout: '',
+      stderr: 'HTTP 403: Resource not accessible',
+    }),
+    false,
+  );
+  assert.deepEqual(
+    classifyPrChecksProbe({
+      status: 1,
+      stdout: '',
+      stderr: 'HTTP 499: 499 (https://api.github.com/graphql)',
+    }),
+    {
+      state: 'RETRY',
+      count: 0,
+      detail: 'HTTP 499: 499 (https://api.github.com/graphql)',
+    },
+  );
+
   assert.deepEqual(
     classifyPrChecksProbe({
       status: 1,
@@ -199,23 +230,60 @@ test('distingue checks aun no registrados de errores reales de gh', () => {
   );
 });
 
-test('finish espera checks antes de watch y verifica el cierre completo antes de PASS', () => {
+test('clasifica polling de CI como pending, pass o fail sin depender de watch', () => {
+  const pending = classifyPrChecksCompletionProbe({
+    status: 8,
+    stdout: JSON.stringify([
+      { name: 'VENTO Required Gate', state: 'IN_PROGRESS', bucket: 'pending', link: '' },
+    ]),
+    stderr: '',
+  });
+  assert.deepEqual(pending, { state: 'WAIT', count: 1, detail: '' });
+
+  const passed = classifyPrChecksCompletionProbe({
+    status: 0,
+    stdout: JSON.stringify([
+      { name: 'VENTO Required Gate', state: 'SUCCESS', bucket: 'pass', link: '' },
+      { name: 'Validar plan canonico', state: 'SKIPPED', bucket: 'skipping', link: '' },
+    ]),
+    stderr: '',
+  });
+  assert.deepEqual(passed, { state: 'PASS', count: 2, detail: '' });
+
+  const failed = classifyPrChecksCompletionProbe({
+    status: 1,
+    stdout: JSON.stringify([
+      { name: 'VENTO Required Gate', state: 'FAILURE', bucket: 'fail', link: '' },
+    ]),
+    stderr: '',
+  });
+  assert.equal(failed.state, 'FAIL');
+  assert.equal(failed.count, 1);
+  assert.match(failed.detail, /VENTO Required Gate:FAILURE/u);
+});
+
+test('finish usa polling reintentable de checks y verifica el cierre completo antes de PASS', () => {
   const source = fs.readFileSync('scripts/docs/task-branch-lifecycle.mjs', 'utf8');
+  const finish = source.indexOf('export function finishTask');
+  const finishEnd = source.indexOf('function runInfraLocalValidation', finish);
+  const finishSource = source.slice(finish, finishEnd);
   const registrationCall = source.indexOf('const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);');
-  const watchCall = source.indexOf("'--watch',", registrationCall);
-  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', watchCall);
+  const completionCall = source.indexOf('const completedCheckCount = waitForPrChecksToComplete(root, prNumber);', registrationCall);
+  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', completionCall);
   const ancestorCheck = source.indexOf("['merge-base', '--is-ancestor', headSha, 'HEAD']", mergeWait);
   const cleanupCall = source.indexOf('const cleanup = cleanupBranch(root, branch);', ancestorCheck);
   const passOutput = source.indexOf("ESTADO: 'PASS'", cleanupCall);
 
   assert.ok(registrationCall >= 0);
-  assert.ok(watchCall > registrationCall);
-  assert.ok(mergeWait > watchCall);
+  assert.ok(completionCall > registrationCall);
+  assert.ok(mergeWait > completionCall);
   assert.ok(ancestorCheck > mergeWait);
   assert.ok(cleanupCall > ancestorCheck);
   assert.ok(passOutput > cleanupCall);
+  assert.equal(finishSource.includes("'--watch'"), false);
   assert.match(source, /HEAD_VALIDATED_IN_MAIN: 'SI'/u);
   assert.match(source, /CHECKS_REGISTERED: registeredCheckCount/u);
+  assert.match(source, /CHECKS_COMPLETED: completedCheckCount/u);
 });
 
 
@@ -226,7 +294,8 @@ test('infra publish usa el mismo cierre fuerte y solo permite PASS al final', ()
   const localValidation = source.indexOf('runInfraLocalValidation(root, dirty);', branchCreate);
   const push = source.indexOf("git(['push', '-u', 'origin', branch]", localValidation);
   const registration = source.indexOf('const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);', push);
-  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', registration);
+  const completion = source.indexOf('const completedCheckCount = waitForPrChecksToComplete(root, prNumber);', registration);
+  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', completion);
   const ancestor = source.indexOf("['merge-base', '--is-ancestor', headSha, 'HEAD']", mergeWait);
   const cleanup = source.indexOf('const cleanup = cleanupBranch(root, branch);', ancestor);
   const ready = source.indexOf("READY_FOR_NEXT_TASK: 'SI'", cleanup);
@@ -236,7 +305,8 @@ test('infra publish usa el mismo cierre fuerte y solo permite PASS al final', ()
   assert.ok(localValidation > branchCreate);
   assert.ok(push > localValidation);
   assert.ok(registration > push);
-  assert.ok(mergeWait > registration);
+  assert.ok(completion > registration);
+  assert.ok(mergeWait > completion);
   assert.ok(ancestor > mergeWait);
   assert.ok(cleanup > ancestor);
   assert.ok(ready > cleanup);
@@ -249,7 +319,8 @@ test('ops publish usa cierre fuerte y solo permite PASS despues de integrar y li
   const localValidation = source.indexOf('runOpsLocalValidation(root, dirty);', branchCreate);
   const push = source.indexOf("git(['push', '-u', 'origin', branch]", localValidation);
   const registration = source.indexOf('const registeredCheckCount = waitForPrChecksToRegister(root, prNumber);', push);
-  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', registration);
+  const completion = source.indexOf('const completedCheckCount = waitForPrChecksToComplete(root, prNumber);', registration);
+  const mergeWait = source.indexOf('const merged = waitForPrMerged(root, prNumber, headSha);', completion);
   const ancestor = source.indexOf("['merge-base', '--is-ancestor', headSha, 'HEAD']", mergeWait);
   const cleanup = source.indexOf('const cleanup = cleanupBranch(root, branch);', ancestor);
   const ready = source.indexOf("READY_FOR_NEXT_TASK: 'SI'", cleanup);
@@ -259,7 +330,8 @@ test('ops publish usa cierre fuerte y solo permite PASS despues de integrar y li
   assert.ok(localValidation > branchCreate);
   assert.ok(push > localValidation);
   assert.ok(registration > push);
-  assert.ok(mergeWait > registration);
+  assert.ok(completion > registration);
+  assert.ok(mergeWait > completion);
   assert.ok(ancestor > mergeWait);
   assert.ok(cleanup > ancestor);
   assert.ok(ready > cleanup);
