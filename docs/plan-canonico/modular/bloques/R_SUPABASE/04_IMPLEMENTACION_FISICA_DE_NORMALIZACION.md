@@ -5975,7 +5975,862 @@ Esta tarea documental no:
 `DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos`
 
 
-### [ ] DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos
+### ✅ DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos
+
+**Estado:** APROBADA
+**Tarea anterior:** DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio
+**Tarea siguiente:** DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para clasificar, diseñar, secuenciar, aplicar y verificar constraints declarativos únicamente después de reconciliar el universo del paquete, preservando identidad, scope, historia, versiones, rollback y fronteras con índices, triggers y auditoría, sin materializar DDL, DML, migraciones, constraints, índices, triggers ni cambios remotos durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `DATA-NORM-DB-006::<package_id>`, sujetas a `POST_E5_PACKAGE`, al handoff válido de `DATA-NORM-DB-005::<package_id>`, al expediente E5 aplicable, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Objetivo
+
+Definir el contrato físico-documental que determina cuándo un invariante de un paquete puede convertirse en constraint de PostgreSQL después de reconciliar datos, qué clase de constraint corresponde, qué evidencia debe existir antes de endurecerlo, cómo se despliega y valida sin confundir identidad con coincidencia textual, y qué responsabilidades permanecen reservadas a las tareas posteriores.
+
+DB-006 no declara que todo dato reconciliado deba producir un constraint. La salida válida de una futura instancia puede ser un constraint aplicable, un handoff a otra tarea, un bloqueo explícito o la conclusión documentada de que no se requiere enforcement declarativo adicional.
+
+#### 2. Resultado canónico
+
+Cada futura instancia `DATA-NORM-DB-006::<package_id>` deberá producir una matriz cerrada de invariantes candidatos y asignar exactamente una disposición a cada uno.
+
+La instancia deberá distinguir como mínimo:
+
+- invariantes de dominio representables mediante `CHECK`;
+- integridad referencial representable mediante `FOREIGN KEY`;
+- obligatoriedad representable mediante `NOT NULL`;
+- identidad directa representable mediante `PRIMARY KEY`;
+- unicidad directa sobre columnas representable mediante `UNIQUE`;
+- unicidad que depende de expresión, predicado, representación normalizada o índice especializado y por tanto pertenece al handoff de DB-007;
+- invariantes que permanecen en servicio/RPC porque no son declarativos, locales a una fila o relacionalmente expresables de forma segura;
+- candidatos bloqueados por evidencia, drift, colisiones, historia, consumidores, semántica o recuperación insuficientes;
+- casos donde no se requiere un nuevo constraint.
+
+#### 3. Topología y cardinalidad vinculantes
+
+DB-006 conserva:
+
+```text
+mode = TEMPLATE_PER_PACKAGE
+execution_gate = POST_E5_PACKAGE
+instance_pattern = DATA-NORM-DB-006::<package_id>
+```
+
+No existe `DATA-NORM-DB-006::GLOBAL`.
+
+La aprobación documental de esta tarea define la plantilla. No materializa una instancia física ni convierte automáticamente un `package_id` en ejecutable.
+
+#### 4. Gate temporal
+
+Una instancia física solo podrá evaluarse después del gate `POST_E5_PACKAGE`.
+
+El gate requiere que el paquete aplicable exista y que su expediente E5 sea compatible con el invariante que se pretende endurecer. Un constraint no puede utilizarse para completar retroactivamente decisiones de dominio, identidad, alcance, autorización o transición que E5 todavía no haya cerrado.
+
+#### 5. Fuentes vinculantes de una instancia
+
+Una futura instancia deberá consumir como mínimo:
+
+1. el expediente E5 del `package_id`;
+2. el handoff de `DATA-NORM-DB-005::<package_id>`;
+3. las decisiones aplicables de identidad, unicidad y scope;
+4. la semántica vigente de normalización y comparación;
+5. el estado remoto recapturado de tablas, columnas, constraints e índices;
+6. los writers, RPC, jobs, imports y consumidores que puedan producir o depender del invariante;
+7. los contratos de rollback y recuperación aplicables;
+8. los requisitos de prueba vigentes;
+9. el estado de RLS, grants y fronteras de producto cuando el objeto sea alcanzable por rutas expuestas;
+10. la historia de migraciones del paquete y su digest.
+
+Ningún nombre parecido de constraint, índice o helper legacy adquiere autoridad por coincidencia nominal.
+
+#### 6. Handoff obligatorio recibido de DB-005
+
+DB-006 no inicia enforcement si DB-005 no entrega un cierre utilizable.
+
+El handoff mínimo deberá declarar:
+
+- `package_id`;
+- `backfill_run_id` o evidencia explícita de `NOT_REQUIRED`;
+- `source_cut_reference`;
+- `version_set_digest`;
+- mapping y algoritmo aplicables;
+- estado final de cada unidad relevante;
+- cero `unknown_outcomes`;
+- cero efectos hijos críticos sin reconciliar;
+- integridad referencial y crosswalks aplicables reconciliados;
+- bloqueos restantes explícitamente fuera del universo del invariante;
+- source hashes y conteos de cierre;
+- estado de constraints e índices recapturado;
+- rollback o recovery path vigente;
+- invariantes que el paquete declara elegibles para evaluación en DB-006.
+
+`FAILED_PARTIAL`, `ROLLBACK_REQUIRED`, `COMPENSATION_REQUIRED` o un bloqueo material impiden endurecer el invariante afectado.
+
+#### 7. Revalidación inmediatamente anterior al enforcement
+
+La evidencia de DB-005 es una entrada, no una reserva indefinida del estado.
+
+Antes de cualquier materialización futura DB-006 deberá volver a comprobar:
+
+1. identidad del ambiente;
+2. commit candidato;
+3. historial de migraciones;
+4. definición de tabla y columnas;
+5. constraints e índices vigentes;
+6. conteos y hashes relevantes;
+7. ausencia de nuevas filas violatorias desde el corte;
+8. writers actualmente habilitados;
+9. versiones de política, mapping y algoritmo;
+10. consumidores y relaciones afectados;
+11. rollback disponible;
+12. autorización física de la instancia.
+
+Drift material invalida la parte de la evidencia que dependa de ese estado.
+
+#### 8. Disposiciones cerradas por invariante
+
+Cada candidato termina exactamente en una de estas disposiciones:
+
+| Disposición | Significado |
+| --- | --- |
+| `NO_CONSTRAINT_REQUIRED` | el estado correcto no exige un nuevo constraint declarativo |
+| `CHECK_CONSTRAINT` | invariante de fila expresable de forma declarativa y acotada |
+| `FOREIGN_KEY_CONSTRAINT` | relación estable con identidad referencial explícita |
+| `NOT_NULL_CONSTRAINT` | ausencia prohibida por contrato y datos reconciliados |
+| `DIRECT_UNIQUE_CONSTRAINT` | unicidad certificada sobre columnas directas y scope completo |
+| `PRIMARY_KEY_CONSTRAINT` | identidad material estable, no nula y certificada |
+| `HANDOFF_TO_DB_007` | enforcement requiere índice de expresión, predicado, representación normalizada o estrategia de índice especializada |
+| `SERVICE_OR_RPC_INVARIANT` | la regla requiere semántica, estado externo, revisión, fuzzy matching, autorización contextual o workflow |
+| `BLOCKED` | falta una precondición material para decidir o aplicar de forma segura |
+
+Ninguna disposición se infiere únicamente a partir del nombre actual de un índice o de la existencia de valores repetidos.
+
+#### 9. Condiciones universales de elegibilidad
+
+Antes de clasificar un candidato como físicamente aplicable deberán demostrarse simultáneamente:
+
+1. invariante aprobado y propietario conocido;
+2. coordenada completa de dominio y scope;
+3. población de datos reconciliada;
+4. casos positivos y negativos definidos;
+5. ausencia de violaciones no resueltas;
+6. semántica de `NULL`, ausencia y temporalidad definida;
+7. consumidores compatibles;
+8. writers inventariados;
+9. rollback o compensación disponible;
+10. costo de lock y validación comprendido;
+11. compatibilidad con particionado cuando aplique;
+12. efecto sobre índices conocido;
+13. error y conducta de rechazo conocidos;
+14. ausencia de invasión sobre DB-007, DB-008 o DB-009;
+15. VITAL fuera del alcance transversal de Vento OS.
+
+#### 10. Prohibición de inferir identidad desde texto
+
+Coincidencia exacta, forma equivalente, clave de búsqueda, plegado de tildes, alias, tokenización, transliteración, similitud, slug, `lower`, `trim`, frecuencia o popularidad no constituyen por sí mismos identidad estable.
+
+DB-006 no convierte:
+
+- una clave de búsqueda en clave empresarial;
+- una colisión en duplicado confirmado;
+- un nombre coincidente en relación;
+- un resultado de ranking en sobreviviente;
+- un helper legacy en política de unicidad;
+- un índice único existente en evidencia de que su semántica actual sea correcta.
+
+La identidad o unicidad endurecida debe estar certificada por su contrato de dominio y scope.
+
+#### 11. `CHECK`
+
+Un `CHECK_CONSTRAINT` solo es elegible cuando la regla:
+
+- depende de columnas de la fila actual;
+- es determinista respecto de los datos persistidos que evalúa;
+- no necesita subconsultas ni conocimiento global;
+- no ejecuta revisión humana;
+- no consulta servicios externos;
+- no decide identidad por similitud;
+- no depende de selección implícita de versión;
+- conserva exactamente la semántica de `NULL` definida por el dominio;
+- tiene corpus positivo y negativo suficiente.
+
+Un `CHECK` que evalúa `UNKNOWN` no equivale a `NOT NULL`; si la ausencia está prohibida, la obligatoriedad debe declararse separadamente.
+
+#### 12. `FOREIGN KEY`
+
+Un `FOREIGN_KEY_CONSTRAINT` exige:
+
+1. identidad estable de la entidad referenciada;
+2. columnas referenciadas con unicidad válida para ese propósito;
+3. crosswalks y remapeos reconciliados;
+4. cero referencias huérfanas dentro del universo aplicable;
+5. definición explícita de `MATCH` cuando la clave sea compuesta y nullable;
+6. decisión explícita de `ON UPDATE`;
+7. decisión explícita de `ON DELETE`;
+8. impacto conocido sobre escrituras y locks de ambas relaciones;
+9. conducta histórica definida para referencias que deban conservar identidad anterior.
+
+Ninguna FK se crea para “arreglar” relaciones aún ambiguas.
+
+#### 13. `NOT NULL`
+
+`NOT_NULL_CONSTRAINT` exige que el dominio distinga claramente entre:
+
+- ausencia válida;
+- desconocido;
+- no aplicable;
+- pendiente;
+- valor aún no capturado;
+- placeholder;
+- vacío textual;
+- valor obligatorio.
+
+La ausencia de nulos en una muestra no autoriza `NOT NULL`.
+
+Antes del enforcement futuro deberá probarse el universo completo aplicable o una garantía equivalente y reproducible que cubra las filas existentes.
+
+#### 14. `UNIQUE` directo
+
+`DIRECT_UNIQUE_CONSTRAINT` solo cubre columnas directas cuya combinación representa una unicidad certificada.
+
+Debe declararse:
+
+- entidad y dominio;
+- columnas determinantes;
+- scope completo;
+- padre o camino cuando aplique;
+- estado y vigencia cuando afecten unicidad;
+- semántica de nulos;
+- consumidores;
+- excepción permitida, si existe;
+- rollback;
+- comportamiento concurrente.
+
+Una consulta previa de “no existen duplicados” no sustituye protección atómica.
+
+#### 15. `PRIMARY KEY`
+
+`PRIMARY_KEY_CONSTRAINT` solo procede cuando la combinación elegida constituye identidad material estable y permanente del registro.
+
+No se promociona a primary key:
+
+- una representación de búsqueda;
+- un código temporal;
+- un valor derivado mutable;
+- una etiqueta;
+- un nombre;
+- una clave externa sin contrato de estabilidad;
+- una combinación cuyo scope aún pueda cambiar.
+
+La existencia de una PK legacy no implica que DB-006 deba recrearla o redefinirla.
+
+#### 16. Semántica de `NULL` en unicidad
+
+Para cada unicidad directa deberá declararse expresamente si múltiples `NULL`:
+
+- representan ausencias independientes y pueden coexistir; o
+- deben considerarse equivalentes para el invariante certificado.
+
+PostgreSQL 17 trata por defecto los nulos como distintos en unicidad. `NULLS NOT DISTINCT` solo es admisible cuando el contrato de dominio exige tratar esos nulos como equivalentes.
+
+No se usará una técnica de `COALESCE` con sentinel para alterar semántica de nulos salvo que exista una representación estructural explícitamente aprobada; si la solución depende de una expresión o predicado, la responsabilidad física se clasifica para DB-007.
+
+#### 17. Unicidad compuesta y scope
+
+Una unicidad compuesta deberá incluir toda dimensión necesaria para distinguir legítimamente entidades.
+
+Según el dominio puede requerir, entre otras:
+
+- tenant o producto;
+- sede;
+- ubicación;
+- padre o camino;
+- contexto funcional;
+- emisor o fuente;
+- estado;
+- intervalo de vigencia;
+- producto;
+- UOM estructural;
+- identificador externo estable.
+
+Omitir una dimensión para simplificar el constraint es un error semántico, no una optimización.
+
+#### 18. Frontera con DB-007
+
+DB-006 no materializa los índices de búsqueda ni la unicidad normalizada reservados a DB-007.
+
+El resultado será `HANDOFF_TO_DB_007` cuando el enforcement dependa de:
+
+- expresión de normalización;
+- `lower`, `trim`, `unaccent`, transliteración o helper equivalente como componente de identidad;
+- predicado parcial;
+- representación derivada de búsqueda;
+- índice de expresión;
+- índice parcial;
+- estrategia de ranking;
+- búsqueda tolerante;
+- unicidad sobre una proyección normalizada.
+
+DB-006 puede definir la invariancia y los prerequisitos que DB-007 debe conservar, pero no absorbe su materialización.
+
+#### 19. Índices existentes y constraints respaldados por índice
+
+Un índice único existente se clasifica antes de reutilizarse.
+
+Para considerar un índice como respaldo de un `UNIQUE` o `PRIMARY KEY` directo deberá demostrarse que:
+
+- es b-tree compatible;
+- está válido y listo;
+- no es parcial;
+- no contiene expresiones;
+- usa las columnas exactas del invariante;
+- su ordenamiento y operator classes son compatibles;
+- no está ligado a una semántica legacy incompatible;
+- no cambia el scope certificado.
+
+Un índice parcial o con expresiones permanece índice; no se reinterpreta como constraint declarativo equivalente.
+
+#### 20. Staging con `NOT VALID`
+
+Cuando PostgreSQL y la forma del objeto lo permitan, una futura instancia podrá separar incorporación y validación.
+
+`NOT VALID` se limita contractualmente a:
+
+- `CHECK`;
+- `FOREIGN KEY`.
+
+No se declara `NOT VALID` para `UNIQUE` ni `PRIMARY KEY`.
+
+El staging no equivale a cierre: mientras `convalidated = false`, el paquete debe declarar expresamente que el constraint todavía no certifica todas las filas históricas.
+
+#### 21. Validación de constraints staged
+
+Un `CHECK` o `FOREIGN KEY` staged solo alcanza estado cerrado después de una validación completa satisfactoria sobre el universo histórico aplicable.
+
+La evidencia deberá conservar:
+
+- constraint exacto;
+- definición exacta;
+- relación;
+- ambiente;
+- commit;
+- migration digest;
+- source cut;
+- inicio y fin;
+- resultado;
+- locks observados;
+- filas violatorias, si existieran;
+- conteos y reconciliación posteriores.
+
+Un fallo de validación no autoriza borrar evidencia ni relajar silenciosamente la definición.
+
+#### 22. `UNIQUE` y `PRIMARY KEY` no usan el flujo `NOT VALID`
+
+La incorporación de `UNIQUE` o `PRIMARY KEY` requiere que la población existente satisfaga el invariante en el momento de su materialización.
+
+Si una estrategia futura utiliza un índice único preexistente para adjuntar un constraint, ese índice debe cumplir las restricciones de PostgreSQL para `USING INDEX`.
+
+La necesidad de un índice parcial o de expresión descalifica ese camino y conserva el objeto bajo la frontera de DB-007.
+
+#### 23. Locks, scans y presupuesto operativo
+
+Cada instancia deberá estimar antes de materializar:
+
+- tablas afectadas;
+- tamaño y cardinalidad;
+- forma de lock;
+- tablas referenciadas;
+- scans requeridos;
+- escrituras concurrentes;
+- ventana operativa;
+- timeout;
+- riesgo de deadlock;
+- impacto de índices;
+- observabilidad;
+- condición de aborto.
+
+La corrección semántica no justifica una operación físicamente insegura.
+
+#### 24. Constraints sobre tablas particionadas
+
+Antes de elegir una estrategia se recaptura si la tabla es particionada o participa en una jerarquía de particiones.
+
+Las restricciones específicas de PostgreSQL para:
+
+- `UNIQUE`;
+- `PRIMARY KEY`;
+- `FOREIGN KEY`;
+- `NOT VALID`;
+- attach/validate;
+
+se consideran parte del gate físico.
+
+No se generaliza desde una tabla no particionada hacia una particionada.
+
+#### 25. Deferrabilidad
+
+`DEFERRABLE` no se usa como solución genérica a errores de orden.
+
+Una futura instancia solo podrá emplear deferrabilidad cuando:
+
+1. PostgreSQL la soporte para la clase de constraint;
+2. la transacción empresarial requiera legítimamente una violación intermedia;
+3. el estado final de la transacción deba satisfacer el invariante;
+4. callers y RPC conozcan esa semántica;
+5. el impacto de rendimiento esté medido.
+
+En ausencia de necesidad explícita, la conducta inmediata conserva preferencia.
+
+#### 26. Acciones referenciales
+
+`ON UPDATE` y `ON DELETE` se deciden por semántica de la relación, no por conveniencia.
+
+Cada FK declarará explícitamente una de las conductas soportadas y justificará por qué:
+
+- preserva historia;
+- no elimina hechos por cascada accidental;
+- no deja referencias ambiguas;
+- no transforma una desactivación en borrado;
+- no atraviesa fronteras de producto;
+- mantiene idempotencia y rollback.
+
+`CASCADE` nunca se infiere por tratarse de una relación “hija”.
+
+#### 27. Naming y trazabilidad de constraints
+
+Todo constraint nuevo deberá tener identidad estable y trazable.
+
+El expediente físico conservará como mínimo:
+
+- `constraint_key` lógico;
+- schema;
+- tabla;
+- columnas;
+- clase;
+- definición;
+- política o invariante propietario;
+- `package_id`;
+- migration id;
+- commit;
+- versión;
+- estado de validación;
+- supersesión cuando aplique.
+
+El nombre físico no sustituye esa trazabilidad.
+
+#### 28. Migraciones forward-only
+
+Toda materialización futura de DB-006 se origina y versiona en `vento-shell`.
+
+No se considera canónico:
+
+- crear el constraint solo desde Dashboard;
+- cambiarlo manualmente y documentarlo después;
+- ocultar drift editando historial;
+- depender de SQL no versionado;
+- aplicar una definición distinta entre ambientes bajo el mismo identificador.
+
+La transición normal es forward-only y conserva una estrategia separada de recuperación.
+
+#### 29. Drift
+
+Antes de cada etapa física se recapturan:
+
+- definición de tabla;
+- columnas;
+- nulabilidad;
+- constraints;
+- índices;
+- particiones;
+- triggers relevantes;
+- RLS/grants cuando puedan afectar la ruta de escritura;
+- writers;
+- migration history.
+
+Drift material produce `BLOCKED` hasta reconciliación.
+
+#### 30. Idempotencia y replay
+
+Reintentar una materialización no puede:
+
+- duplicar constraints;
+- cambiar el significado bajo el mismo identificador;
+- asumir que un nombre existente equivale a la definición esperada;
+- marcar como validado un constraint aún no validado;
+- continuar después de un timeout sin consultar el estado real;
+- ejecutar una definición nueva con la idempotency key de una anterior.
+
+Misma identidad física y misma definición confirmada producen no-op verificable; identidad igual con definición distinta produce conflicto.
+
+#### 31. Versiones y procedencia
+
+Cada constraint gobernado se vincula al mismo corte semántico que justificó su invariante.
+
+La instancia conserva:
+
+- `resolved_version_set`;
+- `version_set_digest`;
+- fuente de la política;
+- mapping;
+- algoritmo cuando aplique;
+- source cut;
+- backfill run;
+- constraint definition digest;
+- migration digest.
+
+No existe selección `latest` implícita durante el enforcement.
+
+#### 32. Frontera servicio/RPC
+
+El constraint es defensa declarativa final para un invariante que realmente pertenece a la base de datos; no reemplaza al servicio de dominio ni a la frontera RPC.
+
+La RPC conserva:
+
+- autenticación;
+- autorización;
+- idempotencia;
+- revalidación de estado;
+- concurrencia;
+- evaluación semántica;
+- persistencia atómica;
+- auditoría raíz.
+
+DB-006 no traslada capitalización, diccionario, aliases, similitud, revisión, selección de sobreviviente ni resolución de identidad hacia PostgreSQL.
+
+#### 33. Frontera con DB-008
+
+DB-006 no crea triggers de negocio ni usa triggers para reparar silenciosamente valores que violarían un constraint.
+
+Si una defensa adicional requiere trigger, el handoff queda reservado a DB-008.
+
+Un trigger futuro no podrá:
+
+- decidir semántica;
+- ejecutar fuzzy matching;
+- fusionar entidades;
+- corregir texto visible sin comando;
+- seleccionar versiones alternativas;
+- llamar red;
+- ejecutar scans globales.
+
+#### 34. RLS, grants y superficie expuesta
+
+Un constraint no reemplaza RLS, grants ni autorización.
+
+La instancia deberá verificar que:
+
+- el writer autorizado puede completar la operación válida;
+- un rechazo no expone datos sensibles por error o logging;
+- funciones privilegiadas conservan privilegio mínimo;
+- el cliente no recibe credenciales de servicio;
+- una ruta directa no evade la RPC gobernada;
+- VITAL permanece fuera de la política transversal de Vento OS.
+
+Cambiar RLS, Auth, Storage, Realtime, Edge Functions, cron o secretos no pertenece a esta tarea salvo que otra tarea propietaria lo autorice expresamente.
+
+#### 35. Baseline remoto de referencia
+
+La recaptura documental de `vento-os-dev` sobre los schemas Vento OS, excluyendo VITAL de la política transversal, observó:
+
+```text
+constraints totales: 1598
+CHECK: 520
+FOREIGN KEY: 726
+PRIMARY KEY: 261
+UNIQUE constraints: 91
+columnas NOT NULL: 2053
+constraints no validados: 13
+índices únicos: 432
+índices únicos parciales o con expresiones: 50
+índices únicos planos no adjuntos a constraint: 30
+```
+
+Los 13 constraints no validados observados son 12 `CHECK` y 1 `FOREIGN KEY`, todos en `public`.
+
+Estas cifras son un baseline de referencia del corte documental y deben recapturarse por instancia. No constituyen un inventario cerrado futuro ni autorizan cambios.
+
+#### 36. Constraints legacy y objetos ya existentes
+
+La existencia de objetos legacy exige clasificación, no adopción automática.
+
+Por cada objeto relevante la instancia determina:
+
+- `KEEP_AS_IS`;
+- `VALIDATE_EXISTING`;
+- `REPLACE_FORWARD`;
+- `SUPERSEDE`;
+- `HANDOFF_TO_DB_007`;
+- `BLOCKED_FOR_REVIEW`;
+- `OUT_OF_SCOPE`.
+
+Un constraint `NOT VALID` preexistente no se valida por pertenecer al mismo schema; primero debe demostrarse que su semántica sigue siendo correcta y que su propietario canónico permite cerrarlo.
+
+#### 37. Rollback y recuperación
+
+Antes de materializar un constraint debe existir una estrategia de recuperación proporcional.
+
+El plan distinguirá:
+
+- retirar un constraint nuevo;
+- revertir una activación de enforcement;
+- reconstruir una derivación;
+- conservar o restaurar rutas de escritura;
+- resolver transacciones desconocidas;
+- preservar crosswalks e historia;
+- compensar efectos posteriores cuando una inversa ya no sea segura.
+
+Eliminar un constraint puede retirar también su índice subyacente cuando el índice sea propiedad del constraint; esa dependencia debe conocerse antes del cambio.
+
+#### 38. Verificación posterior
+
+Una instancia física no cierra por éxito del DDL.
+
+La verificación posterior debe demostrar, según aplique:
+
+1. constraint presente con definición esperada;
+2. validación completa cuando corresponda;
+3. datos reconciliados;
+4. cero filas violatorias;
+5. cero huérfanos;
+6. unicidad correcta bajo scope y semántica de nulos;
+7. writers válidos continúan funcionando;
+8. writers inválidos fallan de forma cerrada;
+9. RPC conserva comportamiento esperado;
+10. RLS/grants continúan correctos;
+11. locks y rendimiento dentro del presupuesto;
+12. migración registrada;
+13. rollback/recovery continúa disponible;
+14. consumidores no interpretan el error como éxito;
+15. evidencia ligada al mismo commit, paquete y corte.
+
+#### 39. Evidence bundle físico futuro
+
+El evidence bundle de una instancia incluirá como mínimo:
+
+```text
+instance_id
+package_id
+environment_identity
+candidate_commit_sha
+migration_history_digest
+source_cut_reference
+backfill_run_id_or_not_required_evidence
+resolved_version_set
+version_set_digest
+constraint_inventory_before
+constraint_plan
+constraint_definition_digests
+lock_and_scan_plan
+writer_registry_version
+consumer_registry_version
+rollback_plan_id
+migration_ids
+constraint_inventory_after
+validation_results
+row_and_relationship_reconciliation
+performance_observation
+security_observation
+outcome
+```
+
+Campos ausentes que sean materiales producen bloqueo, no asunción.
+
+#### 40. Handoff hacia DB-007
+
+DB-006 entrega a DB-007 únicamente los candidatos cuyo enforcement físico requiere índices de búsqueda o unicidad normalizada.
+
+El handoff conserva:
+
+- `package_id`;
+- invariante propietario;
+- coordenada de identidad/scope;
+- semántica de nulos;
+- representación derivada autorizada, si existe;
+- algoritmo y versiones;
+- colisiones ya resueltas;
+- definición de búsqueda;
+- consumidores;
+- baseline de índices;
+- motivos por los que un constraint directo no es suficiente;
+- rollback y condición de validación.
+
+DB-007 no debe inferir identidad desde el índice solicitado.
+
+#### 41. Handoff posterior a DB-008, DB-009 y DB-010
+
+DB-006 no desarrolla esas tareas, pero deja fronteras explícitas:
+
+- DB-008 recibe únicamente necesidades de trigger defensivo que no correspondan a un constraint declarativo;
+- DB-009 conserva persistencia de auditoría operacional de valor previo, resultante y versión de regla;
+- DB-010 conserva pruebas físicas finales de idempotencia, rollback y ausencia de cambios semánticos.
+
+Un constraint confirmado no permite omitir esos handoffs cuando sean aplicables.
+
+#### 42. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea materializa en forma documental obligaciones ya registradas y no altera el registro canónico de requisitos de prueba.
+
+#### 43. Cobertura de prueba vigente reutilizada
+
+La cobertura existente que gobierna esta plantilla incluye, entre otros:
+
+- `TREQ-DATA-140`: compatibilidad física y medición antes de activar representaciones e índices;
+- `TREQ-DATA-145`: ciclo de vida versionado y transición cerrada;
+- `TREQ-DATA-148`: compatibilidad y cambio atómico sin mezclar contratos;
+- `TREQ-DATA-149`: trazabilidad before/after y autoridad;
+- `TREQ-DATA-152`: recuperación y rollback;
+- `TREQ-DATA-154`: identidad lógica de operación, versiones, reversibilidad y outcome;
+- `TREQ-DATA-157`: revalidación de fuente, versión y estado antes de mutar;
+- `TREQ-DATA-158`: determinismo sin dependencias ambientales implícitas;
+- `TREQ-DATA-165`: modos cerrados de unicidad y enforcement únicamente cuando esté certificado;
+- `TREQ-DATA-166`: coordenada completa de política de unicidad;
+- `TREQ-DATA-167`: scopes cerrados y composición explícita;
+- `TREQ-DATA-168`: prohibición de usar claves de búsqueda y helpers legacy como identidad;
+- `TREQ-DATA-169`: semántica separada de nulos, ausencia y claves incompletas;
+- `TREQ-DATA-170`: historia, vigencia y supersesión separadas;
+- `TREQ-DATA-175`: identidad jerárquica con scope completo;
+- `TREQ-DATA-176`: unicidad estructural UOM;
+- `TREQ-DATA-194`: frontera RPC transaccional para mutaciones gobernadas;
+- `TREQ-DATA-198`: atomicidad entre fuente, derivaciones y auditoría raíz;
+- `TREQ-DATA-199`: paridad de versiones entre capas;
+- `TREQ-DATA-200`: idempotencia y concurrencia;
+- `TREQ-DATA-202`: control de escrituras directas y bypass;
+- `TREQ-DATA-206`: colocación de unicidad y necesidad de protección atómica para enforcement certificado;
+- `TREQ-DATA-210`: fallo cerrado;
+- `TREQ-DATA-211`: privilegio mínimo y autorización;
+- `TREQ-DATA-212`: costo acotado de defensas de base;
+- `TREQ-DATA-213`: mapeo de helpers, funciones, triggers, clientes, imports, jobs e índices legacy antes de transición;
+- `TREQ-DATA-214`: corpus integral de conformidad entre capas.
+
+Esta enumeración es trazabilidad de cobertura vigente y no modifica esos requisitos.
+
+#### 44. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería integral del checkout corresponde a la rama documental después de incorporar el bloque al archivo propietario. |
+| LOCAL | PASS | El artefacto fue contrastado contra estructura canónica, metadata obligatoria, orden de cabecera, secciones requeridas, cardinalidad de evidencia, continuidad, declaración TREQ cero, UTF-8, LF, whitespace y reglas semánticas reproducibles del entregable aislado. |
+| REMOTA | PASS | Se contrastaron `main`, owner R, contratos de transición, 04A DATA, package `@vento/data-normalization`, documentación vigente de PostgreSQL 17 y metadatos read-only de `vento-os-dev`; la recaptura confirmó PostgreSQL 17.6 y el baseline actual de constraints, nulabilidad e índices únicos. |
+| OPERATIVA | NOT_EXECUTED | Locks, scans, writers concurrentes, staging, validación física, rendimiento, rollback y comportamiento por `package_id` pertenecen a futuras instancias físicas autorizadas. |
+| FÍSICA | NOT_APPLICABLE | Esta definición documental no autoriza DDL, DML, migraciones, constraints, índices, triggers ni cambios remotos. |
+
+#### 45. Decisiones vinculantes
+
+1. DB-006 es `TEMPLATE_PER_PACKAGE`, nunca global.
+2. El gate físico es `POST_E5_PACKAGE`.
+3. DB-005 debe cerrar y reconciliar antes de endurecer el invariante.
+4. Toda instancia recaptura drift antes del efecto.
+5. `NO_CONSTRAINT_REQUIRED` es una salida válida.
+6. `CHECK`, FK, `NOT NULL`, unicidad directa y PK se evalúan separadamente.
+7. Una coincidencia textual nunca certifica identidad.
+8. `SEARCH_FORM_KEY`, `SEARCH_ACCENT_KEY`, tokens, aliases y similitud no son claves empresariales.
+9. `CHECK` no reemplaza `NOT NULL`.
+10. FK exige crosswalks y referencias reconciliados.
+11. Acciones referenciales no se infieren.
+12. `NOT VALID` se limita a `CHECK` y FK.
+13. `UNIQUE` y PK no utilizan `NOT VALID`.
+14. Un constraint staged no está cerrado hasta validación completa.
+15. Semántica de nulos se declara por política.
+16. `NULLS NOT DISTINCT` requiere decisión explícita del dominio.
+17. Expresiones o predicados de unicidad hacen handoff a DB-007.
+18. Índices parciales o con expresiones no se reinterpretan como constraints directos.
+19. Deferrabilidad exige necesidad transaccional explícita.
+20. Particionado se evalúa antes de elegir estrategia.
+21. Locks y scans forman parte del gate físico.
+22. Nombre existente no demuestra equivalencia.
+23. Reintento consulta estado real después de timeout.
+24. Toda migración futura se origina y versiona en `vento-shell`.
+25. Dashboard no es fuente canónica de DDL.
+26. El constraint no sustituye servicio ni RPC.
+27. DB-008 conserva triggers defensivos.
+28. DB-009 conserva auditoría operacional física.
+29. DB-010 conserva certificación física final.
+30. RLS y grants continúan siendo controles separados.
+31. VITAL permanece fuera del alcance transversal.
+32. Rollback se diseña antes de materializar.
+33. El DDL exitoso no equivale a cierre verificado.
+34. El baseline remoto documental debe recapturarse por instancia.
+35. Esta definición no modifica Supabase.
+36. Esta definición no modifica 04A.
+
+#### 46. Criterios de aceptación
+
+DB-006 queda documentalmente aceptable cuando:
+
+1. conserva `TEMPLATE_PER_PACKAGE`;
+2. conserva `POST_E5_PACKAGE`;
+3. define el handoff obligatorio de DB-005;
+4. exige revalidación de drift;
+5. clasifica todos los invariantes candidatos;
+6. distingue constraints de service/RPC;
+7. define `CHECK`, FK, `NOT NULL`, `UNIQUE` directo y PK;
+8. fija semántica de nulos;
+9. protege scopes compuestos;
+10. conserva identidad separada de búsqueda;
+11. separa unicidad directa de la unicidad normalizada de DB-007;
+12. documenta límites de `NOT VALID`;
+13. contempla locks, scans y tablas particionadas;
+14. define deferrabilidad y acciones referenciales;
+15. clasifica objetos legacy;
+16. define idempotencia y drift;
+17. conserva versionado y procedencia;
+18. mantiene RPC como frontera transaccional;
+19. mantiene DB-008, DB-009 y DB-010 fuera del alcance;
+20. define rollback;
+21. define verificación posterior y evidence bundle;
+22. mantiene cero cambios TREQ;
+23. contiene exactamente las cinco clases de evidencia requeridas;
+24. termina con continuidad canónica y no desarrolla DB-007.
+
+#### 47. Límites
+
+Esta tarea documental no:
+
+- crea migraciones;
+- crea, valida, altera o elimina constraints;
+- modifica nulabilidad;
+- crea o elimina índices;
+- crea triggers;
+- ejecuta backfills;
+- cambia valores;
+- valida físicamente constraints legacy;
+- cambia `ON DELETE` u `ON UPDATE`;
+- activa reglas;
+- modifica RPC;
+- modifica RLS o grants;
+- modifica Auth, Storage, Realtime, Edge Functions, cron o secretos;
+- modifica consumidores;
+- decide identidades o duplicados;
+- selecciona sobrevivientes;
+- modifica el registro 04A;
+- ejecuta cambios sobre VITAL;
+- desarrolla DB-007, DB-008, DB-009 o DB-010.
+
+---
+
+#### 48. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`DATA-NORM-DB-005 — Ejecutar backfills aprobados por dominio`
+
+**TAREA ACTUAL APROBADA**
+`DATA-NORM-DB-006 — Implementar constraints después de reconciliar datos`
+
+**SIGUIENTE TAREA RESERVADA**
+`DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada`
+
+
 ### [ ] DATA-NORM-DB-007 — Implementar índices de búsqueda y unicidad normalizada
 ### [ ] DATA-NORM-DB-008 — Implementar triggers únicamente como barrera defensiva final
 ### [ ] DATA-NORM-DB-009 — Registrar valor previo, valor resultante y versión de regla
