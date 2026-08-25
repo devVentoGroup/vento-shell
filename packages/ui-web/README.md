@@ -32,6 +32,8 @@ Raiz privada de autoria para la implementacion visual web compartida de Vento OS
 
 `SHELL-UI-013::GLOBAL` materializa internamente `PrimaryActionPanel` como superficie server-safe de jerarquia para una unica accion principal ya resuelta, con identidad estable, cuatro estados presentacionales y controles compuestos externamente, sin seleccionar acciones, resolver autoridad, ejecutar efectos empresariales, publicar una API npm ni migrar consumidores.
 
+`SHELL-UI-014::GLOBAL` materializa internamente `SensitiveActionConfirmation` como superficie server-safe de confirmacion explicita para una accion sensible ya clasificada por su propietario, con identidad estable, cuatro estados presentacionales y controles compuestos externamente, sin clasificar riesgo, resolver autoridad, ejecutar efectos empresariales, publicar una API npm ni migrar consumidores.
+
 ## Responsabilidad canonica
 
 La raiz contiene implementacion visual web compartida aprobada por sus tareas propietarias.
@@ -86,6 +88,9 @@ Fronteras vinculantes:
 - `src/PrimaryActionPanel.tsx` como implementacion interna de `PrimaryActionPanel`.
 - `src/primary-action-panel.css` como estilos internos de jerarquia, estados y reflow de `PrimaryActionPanel`.
 - `scripts/validate-primary-action-panel.mjs` como validador fisico de `SHELL-UI-013::GLOBAL`.
+- `src/SensitiveActionConfirmation.tsx` como implementacion interna de `SensitiveActionConfirmation`.
+- `src/sensitive-action-confirmation.css` como estilos internos de consecuencia, estados, controles y reflow de `SensitiveActionConfirmation`.
+- `scripts/validate-sensitive-action-confirmation.mjs` como validador fisico de `SHELL-UI-014::GLOBAL`.
 - Sin `version` npm.
 - Sin `main`, `types` o `exports` en el manifest del package.
 - Sin `dependencies`, `devDependencies` o `peerDependencies` propias.
@@ -628,6 +633,46 @@ La materializacion global no migra aplicaciones. Consumidores conceptualmente el
 
 Consumidores migrados por UI013: 0/7. Copias legacy retiradas por UI013: 0. Releases publicadas por UI013: 0. Cambios Supabase por UI013: 0.
 
+## SensitiveActionConfirmation
+
+`SensitiveActionConfirmation` presenta una confirmacion explicita para una unica accion sensible cuya identidad, politica y necesidad de confirmacion ya fueron resueltas por la superficie propietaria. Conserva `actionId`, copy humano, consecuencia material, estado presentacional y controles compuestos; no clasifica sensibilidad, no concede autoridad, no reautentica, no ejecuta mutaciones y no declara resultados empresariales.
+
+Contrato interno materializado:
+
+- `open` controla exclusivamente si la proyeccion debe renderizarse; abrir la superficie no confirma la accion;
+- `ariaLabel` nombra la superficie de forma humana y localizable;
+- `actionId` conserva la identidad estable de la accion original y no se deriva de copy, titulo ni contenedor;
+- `title`, `description` y `consequence` son obligatorios y permanecen visibles;
+- `resourceLabel`, `contextSummary` y `statusLabel` son opcionales y llegan preparados por el propietario;
+- `SensitiveActionConfirmationState` contiene exactamente `READY`, `PENDING`, `BLOCKED` y `RESULT_UNKNOWN`;
+- `reasonControl` es opcional y no traslada catalogos, validacion, persistencia o auditoria de razones al package;
+- `confirmControl` y `cancelControl` son obligatorios y cada uno ocupa exactamente un slot compuesto externamente;
+- la raiz `section` usa `aria-label`, `data-action-id` y `data-state`; `PENDING` expone `aria-busy` sin declarar exito ni fracaso;
+- sin `use client`, hooks, timers, red, router, storage, Supabase, sesion, credenciales, permisos, roles, reautenticacion, callbacks empresariales ni motor de transiciones;
+- compatible con SSR y con controles cliente compuestos por la superficie propietaria.
+
+### Politica, autoridad y resultado
+
+La necesidad de presentar la superficie permanece fuera del componente. `EXPLICIT_CONFIRMATION` y `REASON_AND_CONFIRMATION` pueden producir una proyeccion compatible; `SERVER_REVALIDATION` permanece en la frontera autoritativa y `EXTERNAL_RESULT_CONFIRMATION` permanece separada de la intencion local. La variante visual `danger` no clasifica sensibilidad, no concede permiso y no sustituye reautenticacion.
+
+`READY` significa que la proyeccion propietaria permite revisar y emitir la intencion; no garantiza permiso irrevocable ni resultado. `PENDING` significa que una operacion equivalente ya fue enviada o esta en curso y no existe resultado final. `BLOCKED` conserva visible una confirmacion relevante mientras una precondicion externa impide confirmar. `RESULT_UNKNOWN` conserva la incertidumbre y no vuelve automaticamente a `READY`; la reconciliacion y el retry equivalente pertenecen al propietario.
+
+La confirmacion solo ocurre mediante el `confirmControl` compuesto. Abrir, cerrar, usar backdrop, `Escape`, navegar, cambiar foco, hacer scroll o agotar un timeout no confirma. `cancelControl` abandona la intencion visual previa al envio cuando el propietario determina que es seguro; no cancela automaticamente una operacion remota ya enviada.
+
+### Button, contenedor y foco
+
+`confirmControl` y `cancelControl` pueden componer el `Button` compartido. La superficie no redefine variantes, tamanos, `disabled`, `loading`, tipo nativo, foco ni semantica de activacion de `Button`.
+
+La primitiva compartida no impone `dialog`, portal, backdrop, focus trap, cierre por `Escape` ni retorno de foco. Esas responsabilidades pertenecen al contenedor accesible elegido por la composicion propietaria cuando la modalidad lo requiera. De este modo la misma semantica puede vivir en dialogo, sheet u otra geometria sin convertir el package en propietario del lifecycle de apertura o de la ejecucion.
+
+### Consumidores, legacy y rollback
+
+SHELL queda `CANDIDATO_A_ADOPTAR_CON_RECONCILIACION_DE_MODAL_LOCAL`; su `src/components/ui/Modal.tsx` permanece legacy y no se promueve ni modifica por UI014. NEXO, FOGO, ORIGO, VISO, PULSO y NUMERA quedan `CANDIDATO_A_ADOPTAR_DONDE_EL_CONTRATO_EXIJA_CONFIRMACION`.
+
+Consumidores esperados: 7. Consumidores materializados en la matriz: 7. Faltantes: 0. Duplicados: 0. adoptados fisicamente: 0. Consumidores migrados por UI014: 0/7. Copias legacy retiradas por UI014: 0. Releases publicadas por UI014: 0. Cambios Supabase por UI014: 0.
+
+Paridad, adopcion, compatibilidad, observacion y rollback permanecen en `SHELL-MIG-*`, `SHELL-CI-*` y propietarios correspondientes.
+
 ## Accesibilidad
 
 `Alert` no impone una region viva universal. El consumidor aporta `role`, `aria-live`, `aria-atomic` u otros atributos ARIA cuando el escenario dinamico lo exige.
@@ -654,6 +699,8 @@ Consumidores migrados por UI013: 0/7. Copias legacy retiradas por UI013: 0. Rele
 
 `PrimaryActionPanel` conserva region nombrada mediante `ariaLabel`, label principal visible, estado ocupado en `PENDING`, copy material de bloqueo cuando el propietario lo aporta, orden primary-then-secondary, reflow y jerarquia no dependiente solo de color; no fuerza foco ni crea una region viva universal.
 
+`SensitiveActionConfirmation` conserva nombre accesible mediante `ariaLabel`, titulo, descripcion y consecuencia visibles, estado ocupado en `PENDING`, copy de bloqueo o incertidumbre cuando el propietario lo aporta y controles explicitos de cancelacion y confirmacion. La primitiva no implementa focus trap, portal, backdrop ni cierre por `Escape`; el contenedor propietario conserva foco seguro, teclado completo y retorno de foco cuando la modalidad lo requiera.
+
 La certificacion de contraste, tecnologias de asistencia, paridad visual y comportamiento por consumidor permanece en los gates de package, UX y migracion aplicables antes de retiro legacy.
 
 ## Superficie publica diferida
@@ -664,14 +711,14 @@ La habilitacion de una superficie publica versionada, compatibilidad, publicacio
 
 ## Continuidad reservada
 
-ÚLTIMA TAREA APROBADA: `SHELL-UI-012`
+ÚLTIMA TAREA APROBADA: `SHELL-UI-013`
 
-TAREA ACTUAL APROBADA: `SHELL-UI-013`
+TAREA ACTUAL APROBADA: `SHELL-UI-014`
 
-SIGUIENTE TAREA RESERVADA: `SHELL-UI-014`
+SIGUIENTE TAREA RESERVADA: `SHELL-UI-015`
 
-`SHELL-UI-013::GLOBAL` materializa solamente la superficie presentacional de una accion principal ya resuelta. `SHELL-UI-014` conserva confirmaciones de acciones sensibles; UI013 no adelanta politicas de confirmacion, reautenticacion, ejecucion autoritativa, mutaciones, migracion de consumidores ni patrones posteriores.
+`SHELL-UI-014::GLOBAL` materializa solamente la superficie presentacional de confirmacion para una accion sensible ya clasificada y preparada por su propietario. `SHELL-UI-015` conserva el diagnostico compartido de contexto; UI014 no adelanta diagnostico, clasificacion de sensibilidad, autorizacion, reautenticacion, ejecucion autoritativa, mutaciones, migracion de consumidores ni patrones posteriores.
 
 ## Fuera de alcance
 
-Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, componentes, estilos o validadores previos de `packages/ui-web` incluidos `Button`, `AppShell`, `TaskNavigation` y `ProcessStatusLine`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, seleccion empresarial de accion principal, registros de acciones, rutas empresariales, permission codes, roles, permisos, grants, contexto efectivo, `OperatingGate`, estados o transiciones de proceso, guards, Server Actions, endpoints, mutaciones, idempotencia, confirmaciones sensibles de `SHELL-UI-014`, reautenticacion, reason codes, offline, sincronizacion, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, adopcion de consumidores, retiro legacy, Supabase ni el registro 04A/TREQ.
+Esta instancia no modifica `package.json` raiz, `package-lock.json`, `packages/ui-web/package.json`, `src/components/ui`, `templates/app-shell-standard`, componentes, estilos o validadores previos de `packages/ui-web` incluidos `Button`, `AppShell`, `TaskNavigation`, `ProcessStatusLine` y `PrimaryActionPanel`, `packages/contracts`, `packages/os-context`, `packages/supabase`, `ProfileMenu`, `AppSwitcher`, `VentoShell`, `VentoChrome`, aplicaciones consumidoras, clasificacion empresarial de sensibilidad, registros de acciones, rutas empresariales, permission codes, roles, permisos, grants, contexto efectivo, `OperatingGate`, estados o transiciones de proceso, guards, Server Actions, endpoints, mutaciones, idempotencia, reautenticacion, reason codes, doble control, cancelacion empresarial, reconciliacion de proveedor, diagnostico de contexto de `SHELL-UI-015`, offline, sincronizacion, SQL, DDL, DML, migraciones, RLS, RPC, Storage, Realtime, Edge Functions, datos, exports npm, versionado, publicacion, adopcion de consumidores, retiro legacy, Supabase ni el registro 04A/TREQ.
