@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1046** |
+| Aprobadas | **1047** |
 | En propuesta | **0** |
-| No iniciadas | **548** |
+| No iniciadas | **547** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.62% (1046/1594)** |
+| Porcentaje de completamiento | **65.68% (1047/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas | ✅ APROBADA |
-| Tarea actual | `INT-DB-003` — Crear staging inmutable de payloads externos | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-DB-004` — Crear mapeos de identificadores externos y canónicos | ⬜ NO INICIADA |
+| Última aprobada | `INT-DB-003` — Crear staging inmutable de payloads externos | ✅ APROBADA |
+| Tarea actual | `INT-DB-004` — Crear mapeos de identificadores externos y canónicos | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-DB-005` — Crear restricciones e índices de idempotencia | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1256,7 +1256,7 @@
 | ✅ APROBADA | `DATA-NORM-DB-010` | Probar idempotencia, rollback y ausencia de cambios semánticos | `bloques/R_SUPABASE/04_IMPLEMENTACION_FISICA_DE_NORMALIZACION.md` |
 | ✅ APROBADA | `INT-DB-001` | Crear registro de sistemas e integraciones externas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `INT-DB-002` | Crear referencias de credenciales sin almacenar secretos en tablas expuestas | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
-| ⬜ NO INICIADA | `INT-DB-003` | Crear staging inmutable de payloads externos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
+| ✅ APROBADA | `INT-DB-003` | Crear staging inmutable de payloads externos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-004` | Crear mapeos de identificadores externos y canónicos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-005` | Crear restricciones e índices de idempotencia | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-006` | Crear cuarentena y registro de errores no procesables | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |

@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1046** |
+| Tareas aprobadas | **1047** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **548** |
+| Tareas no iniciadas | **547** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **65.62% (1046/1594)** |
+| Porcentaje de completamiento | **65.68% (1047/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas** |
-| Tarea actual | **INT-DB-003 — Crear staging inmutable de payloads externos** |
+| Última tarea aprobada | **INT-DB-003 — Crear staging inmutable de payloads externos** |
+| Tarea actual | **INT-DB-004 — Crear mapeos de identificadores externos y canónicos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-DB-004 — Crear mapeos de identificadores externos y canónicos** |
+| Siguiente tarea | **INT-DB-005 — Crear restricciones e índices de idempotencia** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 45 de 51 aprobadas; INT-DB-003 pendiente** |
+| Progreso del bloque | **BLOQUE R: 46 de 51 aprobadas; INT-DB-004 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-027::GLOBAL** |
-| Carril documental | **ACTIVO — INT-DB-003** |
+| Carril documental | **ACTIVO — INT-DB-004** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-027::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-DB-002` — Crear referencias de credenciales sin almacenar secretos en tablas expuestas |
-| Tarea actual | `INT-DB-003` — Crear staging inmutable de payloads externos — **NO INICIADA** |
-| Siguiente tarea | `INT-DB-004` — Crear mapeos de identificadores externos y canónicos |
+| Última aprobada | `INT-DB-003` — Crear staging inmutable de payloads externos |
+| Tarea actual | `INT-DB-004` — Crear mapeos de identificadores externos y canónicos — **NO INICIADA** |
+| Siguiente tarea | `INT-DB-005` — Crear restricciones e índices de idempotencia |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 45 DE 51 APROBADAS — ACTUAL INT-DB-003** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 46 DE 51 APROBADAS — ACTUAL INT-DB-004** |
 | Implementación física | **AUTH-DB-027::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas
-        ↓
-TAREA ACTUAL
 INT-DB-003 — Crear staging inmutable de payloads externos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-DB-004 — Crear mapeos de identificadores externos y canónicos
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-DB-005 — Crear restricciones e índices de idempotencia
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 45 de 51 tareas aprobadas
+BLOQUE R — 46 de 51 tareas aprobadas
 ```
