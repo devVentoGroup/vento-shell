@@ -82,13 +82,33 @@ jobs:
       - name: Instalar dependencias bloqueadas
         run: npm ci --prefer-offline --no-audit --no-fund
 
+      - name: Verificar alcance fisico autorizado de implementacion
+        if: github.event_name == 'pull_request' && steps.scope.outputs.implementation_pr == 'true'
+        shell: bash
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          HEAD_REF: ${{ github.head_ref }}
+        run: npm run docs:commit-scope:check -- --range "$BASE_SHA..$HEAD_SHA" --implementation-head-ref "$HEAD_REF"
+
       - name: Verificar aislamiento de commits en pull request inicial
-        if: github.event_name == 'pull_request' && github.event.action != 'synchronize'
+        if: github.event_name == 'pull_request' && github.event.action != 'synchronize' && steps.scope.outputs.implementation_pr != 'true'
         run: npm run docs:commit-scope:check -- --range "${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
 
       - name: Verificar aislamiento de commits incorporados por el push actual
-        if: github.event_name == 'pull_request' && github.event.action == 'synchronize'
-        run: npm run docs:commit-scope:check -- --range "${{ github.event.before }}..${{ github.event.pull_request.head.sha }}"
+        if: github.event_name == 'pull_request' && github.event.action == 'synchronize' && steps.scope.outputs.implementation_pr != 'true'
+        shell: bash
+        env:
+          BEFORE_SHA: ${{ github.event.before }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if git cat-file -e "$BEFORE_SHA^{commit}" 2>/dev/null && git merge-base --is-ancestor "$BEFORE_SHA" "$HEAD_SHA"; then
+            RANGE="$BEFORE_SHA..$HEAD_SHA"
+          else
+            RANGE="$BASE_SHA..$HEAD_SHA"
+          fi
+          npm run docs:commit-scope:check -- --range "$RANGE"
 
       - name: Verificar aislamiento de commits en push
         if: github.event_name == 'push'

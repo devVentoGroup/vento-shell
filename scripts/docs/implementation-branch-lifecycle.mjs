@@ -6,7 +6,6 @@ import { spawn, spawnSync } from 'node:child_process';
 
 import {
   classifyPrChecksProbe,
-  classifyTaskPath,
   parsePorcelainPaths,
   resolveNpmInvocation,
   waitForPrChecksToComplete,
@@ -14,6 +13,7 @@ import {
 import {
   instanceRecordRelativePath,
   loadImplementationControl,
+  pendingInstanceRecord,
   validateImplementationControl,
 } from './implementation-control.mjs';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
@@ -27,6 +27,13 @@ const CHECK_REGISTRATION_ATTEMPTS = 60;
 const CHECK_REGISTRATION_INTERVAL_MS = 2000;
 const MERGE_CONFIRM_ATTEMPTS = 60;
 const MERGE_CONFIRM_INTERVAL_MS = 2000;
+const SHELL_REPOSITORY = 'vento-group-sas/vento-shell';
+const DERIVED_IMPLEMENTATION_PROJECTIONS = new Set([
+  'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md',
+  'docs/plan-canonico/modular/active-sequence.json',
+  'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md',
+  'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
+]);
 
 function fail(message, code = 1) {
   const error = new Error(message);
@@ -264,25 +271,135 @@ export function assertInstanceCanFinish(instance) {
   return true;
 }
 
-export function classifyImplementationPath(filePath) {
-  const normalized = String(filePath ?? '').replaceAll('\\', '/').replace(/^\.\//u, '');
+function normalizeRepoPath(value) {
+  return String(value ?? '').replaceAll('\\', '/').replace(/^\.\//u, '');
+}
+
+function authorizedImplementationScope(instance) {
+  const writable = new Set();
+  const executeOnly = new Set();
+  for (const entry of instance?.authorized_changes ?? []) {
+    if (String(entry?.repo ?? '').trim() !== SHELL_REPOSITORY) continue;
+    const relativePath = normalizeRepoPath(entry?.path);
+    if (!relativePath) continue;
+    const change = String(entry?.change ?? '').trim().toUpperCase();
+    if (change === 'EXECUTE_ONLY') executeOnly.add(relativePath);
+    else writable.add(relativePath);
+  }
+  return { writable, executeOnly };
+}
+
+export function isPristinePendingInstanceRecord(record, filePath) {
+  if (!record || typeof record !== 'object' || Array.isArray(record)) return false;
+  const expectedKeys = [
+    'instance_id',
+    'task_id',
+    'status',
+    'target_repositories',
+    'authorized_changes',
+    'validation_commands',
+    'authorization',
+    'evidence',
+  ].sort();
+  const actualKeys = Object.keys(record).sort();
+  if (JSON.stringify(actualKeys) !== JSON.stringify(expectedKeys)) return false;
+  if (!String(record.instance_id ?? '').trim() || !String(record.task_id ?? '').trim()) return false;
+  if (record.status !== 'PENDING_AUTHORIZATION') return false;
+  if (!Array.isArray(record.target_repositories) || record.target_repositories.length !== 0) return false;
+  if (!Array.isArray(record.authorized_changes) || record.authorized_changes.length !== 0) return false;
+  if (!Array.isArray(record.validation_commands) || record.validation_commands.length !== 0) return false;
+  if (record.authorization !== null) return false;
+  if (!Array.isArray(record.evidence) || record.evidence.length !== 0) return false;
+
+  let expectedPath;
+  try {
+    expectedPath = instanceRecordRelativePath(record.instance_id);
+  } catch {
+    return false;
+  }
+  if (normalizeRepoPath(filePath) !== expectedPath) return false;
+
+  const expected = pendingInstanceRecord({
+    instanceId: record.instance_id,
+    taskId: record.task_id,
+  });
+  return record.instance_id === expected.instance_id
+    && record.task_id === expected.task_id
+    && record.status === expected.status;
+}
+
+function pendingInstanceCandidate(root, relativePath, baseRef) {
+  const normalized = normalizeRepoPath(relativePath);
+  const prefix = 'docs/plan-canonico/modular/implementation-instances/';
+  if (!normalized.startsWith(prefix) || !normalized.endsWith('.json')) return null;
+
+  const baseProbe = git(['cat-file', '-e', `${baseRef}:${normalized}`], {
+    cwd: root,
+    allowFailure: true,
+  });
+  if (baseProbe.status === 0) return null;
+
+  const absolute = path.join(root, ...normalized.split('/'));
+  if (!fs.existsSync(absolute) || !fs.statSync(absolute).isFile()) return null;
+  try {
+    return JSON.parse(fs.readFileSync(absolute, 'utf8'));
+  } catch {
+    return null;
+  }
+}
+
+export function classifyImplementationPath(filePath, instance, {
+  root = null,
+  baseRef = `origin/${DEFAULT_BRANCH}`,
+} = {}) {
+  const normalized = normalizeRepoPath(filePath);
   if (!normalized) return 'OTHER';
-  if (classifyTaskPath(normalized) !== 'ALLOWED') return 'OTHER';
   if (normalized.startsWith('docs/plan-canonico/modular/') && /(?:^|\/)04A_/u.test(normalized)) {
     return 'TREQ_REGISTRY';
   }
-  return 'ALLOWED';
+
+  const scope = authorizedImplementationScope(instance);
+  if (scope.writable.has(normalized)) return 'AUTHORIZED';
+  if (scope.executeOnly.has(normalized)) return 'EXECUTE_ONLY';
+  if (DERIVED_IMPLEMENTATION_PROJECTIONS.has(normalized)) return 'DERIVED_PROJECTION';
+
+  if (root) {
+    const candidate = pendingInstanceCandidate(root, normalized, baseRef);
+    if (candidate && isPristinePendingInstanceRecord(candidate, normalized)) {
+      return 'DERIVED_PENDING_INSTANCE';
+    }
+  }
+  return 'OTHER';
 }
 
-function ensureImplementationPaths(paths) {
-  const treqPaths = paths.filter((entry) => classifyImplementationPath(entry) === 'TREQ_REGISTRY');
+export function assertImplementationPaths(paths, instance, options = {}) {
+  if (!instance || typeof instance !== 'object') fail('Instancia fisica invalida para validar alcance.');
+  const normalized = [...new Set((paths ?? []).map(normalizeRepoPath).filter(Boolean))].sort();
+  const classified = normalized.map((relativePath) => ({
+    path: relativePath,
+    kind: classifyImplementationPath(relativePath, instance, options),
+  }));
+
+  const treqPaths = classified.filter((entry) => entry.kind === 'TREQ_REGISTRY').map((entry) => entry.path);
   if (treqPaths.length > 0) {
     fail(`El cierre fisico no puede modificar el registro 04A/TREQ: ${treqPaths.join(', ')}.`);
   }
-  const unknown = paths.filter((entry) => classifyImplementationPath(entry) === 'OTHER');
-  if (unknown.length > 0) {
-    fail(`Hay archivos fuera del alcance automatizable de implementacion: ${unknown.join(', ')}.`);
+
+  const executeOnly = classified.filter((entry) => entry.kind === 'EXECUTE_ONLY').map((entry) => entry.path);
+  if (executeOnly.length > 0) {
+    fail(`La instancia declara EXECUTE_ONLY y no autoriza escritura sobre: ${executeOnly.join(', ')}.`);
   }
+
+  const derivedPending = classified.filter((entry) => entry.kind === 'DERIVED_PENDING_INSTANCE').map((entry) => entry.path);
+  if (derivedPending.length > 1) {
+    fail(`El lifecycle solo admite un nuevo registro PENDING_AUTHORIZATION derivado por cierre: ${derivedPending.join(', ')}.`);
+  }
+
+  const unknown = classified.filter((entry) => entry.kind === 'OTHER').map((entry) => entry.path);
+  if (unknown.length > 0) {
+    fail(`Hay archivos fuera de authorized_changes y de las proyecciones propias del lifecycle: ${unknown.join(', ')}.`);
+  }
+  return classified;
 }
 
 export function assertStartWorktree(paths, recordPath) {
@@ -560,10 +677,116 @@ function waitForPrMerged(root, prNumber, headSha) {
   fail(`PR #${prNumber} no confirmo estado MERGED.`);
 }
 
+function findMergedPrForBranch(root, branch) {
+  const list = gh([
+    'pr', 'list',
+    '--head', branch,
+    '--base', DEFAULT_BRANCH,
+    '--state', 'closed',
+    '--json', 'number,state,mergedAt,headRefOid,baseRefName',
+    '--limit', '10',
+  ], { cwd: root, allowFailure: true });
+  if (list.status !== 0) return null;
+  const rows = parseJsonOutput(list.stdout || '[]', 'gh pr list merged');
+  if (!Array.isArray(rows)) return null;
+  const row = rows.find((entry) => entry?.mergedAt || String(entry?.state ?? '').toUpperCase() === 'MERGED');
+  if (!row) return null;
+
+  return parseJsonOutput(
+    gh([
+      'pr', 'view', String(row.number),
+      '--json', 'number,state,mergedAt,mergeCommit,headRefOid,baseRefName',
+    ], { cwd: root }).stdout,
+    'gh pr view merged resume',
+  );
+}
+
+function ensureFinishBranch(root, branch) {
+  const startingBranch = currentBranch(root);
+  if (startingBranch === branch) return 'CURRENT';
+  if (startingBranch !== DEFAULT_BRANCH) {
+    fail(`IMPLEMENTATION_FINISH debe ejecutarse desde ${DEFAULT_BRANCH} o ${branch}; rama actual: ${startingBranch || 'DETACHED'}.`);
+  }
+  if (worktreePaths(root).length > 0) fail('IMPLEMENTATION_FINISH no puede recuperar rama desde main con worktree sucio.');
+
+  const localExists = localBranchExists(root, branch);
+  const remoteExists = remoteBranchExists(root, branch);
+  if (remoteExists) {
+    git(['fetch', 'origin', branch, '--quiet'], { cwd: root });
+    if (localExists) {
+      git(['switch', branch], { cwd: root });
+      git(['branch', '--set-upstream-to', `origin/${branch}`, branch], { cwd: root });
+    } else {
+      git(['switch', '-c', branch, '--track', `origin/${branch}`], { cwd: root });
+    }
+    return 'RESUMED_REMOTE';
+  }
+  if (localExists) {
+    git(['switch', branch], { cwd: root });
+    return 'RESUMED_LOCAL';
+  }
+  fail(`No existe ${branch} local ni remota para reanudar IMPLEMENTATION_FINISH.`);
+}
+
+function finalizeMergedImplementation({ root, id, instance, branch, mergedPr }) {
+  const headSha = String(mergedPr?.headRefOid ?? '').trim();
+  const mergeCommitSha = String(mergedPr?.mergeCommit?.oid ?? '').trim();
+  const prNumber = Number(mergedPr?.number);
+  if (!headSha || !mergeCommitSha || !Number.isFinite(prNumber)) {
+    fail('PR merged previo no conserva identidad suficiente para reanudar el cierre.');
+  }
+
+  if (currentBranch(root) !== DEFAULT_BRANCH) {
+    if (worktreePaths(root).length > 0) fail('No se puede finalizar merge previo con worktree sucio.');
+    git(['switch', DEFAULT_BRANCH], { cwd: root });
+  }
+  git(['pull', '--ff-only', 'origin', DEFAULT_BRANCH], { cwd: root });
+  syncLocalDerivedArtifacts({ root, quiet: true });
+
+  if (worktreePaths(root).length > 0) fail('main no quedo limpio al reanudar un merge ya completado.');
+  const mainSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+  if (mainSync.behind !== 0 || mainSync.ahead !== 0) fail(`main no quedo sincronizado 0/0: ${mainSync.raw}.`);
+
+  if (git(['merge-base', '--is-ancestor', headSha, 'HEAD'], { cwd: root, allowFailure: true }).status !== 0) {
+    fail(`El HEAD previamente mergeado ${headSha} no esta contenido en main.`);
+  }
+  if (git(['merge-base', '--is-ancestor', mergeCommitSha, 'HEAD'], { cwd: root, allowFailure: true }).status !== 0) {
+    fail(`El merge commit previo ${mergeCommitSha} no esta contenido en main.`);
+  }
+
+  const cleanup = cleanupBranch(root, branch);
+  const finalSync = syncCounts(root, `origin/${DEFAULT_BRANCH}`, 'HEAD');
+  if (finalSync.behind !== 0 || finalSync.ahead !== 0) fail(`main perdio sincronizacion al final: ${finalSync.raw}.`);
+
+  printResult({
+    ESTADO: 'PASS',
+    OPERACION: 'IMPLEMENTATION_FINISH',
+    INSTANCE_ID: id,
+    TASK_ID: instance.task_id,
+    BRANCH: branch,
+    BRANCH_MODE: 'RESUME_POST_MERGE',
+    FINISH_MODE: 'RESUME_POST_MERGE',
+    FILES: 'ALREADY_MERGED',
+    PHYSICAL_VALIDATIONS: 'REUSED_FROM_VERIFIED_EVIDENCE',
+    HEAD_VALIDATED: headSha,
+    PR: prNumber,
+    CHECKS_REGISTERED: 'ALREADY_MERGED',
+    CHECKS_COMPLETED: 'ALREADY_MERGED',
+    REQUIRED_CHECKS: 'PASS',
+    MERGE: 'PASS',
+    MERGE_COMMIT: mergeCommitSha,
+    MAIN_HEAD: currentHead(root),
+    SYNC_MAIN: '0/0',
+    WORKTREE: 'CLEAN',
+    LOCAL_BRANCH: cleanup.local,
+    REMOTE_BRANCH: cleanup.remote,
+    READY_TO_RESTART_WATCHER: 'SI',
+  });
+}
+
 export function buildImplementationPrBody(instanceId, changedPaths) {
   const id = normalizeInstanceId(instanceId);
   const paths = [...new Set((changedPaths ?? []).map((entry) => String(entry).replaceAll('\\', '/')))].sort();
-  ensureImplementationPaths(paths);
   return [
     'VENTO-TREQ-AFFECTED: NONE',
     `VENTO-TREQ-ZERO-REASON: ${id} cierra una instancia fisica ya gobernada por requisitos TREQ y este lifecycle bloquea cambios directos al registro 04A.`,
@@ -650,12 +873,17 @@ export async function finishImplementation({ instanceId, root = ensureRepository
   assertInstanceCanFinish(instance);
 
   const branch = implementationBranchName(id);
-  if (currentBranch(root) !== branch) {
-    fail(`IMPLEMENTATION_FINISH debe ejecutarse desde ${branch}; rama actual: ${currentBranch(root) || 'DETACHED'}.`);
-  }
 
   ensureGhReady(root);
   git(['fetch', 'origin', DEFAULT_BRANCH, '--quiet'], { cwd: root });
+
+  const mergedPr = findMergedPrForBranch(root, branch);
+  if (mergedPr) {
+    finalizeMergedImplementation({ root, id, instance, branch, mergedPr });
+    return;
+  }
+
+  const branchMode = ensureFinishBranch(root, branch);
 
   npm(['run', '--silent', 'docs:plan:build'], { cwd: root });
   npm(['run', '--silent', 'docs:plan:check'], { cwd: root });
@@ -677,16 +905,16 @@ export async function finishImplementation({ instanceId, root = ensureRepository
   });
 
   if (finishMode === 'CREATE_COMMIT') {
-    ensureImplementationPaths(dirty);
+    assertImplementationPaths(dirty, instance, { root, baseRef: `origin/${DEFAULT_BRANCH}` });
 
     git(['diff', '--check'], { cwd: root });
     git(['add', '--', ...dirty], { cwd: root });
-    npm(['run', '--silent', 'docs:commit-scope:check', '--', '--staged'], { cwd: root });
+    npm(['run', '--silent', 'docs:commit-scope:check', '--', '--staged', '--instance-id', id], { cwd: root });
     git(['diff', '--cached', '--check'], { cwd: root });
 
     const staged = git(['diff', '--cached', '--name-only', '--diff-filter=ACMRD'], { cwd: root })
       .stdout.split(/\r?\n/u).map((entry) => entry.trim()).filter(Boolean);
-    ensureImplementationPaths(staged);
+    assertImplementationPaths(staged, instance, { root, baseRef: `origin/${DEFAULT_BRANCH}` });
     if (staged.length === 0) fail('No hay archivos staged para cerrar la implementacion.');
 
     git(['commit', '-m', `implementation(${id}): verify`], { cwd: root });
@@ -701,7 +929,15 @@ export async function finishImplementation({ instanceId, root = ensureRepository
 
   const changedPaths = git(['diff', '--name-only', `origin/${DEFAULT_BRANCH}...HEAD`], { cwd: root })
     .stdout.split(/\r?\n/u).map((entry) => entry.trim()).filter(Boolean);
-  ensureImplementationPaths(changedPaths);
+  assertImplementationPaths(changedPaths, instance, { root, baseRef: `origin/${DEFAULT_BRANCH}` });
+
+  if (remoteBranchExists(root, branch)) {
+    git(['fetch', 'origin', branch, '--quiet'], { cwd: root });
+    const remoteSync = syncCounts(root, `origin/${branch}`, 'HEAD');
+    if (remoteSync.behind !== 0) {
+      fail(`origin/${branch} contiene commits que el HEAD local no tiene; cierre detenido sin force-push: ${remoteSync.raw}.`);
+    }
+  }
 
   git(['push', '-u', 'origin', branch], { cwd: root });
   const branchSync = syncCounts(root, `origin/${branch}`, 'HEAD');
@@ -770,6 +1006,7 @@ export async function finishImplementation({ instanceId, root = ensureRepository
     INSTANCE_ID: id,
     TASK_ID: instance.task_id,
     BRANCH: branch,
+    BRANCH_MODE: branchMode,
     FINISH_MODE: finishMode,
     FILES: changedPaths.length,
     PHYSICAL_VALIDATIONS: 'REUSED_FROM_VERIFIED_EVIDENCE',
@@ -821,7 +1058,7 @@ function usage() {
   console.log('  npm run docs:implementation:finish -- --instance-id SHELL-CON-001::GLOBAL');
   console.log('');
   console.log('START exige registro AUTHORIZED, trata continuidad/formato documentales historicos como advisory, crea o recupera implementation/<task-id>/<instance-key>, cambia a IN_PROGRESS, ejecuta el preflight fisico estricto una sola vez y reconcilia derivados con docs:plan:build + docs:plan:check antes de permitir codigo.');
-  console.log('FINISH exige VERIFIED, ejecuta docs:plan:build una sola vez para el estado final, valida plan, TREQ y lint localmente antes del commit, publica, espera CI, mergea, sincroniza main y limpia la rama.');
+  console.log('FINISH exige VERIFIED, valida alcance exacto desde authorized_changes, admite solo proyecciones derivadas controladas, reanuda post-commit/post-PR/post-merge sin force-push, espera CI, mergea, sincroniza main y limpia la rama.');
 }
 
 async function main() {

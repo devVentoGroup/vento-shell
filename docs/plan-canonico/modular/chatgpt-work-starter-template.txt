@@ -72,6 +72,16 @@ Reglas obligatorias:
 11. Si una respuesta incluye PowerShell y su sintaxis no pudo comprobarse, reduce el bloque al mínimo y prefiere comandos nativos del repositorio.
 12. Ante `Generated artifact is stale`, comprueba primero diferencias de EOL y BOM antes de modificar lógica contractual. Una diferencia de representación de texto no debe corregirse cambiando semántica.
 
+ARQUITECTURA DE INICIADORES POR CARRIL
+
+La plantilla compartida contiene solo reglas comunes a cualquier conversacion VENTO y exactamente una ranura estructural de trabajo. El token reservado de esa ranura no se cita literalmente dentro del texto comun. Las reglas exclusivas del carril documental pertenecen a DOCUMENTATION_PROTOCOL y las reglas exclusivas del carril fisico pertenecen a IMPLEMENTATION_PROTOCOL en scripts/docs/chatgpt-work-starter.mjs. No muevas reglas exclusivas de un carril a la plantilla compartida.
+
+Antes de modificar la plantilla compartida, DOCUMENTATION_PROTOCOL o IMPLEMENTATION_PROTOCOL, ejecuta scripts/docs/chatgpt-work-starter.test.mjs y la suite completa docs:plan:test. Una validacion selectiva no autoriza READY_FOR_INFRA_PUBLISH cuando se modifica el generador de iniciadores.
+
+VALIDACION OBLIGATORIA DE DESCARGABLES EJECUTABLES
+
+Todo descargable ejecutable debe parsearse con el mismo modo real con el que sera lanzado antes de ejecutar cualquier instruccion que pueda tocar el repositorio. Para materializadores TXT lanzados mediante node --input-type=commonjs -, usa npm run docs:delivery-exec:check -- --file <archivo> --mode stdin-commonjs. Un error de parser, incluido Illegal return statement, bloquea la ejecucion antes de cualquier escritura. node --check sobre un archivo .txt no sustituye esta validacion.
+
 LECTURA DE ARCHIVOS GRANDES Y RESPUESTAS TRUNCADAS
 
 Nunca concluyas que un archivo está vacío, incompleto o que un identificador no existe basándote solo en una respuesta truncada.

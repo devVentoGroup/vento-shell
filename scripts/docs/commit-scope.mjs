@@ -1,6 +1,14 @@
 import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import {
+  assertImplementationPaths,
+  implementationBranchName,
+  normalizeInstanceId,
+} from './implementation-branch-lifecycle.mjs';
+import { instanceRecordRelativePath } from './implementation-control.mjs';
 
 const TRANSVERSAL_PLAN_FILES = new Set([
   'docs/plan-canonico/modular/01_PROTOCOLO.md',
@@ -21,6 +29,62 @@ const DERIVED_PLAN_PROJECTIONS = new Set([
   'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md',
   'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
 ]);
+
+const IMPLEMENTATION_INSTANCES_DIRECTORY = 'docs/plan-canonico/modular/implementation-instances';
+
+function loadImplementationInstance(root, instanceId) {
+  const id = normalizeInstanceId(instanceId);
+  const relativePath = instanceRecordRelativePath(id);
+  const absolutePath = path.join(root, ...relativePath.split('/'));
+  if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isFile()) {
+    throw new Error(`No existe el registro de instancia ${id}.`);
+  }
+  const record = JSON.parse(fs.readFileSync(absolutePath, 'utf8'));
+  if (record.instance_id !== id) throw new Error(`El registro de ${id} no conserva instance_id exacto.`);
+  return record;
+}
+
+export function resolveImplementationInstanceFromHeadRef({
+  root = process.cwd(),
+  headRef,
+} = {}) {
+  const normalizedHead = String(headRef ?? '').trim();
+  if (!normalizedHead.startsWith('implementation/')) {
+    throw new Error(`Head ref fisico invalido: ${normalizedHead || 'VACIO'}.`);
+  }
+  const directory = path.join(root, ...IMPLEMENTATION_INSTANCES_DIRECTORY.split('/'));
+  if (!fs.existsSync(directory) || !fs.statSync(directory).isDirectory()) {
+    throw new Error('No existe implementation-instances.');
+  }
+  const matches = [];
+  for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    if (!entry.isFile() || !entry.name.endsWith('.json')) continue;
+    const record = JSON.parse(fs.readFileSync(path.join(directory, entry.name), 'utf8'));
+    if (!record?.instance_id) continue;
+    try {
+      if (implementationBranchName(record.instance_id) === normalizedHead) matches.push(record);
+    } catch {
+      // invalid records are handled by the implementation-control validator elsewhere
+    }
+  }
+  if (matches.length !== 1) {
+    throw new Error(`No se pudo resolver una instancia unica para ${normalizedHead}; coincidencias: ${matches.length}.`);
+  }
+  return matches[0];
+}
+
+function baseRefFromRange(range) {
+  const raw = String(range ?? '').trim();
+  const match = /^(.+?)\.{2,3}(.+)$/u.exec(raw);
+  if (!match) throw new Error(`Rango Git invalido: ${raw || 'VACIO'}.`);
+  return match[1];
+}
+
+function netPathsForRange(range) {
+  return runGit(['diff', '--name-only', '--diff-filter=ACMRD', range])
+    .split(/\r?\n/u)
+    .filter(Boolean);
+}
 
 function normalizePath(filePath) {
   return String(filePath).replaceAll('\\', '/').replace(/^\.\//u, '');
@@ -108,7 +172,7 @@ function pathsForCommit(commit) {
 }
 
 function parseArgs(argv) {
-  const args = { staged: false, range: null };
+  const args = { staged: false, range: null, instanceId: null, implementationHeadRef: null };
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--staged') args.staged = true;
@@ -116,15 +180,45 @@ function parseArgs(argv) {
       args.range = argv[index + 1];
       if (!args.range) throw new Error('falta el valor de --range.');
       index += 1;
+    } else if (token === '--instance-id') {
+      args.instanceId = argv[index + 1];
+      if (!args.instanceId) throw new Error('falta el valor de --instance-id.');
+      index += 1;
+    } else if (token === '--implementation-head-ref') {
+      args.implementationHeadRef = argv[index + 1];
+      if (!args.implementationHeadRef) throw new Error('falta el valor de --implementation-head-ref.');
+      index += 1;
     } else throw new Error(`argumento desconocido: ${token}.`);
   }
   if (args.staged && args.range) throw new Error('--staged y --range son mutuamente excluyentes.');
+  if (args.instanceId && args.implementationHeadRef) {
+    throw new Error('--instance-id y --implementation-head-ref son mutuamente excluyentes.');
+  }
+  if ((args.instanceId || args.implementationHeadRef) && !args.staged && !args.range) {
+    throw new Error('el alcance fisico exige --staged o --range.');
+  }
   return args;
 }
 
 export function main(argv = process.argv.slice(2)) {
   const args = parseArgs(argv);
   const reports = [];
+
+  if (args.instanceId || args.implementationHeadRef) {
+    const root = process.cwd();
+    const instance = args.instanceId
+      ? loadImplementationInstance(root, args.instanceId)
+      : resolveImplementationInstanceFromHeadRef({ root, headRef: args.implementationHeadRef });
+    const paths = args.range
+      ? netPathsForRange(args.range)
+      : runGit(['diff', '--cached', '--name-only', '--diff-filter=ACMRD'])
+        .split(/\r?\n/u)
+        .filter(Boolean);
+    const baseRef = args.range ? baseRefFromRange(args.range) : 'origin/main';
+    assertImplementationPaths(paths, instance, { root, baseRef });
+    console.log(`OK: alcance fisico ${instance.instance_id}; ${paths.length} archivo(s) dentro de authorized_changes o proyecciones del lifecycle.`);
+    return [{ label: instance.instance_id, report: { files: paths, scopes: { PHYSICAL_INSTANCE: paths }, errors: [], warnings: [] } }];
+  }
   if (args.range) {
     const commits = runGit(['rev-list', '--reverse', args.range]).split(/\r?\n/u).filter(Boolean);
     for (const commit of commits) {

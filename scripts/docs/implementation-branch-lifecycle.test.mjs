@@ -3,12 +3,14 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 import {
+  assertImplementationPaths,
   assertInstanceCanFinish,
   assertInstanceCanStart,
   assertStartWorktree,
   buildImplementationPrBody,
   classifyImplementationPath,
   implementationBranchName,
+  isPristinePendingInstanceRecord,
   normalizeInstanceId,
   physicalLaneBlockers,
   readinessBlockers,
@@ -104,17 +106,51 @@ test('finish crea commit con cambios y reanuda si el commit ya existe', () => {
   );
 });
 
-test('cierre fisico permite codigo gobernado pero bloquea 04A y archivos ajenos', () => {
-  assert.equal(classifyImplementationPath('packages/contracts/package.json'), 'ALLOWED');
+test('cierre fisico deriva el alcance de authorized_changes y no de carpetas globales', () => {
+  const instance = {
+    instance_id: 'AUTH-DB-015::GLOBAL',
+    authorized_changes: [
+      { repo: 'vento-group-sas/vento-shell', path: 'scripts/supabase/migration-manifest.mjs', change: 'CREATE' },
+      { repo: 'vento-group-sas/vento-shell', path: 'docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md', change: 'MODIFY' },
+      { repo: 'vento-group-sas/vento-shell', path: 'scripts/docs/implementation-branch-lifecycle.mjs', change: 'EXECUTE_ONLY' },
+      { repo: 'vento-group-sas/vento-shell', path: 'docs/plan-canonico/modular/implementation-instances/AUTH-DB-015__GLOBAL.json', change: 'MODIFY' },
+    ],
+  };
+
+  assert.equal(classifyImplementationPath('scripts/supabase/migration-manifest.mjs', instance), 'AUTHORIZED');
+  assert.equal(classifyImplementationPath('docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md', instance), 'AUTHORIZED');
+  assert.equal(classifyImplementationPath('scripts/docs/implementation-branch-lifecycle.mjs', instance), 'EXECUTE_ONLY');
+  assert.equal(classifyImplementationPath('docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md', instance), 'DERIVED_PROJECTION');
   assert.equal(
-    classifyImplementationPath('docs/plan-canonico/modular/implementation-instances/SHELL-CON-001__GLOBAL.json'),
-    'ALLOWED',
-  );
-  assert.equal(
-    classifyImplementationPath('docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_04_SHELL.md'),
+    classifyImplementationPath('docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_04_SHELL.md', instance),
     'TREQ_REGISTRY',
   );
-  assert.equal(classifyImplementationPath('.env.local'), 'OTHER');
+  assert.equal(classifyImplementationPath('src/app/page.tsx', instance), 'OTHER');
+  assert.throws(
+    () => assertImplementationPaths(['scripts/docs/implementation-branch-lifecycle.mjs'], instance),
+    /EXECUTE_ONLY/u,
+  );
+  assert.throws(
+    () => assertImplementationPaths(['src/app/page.tsx'], instance),
+    /fuera de authorized_changes/u,
+  );
+});
+
+test('borrador de la siguiente instancia solo es derivado si permanece pristino', () => {
+  const path = 'docs/plan-canonico/modular/implementation-instances/AUTH-DB-027__GLOBAL.json';
+  const pristine = {
+    instance_id: 'AUTH-DB-027::GLOBAL',
+    task_id: 'AUTH-DB-027',
+    status: 'PENDING_AUTHORIZATION',
+    target_repositories: [],
+    authorized_changes: [],
+    validation_commands: [],
+    authorization: null,
+    evidence: [],
+  };
+  assert.equal(isPristinePendingInstanceRecord(pristine, path), true);
+  assert.equal(isPristinePendingInstanceRecord({ ...pristine, status: 'AUTHORIZED' }, path), false);
+  assert.equal(isPristinePendingInstanceRecord({ ...pristine, extra: true }, path), false);
 });
 
 test('PR fisico declara TREQ NONE y lista el alcance real', () => {
@@ -125,12 +161,6 @@ test('PR fisico declara TREQ NONE y lista el alcance real', () => {
   assert.match(body, /^VENTO-TREQ-AFFECTED: NONE$/mu);
   assert.match(body, /SHELL-CON-001::GLOBAL/u);
   assert.match(body, /packages\/contracts\/package\.json/u);
-  assert.throws(
-    () => buildImplementationPrBody('SHELL-CON-001::GLOBAL', [
-      'docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_04_SHELL.md',
-    ]),
-    /no puede modificar el registro 04A\/TREQ/u,
-  );
 });
 
 test('readiness fisica desacopla continuidad y formato documentales historicos', () => {
@@ -211,6 +241,7 @@ test('finish conserva validadores, reanuda post-commit y usa polling reintentabl
   const dirty = source.indexOf('const dirty = worktreePaths(root);', parallel);
   const finishMode = source.indexOf('const finishMode = resolveImplementationFinishMode({', dirty);
   const commitScope = source.indexOf("'docs:commit-scope:check'", finishMode);
+  const instanceScope = source.indexOf("'--instance-id', id", commitScope);
   const push = source.indexOf("git(['push', '-u', 'origin', branch]", commitScope);
   const registration = source.indexOf('waitForPrChecksToRegister(root, prNumber)', push);
   const completion = source.indexOf('waitForPrChecksToComplete(root, prNumber)', registration);
@@ -234,7 +265,8 @@ test('finish conserva validadores, reanuda post-commit y usa polling reintentabl
   assert.ok(lint > parallel && lint < dirty);
   assert.ok(finishMode > dirty);
   assert.ok(commitScope > finishMode);
-  assert.ok(push > commitScope);
+  assert.ok(instanceScope > commitScope);
+  assert.ok(push > instanceScope);
   assert.ok(registration > push);
   assert.ok(completion > registration);
   assert.ok(merge > completion);
@@ -246,6 +278,10 @@ test('finish conserva validadores, reanuda post-commit y usa polling reintentabl
   assert.ok(awaitedFinish > main);
   assert.ok(awaitedMain > awaitedFinish);
   assert.equal(finishSource.includes("'--watch'"), false);
+  assert.equal(finishSource.includes("'--force'"), false);
+  assert.equal(source.includes('classifyTaskPath'), false);
+  assert.match(source, /RESUME_POST_MERGE/u);
+  assert.match(source, /derivedPending\.length > 1/u);
   assert.match(source, /import \{ spawn, spawnSync \} from 'node:child_process';/u);
   assert.match(source, /const CHECK_REGISTRATION_ATTEMPTS = 60;/u);
   assert.match(source, /const CHECK_REGISTRATION_INTERVAL_MS = 2000;/u);

@@ -54,15 +54,17 @@ test('verifica rango incremental de PR, fuentes antes del build y compilado rege
     workflow.slice(reproducibleBuild),
     /run: git diff --exit-code -- docs\/plan-canonico\/modular/u,
   );
+  assert.match(workflow, /Verificar alcance fisico autorizado de implementacion/u);
+  assert.match(workflow, /steps\.scope\.outputs\.implementation_pr == 'true'/u);
+  assert.match(workflow, /--implementation-head-ref "\$HEAD_REF"/u);
+  assert.match(workflow, /--range "\$BASE_SHA\.\.\$HEAD_SHA"/u);
   assert.match(workflow, /Verificar aislamiento de commits en pull request inicial/u);
-  assert.match(workflow, /github\.event\.action != 'synchronize'/u);
-  assert.match(
-    workflow,
-    /docs:commit-scope:check -- --range "\$\{\{ github\.event\.pull_request\.base\.sha \}\}\.\.\$\{\{ github\.event\.pull_request\.head\.sha \}\}"/u,
-  );
+  assert.match(workflow, /implementation_pr != 'true'/u);
   assert.match(workflow, /Verificar aislamiento de commits incorporados por el push actual/u);
-  assert.match(workflow, /github\.event\.action == 'synchronize'/u);
-  assert.match(
+  assert.match(workflow, /git cat-file -e "\$BEFORE_SHA\^\{commit\}"/u);
+  assert.match(workflow, /git merge-base --is-ancestor "\$BEFORE_SHA" "\$HEAD_SHA"/u);
+  assert.match(workflow, /RANGE="\$BASE_SHA\.\.\$HEAD_SHA"/u);
+  assert.doesNotMatch(
     workflow,
     /docs:commit-scope:check -- --range "\$\{\{ github\.event\.before \}\}\.\.\$\{\{ github\.event\.pull_request\.head\.sha \}\}"/u,
   );

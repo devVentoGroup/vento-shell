@@ -38,6 +38,7 @@ test('repository governed surfaces are LF and BOM free', () => {
 
 test('editor and git policy are wired to LF without BOM', () => {
   const attributes = fs.readFileSync(path.join(repositoryRoot, '.gitattributes'), 'utf8');
+  assert.match(attributes, /^\* text=auto eol=lf$/mu);
   assert.match(attributes, /^\.gitattributes text eol=lf$/mu);
   assert.match(attributes, /^\.editorconfig text eol=lf$/mu);
   assert.match(attributes, /^\.vscode\/\*\.json text eol=lf$/mu);
