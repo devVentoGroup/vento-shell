@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 import {
+  activeSequenceTaskIds,
   buildInfraPrBody,
   buildOpsPrBody,
   buildPrBody,
@@ -10,6 +11,7 @@ import {
   classifyOpsPath,
   classifyPrChecksCompletionProbe,
   classifyPrChecksProbe,
+  classifyTaskFinishContinuity,
   classifyTaskPath,
   infraBranchName,
   isTransientPrChecksFailure,
@@ -30,6 +32,96 @@ test('normaliza una tarea canonica a task/<id-en-minusculas>', () => {
 test('rechaza identificadores que no parecen task IDs canonicos', () => {
   assert.throws(() => taskBranchName('mi-rama'), /TASK_ID invalido/u);
   assert.throws(() => taskBranchName('../main'), /TASK_ID invalido/u);
+});
+
+test('expande la proyeccion activa desde task_ids o segmentos', () => {
+  assert.deepEqual(
+    activeSequenceTaskIds({
+      task_ids: ['ANIMA-AUTH-001', 'ANIMA-AUTH-002'],
+    }),
+    ['ANIMA-AUTH-001', 'ANIMA-AUTH-002'],
+  );
+  assert.deepEqual(
+    activeSequenceTaskIds({
+      segments: [{ prefix: 'INT-DB', from: 8, to: 8 }],
+    }),
+    ['INT-DB-008'],
+  );
+});
+
+test('finish conserva el cierre estandar cuando previous coincide con la tarea', () => {
+  assert.deepEqual(
+    classifyTaskFinishContinuity({
+      taskId: 'INT-DB-007',
+      taskState: 'APROBADA',
+      continuityPrevious: 'INT-DB-007',
+      continuityCurrent: 'INT-DB-008',
+      activeSequenceCurrent: true,
+      baseActiveSequence: {
+        segments: [{ prefix: 'INT-DB', from: 7, to: 8 }],
+        handoff_task_id: 'ANIMA-AUTH-001',
+      },
+    }),
+    { allowed: true, mode: 'STANDARD' },
+  );
+});
+
+test('finish admite cierre terminal solo contra el handoff declarado por main', () => {
+  const baseActiveSequence = {
+    segments: [{ prefix: 'INT-DB', from: 8, to: 8 }],
+    handoff_task_id: 'ANIMA-AUTH-001',
+  };
+
+  assert.deepEqual(
+    classifyTaskFinishContinuity({
+      taskId: 'INT-DB-008',
+      taskState: 'APROBADA',
+      continuityPrevious: 'AUTH-ERR-020',
+      continuityCurrent: 'ANIMA-AUTH-001',
+      activeSequenceCurrent: true,
+      baseActiveSequence,
+    }),
+    { allowed: true, mode: 'TERMINAL_STAGE_TRANSITION' },
+  );
+
+  assert.deepEqual(
+    classifyTaskFinishContinuity({
+      taskId: 'INT-DB-008',
+      taskState: 'APROBADA',
+      continuityPrevious: 'AUTH-ERR-020',
+      continuityCurrent: 'ANIMA-AUTH-002',
+      activeSequenceCurrent: true,
+      baseActiveSequence,
+    }),
+    { allowed: false, mode: 'CONTINUITY_MISMATCH' },
+  );
+
+  assert.deepEqual(
+    classifyTaskFinishContinuity({
+      taskId: 'INT-DB-008',
+      taskState: 'APROBADA',
+      continuityPrevious: 'AUTH-ERR-020',
+      continuityCurrent: 'ANIMA-AUTH-001',
+      activeSequenceCurrent: true,
+      baseActiveSequence: {
+        segments: [{ prefix: 'INT-DB', from: 7, to: 7 }],
+        handoff_task_id: 'ANIMA-AUTH-001',
+      },
+    }),
+    { allowed: false, mode: 'CONTINUITY_MISMATCH' },
+  );
+
+  assert.deepEqual(
+    classifyTaskFinishContinuity({
+      taskId: 'INT-DB-008',
+      taskState: 'APROBADA',
+      continuityPrevious: 'AUTH-ERR-020',
+      continuityCurrent: 'ANIMA-AUTH-001',
+      activeSequenceCurrent: false,
+      baseActiveSequence,
+    }),
+    { allowed: false, mode: 'CONTINUITY_MISMATCH' },
+  );
 });
 
 test('parsea git status sin perder rutas renombradas', () => {
