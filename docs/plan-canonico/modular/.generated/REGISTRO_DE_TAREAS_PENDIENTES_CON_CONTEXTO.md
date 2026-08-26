@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `ANIMA-AUTH-001` — Confirmar turno publicado antes del check-in | `ANIMA-AUTH-002` — Confirmar sede del turno | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `AUTH-DB-002::GLOBAL` — Endurecer políticas RLS demasiado amplias aprobadas para corrección | `AUTH-DB-003::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `IN_PROGRESS` | `AUTH-DB-002::GLOBAL` — Endurecer políticas RLS demasiado amplias aprobadas para corrección | `AUTH-DB-003::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -25,7 +25,7 @@
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-F-ANIMA` — ANIMA
 - **Siguiente etapa documental:** `PHASE-04-G-VISO-CORE`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `AUTH-DB-002::GLOBAL`
+- **Acción física prioritaria:** `EJECUTAR_IMPLEMENTACION` — `AUTH-DB-002::GLOBAL`
 - **Instancias físicas en espera de predecesora:** **14**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
@@ -35,7 +35,7 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `AUTH-DB-002::GLOBAL` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 1 | **ACTUAL** | `AUTH-DB-002::GLOBAL` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `IN_PROGRESS` | ACTUAL — EJECUTAR_IMPLEMENTACION |
 | 2 | PENDIENTE | `AUTH-DB-003::GLOBAL` | Endurecer funciones SECURITY DEFINER aprobadas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-002::GLOBAL. |
 | 3 | PENDIENTE | `AUTH-DB-004::GLOBAL` | Reducir grants innecesarios de authenticated | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-002::GLOBAL. |
 | 4 | PENDIENTE | `AUTH-DB-005::GLOBAL` | Revocar grants innecesarios de anon | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-002::GLOBAL. |

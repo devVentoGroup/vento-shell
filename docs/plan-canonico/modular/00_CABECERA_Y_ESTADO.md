@@ -34,11 +34,11 @@
 | Siguiente tarea | **ANIMA-AUTH-002 — Confirmar sede del turno** |
 | Bloque actual | **BLOQUE F — ANIMA** |
 | Progreso del bloque | **BLOQUE F: 0 de 37 aprobadas; ANIMA-AUTH-001 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-002::GLOBAL** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_ACTIVE** |
+| Acción principal obligatoria | **EJECUTAR_IMPLEMENTACION — AUTH-DB-002::GLOBAL** |
 | Carril documental | **ACTIVO — ANIMA-AUTH-001** |
-| Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-002::GLOBAL** |
-| Alcance físico autorizado | **NINGUNO** |
+| Carril físico | **IN_PROGRESS — AUTH-DB-002::GLOBAL** |
+| Alcance físico autorizado | **AUTH-DB-002::GLOBAL** |
 
 ### Continuidad inmediata
 
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE F: 0 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-001** |
-| Implementación física | **AUTH-DB-002::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **AUTH-DB-002::GLOBAL — IN_PROGRESS** |
 
 ## Reglas de edición
 
