@@ -3738,7 +3738,1290 @@ Esta tarea no:
 `INT-DB-005 — Crear restricciones e índices de idempotencia`
 
 
-### [ ] INT-DB-005 — Crear restricciones e índices de idempotencia
+### ✅ INT-DB-005 — Crear restricciones e índices de idempotencia
+
+**Estado:** APROBADA
+**Tarea anterior:** INT-DB-004 — Crear mapeos de identificadores externos y canónicos
+**Tarea siguiente:** INT-DB-006 — Crear cuarentena y registro de errores no procesables
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para persistir identidad idempotente, huella lógica versionada, claim durable, outcome y resultado recuperable, definiendo restricciones de integridad, unicidad, concurrencia e índices de acceso sin materializar cuarentena, auditoría de procesamiento, compensaciones ni conciliación durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `INT-DB-005::<package_id>`, sujetas a `POST_E5_PACKAGE`, al registro de integración del mismo paquete, al contrato compartido `SHELL-CON-023`, a evidencia fuente y mappings aplicables, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Fecha de corte:** 2026-08-26
+
+---
+
+#### 1. Propósito
+
+`INT-DB-005` define la persistencia física futura que permitirá a cada paquete proteger operaciones reintentables contra efectos duplicados, reutilización incompatible de identidad, carreras concurrentes y pérdida del resultado original.
+
+La tarea cierra documentalmente las restricciones e índices que deberán sostener el contrato compartido de idempotencia ya materializado por `SHELL-CON-023`, sin ejecutar DDL, DML, migraciones, RLS, RPC, jobs, Edge Functions ni cambios remotos.
+
+La definición deberá permitir responder de forma reproducible:
+
+1. qué operación lógica está protegida;
+2. bajo qué scope y owner existe la identidad;
+3. cuál es su namespace;
+4. qué `operation_key` fue fijada antes del primer efecto;
+5. qué generación representa el intento empresarial legítimo;
+6. qué versión contractual interpretó la operación;
+7. qué huella lógica protege compatibilidad de contenido;
+8. qué claim durable conserva la exclusión concurrente;
+9. qué outcome quedó determinado;
+10. qué resultado o referencia durable debe recuperarse ante duplicados;
+11. qué estado permanece pendiente o incierto;
+12. qué referencia de conciliación deberá consumir `INT-DB-008` cuando el outcome no pueda cerrarse de forma segura.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+INT-DB-005
+→ contrato documental único y reutilizable
+
+INT-DB-005::<package_id>
+→ futura instancia física por paquete
+
+operación protegida
+→ IntegrationIdempotencyRef
+→ huella lógica versionada
+→ claim durable o protección atómica equivalente
+→ resultado / estado recuperable
+→ restricciones de unicidad y compatibilidad
+→ índices de resolución y recuperación
+→ handoff estable hacia INT-DB-006..008
+```
+
+La definición global no se reabre por paquete.
+
+No existe una instancia física `INT-DB-005::GLOBAL`.
+
+---
+
+#### 3. Topología vinculante
+
+La topología aplicable queda cerrada así:
+
+| Propiedad | Decisión |
+| --- | --- |
+| Modalidad | `TEMPLATE_PER_PACKAGE` |
+| Gate temporal | `POST_E5_PACKAGE` |
+| Identidad física futura | `INT-DB-005::<package_id>` |
+| Instancia global | no aplica |
+| Reapertura del contrato por paquete | prohibida |
+| Implementación durante esta definición | ninguna |
+
+Cada `package_id` materializa únicamente los scopes, integraciones y efectos que le pertenecen.
+
+La existencia de un ledger compartido o de una misma base Supabase no fusiona identidades entre paquetes.
+
+---
+
+#### 4. Gate temporal
+
+Una futura instancia solo podrá materializar restricciones e índices cuando, para el mismo `package_id`, estén satisfechas las puertas físicas aplicables.
+
+Como mínimo:
+
+```text
+package E5 aplicable = CERRADO
+E5-GATE-008::<package_id> = PASS
+SHELL-CON-023 = MATERIALIZADO COMO CONTRATO COMPARTIDO
+registro INT-DB-001 aplicable = DISPONIBLE
+staging INT-DB-003 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+mapping INT-DB-004 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+drift aplicable = RECONCILED
+rollback = PREPARADO
+physical_authorization = EXPLICIT
+```
+
+Las dependencias documentales anteriores no convierten esta tarea en implementación física anticipada.
+
+---
+
+#### 5. Fuentes vinculantes
+
+La definición consume sin reinterpretación silenciosa:
+
+- `INT-APP-004` y su identidad estable por scope, huella lógica, claim durable y resultado recuperable;
+- `INT-APP-005` para retry, backoff y límites de intento, sin trasladar esa política al índice de identidad;
+- `INT-APP-007` a `INT-APP-010` para trazabilidad, incertidumbre, errores parciales y conciliación;
+- `INT-EXT-012` y `VENTO-EXTERNAL-IDEMPOTENCY-CONTRACT-001`;
+- `INT-EXT-013` para la separación entre mapping e idempotencia;
+- `INT-EXT-017` para conciliación de integraciones externas;
+- `SHELL-CON-019` para el evento externo recibido;
+- `SHELL-CON-022` para mappings externos/canónicos;
+- `SHELL-CON-023` como forma compartida vigente de idempotencia y conciliación;
+- `SHELL-CON-024` para disposición, cuarentena y compensación referenciada;
+- `INT-DB-001` a `INT-DB-004` como entradas físicas previas cuando sean aplicables al paquete;
+- `INT-POS-013`, `INT-POS-020`, `INT-SALES-007` e `INT-SALES-008` para especializaciones POS y venta;
+- el registro canónico de requisitos de prueba vigente;
+- el estado remoto recapturado al iniciar la futura instancia.
+
+La forma compartida vigente declara a `INT-DB-005` como propietario exclusivo de la persistencia física de idempotencia.
+
+---
+
+#### 6. Reconciliación entre contrato histórico y contrato compartido vigente
+
+`INT-EXT-012` conserva la definición histórica de idempotencia por las 21 identidades externas y su estado técnico observado en el momento de aprobación.
+
+`SHELL-CON-023` materializa posteriormente la forma compartida reconciliada y especializa la proyección física sin reescribir la evidencia histórica de `INT-EXT-012`.
+
+Regla de consumo:
+
+```text
+semántica propietaria histórica
++ especializaciones posteriores aprobadas
+→ SHELL-CON-023 vigente
+→ INT-DB-005 persiste la forma reconciliada
+```
+
+Por tanto:
+
+1. la distribución histórica de `INT-EXT-012` permanece evidencia de su corte;
+2. la futura materialización física usa la clasificación y shape vigentes de `SHELL-CON-023`;
+3. la especialización POS no se degrada a un bloqueo genérico si el contrato compartido vigente la conserva como `PENDIENTE_DE_EVIDENCIA`;
+4. ninguna clasificación posterior autoriza inventar un binding ausente.
+
+---
+
+#### 7. Separación semántica obligatoria
+
+La persistencia deberá conservar siempre:
+
+```text
+IDENTIDAD IDEMPOTENTE
+≠ MAPPING DE RECURSO
+≠ CORRELACIÓN
+≠ IDENTIDAD DE EVENTO
+≠ RECEIPT EXTERNO
+≠ IDENTIDAD DE INTENTO TÉCNICO
+≠ CREDENCIAL
+≠ AUTORIZACIÓN
+≠ ESTADO EMPRESARIAL
+≠ CASO DE CONCILIACIÓN
+```
+
+Además:
+
+```text
+operation_key
+≠ logical_content_hash
+```
+
+La identidad responde qué operación lógica se está protegiendo.
+
+La huella responde si una reutilización de esa identidad conserva contenido compatible.
+
+---
+
+#### 8. Contrato compartido que debe persistirse
+
+`SHELL-CON-023` expone:
+
+- **7** scopes de idempotencia;
+- `IntegrationIdempotencyRef` con exactamente **6** campos;
+- `IntegrationIdempotencyRecord` con exactamente **21** campos de nivel superior;
+- **7** estados de claim;
+- **8** outcomes de idempotencia;
+- `IntegrationReconciliationRef` como referencia separada;
+- `IntegrationReconciliationCase` como contrato cuya persistencia pertenece a `INT-DB-008`, no a esta tarea.
+
+Source contract SHA-256 vigente de `SHELL-CON-023`:
+
+```text
+d6630e1e3280845765308579eb06302ce1b476da96475de675a1667e06ee68f0
+```
+
+`INT-DB-005` no redefine ese contrato ni añade campos públicos incompatibles.
+
+---
+
+#### 9. Scopes canónicos
+
+Se preservan exactamente estos 7 valores:
+
+```text
+REQUEST_ACCEPTANCE
+OWNER_COMMAND
+EVENT_EMISSION
+CONSUMER_INBOX
+CONSUMER_EFFECT
+EXTERNAL_RECEIPT
+REPLAY_BATCH
+```
+
+Reglas:
+
+1. no existe una idempotency key global de Vento OS;
+2. no existe una idempotency key global de una venta;
+3. request acceptance no equivale a owner command;
+4. owner command no equivale a event emission;
+5. event emission no equivale a consumer inbox;
+6. consumer inbox no equivale a consumer effect;
+7. external receipt no equivale a efecto empresarial;
+8. replay batch no autoriza por sí solo efectos sensibles;
+9. la misma cadena en scopes diferentes no representa automáticamente la misma operación.
+
+---
+
+#### 10. Shape exacto de `IntegrationIdempotencyRef`
+
+La identidad lógica conserva exactamente:
+
+| Campo | Cardinalidad | Regla |
+| --- | ---: | --- |
+| `scope` | 1 | uno de los 7 scopes canónicos |
+| `scope_owner_ref` | 1 | owner de la operación protegida; no concede autoridad cruzada |
+| `namespace_ref` | 1 | namespace estable que impide colisiones entre contextos incompatibles |
+| `operation_key` | 1 | identidad estable fijada antes del primer efecto |
+| `generation` | 0..1 | nueva intención empresarial legítima, no un contador de retry |
+| `contract_version` | 1 | versión contractual que gobierna la identidad |
+
+Los seis componentes forman una identidad compuesta inseparable.
+
+---
+
+#### 11. Shape exacto de `IntegrationIdempotencyRecord`
+
+Se preservan exactamente los 21 campos de nivel superior de `SHELL-CON-023`:
+
+```text
+idempotency_ref
+logical_content_hash
+logical_content_hash_version
+resource_ref
+claim_state
+outcome
+result_ref
+external_system_id
+external_instance_id
+integration_principal_id
+environment
+surface
+operation_kind
+provider_ref
+first_observed_at
+last_observed_at
+attempt_count
+finalized_at
+correlation_refs
+audit_ref
+reconciliation_ref
+```
+
+Si la futura tabla descompone `idempotency_ref`, deberá conservar sus 6 campos sin pérdida semántica.
+
+La representación física de `attempt_count` no se fija aquí porque el contrato compartido conserva deliberadamente su tipo como no especificado.
+
+---
+
+#### 12. Identidad física y unicidad semántica
+
+La futura persistencia deberá garantizar exactamente una identidad activa por combinación lógica completa de:
+
+```text
+scope
++ scope_owner_ref
++ namespace_ref
++ operation_key
++ generation
++ contract_version
+```
+
+Reglas:
+
+1. `generation = null` sigue siendo un valor semántico de la identidad y no permite duplicar filas equivalentes por semántica SQL de null;
+2. el mecanismo físico deberá tratar dos referencias con todos los campos iguales y `generation = null` como la misma identidad;
+3. `logical_content_hash` no forma parte de la clave única;
+4. incluir el hash en la unicidad permitiría insertar dos contenidos incompatibles bajo la misma operación y queda prohibido;
+5. `attempt_count`, `delivery_id`, `trace_id`, timestamps o worker no forman parte de la identidad;
+6. `mapping_id`, `resource_ref`, `external_event_id`, receipt o credencial no sustituyen la clave compuesta salvo que un contrato propietario los haya acreditado explícitamente como fuente de `operation_key`.
+
+---
+
+#### 13. Semántica de `generation`
+
+`generation` existe únicamente para distinguir una nueva intención empresarial legítima bajo un namespace y operación base compatibles.
+
+No puede usarse para:
+
+- ocultar un conflicto de hash;
+- convertir retry en nueva operación;
+- escapar de `OUTCOME_UNKNOWN`;
+- repetir un efecto cuya respuesta se perdió;
+- evitar una fila ya reclamada;
+- reiniciar un timeout;
+- cambiar de worker, deployment, dispositivo, conexión o transporte;
+- reemplazar una identidad externa ausente con un valor aleatorio por intento.
+
+Una nueva generación requiere una razón empresarial o contractual identificable.
+
+---
+
+#### 14. Namespace externo mínimo
+
+Cuando la operación pertenece a una integración externa, el namespace lógico deberá distinguir como mínimo:
+
+```text
+external_system_id
+environment
+surface
+operation_kind
+```
+
+`external_instance_id` se incorpora cuando sea necesario para evitar colisiones entre instancias acreditadas.
+
+Reglas:
+
+1. el mismo valor en sistemas externos distintos no representa la misma operación;
+2. desarrollo, staging y producción no comparten deduplicación por conveniencia;
+3. checkout y webhook no comparten namespace únicamente porque estén correlacionados;
+4. operaciones de distinta naturaleza no comparten clave por defecto;
+5. una credencial nunca delimita la identidad mediante su valor secreto.
+
+---
+
+#### 15. Política de `operation_key`
+
+Una `operation_key` válida puede provenir de una identidad estable aprobada antes del efecto, por ejemplo:
+
+- command ID propietario;
+- event ID canónico;
+- identificador externo autenticado y estable cuando el contrato lo permita;
+- identidad de transacción del proveedor cuando su estabilidad y scope estén acreditados;
+- composición determinista versionada de campos suficientemente estables e inequívocos cuando el owner la haya aprobado.
+
+No son suficientes por sí solos:
+
+- timestamp de recepción;
+- UUID generado después de recibir una entrada sin identidad estable;
+- nombre de archivo;
+- posición de fila;
+- `source_row_number`;
+- correo o teléfono;
+- `site_id` aislado;
+- nombre de producto o monto;
+- coordenadas o IP;
+- retry count, attempt ID, delivery ID o trace ID;
+- mapping ID;
+- valor secreto.
+
+---
+
+#### 16. Huella lógica versionada
+
+Cada registro debe conservar:
+
+```text
+logical_content_hash
+logical_content_hash_version
+```
+
+Invariantes:
+
+1. la huella es obligatoria para decidir compatibilidad de reutilización;
+2. la versión de canonicalización o composición es obligatoria;
+3. solo participan campos materiales definidos por el contrato propietario;
+4. retry metadata, transporte, conexión, delivery y trace se excluyen;
+5. secretos y material de credenciales se excluyen;
+6. un cambio de canonicalización no reinterpreta silenciosamente huellas históricas;
+7. el algoritmo físico de digest no se fija universalmente en esta tarea;
+8. el mismo contenido lógico bajo la misma versión debe producir una huella reproducible.
+
+---
+
+#### 17. Reutilización compatible
+
+Cuando llega la misma identidad con una huella compatible:
+
+```text
+misma identidad
++ misma huella lógica compatible
+→ NO crear nueva operación
+→ recuperar estado o resultado existente
+```
+
+Según el estado vigente, la respuesta podrá representar:
+
+- `DUPLICATE_RESULT_RETURNED` cuando existe resultado final recuperable;
+- `IN_PROGRESS_RECOVERABLE` cuando la operación válida continúa en curso;
+- `RECONCILIATION_REQUIRED` cuando el resultado no puede determinarse con seguridad;
+- otro outcome canónico permitido por el owner sin ejecutar un segundo efecto incompatible.
+
+El duplicado compatible produce **0** mutaciones empresariales adicionales por el solo hecho de repetirse.
+
+---
+
+#### 18. Reutilización incompatible
+
+Cuando la misma identidad llega con contenido incompatible:
+
+```text
+misma identidad
++ logical_content_hash incompatible
+→ CONFLICTING_REUSE
+→ 0 segundo efecto incompatible
+```
+
+Queda prohibido:
+
+- sobrescribir la huella original;
+- insertar una segunda fila usando el hash como parte de la unicidad;
+- crear una nueva `generation` automáticamente;
+- borrar el registro anterior y reintentar;
+- elegir silenciosamente uno de los contenidos;
+- tratar el conflicto como retry técnico.
+
+---
+
+#### 19. Estados de claim canónicos
+
+Se preservan exactamente:
+
+```text
+CLAIMED
+SUCCEEDED
+FAILED_RETRYABLE
+FAILED_FINAL
+OUTCOME_UNKNOWN
+CANCELLED
+EXPIRED
+```
+
+`claim_state` puede ser nulo únicamente cuando el scope no requiera materializar un claim según su contrato propietario.
+
+La existencia de `EXPIRED` no demuestra ausencia de un efecto remoto o empresarial previamente confirmado o incierto.
+
+---
+
+#### 20. Outcomes canónicos
+
+Se preservan exactamente:
+
+```text
+APPLIED
+DUPLICATE_RESULT_RETURNED
+CONFLICTING_REUSE
+IN_PROGRESS_RECOVERABLE
+STALE_VERSION
+OUT_OF_ORDER_DEFERRED
+RECONCILIATION_REQUIRED
+REJECTED
+```
+
+Los outcomes son resultados del control idempotente y no estados empresariales del recurso.
+
+Un outcome no concede autorización funcional ni cambia ownership.
+
+---
+
+#### 21. Claim durable y exclusión concurrente
+
+Cuando un scope protege un efecto, deberá existir claim durable o protección atómica equivalente antes del primer efecto protegido.
+
+El contrato físico deberá garantizar:
+
+```text
+N ejecuciones concurrentes
++ misma identidad compatible
+→ máximo 1 ganador empresarial
+```
+
+Las demás ejecuciones:
+
+- recuperan estado en curso;
+- recuperan el resultado existente;
+- o quedan sujetas a conciliación si el outcome es incierto.
+
+No son suficientes:
+
+- `SELECT` seguido de efecto y registro sin exclusión equivalente;
+- lock solo en memoria de una instancia;
+- UPSERT que no valide identidad y hash;
+- crear una segunda fila por conflicto de timing;
+- asumir que un timeout liberó el derecho a repetir el efecto.
+
+---
+
+#### 22. Resultado durable recuperable
+
+Una operación confirmada deberá conservar `result_ref` o un mecanismo propietario equivalente que permita devolver el resultado original sin repetir el efecto.
+
+Reglas:
+
+1. `result_ref` apunta al resultado durable del owner;
+2. un ACK de transporte no se trata por defecto como resultado empresarial final;
+3. `attempt_count` no cambia la identidad;
+4. una respuesta perdida no convierte una operación aplicada en fallida;
+5. un retry consulta primero la identidad original;
+6. si el owner demuestra el efecto, recupera el resultado sin repetir;
+7. si demuestra ausencia de efecto y el contrato permite retry, conserva la misma identidad.
+
+---
+
+#### 23. Resultado desconocido
+
+`OUTCOME_UNKNOWN` exige preservar la incertidumbre.
+
+No prueban ausencia de efecto:
+
+- timeout;
+- agotamiento del retry budget;
+- restart del worker o aplicación;
+- expiración de lease;
+- cambio de endpoint;
+- cambio de tabla, RPC o proveedor técnico;
+- ausencia temporal de respuesta.
+
+Ante incertidumbre material:
+
+```text
+identidad original
++ evidencia disponible
++ fuente propietaria / receipt / proveedor cuando aplique
+→ reconciliación o resolución segura
+```
+
+No se permite crear una identidad nueva para escapar de la incertidumbre.
+
+---
+
+#### 24. Frontera con intentos y auditoría
+
+`INT-DB-005` persiste la identidad y el estado idempotente agregado necesario para controlar repetición.
+
+`INT-DB-007` conserva la auditoría detallada de procesamiento, reintentos y compensaciones.
+
+Por tanto, esta tarea no crea:
+
+- una fila de auditoría por intento;
+- historial exhaustivo de delivery IDs;
+- logs de cada retry;
+- payloads de error;
+- compensaciones;
+- decisiones humanas de intervención.
+
+`attempt_count` permanece como dato resumido del contrato compartido y no sustituye el audit trail de `INT-DB-007`.
+
+---
+
+#### 25. Frontera con conciliación
+
+`INT-DB-008` es propietario de `IntegrationReconciliationCase` y de sus mecanismos físicos de comparación y cierre.
+
+`INT-DB-005` únicamente conserva:
+
+```text
+reconciliation_ref
+```
+
+cuando exista relación entre el estado idempotente y un caso de conciliación.
+
+Un `RECONCILIATION_REQUIRED` no autoriza retry por sí mismo.
+
+Esta tarea no materializa casos, comparaciones, cierres ni correcciones de conciliación.
+
+---
+
+#### 26. Frontera con mapping
+
+`INT-DB-004` conserva los mappings externos/canónicos.
+
+Un mapping puede participar en evidencia o resolución de contexto, pero:
+
+```text
+mapping_id ≠ operation_key
+mapping resuelto ≠ operación nueva
+mapping resuelto ≠ autorización
+```
+
+Una revisión de mapping no autoriza repetir un efecto previamente aplicado.
+
+---
+
+#### 27. Frontera con staging de evidencia
+
+`INT-DB-003` conserva `source_evidence_id`, payload protegido y huella de representación fuente cuando corresponda.
+
+La huella de payload fuente y `logical_content_hash` cumplen responsabilidades distintas:
+
+```text
+payload_digest
+→ integridad/equivalencia de la representación fuente
+
+logical_content_hash
+→ compatibilidad del contenido lógico de la operación protegida
+```
+
+Ninguna de las dos sustituye la identidad idempotente.
+
+---
+
+#### 28. Frontera con registro de integración
+
+`INT-DB-001` conserva sistema, integración y binding ambiental.
+
+Cuando el registro idempotente contenga contexto externo, las referencias deberán corresponder al mismo paquete y ambiente acreditados.
+
+`external_system_id`, `external_instance_id`, `environment`, `surface` y `operation_kind` contextualizan la operación; no sustituyen `operation_key`.
+
+La ausencia de binding acreditado impide fabricar contexto externo.
+
+---
+
+#### 29. Frontera con credenciales
+
+`INT-DB-002` conserva referencias opacas no secretas de credenciales.
+
+`INT-DB-005` no almacena:
+
+- API keys;
+- client secrets;
+- service role;
+- bearer tokens;
+- refresh tokens;
+- passwords;
+- private keys;
+- webhook secrets;
+- cookies reutilizables;
+- URLs firmadas persistentes;
+- material capaz de autenticar una nueva solicitud.
+
+El valor de una credencial nunca participa en identidad, hash ni índice.
+
+---
+
+#### 30. Frontera con cuarentena
+
+`INT-DB-006` es propietario de cuarentena y errores no procesables.
+
+Esta tarea puede producir o conservar un outcome que impida repetir un efecto, pero no crea:
+
+- dead-letter;
+- registro de cuarentena;
+- workflow de resolución;
+- reason taxonomy de cuarentena;
+- reactivación manual de eventos inválidos.
+
+El handoff hacia `INT-DB-006` conserva la identidad idempotente y referencias de evidencia sin copiar payloads protegidos.
+
+---
+
+#### 31. Autoridad empresarial
+
+Idempotencia no es autorización.
+
+Antes de ejecutar un efecto, el owner correspondiente conserva la obligación de validar:
+
+- identidad y estado del recurso;
+- actor o principal aplicable;
+- permisos y contexto;
+- versión del recurso;
+- reglas empresariales;
+- vigencia del contrato.
+
+Una fila idempotente existente no concede acceso al recurso y una clave conocida no convierte al llamador en autorizado.
+
+---
+
+#### 32. Universo externo reconciliado vigente
+
+La proyección física vigente de `SHELL-CON-023` conserva exactamente 21 identidades externas:
+
+| ID | Sistema / plataforma | Clasificación vigente | Estado compartido | Disposición de INT-DB-005 |
+| --- | --- | --- | --- | --- |
+| `EXT-SYS-001` | Supabase | `GOBERNADA_POR_CONTRATO_INTERNO` | `ESPECIFICADO` | no crear clave global de plataforma; materializar únicamente scopes propietarios aplicables al paquete |
+| `EXT-SYS-002` | Wompi | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` | elegible para identidad, huella, claim y resultado durable por superficies acreditadas |
+| `EXT-SYS-003` | RevenueCat | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` | elegible; no sustituir identidad estable por retries ni por fingerprint no versionado |
+| `EXT-SYS-004` | Resend | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` | elegible; retry conserva operación y reenvío empresarial legítimo usa nueva generación |
+| `EXT-SYS-005` | Expo / EAS Update | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | `NO_APLICA` | no crear ledger empresarial por referencias de release/configuración |
+| `EXT-SYS-006` | Expo Push Service | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` | elegible por entrega lógica; destinos conservan resultados independientes |
+| `EXT-SYS-007` | Sentry | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL` | `NO_APLICA` | no elevar telemetría best-effort a ledger empresarial |
+| `EXT-SYS-008` | Google Maps / Google Reviews | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL` | `NO_APLICA` | lecturas interactivas no crean ledger sin efecto durable acreditado |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` | separar mutación de recurso y push; resultado remoto incierto se reconcilia antes de repetir |
+| `EXT-SYS-010` | Vercel | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | `NO_APLICA` | deployment/domain no crean operation key empresarial global |
+| `EXT-SYS-011` | Zebra BrowserPrint | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` | resultado físico incierto requiere verificación; reimpresión deliberada es nueva generación |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet | `MODELO_SIN_BINDING_REMOTO` | `NO_APLICA` | no crear operaciones runtime hasta acreditar binding remoto |
+| `EXT-SYS-013` | POS externo vigente | `APLICA_CON_ESPECIALIZACION_POS` | `PENDIENTE_DE_EVIDENCIA` | consumir especialización POS; no fabricar identidad individual desde `makos_excel`, fila, hash, nombre o posición |
+| `EXT-SYS-014` | Shopify / canal de comercio electrónico | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no crear ledger hasta acreditar binding y operación concreta |
+| `EXT-SYS-015` | Rappi / marketplace | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no inventar operación de pedido, tienda o courier |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no inventar operación, subscriber o resultado sin bot/API acreditados |
+| `EXT-SYS-017` | WhatsApp | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | teléfono o conversación no crean identidad de operación sin proveedor y contrato |
+| `EXT-SYS-018` | Instagram / perfiles sociales | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no inventar claims ni outcomes sin API acreditada |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | mailbox o alias no establecen operación idempotente por sí solos |
+| `EXT-SYS-020` | Telefonía / canal de voz | `BLOQUEADO_SIN_BINDING` | `BLOQUEADO` | `TI-INT-003` debe acreditar operador, cuenta, interfaz, identificadores y semántica antes de instanciar |
+| `EXT-SYS-021` | Transporte externo | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no inventar tracking operation ni conciliación sin proveedor e interfaz acreditados |
+
+Balance vigente:
+
+```text
+identidades esperadas = 21
+identidades materializadas documentalmente = 21
+faltantes = 0
+duplicados = 0
+APLICA_IDEMPOTENCIA_Y_CONCILIACION = 6
+GOBERNADA_POR_CONTRATO_INTERNO = 1
+PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE = 2
+SIN_LEDGER_DE_EFECTO_EMPRESARIAL = 2
+MODELO_SIN_BINDING_REMOTO = 1
+APLICA_CON_ESPECIALIZACION_POS = 1
+NO_APLICA_SIN_BINDING = 7
+BLOQUEADO_SIN_BINDING = 1
+```
+
+---
+
+#### 33. Wompi
+
+La evidencia histórica de `INT-EXT-012` conserva un estado parcial: existen unicidades y elementos de idempotencia, pero el claim del webhook no está acreditado como protección atómica previa al efecto y existe fallback de identidad que puede generar un valor nuevo cuando falta identificador externo estable.
+
+La futura instancia aplicable deberá:
+
+1. conservar namespace de proveedor, ambiente, superficie y operación;
+2. fijar identidad antes del efecto;
+3. impedir que una redelivery sin ID acreditado reciba una identidad nueva por intento;
+4. comparar huella compatible antes de devolver resultado o conflicto;
+5. reclamar atómicamente antes del efecto protegido;
+6. conservar resultado recuperable;
+7. enviar incertidumbre a conciliación antes de repetir.
+
+Esta tarea no modifica el webhook actual.
+
+---
+
+#### 34. RevenueCat
+
+La evidencia histórica de `INT-EXT-012` no acredita claim durable previo a las mutaciones derivadas.
+
+La futura instancia aplicable deberá:
+
+1. usar una identidad estable acreditada cuando exista;
+2. si el owner conserva una composición determinista versionada por ausencia de ID nativo, mantener su versión y campos materiales explícitos;
+3. impedir que una redelivery cree una segunda suscripción, entitlement o efecto equivalente;
+4. separar hash lógico de identidad;
+5. recuperar resultado o estado previo cuando la operación sea compatible;
+6. bloquear reutilización incompatible.
+
+Esta tarea no modifica el webhook actual.
+
+---
+
+#### 35. Resend
+
+Retry técnico y reenvío empresarial son operaciones distintas.
+
+La futura instancia aplicable deberá preservar:
+
+```text
+misma entrega lógica + retry
+→ misma identidad
+
+reenvío empresarial deliberado
+→ nueva generation autorizada
+```
+
+El ACK del proveedor no se convierte en confirmación empresarial de lectura o recepción por el destinatario.
+
+---
+
+#### 36. Expo Push Service
+
+La identidad se define por la entrega lógica propietaria y el destino aplicable, no por el número de intento ni por el batch técnico.
+
+La futura instancia deberá:
+
+1. impedir duplicación por reintento del mismo destino y generación;
+2. conservar resultado por destino;
+3. no fusionar destinos distintos bajo una única mutación recuperable;
+4. conservar `DeviceNotRegistered` u otros resultados técnicos en sus contratos propietarios sin convertirlos en identidad de persona.
+
+---
+
+#### 37. Apple Wallet / PassKit y APNs
+
+Mutación del pase y push de actualización son superficies distintas.
+
+Una misma correlación puede vincularlas, pero no convierte ambas en la misma operación idempotente.
+
+Ante resultado remoto incierto, la futura instancia deberá verificar o conciliar antes de repetir una mutación que pueda duplicar o contradecir el recurso.
+
+---
+
+#### 38. Zebra BrowserPrint
+
+Impresión es un efecto físico y una respuesta perdida no prueba que no haya ocurrido.
+
+Reglas:
+
+1. retry técnico conserva la misma identidad;
+2. reimpresión deliberada es una nueva generación autorizada;
+3. un timeout no autoriza impresión automática adicional;
+4. el resultado incierto exige verificación operativa o conciliación;
+5. `device.uid` o nombre de impresora no sustituyen la identidad de la operación de impresión.
+
+---
+
+#### 39. POS externo vigente
+
+La persistencia conserva la especialización de `INT-POS-013` y `INT-POS-020`.
+
+`makos_excel` no adquiere identidad individual de venta o línea por:
+
+- número de fila;
+- posición;
+- nombre de producto;
+- fecha + sede;
+- hash de archivo;
+- similitud de valores.
+
+Mientras falte evidencia individual suficiente, `EXT-SYS-013` permanece `PENDIENTE_DE_EVIDENCIA` y no se materializan claves ficticias.
+
+---
+
+#### 40. Sistemas sin ledger de efecto o sin binding
+
+Las clasificaciones `NO_APLICA`, `PENDIENTE_DE_EVIDENCIA` y `BLOQUEADO` son decisiones explícitas, no ausencia silenciosa de trabajo.
+
+Reglas:
+
+1. no se crea una tabla con filas vacías para simular cobertura;
+2. no se asignan operation keys sintéticas para sistemas sin operación acreditada;
+3. una nueva evidencia de binding se incorpora primero por sus contratos propietarios;
+4. después de una actualización canónica aplicable, el paquete correspondiente podrá materializar su instancia sin reabrir la definición global;
+5. un sistema técnico puede seguir teniendo controles propios sin convertirse en ledger empresarial global.
+
+---
+
+#### 41. Restricciones mínimas obligatorias
+
+Toda futura implementación deberá demostrar restricciones equivalentes a estas invariantes:
+
+1. exactamente una fila lógica por `IntegrationIdempotencyRef`;
+2. unicidad que preserve semántica de `generation = null`;
+3. `scope` limitado a los 7 valores canónicos;
+4. `claim_state`, cuando exista, limitado a los 7 valores canónicos;
+5. `outcome` limitado a los 8 valores canónicos;
+6. `logical_content_hash` obligatorio;
+7. `logical_content_hash_version` obligatorio;
+8. identidad y hash almacenados separadamente;
+9. reutilización incompatible produce conflicto y no segunda fila compatible con el mismo identity scope;
+10. claim atómico o protección equivalente antes del efecto cuando el scope lo requiera;
+11. como máximo un ganador empresarial concurrente por identidad compatible;
+12. resultado confirmado recuperable sin segundo efecto;
+13. incertidumbre conservada sin nueva identidad automática;
+14. contexto externo coherente con paquete, sistema y ambiente acreditados cuando esté presente;
+15. secretos excluidos de identidad, huella y contenido persistido;
+16. references de mapping, auditoría y conciliación conservadas como referencias separadas y no como identidad universal.
+
+---
+
+#### 42. Índice de identidad idempotente
+
+La futura implementación deberá disponer de un índice único o mecanismo equivalente que haga resoluble y exclusivo el `IntegrationIdempotencyRef` completo.
+
+Semántica requerida:
+
+```text
+(scope,
+ scope_owner_ref,
+ namespace_ref,
+ operation_key,
+ generation,
+ contract_version)
+→ máximo una identidad lógica
+```
+
+La implementación deberá demostrar que `generation = null` no permite duplicados semánticamente equivalentes.
+
+No se prescribe aquí el SQL concreto porque la versión de PostgreSQL y la estrategia física se recapturan al abrir cada instancia por paquete.
+
+---
+
+#### 43. Índice de recuperación de claims
+
+Los registros que requieran recuperación deberán poder localizarse sin recorrer el ledger completo por los criterios propietarios de:
+
+```text
+scope / owner
++ claim_state
++ temporalidad observable
+```
+
+La implementación podrá usar índice parcial o equivalente según distribución real, siempre que:
+
+- no cambie la identidad;
+- no convierta un estado temporal en outcome final;
+- no incluya secretos;
+- no imponga un TTL universal no aprobado;
+- permita investigar `CLAIMED`, `FAILED_RETRYABLE`, `OUTCOME_UNKNOWN` o `EXPIRED` cuando sean relevantes al owner.
+
+---
+
+#### 44. Índice de contexto externo
+
+Cuando el paquete tenga integraciones externas aplicables, deberán existir accesos eficientes por contexto acreditado para investigación, redelivery y conciliación.
+
+Dimensiones candidatas autorizadas por el contrato:
+
+```text
+external_system_id
+external_instance_id cuando aplique
+environment
+surface
+operation_kind
+```
+
+Este índice es de consulta contextual y nunca sustituye la unicidad de `IntegrationIdempotencyRef`.
+
+No se crea para sistemas sin binding.
+
+---
+
+#### 45. Índices de resultado, recurso y conciliación
+
+Cuando el patrón de acceso del paquete lo justifique, pueden existir índices no únicos sobre:
+
+- `resource_ref`;
+- `result_ref`;
+- `reconciliation_ref`;
+- `audit_ref`.
+
+Reglas:
+
+1. ninguno se convierte en clave idempotente;
+2. ninguno concede acceso al recurso;
+3. `reconciliation_ref` conserva ownership de `INT-DB-008`;
+4. `audit_ref` conserva ownership de `INT-DB-007`;
+5. la decisión de materializar cada índice se basa en consultas reales del paquete y no en crear índices indiscriminadamente.
+
+---
+
+#### 46. Prohibición de índices semánticamente peligrosos
+
+Queda prohibido usar como unicidad idempotente universal:
+
+- solo `logical_content_hash`;
+- solo `resource_ref`;
+- solo `external_system_id`;
+- solo `external_event_id` sin namespace acreditado;
+- solo `mapping_id`;
+- `email` o teléfono;
+- `source_row_number`;
+- timestamps;
+- `attempt_count`;
+- `delivery_id`;
+- `trace_id`;
+- credenciales o secretos.
+
+Un índice auxiliar sobre una columna no cambia su semántica ni la convierte en identidad.
+
+---
+
+#### 47. Atomicidad con el efecto propietario
+
+`INT-DB-005` no define una transacción ACID global entre aplicaciones o dominios.
+
+Cuando el efecto y el ledger idempotente pertenecen al mismo límite transaccional, la implementación deberá mantenerlos atómicamente ligados o usar un patrón propietario equivalente ya aprobado.
+
+Cuando el efecto es remoto o cruza owners:
+
+- cada owner conserva su commit durable;
+- la identidad del scope se preserva;
+- el resultado se vuelve recuperable;
+- la incertidumbre se reconcilia;
+- no se simula atomicidad distribuida inexistente.
+
+---
+
+#### 48. Compatibilidad con `ExternalReceivedEvent`
+
+`SHELL-CON-019` conserva actualmente `idempotency_ref` como referencia genérica o nula y `SHELL-CON-023` define `IntegrationIdempotencyRef` como target tipado futuro.
+
+Esta tarea no migra consumidores ni modifica el contrato histórico.
+
+Una futura instancia puede enlazar la evidencia recibida con la identidad idempotente cuando el paquete materialice ambos contratos, sin exigir que todo evento externo posea automáticamente una key empresarial.
+
+---
+
+#### 49. Compatibilidad con venta y efectos consumidores
+
+Una venta, línea de venta, evento, inbox y efecto consumidor conservan identidades separadas.
+
+Reglas:
+
+1. `CanonicalSaleId` no es clave universal de todos los efectos;
+2. `CanonicalSaleLineId` no es clave universal de todos los efectos;
+3. NEXO, NUMERA y PASS conservan sus propios scopes de efecto;
+4. cada consumidor puede conservar inbox e identidad de efecto independientes;
+5. una venta confirmada no se reemite para recuperar un efecto downstream pendiente;
+6. una compensación no es retry de la operación original.
+
+---
+
+#### 50. Acceso y seguridad
+
+La futura persistencia deberá tratar el ledger idempotente como control técnico server-side y no como autorización empresarial.
+
+Queda vinculante:
+
+- `operation_key` no es secreto ni permiso;
+- conocer una key no concede lectura de `resource_ref`;
+- conocer `result_ref` no concede acceso al resultado;
+- `IntegrationPrincipalId` no concede autoridad empresarial por sí solo;
+- service role no es principal empresarial;
+- payload completo no pertenece al ledger por defecto;
+- tokens y credenciales quedan excluidos;
+- las superficies cliente no reciben acceso por conveniencia para resolver deduplicación.
+
+RLS y grants físicos deberán alinearse con el paquete y los contratos de autorización aplicables durante la futura instancia.
+
+---
+
+#### 51. Migración de mecanismos legacy
+
+Una futura instancia no podrá reemplazar mecanismos idempotentes existentes mediante un corte ciego.
+
+Antes de imponer una nueva unicidad o claim deberá:
+
+1. inventariar claves y constraints existentes del paquete;
+2. identificar colisiones bajo la identidad objetivo;
+3. distinguir duplicado compatible, conflicto y registros no comparables;
+4. conservar resultados ya confirmados;
+5. no convertir ausencia histórica de key en una identidad fabricada;
+6. reconciliar operaciones inciertas antes de una restricción que las vuelva inaccesibles;
+7. mantener compatibilidad temporal con consumidores activos;
+8. migrar lecturas y escrituras de forma controlada;
+9. validar rollback o forward-fix antes de retirar el mecanismo anterior.
+
+---
+
+#### 52. Backfill de identidad idempotente
+
+No existe un backfill universal autorizado por esta definición.
+
+Una fila histórica solo puede recibir `IntegrationIdempotencyRef` cuando las fuentes permiten reconstruir de forma inequívoca:
+
+```text
+scope
+scope_owner_ref
+namespace_ref
+operation_key
+generation
+contract_version
+```
+
+Si falta evidencia suficiente:
+
+- no se inventa la key;
+- el registro histórico permanece fuera del ledger nuevo o bajo la disposición explícita del paquete;
+- la incertidumbre o inconsistencia se entrega a su owner de conciliación cuando corresponda.
+
+Hash de fila, timestamp, posición, correo, nombre o payload similar no bastan.
+
+---
+
+#### 53. Rollback y forward-fix
+
+La reversión de una futura implementación no puede permitir un segundo efecto sobre operaciones que ya fueron protegidas o confirmadas.
+
+Reglas:
+
+1. DDL defectuoso puede revertirse o corregirse conforme a la política de migraciones;
+2. identidades idempotentes ya utilizadas se preservan o migran de forma controlada;
+3. un rollback no borra una key para volver a ejecutar la operación;
+4. outcomes confirmados conservan resultado o referencia recuperable;
+5. conflictos no se resuelven eliminando una de las huellas;
+6. operaciones inciertas conservan evidencia y vínculo de conciliación;
+7. cambio de índice no reinterpreta la identidad histórica;
+8. una corrección posterior conserva lineage operativo mediante los contratos propietarios.
+
+---
+
+#### 54. Certificación física futura
+
+Una futura instancia `INT-DB-005::<package_id>` no podrá declararse materializada únicamente porque exista un índice único.
+
+La certificación deberá demostrar como mínimo:
+
+1. migración canónica y reproducible desde `vento-shell`;
+2. shape compatible con `SHELL-CON-023`;
+3. unicidad semántica completa de `IntegrationIdempotencyRef`;
+4. tratamiento correcto de `generation = null`;
+5. separación entre identity y logical hash;
+6. conflicto ante reutilización incompatible;
+7. duplicado compatible sin segundo efecto;
+8. exclusión concurrente con un solo ganador empresarial;
+9. resultado confirmado recuperable;
+10. `OUTCOME_UNKNOWN` sin retry destructivo;
+11. aislamiento entre scopes, owners, ambientes y paquetes;
+12. ausencia de secretos;
+13. índices de recuperación compatibles con consultas reales;
+14. compatibilidad y backfill controlados para mecanismos legacy;
+15. rollback o forward-fix sin pérdida de protección ya adquirida;
+16. handoff estable hacia cuarentena, auditoría y conciliación sin materializarlas aquí;
+17. ausencia de cambios fuera del `package_id` autorizado.
+
+---
+
+#### 55. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La tarea persiste documentalmente reglas de identidad, hash, claim, concurrencia, resultado recuperable, conflicto, retry seguro y conciliación ya protegidas por contratos y requisitos vigentes. No introduce un nuevo scope, estado de claim, outcome, sistema externo, operación empresarial ni semántica de autorización. El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 56. Cobertura de prueba vigente reutilizada
+
+La cobertura vigente que sustenta esta tarea incluye, sin modificación:
+
+- `TREQ-INTEGRATION-003` — clave estable, hash lógico, estado durable, resultado recuperable y protección de operaciones reintentables;
+- `TREQ-INTEGRATION-004` — reconstrucción de intentos, resultados, errores y efectos sin duplicación;
+- `TREQ-INTEGRATION-112` — identidad idempotente estable por operación y scope;
+- `TREQ-INTEGRATION-113` — reutilización compatible con recuperación del resultado previo;
+- `TREQ-INTEGRATION-114` — fingerprint lógico separado de la identidad;
+- `TREQ-INTEGRATION-115` — atomicidad o vínculo equivalente entre operación protegida y resultado durable;
+- `TREQ-INTEGRATION-120` — concurrencia con un solo ganador empresarial;
+- `TREQ-INTEGRATION-121` — respuesta perdida recupera resultado original sin segundo efecto;
+- `TREQ-INTEGRATION-122` — mutación, identidad, huella, resultado y publicación propietaria ligados dentro del límite aplicable;
+- `TREQ-INTEGRATION-123` — orden por agregado y versión sin orden global inventado;
+- `TREQ-INTEGRATION-124` — conflicto o diferimiento ante colisión de versión;
+- `TREQ-INTEGRATION-125` — deduplicación de afirmación externa con identidad confiable;
+- `TREQ-INTEGRATION-126` — receipt estable cuando el proveedor no entrega identificador;
+- `TREQ-INTEGRATION-127` — hash como guardia y no como identidad empresarial;
+- `TREQ-INTEGRATION-128` — operaciones offline conservan identity, hash y estado antes de sincronizar;
+- `TREQ-INTEGRATION-129` — delivery, attempt, retry y trace no sustituyen la key idempotente;
+- `TREQ-INTEGRATION-130` — acciones excepcionales distintas conservan identidades propias.
+
+Estas referencias son trazabilidad de cobertura existente y no representan cambios al registro.
+
+---
+
+#### 57. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería npm del checkout completo deberá ejecutarse después de incorporar el artefacto al owner documental vigente. |
+| LOCAL | PASS | El artefacto fue comprobado estructuralmente como UTF-8 sin BOM, LF, metadata compacta, secciones obligatorias, continuidad, cero requisitos en la sección de cambios, shape 7/6/21/7/8, matriz externa 21/21, topología `TEMPLATE_PER_PACKAGE`, gate `POST_E5_PACKAGE`, ausencia de placeholders prohibidos y alcance documental sin materialización física. |
+| REMOTA | PASS | Se verificaron en `main` el cierre de `INT-DB-004`, la continuidad vigente con `INT-DB-005` como tarea actual, el archivo propietario, topología, contrato de entrega, políticas de tarea, `INT-EXT-012`, `SHELL-CON-023`, el contrato generado de idempotencia/conciliación, el registro 04A de integración, `package.json` y ausencia de rama remota `task/int-db-005` al corte. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron retries, webhooks, claims, redeliveries, impresiones, pushes, provider calls ni conciliaciones reales; esas pruebas pertenecen a futuras instancias por paquete. |
+| FÍSICA | NOT_APPLICABLE | La definición documental autoriza cero cambios físicos y no crea instancia `GLOBAL`; la materialización futura pertenece a `INT-DB-005::<package_id>` después de E5. |
+
+---
+
+#### 58. Criterios de aceptación
+
+`INT-DB-005` queda documentalmente cerrada cuando se demuestre que:
+
+1. existe una sola definición reutilizable de persistencia idempotente;
+2. la topología es `TEMPLATE_PER_PACKAGE` y el gate es `POST_E5_PACKAGE`;
+3. ninguna instancia `GLOBAL` es creada o implícita;
+4. se conservan exactamente 7 scopes;
+5. `IntegrationIdempotencyRef` conserva exactamente 6 campos;
+6. `IntegrationIdempotencyRecord` conserva exactamente 21 campos de nivel superior;
+7. se conservan exactamente 7 estados de claim y 8 outcomes;
+8. la identidad compuesta incluye scope, owner, namespace, key, generation y contract version;
+9. `generation = null` no permite duplicados semánticos;
+10. el hash lógico permanece separado de la identidad;
+11. reutilización compatible recupera estado o resultado sin segundo efecto;
+12. reutilización incompatible produce `CONFLICTING_REUSE` sin overwrite;
+13. claim durable o protección atómica equivalente produce como máximo un ganador empresarial;
+14. timeout, lease vencido o retry agotado no se interpretan como ausencia de efecto;
+15. resultado desconocido conserva la identidad original y puede requerir conciliación;
+16. intentos detallados permanecen bajo `INT-DB-007`;
+17. conciliación permanece bajo `INT-DB-008`;
+18. cuarentena permanece bajo `INT-DB-006`;
+19. mapping permanece bajo `INT-DB-004`;
+20. no se almacenan secretos ni payload completo por defecto;
+21. la matriz conserva 21 de 21 identidades externas sin faltantes ni duplicados;
+22. la especialización POS permanece `PENDIENTE_DE_EVIDENCIA` y no fabrica keys desde `makos_excel`;
+23. Telefonía / voz permanece bloqueada hasta `TI-INT-003`;
+24. los índices auxiliares no cambian la semántica de identidad;
+25. backfill histórico exige evidencia suficiente y no usa heurísticas;
+26. rollback conserva protección y resultados ya adquiridos;
+27. la sección de requisitos derivados declara cero cambios y no contiene identificadores de requisito;
+28. la cobertura vigente queda trazada fuera de esa sección;
+29. ninguna modificación Supabase es ejecutada durante esta tarea documental.
+
+---
+
+#### 59. Decisiones vinculantes
+
+Quedan vinculantes para cualquier futura materialización de `INT-DB-005::<package_id>`:
+
+- idempotencia se define por scope y owner, no globalmente;
+- la identidad se fija antes del primer efecto;
+- retry y redelivery conservan identidad compatible;
+- nueva generación representa nueva intención legítima, no escape técnico;
+- identity y hash son conceptos distintos;
+- misma identity con hash incompatible produce conflicto;
+- un claim que protege efecto debe ser durable o atómicamente equivalente;
+- existe como máximo un ganador empresarial concurrente por identidad compatible;
+- resultado confirmado debe poder recuperarse;
+- incertidumbre no se resuelve repitiendo a ciegas;
+- mapping, correlación, idempotencia y conciliación permanecen separados;
+- credenciales y secretos nunca forman parte de identity o fingerprint;
+- los índices auxiliares sirven consulta y recuperación, no crean autoridad;
+- los 21 sistemas conservan la clasificación reconciliada vigente;
+- ninguna key se fabrica para un sistema sin binding o para datos legacy ambiguos;
+- toda materialización pertenece a un `package_id` aprobado después de E5.
+
+---
+
+#### 60. Límites
+
+Esta tarea no:
+
+- ejecuta DDL, DML, migraciones, RLS, RPC ni cambios remotos;
+- crea tablas, filas, constraints o índices físicos;
+- crea operation keys runtime;
+- ejecuta claims;
+- ejecuta retries;
+- ejecuta efectos empresariales;
+- modifica `SHELL-CON-023`;
+- migra consumidores del contrato compartido;
+- materializa `IntegrationReconciliationCase`;
+- crea cuarentena o dead-letter;
+- crea auditoría por intento;
+- ejecuta compensaciones;
+- cambia contratos de mapping;
+- crea ni rota credenciales;
+- acredita bindings ausentes;
+- inventa identidades para `makos_excel`;
+- fija TTL universal;
+- fija un algoritmo universal de digest;
+- inicia `INT-DB-006`.
+
+---
+
+#### 61. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INT-DB-004 — Crear mapeos de identificadores externos y canónicos`
+
+**TAREA ACTUAL APROBADA**
+`INT-DB-005 — Crear restricciones e índices de idempotencia`
+
+**SIGUIENTE TAREA RESERVADA**
+`INT-DB-006 — Crear cuarentena y registro de errores no procesables`
+
+
 ### [ ] INT-DB-006 — Crear cuarentena y registro de errores no procesables
 ### [ ] INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones
 ### [ ] INT-DB-008 — Crear mecanismos de conciliación por integración
