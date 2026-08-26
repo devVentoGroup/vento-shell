@@ -34,11 +34,11 @@
 | Siguiente tarea | **ANIMA-AUTH-001 — Confirmar turno publicado antes del check-in** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
 | Progreso del bloque | **BLOQUE R: 50 de 51 aprobadas; INT-DB-008 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-001::GLOBAL** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_ACTIVE** |
+| Acción principal obligatoria | **EJECUTAR_IMPLEMENTACION — AUTH-DB-001::GLOBAL** |
 | Carril documental | **ACTIVO — INT-DB-008** |
-| Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-001::GLOBAL** |
-| Alcance físico autorizado | **NINGUNO** |
+| Carril físico | **IN_PROGRESS — AUTH-DB-001::GLOBAL** |
+| Alcance físico autorizado | **AUTH-DB-001::GLOBAL** |
 
 ### Continuidad inmediata
 
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE R: 50 DE 51 APROBADAS — ACTUAL INT-DB-008** |
-| Implementación física | **AUTH-DB-001::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **AUTH-DB-001::GLOBAL — IN_PROGRESS** |
 
 ## Reglas de edición
 

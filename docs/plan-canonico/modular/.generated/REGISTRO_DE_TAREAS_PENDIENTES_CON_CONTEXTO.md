@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `INT-DB-008` — Crear mecanismos de conciliación por integración | `ANIMA-AUTH-001` — Confirmar turno publicado antes del check-in | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `AUTH-DB-001::GLOBAL` — Corregir tablas sin RLS identificadas en SUPA-AUD | `AUTH-DB-002::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `IN_PROGRESS` | `AUTH-DB-001::GLOBAL` — Corregir tablas sin RLS identificadas en SUPA-AUD | `AUTH-DB-002::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -25,7 +25,7 @@
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `AUTH-DB-001::GLOBAL`
+- **Acción física prioritaria:** `EJECUTAR_IMPLEMENTACION` — `AUTH-DB-001::GLOBAL`
 - **Instancias físicas en espera de predecesora:** **15**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
@@ -35,7 +35,7 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `AUTH-DB-001::GLOBAL` | Corregir tablas sin RLS identificadas en SUPA-AUD | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 1 | **ACTUAL** | `AUTH-DB-001::GLOBAL` | Corregir tablas sin RLS identificadas en SUPA-AUD | `IN_PROGRESS` | ACTUAL — EJECUTAR_IMPLEMENTACION |
 | 2 | PENDIENTE | `AUTH-DB-002::GLOBAL` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
 | 3 | PENDIENTE | `AUTH-DB-003::GLOBAL` | Endurecer funciones SECURITY DEFINER aprobadas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
 | 4 | PENDIENTE | `AUTH-DB-004::GLOBAL` | Reducir grants innecesarios de authenticated | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
