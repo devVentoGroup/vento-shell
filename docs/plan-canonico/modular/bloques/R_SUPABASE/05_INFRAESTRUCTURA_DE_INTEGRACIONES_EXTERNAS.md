@@ -6489,7 +6489,1685 @@ Esta tarea no:
 `INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones`
 
 
-### [ ] INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones
+### ✅ INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones
+
+**Estado:** APROBADA
+**Tarea anterior:** INT-DB-006 — Crear cuarentena y registro de errores no procesables
+**Tarea siguiente:** INT-DB-008 — Crear mecanismos de conciliación por integración
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para persistir auditoría append-only de procesamiento, intentos, reintentos, resultados, decisiones de autorización, efectos y compensaciones ejecutadas, conservando causalidad, identidad, evidencia, minimización y ownership sin materializar mecanismos de conciliación durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `INT-DB-007::<package_id>`, sujetas a `POST_E5_PACKAGE`, a los registros aplicables de INT-DB-001 a INT-DB-006, a los contratos de retry, auditoría y compensación vigentes, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Fecha de corte:** 2026-08-26
+
+---
+
+#### 1. Propósito
+
+`INT-DB-007` define la persistencia física futura que permitirá reconstruir, por paquete, qué ocurrió durante el procesamiento de una operación de integración desde su recepción o aceptación hasta su resultado, incluidos intentos técnicos, reintentos, decisiones de autorización, efectos confirmados, resultados inciertos, intervenciones y compensaciones ejecutadas.
+
+La auditoría no es un log libre ni una segunda fuente empresarial. Debe conservar una línea temporal causal, append-only, atribuible y minimizada que permita responder de forma reproducible:
+
+1. qué operación, evento, entrega, efecto o caso estaba siendo procesado;
+2. qué aplicación, dominio y superficie eran propietarios;
+3. qué actor humano, principal técnico o principal de integración participó;
+4. qué autorización fue evaluada y con qué versión de política;
+5. qué intento técnico se ejecutó;
+6. qué perfil de retry gobernó el intento;
+7. qué error, rate limit, breaker, espera o dependencia afectó el procesamiento;
+8. qué resultado técnico se observó;
+9. qué efecto empresarial quedó confirmado, ausente, rechazado o incierto;
+10. qué evidencia fuente, mapping, idempotency ref o caso de disposición soportan la reconstrucción;
+11. qué compensación fue solicitada, autorizada, ejecutada y verificada;
+12. qué corrección de auditoría fue necesaria sin alterar la entrada original;
+13. qué brecha de auditoría quedó abierta cuando la historia no pudo persistirse completa;
+14. qué información deberá entregar la tarea a `INT-DB-008` cuando exista conciliación pendiente.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+INT-DB-007
+→ contrato documental único y reutilizable
+
+INT-DB-007::<package_id>
+→ futura instancia física por paquete
+
+operación o unidad procesada
+→ ancla auditada
+→ entradas append-only
+→ intentos técnicos
+→ retry y budget
+→ autorización y actor/principal
+→ resultado técnico
+→ efecto empresarial referenciado
+→ compensación por pasos cuando aplique
+→ correcciones enlazadas
+→ brechas explícitas
+→ handoff estable hacia INT-DB-008
+```
+
+La definición global no se reabre por paquete.
+
+No existe una instancia física `INT-DB-007::GLOBAL`.
+
+Esta definición no ejecuta DDL, DML, migraciones, RLS, RPC, workers, retries, provider calls, compensaciones ni conciliaciones.
+
+---
+
+#### 3. Topología vinculante
+
+La topología aplicable queda cerrada así:
+
+| Propiedad | Decisión |
+| --- | --- |
+| Modalidad | `TEMPLATE_PER_PACKAGE` |
+| Gate temporal | `POST_E5_PACKAGE` |
+| Identidad física futura | `INT-DB-007::<package_id>` |
+| Instancia global | no aplica |
+| Definición documental | única y reutilizable |
+| Implementación durante esta definición | ninguna |
+
+Cada `package_id` materializa únicamente la auditoría correspondiente a integraciones, superficies, owners y efectos incluidos y acreditados en ese paquete.
+
+Compartir base de datos, broker, runtime o proveedor no fusiona auditorías entre paquetes ni transfiere ownership empresarial.
+
+---
+
+#### 4. Gate temporal
+
+Una futura instancia solo podrá materializar la persistencia de auditoría cuando, para el mismo `package_id`, estén satisfechas las puertas físicas aplicables.
+
+Como mínimo:
+
+```text
+package E5 aplicable = CERRADO
+E5-GATE-008::<package_id> = PASS
+registro INT-DB-001 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+credenciales INT-DB-002 aplicables = REFERENCIABLES O NO_APLICABLE JUSTIFICADO
+evidencia INT-DB-003 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+mapping INT-DB-004 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+idempotencia INT-DB-005 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+disposición INT-DB-006 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+contratos de retry, auditoría y compensación = VIGENTES
+drift aplicable = RECONCILED
+rollback = PREPARADO
+physical_authorization = EXPLICIT
+```
+
+La falta de una dependencia opcional no se resuelve fabricando referencias.
+
+---
+
+#### 5. Fuentes vinculantes
+
+La definición consume sin reinterpretación silenciosa:
+
+- `INT-APP-004` para identidad idempotente, claim y resultado recuperable;
+- `INT-APP-005` y `ENTERPRISE-EVENT-RETRY-POLICY-001` para perfiles, budget, retryability, backoff, `Retry-After`, circuit breaker y agotamiento;
+- `INT-APP-006` y `ENTERPRISE-EVENT-COMPENSATION-POLICY-001` para planes y pasos compensatorios;
+- `INT-APP-007` y `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001` para envelope, acciones, outcomes, clases de compromiso, causalidad, acceso, corrección e integridad;
+- `INT-APP-008` e `INT-APP-009` para incertidumbre, errores parciales y tratamiento seguro;
+- `INT-EXT-015` para retry, backoff y rate limit externos;
+- `INT-EXT-016` para cuarentena y dead-letter;
+- `INT-EXT-017` y `VENTO-EXTERNAL-AUDIT-OBSERVABILITY-RECONCILIATION-CONTRACT-001` para auditoría y observabilidad externa;
+- `SHELL-CON-019` para eventos externos recibidos;
+- `SHELL-CON-022` para mappings externos/canónicos;
+- `SHELL-CON-023` para idempotencia y referencias de conciliación;
+- `SHELL-CON-024` para casos de disposición y `IntegrationCompensationPlanRef`;
+- `INT-DB-001` a `INT-DB-006` como entradas físicas previas cuando sean aplicables;
+- las especializaciones POS vigentes para reversos, compensaciones y conciliación;
+- el registro canónico de requisitos de prueba vigente;
+- el estado remoto recapturado al iniciar cada futura instancia.
+
+`INT-DB-007` no crea un contrato público compartido nuevo ni modifica los contratos anteriores.
+
+---
+
+#### 6. Reconciliación de autoridades históricas y vigentes
+
+La semántica de retry, compensación y auditoría se definió primero en BLOQUE X y fue especializada después por contratos compartidos y tareas de persistencia de BLOQUE R.
+
+La regla de consumo queda:
+
+```text
+retry histórico y vigente de INT-APP-005 / INT-EXT-015
++ compensación de INT-APP-006
++ auditoría de INT-APP-007 / INT-EXT-017
++ contratos compartidos SHELL-CON-019/022/023/024
++ handoffs INT-DB-001..006
+→ INT-DB-007 persiste la historia operacional por package_id
+```
+
+Consecuencias:
+
+1. la evidencia histórica no se reescribe;
+2. una especialización posterior aprobada prevalece para la materialización futura sin alterar el corte histórico;
+3. `INT-DB-007` no crea un contrato compartido adicional;
+4. una referencia a conciliación no materializa `IntegrationReconciliationCase`;
+5. un plan de compensación referenciado no prueba que algún paso haya sido ejecutado;
+6. un retry count agregado no sustituye el historial de intentos.
+
+---
+
+#### 7. Separación semántica obligatoria
+
+La persistencia deberá conservar siempre:
+
+```text
+AUDITORÍA
+≠ LOG TÉCNICO
+≠ TRACE
+≠ MÉTRICA
+≠ ALERTA
+≠ EVIDENCIA FUENTE
+≠ HECHO EMPRESARIAL
+≠ CASO DE DISPOSICIÓN
+≠ CASO DE CONCILIACIÓN
+```
+
+Y además:
+
+```text
+OPERACIÓN LÓGICA
+≠ INTENTO TÉCNICO
+≠ DELIVERY
+≠ RETRY
+≠ COMPENSACIÓN
+```
+
+La auditoría demuestra que una acción o decisión fue registrada con identidad, causalidad y evidencia. No convierte un ACK, HTTP 2xx, trace, span, log o receipt en efecto empresarial confirmado.
+
+---
+
+#### 8. Familias lógicas de persistencia
+
+La futura materialización por paquete deberá cubrir, como responsabilidades lógicas separables:
+
+| Familia lógica | Responsabilidad |
+| --- | --- |
+| `INTEGRATION_PROCESSING_AUDIT_ENTRY` | entrada append-only de acción, actor/principal, causalidad, autorización, resultado y referencias |
+| `INTEGRATION_PROCESSING_ATTEMPT` | identidad y detalle de cada intento técnico sobre una operación estable |
+| `INTEGRATION_RETRY_TRANSITION` | programación, diferimiento, agotamiento y recuperación de retry sin cambiar identidad empresarial |
+| `INTEGRATION_COMPENSATION_EXECUTION` | ejecución y verificación de un plan y sus pasos compensatorios |
+| `INTEGRATION_AUDIT_CORRECTION_LINK` | relación entre entrada original y corrección append-only |
+| `INTEGRATION_AUDIT_GAP_RECORD` | brecha explícita cuando una parte de la historia no pudo persistirse sin fabricar datos |
+
+Estos nombres son identidades lógicas del contrato de persistencia. La futura migración podrá escoger nombres SQL compatibles con PostgreSQL y el paquete sin alterar esta semántica.
+
+---
+
+#### 9. Identidad estable de entrada de auditoría
+
+`audit_entry_id` identifica una entrada individual e inmutable.
+
+Reglas:
+
+1. cada entrada tiene identidad propia;
+2. no se deriva del payload, error text, timestamp, `trace_id`, secreto ni hash de fila;
+3. no sustituye `operation_key`, `event_id`, `delivery_id`, `effect_id`, `attempt_id` ni `IntegrationDispositionCaseId`;
+4. una misma operación puede tener múltiples entradas;
+5. una corrección crea otra entrada y enlaza la original;
+6. una redelivery puede producir nuevas entradas sin reinterpretar las anteriores;
+7. una entrada no cambia de `package_id`, owner o ambiente después de persistida;
+8. una entrada eliminada o mutada fuera del mecanismo autorizado se considera alteración, no corrección.
+
+---
+
+#### 10. Envelope canónico de auditoría
+
+La persistencia deberá poder representar, cuando cada dimensión aplique, el envelope de `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001`, incluyendo:
+
+```text
+audit_schema_version
+audit_entry_id
+correlation_id
+causation_id
+trace_id
+span_id
+owner_application
+action_type
+command_name
+event_name
+entity_type
+subject_id
+site_id
+resource_type
+resource_id
+source_system
+target_system
+channel
+environment
+request_id
+idempotency_key
+logical_request_hash
+replay_or_backfill_id
+simulation_id
+job_id
+worker_id
+client_id
+device_id
+station_id
+effective_actor_id
+effective_actor_type
+user_actor_id
+technical_principal_id
+integration_principal_id
+active_role_id
+delegation_id
+permission_key
+authorization_scope
+authorization_source
+authorization_policy_version
+authorization_decision
+authorization_reason
+ticket_or_approval_id
+emergency_override
+delegation_scope_match
+permission_result
+transport_destination
+external_provider
+external_reference
+attempt_count
+retry_count
+error_code
+result_type
+business_outcome_ref
+created_at
+updated_at
+```
+
+La presencia de un campo en el envelope no lo hace obligatorio para todas las acciones. Ausencia legítima, dato desconocido, denegación, invalidez y fallo técnico permanecen estados distintos.
+
+---
+
+#### 11. Envelope físico por paquete e integración
+
+La futura persistencia añadirá el contexto necesario para pertenecer de forma inequívoca a `INT-DB-007::<package_id>` sin modificar el contrato público anterior.
+
+Como mínimo, cuando aplique:
+
+```text
+package_id
+external_system_id
+external_integration_id
+external_environment_binding_id
+source_evidence_id
+mapping_reference
+idempotency_ref
+disposition_case_ref
+reconciliation_ref
+contract_version
+registry_version
+recorded_at
+recorded_by_ref
+```
+
+Reglas:
+
+1. `package_id` no se infiere desde la aplicación;
+2. el contexto externo debe corresponder al mismo binding y ambiente;
+3. `source_evidence_id` se referencia sin copiar el payload protegido;
+4. `mapping_reference` no se convierte en identidad de operación;
+5. `idempotency_ref` conserva ownership de `INT-DB-005`;
+6. `disposition_case_ref` conserva ownership de `INT-DB-006`;
+7. `reconciliation_ref` conserva ownership de `INT-DB-008`;
+8. el envelope físico no amplía la autoridad de quien lee la entrada.
+
+---
+
+#### 12. Taxonomía cerrada de acciones
+
+La persistencia deberá conservar la taxonomía vigente de `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001`:
+
+```text
+REQUEST_RECEIVED
+AUTHORIZATION_EVALUATED
+COMMAND_REJECTED
+COMMAND_ACCEPTED
+OWNER_TRANSACTION_COMMITTED
+EVENT_RECORDED
+EMISSION_ATTEMPTED
+EMISSION_CONFIRMED
+DELIVERY_ATTEMPTED
+DELIVERY_ACKNOWLEDGED
+CONSUMER_CLAIMED
+DUPLICATE_RESULT_RETURNED
+EFFECT_STARTED
+EFFECT_CONFIRMED
+EFFECT_FAILED
+RETRY_SCHEDULED
+RETRY_EXHAUSTED
+RECONCILIATION_DECIDED
+COMPENSATION_STEP_RECORDED
+EXTERNAL_EXCHANGE_RECORDED
+REPLAY_BACKFILL_RECORDED
+AUDIT_ACCESS_OR_CORRECTION_RECORDED
+```
+
+Reglas:
+
+1. `COMMAND_ACCEPTED` no significa commit;
+2. `EMISSION_CONFIRMED` no significa entrega;
+3. `DELIVERY_ACKNOWLEDGED` no significa efecto empresarial;
+4. `RECONCILIATION_DECIDED` registra una decisión producida por el owner de conciliación; esta tarea no la decide;
+5. `COMPENSATION_STEP_RECORDED` puede representar planificación, ejecución, verificación o cierre únicamente con detalle suficiente que distinga la fase;
+6. una acción específica no cambia el significado de su contrato propietario.
+
+---
+
+#### 13. Clases de compromiso de auditoría
+
+Se conservan exactamente las tres clases vigentes:
+
+```text
+AUDIT_ATOMIC_REQUIRED
+AUDIT_DURABLE_BEFORE_ACK
+AUDIT_DURABLE_BUFFER_ALLOWED
+```
+
+Aplicación:
+
+1. decisiones de autorización, commits propietarios, efectos financieros, físicos, de puntos, acceso, documento, calidad y compensación usan `AUDIT_ATOMIC_REQUIRED` o mecanismo reconciliable equivalente;
+2. entregas, intercambios externos, accesos sensibles, exportaciones y cierres de efecto usan `AUDIT_DURABLE_BEFORE_ACK` cuando corresponda;
+3. enriquecimiento técnico no decisorio puede usar `AUDIT_DURABLE_BUFFER_ALLOWED` únicamente con ancla previa e identidad fija;
+4. ninguna clase permite omitir auditoría;
+5. una brecha del buffer durable queda explícita y no se rellena inventando entradas.
+
+---
+
+#### 14. Causalidad y línea temporal
+
+La línea temporal transversal se reconstruye por identidades y relaciones, no por timestamps aislados.
+
+La persistencia podrá enlazar, según aplique:
+
+```text
+correlation_id
+causation_id
+request_id
+source_command_id
+event_id
+delivery_id
+effect_id
+attempt_id
+aggregate_version
+result_ref
+source_evidence_id
+```
+
+Reglas:
+
+1. `correlation_id` agrupa un proceso sin convertir todos sus efectos en una sola operación;
+2. `causation_id` expresa causa inmediata cuando esté acreditada;
+3. un timestamp cercano no demuestra causalidad;
+4. orden de llegada no sustituye versión del agregado;
+5. concurrencia puede producir timestamps intercalados sin alterar la relación causal;
+6. backfill y replay preservan la identidad histórica;
+7. una línea temporal puede quedar incompleta de forma explícita; no se completa por inferencia.
+
+---
+
+#### 15. Semántica temporal
+
+Cada entrada distinguirá, cuando aplique:
+
+```text
+occurred_at
+received_at
+recorded_at
+completed_at
+```
+
+Además deberá preservar zona horaria y calidad de reloj cuando sean materiales.
+
+Reglas:
+
+1. `occurred_at` no se reescribe porque la captura haya sido tardía;
+2. `received_at` representa recepción VENTO cuando exista;
+3. `recorded_at` representa persistencia de auditoría;
+4. `completed_at` representa cierre de la acción auditada, no cierre empresarial universal;
+5. `created_at` y `updated_at` del envelope no sustituyen estas semánticas;
+6. un reloj incierto se declara, no se corrige con una hora inventada.
+
+---
+
+#### 16. Actor humano, principal técnico y principal de integración
+
+La auditoría deberá distinguir de forma explícita:
+
+```text
+effective_actor_id
+effective_actor_type
+user_actor_id
+technical_principal_id
+integration_principal_id
+client_id
+device_id
+station_id
+job_id
+worker_id
+```
+
+Reglas:
+
+1. el principal autenticado no siempre es el actor humano causal;
+2. un dispositivo compartido no se convierte en actor;
+3. `service_role` no se registra como autoridad empresarial;
+4. un worker conserva principal técnico y owner;
+5. un proveedor externo no se convierte en usuario VENTO;
+6. una compensación ejecutada automáticamente conserva tanto su principal técnico como el actor o aprobación causal cuando existan;
+7. ausencia de actor humano en una automatización legítima no autoriza inventarlo.
+
+---
+
+#### 17. Evidencia de autorización
+
+Toda decisión sensible conservará, cuando aplique:
+
+```text
+permission_key
+authorization_scope
+authorization_source
+authorization_policy_version
+authorization_decision
+authorization_reason
+active_role_id
+delegation_id
+delegation_scope_match
+permission_result
+ticket_or_approval_id
+emergency_override
+```
+
+Reglas:
+
+1. una denegación se audita aunque no produzca mutación;
+2. una aprobación previa no congela autoridad para retries o compensaciones posteriores;
+3. antes de un intento sensible se revalida la autoridad exigida por el contrato;
+4. un ticket o approval ref no sustituye la evaluación de permiso;
+5. una credencial técnica válida no equivale a autorización empresarial;
+6. emergencia no elimina trazabilidad, motivo ni owner.
+
+---
+
+#### 18. Auditoría del ciclo de comando
+
+El ciclo de comando deberá distinguir:
+
+```text
+REQUEST_RECEIVED
+→ AUTHORIZATION_EVALUATED
+→ COMMAND_REJECTED
+```
+
+o:
+
+```text
+REQUEST_RECEIVED
+→ AUTHORIZATION_EVALUATED
+→ COMMAND_ACCEPTED
+→ OWNER_TRANSACTION_COMMITTED
+```
+
+Reglas:
+
+1. aceptación técnica no es commit;
+2. HTTP exitoso no es commit;
+3. el commit propietario mantiene un ancla auditada durable;
+4. si la auditoría crítica falla, no se presenta éxito sin ancla o contención reconciliable;
+5. un comando rechazado conserva causa y autorización;
+6. un retry del mismo comando conserva identidad idempotente compatible.
+
+---
+
+#### 19. Auditoría de evento y emisión
+
+Toda emisión deberá distinguir:
+
+```text
+EVENT_RECORDED
+EMISSION_ATTEMPTED
+EMISSION_CONFIRMED
+```
+
+Cada intento de emisión deberá conservar, cuando aplique:
+
+```text
+attempt_id
+event_id
+retry_profile
+transport_destination
+attempt_number
+occurred_at
+result_type
+error_code
+```
+
+Reglas:
+
+1. registrar el evento no demuestra publicación;
+2. publicar no demuestra entrega;
+3. la identidad del evento no cambia por retry;
+4. `attempt_id` cambia por intento técnico;
+5. una respuesta perdida del transporte no autoriza crear un evento nuevo;
+6. la productora conserva el hecho y su evento durable como fuentes distintas del log técnico.
+
+---
+
+#### 20. Auditoría de entrega por consumidora
+
+Cada entrega se reconstruye por consumidora y delivery independiente.
+
+La persistencia deberá conservar, cuando aplique:
+
+```text
+consumer_application
+delivery_id
+event_id
+attempt_id
+attempt_number
+contract_version
+sensitivity_class
+delivery_result
+ack_reference
+next_disposition
+```
+
+Reglas:
+
+1. éxito de una consumidora no cierra otra;
+2. agotar retry de una consumidora no consume budget de otra;
+3. una audiencia histórica de replay no se expande por descubrimiento posterior;
+4. ACK de transporte no equivale a efecto;
+5. delivery y consumer effect permanecen scopes separados;
+6. una consumidora no escribe el audit trail privado de otra salvo contrato compartido explícito.
+
+---
+
+#### 21. Auditoría de claim, deduplicación y efecto consumidor
+
+El procesamiento consumidor deberá poder registrar:
+
+```text
+CONSUMER_CLAIMED
+DUPLICATE_RESULT_RETURNED
+EFFECT_STARTED
+EFFECT_CONFIRMED
+EFFECT_FAILED
+```
+
+Se deberán conservar referencias a:
+
+```text
+idempotency_ref
+logical_content_hash
+claim_state
+resource_ref
+result_ref
+mapping_reference
+business_outcome_ref
+```
+
+Reglas:
+
+1. un duplicado compatible recupera el resultado previo sin segundo efecto;
+2. un conflicto de huella no se registra como retry ordinario;
+3. stale y out-of-order se preservan como decisiones propias;
+4. el ACK del mensaje no marca el efecto como confirmado;
+5. `business_outcome_ref` conserva el resultado empresarial o una referencia estable a él;
+6. la auditoría no se convierte en el ledger idempotente.
+
+---
+
+#### 22. Identidad de intento técnico
+
+Se define `attempt_id` como identidad estable de un intento técnico individual.
+
+Invariantes:
+
+1. una operación lógica puede tener cero, uno o muchos intentos;
+2. cada intento materializado tiene `attempt_id` propio;
+3. `attempt_id` no se reutiliza para otro intento;
+4. no sustituye `operation_key`;
+5. no sustituye `delivery_id`;
+6. no cambia el resultado empresarial por existir;
+7. el intento conserva referencia a la misma identidad empresarial e idempotente cuando es retry;
+8. un nuevo `attempt_id` no concede derecho a repetir un efecto incierto;
+9. un attempt ID no se fabrica para backfill histórico si no puede acreditarse.
+
+---
+
+#### 23. Shape lógico de intento de procesamiento
+
+`INTEGRATION_PROCESSING_ATTEMPT` deberá poder representar, cuando aplique:
+
+```text
+attempt_id
+package_id
+operation_or_delivery_ref
+idempotency_ref
+disposition_case_ref
+external_system_id
+external_integration_id
+external_environment_binding_id
+surface
+attempt_number
+retry_profile
+error_class
+scheduled_at
+started_at
+completed_at
+retry_after_observed_at
+rate_policy_ref
+breaker_state_ref
+worker_id
+job_id
+transport_destination
+authorization_reference
+result_type
+result_reference
+business_outcome_ref
+next_disposition
+audit_entry_refs
+```
+
+Reglas:
+
+1. `attempt_number` no es identidad;
+2. `retry_profile` proviene del contrato vigente;
+3. error técnico y business outcome permanecen separados;
+4. worker/job no adquieren ownership empresarial;
+5. resultado desconocido se conserva como tal;
+6. las referencias de auditoría enlazan las acciones emitidas por el intento sin duplicar contenido.
+
+---
+
+#### 24. Retry y preservación de identidad
+
+Un retry técnico conserva:
+
+```text
+misma operación lógica
++ misma idempotency identity
++ mismo owner y finalidad
++ mismo contenido lógico compatible
+```
+
+Puede cambiar:
+
+```text
+attempt_id
+attempt_number
+worker_id
+job_id
+delivery_id técnico cuando el transporte lo exija
+scheduled_at
+started_at
+completed_at
+```
+
+No puede cambiar por conveniencia:
+
+- `operation_key`;
+- `generation`;
+- owner;
+- ambiente;
+- recurso;
+- contenido material;
+- contract version incompatible;
+- autorización exigida.
+
+Si cambia la intención empresarial, no es retry.
+
+---
+
+#### 25. Programación y agotamiento de retry
+
+`INTEGRATION_RETRY_TRANSITION` deberá permitir auditar:
+
+```text
+retry_profile
+attempt_number
+error_class
+scheduled_at
+next_attempt_at
+retry_after_observed_at
+remaining_attempt_budget
+remaining_age_budget
+breaker_state_ref
+rate_policy_ref
+outcome
+result_recovered_ref
+```
+
+Reglas:
+
+1. `RETRY_SCHEDULED` no confirma que el siguiente intento ocurrió;
+2. `RETRY_EXHAUSTED` no fabrica éxito;
+3. agotar budget no ejecuta automáticamente compensación;
+4. agotar budget no convierte resultado incierto en fracaso;
+5. `Retry-After` observado se conserva como dato del proveedor cuando aplique;
+6. un circuit breaker abierto no pierde ni confirma trabajo;
+7. el restablecimiento no libera todo el backlog sin límites y jitter definidos por la infraestructura propietaria;
+8. cada consumidora conserva budget independiente.
+
+---
+
+#### 26. Resultado desconocido
+
+Timeout, lease expirado, proceso reiniciado, conexión cerrada, respuesta perdida o worker detenido no prueban por sí solos que el efecto no ocurrió.
+
+Cuando el resultado sea incierto:
+
+```text
+identidad original
++ intentos auditados
++ evidence refs
++ result refs disponibles
++ disposition case cuando aplique
+→ outcome incierto preservado
+→ handoff de conciliación cuando corresponda
+```
+
+Reglas:
+
+1. no se crea nueva generación para escapar de la incertidumbre;
+2. no se repite un efecto sensible sin la verificación exigida;
+3. no se ejecuta compensación sobre un efecto hipotético;
+4. cuarentena y dead-letter pueden coexistir con incertidumbre, pero no la resuelven;
+5. `INT-DB-008` decide la conciliación; `INT-DB-007` conserva su evidencia y referencias.
+
+---
+
+#### 27. Handoff recibido de INT-DB-006
+
+Cuando exista `IntegrationDispositionCase`, `INT-DB-007` consume sin reidentificar:
+
+```text
+integration_disposition_case_id
+attempt_references[]
+audit_references[]
+compensation_plan_ref
+manual_intervention_action
+authorization_reference
+partiality_class
+disposition
+business_outcome_reference
+reconciliation_ref
+```
+
+`INT-DB-007` materializa el detalle que `INT-DB-006` dejó expresamente fuera:
+
+- cada intento;
+- cada retry;
+- cada transición técnica relevante;
+- cada resultado técnico;
+- cada paso compensatorio ejecutado;
+- la línea temporal de auditoría.
+
+No modifica la taxonomía, razón de cuarentena, dead-letter gates ni cierre del caso por conveniencia.
+
+---
+
+#### 28. Plan de compensación
+
+La compensación consume el plan propietario definido por `INT-APP-006` y la referencia compartida de `SHELL-CON-024`.
+
+Un plan aplicable conserva como mínimo:
+
+```text
+compensation_plan_id
+plan_version
+process_family
+originating_application
+emergency_scenario
+authorized_trigger_types
+minimum_required_permission
+decision_owner
+manual_review_required_when
+steps
+final_verification
+residual_owner
+```
+
+Reglas:
+
+1. el plan no demuestra que un paso haya sido ejecutado;
+2. una versión iniciada no se edita destructivamente;
+3. cambiar alcance, orden, importe, cantidad, autoridad o tratamiento exige una versión sucesora compatible;
+4. la ejecución conserva la versión exacta;
+5. cancel, void y supersede no se confunden automáticamente con compensación;
+6. un efecto irreversible o pendiente de determinar no recibe reverso automático.
+
+---
+
+#### 29. Identidad y ejecución de paso compensatorio
+
+Cada paso contractual conserva:
+
+```text
+compensation_step_id
+order
+owner_application
+effect_type
+original_effect_reference
+reversibility
+mechanism
+target
+mode
+preconditions
+confirmation_evidence
+authorization_ref
+idempotency_ref
+result_or_effect_ref
+audit_action
+```
+
+`INTEGRATION_COMPENSATION_EXECUTION` agrega el contexto de ejecución:
+
+```text
+package_id
+compensation_plan_id
+plan_version
+compensation_step_id
+attempt_id
+started_at
+completed_at
+execution_result
+verification_result
+error_class
+residual_obligations
+audit_entry_refs
+```
+
+La representación física podrá normalizar estos campos sin modificar el contrato del plan.
+
+---
+
+#### 30. Causalidad de compensación
+
+Toda compensación deberá conservar una relación inequívoca con el efecto original.
+
+Cuando existan, deberán permanecer enlazados:
+
+```text
+original_effect_ref
+original_event_id
+source_command_id
+correlation_id
+causation_id
+action_id
+confirmation_evidence
+```
+
+Queda prohibido seleccionar el efecto a compensar por semejanza de:
+
+- texto;
+- importe;
+- fecha;
+- producto;
+- destinatario;
+- proximidad temporal;
+- payload parecido.
+
+Una compensación sin efecto confirmado queda bloqueada.
+
+---
+
+#### 31. Idempotencia de compensación
+
+Cada paso compensatorio usa una identidad idempotente propia dentro de su scope.
+
+Reglas:
+
+1. repetir la misma identidad y huella compatible devuelve el estado o resultado previo;
+2. no reaplica el efecto;
+3. reutilizar identidad con acción, efecto original, importe, cantidad, destinatario, recurso o plan incompatibles produce conflicto;
+4. `attempt_id` no sustituye la clave idempotente;
+5. un retry de compensación conserva la misma intención;
+6. una nueva compensación legítima exige identidad nueva según el contrato propietario;
+7. el ledger idempotente continúa bajo `INT-DB-005`; esta tarea conserva la relación auditada.
+
+---
+
+#### 32. Autorización y segregación de compensación
+
+Solicitar, aprobar, ejecutar, verificar y cerrar una compensación pueden exigir capacidades separadas.
+
+La persistencia deberá conservar, cuando aplique:
+
+```text
+requested_by_ref
+approved_by_ref
+executed_by_ref
+verified_by_ref
+authorization_ref
+permission_key
+authorization_policy_version
+authorization_decision
+ticket_or_approval_id
+emergency_override
+```
+
+Reglas:
+
+1. el actor que produjo el efecto no se autoaprueba un reverso sensible salvo contrato de emergencia explícito;
+2. un plan aprobado no congela permisos futuros;
+3. antes de cada paso se revalida autoridad, contexto, recurso, estado, versión y sensibilidad;
+4. la ejecución automática conserva principal técnico y autoridad causal;
+5. una compensación no escribe tablas privadas de otro owner.
+
+---
+
+#### 33. Compensación parcial y residuales
+
+Cuando algunos pasos queden confirmados y otros no:
+
+1. se preservan los pasos confirmados;
+2. se identifica el paso fallido o incierto;
+3. se conserva si es retryable o terminal conforme al contrato;
+4. se conserva evidencia suficiente;
+5. se asigna owner residual;
+6. no se ejecuta una segunda cadena inversa por inferencia;
+7. no se presenta la operación como completamente compensada;
+8. si requiere conciliación, se enlaza `reconciliation_ref` sin decidir el caso;
+9. el cierre del plan usa el vocabulario canónico vigente del contrato propietario.
+
+`RESOLVED_COMPENSATED` en un caso de disposición exige compensación confirmada, no solo plan existente.
+
+---
+
+#### 34. Corrección append-only
+
+La auditoría ordinaria es append-only.
+
+Una corrección deberá:
+
+```text
+crear nueva audit_entry_id
+→ enlazar original_audit_entry_id
+→ conservar antes
+→ conservar después
+→ conservar motivo
+→ conservar autoridad
+→ conservar alcance
+```
+
+Reglas:
+
+1. la entrada original permanece inmutable;
+2. no se borra auditoría durante rollback, retiro o migración;
+3. una corrección no cambia el hecho empresarial por sí sola;
+4. una corrección de mapping o evidence ref no reescribe el intento histórico;
+5. una corrección sensible también se audita mediante `AUDIT_ACCESS_OR_CORRECTION_RECORDED`.
+
+---
+
+#### 35. Brechas de auditoría
+
+Cuando una entrada o enriquecimiento esperado no pueda persistirse conforme a la clase de compromiso:
+
+1. no se presenta como existente;
+2. no se crea retrospectivamente con datos inferidos;
+3. se crea `INTEGRATION_AUDIT_GAP_RECORD` o mecanismo equivalente;
+4. se conserva periodo, alcance, causa, riesgo y plan;
+5. se usa el outcome o código canónico de brecha cuando el contrato lo exija;
+6. la operación crítica queda contenida o reconciliable conforme a su clase;
+7. el owner de `INT-DB-008` recibe el handoff si la brecha impide determinar un resultado.
+
+Una brecha no se soluciona copiando logs técnicos a la tabla de auditoría.
+
+---
+
+#### 36. Evidencia fuente, payload y minimización
+
+La auditoría deberá preferir:
+
+```text
+source_evidence_id
+payload_digest_ref
+protected_evidence_ref
+mapping_reference
+external_reference
+result_reference
+business_outcome_ref
+```
+
+Queda prohibido copiar por conveniencia:
+
+- payload original completo cuando una referencia sea suficiente;
+- secretos;
+- tokens;
+- firmas completas;
+- passwords;
+- private keys;
+- `service_role`;
+- datos bancarios completos;
+- datos personales o sensibles no necesarios;
+- URLs firmadas persistentes;
+- headers reutilizables.
+
+Auditoría, staging y evidencia protegida permanecen capas separadas.
+
+---
+
+#### 37. Acceso sensible y auditoría de la propia auditoría
+
+Consultar, buscar, exportar, imprimir, compartir o corregir auditoría sensible requiere autorización por finalidad cuando corresponda.
+
+La evidencia de acceso deberá poder conservar:
+
+```text
+actor_or_principal_ref
+purpose
+scope
+filters
+recipient_or_destination
+reason
+artifact_digest_ref
+occurred_at
+authorization_reference
+```
+
+Reglas:
+
+1. crear una entrada no concede permiso para leerla;
+2. leer metadata no concede acceso al payload protegido;
+3. exportar auditoría no concede acceso al proveedor;
+4. un export no contiene secretos por existir en una superficie administrativa;
+5. el acceso sensible puede generar otra entrada de auditoría;
+6. una consulta técnica de health no se eleva automáticamente a acceso empresarial sensible.
+
+---
+
+#### 38. Retención y legal hold
+
+Cada entrada o familia física deberá enlazar la política aplicable mediante campos o referencias como:
+
+```text
+sensitivity_class
+access_scope
+retention_policy_ref
+legal_hold_reference
+```
+
+Reglas:
+
+1. `INT-DB-007` no fija un TTL universal;
+2. edad no autoriza borrar auditoría crítica;
+3. legal hold bloquea disposición conforme a su política;
+4. retención no cambia business outcome;
+5. backup no sustituye retención;
+6. purga autorizada no permite romper referencias que deban conservarse;
+7. los periodos exactos pertenecen al gobierno de información propietario.
+
+---
+
+#### 39. Seguridad, RLS y grants futuros
+
+La futura persistencia se trata como superficie sensible server-side.
+
+Deberá demostrar:
+
+1. escritura desde clientes no privilegiados denegada salvo contrato explícito posterior;
+2. lectura por owner, finalidad y sensibilidad;
+3. separación entre escritura técnica y autoridad de cierre empresarial;
+4. prohibición de usar `service_role` como principal empresarial;
+5. minimización de vistas y proyecciones;
+6. RLS/grants alineados con el package y contratos de autorización;
+7. acceso de soporte separado del acceso a evidencia protegida;
+8. auditoría de accesos sensibles;
+9. aislamiento entre ambientes y paquetes.
+
+Esta tarea documental no crea policies ni grants.
+
+---
+
+#### 40. Índices y patrones de consulta
+
+La futura implementación deberá permitir consultas operativas sin convertir índices auxiliares en identidad.
+
+Patrones autorizados, según necesidad real del paquete:
+
+```text
+package_id + owner_application + occurred_at
+correlation_id + causation_id
+operation/idempotency ref + attempt_number
+event_id + consumer_application
+delivery_id
+effect_id
+integration_disposition_case_id
+compensation_plan_id + compensation_step_id
+external_system_id + environment + surface
+reconciliation_ref
+```
+
+Reglas:
+
+1. `trace_id` no se convierte en identidad empresarial;
+2. timestamps no sustituyen causalidad;
+3. índices de retry no crean budget;
+4. índices de compensación no conceden autorización;
+5. índices de `reconciliation_ref` no materializan conciliación;
+6. el diseño físico se ajusta a consultas reales del paquete y no a indexación indiscriminada.
+
+---
+
+#### 41. Universo externo reconciliado 21/21
+
+La definición conserva el universo externo canónico y reconcilia la taxonomía histórica de `INT-EXT-017` con especializaciones posteriores aprobadas.
+
+| ID | Sistema / plataforma | Clasificación de auditoría vigente | Estado | Disposición de INT-DB-007 |
+| --- | --- | --- | --- | --- |
+| `EXT-SYS-001` | Supabase | `GOBERNADA_POR_OBSERVABILIDAD_INTERNA_VENTO` | `ESPECIFICADO` | auditorar operaciones propietarias y cambios críticos; no crear un ledger externo global de toda actividad Supabase |
+| `EXT-SYS-002` | Wompi | `INBOUND_EVENT_AUDIT_AND_PROVIDER_RECONCILIATION` | `ESPECIFICADO` | auditar recepción, autenticidad referenciada, identidad, intentos, efecto y resultado; conciliación pertenece a INT-DB-008 |
+| `EXT-SYS-003` | RevenueCat | `INBOUND_EVENT_AUDIT_AND_PROVIDER_RECONCILIATION` | `ESPECIFICADO` | auditar redelivery, transformación, mapping, idempotencia, efecto y outcome sin copiar payload completo |
+| `EXT-SYS-004` | Resend | `OUTBOUND_DELIVERY_AUDIT_AND_RECEIPT_RECONCILIATION` | `ESPECIFICADO` | auditar cada entrega e intento, ACK o receipt cuando exista y resultado técnico separado del resultado empresarial |
+| `EXT-SYS-005` | Expo / EAS Update | `CONFIGURATION_OBSERVABILITY_NO_RUNTIME_EXCHANGE` | `ESPECIFICADO` | conservar auditoría de configuración o release solo cuando el owner lo requiera; no fabricar intercambio runtime |
+| `EXT-SYS-006` | Expo Push Service | `OUTBOUND_DELIVERY_AUDIT_AND_RECEIPT_RECONCILIATION` | `ESPECIFICADO` | auditar por destino, intento, receipt/result y generación sin fusionar destinos |
+| `EXT-SYS-007` | Sentry | `BEST_EFFORT_OBSERVABILITY_PROVIDER` | `ESPECIFICADO` | telemetría best-effort no sustituye la auditoría empresarial ni bloquea el hecho por defecto |
+| `EXT-SYS-008` | Google Maps / Google Reviews | `INTERACTIVE_READ_TECHNICAL_OBSERVABILITY` | `ESPECIFICADO` | auditar uso técnico mínimo cuando sea necesario sin crear ledger empresarial por cada lectura |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs | `HYBRID_RESOURCE_AND_PUSH_OBSERVABILITY` | `ESPECIFICADO` | separar mutación de recurso, registro de dispositivo y push; cada superficie conserva intento y resultado propios |
+| `EXT-SYS-010` | Vercel | `CONFIGURATION_OBSERVABILITY_NO_RUNTIME_EXCHANGE` | `ESPECIFICADO` | auditar cambios de configuración/deployment cuando corresponda sin inventar efecto empresarial |
+| `EXT-SYS-011` | Zebra BrowserPrint | `PHYSICAL_EFFECT_AUDIT_AND_MANUAL_RECONCILIATION` | `ESPECIFICADO` | auditar envío, resultado técnico, incertidumbre física y verificación; timeout no demuestra que no imprimió |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet | `MODEL_NO_REMOTE_BINDING` | `NO_APLICA` | no materializar auditoría runtime externa hasta acreditar binding real |
+| `EXT-SYS-013` | POS externo vigente | `APLICA_CON_ESPECIALIZACION_POS` | `PENDIENTE_DE_EVIDENCIA` | auditar procesamiento VENTO y compensaciones internas acreditadas sin inventar receipts, campos o garantías del proveedor |
+| `EXT-SYS-014` | Shopify / canal de comercio electrónico | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no crear auditoría de intercambio externo sin binding |
+| `EXT-SYS-015` | Rappi / marketplace | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no crear auditoría de pedidos o entregas sin contrato acreditado |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no inventar subscriber, flow, delivery o outcome |
+| `EXT-SYS-017` | WhatsApp | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no auditar un proveedor/API no acreditado como si estuviera activo |
+| `EXT-SYS-018` | Instagram / perfiles sociales | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no crear ledger de mensajes o perfiles sin binding |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no confundir mailbox o alias con integración externa operativa acreditada |
+| `EXT-SYS-020` | Telefonía / canal de voz | `BLOQUEADO_SIN_BINDING` | `BLOQUEADO` | bloqueado hasta acreditar operador, interfaz, IDs y semántica |
+| `EXT-SYS-021` | Transporte externo | `NO_APLICA_SIN_BINDING` | `NO_APLICA` | no inventar tracking, receipt, courier o delivery audit sin proveedor e interfaz acreditados |
+
+---
+
+#### 42. Reconciliación cuantitativa del universo
+
+La distribución vigente queda:
+
+```text
+1 GOBERNADA_POR_OBSERVABILIDAD_INTERNA_VENTO
+2 INBOUND_EVENT_AUDIT_AND_PROVIDER_RECONCILIATION
+2 OUTBOUND_DELIVERY_AUDIT_AND_RECEIPT_RECONCILIATION
+1 BEST_EFFORT_OBSERVABILITY_PROVIDER
+1 INTERACTIVE_READ_TECHNICAL_OBSERVABILITY
+1 HYBRID_RESOURCE_AND_PUSH_OBSERVABILITY
+2 CONFIGURATION_OBSERVABILITY_NO_RUNTIME_EXCHANGE
+1 PHYSICAL_EFFECT_AUDIT_AND_MANUAL_RECONCILIATION
+1 MODEL_NO_REMOTE_BINDING
+1 APLICA_CON_ESPECIALIZACION_POS
+7 NO_APLICA_SIN_BINDING
+1 BLOQUEADO_SIN_BINDING
+= 21
+```
+
+Estados:
+
+```text
+11 ESPECIFICADO
++ 1 PENDIENTE_DE_EVIDENCIA
++ 8 NO_APLICA
++ 1 BLOQUEADO
+= 21
+```
+
+Controles:
+
+- identidades esperadas: **21**;
+- decisiones materializadas documentalmente: **21 de 21**;
+- faltantes: **0**;
+- duplicadas: **0**;
+- entradas runtime creadas durante esta definición: **0**;
+- intentos ejecutados: **0**;
+- compensaciones ejecutadas: **0**.
+
+---
+
+#### 43. Wompi y RevenueCat
+
+Para Wompi, la futura instancia aplicable deberá conservar al menos:
+
+1. recepción y `received_at`;
+2. referencia a evidencia fuente;
+3. autenticidad referenciada;
+4. external event/receipt cuando esté acreditado;
+5. mapping y idempotency refs aplicables;
+6. cada intento y retry;
+7. resultado técnico;
+8. resultado de pago o business outcome referenciado;
+9. incertidumbre explícita;
+10. handoff a conciliación sin repetir pago a ciegas.
+
+Para RevenueCat deberá conservar:
+
+1. redelivery y correlación;
+2. source evidence por referencia;
+3. mapping y aliases solo como referencias acreditadas;
+4. idempotency ref;
+5. cada intento;
+6. mutaciones derivadas por owner;
+7. resultado o entitlement referenciado;
+8. error y retry;
+9. outcome incierto sin segunda suscripción o entitlement;
+10. conciliación posterior bajo `INT-DB-008`.
+
+Ningún caso copia por defecto el payload completo a la auditoría.
+
+---
+
+#### 44. Resend y Expo Push Service
+
+Resend:
+
+```text
+misma entrega lógica + retry
+→ misma identidad
+→ nuevo attempt_id
+```
+
+Un reenvío empresarial deliberado usa nueva generación conforme al contrato.
+
+El ACK de Resend no prueba lectura por el destinatario.
+
+Expo Push Service:
+
+1. cada destino conserva historia independiente;
+2. el intento se audita por destino y generación;
+3. un destino confirmado no se repite porque otro falle;
+4. `DeviceNotRegistered` u otro resultado técnico no se convierte en identidad de persona;
+5. batch, attempt y retry no sustituyen la operación lógica;
+6. outcome incierto puede requerir receipt o conciliación antes de repetir.
+
+---
+
+#### 45. Apple Wallet / APNs y Zebra BrowserPrint
+
+Apple Wallet / PassKit y APNs:
+
+1. mutación del pase y push son operaciones distintas;
+2. registro de dispositivo, pass resource y push conservan referencias separadas;
+3. una correlación común no fusiona sus identidades;
+4. cada intento conserva resultado propio;
+5. un push ACK no demuestra que la actualización haya sido aplicada por el dispositivo.
+
+Zebra BrowserPrint:
+
+1. envío técnico y efecto físico son distintos;
+2. una respuesta perdida no prueba que no haya impresión;
+3. timeout conserva incertidumbre;
+4. auto-reprint queda bloqueado mientras el contrato exija verificación;
+5. reimpresión voluntaria es nueva intención o generación explícita;
+6. la auditoría puede registrar verificación manual sin inventar receipt del dispositivo;
+7. la conciliación del resultado incierto pertenece a `INT-DB-008`.
+
+---
+
+#### 46. Sentry, Google Maps y plataformas técnicas
+
+Sentry:
+
+- telemetría best-effort no se convierte en fuente empresarial;
+- pérdida de telemetría no revierte un hecho confirmado;
+- datos sensibles se minimizan;
+- una entrada Sentry puede correlacionarse sin sustituir auditoría canónica.
+
+Google Maps / Reviews:
+
+- lecturas interactivas conservan observabilidad técnica mínima cuando sea material;
+- `ZERO_RESULTS` válido no es fallo empresarial;
+- una respuesta no confiable no crea mapping ni hecho VENTO;
+- no se crea un audit ledger masivo de respuestas por defecto.
+
+Expo/EAS y Vercel:
+
+- cambios de configuración o deployment pueden ser auditables por su owner;
+- no se inventa intercambio runtime si no existe;
+- deployment, project, channel o domain refs no se convierten en IDs empresariales.
+
+---
+
+#### 47. POS externo vigente
+
+`EXT-SYS-013` conserva el estado `PENDIENTE_DE_EVIDENCIA` para el binding remoto y usa las especializaciones POS aprobadas únicamente donde exista evidencia VENTO.
+
+Reglas:
+
+1. `makos_excel`, número de fila, posición, nombre, fecha o hash de archivo no fabrican identidad individual;
+2. procesamiento VENTO puede auditar lote, fila, transformación, mapping, idempotencia y efecto cuando esos datos estén acreditados;
+3. compensaciones internas de anulaciones o devoluciones conservan vínculo al hecho original y al owner;
+4. no se inventan provider receipts, API responses ni attempt IDs remotos;
+5. una compensación NEXO, NUMERA o PASS solo actúa sobre efectos propios confirmados;
+6. no existe rollback global de venta;
+7. conciliación diaria entre fuente y efectos permanece bajo la tarea propietaria y `INT-DB-008` cuando corresponda a la infraestructura común.
+
+---
+
+#### 48. Sistemas sin binding y sistema bloqueado
+
+Para `EXT-SYS-014`, `015`, `016`, `017`, `018`, `019` y `021`:
+
+1. no se crean entradas runtime externas por completitud;
+2. no se inventan endpoints, provider IDs, receipts, retry profiles específicos ni outcomes;
+3. una futura evidencia de binding se incorpora primero por su contrato propietario;
+4. después podrá materializarse la auditoría correspondiente dentro del package aprobado.
+
+`EXT-SYS-020` permanece `BLOQUEADO` hasta acreditar operador, cuenta, interfaz, IDs y semántica.
+
+No se crean filas vacías para simular cobertura.
+
+---
+
+#### 49. Handoff hacia INT-DB-008
+
+`INT-DB-008 — Crear mecanismos de conciliación por integración` conserva ownership de la persistencia y operación de conciliación.
+
+`INT-DB-007` entrega, cuando aplique:
+
+```text
+package_id
+reconciliation_ref
+correlation_id
+causation_id
+operation_or_resource_refs
+source_evidence_id
+mapping_reference
+idempotency_ref
+disposition_case_ref
+attempt_refs
+audit_entry_refs
+external_reference
+result_reference
+business_outcome_ref
+partiality_or_uncertainty_ref
+compensation_plan_ref
+compensation_execution_refs
+residual_obligations
+last_known_owner
+```
+
+Límites:
+
+1. esta tarea no crea `IntegrationReconciliationCase`;
+2. no compara autoritativamente estados interno/externo para decidir ganador;
+3. no cierra conciliaciones;
+4. puede registrar `RECONCILIATION_DECIDED` únicamente como entrada producida a partir de una decisión de la autoridad de conciliación;
+5. una referencia a conciliación no convierte incertidumbre en resultado;
+6. la tarea siguiente debe consumir la historia sin reescribirla.
+
+---
+
+#### 50. Migración y backfill de auditoría legacy
+
+No existe un backfill universal autorizado.
+
+Antes de adoptar registros históricos, una futura instancia deberá inventariar:
+
+- audit tables existentes;
+- logs técnicos;
+- retry stores;
+- error tables;
+- provider receipts;
+- histories de jobs;
+- compensation logs;
+- exportaciones manuales;
+- campos genéricos `error`, `status`, `attempt`, `retry` o equivalentes.
+
+Una entrada histórica solo puede materializarse cuando se pueda reconstruir con evidencia suficiente su identidad, owner, acción, causalidad, tiempo, actor/principal, resultado y referencias críticas.
+
+Si falta evidencia:
+
+1. no se fabrica `audit_entry_id` histórico con significado falso;
+2. no se inventa actor;
+3. no se inventa `attempt_id`;
+4. no se inventa autorización;
+5. no se convierte log técnico en auditoría canónica;
+6. se conserva la brecha explícita y su owner;
+7. se abre handoff a conciliación si la ausencia afecta un outcome material.
+
+---
+
+#### 51. Rollback y forward-fix
+
+La reversión de una futura implementación no puede borrar historia operacional ya observada.
+
+Reglas:
+
+1. DDL defectuoso puede revertirse o corregirse conforme a la política de migraciones;
+2. entradas auditadas ya persistidas se preservan o migran;
+3. un rollback de código no elimina intentos, resultados ni compensaciones ocurridas;
+4. una corrección usa entrada enlazada;
+5. cambiar índice no reinterpreta causalidad;
+6. un attempt confirmado no se elimina para volver a ejecutarlo;
+7. una compensación confirmada no se elimina para simular que el efecto original sigue intacto;
+8. un audit gap permanece visible hasta su resolución;
+9. un forward-fix conserva lineage;
+10. el rollback de infraestructura no cierra una conciliación abierta.
+
+---
+
+#### 52. Certificación física futura
+
+Una futura instancia `INT-DB-007::<package_id>` no podrá declararse materializada únicamente porque exista una tabla de auditoría.
+
+La certificación deberá demostrar, como mínimo:
+
+1. migración canónica y reproducible desde `vento-shell`;
+2. persistencia append-only para interfaces y servicios ordinarios;
+3. identidad estable de cada `audit_entry_id`;
+4. causalidad por referencias y no por timestamps aislados;
+5. actor humano, principal técnico y principal de integración separados;
+6. evidencia de autorización en acciones sensibles;
+7. clases de compromiso de auditoría aplicadas de forma correcta;
+8. cada intento con `attempt_id` propio y operación estable;
+9. retry conservando idempotency identity;
+10. budget y agotamiento auditables sin fabricar éxito;
+11. resultado desconocido preservado;
+12. emisión, entrega, claim y efecto distinguidos;
+13. compensación vinculada a efecto confirmado;
+14. pasos compensatorios idempotentes y auditados;
+15. compensación parcial con residuales visibles;
+16. corrección mediante nueva entrada enlazada;
+17. brecha de auditoría explícita sin backfill inventado;
+18. payload y secretos minimizados por referencia;
+19. acceso sensible autorizado y auditado;
+20. aislamiento por package, owner y ambiente;
+21. handoff completo a `INT-DB-008`;
+22. ausencia de cambios fuera del `package_id` autorizado.
+
+---
+
+#### 53. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La tarea define documentalmente la persistencia futura de reglas de retry, causalidad, auditoría append-only, autorización, minimización, intentos, outcomes, compensaciones, correcciones y brechas ya protegidas por contratos y requisitos vigentes. No introduce una nueva acción pública, un nuevo perfil de retry, un nuevo outcome, una nueva taxonomía de compensación, un nuevo sistema externo ni una nueva semántica de conciliación. El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 54. Cobertura de prueba vigente reutilizada
+
+La cobertura vigente que sustenta esta tarea incluye, sin modificación:
+
+- `TREQ-INTEGRATION-003` — identidad estable, idempotencia, retry, resultado recuperable y recuperación controlada;
+- `TREQ-INTEGRATION-004` — reconstrucción de causa, principal, intento, resultado, error y efecto final;
+- `TREQ-INTEGRATION-160` — agotamiento de retry con salida explícita y sin trabajo silenciosamente pendiente;
+- `TREQ-INTEGRATION-161` — agotamiento no ejecuta compensación automáticamente;
+- `TREQ-INTEGRATION-162` — revalidación de autoridad antes de intentos sensibles;
+- `TREQ-INTEGRATION-163` — trazabilidad segura de retry sin copiar material sensible;
+- `TREQ-INTEGRATION-168` — compensación solo sobre efecto confirmado;
+- `TREQ-INTEGRATION-172` — plan de compensación versionado y no destructivo;
+- `TREQ-INTEGRATION-173` — causalidad explícita entre compensación y efecto original;
+- `TREQ-INTEGRATION-174` — cada owner ejecuta únicamente sus efectos compensatorios;
+- `TREQ-INTEGRATION-175` — dependencias explícitas entre pasos compensatorios;
+- `TREQ-INTEGRATION-177` — idempotencia por paso compensatorio;
+- `TREQ-INTEGRATION-179` — outcome de compensación verificable sin falso cierre;
+- `TREQ-INTEGRATION-180` — compensación parcial conserva residuales y puede requerir conciliación;
+- `TREQ-INTEGRATION-183` — segregación de solicitud, aprobación, ejecución, verificación y cierre;
+- `TREQ-INTEGRATION-184` — reautorización por paso compensatorio;
+- `TREQ-INTEGRATION-201` — atribución de actor, principal y contexto;
+- `TREQ-INTEGRATION-202` — auditoría de autorización y denegación;
+- `TREQ-INTEGRATION-203` — línea temporal de comando sin confundir aceptación con commit;
+- `TREQ-INTEGRATION-204` — ancla auditada del commit propietario;
+- `TREQ-INTEGRATION-205` — auditoría de evento registrado con causalidad y versión;
+- `TREQ-INTEGRATION-206` — auditoría por intento de emisión;
+- `TREQ-INTEGRATION-207` — auditoría de entrega independiente por consumidora;
+- `TREQ-INTEGRATION-208` — auditoría de claim, deduplicación y resultado previo;
+- `TREQ-INTEGRATION-209` — auditoría del efecto consumidor;
+- `TREQ-INTEGRATION-210` — intento, perfil, demora, próxima ejecución, outcome y budget de retry;
+- `TREQ-INTEGRATION-216` — causalidad transversal mediante IDs y versiones, no timestamps;
+- `TREQ-INTEGRATION-217` — append-only y corrección enlazada;
+- `TREQ-INTEGRATION-218` — minimización y exclusión de secretos;
+- `TREQ-INTEGRATION-219` — autorización y auditoría del acceso a auditoría sensible;
+- `TREQ-INTEGRATION-220` — políticas de compromiso ante fallo de auditoría;
+- `TREQ-INTEGRATION-221` — brechas explícitas sin historia retroactiva inventada;
+- `TREQ-INTEGRATION-222` — semántica temporal diferenciada;
+- `TREQ-INTEGRATION-223` — separación entre hecho, evento, auditoría, evidencia, log, métrica y trace;
+- `TREQ-INTEGRATION-224` — sensibilidad, acceso, retención y legal hold.
+
+Estas referencias son trazabilidad de cobertura existente y no representan cambios al registro.
+
+---
+
+#### 55. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería npm del checkout completo deberá ejecutarse después de incorporar el artefacto al owner documental vigente. |
+| LOCAL | PASS | El artefacto fue comprobado estructuralmente para título, metadata compacta, secciones obligatorias, continuidad, cero requisitos en la sección de cambios, cinco clases de evidencia, matriz externa 21/21, distribución reconciliada, taxonomía de 22 acciones, tres clases de compromiso, topología `TEMPLATE_PER_PACKAGE`, gate `POST_E5_PACKAGE`, ausencia de placeholders y alcance documental sin materialización física. |
+| REMOTA | PASS | Se verificaron el cierre fusionado de `INT-DB-006`, la continuidad vigente con `INT-DB-007` como tarea actual, el owner, topología, contrato de entrega, políticas, `INT-APP-005..009`, `INT-EXT-017`, `SHELL-CON-019/022/023/024`, especializaciones POS, 04A de integración, `package.json`, lifecycle documental y ausencia de rama remota `task/int-db-007` al corte. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron webhooks, retries, deliveries, provider calls, impresiones, pushes, pagos, compensaciones ni conciliaciones reales; esas pruebas pertenecen a futuras instancias por paquete. |
+| FÍSICA | NOT_APPLICABLE | La definición documental autoriza cero cambios físicos y no crea instancia `GLOBAL`; la materialización futura pertenece a `INT-DB-007::<package_id>` después de E5. |
+
+---
+
+#### 56. Criterios de aceptación
+
+`INT-DB-007` queda documentalmente completa cuando se demuestre que:
+
+1. existe una sola definición reutilizable de auditoría operacional;
+2. la topología es `TEMPLATE_PER_PACKAGE` y el gate es `POST_E5_PACKAGE`;
+3. ninguna instancia `GLOBAL` de `INT-DB-007` es creada o implícita;
+4. auditoría, log, trace, métrica, evidencia, hecho empresarial, disposición y conciliación permanecen separados;
+5. `audit_entry_id` identifica una entrada append-only y no deriva de contenido sensible;
+6. el envelope canónico de `INT-APP-007` puede persistirse sin pérdida semántica;
+7. se preservan las 22 acciones canónicas;
+8. se preservan las tres clases de compromiso de auditoría;
+9. causalidad se resuelve por referencias e IDs, no por timestamps aislados;
+10. `occurred_at`, `received_at`, `recorded_at` y `completed_at` permanecen distintos;
+11. actor humano, principal técnico y principal de integración permanecen separados;
+12. autorización sensible queda auditada aunque la decisión sea deny;
+13. aceptación de comando no equivale a commit;
+14. emisión confirmada no equivale a entrega;
+15. entrega ACK no equivale a efecto;
+16. cada intento tiene `attempt_id` propio sin cambiar la identidad empresarial;
+17. cada retry conserva idempotency identity y contenido compatible;
+18. agotamiento de retry no fabrica éxito ni compensación;
+19. resultado desconocido se conserva sin retry ciego;
+20. `INT-DB-006` entrega referencias y esta tarea materializa su detalle operacional;
+21. un plan de compensación no se confunde con ejecución;
+22. cada paso compensatorio conserva efecto original, autorización, idempotencia, resultado y evidencia;
+23. compensación parcial no se presenta como reversión completa;
+24. una corrección crea nueva entrada enlazada;
+25. una brecha de auditoría no se rellena con datos inferidos;
+26. payloads y secretos se minimizan por referencia;
+27. acceso sensible a la auditoría requiere autoridad aplicable y deja evidencia;
+28. retención y legal hold no crean TTL universal;
+29. la matriz conserva 21 de 21 identidades sin faltantes ni duplicados;
+30. la distribución vigente es `1+2+2+1+1+1+2+1+1+1+7+1`;
+31. los estados son `11 ESPECIFICADO + 1 PENDIENTE_DE_EVIDENCIA + 8 NO_APLICA + 1 BLOQUEADO`;
+32. POS no inventa provider receipts ni IDs remotos;
+33. Telefonía / voz permanece bloqueada sin binding;
+34. sistemas sin binding no reciben auditoría runtime ficticia;
+35. conciliación permanece bajo `INT-DB-008`;
+36. la sección de requisitos derivados declara cero cambios y no contiene identificadores de requisito;
+37. la cobertura vigente queda trazada fuera de esa sección;
+38. ninguna modificación Supabase es ejecutada durante esta tarea documental.
+
+---
+
+#### 57. Decisiones vinculantes
+
+Quedan vinculantes para cualquier futura materialización de `INT-DB-007::<package_id>`:
+
+- la auditoría es append-only;
+- una corrección se enlaza y no sobrescribe;
+- `audit_entry_id`, operación, intento, delivery, efecto y compensación son identidades distintas;
+- cada retry conserva la identidad lógica y obtiene un intento técnico propio;
+- agotamiento no determina automáticamente éxito, fracaso empresarial ni compensación;
+- resultados inciertos no se repiten a ciegas;
+- un ACK técnico no confirma un efecto empresarial;
+- actor humano y principales técnicos permanecen separados;
+- autorización sensible se audita con versión y decisión;
+- el payload fuente se referencia antes de duplicarse;
+- secretos y material reutilizable de autenticación quedan excluidos;
+- un plan de compensación no equivale a compensación ejecutada;
+- cada paso compensatorio es auditable e idempotente dentro de su scope;
+- la compensación actúa solo sobre efectos confirmados;
+- una compensación parcial conserva residuales y owner;
+- un audit gap es explícito y no se rellena con historia fabricada;
+- las 21 identidades externas conservan su disposición vigente;
+- POS permanece limitado a evidencia acreditada;
+- no se fabrica runtime para sistemas sin binding;
+- conciliación pertenece a `INT-DB-008`;
+- toda materialización pertenece a un `package_id` aprobado después de E5.
+
+---
+
+#### 58. Límites
+
+Esta tarea no:
+
+- ejecuta DDL, DML, migraciones, RLS, RPC ni cambios remotos;
+- crea tablas, filas, índices, constraints, queues, workers, schedulers o cron físicos;
+- ejecuta requests, webhooks, deliveries, retries o provider calls;
+- crea operation keys ni claims idempotentes;
+- crea o modifica payloads fuente;
+- crea mappings;
+- crea casos de cuarentena o dead-letter;
+- cambia la taxonomía de `SHELL-CON-024`;
+- ejecuta compensaciones;
+- cambia planes de compensación propietarios;
+- materializa `IntegrationReconciliationCase`;
+- decide outcomes de conciliación;
+- corrige estados empresariales de otros owners;
+- crea ni rota credenciales;
+- acredita bindings ausentes;
+- inventa receipts, provider IDs o campos del POS externo;
+- crea auditoría runtime para sistemas sin binding;
+- modifica el registro 04A;
+- inicia `INT-DB-008`.
+
+---
+
+#### 59. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INT-DB-006 — Crear cuarentena y registro de errores no procesables`
+
+**TAREA ACTUAL APROBADA**
+`INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones`
+
+**SIGUIENTE TAREA RESERVADA**
+`INT-DB-008 — Crear mecanismos de conciliación por integración`
+
+
 ### [ ] INT-DB-008 — Crear mecanismos de conciliación por integración
 
 Orden obligatorio de cada paquete de dominio

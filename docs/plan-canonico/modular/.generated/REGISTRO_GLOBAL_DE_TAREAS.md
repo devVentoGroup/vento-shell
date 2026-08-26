@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1050** |
+| Aprobadas | **1051** |
 | En propuesta | **0** |
-| No iniciadas | **544** |
+| No iniciadas | **543** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.87% (1050/1594)** |
+| Porcentaje de completamiento | **65.93% (1051/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-DB-006` — Crear cuarentena y registro de errores no procesables | ✅ APROBADA |
-| Tarea actual | `INT-DB-007` — Crear auditoría de procesamiento, reintentos y compensaciones | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-DB-008` — Crear mecanismos de conciliación por integración | ⬜ NO INICIADA |
+| Última aprobada | `INT-DB-007` — Crear auditoría de procesamiento, reintentos y compensaciones | ✅ APROBADA |
+| Tarea actual | `INT-DB-008` — Crear mecanismos de conciliación por integración | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-001` — Confirmar turno publicado antes del check-in | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1260,7 +1260,7 @@
 | ✅ APROBADA | `INT-DB-004` | Crear mapeos de identificadores externos y canónicos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `INT-DB-005` | Crear restricciones e índices de idempotencia | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `INT-DB-006` | Crear cuarentena y registro de errores no procesables | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
-| ⬜ NO INICIADA | `INT-DB-007` | Crear auditoría de procesamiento, reintentos y compensaciones | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
+| ✅ APROBADA | `INT-DB-007` | Crear auditoría de procesamiento, reintentos y compensaciones | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-008` | Crear mecanismos de conciliación por integración | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-030` | Retirar objetos legacy únicamente después de adopción comprobada | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |
 | ⬜ NO INICIADA | `AUTH-DB-031` | Certificar paridad entre documento, vento-shell, Supabase y aplicaciones | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |
