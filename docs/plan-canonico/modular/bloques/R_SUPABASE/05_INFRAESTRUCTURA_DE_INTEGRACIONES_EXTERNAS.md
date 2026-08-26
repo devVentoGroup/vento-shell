@@ -1824,7 +1824,815 @@ Toda materialización física posterior requiere `INT-DB-002::<package_id>` auto
 `INT-DB-003 — Crear staging inmutable de payloads externos`
 
 
-### [ ] INT-DB-003 — Crear staging inmutable de payloads externos
+### ✅ INT-DB-003 — Crear staging inmutable de payloads externos
+
+**Estado:** APROBADA
+**Tarea anterior:** INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas
+**Tarea siguiente:** INT-DB-004 — Crear mapeos de identificadores externos y canónicos
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para staging inmutable de evidencia fuente y payloads externos, con captura protegida, huella, correlación, minimización, retención y disposición sin convertir el staging en fuente empresarial ni materializar mapeos, idempotencia, cuarentena, auditoría de procesamiento o conciliación durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `INT-DB-003::<package_id>`, sujetas a `POST_E5_PACKAGE`, al registro de integración del mismo paquete, a la política de evidencia fuente vigente, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Fecha de corte:** 2026-08-25
+
+---
+
+#### 1. Propósito
+
+`INT-DB-003` define cómo deberá persistirse, por paquete, la evidencia fuente recibida desde sistemas externos cuando el contrato de integración exija conservar el payload original, una representación fuente protegida o un receipt externo mínimo.
+
+El objetivo no es conservar indiscriminadamente todo lo recibido. El objetivo es preservar exactamente la evidencia necesaria para poder demostrar qué recibió VENTO, cuándo lo recibió, desde qué binding, con qué huella y bajo qué contrato, sin convertir esa evidencia en una segunda fuente de verdad empresarial y sin copiar secretos ni datos innecesarios.
+
+La tarea debe permitir que una futura implementación responda de forma reproducible:
+
+1. qué integración y binding recibieron o produjeron la evidencia;
+2. qué representación fuente fue capturada;
+3. cuándo se recibió o generó;
+4. qué longitud, media type, encoding y huella tuvo;
+5. qué identificador o receipt externo estaba disponible;
+6. qué resultado de autenticidad fue referenciado;
+7. qué política de sensibilidad, retención y hold gobierna la evidencia;
+8. dónde reside la copia protegida cuando el contenido deba conservarse fuera de la fila relacional;
+9. qué vista o artefacto redactado puede exponerse de forma segura;
+10. qué disposición posterior se ejecutó sin alterar la captura original.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido el contrato documental único de staging inmutable para `INT-DB-003`:
+
+```text
+INT-DB-003
+→ definición documental única y reutilizable
+
+INT-DB-003::<package_id>
+→ futura instancia física del paquete
+
+sistema externo seleccionado por el paquete
+→ integración registrada por INT-DB-001
+→ binding ambiental acreditado
+→ recepción o emisión externa
+→ captura fuente según política de preservación
+→ huella y metadata no secreta
+→ custodia protegida cuando corresponda
+→ evidencia inmutable
+→ handoff estable hacia INT-DB-004..008
+```
+
+No existe una instancia física `GLOBAL` de esta tarea.
+
+---
+
+#### 3. Topología y gate de ejecución
+
+La topología aplicable queda cerrada así:
+
+| Propiedad | Decisión |
+| --- | --- |
+| Modalidad | `TEMPLATE_PER_PACKAGE` |
+| Gate temporal | `POST_E5_PACKAGE` |
+| Identidad física futura | `INT-DB-003::<package_id>` |
+| Instancia global | no aplica |
+| Reapertura del marcador por paquete | prohibida |
+| Implementación durante esta definición | ninguna |
+
+Una futura instancia solo podrá existir para un `package_id` que haya superado la puerta E5 aplicable y haya incluido expresamente la integración y sus dependencias en su paquete de implementación.
+
+---
+
+#### 4. Entradas canónicas preservadas
+
+La tarea consume sin redefinir:
+
+- el registro de sistemas, integraciones y bindings definido por `INT-DB-001`;
+- la referencia no secreta de credenciales definida por `INT-DB-002` cuando una superficie aplicable necesite enlazar una referencia de credencial;
+- la separación de sistema, instancia, cuenta externa, principal técnico, credencial, contrato y endpoint ya aprobada;
+- la política de conservación controlada del payload original definida por `INT-EXT-014`;
+- los contratos de autenticidad, idempotencia, retry, mapping, auditoría y conciliación aprobados en BLOQUE X;
+- las reglas de minimización, retención, seguridad y evidencia vigentes en BLOQUE E3;
+- la propiedad empresarial de cada dominio sobre sus hechos y resultados.
+
+La evidencia fuente no obtiene autoridad empresarial por ser más detallada, más antigua, más cercana al proveedor o más fácil de consultar.
+
+---
+
+#### 5. Separación semántica obligatoria
+
+La implementación deberá conservar siempre las siguientes diferencias:
+
+```text
+PAYLOAD ORIGINAL / EVIDENCIA FUENTE
+≠ PAYLOAD NORMALIZADO O ADAPTADO
+≠ HECHO CANÓNICO VENTO
+≠ AUDITORÍA ORDINARIA
+≠ LOG TÉCNICO
+≠ RESPUESTA O RECIBO DEL PROVEEDOR
+≠ CREDENCIAL O SECRETO
+```
+
+Consecuencias:
+
+1. una fila de staging no reemplaza el registro empresarial del owner;
+2. una copia de payload no demuestra que el hecho sea verdadero, válido o autorizado;
+3. una huella no sustituye identidad de sistema, evento, receipt, request o hecho empresarial;
+4. un log no sustituye la evidencia fuente protegida;
+5. una auditoría ordinaria no debe copiar el payload completo por conveniencia;
+6. una referencia de credencial no forma parte del contenido fuente.
+
+---
+
+#### 6. Familias lógicas de persistencia
+
+La futura materialización por paquete se compone de dos familias lógicas separadas:
+
+| Familia lógica | Responsabilidad |
+| --- | --- |
+| `EXTERNAL_SOURCE_EVIDENCE_RECORD` | captura inmutable de la evidencia fuente, identidad, binding, huella, metadata, sensibilidad y referencias seguras |
+| `EXTERNAL_SOURCE_EVIDENCE_CONTROL_EVENT` | eventos append-only de hold, revisión de clasificación, disposición, purga autorizada o cambio de control sin reescribir la captura original |
+
+Los nombres anteriores describen responsabilidades lógicas del contrato. La implementación física posterior decidirá nombres SQL compatibles con el `package_id` y el modelo Supabase vigente sin alterar esta semántica.
+
+---
+
+#### 7. Identidad estable de la evidencia fuente
+
+Se define `source_evidence_id` como identidad estable de una captura fuente individual.
+
+Reglas:
+
+1. es única para cada captura materializada;
+2. no se deriva del payload, del digest, del `external_event_or_receipt_ref` ni de una credencial;
+3. no sustituye `external_event_id`, `receipt_id`, `request_id`, `event_id`, `mapping_id` ni una idempotency key;
+4. una redelivery puede producir una nueva captura aun cuando su contenido sea equivalente;
+5. la equivalencia o duplicidad se determina posteriormente por los contratos de idempotencia y procesamiento, no por reutilizar `source_evidence_id`;
+6. una captura corregida documentalmente no reutiliza ni reemplaza silenciosamente la identidad de otra captura.
+
+---
+
+#### 8. Shape mínimo de `EXTERNAL_SOURCE_EVIDENCE_RECORD`
+
+Cada registro deberá poder representar, como mínimo:
+
+| Campo lógico | Cardinalidad | Regla |
+| --- | ---: | --- |
+| `source_evidence_id` | 1 | identidad estable de la captura |
+| `package_id` | 1 | paquete propietario de la instancia física |
+| `external_system_id` | 1 | sistema externo vigente |
+| `external_integration_id` | 1 | integración registrada por `INT-DB-001` |
+| `external_environment_binding_id` | 1 | binding ambiental acreditado |
+| `environment_ref` | 1 | ambiente exacto del binding |
+| `external_credential_id` | 0..1 | referencia no secreta de `INT-DB-002` cuando aplique |
+| `surface` | 1 | superficie técnica que produjo o recibió la evidencia |
+| `direction` | 1 | dirección contractual de la interacción |
+| `contract_version` | 1 | versión del contrato de integración aplicable |
+| `received_at` | 1 | instante VENTO de recepción o captura |
+| `provider_occurred_at` | 0..1 | tiempo declarado por la fuente, sin sustituir `received_at` |
+| `media_type` | 0..1 | tipo de contenido observado o declarado |
+| `content_encoding` | 0..1 | encoding cuando sea material para reproducibilidad |
+| `source_capture_mode` | 1 | modo de captura aprobado |
+| `source_byte_length` | 0..1 | longitud de la representación fuente preservada |
+| `payload_digest_algorithm` | 1 | algoritmo de huella declarado |
+| `payload_digest` | 1 | huella de la representación capturada, no identidad empresarial |
+| `external_event_or_receipt_ref` | 0..1 | referencia externa estable cuando exista |
+| `authenticity_result_ref` | 0..1 | referencia al resultado de autenticidad, nunca la credencial |
+| `sensitivity_class` | 1 | clasificación de sensibilidad aplicable |
+| `retention_policy_ref` | 1 | política de retención aplicable |
+| `preservation_or_hold_ref` | 0..1 | hold o preservación adicional cuando exista |
+| `protected_payload_locator` | 0..1 | referencia opaca a la evidencia protegida cuando deba conservarse fuera de la fila |
+| `redacted_view_ref` | 0..1 | referencia a representación segura derivada |
+| `disposition_evidence_ref` | 0..1 | evidencia de disposición posterior |
+| `recorded_at` | 1 | instante de persistencia del registro |
+| `recorded_by_ref` | 1 | principal o proceso técnico que registró la captura |
+| `registry_version` | 1 | versión del registro de integración consumida |
+
+La ausencia de un campo opcional no autoriza inferir su valor desde otro campo.
+
+---
+
+#### 9. Semántica de `source_capture_mode`
+
+La captura deberá expresar explícitamente qué representación fue preservada. Como mínimo se reconocen las categorías conceptuales ya aprobadas:
+
+```text
+RAW_BYTES
+PROVIDER_OBJECT
+MINIMAL_RECEIPT
+```
+
+Reglas:
+
+1. `RAW_BYTES` conserva la secuencia fuente necesaria para verificación o reproducción cuando el contrato lo exige;
+2. `PROVIDER_OBJECT` conserva una representación fuente protegida cuando la evidencia contractual no requiere bytes exactos;
+3. `MINIMAL_RECEIPT` conserva únicamente el receipt o evidencia mínima cuando retener el payload completo sería excesivo;
+4. el modo se fija al capturar la evidencia y no se reetiqueta después para justificar una copia distinta;
+5. una representación normalizada nunca se declara `RAW_BYTES`;
+6. el digest se calcula sobre la representación efectivamente preservada y el algoritmo queda explícito.
+
+---
+
+#### 10. Captura antes de transformación
+
+Para una entrada externa que pueda producir un hecho VENTO, el orden contractual es:
+
+```text
+recepción
+→ fijar received_at
+→ capturar transitoriamente la representación fuente
+→ verificar autenticidad u origen cuando aplique
+→ calcular huella
+→ persistir evidencia protegida cuando corresponda
+→ parsear / normalizar
+→ resolver mapping e idempotencia en sus contratos propietarios
+→ validar con el owner empresarial
+→ producir, rechazar o diferir el hecho interno
+```
+
+Cuando la firma o autenticidad dependa de bytes exactos, la representación fuente se captura antes de parsear, reserializar, normalizar espacios, ordenar claves o convertir tipos.
+
+---
+
+#### 11. Inmutabilidad de la captura
+
+`EXTERNAL_SOURCE_EVIDENCE_RECORD` es inmutable respecto de la representación fuente capturada y sus atributos de integridad.
+
+Queda prohibido:
+
+- sobrescribir el payload de una captura previa;
+- sustituir su digest por el de una redelivery;
+- hacer UPSERT destructivo usando identificador externo como clave de reemplazo;
+- convertir una corrección de parser o mapping en edición de la evidencia fuente;
+- editar el contenido fuente porque cambió el hecho empresarial resultante;
+- borrar una captura para volver a insertarla con una forma distinta y conservar la misma identidad.
+
+Una nueva recepción genera nueva captura o nueva evidencia de control, según corresponda, sin borrar historia.
+
+---
+
+#### 12. Redelivery, identificador externo y conflictos de huella
+
+La recepción repetida no autoriza reemplazo.
+
+Casos:
+
+1. mismo `external_event_or_receipt_ref` y mismo digest: puede existir más de una captura de recepción; la clasificación como duplicado pertenece al contrato posterior de idempotencia;
+2. mismo `external_event_or_receipt_ref` y digest distinto: se conserva cada captura y se registra un conflicto que debe resolverse antes de producir un efecto automático incompatible;
+3. identificador externo ausente: se conserva `source_evidence_id` y el procesamiento posterior deberá usar la identidad estable definida por su contrato correspondiente;
+4. digest igual con identificadores externos distintos: no demuestra identidad empresarial ni permite fusionar capturas.
+
+El staging conserva evidencia; no decide por sí solo qué intento debe producir el efecto.
+
+---
+
+#### 13. Digest y límites de identidad
+
+`payload_digest` es una prueba de integridad o equivalencia de contenido dentro de su algoritmo y representación declarados.
+
+No puede sustituir:
+
+- `source_evidence_id`;
+- `external_system_id`;
+- `external_event_or_receipt_ref`;
+- `external_integration_id`;
+- `external_environment_binding_id`;
+- identidad de una operación idempotente;
+- identidad de mapping;
+- identidad del hecho empresarial.
+
+Una futura implementación deberá versionar o declarar el algoritmo y evitar depender de una huella no especificada.
+
+---
+
+#### 14. `protected_payload_locator`
+
+`protected_payload_locator` identifica de forma opaca dónde reside la evidencia fuente protegida cuando el contenido no deba o no pueda almacenarse dentro de la fila relacional.
+
+Reglas:
+
+1. el locator pertenece a la evidencia, no a la credencial;
+2. no es un locator de secret store;
+3. no contiene token de acceso, URL firmada persistente, contraseña, private key ni material recuperable de autenticación;
+4. no se expone a consumidores ordinarios por el solo hecho de que puedan leer el registro empresarial relacionado;
+5. debe ser suficiente para que un backend autorizado resuelva la evidencia bajo política de acceso;
+6. su ciclo de vida se coordina con retención, hold y disposición de la evidencia.
+
+---
+
+#### 15. Frontera con credenciales y secretos
+
+El staging puede enlazar únicamente `external_credential_id` como referencia opaca no secreta cuando sea necesario explicar qué superficie autenticada produjo la interacción.
+
+No almacena:
+
+- API keys operativas;
+- `service_role`;
+- bearer tokens;
+- client secrets;
+- webhook secrets;
+- signing secrets;
+- passwords;
+- private keys;
+- P8 o P12 privados;
+- session cookies reutilizables;
+- headers completos de autenticación;
+- URLs firmadas persistentes;
+- valores capaces de autenticar una nueva solicitud;
+- locators operativos de secret store.
+
+La metadata de credencial y la evidencia fuente permanecen en contratos y persistencias separadas.
+
+---
+
+#### 16. Headers y metadata de transporte
+
+Los headers, atributos y metadata de transporte se conservan por allowlist mínima.
+
+Se permite persistir únicamente información necesaria para:
+
+- tipo y encoding del contenido;
+- identificación de proveedor o superficie ya acreditada;
+- correlación no secreta;
+- timestamps;
+- versión contractual;
+- firmas o autenticidad mediante referencias o resultados no reutilizables, nunca mediante el secreto verificador;
+- límites de reproducción o investigación.
+
+Los headers de autorización, cookies, tokens y cualquier valor reutilizable se excluyen o redactan antes de la persistencia ordinaria de evidencia.
+
+---
+
+#### 17. Minimización y clases de evidencia
+
+La política de `INT-EXT-014` gobierna cuánto conservar, no una regla universal de payload completo.
+
+Cada integración se clasifica en una de estas decisiones documentales heredadas:
+
+- preservación durable de entrada requerida;
+- preservación mínima por recurso;
+- no retener payload completo por minimización;
+- gobernada por contrato interno VENTO;
+- configuración de plataforma sin payload acreditado;
+- modelo documentado sin binding remoto;
+- no aplica sin binding;
+- bloqueada sin binding.
+
+La instancia del paquete materializa solo las filas que correspondan a integraciones efectivamente incluidas y acreditadas para ese paquete.
+
+---
+
+#### 18. Matriz heredada de las 21 identidades externas
+
+| ID | Sistema | Decisión de evidencia fuente heredada | Decisión de INT-DB-003 |
+| --- | --- | --- | --- |
+| `EXT-SYS-001` | Supabase | gobernada por contrato interno VENTO | staging solo cuando el contrato interno del paquete exija evidencia fuente separada |
+| `EXT-SYS-002` | Wompi | preservación durable de entrada requerida | elegible para captura protegida e inmutable antes de transformación |
+| `EXT-SYS-003` | RevenueCat | preservación durable de entrada requerida | elegible para captura protegida e inmutable antes de transformación |
+| `EXT-SYS-004` | Resend | no retener payload completo por minimización | conservar únicamente receipt o evidencia mínima necesaria |
+| `EXT-SYS-005` | Expo / EAS Update | configuración de plataforma sin payload acreditado | no materializar staging de payload sin evidencia adicional |
+| `EXT-SYS-006` | Expo Push Service | no retener payload completo por minimización | conservar evidencia mínima de operación y receipt cuando aplique |
+| `EXT-SYS-007` | Sentry | no retener payload completo por minimización | no duplicar telemetría completa en staging |
+| `EXT-SYS-008` | Google Maps / Google Reviews | no retener payload completo por minimización | conservar solo referencias o evidence mínima necesaria |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs | preservación mínima de operación por recurso | conservar receipt o evidencia mínima correlacionable por recurso |
+| `EXT-SYS-010` | Vercel | configuración de plataforma sin payload acreditado | no materializar staging de payload sin evidencia adicional |
+| `EXT-SYS-011` | Zebra BrowserPrint | no retener payload completo por minimización | conservar resultado técnico mínimo cuando sea necesario |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet | modelo documentado sin binding remoto | no materializar staging hasta acreditar binding real |
+| `EXT-SYS-013` | POS externo vigente | bloqueada sin binding | bloqueado hasta acreditar proveedor, binding y contrato de entrada |
+| `EXT-SYS-014` | Shopify / canal de comercio electrónico | no aplica sin binding | no crear staging hasta acreditar binding |
+| `EXT-SYS-015` | Rappi / marketplace | no aplica sin binding | no crear staging hasta acreditar binding |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | no aplica sin binding | no crear staging hasta acreditar binding |
+| `EXT-SYS-017` | WhatsApp | no aplica sin binding | no crear staging hasta acreditar binding |
+| `EXT-SYS-018` | Instagram / perfiles sociales | no aplica sin binding | no crear staging hasta acreditar binding |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales | no aplica sin binding | no crear staging hasta acreditar binding |
+| `EXT-SYS-020` | Telefonía / canal de voz | bloqueada sin binding | bloqueado hasta acreditar proveedor, canal, binding y contrato |
+| `EXT-SYS-021` | Transporte externo | no aplica sin binding | no crear staging hasta acreditar binding |
+
+---
+
+#### 19. Reconciliación cuantitativa del universo
+
+La definición conserva exactamente la distribución heredada:
+
+| Clasificación | Cantidad |
+| --- | ---: |
+| preservación durable de entrada requerida | **2** |
+| preservación mínima de operación por recurso | **1** |
+| no retener payload completo por minimización | **5** |
+| gobernada por contrato interno VENTO | **1** |
+| configuración de plataforma sin payload acreditado | **2** |
+| modelo documentado sin binding remoto | **1** |
+| no aplica sin binding | **7** |
+| bloqueada sin binding | **2** |
+| total | **21** |
+
+Controles:
+
+- identidades esperadas: **21**;
+- decisiones materializadas documentalmente: **21 de 21**;
+- faltantes: **0**;
+- duplicadas: **0**;
+- payloads físicos creados durante esta definición: **0**;
+- secretos creados, copiados, movidos o revelados: **0**.
+
+---
+
+#### 20. Separación obligatoria por ambiente
+
+Cada captura pertenece al `external_environment_binding_id` exacto de su integración.
+
+Reglas:
+
+1. una evidencia de `DEVELOPMENT` no puede ser presentada como evidencia de `STAGING` o `PRODUCTION`;
+2. una evidencia de `STAGING` no se reutiliza como fuente productiva;
+3. una captura productiva no se copia a ambientes inferiores por conveniencia;
+4. el ambiente se deriva del binding registrado, no del nombre de una variable ni del payload;
+5. un mismo proveedor o cuenta externa no elimina la separación ambiental;
+6. retención, acceso y redacción pueden diferir por ambiente si la política aprobada así lo exige.
+
+---
+
+#### 21. Aislamiento de acceso
+
+La visibilidad de una fila empresarial relacionada no concede acceso al payload fuente protegido.
+
+La futura materialización deberá demostrar:
+
+- denegación por defecto a clientes que no necesiten la evidencia;
+- acceso mínimo por finalidad;
+- separación entre lectura de metadata segura y recuperación del contenido protegido;
+- autorización server-side para resolver `protected_payload_locator`;
+- auditoría del acceso sensible mediante el contrato propietario de auditoría;
+- ausencia de exposición accidental por views, RPC, logs, Storage URLs o joins de conveniencia.
+
+Ninguna política de acceso se deduce por estar en el mismo `package_id`.
+
+---
+
+#### 22. Wompi: disposición objetivo del staging
+
+Para Wompi, la definición conserva la brecha heredada: el estado observado guarda JSON parseado en una fila de webhook, duplica contenido en una respuesta de transacción y permite actualización del payload en redelivery, sin una evidencia fuente inmutable separada con huella de los bytes o representación fuente preservada.
+
+La futura instancia aplicable deberá:
+
+1. capturar la representación fuente antes de cualquier transformación que invalide la verificación;
+2. conservar `received_at`, longitud, modo de captura y digest;
+3. mantener evidencia protegida separada de la transacción empresarial;
+4. impedir reemplazo del contenido por redelivery;
+5. enlazar autenticidad mediante referencia, no copiar el secreto;
+6. entregar la identidad de evidencia a los contratos posteriores de idempotencia, mapping, auditoría y conciliación.
+
+Esta tarea no modifica el webhook actual.
+
+---
+
+#### 23. RevenueCat: disposición objetivo del staging
+
+Para RevenueCat, la definición conserva la brecha heredada: la entrada observada se parsea antes de preservar una representación fuente separada y el payload completo aparece duplicado en superficies empresariales o de auditoría.
+
+La futura instancia aplicable deberá:
+
+1. separar captura fuente de la suscripción y del audit trail ordinario;
+2. preservar la representación necesaria antes de normalización cuando el contrato de autenticidad lo requiera;
+3. impedir duplicación del payload completo en registros empresariales;
+4. limitar vistas y lecturas a metadata o representaciones redactadas;
+5. conservar digest y correlación suficientes para reproducción controlada;
+6. evitar que un payload del proveedor sea tratado como estado canónico de Club.
+
+Esta tarea no modifica el webhook ni las tablas actuales.
+
+---
+
+#### 24. Retención, preservación y disposición
+
+No existe una duración universal fijada por `INT-DB-003`.
+
+Toda captura materializada debe resolver:
+
+```text
+sensitivity_class
++ finalidad
++ proceso o recurso
++ retention_policy_ref
++ preservation_or_hold_ref cuando exista
+→ condición de disposición
+```
+
+Reglas:
+
+1. retención indefinida por ausencia de decisión está prohibida;
+2. un hold impide disposición mientras permanezca vigente;
+3. backup no sustituye retención ni preservación;
+4. purgar una evidencia no equivale a borrar el hecho empresarial ni su auditoría;
+5. `disposition_evidence_ref` conserva la prueba de la disposición sin volver a copiar el payload;
+6. la disposición no puede romper una obligación activa de replay, disputa, investigación o conciliación.
+
+---
+
+#### 25. Correcciones y revisiones de control
+
+La representación fuente capturada no se corrige mediante UPDATE.
+
+Cuando cambie una clasificación, hold, regla de acceso, decisión de disposición o metadata interpretativa:
+
+- se crea un `EXTERNAL_SOURCE_EVIDENCE_CONTROL_EVENT` enlazado a `source_evidence_id`;
+- se conserva razón, autoridad, tiempo y estado resultante;
+- no se modifica el digest de la captura original;
+- no se reemplaza `received_at`;
+- no se reescribe la fuente porque un parser posterior obtenga otro resultado.
+
+La corrección del hecho empresarial pertenece al owner empresarial y permanece separada.
+
+---
+
+#### 26. Datos binarios, documentos y payloads grandes
+
+El registro relacional no obliga a almacenar inline contenido binario, documentos o cuerpos grandes.
+
+La futura implementación deberá escoger una custodia protegida compatible con:
+
+- integridad verificable;
+- acceso mínimo;
+- retención y hold;
+- borrado verificable;
+- recuperación autorizada;
+- límites de tamaño y content type;
+- ausencia de URLs firmadas persistentes en las filas;
+- ausencia de duplicación innecesaria en logs, auditoría o tablas empresariales.
+
+El staging conserva identidad y metadata aunque el contenido resida en una superficie protegida distinta.
+
+---
+
+#### 27. Handoff hacia INT-DB-004
+
+`INT-DB-004` es propietario de la tabla física de mapeo entre identificadores externos y canónicos.
+
+El handoff desde esta tarea es:
+
+```text
+source_evidence_id
+package_id
+external_system_id
+external_integration_id
+external_environment_binding_id
+external_event_or_receipt_ref cuando exista
+payload_digest
+contract_version
+```
+
+`INT-DB-003` no crea `mapping_id`, no decide equivalencias y no convierte coincidencia de payload, UUID, correo, nombre, teléfono u otro atributo en un mapeo canónico.
+
+---
+
+#### 28. Handoff hacia INT-DB-005
+
+`INT-DB-005` conserva restricciones e índices de idempotencia.
+
+`INT-DB-003` entrega:
+
+- `source_evidence_id`;
+- identidad del sistema e integración;
+- binding ambiental;
+- identificador o receipt externo cuando exista;
+- digest de la representación capturada;
+- tiempo de recepción;
+- versión contractual.
+
+No crea idempotency keys, claims, outcomes recuperables ni deduplicación empresarial.
+
+---
+
+#### 29. Handoff hacia INT-DB-006
+
+`INT-DB-006` es propietario de la cuarentena de eventos no mapeados o inválidos.
+
+Una futura cuarentena podrá referenciar `source_evidence_id` sin copiar de nuevo el payload protegido.
+
+`INT-DB-003` no define motivos de cuarentena, workflow de resolución ni lifecycle de dead-letter.
+
+---
+
+#### 30. Handoff hacia INT-DB-007
+
+`INT-DB-007` es propietario de auditoría de procesamiento.
+
+La auditoría podrá referenciar:
+
+- `source_evidence_id`;
+- digest;
+- integración;
+- binding;
+- contract version;
+- referencias de autenticidad o resultado.
+
+No debe copiar por defecto el payload completo. La existencia de la evidencia fuente tampoco sustituye el audit trail de quién procesó, rechazó, reintentó o produjo un efecto.
+
+---
+
+#### 31. Handoff hacia INT-DB-008
+
+`INT-DB-008` es propietario de mecanismos de conciliación.
+
+Una conciliación podrá usar `source_evidence_id` como referencia inmutable de qué recibió VENTO y comparar esa evidencia con receipts, mappings, efectos empresariales y resultados externos.
+
+`INT-DB-003` no decide el outcome de conciliación ni corrige fuentes durante esta definición.
+
+---
+
+#### 32. Contrato de materialización por paquete
+
+Cada futura instancia `INT-DB-003::<package_id>` deberá cerrar, antes de materializarse:
+
+```text
+package_id aprobado
+E5 del package_id = PASS
+registro INT-DB-001 del mismo paquete disponible
+integraciones aplicables seleccionadas explícitamente
+binding ambiental acreditado
+política INT-EXT-014 resuelta por integración
+sensitivity_class resuelta
+retention_policy_ref resuelta
+custodia protegida decidida cuando aplique
+frontera de acceso y redacción definida
+rollback o forward-fix de la migración definido
+```
+
+Si una integración necesita enlazar una credencial, la referencia debe provenir del contrato de `INT-DB-002`; su valor nunca entra al staging.
+
+---
+
+#### 33. Evidencia mínima de certificación física futura
+
+Una futura instancia no podrá declararse materializada únicamente porque exista una tabla.
+
+La certificación por paquete deberá demostrar, como mínimo:
+
+1. migración canónica y reproducible desde `vento-shell`;
+2. inmutabilidad de la captura fuente;
+3. ausencia de overwrite por redelivery;
+4. digest reproducible sobre la representación declarada;
+5. captura raw antes de parseo cuando la autenticidad dependa de bytes exactos;
+6. denegación de secretos y headers reutilizables;
+7. aislamiento ambiental;
+8. acceso mínimo a payload protegido;
+9. redacción segura de vistas, logs y auditoría;
+10. retención, hold y disposición verificables;
+11. referencias estables para mappings, idempotencia, cuarentena, auditoría y conciliación;
+12. rollback o forward-fix compatible con evidencia ya capturada;
+13. ausencia de cambios fuera del `package_id` autorizado.
+
+---
+
+#### 34. Rollback y forward-fix
+
+La reversión de una futura implementación no puede destruir evidencia fuente ya aceptada como canónica de investigación.
+
+Reglas:
+
+1. DDL defectuoso puede revertirse o corregirse conforme a la política de migraciones;
+2. datos fuente ya capturados se preservan o migran de forma controlada;
+3. un rollback no reescribe el payload para acomodarlo al esquema anterior;
+4. si existe evidencia producida bajo una versión defectuosa, la corrección conserva lineage y digest originales;
+5. la pérdida deliberada de evidencia solo puede ocurrir mediante disposición autorizada por retención, no como efecto colateral del rollback.
+
+---
+
+#### 35. Límites
+
+Esta tarea no:
+
+- ejecuta DDL, DML, migraciones, RLS, RPC ni cambios remotos;
+- crea payloads físicos, filas, buckets, blobs o objetos Storage;
+- modifica webhooks de Wompi o RevenueCat;
+- crea ni rota credenciales;
+- define locators de secret store;
+- materializa mappings externos/canónicos;
+- crea idempotency keys ni claims;
+- crea cuarentenas o dead-letter;
+- materializa auditoría de procesamiento;
+- materializa conciliación;
+- cambia contratos empresariales de los owners;
+- acredita un binding que BLOQUE X mantiene como no aplicable o bloqueado;
+- inicia `INT-DB-004`.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+El contrato queda cubierto por requisitos vigentes de integración, seguridad, Supabase, retención, idempotencia, auditoría y conservación de payload ya registrados. No se modifica el registro 04A.
+
+---
+
+#### 37. Cobertura de prueba vigente reutilizada
+
+La cobertura vigente que sustenta esta tarea incluye, sin modificación:
+
+- `TREQ-INTEGRATION-003` — identidad estable, huella, estado durable y resultado recuperable para operaciones reintentables;
+- `TREQ-INTEGRATION-004` — reconstrucción de causa, payload, principal, intento, resultado y efecto;
+- `TREQ-INTEGRATION-034` — minimización y carácter referencial del payload específico;
+- `TREQ-INTEGRATION-049` — afirmación original, autenticidad, identificador externo, payload protegido, recepción y correlación;
+- `TREQ-INTEGRATION-051` — prohibición de secretos y credenciales en eventos y contratos;
+- `TREQ-INTEGRATION-125` — deduplicación posterior preservando payload fuente protegido y huella;
+- `TREQ-INTEGRATION-126` — receipt estable cuando el proveedor no suministra identificador;
+- `TREQ-INTEGRATION-127` — digest como guardia y no como identidad empresarial;
+- `TREQ-INTEGRATION-213` — conservación de referencias del intercambio externo, payload protegido, digest, transformación y correlación;
+- `TREQ-INTEGRATION-217` — append-only y corrección enlazada;
+- `TREQ-INTEGRATION-218` — minimización de auditoría y exclusión de secretos;
+- `TREQ-SUPABASE-201` — replay, retención y redacción del webhook de pagos;
+- `TREQ-SUPABASE-208` — resiliencia, datos enviados, retención y conciliación de integraciones externas;
+- `TREQ-SUPABASE-218` — prohibición de secretos en tablas, logs, fixtures y artefactos;
+- `TREQ-SUPABASE-226` — coherencia de ambiente, proveedor y endpoints;
+- `TREQ-SUPABASE-230` — redacción de payloads y datos sensibles en observabilidad;
+- `TREQ-SUPABASE-271` — evidencia inmutable sin secretos;
+- `TREQ-SUPABASE-386` — retención, archivo, purga y replay para tablas de eventos y webhooks;
+- `TREQ-SUPABASE-387` — conservación controlada de payload, firma, resultado e idempotencia de webhooks;
+- `TREQ-SUPABASE-391` — separación entre backup, retención y archivo;
+- `TREQ-SUPABASE-476` — payload original, firma, identificador externo, correlación, deduplicación y conciliación antes del hecho interno.
+
+Estas referencias son trazabilidad de cobertura existente y no representan cambios al registro.
+
+---
+
+#### 38. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería npm del checkout completo no forma parte de la preparación estática del artefacto y deberá ejecutarse en el checkout documental vigente después de insertar la tarea. |
+| LOCAL | PASS | El artefacto fue comprobado estructuralmente como UTF-8 sin BOM, LF, metadata compacta, secciones obligatorias, continuidad, cero TREQ en la sección de cambios, matriz 21/21, topología `TEMPLATE_PER_PACKAGE`, gate `POST_E5_PACKAGE`, contenido prohibido y alcance documental sin materialización física. |
+| REMOTA | PASS | Se verificaron en `main` la continuidad después del cierre de INT-DB-002, el archivo propietario, topología, políticas de tarea, contrato de entrega, BLOQUE X, 04A INTEGRATION y SUPABASE, `package.json`, validadores documentales y ausencia de rama remota `task/int-db-003` al corte. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron webhooks, providers, replay, redelivery, retención ni accesos a evidencia en ambientes operativos; esas pruebas corresponden a futuras instancias por paquete. |
+| FÍSICA | NOT_APPLICABLE | La definición documental autoriza cero cambios físicos y no crea instancia `GLOBAL`; la materialización futura pertenece a `INT-DB-003::<package_id>` después de E5. |
+
+---
+
+#### 39. Criterios de aceptación
+
+`INT-DB-003` queda documentalmente cerrada cuando se demuestre que:
+
+1. existe una sola definición reutilizable del staging inmutable;
+2. la topología es `TEMPLATE_PER_PACKAGE` y el gate es `POST_E5_PACKAGE`;
+3. ninguna instancia `GLOBAL` es creada o implícita;
+4. el staging usa identidades estables de `INT-DB-001` y solo referencias no secretas de `INT-DB-002` cuando correspondan;
+5. evidencia fuente, payload normalizado, hecho empresarial, auditoría, log y credencial permanecen separados;
+6. la captura fuente es inmutable y redelivery no sobrescribe historia;
+7. el digest no se usa como identidad empresarial;
+8. la captura raw ocurre antes de parseo cuando la autenticidad depende de bytes exactos;
+9. secretos y material reutilizable de autenticación están excluidos;
+10. `protected_payload_locator` no puede convertirse en secret-store locator ni URL firmada persistente;
+11. la matriz conserva 21 de 21 identidades y la distribución 2/1/5/1/2/1/7/2;
+12. Wompi y RevenueCat conservan las brechas actuales como drivers de implementación sin declarar corrección física;
+13. retención, hold y disposición quedan expresamente separados de backup;
+14. `INT-DB-004..008` conservan sus responsabilidades propias;
+15. la sección de requisitos derivados declara cero cambios y no contiene identificadores de requisito;
+16. la cobertura existente queda trazada fuera de esa sección;
+17. ninguna modificación Supabase es ejecutada durante esta tarea documental.
+
+---
+
+#### 40. Decisiones vinculantes
+
+Quedan vinculantes para cualquier futura materialización de `INT-DB-003::<package_id>`:
+
+- staging significa evidencia fuente protegida, no copia empresarial;
+- la captura original no se sobrescribe;
+- cada captura tiene identidad propia;
+- los identificadores externos y los digests se conservan como referencias, no como identidad universal;
+- raw bytes se preservan antes de transformación cuando el contrato de autenticidad los necesite;
+- el contenido completo se conserva únicamente cuando la política de preservación lo exige;
+- receipt mínimo o representación redactada se prefieren cuando el payload completo no es necesario;
+- credenciales y secretos nunca forman parte del staging;
+- la evidencia protegida no hereda automáticamente la visibilidad de la fila empresarial;
+- una corrección crea nueva evidencia de control y no edita la captura;
+- retención y disposición son explícitas y auditables;
+- mappings, idempotencia, cuarentena, auditoría y conciliación permanecen separados;
+- toda materialización pertenece a un `package_id` aprobado después de E5.
+
+---
+
+#### 41. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INT-DB-002 — Crear referencias de credenciales sin almacenar secretos en tablas expuestas`
+
+**TAREA ACTUAL APROBADA**
+`INT-DB-003 — Crear staging inmutable de payloads externos`
+
+**SIGUIENTE TAREA RESERVADA**
+`INT-DB-004 — Crear mapeos de identificadores externos y canónicos`
+
+
 ### [ ] INT-DB-004 — Crear mapeos de identificadores externos y canónicos
 ### [ ] INT-DB-005 — Crear restricciones e índices de idempotencia
 ### [ ] INT-DB-006 — Crear cuarentena y registro de errores no procesables
