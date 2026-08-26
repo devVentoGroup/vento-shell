@@ -133,13 +133,18 @@ test('rechaza estados materiales sin evidencia', () => {
   }), /IMPLEMENTED sin evidencia/u);
 });
 
-test('los catálogos reales generan preparación completa sin escrituras', () => {
+test('los catálogos reales generan preparación completa u omisión segura sin escrituras', () => {
   const result = prepareImplementationReadinessArtifacts({ write: false });
-  const workTopology = resolveTaskWorkTopology();
-  const currentLifecycle = workTopology.topology.get(workTopology.currentId);
   assert.equal(result.applicationRows.length, 10);
   assert.equal(result.applicationRows.reduce((sum, row) => sum + row.ownedProcesses, 0), 69);
   assert.equal(result.applicationRows.reduce((sum, row) => sum + row.screenCount, 0), 177);
+  if (result.skipped) {
+    assert.equal(result.handoff, undefined);
+    assert.equal(result.progress, undefined);
+    return;
+  }
+  const workTopology = resolveTaskWorkTopology();
+  const currentLifecycle = workTopology.topology.get(workTopology.currentId);
   assert.ok(result.handoff.includes('CONTROLLED_EXECUTION'));
   assert.ok(result.handoff.includes(workTopology.currentId));
   assert.ok(result.handoff.includes(currentLifecycle.mode));
