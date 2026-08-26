@@ -120,16 +120,94 @@ pending_production
 
 La medición de baseline y drift entre entornos pertenece a `AUTH-DB-028`.
 
+## Baseline y control de drift
+
+`AUTH-DB-028::GLOBAL` materializa el controlador reusable de baseline y drift sin crear una segunda fuente de verdad de schema ni de historial migratorio.
+
+Las entradas estables son:
+
+```text
+npm run supabase:drift:test
+npm run supabase:drift:expected
+npm run supabase:drift:local
+npm run supabase:drift:remote -- --environment-role staging --project-ref <ref> --owner <owner>
+npm run supabase:drift:remote -- --environment-role production --project-ref <ref> --owner <owner>
+```
+
+Los parámetros `<ref>` y `<owner>` anteriores representan valores reales exigidos en cada ejecución; no son valores por defecto ni autorización para inferir una identidad ambiental.
+
+La referencia siempre se construye así:
+
+```text
+EXPECTED(candidate versionado en vento-shell)
+vs.
+OBSERVED(environment identificado)
+```
+
+El estado esperado conserva el commit candidato, el árbol Git, el manifiesto y SHA-256 de migraciones, `supabase/config.toml`, versión de herramientas, Edge Functions versionadas, `verify_jwt` y nombres de secretos referenciados sin valores.
+
+La observación local reutiliza el harness de `AUTH-DB-027` y fingerprints deterministas de PostgreSQL. La observación hosted utiliza exclusivamente lecturas soportadas: Management API GET y el endpoint SQL `database/query/read-only`. El controlador rechaza por allowlist interna métodos o endpoints de mutación.
+
+La comparación cubre, según aplicabilidad:
+
+- historial migratorio;
+- relaciones, columnas, constraints, índices y vistas;
+- funciones/RPC, triggers, grants y RLS;
+- extensiones, publications y tipos;
+- Data API;
+- Auth contractual no secreto;
+- Storage y buckets;
+- Realtime;
+- Edge Functions y `verify_jwt`;
+- cron cuando `pg_cron` sea aplicable;
+- nombres de secretos requeridos, nunca sus valores.
+
+`vital` se excluye explícitamente de `governed_schemas`. Su existencia puede demostrarse como frontera, pero sus objetos no participan en fingerprints gobernados por Vento OS.
+
+Un ambiente remoto solo puede usar rol `staging` o `production` y requiere `project_ref` y owner explícitos. Un nombre visible como `dev`, `staging` o `prod` no sustituye su identidad técnica.
+
+Los resultados de drift son:
+
+```text
+EXPECTED_OVERLAY
+TEMPORARY_EXCEPTION
+UNAUTHORIZED_DRIFT
+INSUFFICIENT_EVIDENCE
+```
+
+La allowlist solo admite coincidencia exacta por `drift_id`, superficie, identidad y ambiente. No admite comodines. `TEMPORARY_EXCEPTION` exige expiración futura, owner, aprobador, riesgo, evidencia y tratamiento.
+
+`UNAUTHORIZED_DRIFT` e `INSUFFICIENT_EVIDENCE` bloquean certificación. Una superficie requerida que no pueda leerse no se convierte en PASS implícito.
+
+La evidencia opcional solo puede escribirse bajo `.delivery/`. El controlador no persiste valores de secretos ni connection strings completas.
+
+Detectar drift no autoriza ninguna de estas operaciones:
+
+```text
+db pull
+migration repair
+db push
+db reset --linked
+DDL
+DML
+cambios de Auth
+cambios de RLS o grants
+cambios de Storage
+redeploy de Edge Functions
+```
+
+Toda reparación pertenece a su tarea o paquete propietario y debe volver a producir baseline y comparación después de la corrección.
+
 ## Fronteras de responsabilidad
 
 | Tarea | Responsabilidad |
 | --- | --- |
 | `AUTH-DB-015` | Inventario y versionado verificable del historial físico de migraciones. |
 | `AUTH-DB-027` | Harness de pruebas de esquema, integridad, RLS, RPC y migraciones. |
-| `AUTH-DB-028` | Baseline y drift entre local, staging y producción. |
+| `AUTH-DB-028` | Baseline y drift entre local, staging y producción mediante observación read-only. |
 | `AUTH-DB-029` | Respaldo, restauración y rollback. |
 
-Esta arquitectura no aplica migraciones, no ejecuta `supabase db push`, no consulta estado remoto y no modifica datos productivos.
+`AUTH-DB-015` y `AUTH-DB-027` no representan estado remoto. `AUTH-DB-028` puede observar estado remoto únicamente en modo read-only y no lo convierte en fuente canónica. Ninguna de estas tareas aplica migraciones o repara drift por inferencia.
 
 ## Flujo para una migración nueva
 
@@ -154,3 +232,5 @@ La clasificación es descriptiva. No equivale a error de base de datos, estado d
 - `supabase/migrations/`
 - `supabase/MIGRATION_MANIFEST.md`
 - `scripts/supabase/migration-manifest.mjs`
+- `scripts/quality/supabase-db-harness.mjs`
+- `scripts/supabase/environment-drift.mjs`
