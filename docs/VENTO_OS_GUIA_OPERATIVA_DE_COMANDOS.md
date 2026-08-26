@@ -6,7 +6,7 @@
 >
 > **Rama estable:** `main`
 >
-> **Fecha de esta guía:** 2026-08-20
+> **Fecha de esta guía:** 2026-08-25
 
 ---
 
@@ -239,6 +239,50 @@ READY_TO_RESTART_WATCHER: SI
 **El watcher solo se vuelve a encender después de `READY_TO_RESTART_WATCHER: SI`.**
 
 ---
+
+## 2.4.1 RESILIENCIA DEL LIFECYCLE Y GATES
+
+Esta sección registra protecciones permanentes del repositorio. No depende de memoria de ChatGPT, de una conversación concreta ni de un operador recordando un workaround.
+
+La autoridad para estas reglas está en el código, los tests, los workflows y los contratos versionados del repositorio. Si una regla de esta sección y el tooling divergen, el cambio se trata como infraestructura transversal y se corrige antes de continuar una nueva implementación física.
+
+| ID | Incidente que debe permanecer imposible | Protección permanente | Evidencia automática |
+| --- | --- | --- | --- |
+| LC-001 | Una carpeta nueva legítima queda fuera del lifecycle físico. | El scope de una implementación se deriva de `authorized_changes` de su instancia y repositorio, no de una whitelist global de carpetas. | `implementation-branch-lifecycle.test.mjs` prueba rutas como `scripts/supabase/` y documentación raíz autorizada. |
+| LC-002 | `docs:plan:build` crea la siguiente instancia y el cierre la confunde con scope ajeno. | Fuera de `authorized_changes` solo se aceptan proyecciones propias del lifecycle y como máximo un registro nuevo con forma exacta `PENDING_AUTHORIZATION`, arrays vacíos, `authorization: null` y `evidence: []`. | El lifecycle valida forma, identidad de ruta y cardinalidad; cualquier segundo borrador derivado falla cerrado. |
+| LC-003 | `commit-scope` bloquea una implementación válida porque mezcla categorías genéricas. | Los PR `implementation/*` usan validación instance-aware sobre el rango completo `base..head`. Las categorías genéricas continúan gobernando task/infra/ops, pero no sustituyen el contrato físico. | `commit-scope.test.mjs` y `validate-canonical-plan-workflow.test.mjs`. |
+| LC-004 | `gh pr checks --watch` cae por HTTP 499 o error transitorio. | El lifecycle usa polling corto y reintenta HTTP 408/425/429/499/5xx y errores transitorios de red; los fallos reales de checks siguen siendo fail-fast. | `task-branch-lifecycle.test.mjs` clasifica HTTP 499 como RETRY y 403 como ERROR. |
+| LC-005 | `finish` falla porque el commit ya existe y el worktree está limpio. | `docs:implementation:finish` conserva `RESUME_POST_COMMIT` y continúa desde el commit existente. | `implementation-branch-lifecycle.test.mjs`. |
+| LC-006 | El PR ya fue mergeado pero falló la sincronización o limpieza local. | `docs:implementation:finish` detecta el PR mergeado, verifica HEAD y merge commit en main y termina por `RESUME_POST_MERGE`. | Test estructural y verificación de ancestros Git antes de PASS. |
+| LC-007 | Un force-push deja `github.event.before` huérfano y CI responde `Invalid revision range`. | El lifecycle físico no usa force-push. En synchronize no físico, el workflow usa `github.event.before` solo si existe y es ancestro; de lo contrario cae de forma segura a `base..head`. | Workflow test con guard `git cat-file` + `git merge-base --is-ancestor`. |
+| LC-008 | Windows y Linux calculan SHA distintos por CRLF/LF o una carpeta nueva vuelve a EOL no gobernado. | Git aplica `* text=auto eol=lf`; el manifiesto de migraciones neutraliza únicamente CRLF de checkout a LF antes de SHA-256 y bytes. | `validate-eol-policy.test.mjs` y prueba `contenido canonico es estable entre checkout CRLF de Windows y LF de CI`. |
+| LC-009 | Node en Windows intenta `spawnSync npm.cmd` y retorna EINVAL. | Los lifecycles usan `resolveNpmInvocation`; para scripts Node conocidos se usa `process.execPath`. Está prohibido spawn/spawnSync directo sobre `npm.cmd`. | `task-branch-lifecycle.test.mjs` prueba resolución Windows y ausencia de spawn directo. |
+| LC-010 | Un comando inventa un alias npm inexistente al invertir los términos `local` y `sync` del nombre canónico. | `package.json` es autoridad única de nombres. La sincronización local vigente es `docs:plan:local-sync`. Los nombres prohibidos se describen semánticamente y nunca se copian literalmente dentro de la guía. | Starter canónico y tests rechazan aliases inventados; el validador operativo bloquea la presencia del literal prohibido. |
+| LC-011 | Se crea un recovery ad hoc y el recovery introduce otro fallo de parser, shell o estado. | El mecanismo normal de recuperación es volver a ejecutar `docs:implementation:finish`. No se crea recovery ad hoc para estados post-commit, post-push, post-PR o post-merge que el lifecycle pueda reanudar. | Starter canónico y esta guía; una carencia de reanudación obliga a corregir el lifecycle mediante `docs:infra:publish`. |
+| LC-012 | Una corrección parcial deja el worktree a medias si falla una validación. | Los aplicadores de hardening usados para esta corrección restauran bytes originales ante FAIL; la publicación oficial continúa siendo propiedad de los publishers del repositorio. | El aplicador imprime `ROLLBACK:PASS` en fallo de materialización y el publisher vuelve a validar antes del commit. |
+| LC-013 | Un descargable ejecutable contiene sintaxis válida en apariencia pero falla al lanzarse como stdin CommonJS, por ejemplo `return;` a nivel superior con `Illegal return statement`. | Todo materializador TXT ejecutado con `node --input-type=commonjs -` debe pasar primero `docs:delivery-exec:check -- --file <archivo> --mode stdin-commonjs`, que parsea con semántica CommonJS y falla antes de cualquier escritura. | `validate-executable-delivery.test.mjs` reproduce explícitamente `return;` top-level como FAIL y un return dentro de función como PASS. |
+| LC-014 | Reglas exclusivas del lifecycle fisico se insertan en la plantilla compartida y contaminan el iniciador documental; `chatgpt-work-starter.test.mjs` falla porque la plantilla comun deja de ser comun. | La plantilla compartida contiene solo reglas comunes; las reglas documentales viven en `DOCUMENTATION_PROTOCOL` y las fisicas en `IMPLEMENTATION_PROTOCOL`. Toda modificacion del generador debe pasar `chatgpt-work-starter.test.mjs` y la suite completa `docs:plan:test` antes de publicar. | `chatgpt-work-starter.test.mjs` protege la ausencia de comandos fisicos en la plantilla comun y `task-branch-lifecycle.test.mjs` verifica que `SCOPE_FISICO = authorized_changes` permanezca dentro de `IMPLEMENTATION_PROTOCOL`. |
+| LC-015 | Un repair intenta acomodar su cambio reescribiendo el test contractual que habia detectado el defecto, o devuelve solo `node --test failed` sin el diagnostico concreto. | El test propietario se trata como contrato: primero se corrige la implementacion. Solo se modifica el test cuando cambia deliberadamente el contrato y la razon queda versionada. Los materializadores capturan y devuelven el nombre del paso y el diagnostico exacto del test antes de rollback. | El repair V5 conserva `chatgpt-work-starter.test.mjs`, modifica solo el test transversal agregado por el hardening y exige `docs:plan:test` completo antes de `READY_FOR_INFRA_PUBLISH: SI`. |
+| LC-016 | La documentacion de la plantilla compartida repite literalmente el token estructural de la ranura y crea una segunda ranura accidental; el generador deja de poder resolver una unica insercion. | La ranura estructural de trabajo debe existir exactamente una vez. El token reservado de la ranura no se cita literalmente dentro del texto comun y la cardinalidad se valida antes de los tests. | `chatgpt-work-starter.test.mjs` conserva la asercion de cardinalidad y el hardening transversal duplica esa proteccion antes de publicar. |
+| LC-017 | Un ejemplo negativo dentro de documentación operativa reproduce literalmente un identificador que el propio validador prohíbe y activa el guard aunque el texto pretendiera explicar un error histórico. | Los identificadores y nombres prohibidos se documentan por significado, patrón o descripción, nunca copiando el literal vetado. La guía candidata se valida con `validateOperationalGuideResilience` antes de declararse lista para publicar. | `task-branch-lifecycle.test.mjs` prueba el rechazo del literal prohibido y `docs:ops:publish` ejecuta el mismo validador sobre el archivo real. |
+
+### Reglas operativas vinculantes
+
+1. Para una instancia física, `authorized_changes` decide escrituras permitidas. `EXECUTE_ONLY` nunca concede escritura.
+2. `docs:implementation:finish` es idempotente y reanudable. Ante interrupción, consulta estado real y vuelve a ejecutar el mismo lifecycle; no reconstruyas manualmente commit, push, PR o merge.
+3. Nunca uses force-push para conseguir que pase un cierre físico.
+4. Nunca sustituyas un fallo de gate por un workaround manual. Si el gate está equivocado, se corrige como infraestructura y se agrega regresión.
+5. Para llamadas npm desde Node, usa `resolveNpmInvocation`. Para ejecutar un `.mjs` conocido directamente, usa `process.execPath`.
+6. Antes de nombrar un script npm, lee `package.json`. El nombre exacto de sincronización local es `docs:plan:local-sync`.
+7. El workflow no asume que `github.event.before` siga alcanzable después de reescrituras de historia; debe tener fallback seguro.
+8. HTTP 499 y errores de red transitorios se reintentan; un check en FAILURE no se reintenta como si fuera un problema de transporte.
+9. CRLF/LF no puede cambiar la identidad persistida de una migración ni exigir habilitar una carpeta nueva en la política EOL.
+10. Si una futura implementación necesita una ruta nueva, se autoriza esa ruta en su instancia. No se modifica el lifecycle para “habilitar la carpeta”.
+11. Antes de ejecutar un materializador descargable TXT mediante node --input-type=commonjs -, valida el archivo con npm run docs:delivery-exec:check -- --file <archivo> --mode stdin-commonjs. Un Illegal return statement o cualquier error de parser debe detenerse antes de tocar el repositorio.
+12. La plantilla compartida contiene solo reglas comunes. Las reglas exclusivas de implementacion pertenecen a IMPLEMENTATION_PROTOCOL y las documentales a DOCUMENTATION_PROTOCOL; nunca se corrige un carril contaminando el otro.
+13. Un test contractual propietario no se reescribe para acomodar una implementacion defectuosa. Primero se corrige la implementacion; cualquier cambio deliberado del contrato exige una justificacion versionada.
+14. Todo materializador de infraestructura debe devolver el paso fallido y un diagnostico exacto del test antes de rollback; un mensaje generico como node --test failed no es evidencia suficiente.
+15. Un ejemplo negativo no debe copiar literalmente un identificador que el validador de la misma guía prohíbe. Describe el patrón o el significado y valida el documento candidato con la función canónica antes de publicarlo.
 
 ## 2.5 Publicar un cambio transversal
 
