@@ -35,6 +35,74 @@ export function taskBranchName(taskId) {
   return `${TASK_PREFIX}${normalizeTaskId(taskId).toLowerCase()}`;
 }
 
+export function activeSequenceTaskIds(config) {
+  if (Array.isArray(config?.task_ids)) {
+    return config.task_ids.filter(
+      (id) => typeof id === 'string' && id.trim().length > 0,
+    );
+  }
+
+  if (!Array.isArray(config?.segments)) return [];
+
+  const ids = [];
+  for (const segment of config.segments) {
+    const prefix = String(segment?.prefix ?? '').trim();
+    const from = Number(segment?.from);
+    const to = Number(segment?.to);
+
+    if (
+      !prefix
+      || !Number.isInteger(from)
+      || !Number.isInteger(to)
+      || from < 1
+      || to < from
+    ) {
+      return [];
+    }
+
+    ids.push(
+      ...Array.from(
+        { length: to - from + 1 },
+        (_, index) => `${prefix}-${String(from + index).padStart(3, '0')}`,
+      ),
+    );
+  }
+
+  return ids;
+}
+
+export function classifyTaskFinishContinuity({
+  taskId,
+  taskState,
+  continuityPrevious,
+  continuityCurrent,
+  activeSequenceCurrent,
+  baseActiveSequence,
+}) {
+  if (String(taskState ?? '').toUpperCase() !== 'APROBADA') {
+    return { allowed: false, mode: 'TASK_NOT_APPROVED' };
+  }
+
+  if (continuityPrevious === taskId) {
+    return { allowed: true, mode: 'STANDARD' };
+  }
+
+  const baseCurrentTaskId = activeSequenceTaskIds(baseActiveSequence)[0] ?? null;
+  const baseHandoffTaskId = String(baseActiveSequence?.handoff_task_id ?? '').trim();
+  const terminalStageTransition = (
+    activeSequenceCurrent === true
+    && baseCurrentTaskId === taskId
+    && baseHandoffTaskId.length > 0
+    && continuityCurrent === baseHandoffTaskId
+  );
+
+  if (terminalStageTransition) {
+    return { allowed: true, mode: 'TERMINAL_STAGE_TRANSITION' };
+  }
+
+  return { allowed: false, mode: 'CONTINUITY_MISMATCH' };
+}
+
 export function normalizeInfraChangeId(value) {
   const changeId = String(value ?? '').trim().toLowerCase();
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/u.test(changeId)) {
@@ -83,6 +151,26 @@ function run(command, args, {
 
 function git(args, options = {}) {
   return run('git', args, options);
+}
+
+function readJsonAtRef(root, ref, relativePath, label) {
+  const result = git(['show', `${ref}:${relativePath}`], {
+    cwd: root,
+    allowFailure: true,
+  });
+
+  if (result.status !== 0) {
+    fail(
+      `No se pudo leer ${label} desde ${ref}: `
+      + `${result.stderr || result.stdout || 'ERROR_DESCONOCIDO'}.`,
+    );
+  }
+
+  try {
+    return JSON.parse(result.stdout);
+  } catch {
+    fail(`${label} en ${ref} no contiene JSON valido.`);
+  }
 }
 
 function gh(args, options = {}) {
@@ -461,13 +549,33 @@ function ensureTaskCanFinish(root, taskId) {
   if (String(report?.task?.state ?? '').toUpperCase() !== 'APROBADA') {
     fail(`${taskId} debe estar APROBADA antes de finish; estado: ${report?.task?.state ?? 'DESCONOCIDO'}.`);
   }
-  if (report?.continuity?.previous !== taskId) {
-    fail(`La continuidad no reconoce ${taskId} como ultima tarea aprobada.`);
-  }
   if (report?.continuity?.active_sequence_current !== true) {
     fail('active-sequence.json no esta sincronizado; ejecute el cierre documental antes de finish.');
   }
-  return report;
+
+  const baseActiveSequence = readJsonAtRef(
+    root,
+    `origin/${DEFAULT_BRANCH}`,
+    'docs/plan-canonico/modular/active-sequence.json',
+    'active-sequence.json base',
+  );
+  const continuity = classifyTaskFinishContinuity({
+    taskId,
+    taskState: report.task.state,
+    continuityPrevious: report.continuity.previous,
+    continuityCurrent: report.continuity.current,
+    activeSequenceCurrent: report.continuity.active_sequence_current,
+    baseActiveSequence,
+  });
+
+  if (!continuity.allowed) {
+    fail(`La continuidad no reconoce ${taskId} como ultima tarea aprobada.`);
+  }
+
+  return {
+    ...report,
+    finish_continuity_mode: continuity.mode,
+  };
 }
 
 export function classifyTaskPath(filePath) {
