@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1052** |
+| Tareas aprobadas | **1053** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **542** |
+| Tareas no iniciadas | **541** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **66.00% (1052/1594)** |
+| Porcentaje de completamiento | **66.06% (1053/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-ERR-020 — Compartir mensajes desde vento-shell** |
-| Tarea actual | **ANIMA-AUTH-001 — Confirmar turno publicado antes del check-in** |
+| Última tarea aprobada | **ANIMA-AUTH-001 — Confirmar turno publicado antes del check-in** |
+| Tarea actual | **ANIMA-AUTH-002 — Confirmar sede del turno** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-AUTH-002 — Confirmar sede del turno** |
+| Siguiente tarea | **ANIMA-AUTH-003 — Confirmar área del turno** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 0 de 37 aprobadas; ANIMA-AUTH-001 pendiente** |
+| Progreso del bloque | **BLOQUE F: 1 de 37 aprobadas; ANIMA-AUTH-002 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-003::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-AUTH-001** |
+| Carril documental | **ACTIVO — ANIMA-AUTH-002** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-003::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-ERR-020` — Compartir mensajes desde vento-shell |
-| Tarea actual | `ANIMA-AUTH-001` — Confirmar turno publicado antes del check-in — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-AUTH-002` — Confirmar sede del turno |
+| Última aprobada | `ANIMA-AUTH-001` — Confirmar turno publicado antes del check-in |
+| Tarea actual | `ANIMA-AUTH-002` — Confirmar sede del turno — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-AUTH-003` — Confirmar área del turno |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 0 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 1 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-002** |
 | Implementación física | **AUTH-DB-003::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-ERR-020 — Compartir mensajes desde vento-shell
-        ↓
-TAREA ACTUAL
 ANIMA-AUTH-001 — Confirmar turno publicado antes del check-in
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-AUTH-002 — Confirmar sede del turno
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-AUTH-003 — Confirmar área del turno
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 0 de 37 tareas aprobadas
+BLOQUE F — 1 de 37 tareas aprobadas
 ```
