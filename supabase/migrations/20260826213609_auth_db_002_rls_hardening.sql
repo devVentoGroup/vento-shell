@@ -6,6 +6,9 @@ do $auth_db_002_precheck$
 declare
   v_count bigint;
   v_md5 text;
+  v_document_policy_present boolean;
+  v_document_types_rls boolean;
+  v_document_types_force boolean;
 begin
   with target(schemaname, tablename, policyname) as (
     values
@@ -67,19 +70,81 @@ begin
   into v_count, v_md5
   from policy_rows;
 
-  if v_count <> 20 then
+  if to_regclass('public.document_types') is null then
     raise exception
-      'AUTH_DB_002_PRECONDITION_FAILED: expected 20 policy snapshot rows, observed %',
-      v_count;
+      'AUTH_DB_002_PRECONDITION_FAILED: public.document_types does not exist';
   end if;
 
-  if v_md5 <> 'bbde94326ddde8fb0cd0fd5ad1475914' then
+  select exists (
+    select 1
+    from pg_catalog.pg_policies
+    where schemaname = 'public'
+      and tablename = 'document_types'
+      and policyname = 'document_types_write_admin'
+  )
+  into v_document_policy_present;
+
+  select
+    c.relrowsecurity,
+    c.relforcerowsecurity
+  into
+    v_document_types_rls,
+    v_document_types_force
+  from pg_catalog.pg_class c
+  join pg_catalog.pg_namespace n
+    on n.oid = c.relnamespace
+  where n.nspname = 'public'
+    and c.relname = 'document_types'
+    and c.relkind = 'r';
+
+  if v_document_types_force is distinct from false then
     raise exception
-      'AUTH_DB_002_PRECONDITION_FAILED: snapshot md5 % does not match bbde94326ddde8fb0cd0fd5ad1475914',
-      coalesce(v_md5, 'NULL');
+      'AUTH_DB_002_PRECONDITION_FAILED: public.document_types FORCE RLS changed';
+  end if;
+
+  if v_count = 20 then
+    if v_md5 <> 'bbde94326ddde8fb0cd0fd5ad1475914' then
+      raise exception
+        'AUTH_DB_002_PRECONDITION_FAILED: hosted snapshot md5 % does not match expected',
+        coalesce(v_md5, 'NULL');
+    end if;
+
+    if not v_document_policy_present then
+      raise exception
+        'AUTH_DB_002_PRECONDITION_FAILED: hosted baseline missing document_types_write_admin';
+    end if;
+
+    if v_document_types_rls is distinct from true then
+      raise exception
+        'AUTH_DB_002_PRECONDITION_FAILED: hosted baseline document_types RLS is not enabled';
+    end if;
+
+  elsif v_count = 19 then
+    if v_md5 <> '9fb866b9bbd27e8db75e0b1af3300e12' then
+      raise exception
+        'AUTH_DB_002_PRECONDITION_FAILED: reproducible snapshot md5 % does not match expected',
+        coalesce(v_md5, 'NULL');
+    end if;
+
+    if v_document_policy_present then
+      raise exception
+        'AUTH_DB_002_PRECONDITION_FAILED: reproducible baseline unexpectedly contains document_types_write_admin';
+    end if;
+
+    if v_document_types_rls is distinct from false then
+      raise exception
+        'AUTH_DB_002_PRECONDITION_FAILED: reproducible baseline document_types RLS is not disabled';
+    end if;
+
+  else
+    raise exception
+      'AUTH_DB_002_PRECONDITION_FAILED: expected hosted 20-policy or reproducible 19-policy baseline, observed %',
+      v_count;
   end if;
 end
 $auth_db_002_precheck$;
+
+alter table public.document_types enable row level security;
 
 drop policy users_update_self
 on public.users;
@@ -167,7 +232,7 @@ using (
   )
 );
 
-drop policy document_types_write_admin
+drop policy if exists document_types_write_admin
 on public.document_types;
 
 create policy document_types_write_admin
@@ -410,3 +475,61 @@ begin
   end if;
 end
 $auth_db_002_postcheck$;
+
+do $auth_db_002_document_types_rls_postcheck$
+declare
+  v_rls boolean;
+  v_force boolean;
+  v_policy_count integer;
+begin
+  select
+    c.relrowsecurity,
+    c.relforcerowsecurity
+  into
+    v_rls,
+    v_force
+  from pg_catalog.pg_class c
+  join pg_catalog.pg_namespace n
+    on n.oid = c.relnamespace
+  where n.nspname = 'public'
+    and c.relname = 'document_types'
+    and c.relkind = 'r';
+
+  if v_rls is distinct from true then
+    raise exception
+      'AUTH_DB_002_POSTCONDITION_FAILED: public.document_types RLS is not enabled';
+  end if;
+
+  if v_force is distinct from false then
+    raise exception
+      'AUTH_DB_002_POSTCONDITION_FAILED: public.document_types FORCE RLS changed';
+  end if;
+
+  select count(*)
+  into v_policy_count
+  from pg_catalog.pg_policies p
+  where p.schemaname = 'public'
+    and p.tablename = 'document_types'
+    and p.policyname = 'document_types_write_admin'
+    and p.cmd = 'ALL'
+    and p.roles::text = '{authenticated}'
+    and position(
+      'is_owner()'
+      in coalesce(p.qual, '') || ' ' || coalesce(p.with_check, '')
+    ) > 0
+    and position(
+      'is_global_manager()'
+      in coalesce(p.qual, '') || ' ' || coalesce(p.with_check, '')
+    ) > 0
+    and position(
+      'gerente'
+      in coalesce(p.qual, '') || ' ' || coalesce(p.with_check, '')
+    ) = 0;
+
+  if v_policy_count <> 1 then
+    raise exception
+      'AUTH_DB_002_POSTCONDITION_FAILED: document_types_write_admin hardened policy mismatch count=%',
+      v_policy_count;
+  end if;
+end
+$auth_db_002_document_types_rls_postcheck$;

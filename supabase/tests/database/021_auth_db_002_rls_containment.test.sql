@@ -169,7 +169,8 @@ values
     'a0021000-0000-0000-0000-000000000001',
     true,
     true
-  );
+  )
+on conflict (employee_id, site_id) do nothing;
 
 insert into public.documents (
   id,
@@ -202,6 +203,20 @@ values
     'auth-db-002/peer/private.pdf',
     'private.pdf'
   );
+
+-- AUTH-DB-002 test-only parent fixture for storage.objects FK.
+-- Transactional: this row is rolled back with the pgTAP test.
+insert into storage.buckets (
+  id,
+  name,
+  public
+)
+values (
+  'documents',
+  'documents',
+  true
+)
+on conflict (id) do nothing;
 
 insert into storage.objects (
   id,
@@ -248,8 +263,7 @@ insert into pass.loyalty_redemptions (
   user_id,
   reward_id,
   points_spent,
-  status,
-  site_id
+  status
 )
 values
   (
@@ -257,16 +271,14 @@ values
     'a0020000-0000-0000-0000-000000000005',
     'a0024000-0000-0000-0000-000000000001',
     10,
-    'pending',
-    'a0021000-0000-0000-0000-000000000001'
+    'pending'
   ),
   (
     'a0025000-0000-0000-0000-000000000002',
     'a0020000-0000-0000-0000-000000000005',
     'a0024000-0000-0000-0000-000000000002',
     10,
-    'pending',
-    'a0021000-0000-0000-0000-000000000002'
+    'pending'
   );
 
 select plan(40);

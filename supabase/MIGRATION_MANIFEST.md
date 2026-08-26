@@ -562,7 +562,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260716170000 | 20260716170000_add_route_snapshot_to_restock_item_fulfillments.sql | 03f7aa88dc424af9a405fb2dd373223006243768cdbc361d80156a2c098f8976 | 4661 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260731082600 | 20260731082600_viso_monthly_schedule_186_hour_publish_guard.sql | 2c016978c5d06406def5c0cfe27b98947c16ea35efc628e4bfcf549869a98660 | 3754 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260826191458 | 20260826191458_auth_db_001_enable_rls_containment.sql | e334ae3c90e0b512b90fee1fde5a65c52117c3e3e62636536651da5bd5a0334e | 6812 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260826213609 | 20260826213609_auth_db_002_rls_hardening.sql | c2489c86fa31dd3203b8af971f36050a4843999e7b4e98e33566c55560cbb6ea | 11954 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260826213609 | 20260826213609_auth_db_002_rls_hardening.sql | aca1a4b69e8f9c483b25a88a2c0ffc18a1a9f507fc5b3bcdb72dec7cdf0320b7 | 15542 | STANDARD |  |  | SIN_HALLAZGO |
 
 ## Inventory summary
 

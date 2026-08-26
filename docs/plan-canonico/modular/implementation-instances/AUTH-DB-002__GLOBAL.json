@@ -10,7 +10,7 @@
       "repo": "vento-group-sas/vento-shell",
       "path": "supabase/migrations/20260826213609_auth_db_002_rls_hardening.sql",
       "change": "CREATE",
-      "scope": "Create exactly one forward AUTH-DB-002 migration. Fail closed unless the approved 20-policy baseline snapshot remains exact. Modify only the 16 approved RLS policies: remove 10 broad policies and replace 6 with hardened definitions. Do not modify grants, functions, buckets, data, historical migrations or any other policy."
+      "scope": "Create exactly one forward AUTH-DB-002 migration. Accept only either the exact hosted 20-policy baseline bbde94326ddde8fb0cd0fd5ad1475914 with public.document_types RLS ON and document_types_write_admin present, or the exact reproducible 19-policy baseline 9fb866b9bbd27e8db75e0b1af3300e12 with public.document_types RLS OFF and document_types_write_admin absent. Enable RLS only on public.document_types to reconcile that demonstrated historical drift, then converge both states to the same approved hardened 16-policy target. Do not FORCE RLS. Do not modify grants, functions, buckets, data, historical migrations, consumers or unrelated policies."
     },
     {
       "repo": "vento-group-sas/vento-shell",
@@ -84,23 +84,42 @@
   "authorization": {
     "decision": "APPROVED",
     "approved_by": "VENTO_OWNER",
-    "approved_at": "2026-08-26T16:36:10-05:00",
+    "approved_at": "2026-08-26T17:23:40-05:00",
     "timezone": "America/Bogota",
-    "approval_statement": "Pues si este es el desarrollo de la tarea, si, aprobado",
+    "approval_statement": "PUES SI QUE MAS PUEDO DECIR, SI NO TENGO NI IDEA DE CUAL ES LA SOLUCION, SI ME DICES QUE ES ESA PUES ES ESA ASI QUE HAZLO",
     "source_contract_sha256": "5d999211c99d92dbf5132c7912a3d5f560dfc34cdbc928ca29fb2237b0686d47"
   },
   "evidence": [
     "MATERIALIZATION migration supabase/migrations/20260826213609_auth_db_002_rls_hardening.sql",
-    "FILE_SHA256 supabase/migrations/20260826213609_auth_db_002_rls_hardening.sql c2489c86fa31dd3203b8af971f36050a4843999e7b4e98e33566c55560cbb6ea",
-    "FILE_SHA256 supabase/tests/database/021_auth_db_002_rls_containment.test.sql 52585d05841cadc14ddf8a5d7f2c30eb113b0b89b552c4722bc3f0caf287f072",
-    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md 92daba9516259d57abc6871114436c12b7c4f4a6fa99dd5fdee0d2cd46d2f36c",
-    "MATERIALIZATION AUTH-DB-002 policy baseline precondition count=20 md5=bbde94326ddde8fb0cd0fd5ad1475914",
     "MATERIALIZATION broad policies dropped=10 hardened policies replaced=6",
     "MATERIALIZATION grants changed=0 functions changed=0 buckets changed=0 data changed=0",
     "MATERIALIZATION remote_mutations=NO",
     "PRE_VALIDATION_GATE quality:repair PASS exactly once",
     "PRE_VALIDATION_GATE docs:commit-scope:check PASS",
     "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
-    "SOURCE CONTRACT SHA256 5d999211c99d92dbf5132c7912a3d5f560dfc34cdbc928ca29fb2237b0686d47"
+    "SOURCE CONTRACT SHA256 5d999211c99d92dbf5132c7912a3d5f560dfc34cdbc928ca29fb2237b0686d47",
+    "SCOPE_EXPANSION_APPROVAL approved_at=2026-08-26T17:23:40-05:00 public.document_types enable_rls=YES force_rls=NO",
+    "BASELINE_RECONCILIATION hosted_count=20 hosted_md5=bbde94326ddde8fb0cd0fd5ad1475914 document_types_rls=ON policy=PRESENT",
+    "BASELINE_RECONCILIATION local_count=19 local_md5=9fb866b9bbd27e8db75e0b1af3300e12 document_types_rls=OFF policy=ABSENT",
+    "BASELINE_RECONCILIATION convergence=document_types_rls_ON_plus_hardened_policy",
+    "FILE_SHA256 supabase/migrations/20260826213609_auth_db_002_rls_hardening.sql aca1a4b69e8f9c483b25a88a2c0ffc18a1a9f507fc5b3bcdb72dec7cdf0320b7",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md 85437bf992e3eb7bf6d3a768f0b8ab1af01a238a34ad249a1eb3c3960f754214",
+    "MATERIALIZATION scope_expansion_tables=1 table=public.document_types",
+    "MATERIALIZATION grants_changed=0 functions_changed=0 buckets_changed=0 data_changed=0 force_rls_changed=0",
+    "MATERIALIZATION remote_mutations=NO",
+    "PRE_VALIDATION_GATE quality:repair NOT_RERUN_ALREADY_CONSUMED",
+    "FIXTURE_RECONCILIATION employee_sites statements_patched=1 conflict_strategy=DO_NOTHING trigger=employees_sync_site_assignment_insert",
+    "FIXTURE_RECONCILIATION reason=employee_insert_automatically_materializes_primary_employee_site",
+    "FIXTURE_RECONCILIATION reason=storage.objects_bucketId_fkey_requires_parent_bucket_in_clean_replay",
+    "FIXTURE_RECONCILIATION storage_documents_bucket id=documents transactional=YES persisted=NO",
+    "FIXTURE_RECONCILIATION reason=storage.objects_bucketId_fkey_requires_parent_bucket_in_clean_replay",
+    "FIXTURE_ORDER storage_documents_bucket fixture_line=207 object_insert_line=221 ordering=PASS",
+    "OBSERVED_ENVIRONMENT_DRIFT pass.loyalty_redemptions.site_id hosted=PRESENT local_replay=ABSENT owner=AUTH-DB-028 action_in_AUTH-DB-002=NONE",
+    "FIXTURE_RECONCILIATION loyalty_redemptions_site removed_direct_site_id=YES territory_source=reward_id_to_loyalty_rewards.site_id",
+    "STATIC_FIXTURE_SCHEMA_PREFLIGHT insert_statements=10 result=PASS",
+    "FILE_SHA256 supabase/tests/database/021_auth_db_002_rls_containment.test.sql 52402e2e840a36a602f3d8cc5be2810f0655eee93bd01a0bfc09639f488f8b09",
+    "CORRECTION_PROBE supabase_test_db path=supabase/tests/database/021_auth_db_002_rls_containment.test.sql tests=40 result=PASS",
+    "CORRECTION_PROBE storage_documents_bucket_fixture_rollback=PASS persisted_count=0",
+    "CORRECTION_PROBE poststate broad_policies=0 hardened_policies=6"
   ]
 }
