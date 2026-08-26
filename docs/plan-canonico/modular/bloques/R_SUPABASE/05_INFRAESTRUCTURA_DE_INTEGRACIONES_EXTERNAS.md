@@ -8168,7 +8168,1428 @@ Esta tarea no:
 `INT-DB-008 — Crear mecanismos de conciliación por integración`
 
 
-### [ ] INT-DB-008 — Crear mecanismos de conciliación por integración
+### ✅ INT-DB-008 — Crear mecanismos de conciliación por integración
+
+**Estado:** APROBADA
+**Tarea anterior:** INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones
+**Tarea siguiente:** ANIMA-AUTH-001 — Confirmar turno publicado antes del check-in
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para materializar mecanismos de conciliación por integración que comparen fuentes acreditadas, preserven incertidumbre, autoridad, evidencia, residuales y ownership, y cierren divergencias sin reescribir historia ni ejecutar correcciones cruzadas durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `INT-DB-008::<package_id>`, sujetas a `POST_E5_PACKAGE`, a las referencias y evidencias producidas por INT-DB-001 a INT-DB-007, al contrato compartido vigente de idempotencia y conciliación, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Fecha de corte:** 2026-08-26
+
+---
+
+#### 1. Propósito
+
+`INT-DB-008` define la persistencia física futura que permitirá abrir, investigar, decidir y cerrar divergencias de una integración cuando dos o más fuentes acreditadas no permitan afirmar de forma inmediata y segura qué ocurrió, qué efecto empresarial quedó vigente o qué acción posterior corresponde.
+
+La conciliación no es un mecanismo para escoger el dato más conveniente, repetir una operación incierta, editar historia, fabricar evidencia ni escribir directamente sobre una fuente propietaria ajena. Debe permitir responder de forma reproducible:
+
+1. qué operación, recurso, evento, entrega, efecto o relación originó la divergencia;
+2. qué `package_id` e integración son responsables del caso;
+3. qué referencias de idempotencia, mapping, evidencia fuente, disposición y auditoría ya existen;
+4. qué fuentes acreditadas fueron comparadas;
+5. qué diferencia concreta fue observada;
+6. qué hechos siguen confirmados, ausentes, duplicados, parciales o inciertos;
+7. qué autoridad puede decidir el tratamiento;
+8. qué outcome de cierre es compatible con la evidencia;
+9. qué residuales permanecen después de la decisión;
+10. qué owner debe ejecutar una corrección, compensación, consulta o acción posterior;
+11. qué condición permite reactivar un caso o abrir un sucesor;
+12. qué evidencia demuestra el cierre sin borrar ni reinterpretar el historial previo.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+INT-DB-008
+→ contrato documental único y reutilizable
+
+INT-DB-008::<package_id>
+→ futura instancia física por paquete
+
+divergencia o resultado incierto
+→ referencia estable de conciliación
+→ fuentes acreditadas comparadas
+→ diferencias observadas
+→ evidencia y auditoría correlacionadas
+→ decisión bajo autoridad explícita
+→ outcome de cierre cerrado
+→ residuales y siguiente acción
+→ cierre o sucesor sin reescribir historia
+```
+
+No existe una instancia física `INT-DB-008::GLOBAL`.
+
+La definición documental no ejecuta DDL, DML, migraciones, RLS, RPC, jobs, polling, provider calls, correcciones, compensaciones ni cierres operativos reales.
+
+---
+
+#### 3. Topología vinculante
+
+La topología aplicable queda cerrada así:
+
+| Propiedad | Decisión |
+| --- | --- |
+| Modalidad | `TEMPLATE_PER_PACKAGE` |
+| Gate temporal | `POST_E5_PACKAGE` |
+| Identidad física futura | `INT-DB-008::<package_id>` |
+| Instancia global | no aplica |
+| Definición documental | única y reutilizable |
+| Materialización durante esta definición | ninguna |
+
+Cada `package_id` materializa únicamente los mecanismos de conciliación correspondientes a integraciones, owners y efectos incluidos y acreditados en ese paquete.
+
+Compartir Supabase, proveedor, broker, credencial, runtime o aplicación no fusiona casos entre paquetes ni crea autoridad transversal implícita.
+
+---
+
+#### 4. Gate temporal
+
+Una futura instancia solo podrá materializar mecanismos de conciliación cuando, para el mismo `package_id`, estén satisfechas las puertas físicas aplicables.
+
+Como mínimo:
+
+```text
+package E5 aplicable = CERRADO
+E5-GATE-008::<package_id> = PASS
+registro INT-DB-001 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+credenciales INT-DB-002 aplicables = REFERENCIABLES O NO_APLICABLE JUSTIFICADO
+evidencia fuente INT-DB-003 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+mapping INT-DB-004 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+idempotencia INT-DB-005 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+disposición INT-DB-006 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+auditoría INT-DB-007 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+contrato compartido de conciliación = VIGENTE
+owner de cada hecho = RESUELTO
+fuentes comparables = ACREDITADAS
+drift aplicable = RECONCILED
+rollback = PREPARADO
+physical_authorization = EXPLICIT
+```
+
+Una dependencia no aplicable se documenta; no se sustituye con una referencia inventada.
+
+---
+
+#### 5. Fuentes vinculantes
+
+Cada futura instancia deberá consumir sin reinterpretación silenciosa:
+
+- `INT-DB-001` para sistema, integración, binding y ownership externo;
+- `INT-DB-002` para referencias de credenciales no secretas cuando apliquen;
+- `INT-DB-003` para evidencia fuente protegida y su procedencia;
+- `INT-DB-004` para mappings externos y canónicos acreditados;
+- `INT-DB-005` para identidad idempotente, resultado recuperable y conflicto de reutilización;
+- `INT-DB-006` para disposición, cuarentena, dead-letter, intervención y referencias de resultado incierto;
+- `INT-DB-007` para intentos, retries, decisiones, efectos, compensaciones y línea temporal auditada;
+- `SHELL-CON-023` para `IntegrationReconciliationRef`, `IntegrationReconciliationCase`, outcomes de cierre y matriz de adopción vigente;
+- `INT-APP-004`, `INT-APP-005`, `INT-APP-007`, `INT-APP-008`, `INT-APP-009` e `INT-APP-010` para idempotencia, retry, auditoría, investigación, recuperación y fronteras de ownership;
+- `INT-EXT-012` e `INT-EXT-017` para idempotencia externa, evidencia, fuentes, resultados desconocidos y conciliación por proveedor;
+- `INT-POS-013` e `INT-POS-020` para la especialización POS cuando exista evidencia suficiente;
+- `INT-SALES-007` e `INT-SALES-008` cuando la conciliación afecte hechos de venta definidos por esos contratos;
+- el expediente E5, contratos de dominio y owners del paquete;
+- el registro canónico de requisitos de prueba vigente;
+- el estado remoto y el drift recapturados al iniciar la futura instancia.
+
+Una contradicción entre owner, evidencia, proveedor, contrato y estado persistido se conserva como divergencia; no se resuelve por precedencia técnica improvisada.
+
+---
+
+#### 6. Handoff recibido de INT-DB-007
+
+Cuando la conciliación sea aplicable, `INT-DB-007` entrega referencias, no una decisión de verdad.
+
+El handoff mínimo reutilizable es:
+
+```text
+package_id
+reconciliation_ref
+correlation_id
+causation_id
+operation_or_resource_refs
+source_evidence_id
+mapping_reference
+idempotency_ref
+disposition_case_ref
+attempt_refs
+audit_entry_refs
+external_reference
+result_reference
+business_outcome_ref
+partiality_or_uncertainty_ref
+compensation_plan_ref
+compensation_execution_refs
+residual_obligations
+last_known_owner
+```
+
+Reglas:
+
+1. la ausencia justificada de una referencia opcional no invalida automáticamente el caso;
+2. una referencia presente no prueba por sí sola el hecho que representa;
+3. `audit_entry_refs` reconstruye historia, pero no convierte auditoría en fuente empresarial propietaria;
+4. `result_reference` puede seguir siendo incierta;
+5. `business_outcome_ref` solo es autoritativa cuando proviene del owner competente;
+6. `compensation_execution_refs` no convierte una compensación parcial en cierre completo;
+7. `residual_obligations` debe sobrevivir al cierre cuando el outcome las admite.
+
+---
+
+#### 7. Autoridad y frontera semántica
+
+La conciliación conserva la autoridad de cada fuente propietaria.
+
+```text
+conciliación
+!= fuente de verdad empresarial
+!= proveedor externo por defecto
+!= auditoría
+!= log técnico
+!= métrica
+!= trace
+!= proyección
+!= idempotencia
+!= mapping
+!= compensación
+```
+
+Reglas vinculantes:
+
+1. el owner interno sigue siendo autoridad de los hechos que le pertenecen;
+2. un proveedor externo es autoridad únicamente sobre hechos que su contrato y evidencia acreditan;
+3. un ACK técnico no equivale a efecto empresarial;
+4. una fila proyectada no es una segunda fuente independiente;
+5. una métrica no sustituye un ledger;
+6. un log aislado no sustituye un resultado durable;
+7. timestamps próximos no prueban causalidad;
+8. igualdad textual, monetaria o nominal no prueba identidad;
+9. la conciliación puede declarar divergencia, decisión y siguiente acción, pero no apropiarse del hecho de otro owner.
+
+---
+
+#### 8. Reutilización del contrato compartido vigente
+
+`INT-DB-008` no define un contrato compartido paralelo.
+
+Consume la forma ya vigente publicada por `SHELL-CON-023` y se limita a definir su persistencia física futura por paquete.
+
+Consecuencias:
+
+1. `IntegrationReconciliationRef` conserva su semántica vigente;
+2. `IntegrationReconciliationCase` conserva su shape vigente;
+3. los ocho outcomes de cierre no se amplían localmente;
+4. la matriz externa no se sustituye por la matriz más amplia de auditoría de `INT-DB-007`;
+5. `INT-DB-008` es el owner físico futuro de la persistencia de conciliación;
+6. runtime y persistencia permanecen no materializados hasta una instancia física autorizada;
+7. una futura evolución del contrato compartido requiere compatibilidad y versionado antes de migrar casos persistidos.
+
+---
+
+#### 9. Identidad estable `IntegrationReconciliationRef`
+
+La referencia de conciliación es una identidad estable, opaca y no secreta.
+
+Reglas:
+
+1. no se deriva de payload, token, firma, credencial, importe, timestamp ni nombre visible;
+2. no es una idempotency key;
+3. no es `event_id`, `receipt_ref`, `mapping_id`, `sale_id` ni `effect_id`;
+4. puede correlacionarse con esas referencias sin fusionar identidades;
+5. nueva evidencia sobre la misma divergencia abierta reutiliza el mismo caso por defecto;
+6. una divergencia semánticamente distinta requiere otra referencia;
+7. un caso sucesor conserva referencia al caso predecesor;
+8. el cierre no autoriza reutilizar la referencia para otra divergencia;
+9. la identidad permanece estable aunque cambie la evidencia o el responsable operativo;
+10. el `package_id` propietario forma parte del alcance de persistencia y no se infiere por la referencia.
+
+---
+
+#### 10. Shape canónico de `IntegrationReconciliationCase`
+
+La persistencia futura deberá poder representar exactamente estos 23 campos de nivel superior:
+
+```text
+reconciliation_ref
+idempotency_ref
+owner_ref
+operation_ref
+event_ref
+receipt_ref
+mapping_refs
+correlation_refs
+compared_source_refs
+evidence_refs
+attempt_refs
+observed_difference_refs
+owner_outcome_ref
+external_claim_state
+decision_ref
+closure_outcome
+residual_obligations
+next_action_ref
+responsible_owner_ref
+reactivation_condition_ref
+opened_at
+updated_at
+closed_at
+```
+
+La capa física puede normalizar colecciones o relaciones en estructuras auxiliares, siempre que no cambie esta semántica pública ni fabrique campos obligatorios ausentes en el contrato compartido.
+
+---
+
+#### 11. Semántica mínima de los 23 campos
+
+| Campo | Regla mínima |
+| --- | --- |
+| `reconciliation_ref` | identidad estable del caso |
+| `idempotency_ref` | vínculo opcional a la operación lógica protegida |
+| `owner_ref` | owner del hecho o proceso bajo investigación |
+| `operation_ref` | operación empresarial o técnica relevante |
+| `event_ref` | evento correlacionado cuando exista |
+| `receipt_ref` | receipt acreditado cuando exista |
+| `mapping_refs` | mappings usados para demostrar correspondencia |
+| `correlation_refs` | correlaciones causales o transversales sin fusión de identidad |
+| `compared_source_refs` | fuentes efectivamente comparadas |
+| `evidence_refs` | evidencia protegida y verificable |
+| `attempt_refs` | intentos auditados relevantes |
+| `observed_difference_refs` | diferencias persistidas sin sobrescribir fuente |
+| `owner_outcome_ref` | resultado afirmado por el owner competente |
+| `external_claim_state` | estado externo observado o acreditado, sin convertirlo en verdad universal |
+| `decision_ref` | decisión de conciliación y su autoridad |
+| `closure_outcome` | outcome cerrado cuando existe evidencia suficiente |
+| `residual_obligations` | obligaciones que permanecen después de la decisión |
+| `next_action_ref` | acción posterior requerida sin ejecutarla desde la capa de conciliación |
+| `responsible_owner_ref` | owner responsable de la siguiente acción o residual |
+| `reactivation_condition_ref` | condición explícita para reabrir investigación o crear sucesor |
+| `opened_at` | apertura del caso |
+| `updated_at` | última actualización append-only o derivada de eventos del caso |
+| `closed_at` | instante de cierre; nulo mientras no exista cierre válido |
+
+Ningún campo permite almacenar secretos o payloads completos por conveniencia.
+
+---
+
+#### 12. Fuentes comparables acreditadas
+
+Un caso puede comparar, según contrato y paquete:
+
+- resultado durable del owner;
+- receipt externo acreditado;
+- estado consultable del proveedor cuando la interfaz y la autoridad estén demostradas;
+- ledger del owner;
+- evento y versión de agregado;
+- inbox o efecto confirmado por una consumidora;
+- mapping acreditado;
+- evidencia fuente protegida de `INT-DB-003`;
+- auditoría correlacionada de `INT-DB-007`;
+- compensación confirmada y verificable;
+- estado físico verificado cuando el contrato del dominio lo requiera y exista evidencia operacional.
+
+Cada fuente comparada debe conservar referencia, tipo, owner, versión o momento de observación y evidencia suficiente para reproducir la comparación.
+
+---
+
+#### 13. Fuentes que no sustituyen autoridad
+
+No son prueba suficiente por sí solas:
+
+- un log aislado;
+- una métrica agregada;
+- un span o trace sin ancla empresarial;
+- un HTTP 2xx;
+- un ACK de transporte;
+- un timeout;
+- una ausencia de alerta;
+- una fila de proyección derivada del mismo owner;
+- una captura sin procedencia;
+- similitud de importe, fecha, texto, correo, teléfono o nombre;
+- un hash sin identidad y contrato;
+- una cola vacía;
+- agotamiento de retries;
+- una compensación solicitada pero no confirmada.
+
+La conciliación registra estas señales como contexto cuando sean útiles, pero no las eleva a fuente autoritativa.
+
+---
+
+#### 14. Condiciones que pueden abrir conciliación
+
+Un caso puede abrirse cuando exista al menos una condición demostrable como:
+
+1. resultado `UNKNOWN_OUTCOME` o equivalente contractual;
+2. timeout con posible efecto previo;
+3. receipt externo incompatible con el estado del owner;
+4. estado del proveedor incompatible con el ledger o efecto interno;
+5. mismo identificador externo asociado a huellas incompatibles;
+6. mapping insuficiente, ambiguo o conflictivo;
+7. delivery confirmado sin efecto empresarial verificable;
+8. efecto interno confirmado sin receipt esperado cuando ese receipt sea contractual;
+9. compensación parcial o resultado compensatorio incierto;
+10. brecha de auditoría que impida demostrar el cierre;
+11. recuperación técnica sin evidencia de convergencia empresarial;
+12. reaparición de una divergencia bajo una condición de reactivación previamente definida.
+
+La mera edad de una operación no obliga a abrir un caso si no existe divergencia o incertidumbre material.
+
+---
+
+#### 15. Apertura del caso
+
+La apertura deberá ser determinista dentro del alcance aplicable.
+
+Como mínimo debe:
+
+1. resolver `package_id` e integración propietaria;
+2. asignar o recuperar `reconciliation_ref`;
+3. identificar owner y operación o recurso;
+4. vincular referencias ya disponibles;
+5. registrar el trigger concreto;
+6. conservar la incertidumbre inicial sin inventar outcome;
+7. registrar fuentes esperadas y fuentes efectivamente disponibles;
+8. asignar responsible owner cuando pueda determinarse legítimamente;
+9. dejar `closure_outcome` y `closed_at` sin valor mientras no exista cierre válido;
+10. evitar duplicar un caso abierto por redelivery de la misma divergencia.
+
+---
+
+#### 16. Deduplicación, identidad y sucesores
+
+La persistencia futura deberá impedir proliferación de casos equivalentes.
+
+Reglas:
+
+1. la misma divergencia lógica abierta converge al mismo `reconciliation_ref`;
+2. nuevos intentos o nueva evidencia no crean automáticamente otro caso;
+3. un conflicto de mapping puede exigir caso distinto si cambia la identidad investigada;
+4. un caso cerrado no se reescribe para representar una divergencia posterior;
+5. si la nueva divergencia continúa causalmente una anterior, se crea un sucesor enlazado;
+6. `SUPERSEDED_BY_SUCCESSOR` exige una referencia sucesora válida;
+7. concurrencia entre dos aperturas equivalentes debe resolverse mediante unicidad, claim o mecanismo atómico equivalente;
+8. una carrera no puede producir dos decisiones finales incompatibles para el mismo caso.
+
+---
+
+#### 17. Lifecycle sin estado paralelo inventado
+
+`INT-DB-008` no agrega un enum público de lifecycle distinto del contrato compartido.
+
+El estado operativo se deriva de evidencia persistida:
+
+```text
+closed_at = null
+AND closure_outcome = null
+→ caso abierto o en investigación
+
+closure_outcome válido
+AND closed_at válido
+→ caso cerrado
+```
+
+Estados internos de worker, lease, scheduler o UI pueden existir físicamente si el paquete los necesita, pero no sustituyen la semántica contractual del caso ni se exponen como un segundo outcome empresarial.
+
+---
+
+#### 18. Diferencias observadas
+
+Cada diferencia deberá persistirse por referencia y contexto suficiente para reproducirla.
+
+Debe distinguir, según aplique:
+
+- valor del owner frente a valor externo;
+- presencia frente a ausencia;
+- versión esperada frente a versión observada;
+- cantidad o importe;
+- estado empresarial;
+- estado técnico;
+- mapping;
+- receipt;
+- efecto de consumidora;
+- compensación;
+- temporalidad;
+- autoridad o procedencia insuficiente.
+
+Una diferencia no se corrige modificando la fuente observada desde la tabla de conciliación.
+
+---
+
+#### 19. Decisión y autoridad
+
+Una decisión de conciliación deberá conservar:
+
+1. `decision_ref` estable;
+2. fuentes efectivamente comparadas;
+3. criterio utilizado;
+4. diferencias resueltas y no resueltas;
+5. autoridad que tomó o confirmó la decisión;
+6. owner responsable;
+7. outcome propuesto o confirmado;
+8. residuales;
+9. siguiente acción;
+10. evidencia que permite reproducirla.
+
+La capa de conciliación no puede adjudicarse permisos que pertenecen al owner. Una decisión que requiera corrección, compensación, reexpresión, reintento o consulta se entrega al contrato del owner correspondiente.
+
+---
+
+#### 20. Vocabulario cerrado de outcomes de cierre
+
+El contrato compartido conserva exactamente ocho outcomes:
+
+```text
+RESOLVED_CONFIRMED
+RESOLVED_NO_EFFECT
+RESOLVED_DUPLICATE_PRIOR_RESULT
+RESOLVED_CORRECTED
+RESOLVED_COMPENSATED
+RESOLVED_WITH_ACCEPTED_RESIDUAL
+PERMANENTLY_REJECTED
+SUPERSEDED_BY_SUCCESSOR
+```
+
+`INT-DB-008` no agrega aliases locales ni valores genéricos como éxito, error o terminado.
+
+---
+
+#### 21. Criterios de cierre por outcome
+
+| Outcome | Evidencia mínima vinculante |
+| --- | --- |
+| `RESOLVED_CONFIRMED` | el efecto o resultado correcto quedó confirmado por fuente competente y la divergencia quedó explicada |
+| `RESOLVED_NO_EFFECT` | se demostró que el efecto investigado no ocurrió y no queda efecto pendiente incompatible |
+| `RESOLVED_DUPLICATE_PRIOR_RESULT` | la operación corresponde a un resultado previo compatible y recuperable, sin segundo efecto |
+| `RESOLVED_CORRECTED` | el owner ejecutó una corrección autorizada y auditable sin reescribir el hecho original |
+| `RESOLVED_COMPENSATED` | existe compensación confirmada, causalmente ligada y verificable |
+| `RESOLVED_WITH_ACCEPTED_RESIDUAL` | los residuales quedaron explícitos, con owner y autoridad de aceptación |
+| `PERMANENTLY_REJECTED` | la operación es rechazable de forma demostrable y no queda efecto parcial o incierto incompatible |
+| `SUPERSEDED_BY_SUCCESSOR` | existe un caso sucesor válido que preserva causalidad y continuará la investigación |
+
+Un valor desconocido, nulo o no soportado no cierra el caso.
+
+---
+
+#### 22. Reglas negativas de cierre
+
+No puede cerrarse un caso únicamente porque:
+
+- se agotó el presupuesto de retry;
+- pasó un periodo de tiempo;
+- dejó de aparecer una alerta;
+- el worker terminó;
+- la cola quedó vacía;
+- un endpoint respondió 2xx;
+- llegó un ACK técnico;
+- existe un mapping parecido;
+- se solicitó una compensación;
+- se creó un ticket manual;
+- una fuente dejó de estar disponible;
+- un operador considera probable un resultado.
+
+`PERMANENTLY_REJECTED` queda bloqueado mientras exista efecto parcial o incierto incompatible con rechazo definitivo.
+
+---
+
+#### 23. Residuales
+
+`residual_obligations` conserva toda obligación que sobreviva a la decisión.
+
+Cada residual deberá poder resolver:
+
+```text
+residual_type
+owner_ref
+reason
+source_case_ref
+required_action_ref
+due_or_review_condition
+authority_ref
+evidence_ref
+status_or_resolution_ref
+```
+
+La representación física puede normalizar estos detalles, pero no puede ocultar residuales para presentar una conciliación como completa.
+
+`RESOLVED_WITH_ACCEPTED_RESIDUAL` exige owner y autoridad explícitos.
+
+---
+
+#### 24. Siguiente acción y reactivación
+
+`next_action_ref` identifica una acción posterior sin ejecutarla desde la tabla de conciliación.
+
+Ejemplos legítimos incluyen:
+
+- consultar al proveedor mediante interfaz acreditada;
+- solicitar al owner revalidación o corrección;
+- solicitar compensación;
+- solicitar revisión humana;
+- esperar evidencia contractual aún no disponible;
+- abrir caso sucesor bajo una nueva divergencia.
+
+`reactivation_condition_ref` debe ser verificable. No se usa una frase abierta como “revisar después” sin condición de salida.
+
+---
+
+#### 25. Relación con idempotencia de INT-DB-005
+
+La conciliación no reemplaza la idempotencia.
+
+Reglas:
+
+1. `idempotency_ref` conserva la identidad lógica cuando exista;
+2. caso y operación idempotente tienen identidades distintas;
+3. un caso puede investigar una operación con resultado incierto sin alterar su operation key;
+4. resultado previo compatible puede sustentar `RESOLVED_DUPLICATE_PRIOR_RESULT`;
+5. reutilización incompatible sigue siendo conflicto, no conciliación silenciosa;
+6. una conciliación no autoriza segundo efecto sobre una operación ya confirmada;
+7. la decisión de retry posterior debe respetar la misma identidad y el estado idempotente.
+
+---
+
+#### 26. Relación con auditoría de INT-DB-007
+
+La auditoría aporta historia; la conciliación aporta comparación y decisión.
+
+```text
+INT-DB-007
+→ qué ocurrió, quién, cuándo, con qué intento, resultado y evidencia
+
+INT-DB-008
+→ qué fuentes se compararon, qué divergió, qué autoridad decidió y cómo cerró
+```
+
+`audit_entry_refs` puede demostrar causalidad o reconstruir intentos, pero una entrada de auditoría no se convierte por ello en ledger empresarial.
+
+Una decisión de conciliación puede ser auditada por `INT-DB-007`; eso no crea una dependencia circular de ownership.
+
+---
+
+#### 27. Relación con disposición de INT-DB-006
+
+`INT-DB-006` puede declarar que una operación requiere conciliación, intervención o tratamiento posterior.
+
+`INT-DB-008`:
+
+1. recibe `disposition_case_ref` cuando exista;
+2. no reescribe la disposición histórica;
+3. compara las fuentes requeridas;
+4. registra decisión y cierre propios;
+5. entrega el resultado de vuelta por referencia cuando el caso de disposición necesite conocerlo;
+6. no convierte dead-letter en evidencia de fracaso empresarial;
+7. no ejecuta por sí sola una acción manual o compensatoria propietaria.
+
+---
+
+#### 28. Relación con mappings de INT-DB-004
+
+Un mapping acreditado puede ser fuente de identidad para comparar hechos externos y canónicos.
+
+Reglas:
+
+1. `mapping_refs` conserva las versiones utilizadas;
+2. ausencia o ambigüedad de mapping puede ser causa de divergencia;
+3. la conciliación no crea equivalencias por semejanza;
+4. una corrección de mapping pertenece a su owner y conserva historia;
+5. cambiar mapping durante un caso debe conservar qué versión sustentó cada comparación;
+6. un mapping nuevo no invalida retroactivamente la evidencia que justificó una decisión anterior.
+
+---
+
+#### 29. Relación con evidencia fuente de INT-DB-003
+
+La evidencia fuente puede sustentar qué recibió o afirmó un sistema externo.
+
+La conciliación conserva:
+
+- `source_evidence_id` o referencia equivalente;
+- digest cuando aplique;
+- versión contractual;
+- procedencia;
+- sensibilidad;
+- recepción y contexto necesarios.
+
+No duplica payload completo en el caso cuando una referencia protegida es suficiente.
+
+---
+
+#### 30. Relación con credenciales de INT-DB-002
+
+Una consulta de conciliación a un proveedor puede necesitar una credencial válida, pero el caso solo conserva la referencia no secreta necesaria para trazabilidad cuando corresponda.
+
+Reglas:
+
+1. ningún secreto se persiste en `IntegrationReconciliationCase`;
+2. una rotación de credencial no cambia la identidad del caso;
+3. una credencial válida no amplía la autoridad del provider;
+4. ausencia de credencial para una consulta requerida deja el caso abierto o con siguiente acción; no autoriza inferir el resultado;
+5. ambientes permanecen aislados.
+
+---
+
+#### 31. Relación con registro externo de INT-DB-001
+
+Cada caso debe poder resolver:
+
+```text
+package_id
+external_system_id
+external_integration_id
+external_environment_binding_id cuando aplique
+business_owner_ref
+technical_owner_ref
+contract_version o referencia equivalente
+```
+
+La conciliación no crea un binding que el registro externo no haya acreditado.
+
+Un sistema inventariado pero sin binding operativo no recibe conciliación runtime ficticia.
+
+---
+
+#### 32. Prohibición de escrituras cruzadas
+
+`INT-APP-010` permanece vinculante.
+
+La capa de conciliación puede:
+
+- determinar que existe diferencia;
+- conservar evidencia;
+- emitir o registrar una decisión autorizada;
+- solicitar una acción al owner;
+- verificar posteriormente el resultado del owner.
+
+No puede:
+
+- actualizar directamente tablas privadas de otra aplicación;
+- ajustar un ledger ajeno;
+- modificar inventario de otra propietaria;
+- cambiar puntos, pagos, ventas, documentos o accesos por acceso técnico compartido;
+- usar privilegios de Supabase como sustituto de contrato;
+- corregir una fuente externa mediante una escritura no autorizada.
+
+---
+
+#### 33. Relación con compensaciones
+
+La conciliación puede concluir que una compensación es necesaria, pero no ejecutarla como efecto implícito.
+
+Reglas:
+
+1. solo se compensa un efecto confirmado y atribuible;
+2. timeout o retry agotado no bastan;
+3. `compensation_plan_ref` identifica el plan cuando exista;
+4. `compensation_execution_refs` identifica pasos realmente ejecutados;
+5. `RESOLVED_COMPENSATED` exige confirmación verificable del tratamiento aplicable;
+6. compensación parcial conserva residuales;
+7. una nueva cadena compensatoria no se infiere automáticamente ante fallo parcial;
+8. el owner de cada efecto conserva la ejecución de su acción compensatoria.
+
+---
+
+#### 34. Mecanismos automáticos y manuales
+
+Una futura instancia puede materializar, según el paquete:
+
+- apertura automática por resultado incierto;
+- comparación programada de fuentes acreditadas;
+- consulta on-demand a proveedor;
+- conciliación periódica de ledgers o receipts;
+- revisión manual asistida cuando la decisión requiera autoridad humana;
+- reactivación por nueva evidencia;
+- verificación posterior de corrección o compensación.
+
+La existencia de un mecanismo técnico no cambia la autoridad de la decisión.
+
+Un caso que exige juicio o aprobación no se auto-cierra por automatización de transporte.
+
+---
+
+#### 35. Frecuencia y scheduling
+
+No existe una frecuencia universal de conciliación para todas las integraciones.
+
+Cada futura instancia deberá derivar frecuencia, ventana y trigger de:
+
+1. criticidad del hecho;
+2. contrato del proveedor;
+3. disponibilidad de consulta o receipt;
+4. SLA del paquete;
+5. riesgo de duplicación o pérdida;
+6. volumen;
+7. costo y rate limit;
+8. necesidad operacional de cierre;
+9. requisitos del dominio.
+
+No se inventa polling para un sistema sin binding ni API acreditada.
+
+---
+
+#### 36. Concurrencia y exclusión
+
+El procesamiento concurrente de un mismo caso debe ser seguro.
+
+Como mínimo:
+
+1. una revisión obtiene versión, claim o mecanismo equivalente antes de decidir;
+2. dos workers no pueden cerrar el mismo caso con outcomes incompatibles;
+3. nueva evidencia llegada durante una decisión obliga a revalidar la versión relevante;
+4. un lease vencido no prueba que el procesamiento anterior no produjo una decisión;
+5. retry de worker reutiliza el caso y no duplica diferencias ni decisiones;
+6. cierres son idempotentes cuando la misma evidencia y decisión se reentregan;
+7. un cierre incompatible con otro ya confirmado produce conflicto y no overwrite.
+
+---
+
+#### 37. Resultado incierto
+
+La incertidumbre es un estado de conocimiento, no un fracaso empresarial.
+
+Reglas:
+
+1. `UNKNOWN_OUTCOME` o equivalente mantiene abierto el análisis;
+2. no se reintenta un efecto sensible a ciegas;
+3. primero se consulta la fuente acreditada cuando exista;
+4. si no existe fuente suficiente, el caso conserva esa limitación y el responsable;
+5. la conciliación no completa campos desconocidos por inferencia;
+6. cierre exige evidence suficiente para el outcome elegido;
+7. si la evidencia nunca puede obtenerse, la resolución debe usar autoridad y residuales explícitos, no una ficción retrospectiva.
+
+---
+
+#### 38. Correcciones posteriores
+
+Una conciliación puede ordenar o solicitar corrección, pero la corrección pertenece al owner.
+
+El caso deberá conservar:
+
+```text
+source_decision_ref
+owner_action_ref
+before_reference
+after_reference
+execution_evidence_ref
+verification_ref
+```
+
+Estos detalles pueden residir en relaciones físicas auxiliares.
+
+`RESOLVED_CORRECTED` solo se usa después de verificar la corrección; no por la mera intención de corregir.
+
+---
+
+#### 39. Seguridad, RLS y grants futuros
+
+Una futura materialización deberá aplicar least privilege y separar capacidades de:
+
+- crear caso;
+- añadir evidencia;
+- ejecutar consultas técnicas;
+- proponer decisión;
+- aprobar decisión sensible;
+- cerrar caso;
+- reactivar o crear sucesor;
+- leer casos sensibles;
+- exportar evidencia;
+- administrar retención o legal hold cuando aplique.
+
+Reglas:
+
+1. crear caso no concede permiso para leer todos los casos;
+2. una credencial de proveedor no concede permiso empresarial;
+3. service roles no deben convertirse en bypass de ownership;
+4. RLS y grants se aplican en la futura instancia, no en esta definición;
+5. acciones sensibles conservan actor, principal técnico, finalidad y evidencia de autorización;
+6. denegación no se transforma en fallo técnico genérico.
+
+---
+
+#### 40. Privacidad y minimización
+
+El caso de conciliación persiste referencias y diferencias necesarias, no copias ilimitadas de datos.
+
+Queda prohibido almacenar por conveniencia:
+
+- tokens;
+- passwords;
+- firmas completas reutilizables;
+- API keys;
+- credenciales;
+- payloads personales completos cuando una referencia protegida sea suficiente;
+- datos bancarios completos;
+- contenido sensible ajeno a la divergencia.
+
+Las diferencias pueden representarse mediante referencias, hashes, campos minimizados o evidencia protegida según el contrato del dominio.
+
+---
+
+#### 41. Retención, integridad y legal hold
+
+La persistencia de conciliación deberá conservar historia suficiente para demostrar la decisión.
+
+Reglas:
+
+1. no se borra un caso para ocultar una divergencia;
+2. correcciones de metadata sensible conservan trazabilidad;
+3. un rollback de código no elimina casos ya ocurridos;
+4. un caso cerrado conserva outcome, decisión, evidencia y residuales aplicables;
+5. legal hold, cuando corresponda, prevalece sobre limpieza ordinaria;
+6. periodos físicos exactos pertenecen al gobierno de información aplicable y no se inventan aquí;
+7. archivado no rompe referencias desde auditoría, idempotencia, disposición o owner.
+
+---
+
+#### 42. Índices y patrones de consulta futuros
+
+La futura instancia deberá optimizar, según uso demostrado, búsquedas por:
+
+- `reconciliation_ref`;
+- `package_id` e integración;
+- owner y operación;
+- `idempotency_ref`;
+- `event_ref` o `receipt_ref`;
+- correlaciones;
+- caso abierto frente a cerrado;
+- `closure_outcome`;
+- responsible owner;
+- reactivation condition;
+- timestamps de apertura, actualización y cierre.
+
+Los índices exactos se diseñan con cardinalidad y planes de consulta reales. Esta definición no prescribe nombres físicos ni DDL prematuro.
+
+---
+
+#### 43. Migración y backfill de conciliación legacy
+
+Una futura instancia no convertirá cualquier log histórico en caso canónico.
+
+El backfill solo podrá crear un caso histórico cuando exista evidencia suficiente para resolver identidad, owner, divergencia y procedencia.
+
+Cada migración deberá:
+
+1. ejecutar dry-run;
+2. detectar colisiones;
+3. clasificar registros no demostrables;
+4. no inventar `reconciliation_ref` con semántica falsa;
+5. preservar referencias legacy cuando sean necesarias;
+6. evitar marcar como cerrados casos cuyo outcome no pueda demostrarse;
+7. conservar conteos antes y después;
+8. producir rollback o forward-fix documentado.
+
+Datos históricos insuficientes permanecen como legacy no promovido o evidencia auxiliar según el paquete.
+
+---
+
+#### 44. Orden obligatorio de cada paquete de dominio
+
+La futura materialización conserva el orden heredado del bloque:
+
+1. confirmar objeto, dominio, propietario y consumidores;
+2. crear estructura objetivo;
+3. crear compatibilidad temporal;
+4. ejecutar dry-run de normalización cuando corresponda;
+5. identificar colisiones y posibles duplicados;
+6. aprobar tratamiento de colisiones;
+7. ejecutar backfill;
+8. reconciliar datos;
+9. adaptar escrituras;
+10. adaptar lecturas;
+11. aplicar normalización en límites del dominio;
+12. aplicar constraints;
+13. aplicar RLS y grants;
+14. generar tipos;
+15. actualizar contratos y wrappers;
+16. adaptar consumidores;
+17. ejecutar pruebas;
+18. verificar drift;
+19. verificar rendimiento;
+20. confirmar rollback;
+21. aprobar adopción del paquete.
+
+Este orden no autoriza saltarse `POST_E5_PACKAGE` ni ejecutar cambios físicos desde la definición documental.
+
+---
+
+#### 45. Reglas heredadas de backfill y tipos
+
+Se conservan las restricciones del bloque:
+
+1. `AUTH-DB-011` no puede ejecutarse antes del backfill y la reconciliación del paquete correspondiente;
+2. `AUTH-DB-026` no es una acción única al final del proyecto;
+3. los tipos se regeneran después de cada cambio contractual de esquemas, tablas, vistas, funciones, RPC, enums o contratos expuestos;
+4. estas reglas no convierten `INT-DB-008` en owner de las tareas de autorización citadas;
+5. la futura instancia aplica únicamente las reglas que correspondan al `package_id` materializado.
+
+---
+
+#### 46. Contratos, tipos y wrappers
+
+Después de cualquier materialización física que cambie un contrato expuesto deberá verificarse:
+
+- shape de `IntegrationReconciliationCase`;
+- `IntegrationReconciliationRef`;
+- nullability compatible;
+- colecciones y relaciones normalizadas;
+- enums de cierre;
+- tipos generados;
+- wrappers de acceso;
+- RPC o interfaces autorizadas;
+- consumidores que lean o creen casos.
+
+Una optimización física no puede cambiar el contrato público sin evolución canónica previa.
+
+---
+
+#### 47. Consumidores
+
+Cada consumidor deberá usar el mecanismo de conciliación únicamente dentro de su autoridad.
+
+Debe quedar demostrado:
+
+1. quién abre casos;
+2. quién aporta evidencia;
+3. quién consulta proveedores;
+4. quién puede decidir;
+5. quién ejecuta la acción correctiva;
+6. quién verifica el resultado;
+7. quién puede cerrar;
+8. quién consume el outcome sin reescribir fuentes.
+
+Un dashboard de observabilidad no adquiere autoridad de cierre por poder visualizar el caso.
+
+---
+
+#### 48. Drift
+
+Antes y después de una futura materialización se verificará drift de:
+
+- esquema;
+- constraints;
+- índices;
+- RLS;
+- grants;
+- funciones y RPC;
+- tipos generados;
+- contratos compartidos;
+- consumers;
+- bindings externos;
+- matriz de aplicabilidad;
+- configuración de schedulers o workers cuando existan.
+
+Drift material bloquea únicamente la instancia afectada hasta reconciliarse.
+
+---
+
+#### 49. Rendimiento
+
+La conciliación no debe degradar el camino crítico empresarial por consultas indiscriminadas.
+
+Una futura instancia deberá medir:
+
+- tasa de apertura;
+- casos simultáneos;
+- latencia de consulta por proveedor;
+- tamaño de evidencia referenciada;
+- consultas por owner;
+- aging de casos abiertos;
+- costo de scans y joins;
+- backlog;
+- rate limits externos;
+- tiempo de cierre.
+
+Polling masivo no sustituye una estrategia de triggers, receipts o consultas focalizadas cuando el contrato permite alternativas más seguras.
+
+---
+
+#### 50. Rollback y forward-fix
+
+El rollback físico deberá preservar evidencia de casos ya ocurridos.
+
+Reglas:
+
+1. revertir código no borra decisiones históricas;
+2. un rollback de schema no puede dejar referencias huérfanas sin plan;
+3. una migración fallida conserva conteos y estado previo;
+4. los casos abiertos deben seguir siendo identificables durante compatibilidad temporal;
+5. un forward-fix puede ser preferible cuando ya existe evidencia nueva bajo el contrato nuevo;
+6. outcomes confirmados no se reescriben para aparentar que la versión anterior nunca existió;
+7. toda transición de rollback conserva owner y condición de recuperación.
+
+---
+
+#### 51. Universo externo de conciliación 21/21
+
+La aplicabilidad de conciliación consume la matriz vigente de `SHELL-CON-023`, no la matriz de auditoría más amplia de `INT-DB-007`.
+
+| ID | Sistema / plataforma | Disposición de conciliación | Estado vigente |
+| --- | --- | --- | --- |
+| `EXT-SYS-001` | Supabase | `GOBERNADA_POR_CONTRATO_INTERNO` | `ESPECIFICADO` |
+| `EXT-SYS-002` | Wompi | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-003` | RevenueCat | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-004` | Resend | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-005` | Expo / EAS Update | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | `NO_APLICA` |
+| `EXT-SYS-006` | Expo Push Service | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-007` | Sentry | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL` | `NO_APLICA` |
+| `EXT-SYS-008` | Google Maps / Google Reviews | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL` | `NO_APLICA` |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-010` | Vercel | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | `NO_APLICA` |
+| `EXT-SYS-011` | Zebra BrowserPrint | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet | `MODELO_SIN_BINDING_REMOTO` | `NO_APLICA` |
+| `EXT-SYS-013` | POS externo vigente | `APLICA_CON_ESPECIALIZACION_POS` | `PENDIENTE_DE_EVIDENCIA` |
+| `EXT-SYS-014` | Shopify / canal de comercio electrónico | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-015` | Rappi / marketplace | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-017` | WhatsApp | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-018` | Instagram / perfiles sociales | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-020` | Telefonía / canal de voz | `BLOQUEADO_SIN_BINDING` | `BLOQUEADO` |
+| `EXT-SYS-021` | Transporte externo | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+
+---
+
+#### 52. Reconciliación cuantitativa de la matriz
+
+La matriz debe cerrar exactamente:
+
+```text
+identidades esperadas = 21
+identidades materializadas documentalmente = 21
+faltantes = 0
+duplicados = 0
+
+GOBERNADA_POR_CONTRATO_INTERNO = 1
+APLICA_IDEMPOTENCIA_Y_CONCILIACION = 6
+SIN_LEDGER_DE_EFECTO_EMPRESARIAL = 2
+PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE = 2
+MODELO_SIN_BINDING_REMOTO = 1
+APLICA_CON_ESPECIALIZACION_POS = 1
+NO_APLICA_SIN_BINDING = 7
+BLOQUEADO_SIN_BINDING = 1
+
+total = 21
+
+ESPECIFICADO = 7
+PENDIENTE_DE_EVIDENCIA = 1
+NO_APLICA = 12
+BLOQUEADO = 1
+
+total = 21
+
+casos de conciliacion materializados fisicamente = 0
+```
+
+Ninguna futura instancia crea casos para una identidad `NO_APLICA` o `BLOQUEADO` sin que primero cambie su evidencia y contrato canónico.
+
+---
+
+#### 53. Diferencia obligatoria entre auditoría y conciliación
+
+La matriz de `INT-DB-007` es deliberadamente más amplia porque observabilidad y auditoría técnica pueden existir donde no existe una fuente empresarial externa reconciliable.
+
+Por tanto:
+
+```text
+auditoría aplicable
+NO IMPLICA
+conciliación runtime aplicable
+```
+
+Ejemplos:
+
+- Sentry puede producir observabilidad sin convertirse en ledger empresarial;
+- Google Maps / Reviews puede producir señales o navegación sin una segunda fuente empresarial reconciliable en el corte;
+- Vercel y EAS pueden tener configuración técnica auditada sin efecto empresarial que amerite caso de conciliación;
+- sistemas documentados sin binding no reciben polling ni casos runtime por sola mención.
+
+Esta separación evita crear reconciliación artificial para 21 sistemas solo porque 21 identidades existen en el inventario.
+
+---
+
+#### 54. Wompi y RevenueCat
+
+Para Wompi y RevenueCat, la futura conciliación deberá comparar hechos internos con evidencia autoritativa del proveedor cuando el binding del paquete y la interfaz estén acreditados.
+
+Reglas:
+
+1. un timeout no equivale a rechazo;
+2. reentrega de webhook no equivale a nuevo efecto;
+3. receipt o consulta del proveedor se conserva por referencia;
+4. el resultado interno mantiene su owner;
+5. divergencia de identidad o fingerprint no se corrige por proximidad temporal;
+6. una compensación se verifica por evidencia, no por solicitud;
+7. rate limits y credenciales pertenecen al binding concreto del ambiente.
+
+---
+
+#### 55. Resend y Expo Push Service
+
+Para Resend y Expo Push Service:
+
+- receipt o estado se consulta solo cuando la interfaz autorizada lo permite;
+- entrega técnica no equivale a efecto empresarial posterior;
+- en push, cada destino conserva su propia evidencia cuando el contrato lo requiera;
+- éxito de un destinatario no cierra divergencias de otro;
+- retries conservan identidad lógica y nueva identidad de intento;
+- proveedor inaccesible deja evidencia y siguiente acción, no un cierre inventado.
+
+---
+
+#### 56. Apple Wallet / APNs y Zebra BrowserPrint
+
+Apple Wallet / APNs deberá separar estado del recurso, intento de push y estado empresarial canónico. La confirmación de transporte no sustituye la vigencia del recurso administrado por VENTO.
+
+Zebra BrowserPrint puede requerir reconciliar receipt técnico con verificación física u operacional cuando el paquete lo defina. Una llamada aceptada por el bridge no demuestra por sí sola que la etiqueta o documento correcto fue producido y aplicado.
+
+Estas especializaciones solo se materializan en paquetes donde la operación y la evidencia sean aplicables.
+
+---
+
+#### 57. Supabase
+
+Supabase se gobierna por contrato interno y no se trata como una única fuente externa monolítica.
+
+Una futura conciliación deberá resolverse por objeto, owner, integración o adaptador concreto.
+
+No se permite:
+
+- comparar toda la base como si fuera un solo ledger;
+- convertir una tabla de proyección en fuente competidora;
+- usar acceso administrativo para corregir datos de otro owner;
+- declarar convergencia porque dos filas técnicas coinciden sin validar la semántica empresarial.
+
+---
+
+#### 58. POS externo vigente
+
+El POS externo permanece `PENDIENTE_DE_EVIDENCIA` para la matriz de conciliación compartida.
+
+Reglas:
+
+1. `INT-POS-020` es la especialización documental de conciliación diaria cuando el binding quede acreditado;
+2. `INT-POS-013` gobierna idempotencia de las identidades externas aplicables;
+3. venta, línea, pago, anulación, devolución y reembolso conservan semánticas distintas;
+4. `CANCELLED` no equivale por sí solo a devolución o reembolso;
+5. no se inventan receipts, endpoints, IDs, estados ni garantías del proveedor;
+6. mientras falte evidencia crítica, no se habilitan efectos reales por inferencia;
+7. una divergencia se conserva para la futura especialización sin reescribir la venta original.
+
+---
+
+#### 59. Sistemas sin binding y sistema bloqueado
+
+Las siete identidades `NO_APLICA_SIN_BINDING` no reciben scheduler, worker, polling, tabla de caso runtime ni consultas a proveedor durante una futura instancia que no las incluya expresamente.
+
+El sistema `BLOQUEADO_SIN_BINDING` permanece bloqueado hasta que proveedor, interfaz, autoridad y evidencia sean acreditados por las tareas propietarias correspondientes.
+
+Cambiar esa situación exige actualización canónica previa; no se resuelve localmente desde `INT-DB-008`.
+
+---
+
+#### 60. Evidencia física futura por instancia
+
+Cada futura instancia `INT-DB-008::<package_id>` deberá demostrar, según aplicabilidad:
+
+1. E5 del paquete en PASS;
+2. integración y binding concretos;
+3. schema y migración revisados;
+4. RLS y grants;
+5. unicidad o exclusión de casos equivalentes;
+6. persistencia de los 23 campos o representación normalizada equivalente;
+7. ocho outcomes sin ampliaciones locales;
+8. fuentes comparadas acreditadas;
+9. apertura por trigger demostrable;
+10. cierre solo con evidencia suficiente;
+11. resultados inciertos sin retry ciego;
+12. prohibición de escrituras cruzadas;
+13. residual y responsible owner cuando aplique;
+14. casos sucesores enlazados;
+15. rollback o forward-fix;
+16. tipos y consumidores actualizados;
+17. drift reconciliado;
+18. rendimiento dentro del presupuesto del paquete;
+19. evidencia de pruebas de concurrencia, duplicación y cierre;
+20. ausencia de secretos o payloads innecesarios en la persistencia.
+
+---
+
+#### 61. Handoff al cierre del minibloque INT-DB
+
+`INT-DB-008` cierra el minibloque documental de infraestructura de integraciones externas.
+
+Su salida no inicia una implementación física ni crea una tarea administrativa adicional.
+
+El handoff documental hacia la siguiente fase conserva:
+
+```text
+INT-DB-001..008 = DEFINIDOS DOCUMENTALMENTE
+materializaciones por package_id = SUJETAS A SU PROPIO E5 Y AUTORIZACION
+continuidad documental = ANIMA-AUTH-001
+```
+
+La siguiente fase consume el estado canónico resultante sin reabrir las decisiones correctas de este minibloque.
+
+---
+
+#### 62. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos obsoletos:** 0
+
+La tarea materializa documentalmente mecanismos de persistencia futura para obligaciones ya cubiertas por el registro canónico vigente.
+
+---
+
+#### 63. Cobertura de prueba vigente reutilizada
+
+La trazabilidad existente se reutiliza sin modificar el registro, incluyendo:
+
+- `TREQ-INTEGRATION-003` para idempotencia, resultados recuperables, retry seguro y recuperación;
+- `TREQ-INTEGRATION-004` para reconstrucción causal de cadenas y efectos;
+- `TREQ-INTEGRATION-006` para fuentes competidoras, diferencias, resolución y evidencia sin sobrescribir historia;
+- `TREQ-INTEGRATION-160` para cierre explícito al agotarse retry sin dejar trabajo silencioso;
+- `TREQ-INTEGRATION-180` para compensaciones parciales y residuales;
+- `TREQ-INTEGRATION-211` para registrar fuentes comparadas, criterio, diferencias, decisión, autoridad, residuales y resultado;
+- `TREQ-INTEGRATION-216` para causalidad transversal por referencias y no por timestamps aislados;
+- `TREQ-INTEGRATION-217` para integridad append-only y corrección enlazada;
+- `TREQ-INTEGRATION-218` para minimización y exclusión de secretos;
+- `TREQ-INTEGRATION-220` para compromiso durable de auditoría en efectos críticos;
+- `TREQ-INTEGRATION-221` para brechas que requieren conciliación sin fabricar historia;
+- `TREQ-INTEGRATION-223` para separar registro empresarial, auditoría, evidencia, logs, métricas y traces;
+- `TREQ-INTEGRATION-268` para resultados desconocidos o parciales que requieren consulta o conciliación antes de repetir, compensar o declarar cierre.
+
+Esta sección expresa cobertura heredada, no cambios de requisitos.
+
+---
+
+#### 64. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería npm del checkout completo deberá ejecutarse después de incorporar y normalizar el artefacto dentro del owner documental vigente. |
+| LOCAL | PASS | El artefacto fue comprobado estructuralmente para título, metadata compacta, secciones obligatorias, continuidad, cero requisitos en la sección derivada, cinco clases de evidencia, shape de 23 campos, ocho outcomes, matriz externa 21/21, distribución 7/1/12/1, topología `TEMPLATE_PER_PACKAGE`, gate `POST_E5_PACKAGE`, ausencia de placeholders y ausencia de referencias canónicas hipotéticas. |
+| REMOTA | PASS | Se verificaron `main`, el cierre fusionado de `INT-DB-007`, continuidad con `INT-DB-008` como única tarea pendiente del tramo, owner, topología, contrato de entrega, políticas, `SHELL-CON-023`, contratos de integración externa, especialización POS, 04A de integración, `package.json`, preflight y ausencia de rama remota `task/int-db-008` al corte. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron provider queries, polling, reconciliaciones, correcciones, compensaciones, ventas, pagos, pushes, impresiones ni cierres reales; pertenecen a futuras instancias autorizadas por paquete. |
+| FÍSICA | NOT_APPLICABLE | La definición documental autoriza cero cambios físicos y no crea instancia `GLOBAL`; la materialización futura pertenece a `INT-DB-008::<package_id>` después de E5. |
+
+---
+
+#### 65. Criterios de aceptación
+
+`INT-DB-008` queda documentalmente completa cuando se demuestre que:
+
+1. existe una sola definición reutilizable de conciliación por integración;
+2. la topología es `TEMPLATE_PER_PACKAGE` y el gate `POST_E5_PACKAGE`;
+3. no existe instancia física `GLOBAL` de la tarea;
+4. se consume el handoff exacto de `INT-DB-007` sin convertir auditoría en fuente de verdad;
+5. `SHELL-CON-023` sigue siendo el contrato compartido vigente y no se define otro paralelo;
+6. `IntegrationReconciliationRef` conserva identidad estable, opaca y separada de otras identidades;
+7. el shape conserva exactamente 23 campos de nivel superior;
+8. los ocho outcomes de cierre se conservan sin aliases locales;
+9. un outcome nulo o desconocido no cierra;
+10. retry agotado no cierra ni compensa automáticamente;
+11. un ACK técnico no demuestra efecto empresarial;
+12. fuentes comparadas están acreditadas y referenciadas;
+13. logs, métricas, traces y proyecciones no sustituyen owner o ledger;
+14. apertura duplicada converge al mismo caso cuando la divergencia es la misma;
+15. un caso sucesor preserva causalidad;
+16. diferencias se persisten sin sobrescribir fuentes;
+17. decisiones conservan autoridad, criterio y evidencia;
+18. residuales conservan owner y siguiente acción;
+19. reactivación tiene condición verificable;
+20. idempotencia y conciliación mantienen identidades distintas;
+21. auditoría y conciliación mantienen responsabilidades distintas;
+22. disposición y conciliación mantienen casos distintos pero correlacionables;
+23. mapping no se crea por semejanza;
+24. evidencia fuente se referencia sin duplicación innecesaria;
+25. credenciales se referencian sin secretos;
+26. el registro externo gobierna binding y ambiente;
+27. ninguna corrección cruza ownership directamente;
+28. compensación solo puede cerrar después de ejecución confirmada;
+29. concurrencia no produce cierres incompatibles;
+30. resultados inciertos permanecen explícitos;
+31. RLS y grants futuros separan capacidades sensibles;
+32. retención no elimina historia para ocultar divergencias;
+33. backfill legacy no fabrica casos históricos;
+34. se preserva el orden obligatorio de materialización de paquetes;
+35. tipos se regeneran después de cambios contractuales aplicables;
+36. la matriz contiene 21 de 21 identidades, sin faltantes ni duplicados;
+37. la distribución de disposición es `1+6+2+2+1+1+7+1`;
+38. los estados son `7 ESPECIFICADO + 1 PENDIENTE_DE_EVIDENCIA + 12 NO_APLICA + 1 BLOQUEADO`;
+39. auditoría aplicable no implica conciliación runtime aplicable;
+40. POS conserva especialización y evidencia pendiente;
+41. sistemas sin binding no reciben runtime ficticio;
+42. el sistema bloqueado permanece bloqueado sin evidencia nueva;
+43. la sección de requisitos derivados declara cero cambios y no enumera identificadores de requisito;
+44. la cobertura vigente queda trazada en sección independiente;
+45. no se ejecuta ninguna modificación Supabase durante la definición documental;
+46. la continuidad entrega a `ANIMA-AUTH-001` sin desarrollar esa tarea.
+
+---
+
+#### 66. Decisiones vinculantes
+
+Quedan vinculantes para cualquier futura materialización de `INT-DB-008::<package_id>`:
+
+- conciliación compara fuentes y no sustituye owners;
+- el contrato compartido vigente se reutiliza sin crear otro paralelo;
+- `IntegrationReconciliationRef` es una identidad propia;
+- el caso conserva exactamente el shape contractual vigente;
+- los outcomes de cierre son cerrados y finitos;
+- incertidumbre no equivale a fracaso;
+- retry agotado no equivale a cierre;
+- ACK técnico no equivale a efecto;
+- nueva evidencia no reescribe revisiones previas;
+- correcciones son ejecutadas por el owner correspondiente;
+- compensaciones requieren efecto confirmado y evidencia de ejecución;
+- residuales no se ocultan;
+- casos sucesores preservan causalidad;
+- accesos sensibles se autorizan por finalidad;
+- secretos y payloads completos innecesarios quedan fuera;
+- cada paquete materializa solo las integraciones que le pertenecen;
+- la matriz de conciliación es más estrecha que la matriz de auditoría;
+- POS permanece condicionado a evidencia suficiente;
+- sistemas sin binding no reciben reconciliación runtime;
+- toda materialización ocurre después de E5 y autorización física explícita.
+
+---
+
+#### 67. Límites
+
+Esta tarea no:
+
+- ejecuta DDL, DML, migraciones, RLS, grants, RPC ni cambios remotos;
+- crea tablas, filas, índices, constraints, jobs, schedulers, queues o workers físicos;
+- abre, decide o cierra casos reales;
+- consulta proveedores;
+- ejecuta polling;
+- reintenta operaciones empresariales;
+- ejecuta compensaciones;
+- corrige ledgers, inventario, pagos, puntos, ventas, documentos o accesos;
+- crea mappings;
+- crea evidencia fuente;
+- crea idempotency records;
+- crea casos de disposición;
+- modifica auditoría histórica;
+- crea credenciales ni secretos;
+- acredita bindings ausentes;
+- inventa receipts, endpoints, IDs o garantías de proveedores;
+- cambia la semántica de POS antes de su evidencia;
+- crea runtime para sistemas sin binding;
+- modifica el registro 04A;
+- desarrolla `ANIMA-AUTH-001`;
+- autoriza una implementación física.
 
 Orden obligatorio de cada paquete de dominio
 
@@ -8208,3 +9629,16 @@ Los tipos deberán regenerarse después de cada cambio contractual de:
 - RPC;
 - enums;
 - contratos expuestos.
+
+---
+
+#### 68. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones`
+
+**TAREA ACTUAL APROBADA**
+`INT-DB-008 — Crear mecanismos de conciliación por integración`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-001 — Confirmar turno publicado antes del check-in`
