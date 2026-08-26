@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1051** |
+| Aprobadas | **1052** |
 | En propuesta | **0** |
-| No iniciadas | **543** |
+| No iniciadas | **542** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.93% (1051/1594)** |
+| Porcentaje de completamiento | **66.00% (1052/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-DB-007` — Crear auditoría de procesamiento, reintentos y compensaciones | ✅ APROBADA |
-| Tarea actual | `INT-DB-008` — Crear mecanismos de conciliación por integración | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-001` — Confirmar turno publicado antes del check-in | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-020` — Compartir mensajes desde vento-shell | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-001` — Confirmar turno publicado antes del check-in | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-002` — Confirmar sede del turno | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1261,7 +1261,7 @@
 | ✅ APROBADA | `INT-DB-005` | Crear restricciones e índices de idempotencia | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `INT-DB-006` | Crear cuarentena y registro de errores no procesables | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `INT-DB-007` | Crear auditoría de procesamiento, reintentos y compensaciones | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
-| ⬜ NO INICIADA | `INT-DB-008` | Crear mecanismos de conciliación por integración | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
+| ✅ APROBADA | `INT-DB-008` | Crear mecanismos de conciliación por integración | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-030` | Retirar objetos legacy únicamente después de adopción comprobada | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |
 | ⬜ NO INICIADA | `AUTH-DB-031` | Certificar paridad entre documento, vento-shell, Supabase y aplicaciones | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |
 | ✅ APROBADA | `AUTH-ERR-001` | Sin sesión | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
