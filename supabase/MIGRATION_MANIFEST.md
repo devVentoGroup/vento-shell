@@ -11,9 +11,9 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 <!-- prettier-ignore -->
 | version | filename | sha256 | bytes | kind | findings | lineage | notes |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 00000000000000 | 00000000000000_baseline.sql | fdf72d892675a34e0df84bb1977839e15599dd7fffaf9b21f48b91ab8b25bafe | 172914 | BASELINE |  |  | SIN_HALLAZGO |
+| 00000000000000 | 00000000000000_baseline.sql | 6b7724e6c785a8ace4b229c1605c5c97bccaa7f97db646722abbe8fb6b9afe4d | 184054 | BASELINE |  |  | SIN_HALLAZGO |
 | 20250203000000 | 20250203000000_inventory_count_sessions.sql | 73271e3d763d871cc89ef7db6bb5aae67f84c639900a00835ab92915335cba17 | 1987 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260117130000 | 20260117130000_permissions_core.sql | d7936e2b63dbf1426cd1a2e4bc7d0f9b7bc7eb2ddb7baa66ad78b3a6e1343a0b | 40056 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260117130000 | 20260117130000_permissions_core.sql | c87154ce6b1df205256f7c84832205e5d146f670f40d9c5b2c00b19e5287f481 | 41476 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260118163931 | 20260118163931_remote_schema.sql | 825d6a664c19ab5f17b4fd8bfa0d3105011375caea21d57226db72eca48603e8 | 331 | STANDARD | SAME_LOGICAL_FAMILY | family:20260304153848_remote_schema.sql | RELACIÓN_DOCUMENTADA |
 | 20260118193000 | 20260118193000_remissions_production.sql | 6ac900b62848115d429901a28ec999101034106c49ff317b42a59f01e5a2fbad | 6462 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260118195000 | 20260118195000_nexo_rls_permissions.sql | 7f8d0f6b202f39d54b6e440f93ed74491dd064f881d4d37485a14a3909f78fa6 | 14978 | STANDARD |  |  | SIN_HALLAZGO |
@@ -58,7 +58,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260218000003 | 20260218000003_production_batch_consumptions.sql | eda724ab24f2af85b83560783aede3d7e1866274c6b0a95bfe0b6480f386b681 | 2219 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260218000004 | 20260218000004_site_production_pick_order.sql | 78241afb1b1d06f8251707f4e4a06038a2623bdb9e6f986a2b46a174ebd2b782 | 673 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260218000005 | 20260218000005_product_cost_events_add_production_source.sql | 22fe755059365c3f7d66190056790c40c1eb72362cf4507427974964cacbe47e | 259 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260218000006 | 20260218000006_app_split_permissions_and_entries_audit.sql | 36854496513a75e2ad1acef4dd1e13ffd6ef566f9596812f87003bff9313e179 | 17890 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260218000006 | 20260218000006_app_split_permissions_and_entries_audit.sql | 73adfb3de9aa920d070c09baf2bce16a6c21f889e02146706ce5682d9074b205 | 17895 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260218000007 | 20260218000007_product_site_min_stock_purchase_mode.sql | db98d7aff1b8086972539af9db96d6dee031e542d7c3e2f21649dd295cfaae4a | 2560 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260218000008 | 20260218000008_product_site_settings_deduplicate_unique.sql | 3ab2d854fd31426058d206a72a2cc38820dfa34a20b098d33302f8da9ab7a47d | 564 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260219000001 | 20260219000001_nexo_remissions_rls_prepare_receive_visibility.sql | 957b603b15d1120969337812718117d8db9659101d7bd1d285626a70a53abd94 | 2176 | STANDARD |  |  | SIN_HALLAZGO |
@@ -131,7 +131,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260313140000 | 20260313140000_anima_employee_push_tokens.sql | e03d98450c69c90d0c2fc7f99953589decf06aefadc82930e559d41c23360dfa | 1879 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260313140100 | 20260313140100_anima_staff_invitations_rls_insert.sql | 35131fdbeeddffe951c4be479441fb4cf9e34b0d8443fc8d33d82de616ce1534 | 732 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260313150000 | 20260313150000_anima_attendance_logs_shift_id.sql | afdbedf1755f75914b4d80e956d53dbbc9d31b573fd207ad2dfedf467a32a5b8 | 4445 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260313160000 | 20260313160000_anima_attendance_policy.sql | 16b856c85ed4579a8901967a422ddbf44c703e878a6edd82548a910ef6969482 | 2388 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260313160000 | 20260313160000_anima_attendance_policy.sql | 69af2f45ef5444d5970f0ec62571ac759a41d14e29df2e6bad49d0504a14e925 | 2724 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260313170000 | 20260313170000_anima_site_attendance_policy.sql | 72ea42a3981b347414ac70077de58c749d8ba09aed5dc0271ade073edefb6d32 | 1226 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260313180000 | 20260313180000_anima_role_capabilities.sql | de9328a601be649c7ab61fe04985914d938f1aa755d3486eac0e36d20e67d97d | 1466 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260313190000 | 20260313190000_anima_app_config.sql | 2123c2a370b0374cd51007f9394d79de5df33f5083e9f0e9ab78529da79bfd1f | 1158 | STANDARD |  |  | SIN_HALLAZGO |
@@ -248,8 +248,8 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260430114500 | 20260430114500_nexo_center_operational_locs.sql | 9da61a000ed76f599f979129504094db774ce85173d32f1e15407372a4b96906 | 2030 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260430115500 | 20260430115500_nexo_dedupe_cocina_caliente_area.sql | 93702bf832698c6f96c5e7589c9a60c6128dece13913f758a0bdf5fdb939fdaa | 3873 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260502123000 | 20260502123000_nexo_grant_bodega_kiosk_withdraw.sql | 3f75c97232b7ff5175da32bbbd018514a0ac93f056721596755f098ffdfb755f | 1408 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260502124500 | 20260502124500_nexo_fix_bodega_kiosk_account_access.sql | 3444403ee3a8963f2529065cf2fb3a01266bfd4671a671c7f9636303d84683a7 | 3551 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260502125000 | 20260502125000_nexo_assert_bodega_kiosk_account_access.sql | 2a8a1b340a5d96042d1b5ec53e8c84060b154d045801f361d3475bf6a3d74930 | 1401 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260502124500 | 20260502124500_nexo_fix_bodega_kiosk_account_access.sql | 3a98343a268d9ff393f3bef304f9e1733ac45b78b094f27c6e83a3a38de72da1 | 4034 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260502125000 | 20260502125000_nexo_assert_bodega_kiosk_account_access.sql | 1d82670981644d861a32fa6faaf4061836403dbe97bbd881a768b862607e9e12 | 1870 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260504120000 | 20260504120000_staff_documents_photos_permissions.sql | 0e112f0a21f6e3541feebce1e46141cd6e6b94863b5720f4d8bc4585546c03c7 | 10633 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260505120000 | 20260505120000_nexo_reconcile_internal_position_count.sql | 3884bb238f6e239c897b416fe0635a72110cc3378e3c01b4251d72ee33286e32 | 6049 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260505150023 | 20260505150023_nexo_touch_counted_stock_timestamps.sql | 92e23fba6b07449ad55cbab103a54b96d4e4d281115c83150ca4aa52196422d9 | 3357 | STANDARD |  |  | SIN_HALLAZGO |
@@ -271,7 +271,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260519174000 | 20260519174000_drop_legacy_inventory_reset_rpc.sql | 742ab2755d4e81842e98756bc27485dadee0e3851c5e0f0a629ac8ab04646147 | 241 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260519175000 | 20260519175000_restore_minimal_anon_bootstrap_reads.sql | 27fc6b5d4f02123908706603e84913c4821409102834added1ffef41500403ef | 292 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260519181000 | 20260519181000_harden_authenticated_write_policies.sql | 87467f9edc430cec7a95f61faa71fc3537a58987bfcea1543324c10f4daa0f8c | 1509 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260519182000 | 20260519182000_revoke_internal_function_execute.sql | 4d13b9cc62d1cafd40147ec7fc2259b79a5d404c837e233455cc8b70accddf1a | 2292 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260519182000 | 20260519182000_revoke_internal_function_execute.sql | 0e0d102e3a4d36bf250d68ef8260731291c063b85cf9afc92d84247403c715d7 | 2297 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260519183000 | 20260519183000_revoke_sensitive_rpc_execute.sql | 70e2690e190bd6e6bdb53f9a416b8b591de3082201ffb4ac2d5072bc27965d7c | 2647 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260519184000 | 20260519184000_clean_low_risk_lint_warnings.sql | cd641e4bc3b97b3fa1da0ec972b2337f70b05fee02317dfe89b32eee94dc1f92 | 8168 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260519185000 | 20260519185000_harden_sites_and_employee_update_rls.sql | 1459186089b596783d8fbf04da22080e57261ad55423448c3838c641bff2c827 | 1176 | STANDARD |  |  | SIN_HALLAZGO |
@@ -372,7 +372,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260624102700 | 20260624102700_operational_roles_matrix_v1.sql | dde323f6d65726a9a3e3195b288513a4e529cf8a3bd0456200acfab64d769055 | 5866 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260624103200 | 20260624103200_upsert_site_operational_role_rpc.sql | b281216c76f38d80c115f90dd668186c9a554c6d40876de6eede09fd16881dee | 2195 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260625134730 | 20260625134730_enable_product_uom_profiles_rls.sql | fbc17a6a809b73e5c95d463c52f4468a5daa54efec5658a1b65be8c445ae4d45 | 67 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260625140000 | 20260625140000_attendance_shift_resolver_timezone_safe.sql | 1847548a9dec84f6651816fd03146264271f9c4d2ea0b5725d73c07675c32077 | 2466 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260625140000 | 20260625140000_attendance_shift_resolver_timezone_safe.sql | 7c018665e03704ed718187de78138addc619761d3998af57cf6383f13672de37 | 2948 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260625141000 | 20260625141000_attendance_logs_resolve_shift_trigger.sql | 85d7d4cca56e489e1b7ce97415e02865ffb44cf15d161c2d56a5d67a03f4baf2 | 1671 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260625142000 | 20260625142000_backfill_attendance_logs_shift_id.sql | 354c2ae6f73082121040d0c996545f48852971272e72d5b5fe7841ae012643d3 | 886 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260625162814 | 20260625162814_employee_shifts_area_id.sql | 7e13da5ce89021b684fb54b576ceae75bdd07ab0a8e058bc330c8ed015e72491 | 755 | STANDARD |  |  | SIN_HALLAZGO |
@@ -421,19 +421,19 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260707173357 | 20260707173357_employees_document_identity.sql | e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855 | 0 | STANDARD | EMPTY_FILE,SAME_LOGICAL_FAMILY | family:20260707173408_employees_document_identity.sql | RELACIÓN_DOCUMENTADA |
 | 20260707173408 | 20260707173408_employees_document_identity.sql | 0d5ebed0be35e587caa0dabdd128d5aef4b58ffbd18f4d5ffbbf6e7224d77f70 | 1761 | STANDARD | SAME_LOGICAL_FAMILY | family:20260707173357_employees_document_identity.sql | RELACIÓN_DOCUMENTADA |
 | 20260708221708 | 20260708221708_staff_schedule_hidden_employees.sql | 0245a71300a2c5bc93f03b63909235ab2a999cdeea4930565bf7ad333b78aa7d | 1955 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709133728 | 20260709133728_unify_human_permissions_catalog.sql | eed8aaeb801724d4a34706ea3223b79ec100426afb3452a154d31c5a8888b59b | 19211 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709134106 | 20260709134106_human_permission_catalog_configured_flag_v2.sql | db5d08fd653d9fb1339c319854f5095defc35da60380ce801e00cca5f9f25694 | 916 | STANDARD | CONTENT_DUPLICATE,SAME_LOGICAL_FAMILY | content:20260709143932_human_permission_catalog_configured_flag_v2.sql; family:20260709143932_human_permission_catalog_configured_flag_v2.sql | RELACIÓN_DOCUMENTADA |
-| 20260709143932 | 20260709143932_human_permission_catalog_configured_flag_v2.sql | db5d08fd653d9fb1339c319854f5095defc35da60380ce801e00cca5f9f25694 | 916 | STANDARD | CONTENT_DUPLICATE,SAME_LOGICAL_FAMILY | content:20260709134106_human_permission_catalog_configured_flag_v2.sql; family:20260709134106_human_permission_catalog_configured_flag_v2.sql | RELACIÓN_DOCUMENTADA |
-| 20260709145349 | 20260709145349_shared_operational_devices_base.sql | daad248d73f440f32b11c13c1c49a49ae3c2901ea3a7fa1ccb8986329447cd5e | 12858 | STANDARD | CONTENT_DUPLICATE,SAME_LOGICAL_FAMILY | content:20260709160904_shared_operational_devices_base.sql; family:20260709160904_shared_operational_devices_base.sql | RELACIÓN_DOCUMENTADA |
-| 20260709151226 | 20260709151226_register_kiosco_bodega_cp_shared_device.sql | 4e7df399055de1caf79a6ec3f1eed4a72e1a9f667b39a200243fd0e38abe34f5 | 3026 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709152735 | 20260709152735_deactivate_tablet_bodega_legacy_employee_keep_role.sql | 7ed2dc0bda15b650238a8fa011a852693584ab5d715557ef4e7b051119e5cdaa | 1236 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709155118 | 20260709155118_shared_device_actor_policy_scopes.sql | 876e985e9012b5df1372dfc953955b2482dccff34a3c51fe896df8858f0fb240 | 8012 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709160131 | 20260709160131_shared_device_configurable_templates.sql | c2994eacac8439f31f6c79015c42832401486a8b655fec84ff39d3981c656e9c | 14708 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709160904 | 20260709160904_shared_operational_devices_base.sql | daad248d73f440f32b11c13c1c49a49ae3c2901ea3a7fa1ccb8986329447cd5e | 12858 | STANDARD | CONTENT_DUPLICATE,SAME_LOGICAL_FAMILY | content:20260709145349_shared_operational_devices_base.sql; family:20260709145349_shared_operational_devices_base.sql | RELACIÓN_DOCUMENTADA |
-| 20260709195545 | 20260709195545_harden_remaining_rls_batch.sql | d2755a56e87d7bceb9fb373e191cb9dbbecd2f14c5de56e542a4d55bbf86e84c | 16618 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709195728 | 20260709195728_close_no_policy_rls_tables.sql | c4181bc13a505e6e34f9db23c71494e48fcc3566fe50668b2cb683081a49025b | 1224 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709200556 | 20260709200556_shared_device_navigation_permission_profile_v2.sql | cdf4597604a4ecb3abbd6ff45fb526c2121d4151c567d50dec60391dd0b24754 | 3753 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260709200722 | 20260709200722_seed_shared_device_template_apps_v2.sql | 160427fc7d1b3afd23dd1584d4d364eadd3ce2dfc419a72a46c0d2a0e98b287b | 1160 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709133728 | 20260709133728_unify_human_permissions_catalog.sql | d1d04a8159c723f342b23bf79cf5dbcc6445e29f77ad73db0de4b74bbbce88a4 | 19208 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709134106 | 20260709134106_human_permission_catalog_configured_flag_v2.sql | 42ed6462987aaf88b410bbf199dd1583a21045717978f1fc4f03efb7bbee4208 | 913 | STANDARD | CONTENT_DUPLICATE,SAME_LOGICAL_FAMILY | content:20260709143932_human_permission_catalog_configured_flag_v2.sql; family:20260709143932_human_permission_catalog_configured_flag_v2.sql | RELACIÓN_DOCUMENTADA |
+| 20260709143932 | 20260709143932_human_permission_catalog_configured_flag_v2.sql | 42ed6462987aaf88b410bbf199dd1583a21045717978f1fc4f03efb7bbee4208 | 913 | STANDARD | CONTENT_DUPLICATE,SAME_LOGICAL_FAMILY | content:20260709134106_human_permission_catalog_configured_flag_v2.sql; family:20260709134106_human_permission_catalog_configured_flag_v2.sql | RELACIÓN_DOCUMENTADA |
+| 20260709145349 | 20260709145349_shared_operational_devices_base.sql | 6d2cc3d249b4789cc5fd4da48f85d851ea17b27445302c292c6bdff2ccd646a0 | 12855 | STANDARD | CONTENT_DUPLICATE,SAME_LOGICAL_FAMILY | content:20260709160904_shared_operational_devices_base.sql; family:20260709160904_shared_operational_devices_base.sql | RELACIÓN_DOCUMENTADA |
+| 20260709151226 | 20260709151226_register_kiosco_bodega_cp_shared_device.sql | fb23f81c5e90765d75678ada5cbf1c75b597dab65e06bb06b355b4455f878eea | 3682 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709152735 | 20260709152735_deactivate_tablet_bodega_legacy_employee_keep_role.sql | d2e663fd312c53ff2c89a93e6cbd08a68a4549aaf7710c440071a2f91d85e4a7 | 1237 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709155118 | 20260709155118_shared_device_actor_policy_scopes.sql | 29aa66e90655ee4b3eb652177cdd7f80c4a986e8aeffeb880f611564f143407c | 8009 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709160131 | 20260709160131_shared_device_configurable_templates.sql | 5c52fa424295566e458aabbca1fec7b6d460db4e9353efd8d90f871a69671741 | 14705 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709160904 | 20260709160904_shared_operational_devices_base.sql | 6d2cc3d249b4789cc5fd4da48f85d851ea17b27445302c292c6bdff2ccd646a0 | 12855 | STANDARD | CONTENT_DUPLICATE,SAME_LOGICAL_FAMILY | content:20260709145349_shared_operational_devices_base.sql; family:20260709145349_shared_operational_devices_base.sql | RELACIÓN_DOCUMENTADA |
+| 20260709195545 | 20260709195545_harden_remaining_rls_batch.sql | eee5fd53d3d128f009fd5bd3a2c9175f13f947e694841214c6325298eeaac7e1 | 16914 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709195728 | 20260709195728_close_no_policy_rls_tables.sql | 2424a3ec362cb1578e7cd01573099621970fd3830f275a84c196736fa23f1a81 | 1221 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709200556 | 20260709200556_shared_device_navigation_permission_profile_v2.sql | 0bc4fc33f42a9f1ace092da7db963808e70c19a766abb982840df77e00f8135e | 3750 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260709200722 | 20260709200722_seed_shared_device_template_apps_v2.sql | 45da7750f5d506787c39e757d577da7569b584eeaa9286d9efa2b88c9b499bdf | 1157 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260709212923 | 20260709212923_shared_device_operational_role_permission.sql | e1df7b049159eca540585b6dd1baca6f88544a1c91bb59da194968b971bcdf8c | 2357 | STANDARD | CONTENT_DUPLICATE | content:20260709213239_fix_shared_device_operational_role_permission_area_kind.sql | RELACIÓN_DOCUMENTADA |
 | 20260709213239 | 20260709213239_fix_shared_device_operational_role_permission_area_kind.sql | e1df7b049159eca540585b6dd1baca6f88544a1c91bb59da194968b971bcdf8c | 2357 | STANDARD | CONTENT_DUPLICATE | content:20260709212923_shared_device_operational_role_permission.sql | RELACIÓN_DOCUMENTADA |
 | 20260709215935 | 20260709215935_fix_postgres_log_noise_attendance_and_legacy_qty.sql | edda8bd42684da9ba9e6746741b3bf961d155af101df091b853d78eed684bcd5 | 1470 | STANDARD |  |  | SIN_HALLAZGO |
@@ -445,7 +445,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260710132340 | 20260710132340_shared_device_signature_pin_actor_lookup.sql | fbdab5adff23ec69b082895de5cdf47ec87c182546f12fb76fb718a2a1a28c24 | 6925 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260710135505 | 20260710135505_attach_shared_device_signature_target.sql | 388abe620457a6deefc030b28cb4f84c5884370aab19095f80112490d2d93996 | 2630 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260710140000 | 20260710140000_checkout_payment_rpc.sql | de948fa6e7711306f6b8216c23e43feaec4324c7435652441c6959f15cef2a02 | 1802 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260710140100 | 20260710140100_payment_webhook_and_reconciliation.sql | e133c1b208c78bd3a44e37564c6720acc82e7c7e7d057644556edb38dd68fbfa | 9053 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260710140100 | 20260710140100_payment_webhook_and_reconciliation.sql | 24b4fd1682fd00f6acd1ca6189f59c1faa718102ac15cac10c6030daa6fa74b4 | 9597 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260710140200 | 20260710140200_checkout_intent_compensation.sql | e8abfb6d56aeff5679ea72997e13b34edc937945da4571c232db54dba7ce1d9b | 2856 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260710181000 | 20260710181000_order_chat_realtime_unread_and_client_push.sql | 7b10ae66ba99b1695f45dae8d9ee111fc957e4d576332e532eaa57691fa30bb1 | 5548 | STANDARD | SAME_LOGICAL_FAMILY | family:20260710202008_order_chat_realtime_unread_and_client_push.sql | RELACIÓN_DOCUMENTADA |
 | 20260710190000 | 20260710190000_order_electronic_billing_requests.sql | 2e83397210c99321620e001efc0e5be6c0eaaa7dbb5166fa364cbd4899be0988 | 11729 | STANDARD | SAME_LOGICAL_FAMILY | family:20260710204528_order_electronic_billing_requests.sql | RELACIÓN_DOCUMENTADA |
@@ -469,17 +469,17 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260711212649 | 20260711212649_restore_service_only_internal_rpc_privileges.sql | 146033c0df5ee8929e2dd00f9aacde1a8df49e016de862aed9f6e24af349fc62 | 1099 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260711212718 | 20260711212718_restrict_server_sync_and_loyalty_rpc_privileges.sql | d8993c385f098ff4de74934d8f3a804aa8e94c7ff7e6988255cd06a5cf94f730 | 976 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260711213309 | 20260711213309_restrict_anon_operational_context_rpcs.sql | 9831c80d16b00b52fc6350db987a53edf457f93c1ad5ff0a2a67927e388a05b7 | 613 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260711214206 | 20260711214206_normalize_document_types_select_policy.sql | 2c6cf3d2e711816397c31ea5a3434129dffdb682a9b568997b21871fda44eb1b | 90 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260711214211 | 20260711214211_normalize_roles_select_policy.sql | 27afe08d48e6900573fbeda20f2736f33738186594698ee253470aac32da7e3c | 72 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260711214215 | 20260711214215_normalize_employee_sites_select_policy.sql | a5860bed0a8a14e61ed30815e3ba009dcc81495bb0a4ebe3ff5b08a3993da618 | 354 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260711214219 | 20260711214219_normalize_employees_select_policy.sql | c6b99fa204301b96a55d44da6feb754889c1f673fd665ee0fc5c89c00da27555 | 238 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260711214206 | 20260711214206_normalize_document_types_select_policy.sql | 41584c0da83be2ac3d25be8f33198e2e212ca109c3b7ee40dbc9e70faf6e345b | 173 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260711214211 | 20260711214211_normalize_roles_select_policy.sql | f7af18d3e12268b0d622915ff2fbc1eb2b742637f80d4ce52d3caf5bba350f7c | 137 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260711214215 | 20260711214215_normalize_employee_sites_select_policy.sql | 99dfc56ab9337d7c9f47aa5659f71265671d0638ca403fa8f9df61f902051700 | 515 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260711214219 | 20260711214219_normalize_employees_select_policy.sql | 5ce118de3bde84e45cc8737ccd8552eeb08c6b9fdf6dc86c1d688971ae87051a | 333 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260711215813 | 20260711215813_restrict_internal_public_policies_batch_1.sql | 9d326f6685f7475d4d361fcfc224970d46a0052a40e02128cfca780ab383422c | 1612 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260711215846 | 20260711215846_restrict_internal_public_policies_batch_2.sql | cb672c0c0590c29c89e148db1e7d0a46ca9af176aaebce7d5a06355f8562c45a | 2596 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260711221110 | 20260711221110_restrict_internal_public_policies_batch_3.sql | f4a4ba7ae0dd175c5f14f29e45bfd085f64b3bd7f9ed08e20a6b7f9c0305b23d | 1177 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260711221135 | 20260711221135_restrict_internal_public_policies_batch_4.sql | 80946c1ea6dbb57ed78f0650d37160f282ccd3c69b1ef54818883fce05995386 | 1879 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260711221135 | 20260711221135_restrict_internal_public_policies_batch_4.sql | 30e9db75bc2a97528d10d9bf27266dee03e6818ebc63d97af9826ad923d3b319 | 2217 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260711230543 | 20260711230543_add_order_delivery_windows.sql | a6d4b6d7f5cb5cc83cbbf000cc1002403ad12e4a5e2ae53fb93faa91e967e720 | 12597 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260711230631 | 20260711230631_fix_delivery_slot_lead_calculation.sql | 0e38ae0e358973a46fd772ffddd68fda1bc197a88f827b34c377d7494427d65b | 5039 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260712031953 | 20260712031953_add_site_business_hours.sql | 23515d4d5c6c5bb52f89392ee42e19ce8d2f303f61a3d3d825f95354e2e1b2d8 | 2116 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260712031953 | 20260712031953_add_site_business_hours.sql | b966600315dea11ee8dbc9e4a8810baed4ad58fc893a702f453060ea7bc241a2 | 3613 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260712041627 | 20260712041627_generate_order_times_from_business_hours.sql | b9ed8164376b3aabd13c3339af43a09fd1157b75c53efa2fe153ec70fc57f939 | 3690 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260712041638 | 20260712041638_validate_generated_order_times.sql | be98587c737c4da790f61779bfc1f96ef2a4970b0d5abd22ed1cf59ca49d50fd | 4027 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260712042417 | 20260712042417_enforce_immediate_order_site_hours.sql | 735abc02fb28ddc2d14ec60671e14ce046c668dd897f6cb9571881bed19d94ee | 7447 | STANDARD |  |  | SIN_HALLAZGO |
@@ -513,13 +513,13 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260714173000 | 20260714173000_create_inventory_location_product_catalog.sql | aba20ac7de3cfe235b0ee14f11f5d9d41014d1e8c1fc00db75c5e277f0f598c4 | 2914 | STANDARD | SAME_LOGICAL_FAMILY | family:20260714160216_create_inventory_location_product_catalog.sql | RELACIÓN_DOCUMENTADA |
 | 20260714183207 | 20260714183207_allow_count_and_stock_to_read_inventory_locations.sql | efbbd46e6c7a2085d29e8554133d5800eb84b9b3957251749a4fc2acd762d410 | 457 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260714184500 | 20260714184500_fix_restock_operational_uom_conversion.sql | 5503721072b4228b8a3b08ec9c7a37ca139763cc748f80ba5a5f7989bc2999e5 | 2076 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260714203000 | 20260714203000_add_product_request_policy_schema.sql | b81fb3620e589cfae5caa8cd3cfa5d7becfb298e1b1910361195981e6de6878e | 2502 | STANDARD | SAME_LOGICAL_FAMILY | family:20260714235223_add_product_request_policy_schema.sql | RELACIÓN_DOCUMENTADA |
+| 20260714203000 | 20260714203000_add_product_request_policy_schema.sql | c3aa039a5e40ea5e4df34ee1a22c891e3e9dae9b8f4c894d11f913cf5335609e | 2541 | STANDARD | SAME_LOGICAL_FAMILY | family:20260714235223_add_product_request_policy_schema.sql | RELACIÓN_DOCUMENTADA |
 | 20260714204000 | 20260714204000_fix_request_policy_validator.sql | 7a58e5fb67d0efd861da5866b7228f4529f70c85a3d2b6ad47143f51633d9abd | 734 | STANDARD | SAME_LOGICAL_FAMILY | family:20260715001220_fix_request_policy_validator.sql | RELACIÓN_DOCUMENTADA |
 | 20260714204500 | 20260714204500_seed_product_request_policies.sql | 66f444ea2926a5c7ac5054b09b3dbebd6251bc50c4a55a72e1e8b72aed79fee6 | 3339 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260714210000 | 20260714210000_assign_request_policy_from_legacy_remission_fields.sql | 9eb19198a6d7e95d6b384fdbebb4b9856682b974412ff7a4ba279ed91a77d7ee | 1473 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260714213000 | 20260714213000_prefer_default_request_policy_for_legacy_remission_form.sql | 7385d65a93ceaf03a0eb6253ee5f346001e086f32c20903bfb986adf67772cf9 | 1389 | STANDARD | SAME_LOGICAL_FAMILY | family:20260715011828_prefer_default_request_policy_for_legacy_remission_form.sql | RELACIÓN_DOCUMENTADA |
 | 20260714220756 | 20260714220756_allow_catalog_item_image_only_updates.sql | 39bebd1f86da56cf4f9156ff365475b4c2317dd80b86a89f7fb40831fc9c775c | 2386 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260714235223 | 20260714235223_add_product_request_policy_schema.sql | 8540ab11c12213afbeb7535b318ba797fa86e0eed908d581b9608aa446deee86 | 13266 | STANDARD | SAME_LOGICAL_FAMILY | family:20260714203000_add_product_request_policy_schema.sql | RELACIÓN_DOCUMENTADA |
+| 20260714235223 | 20260714235223_add_product_request_policy_schema.sql | 6b2d10b0e20a8409f5865b5cf186cb3d7ebc31db320d944faf980c72f96a09e6 | 13337 | STANDARD | SAME_LOGICAL_FAMILY | family:20260714203000_add_product_request_policy_schema.sql | RELACIÓN_DOCUMENTADA |
 | 20260715001220 | 20260715001220_fix_request_policy_validator.sql | 036d73d00bf3dbd1a46613f2bd2c1546e4a6e21218fffd674c3f2287c92d7a0f | 2642 | STANDARD | SAME_LOGICAL_FAMILY | family:20260714204000_fix_request_policy_validator.sql | RELACIÓN_DOCUMENTADA |
 | 20260715001236 | 20260715001236_seed_product_request_policies_data.sql | 5a247185c8ef4250d0b7b9151f19faec228865d3becdeff486166b34f3760ffb | 3928 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260715010357 | 20260715010357_auto_assign_request_policy_on_restock_item.sql | 5a0c6bb9d42a640b0f63a1d5f6ba869a161c39fca2b6fe3d65ecacbda9f1b5fc | 1471 | STANDARD |  |  | SIN_HALLAZGO |
@@ -539,7 +539,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260715163000 | 20260715163000_consolidate_request_policy_history_guard_preview.sql | 2d1a5a85f7325fc3571c2de1ad21b45193685b289bf7f666dcab6b6c71ed95e5 | 1712 | STANDARD | SAME_LOGICAL_FAMILY | family:20260715160058_consolidate_request_policy_history_guard_preview.sql | RELACIÓN_DOCUMENTADA |
 | 20260715173000 | 20260715173000_reconcile_request_policy_tables_from_dev.sql | 535b457328cdfda117bc817305ebf44889a948cee9e59a95b708e94cd872a446 | 4717 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260715173100 | 20260715173100_reconcile_request_policy_runtime_from_dev.sql | c096e7c11cd37c7df5a23bf121eca501298bf07143ad7161ec095d189a9db611 | 9051 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260715173200 | 20260715173200_reconcile_request_policy_access_and_audit_from_dev.sql | c3a603fe43ae1d361edaee6643a4ffcf9e3a13d26aace11145443f802122b9ce | 6084 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260715173200 | 20260715173200_reconcile_request_policy_access_and_audit_from_dev.sql | cd9a8a5d414d75bdcda576bae464ebf8188bb891ec5a4593185ab3b072cf9ccb | 6151 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260715220259 | 20260715220259_add_restock_fulfillment_shipments_v1.sql | 4e26892ff195f71504e999ad4ad201c37904f391f8ed1e2bb2fc0469a1471575 | 20682 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260715220734 | 20260715220734_allow_requester_to_seed_fulfillment_tasks.sql | 6d66d788c19c999793b452ea874fd1c7ccf3f4b0d6e7cac537edb6341598edf8 | 952 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260715220849 | 20260715220849_add_fulfillment_allocation_and_shipment_rpc.sql | f613743cf7daae5a5b2eda5637a620b6a014e01ce6716519fe6bda439c694fab | 5001 | STANDARD |  |  | SIN_HALLAZGO |

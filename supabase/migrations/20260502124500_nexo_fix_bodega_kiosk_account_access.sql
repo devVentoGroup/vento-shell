@@ -1,6 +1,12 @@
 -- Hardening for the bodega tablet account.
 -- The kiosk withdrawal page records an internal transfer, so the account needs
 -- access, withdraw and transfers on its active bodega site.
+--
+-- Replay safety:
+-- - Local database resets do not require operational Auth seed users to exist.
+-- - If bodega@ventogroup.co is not provisioned, this data-specific hardening is skipped.
+-- - If no active site can be resolved, this data-specific hardening is skipped.
+-- - When the user and site do exist, the original provisioning behavior is preserved.
 
 do $$
 declare
@@ -11,18 +17,22 @@ begin
   select u.id
     into v_user_id
   from auth.users u
-  where lower(u.email) = lower('bodega@ventogroup.co')
+  where lower(trim(u.email)) = lower('bodega@ventogroup.co')
   limit 1;
 
   if v_user_id is null then
-    raise exception 'Auth user bodega@ventogroup.co does not exist.';
+    raise notice 'Bodega kiosk hardening skipped: auth user bodega@ventogroup.co is not provisioned in this environment.';
+    return;
   end if;
 
   select coalesce(es.site_id, e.site_id)
     into v_site_id
   from auth.users u
   left join public.employees e on e.id = u.id
-  left join public.employee_sites es on es.employee_id = u.id and es.is_active and es.is_primary
+  left join public.employee_sites es
+    on es.employee_id = u.id
+   and es.is_active
+   and es.is_primary
   where u.id = v_user_id
   limit 1;
 
@@ -55,7 +65,8 @@ begin
   end if;
 
   if v_site_id is null then
-    raise exception 'No active site found for bodega@ventogroup.co.';
+    raise notice 'Bodega kiosk hardening skipped: no active site is available in this environment.';
+    return;
   end if;
 
   insert into public.employees (

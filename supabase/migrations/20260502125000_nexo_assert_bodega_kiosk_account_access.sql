@@ -1,5 +1,11 @@
 -- Assert the bodega tablet account has the exact minimum grants required by
 -- the kiosk board and kiosk withdrawal flow.
+--
+-- This assertion is environment-aware: a clean database replay must not depend
+-- on an Auth user or operational site being provisioned before migrations run.
+-- When the kiosk account and its active site exist, the exact three required
+-- NEXO grants remain mandatory and the migration fails closed if they are
+-- incomplete.
 
 do $$
 declare
@@ -14,7 +20,8 @@ begin
   limit 1;
 
   if v_user_id is null then
-    raise exception 'Auth user bodega@ventogroup.co does not exist.';
+    raise notice 'Bodega kiosk grant assertion skipped: auth user bodega@ventogroup.co is not provisioned in this environment.';
+    return;
   end if;
 
   select coalesce(es.selected_site_id, e.site_id)
@@ -26,7 +33,8 @@ begin
   limit 1;
 
   if v_site_id is null then
-    raise exception 'bodega@ventogroup.co has no active employee site.';
+    raise notice 'Bodega kiosk grant assertion skipped: bodega@ventogroup.co has no active employee site in this environment.';
+    return;
   end if;
 
   select count(distinct ap.code)

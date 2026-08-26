@@ -1,4 +1,4 @@
-﻿alter table public.shared_operational_device_templates
+alter table public.shared_operational_device_templates
   add column if not exists navigation_role text;
 
 alter table public.shared_operational_devices

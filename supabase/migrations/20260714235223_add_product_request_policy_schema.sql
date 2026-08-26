@@ -1,4 +1,4 @@
-create table public.product_request_policies (
+create table if not exists public.product_request_policies (
   id uuid primary key default gen_random_uuid(),
   product_id uuid not null references public.products(id) on delete cascade,
   label text not null,
@@ -39,18 +39,18 @@ create table public.product_request_policies (
   )
 );
 
-create index product_request_policies_product_idx
+create index if not exists product_request_policies_product_idx
   on public.product_request_policies(product_id, is_active);
 
-create index product_request_policies_physical_uom_idx
+create index if not exists product_request_policies_physical_uom_idx
   on public.product_request_policies(physical_uom_profile_id)
   where physical_uom_profile_id is not null;
 
-create unique index product_request_policies_one_active_default_idx
+create unique index if not exists product_request_policies_one_active_default_idx
   on public.product_request_policies(product_id)
   where is_active and is_default;
 
-create unique index product_request_policies_active_label_idx
+create unique index if not exists product_request_policies_active_label_idx
   on public.product_request_policies(product_id, lower(btrim(label)))
   where is_active;
 

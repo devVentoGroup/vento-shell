@@ -1,4 +1,4 @@
-﻿insert into public.shared_operational_device_template_apps (template_id, app_code, is_default, is_active, sort_order)
+insert into public.shared_operational_device_template_apps (template_id, app_code, is_default, is_active, sort_order)
 select t.id, x.app_code, x.app_code = t.default_app_code, true, x.sort_order
 from public.shared_operational_device_templates t
 join (

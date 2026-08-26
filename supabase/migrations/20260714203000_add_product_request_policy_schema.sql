@@ -16,7 +16,7 @@ create table public.product_request_policies (
   is_active boolean not null default true,
   policy_kind text not null default 'base_unit' check (policy_kind in ('base_unit', 'logical_group', 'physical_presentation', 'actual_quantity')),
   physical_uom_profile_id uuid null references public.product_uom_profiles(id) on delete restrict,
-  source text not null default 'manual' check (source in ('manual', 'migration', 'system', 'uom_profile')),
+  source text not null default 'manual' check (source in ('manual', 'migration', 'system', 'uom_profile', 'supplier_primary', 'recipe_portion')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   created_by uuid null references auth.users(id) on delete set null,

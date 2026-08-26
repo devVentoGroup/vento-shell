@@ -1,4 +1,4 @@
-﻿do $$
+do $$
 declare
   v_employee_id uuid := 'f39717c8-20e4-4bfb-913b-ce89668f94c1'::uuid;
   v_device_id uuid;
@@ -10,7 +10,8 @@ begin
   limit 1;
 
   if v_device_id is null then
-    raise exception 'No existe el dispositivo compartido KIOSCO_BODEGA_CP para desactivar el empleado legacy de forma segura.';
+    raise notice 'Legacy Tablet Bodega deactivation skipped: KIOSCO_BODEGA_CP is not provisioned in this environment.';
+    return;
   end if;
 
   update public.employees

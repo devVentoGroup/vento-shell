@@ -18,6 +18,11 @@ create table if not exists public.attendance_policy (
   shift_departure_min_check_interval_ms integer not null default 45000,
   -- Radio por defecto para sedes sin checkin_radius_meters (metros)
   default_radius_meters integer,
+  -- Ventanas usadas para asociar una marcación con el turno programado.
+  shift_match_early_checkin_minutes integer not null default 120,
+  shift_match_late_checkin_minutes integer not null default 60,
+  shift_match_early_checkout_minutes integer not null default 60,
+  shift_match_late_checkout_minutes integer not null default 240,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );

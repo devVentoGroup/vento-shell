@@ -274,16 +274,32 @@ revoke all on function public.reconcile_expired_payment_checkouts() from anon;
 revoke all on function public.reconcile_expired_payment_checkouts() from authenticated;
 grant execute on function public.reconcile_expired_payment_checkouts() to service_role;
 
-do $$
+do $do$
 begin
-  perform cron.unschedule('pass_payment_checkout_expiry_reconciliation');
-exception
-  when others then
-    null;
-end $$;
+  if exists (select 1 from pg_extension where extname = 'pg_cron')
+     and exists (
+       select 1
+       from information_schema.tables
+       where table_schema = 'cron'
+         and table_name = 'job'
+     ) then
+    begin
+      perform cron.unschedule('pass_payment_checkout_expiry_reconciliation');
+    exception
+      when others then
+        null;
+    end;
 
-select cron.schedule(
-  'pass_payment_checkout_expiry_reconciliation',
-  '*/5 * * * *',
-  $$select public.reconcile_expired_payment_checkouts();$$
-);
+    perform cron.schedule(
+      'pass_payment_checkout_expiry_reconciliation',
+      '*/5 * * * *',
+      $cron$select public.reconcile_expired_payment_checkouts();$cron$
+    );
+  else
+    raise notice 'Skipping payment checkout reconciliation cron because pg_cron is unavailable.';
+  end if;
+exception
+  when insufficient_privilege then
+    raise notice 'Skipping payment checkout reconciliation cron due to insufficient privilege.';
+end;
+$do$;

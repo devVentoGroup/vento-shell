@@ -1,4 +1,4 @@
-﻿alter table public.app_permissions
+alter table public.app_permissions
   add column if not exists human_label text,
   add column if not exists human_description text,
   add column if not exists human_group text,

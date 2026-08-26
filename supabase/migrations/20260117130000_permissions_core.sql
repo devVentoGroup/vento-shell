@@ -497,12 +497,58 @@ create table if not exists public.role_permissions (
   role text not null references public.roles(code) on delete cascade,
   permission_id uuid not null references public.app_permissions(id) on delete cascade,
   scope_type public.permission_scope_type not null default 'site',
+  scope_site_id uuid,
+  scope_area_id uuid,
   scope_site_type public.site_type,
   scope_area_kind text references public.area_kinds(code),
   is_allowed boolean not null default true,
   created_at timestamptz not null default now(),
+  constraint role_permissions_scope_consistency_check check (
+    (
+      coalesce(scope_type, 'global'::public.permission_scope_type) = 'global'
+      and scope_site_id is null
+      and scope_area_id is null
+      and scope_site_type is null
+      and scope_area_kind is null
+    )
+    or (
+      scope_type = 'site'
+      and scope_area_id is null
+      and scope_site_type is null
+      and scope_area_kind is null
+    )
+    or (
+      scope_type = 'area'
+      and scope_site_id is null
+      and scope_site_type is null
+      and scope_area_kind is null
+    )
+    or (
+      scope_type = 'site_type'
+      and scope_site_type is not null
+      and scope_site_id is null
+      and scope_area_id is null
+      and scope_area_kind is null
+    )
+    or (
+      scope_type = 'area_kind'
+      and scope_area_kind is not null
+      and scope_site_id is null
+      and scope_area_id is null
+      and scope_site_type is null
+    )
+  ),
   unique (role, permission_id, scope_type, scope_site_type, scope_area_kind)
 );
+
+create index if not exists role_permissions_scope_site_id_idx
+  on public.role_permissions (scope_site_id);
+create index if not exists role_permissions_scope_area_id_idx
+  on public.role_permissions (scope_area_id);
+create index if not exists role_permissions_scope_site_type_idx
+  on public.role_permissions (scope_site_type);
+create index if not exists role_permissions_scope_area_kind_idx
+  on public.role_permissions (scope_area_kind);
 
 comment on table public.role_permissions is 'Permisos base por rol.';
 

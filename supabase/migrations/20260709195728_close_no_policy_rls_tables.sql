@@ -1,4 +1,4 @@
-﻿begin;
+begin;
 
 -- These tables are intentionally service-side only. Defining explicit deny
 -- policies removes the RLS "enabled without policy" advisor without exposing
