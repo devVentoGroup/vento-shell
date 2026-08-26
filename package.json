@@ -71,7 +71,10 @@
     "docs:treq:check": "node scripts/docs/validate-treq-registry.mjs",
     "docs:treq:test": "node --test scripts/docs/validate-treq-registry.test.mjs scripts/docs/treq-safe-reconcile.test.mjs",
     "docs:plan:watch": "node scripts/docs/sync-local-derived-artifacts.mjs && node scripts/docs/watch-plan-canonico.mjs",
-    "docs:plan:local-sync": "node scripts/docs/sync-local-derived-artifacts.mjs"
+    "docs:plan:local-sync": "node scripts/docs/sync-local-derived-artifacts.mjs",
+    "supabase:recovery:test": "node --test scripts/supabase/recovery-drill.test.mjs",
+    "supabase:recovery:validate": "node scripts/supabase/recovery-drill.mjs validate",
+    "supabase:recovery:local": "node scripts/supabase/recovery-drill.mjs local --rpo-target-loss-units=0 --rto-target-ms=900000"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",

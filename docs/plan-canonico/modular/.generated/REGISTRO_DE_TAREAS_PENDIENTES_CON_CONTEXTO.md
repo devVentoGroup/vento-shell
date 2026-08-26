@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `INT-DB-007` — Crear auditoría de procesamiento, reintentos y compensaciones | `INT-DB-008` — Crear mecanismos de conciliación por integración | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `AUTH-DB-029::GLOBAL` — Validar respaldo, restauración y rollback antes del primer paquete | `AUTH-DB-001::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `AUTH-DB-001::GLOBAL` — Corregir tablas sin RLS identificadas en SUPA-AUD | `AUTH-DB-002::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1049/1594 aprobadas** | **544** no aprobadas (1 propuesta, 0 rechazadas) | `INT-DB-007` |
-| 🟧 **Implementación física conocida** | **78/95 VERIFIED** | **17** no terminales | `AUTH-DB-029::GLOBAL` |
+| 🟧 **Implementación física conocida** | **79/95 VERIFIED** | **16** no terminales | `AUTH-DB-001::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-03-R-DATABASE-IMPLEMENTATION` — Fundación física, migraciones por dominio y normalización
 - **Siguiente etapa documental:** `PHASE-04-F-ANIMA`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `AUTH-DB-029::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **16**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `AUTH-DB-001::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **15**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,18 +35,18 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `AUTH-DB-029::GLOBAL` | Validar respaldo, restauración y rollback antes del primer paquete | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `AUTH-DB-001::GLOBAL` | Corregir tablas sin RLS identificadas en SUPA-AUD | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 3 | PENDIENTE | `AUTH-DB-002::GLOBAL` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 4 | PENDIENTE | `AUTH-DB-003::GLOBAL` | Endurecer funciones SECURITY DEFINER aprobadas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 5 | PENDIENTE | `AUTH-DB-004::GLOBAL` | Reducir grants innecesarios de authenticated | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 6 | PENDIENTE | `AUTH-DB-005::GLOBAL` | Revocar grants innecesarios de anon | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 7 | PENDIENTE | `AUTH-DB-016::GLOBAL` | Crear esquemas empresariales aprobados | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 8 | PENDIENTE | `AUTH-DB-018::GLOBAL` | Separar vistas y RPC expuestas de helpers internos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 9 | PENDIENTE | `AUTH-DB-017::GLOBAL` | Configurar esquemas expuestos y privilegios de Data API | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 10 | PENDIENTE | `AUTH-DB-019::GLOBAL` | Implementar vínculos canónicos entre Auth e identidades empresariales | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 11 | PENDIENTE | `AUTH-DB-033::GLOBAL` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
-| 12 | PENDIENTE | `AUTH-DB-035::GLOBAL` | Implementar token transaccional de frescura e invalidación del contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-029::GLOBAL. |
+| 1 | **ACTUAL** | `AUTH-DB-001::GLOBAL` | Corregir tablas sin RLS identificadas en SUPA-AUD | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `AUTH-DB-002::GLOBAL` | Endurecer políticas RLS demasiado amplias aprobadas para corrección | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 3 | PENDIENTE | `AUTH-DB-003::GLOBAL` | Endurecer funciones SECURITY DEFINER aprobadas | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 4 | PENDIENTE | `AUTH-DB-004::GLOBAL` | Reducir grants innecesarios de authenticated | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 5 | PENDIENTE | `AUTH-DB-005::GLOBAL` | Revocar grants innecesarios de anon | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 6 | PENDIENTE | `AUTH-DB-016::GLOBAL` | Crear esquemas empresariales aprobados | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 7 | PENDIENTE | `AUTH-DB-018::GLOBAL` | Separar vistas y RPC expuestas de helpers internos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 8 | PENDIENTE | `AUTH-DB-017::GLOBAL` | Configurar esquemas expuestos y privilegios de Data API | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 9 | PENDIENTE | `AUTH-DB-019::GLOBAL` | Implementar vínculos canónicos entre Auth e identidades empresariales | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 10 | PENDIENTE | `AUTH-DB-033::GLOBAL` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 11 | PENDIENTE | `AUTH-DB-035::GLOBAL` | Implementar token transaccional de frescura e invalidación del contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
+| 12 | PENDIENTE | `AUTH-DB-034::GLOBAL` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-001::GLOBAL. |
 
 ## Modos de trabajo y materialización
 

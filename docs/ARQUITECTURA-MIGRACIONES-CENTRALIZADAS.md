@@ -234,3 +234,28 @@ La clasificación es descriptiva. No equivale a error de base de datos, estado d
 - `scripts/supabase/migration-manifest.mjs`
 - `scripts/quality/supabase-db-harness.mjs`
 - `scripts/supabase/environment-drift.mjs`
+
+<!-- AUTH-DB-029-PHYSICAL-FOUNDATION -->
+
+## Fundación física de recuperación — AUTH-DB-029
+
+`AUTH-DB-029::GLOBAL` materializa una infraestructura reusable y fail-closed para demostrar recovery antes de los paquetes que puedan modificar Supabase.
+
+La infraestructura conserva la separación canónica:
+
+- backup no demuestra restore;
+- restore no demuestra operabilidad;
+- rollback no reescribe historial migratorio;
+- después del PONR puede corresponder forward recovery, compensación o reconciliación.
+
+El recovery envelope se ancla al candidato y baseline producidos por `AUTH-DB-028`, al migration manifest de `AUTH-DB-015` y al harness de `AUTH-DB-027`. Conserva recovery point identificable, PONR, RPO/RTO de la unidad aplicable, reconciliación y evidencia append-only.
+
+La autocertificación global utiliza exclusivamente un esquema sintético local `vento_recovery_drill`. Demuestra rollback transaccional pre-PONR, crea un dump lógico del fixture, alcanza un PONR mediante destrucción controlada del fixture, restaura el recovery point, reconcilia el rowset exacto, elimina el fixture y vuelve a ejecutar el harness y el control de drift.
+
+Los artefactos runtime se conservan exclusivamente bajo `.delivery/supabase-recovery/` y no se versionan.
+
+La autocertificación local no usa staging ni producción y rechaza flags que seleccionen targets remotos. No ejecuta `db reset --linked`, `db push`, `migration repair`, restore hosted, PITR ni otra mutación remota.
+
+La capacidad hosted se evalúa nuevamente al ejecutar porque depende del plan, configuración y versión vigentes. Un backup PostgreSQL no autoriza a declarar recuperados objetos de Storage, configuración Auth, secretos, Edge Functions, integraciones ni consumidores externos. Cada superficie conserva su mecanismo propietario de recuperación.
+
+Los RPO/RTO usados por el fixture local certifican únicamente la mecánica de la fundación. Los paquetes y ambientes reales deben aportar objetivos propios y una autorización física específica antes de cualquier drill o recovery destructivo.
