@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1047** |
+| Tareas aprobadas | **1048** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **547** |
+| Tareas no iniciadas | **546** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **65.68% (1047/1594)** |
+| Porcentaje de completamiento | **65.75% (1048/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-DB-003 — Crear staging inmutable de payloads externos** |
-| Tarea actual | **INT-DB-004 — Crear mapeos de identificadores externos y canónicos** |
+| Última tarea aprobada | **INT-DB-004 — Crear mapeos de identificadores externos y canónicos** |
+| Tarea actual | **INT-DB-005 — Crear restricciones e índices de idempotencia** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-DB-005 — Crear restricciones e índices de idempotencia** |
+| Siguiente tarea | **INT-DB-006 — Crear cuarentena y registro de errores no procesables** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 46 de 51 aprobadas; INT-DB-004 pendiente** |
+| Progreso del bloque | **BLOQUE R: 47 de 51 aprobadas; INT-DB-005 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-028::GLOBAL** |
-| Carril documental | **ACTIVO — INT-DB-004** |
+| Carril documental | **ACTIVO — INT-DB-005** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-028::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-DB-003` — Crear staging inmutable de payloads externos |
-| Tarea actual | `INT-DB-004` — Crear mapeos de identificadores externos y canónicos — **NO INICIADA** |
-| Siguiente tarea | `INT-DB-005` — Crear restricciones e índices de idempotencia |
+| Última aprobada | `INT-DB-004` — Crear mapeos de identificadores externos y canónicos |
+| Tarea actual | `INT-DB-005` — Crear restricciones e índices de idempotencia — **NO INICIADA** |
+| Siguiente tarea | `INT-DB-006` — Crear cuarentena y registro de errores no procesables |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 46 DE 51 APROBADAS — ACTUAL INT-DB-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 47 DE 51 APROBADAS — ACTUAL INT-DB-005** |
 | Implementación física | **AUTH-DB-028::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-DB-003 — Crear staging inmutable de payloads externos
-        ↓
-TAREA ACTUAL
 INT-DB-004 — Crear mapeos de identificadores externos y canónicos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-DB-005 — Crear restricciones e índices de idempotencia
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-DB-006 — Crear cuarentena y registro de errores no procesables
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 46 de 51 tareas aprobadas
+BLOQUE R — 47 de 51 tareas aprobadas
 ```
