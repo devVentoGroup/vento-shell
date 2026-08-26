@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-001::GLOBAL",
   "task_id": "AUTH-DB-001",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -85,6 +85,17 @@
     "MATERIALIZATION remote_mutations=NO",
     "PRE_VALIDATION_GATE quality:repair PASS exactly once",
     "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
-    "SOURCE CONTRACT SHA256 e64cfb85cadfba22a91d859a5ddf341d7c5f4596e9c5c40b6f3d5989f07f01d0"
+    "SOURCE CONTRACT SHA256 e64cfb85cadfba22a91d859a5ddf341d7c5f4596e9c5c40b6f3d5989f07f01d0",
+    "MATERIALIZATION_COMMIT_SHA b20ea0bec980246ab573fbb0105050636d5edabb",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS",
+    "VALIDATION node scripts/supabase/environment-drift.mjs local --strict PASS",
+    "DRIFT_CERTIFICATION LOCAL_CERTIFIED candidate_sha=b20ea0bec980246ab573fbb0105050636d5edabb expected_digest=e4d64188a3697ac0f01877415eccd9c8629592868747f0b58e9bad50b144bcfc observed_digest=c1a5d9e76d87f2b3304694861cb9e64a3d99ca80e7d9e793cf693afcff60c7a0 drift_total=0 unauthorized_drift=0 insufficient_evidence=0",
+    "DRIFT_EVIDENCE SOURCE=CONTROLLER_OUTPUT EVIDENCE_FILE=NOT_WRITTEN",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check origin/main...HEAD PASS",
+    "MIGRATION supabase/migrations/20260826191458_auth_db_001_enable_rls_containment.sql",
+    "REMOTE_TARGETS_USED NO",
+    "RESULT AUTH-DB-001::GLOBAL VERIFIED"
   ]
 }
