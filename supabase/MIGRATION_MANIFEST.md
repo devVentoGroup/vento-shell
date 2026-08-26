@@ -223,7 +223,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260414143000 | 20260414143000_ops_v2_readiness_views.sql | ef73a469fe707cc79ea084df7f4d2ead5fb3948c9259cde503117d130ef8dd9e | 6134 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260414152000 | 20260414152000_ops_v2_bootstrap_locations_and_defaults.sql | ff9bf5aa7a3f89548de4a80945d08f09f762296aa8a8c91f3143b031e48f094f | 2758 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260414164000 | 20260414164000_ops_v2_cleanup_test_orders_stock_movements.sql | c444b18b4e39dc0bf86aa18fe3df547be1fc83ae2f75c8d49070d1e40444d4e2 | 1188 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260415000000 | 20260415000000_nexo_locations_validation.sql | 453ea2416b1a2561e866d0dd136a3a884af87315034e72f38e88057cd7d2b879 | 4908 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260415000000 | 20260415000000_nexo_locations_validation.sql | 8da5fa6406ec51437c60ad535cc3e04f1a3c5cc088ba177693c7e7b5528844fb | 4879 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260415150000 | 20260415150000_nexo_add_inventory_validation_permission.sql | 447b5670186820ac29f1b185dc8f015000365cf0977c822a0653356b3f76049f | 1192 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260415160000 | 20260415160000_nexo_propietario_inventory_validation.sql | dcb3bee84827fbd1f970184f5e7ed0ca4581cfed814769069a4c5eb6f71b11b0 | 800 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260416150000 | 20260416150000_nexo_printing_layouts.sql | bc10220f7afc6fdb36744cd84a45799ece00c5f61ea3c2fbfc9443c6e0556b22 | 1918 | STANDARD |  |  | SIN_HALLAZGO |
