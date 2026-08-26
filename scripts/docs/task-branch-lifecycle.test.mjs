@@ -19,6 +19,7 @@ import {
   resolveCanonicalOwnerRelativePath,
   resolveNpmInvocation,
   taskBranchName,
+  validateOperationalGuideResilience,
 } from './task-branch-lifecycle.mjs';
 
 test('normaliza una tarea canonica a task/<id-en-minusculas>', () => {
@@ -105,6 +106,35 @@ test('PR transversal declara TREQ NONE y enumera solo infraestructura permitida'
   );
 });
 
+
+test('guia operativa de lifecycle conserva invariantes de resiliencia', () => {
+  const valid = [
+    'RESILIENCIA DEL LIFECYCLE Y GATES',
+    'authorized_changes',
+    'docs:implementation:finish',
+    'docs:plan:local-sync',
+    'github.event.before',
+    'resolveNpmInvocation',
+    'HTTP 499',
+    'CRLF',
+    'force-push',
+    'recovery ad hoc',
+    'docs:delivery-exec:check',
+    'stdin-commonjs',
+    'Illegal return statement',
+    'IMPLEMENTATION_PROTOCOL',
+    'plantilla compartida contiene solo reglas comunes',
+    'LC-015',
+    'test contractual propietario',
+    'diagnostico exacto',
+    'LC-016',
+    'ranura estructural de trabajo',
+    'token reservado',
+  ].join('\n');
+  assert.equal(validateOperationalGuideResilience(valid), true);
+  assert.throws(() => validateOperationalGuideResilience(valid.replace('authorized_changes', 'scope')), /perdio invariantes/u);
+  assert.throws(() => validateOperationalGuideResilience(`${valid}\ndocs:plan:sync-local`), /nombre inexistente/u);
+});
 
 test('documentacion operativa usa ops/<change-id> y solo admite Markdown directo en docs', () => {
   assert.equal(opsBranchName('guia-operativa-comandos'), 'ops/guia-operativa-comandos');
@@ -355,6 +385,16 @@ test('resuelve el owner del preflight dentro de docs/plan-canonico/modular', () 
   );
 });
 
+test('lifecycle oficial no contiene spawn directo de npm.cmd', () => {
+  for (const relativePath of [
+    'scripts/docs/task-branch-lifecycle.mjs',
+    'scripts/docs/implementation-branch-lifecycle.mjs',
+  ]) {
+    const source = fs.readFileSync(relativePath, 'utf8');
+    assert.doesNotMatch(source, /spawn(?:Sync)?\(\s*['"]npm\.cmd['"]/u);
+  }
+});
+
 test('resuelve npm de forma portable y evita spawn directo de npm.cmd en Windows', () => {
   assert.deepEqual(
     resolveNpmInvocation({
@@ -406,6 +446,28 @@ test('el iniciador exige start antes de trabajo y finish antes de siguiente tare
   assert.match(template, /npm run docs:task:finish -- --task-id/u);
   assert.match(template, /NEXT_TASK_ALLOWED: SI/u);
   assert.match(template, /ninguna tarea siguiente puede comenzar/u);
+  assert.match(template, /ARQUITECTURA DE INICIADORES POR CARRIL/u);
+  assert.equal(template.split('{{CURRENT_WORK}}').length, 2);
+  assert.match(template, /ranura estructural de trabajo/u);
+  assert.match(template, /token reservado/u);
+  assert.match(template, /VALIDACION OBLIGATORIA DE DESCARGABLES EJECUTABLES/u);
+  assert.match(template, /docs:delivery-exec:check/u);
+  assert.match(template, /stdin-commonjs/u);
+  assert.match(template, /Illegal return statement/u);
+  assert.doesNotMatch(template, /RESILIENCIA OBLIGATORIA DEL LIFECYCLE FISICO/u);
+  assert.doesNotMatch(template, /docs:implementation:finish/u);
+  assert.doesNotMatch(template, /docs:plan:sync-local/u);
+
+  const generator = fs.readFileSync('scripts/docs/chatgpt-work-starter.mjs', 'utf8');
+  const implementationStart = generator.indexOf('const IMPLEMENTATION_PROTOCOL =');
+  assert.ok(implementationStart >= 0);
+  const implementationProtocol = generator.slice(implementationStart);
+  assert.match(implementationProtocol, /RESILIENCIA OBLIGATORIA DEL LIFECYCLE FISICO/u);
+  assert.match(implementationProtocol, /SCOPE_FISICO = authorized_changes/u);
+  assert.match(implementationProtocol, /docs:implementation:finish/u);
+  assert.match(implementationProtocol, /resolveNpmInvocation/u);
+  assert.match(implementationProtocol, /docs:plan:local-sync/u);
+  assert.match(implementationProtocol, /github\.event\.before/u);
 });
 
 test('package.json expone ciclos de tarea, infraestructura y documentacion operativa', () => {

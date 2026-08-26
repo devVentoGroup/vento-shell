@@ -1133,6 +1133,41 @@ export function publishInfraChange({ changeId, root = ensureRepositoryRoot() }) 
 }
 
 
+export function validateOperationalGuideResilience(source) {
+  const text = String(source ?? '');
+  const required = [
+    'RESILIENCIA DEL LIFECYCLE Y GATES',
+    'authorized_changes',
+    'docs:implementation:finish',
+    'docs:plan:local-sync',
+    'github.event.before',
+    'resolveNpmInvocation',
+    'HTTP 499',
+    'CRLF',
+    'force-push',
+    'recovery ad hoc',
+    'docs:delivery-exec:check',
+    'stdin-commonjs',
+    'Illegal return statement',
+    'IMPLEMENTATION_PROTOCOL',
+    'plantilla compartida contiene solo reglas comunes',
+    'LC-015',
+    'test contractual propietario',
+    'diagnostico exacto',
+    'LC-016',
+    'ranura estructural de trabajo',
+    'token reservado',
+  ];
+  const missing = required.filter((marker) => !text.includes(marker));
+  if (missing.length > 0) {
+    fail(`La guia operativa perdio invariantes de resiliencia: ${missing.join(', ')}.`);
+  }
+  if (text.includes('docs:plan:sync-local')) {
+    fail('La guia operativa contiene el nombre inexistente docs:plan:sync-local.');
+  }
+  return true;
+}
+
 function runOpsLocalValidation(root, paths) {
   git(['diff', '--check'], { cwd: root });
 
@@ -1141,6 +1176,9 @@ function runOpsLocalValidation(root, paths) {
     if (!fs.existsSync(absolute)) continue;
     const source = fs.readFileSync(absolute, 'utf8');
     if (!source.trim()) fail(`Documento operativo vacio: ${entry}.`);
+    if (entry === 'docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md') {
+      validateOperationalGuideResilience(source);
+    }
   }
 
   npm(['run', '--silent', 'docs:plan:test'], { cwd: root });

@@ -1,7 +1,14 @@
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 import test from 'node:test';
 
-import { analyzeCommitScope, classifyCommitPath } from './commit-scope.mjs';
+import {
+  analyzeCommitScope,
+  classifyCommitPath,
+  resolveImplementationInstanceFromHeadRef,
+} from './commit-scope.mjs';
 
 test('clasifica fuentes canónicas y herramientas transversales por separado', () => {
   assert.equal(
@@ -81,4 +88,30 @@ test('permite uno o varios documentos operativos en un commit aislado', () => {
     'docs/OTRA_GUIA.md',
     'docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md',
   ]);
+});
+
+test('resuelve la instancia fisica desde la rama sin inferir carpetas de codigo', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'vento-commit-scope-instance-'));
+  const directory = path.join(root, 'docs', 'plan-canonico', 'modular', 'implementation-instances');
+  fs.mkdirSync(directory, { recursive: true });
+  fs.writeFileSync(
+    path.join(directory, 'AUTH-DB-015__GLOBAL.json'),
+    JSON.stringify({ instance_id: 'AUTH-DB-015::GLOBAL', task_id: 'AUTH-DB-015' }),
+    'utf8',
+  );
+  try {
+    assert.equal(
+      resolveImplementationInstanceFromHeadRef({
+        root,
+        headRef: 'implementation/auth-db-015/global',
+      }).instance_id,
+      'AUTH-DB-015::GLOBAL',
+    );
+    assert.throws(
+      () => resolveImplementationInstanceFromHeadRef({ root, headRef: 'implementation/unknown/global' }),
+      /instancia unica/u,
+    );
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });
