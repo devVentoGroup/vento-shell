@@ -1,10 +1,101 @@
 {
   "instance_id": "AUTH-DB-001::GLOBAL",
   "task_id": "AUTH-DB-001",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260826191458_auth_db_001_enable_rls_containment.sql",
+      "change": "CREATE",
+      "scope": "Create exactly one forward AUTH-DB-001 migration. Fail closed unless the exact 12-table precondition remains true. Enable row level security only. Do not create, alter or drop policies. Do not grant or revoke privileges. Do not force or disable RLS. Do not modify owners, table shape, triggers, constraints, indexes or data."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest only through scripts/supabase/migration-manifest.mjs after adding the authorized migration. Do not edit manifest rows manually."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-001__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record only AUTH-DB-001::GLOBAL authorization, lifecycle state and consolidated evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying its implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the VERIFIED AUTH-DB-027 clean local database harness without modifying its implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict AUTH-DB-028 local candidate and drift certification without modifying its implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run quality:repair exactly once after complete materialization and before IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative physical lifecycle."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validate the staged intermediate materialization commit against the exact authorized instance scope."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-26T14:14:58-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "e64cfb85cadfba22a91d859a5ddf341d7c5f4596e9c5c40b6f3d5989f07f01d0"
+  },
+  "evidence": [
+    "MATERIALIZATION migration supabase/migrations/20260826191458_auth_db_001_enable_rls_containment.sql",
+    "FILE_SHA256 supabase/migrations/20260826191458_auth_db_001_enable_rls_containment.sql e334ae3c90e0b512b90fee1fde5a65c52117c3e3e62636536651da5bd5a0334e",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md 2ef0eecc29dce7f8c710739040ee6b5f1172b60cf383c9fbc1780059f17280e1",
+    "MATERIALIZATION RLS enabled by migration for exactly 12 authorized tables",
+    "MATERIALIZATION policies changed=0 grants changed=0 force_rls changed=0",
+    "MATERIALIZATION remote_mutations=NO",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 e64cfb85cadfba22a91d859a5ddf341d7c5f4596e9c5c40b6f3d5989f07f01d0",
+    "MATERIALIZATION_COMMIT_SHA b20ea0bec980246ab573fbb0105050636d5edabb",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS",
+    "VALIDATION node scripts/supabase/environment-drift.mjs local --strict PASS",
+    "DRIFT_CERTIFICATION LOCAL_CERTIFIED candidate_sha=b20ea0bec980246ab573fbb0105050636d5edabb expected_digest=e4d64188a3697ac0f01877415eccd9c8629592868747f0b58e9bad50b144bcfc observed_digest=c1a5d9e76d87f2b3304694861cb9e64a3d99ca80e7d9e793cf693afcff60c7a0 drift_total=0 unauthorized_drift=0 insufficient_evidence=0",
+    "DRIFT_EVIDENCE SOURCE=CONTROLLER_OUTPUT EVIDENCE_FILE=NOT_WRITTEN",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check origin/main...HEAD PASS",
+    "MIGRATION supabase/migrations/20260826191458_auth_db_001_enable_rls_containment.sql",
+    "REMOTE_TARGETS_USED NO",
+    "RESULT AUTH-DB-001::GLOBAL VERIFIED"
+  ]
 }
