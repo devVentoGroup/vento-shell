@@ -1,10 +1,108 @@
 {
   "instance_id": "AUTH-DB-029::GLOBAL",
   "task_id": "AUTH-DB-029",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "CREATE",
+      "scope": "Create the reusable fail-closed AUTH-DB-029 recovery controller. Support a destructive local synthetic drill only, preserve the SUPA-TRANS-011 recovery modes and outcomes, materialize an exact recovery envelope with candidate/environment identities, recovery point, PONR, scoped RPO/RTO targets and append-only evidence, prove pre-PONR transaction rollback plus post-PONR selective logical restore, run AUTH-DB-027 post-recovery database tests and AUTH-DB-028 local drift checks, redact sensitive values, and reject remote target flags or any hosted mutation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.test.mjs",
+      "change": "CREATE",
+      "scope": "Self-certify recovery envelope validation, inherited mode/outcome handling, explicit recovery point and PONR requirements, RPO/RTO enforcement, sensitive-evidence rejection, remote-target rejection, local synthetic fixture boundaries, deterministic identities, append-only evidence and stable package entry points using isolated fixtures only."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "package.json",
+      "change": "MODIFY",
+      "scope": "Add supabase:recovery:test, supabase:recovery:validate and supabase:recovery:local as stable AUTH-DB-029 entry points while preserving existing scripts, dependencies, engines and the canonical npm test facade. The local self-certification target values apply only to the synthetic foundation drill and do not establish package or production RPO/RTO policy."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md",
+      "change": "MODIFY",
+      "scope": "Document the physical AUTH-DB-029 recovery foundation, recovery-envelope and append-only evidence boundaries, distinction between backup/restore/rollback/forward recovery, local synthetic drill, post-recovery AUTH-DB-027 and AUTH-DB-028 checks, hosted capability verification by plan/configuration at execution time, and explicit Auth, Storage, Edge Functions, secrets and external-consumer exclusions from database-only recovery."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-029__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record the explicit human authorization, physical lifecycle transitions and consolidated evidence only for AUTH-DB-029::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Reuse the VERIFIED AUTH-DB-015 migration inventory authority without modifying the manifest generator implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Reuse the VERIFIED AUTH-DB-027 database harness for clean pre-recovery reconstruction and post-recovery schema, integrity, RLS, RPC and migration evidence; do not modify the harness implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Reuse the VERIFIED AUTH-DB-028 local candidate/baseline/drift controller before and after the local recovery drill; do not modify the drift implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after complete materialization and before IMPLEMENTED; require REPAIR_SCOPE PASS and READY_FOR_VALIDATION SI without editing the repair implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/supabase/recovery-drill.mjs",
+    "node --test scripts/supabase/recovery-drill.test.mjs",
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:recovery:local",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-26T13:06:02-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "b469cb95b139caebd05edea8cdf530a98b7c1ae384e18e14f72f1923a0e5187a"
+  },
+  "evidence": [
+    "MATERIALIZATION scripts/supabase/recovery-drill.mjs created as the fail-closed AUTH-DB-029 local synthetic recovery controller",
+    "MATERIALIZATION scripts/supabase/recovery-drill.test.mjs created for isolated recovery-envelope and recovery-policy self-certification",
+    "MATERIALIZATION package.json exposes supabase:recovery:test, supabase:recovery:validate and supabase:recovery:local",
+    "MATERIALIZATION docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md reconciled with the AUTH-DB-029 physical recovery foundation",
+    "FILE_SHA256 scripts/supabase/recovery-drill.mjs 711e3c0af09547d1eef9274d86615b373953b53948f108b3d81394d1c4ddd58b",
+    "FILE_SHA256 scripts/supabase/recovery-drill.test.mjs 78fa6b259b7de9dae25acf1e92fef69316cd5812e1375abf74ac5e2ca35f44a0",
+    "FILE_SHA256 package.json 813e4e8daa94f97119746010f8615d7455fcfb79b24134591606e0914d47b83e",
+    "FILE_SHA256 docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md 4500bb642f7b83f87eb510e62a819f22882341fb3ba2d4878d305530c5cac996",
+    "SOURCE CONTRACT SHA256 b469cb95b139caebd05edea8cdf530a98b7c1ae384e18e14f72f1923a0e5187a",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION node --check scripts/supabase/recovery-drill.mjs PASS",
+    "VALIDATION node --test scripts/supabase/recovery-drill.test.mjs PASS tests=28 failures=0",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:recovery:local PASS outcome=PASS_ROLLBACK_VERIFIED remote_targets_used=NO",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "RECOVERY_EVIDENCE .delivery/supabase-recovery/20260826184745919-5b3fa2055948-c6407055/evidence.json",
+    "PHYSICAL_SCOPE local synthetic Supabase only; hosted environments NOT_USED",
+    "RESULT AUTH-DB-029::GLOBAL VERIFIED"
+  ]
 }
