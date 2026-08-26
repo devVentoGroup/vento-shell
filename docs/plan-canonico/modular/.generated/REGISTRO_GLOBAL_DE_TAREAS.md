@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1049** |
+| Aprobadas | **1050** |
 | En propuesta | **0** |
-| No iniciadas | **545** |
+| No iniciadas | **544** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **65.81% (1049/1594)** |
+| Porcentaje de completamiento | **65.87% (1050/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-DB-005` — Crear restricciones e índices de idempotencia | ✅ APROBADA |
-| Tarea actual | `INT-DB-006` — Crear cuarentena y registro de errores no procesables | ⬜ NO INICIADA |
-| Siguiente reservada | `INT-DB-007` — Crear auditoría de procesamiento, reintentos y compensaciones | ⬜ NO INICIADA |
+| Última aprobada | `INT-DB-006` — Crear cuarentena y registro de errores no procesables | ✅ APROBADA |
+| Tarea actual | `INT-DB-007` — Crear auditoría de procesamiento, reintentos y compensaciones | ⬜ NO INICIADA |
+| Siguiente reservada | `INT-DB-008` — Crear mecanismos de conciliación por integración | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1259,7 +1259,7 @@
 | ✅ APROBADA | `INT-DB-003` | Crear staging inmutable de payloads externos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `INT-DB-004` | Crear mapeos de identificadores externos y canónicos | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ✅ APROBADA | `INT-DB-005` | Crear restricciones e índices de idempotencia | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
-| ⬜ NO INICIADA | `INT-DB-006` | Crear cuarentena y registro de errores no procesables | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
+| ✅ APROBADA | `INT-DB-006` | Crear cuarentena y registro de errores no procesables | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-007` | Crear auditoría de procesamiento, reintentos y compensaciones | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `INT-DB-008` | Crear mecanismos de conciliación por integración | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-030` | Retirar objetos legacy únicamente después de adopción comprobada | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |

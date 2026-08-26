@@ -5022,7 +5022,1473 @@ Esta tarea no:
 `INT-DB-006 — Crear cuarentena y registro de errores no procesables`
 
 
-### [ ] INT-DB-006 — Crear cuarentena y registro de errores no procesables
+### ✅ INT-DB-006 — Crear cuarentena y registro de errores no procesables
+
+**Estado:** APROBADA
+**Tarea anterior:** INT-DB-005 — Crear restricciones e índices de idempotencia
+**Tarea siguiente:** INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones
+**Tipo de tarea:** Documental; contrato y plantilla R2 repetible por `package_id` para persistir casos de disposición, cuarentena, elegibilidad de dead-letter y errores no procesables conforme a `SHELL-CON-024`, preservando identidad, parcialidad, evidencia, ownership, autorización, retención y estado empresarial sin materializar auditoría detallada de intentos, compensaciones ni conciliación durante esta definición
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md`
+**Estado físico resultante:** `ESPECIFICADO_NO_MATERIALIZADO`; contrato canónico `TEMPLATE_PER_PACKAGE` cerrado para futuras instancias `INT-DB-006::<package_id>`, sujetas a `POST_E5_PACKAGE`, al contrato compartido `SHELL-CON-024`, al ledger idempotente aplicable, a evidencia protegida y mappings vigentes, a recaptura de drift y a autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+**Fecha de corte:** 2026-08-26
+
+---
+
+#### 1. Propósito
+
+`INT-DB-006` define la persistencia física futura que permitirá a cada paquete aislar y gobernar unidades externas o internas de integración que no pueden continuar por el flujo ordinario sin perder identidad, evidencia, ownership, parcialidad ni obligaciones abiertas.
+
+La tarea convierte el contrato compartido `SHELL-CON-024` en una especificación de persistencia por paquete para:
+
+- casos de disposición;
+- cuarentena;
+- evaluación acumulativa de dead-letter;
+- errores no procesables;
+- referencias de intervención autorizada;
+- referencias de evidencia, idempotencia, mapping y conciliación;
+- residual y cierre seguro.
+
+No ejecuta DDL, DML, migraciones, RLS, RPC, workers, queues, Edge Functions, cron, reprocesos, compensaciones ni cambios remotos.
+
+La definición deberá permitir responder de forma reproducible:
+
+1. cuál es la unidad exacta afectada;
+2. qué caso estable la representa;
+3. qué alcance de fallo y parcialidad conserva;
+4. qué disposición está vigente;
+5. por qué razón cerrada puede existir cuarentena;
+6. si las siete puertas de dead-letter fueron evaluadas y satisfechas;
+7. qué resultado empresarial está confirmado, ausente, incierto o pendiente;
+8. qué evidencia protegida sostiene la decisión;
+9. qué owner empresarial y responsable operativo conservan el caso;
+10. qué acción siguiente está permitida;
+11. qué autorización es exigible para intervenir o reprocesar;
+12. qué referencias de idempotencia, mapping, auditoría o conciliación enlazan el caso;
+13. qué retención, hold y residuales siguen vigentes;
+14. qué outcome seguro permite cerrar sin borrar historia.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+INT-DB-006
+→ contrato documental único y reutilizable
+
+INT-DB-006::<package_id>
+→ futura instancia física por paquete
+
+unidad fallida o no procesable
+→ IntegrationDispositionCaseId estable
+→ clasificación de alcance + parcialidad
+→ disposición vigente
+→ cuarentena cuando corresponda
+→ evaluación de siete puertas de dead-letter cuando corresponda
+→ evidencia protegida por referencia
+→ owner + responsable + siguiente acción
+→ autorización de intervención/reproceso
+→ residual + cierre seguro
+→ handoff estable hacia INT-DB-007 e INT-DB-008
+```
+
+La definición global no se reabre por paquete.
+
+No existe una instancia física `INT-DB-006::GLOBAL`.
+
+---
+
+#### 3. Topología vinculante
+
+La topología aplicable queda cerrada así:
+
+| Propiedad | Decisión |
+| --- | --- |
+| Modalidad | `TEMPLATE_PER_PACKAGE` |
+| Gate temporal | `POST_E5_PACKAGE` |
+| Identidad física futura | `INT-DB-006::<package_id>` |
+| Instancia global | no aplica |
+| Reapertura del contrato por paquete | prohibida |
+| Implementación durante esta definición | ninguna |
+
+Cada `package_id` materializa únicamente los casos, integraciones, superficies, owners y efectos que le pertenecen.
+
+La existencia de un contrato compartido global o de una base Supabase común no convierte la cuarentena en un recurso transversal sin ownership ni fusiona casos de paquetes distintos.
+
+---
+
+#### 4. Gate temporal
+
+Una futura instancia solo podrá materializar cuarentena y registro de errores cuando, para el mismo `package_id`, estén satisfechas las puertas físicas aplicables.
+
+Como mínimo:
+
+```text
+package E5 aplicable = CERRADO
+E5-GATE-008::<package_id> = PASS
+SHELL-CON-024::GLOBAL = VERIFIED
+registro INT-DB-001 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+staging INT-DB-003 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+mapping INT-DB-004 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+idempotencia INT-DB-005 aplicable = DISPONIBLE O NO_APLICABLE JUSTIFICADO
+evidencia protegida aplicable = RESOLUBLE
+drift aplicable = RECONCILED
+rollback = PREPARADO
+physical_authorization = EXPLICIT
+```
+
+La existencia de `SHELL-CON-024::GLOBAL` no autoriza una instancia de paquete antes de E5.
+
+---
+
+#### 5. Fuentes vinculantes
+
+La definición consume sin reinterpretación silenciosa:
+
+- `INT-APP-006` para compensación únicamente sobre efectos confirmados;
+- `INT-APP-007` a `INT-APP-009` para trazabilidad, incertidumbre, errores parciales, cuarentena, dead-letter, intervención y cierre;
+- `INT-EXT-016` y `VENTO-EXTERNAL-QUARANTINE-DEAD-LETTER-CONTRACT-001` como definición histórica de disposición externa;
+- `INT-EXT-017` para auditoría, métricas, alertas y conciliación externa;
+- `SHELL-CON-017` para principal técnico;
+- `SHELL-CON-018` para referencia de credencial sin secreto;
+- `SHELL-CON-019` para evento externo recibido;
+- `SHELL-CON-022` para mapping externo/canónico;
+- `SHELL-CON-023` para idempotencia y conciliación;
+- `SHELL-CON-024` como forma compartida vigente de disposición, cuarentena, dead-letter, rechazo seguro, intervención y compensación referenciada;
+- `INT-DB-001` a `INT-DB-005` como entradas físicas previas cuando sean aplicables al paquete;
+- `QUEUE-ARC-008`, `QUEUE-ARC-009`, `QUEUE-ARC-011` y `QUEUE-ARC-012` como contratos de infraestructura de fallos, exclusión de reproceso, métricas y autorización de trabajo;
+- `INT-POS-012`, `INT-POS-019` e `INT-POS-020` para la especialización POS vigente;
+- el registro canónico de requisitos de prueba vigente;
+- el estado remoto recapturado al iniciar la futura instancia.
+
+La forma compartida vigente declara a `INT-DB-006` como propietario exclusivo de la persistencia física de cuarentena.
+
+---
+
+#### 6. Reconciliación entre semántica histórica y contrato compartido vigente
+
+`INT-EXT-016` conserva la clasificación histórica de cuarentena y dead-letter por las 21 identidades externas en el momento de su aprobación.
+
+`SHELL-CON-024` materializa posteriormente la forma compartida reconciliada y especializa la proyección física sin reescribir la evidencia histórica.
+
+Regla de consumo:
+
+```text
+semántica histórica de INT-EXT-016
++ especializaciones posteriores aprobadas
+→ SHELL-CON-024 vigente
+→ INT-DB-006 persiste la forma reconciliada por paquete
+```
+
+La reconciliación vigente incorpora una especialización POS explícita que ya no se trata como un bloqueo genérico de disposición.
+
+Por tanto:
+
+1. la distribución histórica de `INT-EXT-016` permanece evidencia de su corte;
+2. la futura materialización física usa shape, políticas, estados y adopción vigentes de `SHELL-CON-024`;
+3. `EXT-SYS-013` conserva `APLICA_CON_ESPECIALIZACION_POS` y `EXTERNAL-SALE-LINE-QUARANTINE-001`;
+4. `EXT-SYS-020` permanece `BLOQUEADO_SIN_BINDING`;
+5. ningún cambio de clasificación autoriza inventar un binding, caso runtime o efecto ausente.
+
+---
+
+#### 7. Contrato compartido materializado que gobierna esta tarea
+
+La forma compartida vigente conserva:
+
+```text
+IntegrationDispositionCaseId
+IntegrationDispositionCaseRef
+IntegrationDispositionCase
+IntegrationQuarantineRef
+IntegrationDeadLetterRef
+IntegrationCompensationPlanRef
+```
+
+Y preserva exactamente:
+
+| Elemento | Cardinalidad |
+| --- | ---: |
+| `IntegrationDispositionCaseRef` | 2 campos |
+| `IntegrationCompensationPlanRef` | 8 campos |
+| `IntegrationDispositionCase` | 39 campos de nivel superior |
+| `IntegrationFailureScope` | 8 valores |
+| `IntegrationPartialityClass` | 9 valores |
+| `IntegrationDisposition` | 12 valores |
+| `IntegrationQuarantineReason` | 8 valores |
+| `IntegrationDeadLetterGate` | 7 valores |
+| `IntegrationManualInterventionAction` | 10 valores |
+| outcomes de cierre reutilizados de `SHELL-CON-023` | 8 valores |
+
+`INT-DB-006` no crea un segundo contrato ni una taxonomía paralela.
+
+---
+
+#### 8. Separación semántica obligatoria
+
+La persistencia deberá conservar siempre:
+
+```text
+CASO DE DISPOSICIÓN
+≠ OPERACIÓN EMPRESARIAL
+≠ EVENTO
+≠ RECEIPT
+≠ INTENTO TÉCNICO
+≠ CLAVE IDEMPOTENTE
+≠ CASO DE CONCILIACIÓN
+≠ PLAN DE COMPENSACIÓN
+```
+
+Y además:
+
+```text
+CUARENTENA
+≠ DEAD_LETTER_CANDIDATE
+≠ RECHAZO EMPRESARIAL
+≠ RESULTADO DESCONOCIDO
+≠ CONCILIACIÓN
+≠ COMPENSACIÓN
+≠ CONTINGENCIA
+```
+
+Mover una unidad entre estados operativos de aislamiento no modifica por sí mismo el hecho empresarial ni concede autoridad sobre su owner.
+
+---
+
+#### 9. Identidad estable del caso
+
+`IntegrationDispositionCaseId` es la identidad estable del caso operativo de disposición.
+
+Reglas:
+
+1. es opaca y no secreta;
+2. no deriva de payload, importe, fecha, correo, teléfono, producto, proveedor ni texto de error;
+3. no es `event_id`, `receipt_id`, `attempt_id`, `delivery_id`, `mapping_id`, `sale_id`, `correlation_id` ni idempotency key;
+4. un retry técnico no crea un caso nuevo por defecto;
+5. un reproceso de la misma intención conserva el caso salvo especialización propietaria que exija sucesión explícita;
+6. un caso cerrado no reutiliza su identidad para otro incidente;
+7. dos paquetes no comparten la identidad física de un caso por conveniencia;
+8. una identidad ambigua no se resuelve por similitud de contenido.
+
+---
+
+#### 10. Shape lógico `IntegrationDispositionCase`
+
+La futura persistencia deberá poder reconstruir sin pérdida los 39 campos de nivel superior de la forma compartida vigente:
+
+```text
+integration_disposition_case_id
+failure_scope
+partiality_class
+disposition
+owner_application
+owner_domain_ref
+resource_or_operation_refs
+external_system_id
+environment
+surface
+integration_principal_ref
+external_received_event_ref
+external_identifier_mapping_refs
+idempotency_ref
+reconciliation_ref
+quarantine_ref
+dead_letter_ref
+compensation_plan_ref
+original_evidence_refs
+content_integrity_ref
+contract_or_schema_version
+quarantine_reason
+owner_specialization_ref
+owner_resolution_detail
+dead_letter_gate_results
+manual_intervention_action
+authorization_reference
+attempt_references
+business_outcome_reference
+responsible_owner
+next_action
+residual_obligations
+retention_policy_ref
+legal_hold_reference
+audit_references
+closure_outcome
+created_at
+updated_at
+closed_at
+```
+
+La representación física puede normalizar colecciones en relaciones hijas o usar otra forma compatible con PostgreSQL, siempre que:
+
+- el shape compartido sea reconstruible;
+- cardinalidad, integridad y ownership permanezcan verificables;
+- los contratos expuestos no cambien por conveniencia de almacenamiento;
+- no se dupliquen payloads sensibles;
+- no se creen vocabularios alternos.
+
+---
+
+#### 11. Colecciones y referencias multivaluadas
+
+Las siguientes propiedades pueden contener múltiples referencias y deberán preservar identidad y orden contractual cuando este sea material:
+
+- `resource_or_operation_refs`;
+- `external_identifier_mapping_refs`;
+- `original_evidence_refs`;
+- `dead_letter_gate_results`;
+- `attempt_references`;
+- `residual_obligations`;
+- `audit_references`.
+
+Reglas:
+
+1. una relación hija no adquiere identidad empresarial por existir en la persistencia;
+2. no se permite duplicar una misma referencia para inflar evidencia o cumplimiento de gates;
+3. una referencia eliminada por corrección no borra su existencia histórica de la auditoría propietaria;
+4. la implementación deberá poder distinguir ausencia legítima de colección vacía cuando el contrato propietario lo requiera.
+
+---
+
+#### 12. Alcances de fallo cerrados
+
+Se conservan exactamente ocho valores:
+
+```text
+REQUEST_OR_COMMAND
+OWNER_TRANSACTION
+EVENT_EMISSION
+DELIVERY
+CONSUMER_EFFECT
+BATCH_OR_BULK_ITEM
+EXTERNAL_EXCHANGE
+OFFLINE_OR_EVIDENCE
+```
+
+Un caso tiene un alcance primario y puede enlazar otros alcances sin fusionar sus identidades.
+
+La persistencia no podrá aceptar un noveno alcance local sin cambio contractual aprobado.
+
+---
+
+#### 13. Clases de parcialidad cerradas
+
+Se conservan exactamente nueve valores:
+
+```text
+NO_EFFECT_CONFIRMED
+SOME_EFFECTS_CONFIRMED
+SOME_EFFECTS_UNKNOWN
+ALL_EFFECTS_UNKNOWN
+DEPENDENCY_INCOMPLETE
+CONFLICTING_RESULTS
+UNTRUSTED_OR_TAMPERED_INPUT
+CONTRACT_OR_SCHEMA_INCOMPATIBLE
+EXTERNAL_STATE_DIVERGENCE
+```
+
+Una unidad en cuarentena conserva su clase de parcialidad; el aislamiento no la reemplaza.
+
+Un timeout no convierte resultados desconocidos en ausencia de efecto confirmada.
+
+---
+
+#### 14. Disposiciones cerradas
+
+Se conservan exactamente doce valores:
+
+```text
+RETRY_SAME_OPERATION
+WAIT_FOR_DEPENDENCY
+QUERY_AUTHORITATIVE_RESULT
+RECONCILE
+QUARANTINE
+DEAD_LETTER_CANDIDATE
+MANUAL_INTERVENTION_REQUIRED
+PERMANENTLY_REJECT
+COMPENSATE_CONFIRMED_EFFECTS
+CREATE_CORRECTION_OR_SUCCESSOR
+CONTINUE_INDEPENDENT_UNITS
+BLOCK_DEPENDENT_UNITS
+```
+
+`INT-DB-006` persiste la disposición vigente; no ejecuta las acciones asociadas.
+
+---
+
+#### 15. Razones cerradas de cuarentena
+
+Solo se permiten las ocho razones canónicas:
+
+```text
+UNTRUSTED_SIGNATURE_OR_AUTHENTICITY
+SCHEMA_OR_VERSION_UNSUPPORTED
+PAYLOAD_INTEGRITY_FAILED
+IDENTITY_OR_ROUTING_AMBIGUOUS
+SENSITIVITY_OR_POLICY_VIOLATION
+REPEATED_POISON_MESSAGE
+EVIDENCE_LINKAGE_INVALID
+MANUAL_HOLD_FOR_INVESTIGATION
+```
+
+Reglas:
+
+1. ninguna instancia de paquete crea una novena razón local;
+2. conectividad temporal, rate limit, breaker abierto o espera normal de dependencia no son cuarentena;
+3. rechazo empresarial ordinario no es cuarentena;
+4. `REPEATED_POISON_MESSAGE` exige identidad estable y evidencia de repetición;
+5. `MANUAL_HOLD_FOR_INVESTIGATION` exige autoridad y finalidad explícitas;
+6. liberar cuarentena exige resolver la causa.
+
+---
+
+#### 16. Puertas acumulativas de dead-letter
+
+Se conservan exactamente siete puertas:
+
+```text
+AUTOMATION_BUDGET_CLOSED
+ITEM_ISOLATED
+IDENTITY_AND_CONTENT_PRESERVED
+BUSINESS_OUTCOME_CLASSIFIED_OR_RECONCILIATION_OPEN
+OWNER_AND_NEXT_ACTION_ASSIGNED
+REPROCESSING_REQUIRES_AUTHORIZATION
+RETENTION_AND_AUDIT_DEFINED
+```
+
+Elegibilidad:
+
+```text
+DEAD_LETTER_CANDIDATE
+=
+GATE_1
+AND GATE_2
+AND GATE_3
+AND GATE_4
+AND GATE_5
+AND GATE_6
+AND GATE_7
+```
+
+Una puerta falsa bloquea la clasificación completa.
+
+Retry agotado puede satisfacer únicamente `AUTOMATION_BUDGET_CLOSED`; nunca prueba por sí solo dead-letter completo.
+
+---
+
+#### 17. Acciones manuales cerradas
+
+Se conservan exactamente diez acciones:
+
+```text
+RETRY_AUTHORIZED
+QUERY_RECEIPT
+CORRECT_METADATA
+CREATE_SUCCESSOR
+RELINK_EVIDENCE
+REPROCESS_FROM_QUARANTINE
+REPROCESS_FROM_DEAD_LETTER
+PERMANENT_REJECT
+START_RECONCILIATION
+START_COMPENSATION
+```
+
+La persistencia registra la acción seleccionada y su autorización cuando corresponda.
+
+No autoriza editar una fuente propietaria, forzar éxito, borrar un caso para cerrarlo ni cambiar un outcome sin evidencia.
+
+---
+
+#### 18. Outcomes de cierre reutilizados
+
+Se reutilizan exactamente los ocho outcomes de cierre definidos por `SHELL-CON-023`:
+
+```text
+RESOLVED_CONFIRMED
+RESOLVED_NO_EFFECT
+RESOLVED_DUPLICATE_PRIOR_RESULT
+RESOLVED_CORRECTED
+RESOLVED_COMPENSATED
+RESOLVED_WITH_ACCEPTED_RESIDUAL
+PERMANENTLY_REJECTED
+SUPERSEDED_BY_SUCCESSOR
+```
+
+No existe `CLOSED_UNKNOWN`.
+
+La edad, el silencio de una alerta, mover a dead-letter, archivar o reiniciar un worker no cierran un caso.
+
+---
+
+#### 19. Contrato de cuarentena persistente
+
+Cuando `disposition = QUARANTINE`, la futura implementación deberá demostrar:
+
+1. unidad exacta aislada del procesamiento ordinario;
+2. identidad original preservada;
+3. contenido lógico o evidencia protegida preservados por referencia;
+4. `content_integrity_ref` conservado cuando aplique;
+5. razón cerrada de cuarentena presente;
+6. owner y responsable explícitos;
+7. siguiente acción o condición de tratamiento resoluble;
+8. autorización requerida para liberar o reprocesar;
+9. resultado empresarial no inferido;
+10. ausencia de mutación del payload fuente para conseguir que el caso pase.
+
+Cuarentena no es secret store ni una segunda fuente de verdad.
+
+---
+
+#### 20. Contrato de dead-letter persistente
+
+Cuando `disposition = DEAD_LETTER_CANDIDATE`, la futura implementación deberá demostrar:
+
+1. las siete puertas fueron evaluadas;
+2. existen exactamente siete resultados de gate para la evaluación vigente;
+3. cada puerta está satisfecha;
+4. cada resultado puede enlazar evidencia suficiente;
+5. el owner y siguiente acción permanecen vigentes;
+6. el reproceso requiere autorización;
+7. retención y auditoría están definidas;
+8. resultado desconocido conserva conciliación abierta;
+9. dead-letter no modifica el business outcome;
+10. el caso no se elimina para reducir backlog.
+
+La persistencia puede distinguir un candidato a dead-letter de su ubicación física de almacenamiento; mover filas o mensajes no cambia la semántica.
+
+---
+
+#### 21. Resultado desconocido y precedencia de conciliación
+
+`SOME_EFFECTS_UNKNOWN`, `ALL_EFFECTS_UNKNOWN`, `OUTCOME_UNKNOWN` u otra incertidumbre contractual equivalente tienen precedencia sobre un cierre técnico por agotamiento.
+
+Reglas:
+
+1. timeout no prueba fracaso;
+2. no response no prueba ausencia de efecto;
+3. cuarentena no resuelve incertidumbre;
+4. dead-letter no resuelve incertidumbre;
+5. rechazo no resuelve incertidumbre;
+6. compensación de efecto hipotético queda prohibida;
+7. antes de repetir un efecto material se consulta fuente autoritativa, receipt o conciliación aplicable;
+8. un resultado indeterminado requiere `reconciliation_ref` o handoff explícito hacia `INT-DB-008`;
+9. aislamiento operativo y conciliación abierta pueden coexistir.
+
+---
+
+#### 22. Reproceso de la misma intención
+
+El reproceso de la misma intención lógica conserva:
+
+```text
+misma identidad empresarial
++ mismo scope y operation key idempotentes
++ huella compatible
++ owner y finalidad
++ correlación y evidencia fuente
++ historial de retry
+```
+
+Puede cambiar el identificador técnico del intento.
+
+No puede producir un segundo efecto empresarial ya confirmado.
+
+La referencia de intento nuevo se enlaza al mismo caso; el detalle del intento pertenece a `INT-DB-007`.
+
+---
+
+#### 23. Corrección o sucesor
+
+Un cambio material de:
+
+- intención;
+- payload;
+- recurso;
+- importe;
+- cantidad;
+- destinatario;
+- versión;
+- acción;
+- autoridad;
+
+no es un simple reproceso.
+
+Debe usar la semántica de corrección o sucesor del owner, preservar relación con el caso original y no reinterpretar la historia.
+
+---
+
+#### 24. Rechazo terminal seguro
+
+`PERMANENTLY_REJECT` solo puede persistirse como cierre seguro cuando:
+
+1. la unidad exacta está identificada;
+2. el contrato aplicable es conocido;
+3. existe causa terminal;
+4. se demuestra ausencia de efecto incompatible con el rechazo;
+5. no permanece `OUTCOME_UNKNOWN` ni `RESULT_UNKNOWN` sin resolver;
+6. no se ocultan efectos parciales;
+7. owner y autoridad de decisión están acreditados;
+8. evidencia y auditoría quedan referenciadas.
+
+El rechazo no fabrica un hecho externo ni modifica silenciosamente un estado del proveedor.
+
+---
+
+#### 25. Ownership y autoridad
+
+Toda persistencia deberá distinguir:
+
+```text
+owner_application
+owner_domain_ref
+integration_principal_ref
+responsible_owner
+authorization_reference
+```
+
+Reglas:
+
+1. el owner empresarial conserva la decisión sobre el hecho;
+2. el adaptador puede registrar metadata técnica propia sin apropiarse del negocio;
+3. una queue futura no se convierte en owner empresarial;
+4. asignar un caso a soporte no concede autoridad sobre el hecho;
+5. conocer el caso no concede acceso a evidencia protegida;
+6. una credencial externa no concede autoridad transversal VENTO;
+7. service role no es principal empresarial;
+8. compensación, cuando aplique, se ejecuta dentro del owner del efecto y no desde este registro.
+
+---
+
+#### 26. Evidencia, integridad y minimización
+
+La persistencia deberá preferir:
+
+- referencias protegidas;
+- hashes o digests;
+- metadata mínima allowlisted;
+- referencias de autenticidad;
+- referencias de mapping;
+- referencias de auditoría.
+
+Queda prohibido guardar por conveniencia:
+
+- API keys;
+- bearer tokens;
+- service role;
+- private keys;
+- passwords;
+- material reutilizable de firma;
+- datos bancarios completos;
+- payload personal completo cuando una referencia protegida sea suficiente;
+- URLs firmadas persistentes o parámetros de credencial.
+
+La persistencia de casos no sustituye la custodia del payload original.
+
+---
+
+#### 27. Retención, hold y disposición
+
+No existe un TTL universal autorizado.
+
+Cada caso conserva, cuando aplique:
+
+```text
+retention_policy_ref
+legal_hold_reference
+residual_obligations
+closure_outcome
+closed_at
+```
+
+Reglas:
+
+1. la edad no cierra el caso;
+2. dead-letter no inicia borrado automático;
+3. un caso abierto no se borra para reducir backlog;
+4. un hold bloquea disposición según su política sin inferir outcome;
+5. evidencia de disposición no copia el payload eliminado;
+6. `RESOLVED_WITH_ACCEPTED_RESIDUAL` exige residual, owner, responsable, riesgo, control, autoridad y condición de seguimiento en las fuentes propietarias.
+
+---
+
+#### 28. Aislamiento por ambiente
+
+Un caso con contexto externo deberá conservar ambiente cuando aplique.
+
+Reglas:
+
+1. production, staging y development no comparten casos como si fueran la misma operación;
+2. no se copian payloads o credenciales de producción a otros ambientes para depurar;
+3. una operación no cambia de ambiente para eludir una restricción;
+4. una referencia externa debe resolverse contra el binding del ambiente correcto;
+5. un paquete no accede a casos de otro por compartir instancia Supabase.
+
+---
+
+#### 29. Aislamiento por paquete
+
+La cardinalidad física es por `package_id`.
+
+Invariantes:
+
+1. el caso pertenece al paquete que materializa la superficie aplicable;
+2. una misma identidad externa puede aparecer en varios paquetes sin fusionar casos;
+3. ownership de negocio no se transfiere por estar en un registro técnico común;
+4. no existe un backlog global de VENTO que permita reproceso transversal sin contrato;
+5. índices, RLS, grants y jobs futuros deberán respetar el package boundary.
+
+---
+
+#### 30. Adopción externa vigente 21/21
+
+La futura persistencia conserva el universo vigente de `SHELL-CON-024`:
+
+| ID | Sistema / plataforma | Clasificación vigente | Estado de disposición |
+| --- | --- | --- | --- |
+| `EXT-SYS-001` | Supabase | `GOBERNADA_POR_CONTRATO_INTERNO` | `ESPECIFICADO` |
+| `EXT-SYS-002` | Wompi | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-003` | RevenueCat | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-004` | Resend | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-005` | Expo / EAS Update | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | `ESPECIFICADO` |
+| `EXT-SYS-006` | Expo Push Service | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-007` | Sentry | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL` | `ESPECIFICADO` |
+| `EXT-SYS-008` | Google Maps / Google Reviews | `SIN_LEDGER_DE_EFECTO_EMPRESARIAL` | `ESPECIFICADO` |
+| `EXT-SYS-009` | Apple Wallet / PassKit y APNs | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-010` | Vercel | `PLATAFORMA_TECNICA_SIN_EFECTO_EMPRESARIAL_EN_CORTE` | `ESPECIFICADO` |
+| `EXT-SYS-011` | Zebra BrowserPrint | `APLICA_IDEMPOTENCIA_Y_CONCILIACION` | `ESPECIFICADO` |
+| `EXT-SYS-012` | Google Wallet / Google Pay & Wallet | `MODELO_SIN_BINDING_REMOTO` | `NO_APLICA` |
+| `EXT-SYS-013` | POS externo vigente | `APLICA_CON_ESPECIALIZACION_POS` | `ESPECIFICADO` |
+| `EXT-SYS-014` | Shopify / comercio electrónico | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-015` | Rappi / marketplace | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-016` | ManyChat / automatización conversacional | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-017` | WhatsApp | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-018` | Instagram / social | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-019` | Correo corporativo y alias funcionales | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+| `EXT-SYS-020` | Telefonía / voz | `BLOQUEADO_SIN_BINDING` | `BLOQUEADO` |
+| `EXT-SYS-021` | Transporte externo | `NO_APLICA_SIN_BINDING` | `NO_APLICA` |
+
+No se crean casos runtime por el solo hecho de que una fila esté `ESPECIFICADO`.
+
+---
+
+#### 31. Reconciliación de cobertura vigente
+
+La distribución vigente queda fijada así:
+
+```text
+21 identidades
+=
+1 gobernada por contrato interno
++ 6 con idempotencia y conciliación
++ 2 sin ledger de efecto empresarial
++ 2 plataformas técnicas sin efecto empresarial en corte
++ 1 modelo sin binding remoto
++ 1 especialización POS
++ 7 no aplicables sin binding
++ 1 bloqueada sin binding
+```
+
+Estados:
+
+```text
+12 ESPECIFICADO
++ 8 NO_APLICA
++ 1 BLOQUEADO
+= 21
+```
+
+Faltantes = 0.
+
+Duplicados = 0.
+
+---
+
+#### 32. Wompi
+
+Para `EXT-SYS-002`, una futura instancia aplicable deberá conservar:
+
+1. receipt e identidad idempotente antes del efecto;
+2. autenticidad, integridad y ambiente como controles previos;
+3. cuarentena solo por razones cerradas;
+4. mismo event/receipt con huella distinta como conflicto, nunca overwrite;
+5. resultado de pago incierto como consulta o conciliación antes de repetir;
+6. dead-letter únicamente después de evaluar las siete puertas;
+7. evidencia protegida por referencia;
+8. liberación o reproceso autorizados sin crear un evento Wompi nuevo.
+
+Dead-letter nunca demuestra que el pago no ocurrió.
+
+---
+
+#### 33. RevenueCat
+
+Para `EXT-SYS-003`, la futura instancia aplicable deberá:
+
+1. aislar input incompatible o mapping no resoluble sin alterar la fuente;
+2. conservar redelivery bajo la misma identidad idempotente;
+3. evitar duplicar suscripción o entitlement;
+4. conciliar un entitlement incierto antes de corregir, reprocesar o compensar;
+5. conservar el entitlement empresarial separado del estado técnico del caso;
+6. referenciar payload protegido sin duplicarlo en el registro de error.
+
+---
+
+#### 34. Resend
+
+Para `EXT-SYS-004`:
+
+1. la generación de entrega conserva identidad;
+2. retry técnico mantiene la misma operación;
+3. un error permanente con no-efecto demostrado puede terminar en rechazo seguro sin dead-letter obligatorio;
+4. timeout después del envío conserva resultado incierto si el proveedor pudo aceptar;
+5. no existe reenvío ciego sin receipt o evidencia suficiente;
+6. una nueva invitación o reenvío empresarial deliberado usa nueva generación;
+7. el registro no duplica subject, body ni datos personales si una referencia es suficiente.
+
+---
+
+#### 35. Expo Push Service
+
+Para `EXT-SYS-006`:
+
+1. disposición por destino y generación;
+2. resultado individual por destino;
+3. un destino confirmado no se repite porque otro falle;
+4. `DeviceNotRegistered` no se convierte en retry infinito;
+5. resultado incierto se consulta cuando el contrato disponga de receipt aplicable;
+6. dead-letter se evalúa después del agotamiento y de las siete puertas;
+7. una campaña nueva no reutiliza silenciosamente el caso anterior.
+
+---
+
+#### 36. Sentry y Google Maps / Google Reviews
+
+`EXT-SYS-007` y `EXT-SYS-008` no adquieren un ledger empresarial de dead-letter por existir como integraciones técnicas.
+
+Sentry:
+
+- telemetría best-effort no bloquea ni revierte el negocio;
+- una violación de sensibilidad se bloquea sin copiar el dato prohibido a otro store;
+- buffers técnicos no se convierten en backlog empresarial.
+
+Google Maps / Reviews:
+
+- una lectura interactiva agotada no crea un job persistente oculto;
+- `ZERO_RESULTS` válido no es error de dead-letter;
+- una respuesta no confiable no alimenta mappings ni hechos VENTO;
+- no se fabrica un archivo masivo de respuestas para investigación.
+
+---
+
+#### 37. Apple Wallet / PassKit y APNs
+
+`EXT-SYS-009` conserva superficies separadas.
+
+PassKit inbound:
+
+- autenticación, routing, schema, integridad y evidencia se validan antes de mutar;
+- una petición inválida no se corrige alterando identifiers o tokens;
+- token de autenticación no se copia al caso.
+
+APNs outbound:
+
+- señal de actualización conserva pass, dispositivo y generación;
+- token permanentemente inválido no se reintenta indefinidamente;
+- resultado incierto no confirma recepción o aplicación;
+- dead-letter solo aplica si la señal sigue vigente y las siete puertas se cumplen;
+- reprocesar señal no crea una versión nueva del pase.
+
+---
+
+#### 38. Zebra BrowserPrint
+
+`EXT-SYS-011` representa un efecto físico con riesgo de resultado incierto.
+
+Reglas:
+
+1. fallo antes del envío puede demostrar no-efecto físico;
+2. después de enviar ZPL, timeout o desconexión puede dejar resultado desconocido;
+3. resultado desconocido bloquea auto-reprint;
+4. el registro distingue envío técnico de impresión física;
+5. incompatibilidad, routing ambiguo o evidencia inválida pueden activar cuarentena;
+6. dead-letter exige outcome clasificado o conciliación abierta y las siete puertas;
+7. reproceso desde dead-letter no equivale a reimpresión automática;
+8. reimpresión voluntaria es nueva generación explícita.
+
+---
+
+#### 39. POS externo vigente
+
+`EXT-SYS-013` conserva la especialización aprobada `EXTERNAL-SALE-LINE-QUARANTINE-001`.
+
+Reglas:
+
+1. la unidad propietaria puede ser la línea canónica cuando mapping bloquea un efecto dependiente de producto;
+2. liberar cuarentena no ejecuta inventario por sí mismo;
+3. corregir mapping no cambia la identidad de la línea;
+4. posibilidad de efecto previo exige conciliación antes de repetir;
+5. NEXO, NUMERA y PASS compensan únicamente efectos propios confirmados;
+6. no existe rollback global de venta;
+7. la conciliación no reejecuta efectos ya confirmados.
+
+La especialización no crea casos físicos durante esta definición.
+
+---
+
+#### 40. Sistemas técnicos, sin binding y bloqueados
+
+`EXT-SYS-001` no recibe una cuarentena externa universal para toda actividad Supabase; cada superficie interna conserva su owner.
+
+`EXT-SYS-005` y `EXT-SYS-010` no reciben una cola empresarial ficticia por configuración de plataforma.
+
+`EXT-SYS-012` no recibe runtime de disposición sin binding remoto acreditado.
+
+`EXT-SYS-014`, `015`, `016`, `017`, `018`, `019` y `021` permanecen `NO_APLICA_SIN_BINDING`.
+
+`EXT-SYS-020` permanece `BLOQUEADO_SIN_BINDING` hasta acreditar operador e interfaz conforme a `TI-INT-003`.
+
+No se crean filas vacías para simular cobertura.
+
+---
+
+#### 41. Restricciones mínimas de integridad
+
+Toda futura implementación deberá demostrar restricciones equivalentes a estas invariantes:
+
+1. `integration_disposition_case_id` único;
+2. `failure_scope` limitado a los 8 valores canónicos;
+3. `partiality_class` limitado a los 9 valores canónicos;
+4. `disposition` limitado a los 12 valores canónicos;
+5. `quarantine_reason`, cuando exista, limitado a los 8 valores canónicos;
+6. `manual_intervention_action`, cuando exista, limitado a los 10 valores canónicos;
+7. `closure_outcome`, cuando exista, limitado a los 8 outcomes reutilizados;
+8. `owner_application`, `owner_domain_ref` y `responsible_owner` no pueden perderse en un caso abierto;
+9. `contract_or_schema_version` obligatorio;
+10. `created_at` y `updated_at` obligatorios y coherentes;
+11. `closed_at` no puede anteceder a `created_at`;
+12. referencias de evidencia, idempotencia, mapping, conciliación y compensación conservan semántica separada;
+13. secretos excluidos de campos persistidos;
+14. package y ambiente permanecen aislados por el contrato físico propietario.
+
+---
+
+#### 42. Restricciones de cuarentena
+
+Cuando un caso está en `QUARANTINE`:
+
+1. `quarantine_ref` debe existir;
+2. `quarantine_reason` debe existir;
+3. la razón debe pertenecer al vocabulario cerrado;
+4. la unidad debe estar aislada del flujo ordinario;
+5. evidencia original o referencia protegida debe permanecer resoluble cuando sea exigible;
+6. el caso no puede auto-reprocesarse;
+7. el resultado empresarial no cambia por el aislamiento;
+8. liberar cuarentena exige resolución de causa y autorización aplicable.
+
+Un `quarantine_ref` no convierte por sí solo la disposición en cierre.
+
+---
+
+#### 43. Restricciones de dead-letter
+
+Cuando un caso está en `DEAD_LETTER_CANDIDATE`:
+
+1. `dead_letter_ref` debe existir;
+2. las siete puertas deben tener resultado explícito;
+3. no se admiten puertas duplicadas;
+4. no falta ninguna de las siete;
+5. todas deben estar satisfechas para la evaluación que habilita la disposición;
+6. si existe resultado desconocido, `reconciliation_ref` debe permanecer resoluble;
+7. owner y siguiente acción deben seguir asignados;
+8. la autorización de reproceso debe estar representada conforme al contrato;
+9. retención y auditoría deben estar definidas por referencia;
+10. dead-letter no cambia `business_outcome_reference` por inferencia.
+
+---
+
+#### 44. Restricciones de cierre
+
+Un caso cerrado deberá cumplir:
+
+1. `closure_outcome` permitido;
+2. `closed_at` presente;
+3. ausencia de outcome desconocido no resuelto;
+4. residual aceptado con evidencia y responsabilidad cuando aplique;
+5. `PERMANENTLY_REJECTED` solo con terminalidad segura;
+6. `RESOLVED_COMPENSATED` solo con compensación confirmada referenciada;
+7. `SUPERSEDED_BY_SUCCESSOR` con relación sucesora resoluble;
+8. el cierre no elimina evidencia histórica.
+
+Un caso abierto no puede usar `closed_at` para ocultar backlog.
+
+---
+
+#### 45. Integridad de referencias
+
+La futura persistencia deberá verificar, cuando la referencia sea aplicable al paquete:
+
+- principal técnico conocido;
+- evento externo recibido resoluble;
+- mapping conocido o estado explícitamente no resuelto;
+- idempotency ref compatible;
+- reconciliation ref compatible;
+- evidencia protegida accesible por la autoridad adecuada;
+- compensation plan ref únicamente como referencia a plan propietario;
+- audit refs emitidas por la superficie propietaria.
+
+Una FK física no sustituye validación de autorización o semántica.
+
+---
+
+#### 46. Índice de identidad del caso
+
+La futura implementación deberá disponer de unicidad o mecanismo equivalente sobre `integration_disposition_case_id`.
+
+No se permite usar como identidad universal:
+
+- error text;
+- payload hash aislado;
+- external system id;
+- receipt id aislado;
+- event id aislado;
+- mapping id;
+- idempotency key;
+- email o teléfono;
+- timestamp;
+- attempt id;
+- trace id.
+
+Los índices auxiliares no cambian la semántica de esos campos.
+
+---
+
+#### 47. Índices de backlog abierto
+
+Los casos abiertos deberán poder localizarse eficientemente por dimensiones operativas autorizadas, como:
+
+```text
+package / owner
++ responsible_owner
++ disposition
++ partiality_class
++ estado de cierre
++ temporalidad observable
+```
+
+La implementación puede usar índices parciales o equivalentes según la distribución real.
+
+No se fija un TTL ni prioridad universal.
+
+---
+
+#### 48. Índices de cuarentena
+
+Cuando el paquete materialice cuarentena, deberán ser resolubles sin escaneo completo al menos:
+
+```text
+owner / responsible_owner
++ quarantine_reason
++ estado abierto
++ ambiente cuando aplique
+```
+
+La consulta operativa no autoriza acceso automático al payload protegido.
+
+---
+
+#### 49. Índices de dead-letter
+
+Cuando exista evaluación de dead-letter, deberán ser resolubles:
+
+- casos candidatos abiertos;
+- resultado de sus siete gates;
+- owner y siguiente acción;
+- casos con conciliación abierta;
+- casos autorizables para reproceso conforme al owner.
+
+Un índice de backlog no constituye una queue ni autoriza ejecución.
+
+---
+
+#### 50. Índices de contexto externo
+
+Cuando el paquete tenga integración externa acreditada, se permiten índices de consulta por:
+
+```text
+external_system_id
+environment
+surface
+integration_principal_ref
+external_received_event_ref
+```
+
+Solo se materializan según patrones reales de investigación y soporte del paquete.
+
+No se crean para bindings inexistentes.
+
+---
+
+#### 51. Índices de idempotencia, mapping, auditoría y conciliación
+
+Puede requerirse acceso no único por:
+
+- `idempotency_ref`;
+- `external_identifier_mapping_refs`;
+- `reconciliation_ref`;
+- `audit_references`;
+- `business_outcome_reference`.
+
+Reglas:
+
+1. ninguno se convierte en identidad del caso;
+2. `idempotency_ref` conserva ownership de `INT-DB-005`;
+3. detalle de auditoría conserva ownership de `INT-DB-007`;
+4. conciliación conserva ownership de `INT-DB-008`;
+5. la existencia de una referencia no concede acceso al recurso referenciado.
+
+---
+
+#### 52. RLS, grants y acceso
+
+La futura persistencia deberá tratar cuarentena y errores no procesables como superficie sensible server-side.
+
+Reglas:
+
+1. acceso de lectura se limita por owner, finalidad y sensibilidad;
+2. soporte no obtiene payload completo por pertenecer a un grupo operativo;
+3. intervención exige autoridad distinta de la mera lectura cuando corresponda;
+4. una aplicación no muta el caso de otro owner por compartir base de datos;
+5. service role no sustituye autorización empresarial;
+6. las superficies cliente no reciben acceso directo por conveniencia;
+7. un adapter puede registrar metadata técnica de su propia frontera sin adquirir autoridad de cierre empresarial;
+8. RLS y grants físicos se definirán dentro de la futura instancia conforme al paquete y los contratos de autorización vigentes.
+
+Esta tarea documental no crea policies ni grants.
+
+---
+
+#### 53. Relación con `QUEUE-ARC-008`, `009`, `011` y `012`
+
+`INT-DB-006` define persistencia de estado y referencias; no absorbe la infraestructura de ejecución.
+
+Fronteras:
+
+| Materia | Owner |
+| --- | --- |
+| cola de fallos y recuperación manual | `QUEUE-ARC-008` |
+| exclusión concurrente de reproceso | `QUEUE-ARC-009` |
+| métricas de backlog, espera y error | `QUEUE-ARC-011` |
+| autorización operativa de retry o trabajo manual | `QUEUE-ARC-012` |
+
+Una futura queue puede referenciar el caso, pero no se convierte en la fuente del resultado empresarial.
+
+---
+
+#### 54. Frontera con `INT-DB-007`
+
+`INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones` es propietario de la historia detallada de procesamiento.
+
+`INT-DB-006` conserva únicamente referencias necesarias para el caso:
+
+```text
+attempt_references[]
+audit_references[]
+compensation_plan_ref
+manual_intervention_action
+authorization_reference
+```
+
+No materializa aquí:
+
+- cada intento;
+- cada retry;
+- cada transición de worker;
+- cada resultado técnico;
+- cada compensación ejecutada;
+- la línea temporal completa de auditoría.
+
+---
+
+#### 55. Frontera con `INT-DB-008`
+
+`INT-DB-008 — Crear mecanismos de conciliación por integración` es propietario de la persistencia y operación de conciliación.
+
+`INT-DB-006` conserva:
+
+```text
+reconciliation_ref
+partiality_class
+disposition
+business_outcome_reference
+residual_obligations
+```
+
+Un caso con incertidumbre puede permanecer aislado y simultáneamente vinculado a conciliación.
+
+Moverlo a dead-letter no cierra la conciliación.
+
+---
+
+#### 56. Migración de mecanismos legacy
+
+Una futura instancia deberá inventariar antes de migrar:
+
+- tablas o logs de errores existentes;
+- dead-letter o retry stores legacy;
+- estados genéricos `error`, `failed`, `pending` o equivalentes;
+- payloads duplicados en logs;
+- mecanismos de reintento automático;
+- jobs manuales de reproceso;
+- vínculos existentes con receipts, mappings o outcomes.
+
+No se permitirá mapear un estado legacy a cuarentena o dead-letter únicamente por semejanza textual.
+
+La migración exige evidencia suficiente para reconstruir semántica, ownership y estado.
+
+---
+
+#### 57. Backfill de casos históricos
+
+No existe backfill universal.
+
+Un registro histórico solo puede convertirse en `IntegrationDispositionCase` cuando sea posible reconstruir de forma suficientemente confiable:
+
+```text
+unidad exacta
+owner
+failure_scope
+partiality_class
+disposition
+contract/version
+estado empresarial conocido o explícitamente incierto
+evidencia o referencias mínimas
+```
+
+Si la información no alcanza:
+
+- no se fabrica `quarantine_reason`;
+- no se marca dead-letter por retry count aislado;
+- no se inventa `reconciliation_ref`;
+- no se inventa resultado empresarial;
+- el dato legacy conserva su tratamiento explícito del paquete hasta que exista una decisión acreditada.
+
+---
+
+#### 58. Rollback y forward-fix
+
+La reversión de una futura implementación no puede borrar casos que ya protegen evidencia, resultados desconocidos o decisiones de disposición.
+
+Reglas:
+
+1. DDL defectuoso puede revertirse o corregirse conforme a la política de migraciones;
+2. case IDs ya utilizados se preservan o migran de forma controlada;
+3. un rollback no elimina cuarentena para volver a procesar una unidad;
+4. dead-letter gate results ya observados no se reescriben para fabricar elegibilidad;
+5. evidencia original y content integrity refs permanecen reconstruibles;
+6. unknown outcomes conservan conciliación o handoff aplicable;
+7. un cambio de índice no reinterpreta la semántica histórica;
+8. un forward-fix conserva relación con la versión anterior;
+9. restaurar el runtime anterior no autoriza reprocesar efectos confirmados.
+
+---
+
+#### 59. Certificación física futura
+
+Una futura instancia `INT-DB-006::<package_id>` no podrá declararse materializada únicamente porque exista una tabla de errores.
+
+La certificación deberá demostrar como mínimo:
+
+1. migración canónica y reproducible desde `vento-shell`;
+2. shape compatible con `SHELL-CON-024`;
+3. reconstrucción de los 39 campos de nivel superior cuando sean aplicables;
+4. vocabularios exactos 8/9/12/8/7/10 y 8 outcomes reutilizados;
+5. case identity estable y no derivada de contenido sensible;
+6. cuarentena con razón cerrada y aislamiento real;
+7. dead-letter únicamente con las siete puertas satisfechas;
+8. resultado desconocido con conciliación abierta o handoff explícito;
+9. rechazo terminal sin ocultar efectos parciales;
+10. reproceso de misma intención conservando identity e idempotency scope;
+11. sucesor ante cambio material;
+12. evidencia protegida por referencia y minimización;
+13. ausencia de secretos y payloads duplicados por conveniencia;
+14. aislamiento entre package, owner y ambiente;
+15. RLS/grants alineados con autorización vigente;
+16. compatibilidad y backfill controlados para mecanismos legacy;
+17. rollback o forward-fix sin pérdida de historia ni protección;
+18. handoff a `INT-DB-007` para auditoría detallada;
+19. handoff a `INT-DB-008` para conciliación;
+20. ausencia de cambios fuera del `package_id` autorizado.
+
+---
+
+#### 60. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La tarea define documentalmente la persistencia futura de reglas de errores parciales, cuarentena, dead-letter, intervención, resultado desconocido, minimización, autorización, idempotencia y cierre que ya están protegidas por contratos y cobertura de prueba vigentes. No introduce un nuevo vocabulario, una nueva razón de cuarentena, una nueva puerta, una nueva acción manual, un nuevo outcome, un nuevo sistema externo ni un nuevo efecto empresarial. El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 61. Cobertura de prueba vigente reutilizada
+
+La cobertura vigente que sustenta esta tarea incluye, sin modificación:
+
+- `TREQ-INTEGRATION-003` — identidad estable, estado durable, resultado recuperable, idempotencia y recuperación manual controlada;
+- `TREQ-INTEGRATION-004` — reconstrucción de intentos, errores y efectos sin duplicación;
+- `TREQ-INTEGRATION-263` — ocho alcances de fallo y enlaces secundarios sin fusión de identidad;
+- `TREQ-INTEGRATION-264` — rechazo terminal solo con ausencia de efecto demostrada;
+- `TREQ-INTEGRATION-267` — reproceso conserva operación, key, huella, contenido y owner;
+- `TREQ-INTEGRATION-268` — resultados desconocidos requieren consulta o conciliación antes de acciones incompatibles;
+- `TREQ-INTEGRATION-269` — cuarentena limitada a ocho razones cerradas;
+- `TREQ-INTEGRATION-270` — cuarentena preserva identidad, contenido o referencia, hash, procedencia, sensibilidad, intentos y evidencia;
+- `TREQ-INTEGRATION-271` — dead-letter exige siete puertas acumulativas;
+- `TREQ-INTEGRATION-272` — dead-letter permanece disposición operativa y no estado empresarial;
+- `TREQ-INTEGRATION-273` — intervención manual atribuible, autorizada y auditada;
+- `TREQ-INTEGRATION-274` — allowlist de diez acciones manuales;
+- `TREQ-INTEGRATION-280` — línea temporal inmutable de tratamiento de errores parciales;
+- `TREQ-INTEGRATION-281` — minimización, referencias/hashes y exclusión de secretos;
+- `TREQ-INTEGRATION-282` — ownership y aging de casos abiertos sin cierre por antigüedad.
+
+Estas referencias son trazabilidad de cobertura existente y no representan cambios al registro.
+
+---
+
+#### 62. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería npm del checkout completo deberá ejecutarse después de incorporar el artefacto al owner documental vigente. |
+| LOCAL | PASS | El artefacto fue comprobado estructuralmente como UTF-8 sin BOM, LF, metadata compacta, secciones obligatorias, continuidad, cero requisitos en la sección de cambios, shape 2/8/39, vocabularios 8/9/12/8/7/10/8, matriz externa 21/21, distribución vigente 1+6+2+2+1+1+7+1, estados 12/8/1, topología `TEMPLATE_PER_PACKAGE`, gate `POST_E5_PACKAGE`, ausencia de placeholders prohibidos y alcance documental sin materialización física. |
+| REMOTA | PASS | Se verificaron en `main` el cierre de `INT-DB-005`, la continuidad vigente con `INT-DB-006` como tarea actual, el archivo propietario, topología, contrato de entrega, políticas de tarea, `INT-EXT-016`, `SHELL-CON-024`, la instancia verificada `SHELL-CON-024::GLOBAL`, el contrato generado de disposition, el registro 04A de integración, `package.json` y ausencia de rama remota `task/int-db-006` al corte. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron quarantines, dead-letter, reprocesos, provider calls, impresiones, pushes, pagos, compensaciones ni conciliaciones reales; esas pruebas pertenecen a futuras instancias por paquete. |
+| FÍSICA | NOT_APPLICABLE | La definición documental autoriza cero cambios físicos y no crea instancia `GLOBAL`; la materialización futura pertenece a `INT-DB-006::<package_id>` después de E5. |
+
+---
+
+#### 63. Criterios de aceptación
+
+`INT-DB-006` queda documentalmente cerrada cuando se demuestre que:
+
+1. existe una sola definición reutilizable de persistencia de casos de disposición;
+2. la topología es `TEMPLATE_PER_PACKAGE` y el gate es `POST_E5_PACKAGE`;
+3. ninguna instancia `GLOBAL` de `INT-DB-006` es creada o implícita;
+4. se consume `SHELL-CON-024` sin taxonomía paralela;
+5. se conservan shapes 2/8/39;
+6. se conservan exactamente 8 scopes, 9 partiality classes y 12 dispositions;
+7. se conservan exactamente 8 quarantine reasons, 7 dead-letter gates y 10 manual actions;
+8. se reutilizan exactamente 8 closure outcomes de `SHELL-CON-023`;
+9. `IntegrationDispositionCaseId` permanece estable, opaco y no secreto;
+10. retry técnico no crea un caso nuevo por defecto;
+11. cuarentena preserva unidad, identidad, evidencia e integridad y no cambia el business outcome;
+12. fallos transitorios ordinarios no se convierten en cuarentena;
+13. dead-letter requiere las siete puertas, sin excepción;
+14. retry agotado no produce dead-letter completo automáticamente;
+15. resultado desconocido no se transforma en fracaso y exige consulta o conciliación;
+16. dead-letter no cierra conciliación ni obligaciones abiertas;
+17. misma intención conserva idempotencia y huella compatible;
+18. cambio material exige corrección o sucesor;
+19. rechazo terminal exige ausencia de efecto incompatible demostrada;
+20. compensación se referencia únicamente para efectos confirmados y permanece bajo su owner;
+21. secretos y payload completo no se duplican por conveniencia;
+22. retención y hold no crean TTL universal;
+23. la persistencia queda aislada por package, owner y ambiente;
+24. la matriz conserva 21/21 identidades sin faltantes ni duplicados;
+25. la distribución vigente es `1+6+2+2+1+1+7+1`;
+26. los estados vigentes son `12 ESPECIFICADO + 8 NO_APLICA + 1 BLOQUEADO`;
+27. POS conserva especialización `EXTERNAL-SALE-LINE-QUARANTINE-001`;
+28. Telefonía / voz permanece bloqueada hasta `TI-INT-003`;
+29. sistemas sin binding no reciben casos ficticios;
+30. `INT-DB-007` conserva auditoría detallada de procesamiento, retries y compensaciones;
+31. `INT-DB-008` conserva conciliación;
+32. `QUEUE-ARC-008/009/011/012` conservan infraestructura de queue, concurrencia, métricas y autorización;
+33. backfill legacy exige evidencia suficiente y no usa semejanza textual;
+34. rollback conserva casos, evidencia, gates e incertidumbre ya registrada;
+35. la sección de requisitos derivados declara cero cambios y no contiene identificadores de requisito;
+36. la cobertura vigente queda trazada fuera de esa sección;
+37. ninguna modificación Supabase es ejecutada durante esta tarea documental.
+
+---
+
+#### 64. Decisiones vinculantes
+
+Quedan vinculantes para cualquier futura materialización de `INT-DB-006::<package_id>`:
+
+- el caso de disposición no es la operación empresarial;
+- cuarentena, dead-letter, rechazo, incertidumbre, conciliación y compensación permanecen conceptos distintos;
+- case ID es estable y no deriva del contenido sensible;
+- cuarentena usa únicamente las ocho razones cerradas;
+- dead-letter exige las siete puertas acumulativas;
+- retry agotado no determina outcome;
+- un resultado incierto no se repite a ciegas;
+- misma intención conserva idempotencia y evidencia;
+- cambio material crea corrección o sucesor;
+- owner empresarial retiene autoridad;
+- una queue no se convierte en owner;
+- evidencia protegida se referencia antes de duplicarse;
+- secrets y credential material quedan excluidos;
+- no existe TTL universal;
+- los 21 sistemas conservan la adopción reconciliada de `SHELL-CON-024`;
+- POS conserva su especialización vigente;
+- no se fabrica runtime para sistemas sin binding;
+- auditoría detallada pertenece a `INT-DB-007`;
+- conciliación pertenece a `INT-DB-008`;
+- toda materialización pertenece a un `package_id` aprobado después de E5.
+
+---
+
+#### 65. Límites
+
+Esta tarea no:
+
+- ejecuta DDL, DML, migraciones, RLS, RPC ni cambios remotos;
+- crea tablas, filas, índices, constraints, queues, topics, buckets, workers, cron o schedulers físicos;
+- crea casos runtime de disposition;
+- crea quarantine records runtime;
+- crea dead-letter records runtime;
+- ejecuta reprocesos;
+- ejecuta retries;
+- ejecuta compensaciones;
+- resuelve conciliaciones;
+- modifica `SHELL-CON-024`;
+- migra consumidores del contrato compartido;
+- almacena payload completo como mecanismo de debug;
+- crea ni rota credenciales;
+- acredita bindings ausentes;
+- cambia owners empresariales;
+- crea backlog empresarial para Sentry;
+- crea jobs persistentes para lecturas interactivas de Google Maps / Reviews;
+- crea una cuarentena externa universal para Supabase;
+- inventa política física para sistemas sin binding;
+- absorbe la auditoría detallada reservada a `INT-DB-007`;
+- absorbe la conciliación reservada a `INT-DB-008`;
+- inicia `INT-DB-007`.
+
+---
+
+#### 66. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`INT-DB-005 — Crear restricciones e índices de idempotencia`
+
+**TAREA ACTUAL APROBADA**
+`INT-DB-006 — Crear cuarentena y registro de errores no procesables`
+
+**SIGUIENTE TAREA RESERVADA**
+`INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones`
+
+
 ### [ ] INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones
 ### [ ] INT-DB-008 — Crear mecanismos de conciliación por integración
 
