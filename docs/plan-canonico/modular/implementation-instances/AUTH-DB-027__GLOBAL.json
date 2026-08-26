@@ -1,10 +1,132 @@
 {
   "instance_id": "AUTH-DB-027::GLOBAL",
   "task_id": "AUTH-DB-027",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "CREATE",
+      "scope": "Create the reusable local-only database harness with incremental and clean-rebuild modes, exact five-category discovery, migration-manifest integration, fail-closed command allowlisting, compact ASCII evidence and no staging/production access."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.test.mjs",
+      "change": "CREATE",
+      "scope": "Test mode selection, PostgreSQL-major parsing, mandatory category discovery, category-marker cardinality, local-only Supabase command restrictions, Windows-safe npm invocation, pg_prove summary parsing and stable package script exposure without requiring a remote project."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/000_schema_harness.test.sql",
+      "change": "CREATE",
+      "scope": "Create the self-contained pgTAP SCHEMA smoke suite that proves the local reconstructed database exposes required base schemas, auth.users and UUID support without relying on production data."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/010_integrity_harness.test.sql",
+      "change": "CREATE",
+      "scope": "Create the self-contained pgTAP INTEGRITY harness fixture proving valid inserts plus CHECK, UNIQUE and foreign-key enforcement inside a transaction that rolls back."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/020_rls_harness.test.sql",
+      "change": "CREATE",
+      "scope": "Create the self-contained pgTAP RLS harness fixture with authenticated JWT context and both positive owned-row access and negative lateral-row denial; service_role is not used as proof of protection."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/030_rpc_harness.test.sql",
+      "change": "CREATE",
+      "scope": "Create the self-contained pgTAP RPC harness fixture proving function existence, SECURITY INVOKER posture, explicit EXECUTE permission and contract result inside a rolled-back transaction."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/040_migrations_harness.test.sql",
+      "change": "CREATE",
+      "scope": "Create the self-contained pgTAP MIGRATIONS suite proving local migration history exists and is non-empty, applied versions are unique and runtime PostgreSQL major matches the configured major 17 after reconstruction."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "package.json",
+      "change": "MODIFY",
+      "scope": "Add supabase:db:harness:test, supabase:db:test and supabase:db:test:clean as stable harness entry points while preserving the existing canonical npm test facade and all unrelated scripts."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260415000000_nexo_locations_validation.sql",
+      "change": "MODIFY",
+      "scope": "Correct the historical local-replay blocker by replacing the nonexistent public.current_user_id() identity helper with the repository-canonical auth.uid() identity in exactly the two locations_validation RLS policy predicates; preserve all other migration semantics and statements."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest after the authorized historical migration correction so its sha256 and byte count match repository-canonical LF content; do not alter unrelated migration rows or findings."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-027__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, lifecycle transitions and consolidated evidence only for AUTH-DB-027::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Reuse the verified AUTH-DB-015 migration inventory implementation to rebuild and check MIGRATION_MANIFEST.md after the authorized historical migration correction; do not modify the generator implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after complete materialization and before IMPLEMENTED; require REPAIR_SCOPE PASS and READY_FOR_VALIDATION SI without editing the repair implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/quality/supabase-db-harness.mjs",
+    "node --test scripts/quality/supabase-db-harness.test.mjs",
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:db:test",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-25T22:00:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, HAGAMOS ESO",
+    "source_contract_sha256": "b1e67ceaa1943f34ae97c851cf4f219422ad4dedc06e0b7723f30a3838f3bedc"
+  },
+  "evidence": [
+    "MATERIALIZATION scripts/quality/supabase-db-harness.mjs created with local-only incremental and clean-rebuild modes, mandatory five-category discovery, migration-manifest integration, fail-closed command allowlisting and compact ASCII evidence",
+    "MATERIALIZATION scripts/quality/supabase-db-harness.test.mjs created with deterministic tests for modes, category coverage, local-only command restrictions, portable npm invocation, pg_prove parsing and package scripts",
+    "MATERIALIZATION five self-contained pgTAP suites created under supabase/tests/database for SCHEMA, INTEGRITY, RLS, RPC and MIGRATIONS with transactional rollback",
+    "MATERIALIZATION package.json exposes supabase:db:harness:test, supabase:db:test and supabase:db:test:clean while preserving unrelated scripts",
+    "HISTORICAL_REPLAY_FIX supabase/migrations/20260415000000_nexo_locations_validation.sql replaced exactly two nonexistent public.current_user_id() references with repository-canonical auth.uid() identity predicates",
+    "MIGRATION_MANIFEST supabase/MIGRATION_MANIFEST.md regenerated after the authorized historical migration correction",
+    "SOURCE CONTRACT SHA256 b1e67ceaa1943f34ae97c851cf4f219422ad4dedc06e0b7723f30a3838f3bedc",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "VALIDATION node --check scripts/quality/supabase-db-harness.mjs PASS",
+    "VALIDATION node --test scripts/quality/supabase-db-harness.test.mjs PASS",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS",
+    "VALIDATION npm run supabase:db:test PASS",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check PASS",
+    "HARNESS_INCREMENTAL migrations=550 test_files_discovered=5 pgtap_files_executed=5 assertions=20 schema=PASS integrity=PASS rls=PASS rpc=PASS migrations=PASS remote_targets_used=NO",
+    "PHYSICAL_SCOPE local Supabase only; staging and production NOT_USED",
+    "RESULT AUTH-DB-027::GLOBAL VERIFIED"
+  ]
 }

@@ -86,7 +86,7 @@ create policy "managers_site_validation"
     public.is_manager()
     and site_id in (
       select site_id from public.employee_sites 
-      where employee_id = public.current_user_id()
+      where employee_id = auth.uid()
     )
   );
 
@@ -94,7 +94,7 @@ create policy "managers_site_validation"
 create policy "auditors_own_validation"
   on public.locations_validation
   for all
-  using (auditor_id = public.current_user_id());
+  using (auditor_id = auth.uid());
 
 -- Asignar permiso inventory.validation a propietario
 insert into public.role_permissions (role, permission_id, scope_type)
