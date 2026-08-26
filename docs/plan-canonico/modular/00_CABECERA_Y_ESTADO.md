@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1049** |
+| Tareas aprobadas | **1050** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **545** |
+| Tareas no iniciadas | **544** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **65.81% (1049/1594)** |
+| Porcentaje de completamiento | **65.87% (1050/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **INT-DB-005 — Crear restricciones e índices de idempotencia** |
-| Tarea actual | **INT-DB-006 — Crear cuarentena y registro de errores no procesables** |
+| Última tarea aprobada | **INT-DB-006 — Crear cuarentena y registro de errores no procesables** |
+| Tarea actual | **INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones** |
+| Siguiente tarea | **INT-DB-008 — Crear mecanismos de conciliación por integración** |
 | Bloque actual | **BLOQUE R — Fundación física, migraciones por dominio y normalización** |
-| Progreso del bloque | **BLOQUE R: 48 de 51 aprobadas; INT-DB-006 pendiente** |
+| Progreso del bloque | **BLOQUE R: 49 de 51 aprobadas; INT-DB-007 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-029::GLOBAL** |
-| Carril documental | **ACTIVO — INT-DB-006** |
+| Carril documental | **ACTIVO — INT-DB-007** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-029::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `INT-DB-005` — Crear restricciones e índices de idempotencia |
-| Tarea actual | `INT-DB-006` — Crear cuarentena y registro de errores no procesables — **NO INICIADA** |
-| Siguiente tarea | `INT-DB-007` — Crear auditoría de procesamiento, reintentos y compensaciones |
+| Última aprobada | `INT-DB-006` — Crear cuarentena y registro de errores no procesables |
+| Tarea actual | `INT-DB-007` — Crear auditoría de procesamiento, reintentos y compensaciones — **NO INICIADA** |
+| Siguiente tarea | `INT-DB-008` — Crear mecanismos de conciliación por integración |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE R: 48 DE 51 APROBADAS — ACTUAL INT-DB-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE R: 49 DE 51 APROBADAS — ACTUAL INT-DB-007** |
 | Implementación física | **AUTH-DB-029::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-INT-DB-005 — Crear restricciones e índices de idempotencia
-        ↓
-TAREA ACTUAL
 INT-DB-006 — Crear cuarentena y registro de errores no procesables
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 INT-DB-007 — Crear auditoría de procesamiento, reintentos y compensaciones
         ↓
+SIGUIENTE TAREA RESERVADA
+INT-DB-008 — Crear mecanismos de conciliación por integración
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE R — 48 de 51 tareas aprobadas
+BLOQUE R — 49 de 51 tareas aprobadas
 ```
