@@ -1,10 +1,105 @@
 {
   "instance_id": "AUTH-DB-028::GLOBAL",
   "task_id": "AUTH-DB-028",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "CREATE",
+      "scope": "Create the reusable fail-closed baseline and environment-drift controller. Derive expected state from the versioned vento-shell candidate, observe local and explicitly identified hosted environments read-only, fingerprint applicable database and hosted surfaces, classify EXPECTED_OVERLAY, TEMPORARY_EXCEPTION, UNAUTHORIZED_DRIFT and INSUFFICIENT_EVIDENCE, exclude VITAL from the governed Vento OS surface, redact secret values and never perform remote repair or mutation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.test.mjs",
+      "change": "CREATE",
+      "scope": "Test deterministic TOML parsing, stable fingerprints, Edge Function and secret-name inventory, Management API read-only allowlisting, exact drift allowlists, local and remote certification gates, VITAL exclusion, mutation-free SQL fingerprints and stable package script exposure without mutating Supabase."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "package.json",
+      "change": "MODIFY",
+      "scope": "Add supabase:drift:test, supabase:drift:expected, supabase:drift:local and supabase:drift:remote as stable entry points while preserving all existing scripts, dependencies, engines and the canonical npm test facade."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md",
+      "change": "MODIFY",
+      "scope": "Document the physical AUTH-DB-028 baseline/drift tooling, its read-only environmental boundary, explicit environment identity, evidence and allowlist semantics, VITAL exclusion, and the preserved AUTH-DB-015 -> AUTH-DB-027 -> AUTH-DB-028 -> AUTH-DB-029 responsibility chain."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-028__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record authorization, physical lifecycle transitions and consolidated evidence only for AUTH-DB-028::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Reuse the VERIFIED AUTH-DB-015 migration inventory as the versioned expected migration authority; do not modify the manifest generator implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Reuse the VERIFIED AUTH-DB-027 local database harness for local candidate reconstruction and test evidence; do not modify the harness implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute npm run quality:repair exactly once after complete materialization and before IMPLEMENTED; require REPAIR_SCOPE PASS and READY_FOR_VALIDATION SI without editing the repair implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish for the physical branch lifecycle; do not edit the lifecycle implementation."
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/supabase/environment-drift.mjs",
+    "node --test scripts/supabase/environment-drift.test.mjs",
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:drift:local",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-26T08:49:10-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "2a7dded675de4004a511f952c85aacd94adbbdc69c96e5f5cdc88ae92597be7a"
+  },
+  "evidence": [
+    "MATERIALIZATION scripts/supabase/environment-drift.mjs created as the reusable fail-closed expected-vs-observed baseline and drift controller",
+    "MATERIALIZATION scripts/supabase/environment-drift.test.mjs created with deterministic read-only boundary and classification tests",
+    "MATERIALIZATION package.json exposes supabase:drift:test, supabase:drift:expected, supabase:drift:local and supabase:drift:remote",
+    "MATERIALIZATION docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md reconciled with AUTH-DB-028 read-only environmental baseline and drift responsibility",
+    "FILE_SHA256 scripts/supabase/environment-drift.mjs 1cd29154827f178acf75b2b6d0a927505cef1bdbd299980645a4c284a8c94790",
+    "FILE_SHA256 scripts/supabase/environment-drift.test.mjs 2e02e70625860b7f1b35f6eea43528f8f4756ae1f92b4c975788c1834da49830",
+    "FILE_SHA256 package.json 2547acea74e8bdabd3da482024ff26f115e67efd52e79e906dc209993f52d511",
+    "FILE_SHA256 docs/ARQUITECTURA-MIGRACIONES-CENTRALIZADAS.md dcc17e339325b9306eb3b0e3e3ec0b8eb3e7e19c9232fa676883316b55e63d21",
+    "SOURCE CONTRACT SHA256 2a7dded675de4004a511f952c85aacd94adbbdc69c96e5f5cdc88ae92597be7a",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "REPLAY_DEPENDENCY PR #192 merged after required gate PASS; active implementation branch fast-forwarded to merge 61e0addebd8b00f134652953625a17945f1982e4",
+    "DEFECT_FIX local SQL fingerprint output exceeded the Node spawnSync default buffer; bounded process output capacity raised to 32 MiB without enabling mutations or exposing secret values",
+    "VALIDATION node --check scripts/supabase/environment-drift.mjs PASS",
+    "VALIDATION node --test scripts/supabase/environment-drift.test.mjs PASS tests=15 failures=0",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS migrations=550",
+    "VALIDATION npm run supabase:db:test:clean PASS migrations=550 pgtap_files=5 assertions=20 remote_targets_used=NO",
+    "VALIDATION npm run supabase:drift:local PASS unauthorized_drift=0 insufficient_evidence=1 reason=DIRTY_CANDIDATE_BEFORE_COMMIT remote_mutations=NO secret_values_in_evidence=NO",
+    "VALIDATION npm run quality:lint:ratchet PASS touched_files=7",
+    "VALIDATION git --no-pager diff --check PASS",
+    "PHYSICAL_SCOPE local Supabase only; staging and production NOT_USED",
+    "RESULT AUTH-DB-028::GLOBAL VERIFIED"
+  ]
 }
