@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-002::GLOBAL",
   "task_id": "AUTH-DB-002",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -120,6 +120,20 @@
     "FILE_SHA256 supabase/tests/database/021_auth_db_002_rls_containment.test.sql 52402e2e840a36a602f3d8cc5be2810f0655eee93bd01a0bfc09639f488f8b09",
     "CORRECTION_PROBE supabase_test_db path=supabase/tests/database/021_auth_db_002_rls_containment.test.sql tests=40 result=PASS",
     "CORRECTION_PROBE storage_documents_bucket_fixture_rollback=PASS persisted_count=0",
-    "CORRECTION_PROBE poststate broad_policies=0 hardened_policies=6"
+    "CORRECTION_PROBE poststate broad_policies=0 hardened_policies=6",
+    "FINAL_CANDIDATE_SHA e28fed31ae7a347ae387f1cbd4119b07ac8ab1a2",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS migrations=552 test_files=6 assertions=60",
+    "VALIDATION npm run supabase:recovery:local PASS",
+    "RECOVERY_EVIDENCE .delivery/supabase-recovery/20260826231507233-e28fed31ae7a-8ff7d098/evidence.json",
+    "RECOVERY_OUTCOME PASS_ROLLBACK_VERIFIED",
+    "RECOVERY_RPO actual=0 target=0 synthetic_state_loss_units",
+    "RECOVERY_RTO_MS actual=25585 target=900000",
+    "VALIDATION node scripts/supabase/environment-drift.mjs local --strict PASS drift_total=0 certification=LOCAL_CERTIFIED",
+    "DRIFT_EVIDENCE SOURCE=CONTROLLER_OUTPUT EVIDENCE_FILE=NOT_WRITTEN",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check origin/main...HEAD PASS",
+    "REMOTE_TARGETS_USED NO",
+    "RESULT AUTH-DB-002::GLOBAL VERIFIED"
   ]
 }
