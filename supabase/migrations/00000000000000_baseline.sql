@@ -5191,6 +5191,283 @@ ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TAB
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON TABLES TO "service_role";
 
 
+-- Restore the attendance-break contract that already existed when the
+-- post-baseline attendance migrations were authored. Without this block a
+-- clean replay diverges from the historical database.
+CREATE TABLE IF NOT EXISTS "public"."attendance_breaks" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "employee_id" "uuid" NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "started_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "ended_at" timestamp with time zone,
+    "start_source" "text" DEFAULT 'mobile'::"text" NOT NULL,
+    "end_source" "text",
+    "start_notes" "text",
+    "end_notes" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "attendance_breaks_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "attendance_breaks_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE,
+    CONSTRAINT "attendance_breaks_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE RESTRICT,
+    CONSTRAINT "attendance_breaks_end_source_check" CHECK (("end_source" IS NULL) OR ("end_source" = ANY (ARRAY['mobile'::"text", 'web'::"text", 'kiosk'::"text", 'system'::"text"]))),
+    CONSTRAINT "attendance_breaks_start_source_check" CHECK ("start_source" = ANY (ARRAY['mobile'::"text", 'web'::"text", 'kiosk'::"text", 'system'::"text"])),
+    CONSTRAINT "attendance_breaks_time_check" CHECK (("ended_at" IS NULL) OR ("ended_at" >= "started_at"))
+);
+
+ALTER TABLE "public"."attendance_breaks" OWNER TO "postgres";
+
+CREATE INDEX "attendance_breaks_employee_started_idx"
+ON "public"."attendance_breaks" USING "btree" ("employee_id", "started_at" DESC);
+
+CREATE UNIQUE INDEX "attendance_breaks_one_open_per_employee_idx"
+ON "public"."attendance_breaks" USING "btree" ("employee_id")
+WHERE ("ended_at" IS NULL);
+
+CREATE INDEX "attendance_breaks_site_started_idx"
+ON "public"."attendance_breaks" USING "btree" ("site_id", "started_at" DESC);
+
+CREATE OR REPLACE FUNCTION "public"."start_attendance_break"(
+    "p_site_id" "uuid",
+    "p_source" "text" DEFAULT 'mobile'::"text",
+    "p_notes" "text" DEFAULT NULL::"text"
+) RETURNS "public"."attendance_breaks"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+AS $$
+declare
+  v_employee public.employees%rowtype;
+  v_last_action text;
+  v_last_site_id uuid;
+  v_result public.attendance_breaks%rowtype;
+begin
+  if auth.uid() is null then
+    raise exception 'No autenticado';
+  end if;
+
+  select * into v_employee
+  from public.employees
+  where id = auth.uid();
+
+  if not found then
+    raise exception 'Empleado no encontrado';
+  end if;
+
+  if coalesce(v_employee.is_active, false) is false then
+    raise exception 'Empleado inactivo';
+  end if;
+
+  select action, site_id into v_last_action, v_last_site_id
+  from public.attendance_logs
+  where employee_id = v_employee.id
+  order by occurred_at desc, created_at desc
+  limit 1;
+
+  if v_last_action is distinct from 'check_in' then
+    raise exception 'No hay un turno activo para iniciar descanso';
+  end if;
+
+  if p_site_id is not null and p_site_id is distinct from v_last_site_id then
+    raise exception 'La sede del descanso no coincide con el turno activo';
+  end if;
+
+  if exists (
+    select 1 from public.attendance_breaks b
+    where b.employee_id = v_employee.id and b.ended_at is null
+  ) then
+    raise exception 'Ya tienes un descanso activo';
+  end if;
+
+  insert into public.attendance_breaks (
+    employee_id, site_id, started_at, start_source, start_notes
+  ) values (
+    v_employee.id, coalesce(p_site_id, v_last_site_id), now(),
+    coalesce(p_source, 'mobile'), p_notes
+  )
+  returning * into v_result;
+
+  return v_result;
+end;
+$$;
+
+ALTER FUNCTION "public"."start_attendance_break"("uuid", "text", "text") OWNER TO "postgres";
+
+CREATE OR REPLACE FUNCTION "public"."end_attendance_break"(
+    "p_source" "text" DEFAULT 'mobile'::"text",
+    "p_notes" "text" DEFAULT NULL::"text"
+) RETURNS "public"."attendance_breaks"
+    LANGUAGE "plpgsql" SECURITY DEFINER
+    SET "search_path" TO 'public'
+AS $$
+declare
+  v_employee_id uuid;
+  v_open_break public.attendance_breaks%rowtype;
+  v_result public.attendance_breaks%rowtype;
+begin
+  v_employee_id := auth.uid();
+  if v_employee_id is null then
+    raise exception 'No autenticado';
+  end if;
+
+  select * into v_open_break
+  from public.attendance_breaks
+  where employee_id = v_employee_id and ended_at is null
+  order by started_at desc
+  limit 1
+  for update;
+
+  if not found then
+    raise exception 'No hay descanso activo para finalizar';
+  end if;
+
+  update public.attendance_breaks
+  set ended_at = now(),
+      end_source = coalesce(p_source, 'mobile'),
+      end_notes = p_notes
+  where id = v_open_break.id
+  returning * into v_result;
+
+  return v_result;
+end;
+$$;
+
+ALTER FUNCTION "public"."end_attendance_break"("text", "text") OWNER TO "postgres";
+
+CREATE OR REPLACE TRIGGER "attendance_breaks_set_updated_at"
+BEFORE UPDATE ON "public"."attendance_breaks"
+FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
+
+ALTER TABLE "public"."attendance_breaks" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "attendance_breaks_select_self"
+ON "public"."attendance_breaks"
+FOR SELECT TO "authenticated"
+USING ("employee_id" = "auth"."uid"());
+
+CREATE POLICY "attendance_breaks_select_manager"
+ON "public"."attendance_breaks"
+FOR SELECT TO "authenticated"
+USING (
+  EXISTS (
+    SELECT 1
+    FROM "public"."employees" "e"
+    WHERE "e"."id" = "auth"."uid"()
+      AND "e"."role" = ANY (ARRAY['owner'::"text", 'manager'::"text", 'global_manager'::"text"])
+      AND (
+        "e"."role" = ANY (ARRAY['owner'::"text", 'global_manager'::"text"])
+        OR "e"."site_id" = "attendance_breaks"."site_id"
+      )
+  )
+);
+
+GRANT ALL ON TABLE "public"."attendance_breaks" TO "authenticated";
+GRANT ALL ON TABLE "public"."attendance_breaks" TO "service_role";
+GRANT ALL ON FUNCTION "public"."start_attendance_break"("uuid", "text", "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."start_attendance_break"("uuid", "text", "text") TO "service_role";
+GRANT ALL ON FUNCTION "public"."end_attendance_break"("text", "text") TO "authenticated";
+GRANT ALL ON FUNCTION "public"."end_attendance_break"("text", "text") TO "service_role";
+
+
+-- Restore the departure-event table used by attendance migrations authored
+-- after the baseline snapshot.
+CREATE TABLE IF NOT EXISTS "public"."attendance_shift_events" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "employee_id" "uuid" NOT NULL,
+    "site_id" "uuid" NOT NULL,
+    "shift_start_at" timestamp with time zone NOT NULL,
+    "event_type" "text" NOT NULL,
+    "occurred_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "distance_meters" integer,
+    "accuracy_meters" integer,
+    "source" "text" DEFAULT 'mobile'::"text" NOT NULL,
+    "notes" "text",
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    CONSTRAINT "attendance_shift_events_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "attendance_shift_events_employee_id_fkey" FOREIGN KEY ("employee_id") REFERENCES "public"."employees"("id") ON DELETE CASCADE,
+    CONSTRAINT "attendance_shift_events_site_id_fkey" FOREIGN KEY ("site_id") REFERENCES "public"."sites"("id") ON DELETE RESTRICT,
+    CONSTRAINT "attendance_shift_events_accuracy_check" CHECK (("accuracy_meters" IS NULL) OR ("accuracy_meters" >= 0)),
+    CONSTRAINT "attendance_shift_events_distance_check" CHECK (("distance_meters" IS NULL) OR ("distance_meters" >= 0)),
+    CONSTRAINT "attendance_shift_events_event_type_check" CHECK ("event_type" = ANY (ARRAY['left_site_open_shift'::"text"])),
+    CONSTRAINT "attendance_shift_events_source_check" CHECK ("source" = ANY (ARRAY['mobile'::"text", 'web'::"text", 'kiosk'::"text", 'system'::"text"]))
+);
+
+ALTER TABLE "public"."attendance_shift_events" OWNER TO "postgres";
+
+CREATE INDEX "attendance_shift_events_employee_shift_idx"
+ON "public"."attendance_shift_events" USING "btree" ("employee_id", "shift_start_at" DESC);
+
+CREATE INDEX "attendance_shift_events_site_occurred_idx"
+ON "public"."attendance_shift_events" USING "btree" ("site_id", "occurred_at" DESC);
+
+CREATE UNIQUE INDEX "attendance_shift_events_unique_shift_event_idx"
+ON "public"."attendance_shift_events" USING "btree" ("employee_id", "shift_start_at", "event_type");
+
+CREATE OR REPLACE TRIGGER "attendance_shift_events_set_updated_at"
+BEFORE UPDATE ON "public"."attendance_shift_events"
+FOR EACH ROW EXECUTE FUNCTION "public"."update_updated_at"();
+
+ALTER TABLE "public"."attendance_shift_events" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "attendance_shift_events_select_self"
+ON "public"."attendance_shift_events"
+FOR SELECT TO "authenticated"
+USING ("employee_id" = "auth"."uid"());
+
+CREATE POLICY "attendance_shift_events_select_manager"
+ON "public"."attendance_shift_events"
+FOR SELECT TO "authenticated"
+USING (
+  EXISTS (
+    SELECT 1
+    FROM "public"."employees" "e"
+    WHERE "e"."id" = "auth"."uid"()
+      AND "e"."role" = ANY (ARRAY['propietario'::"text", 'gerente'::"text", 'gerente_general'::"text"])
+      AND (
+        "e"."role" = ANY (ARRAY['propietario'::"text", 'gerente_general'::"text"])
+        OR "e"."site_id" = "attendance_shift_events"."site_id"
+      )
+  )
+);
+
+GRANT ALL ON TABLE "public"."attendance_shift_events" TO "authenticated";
+GRANT ALL ON TABLE "public"."attendance_shift_events" TO "service_role";
+
+
+-- Restore the service-side Apple Wallet registration tables that are present
+-- in the deployed schema and hardened by later RLS migrations.
+CREATE TABLE IF NOT EXISTS "public"."wallet_passes" (
+    "serial_number" "text" NOT NULL,
+    "user_id" "uuid" NOT NULL,
+    "pass_type_identifier" "text" NOT NULL,
+    "auth_token" "text" NOT NULL,
+    "data_hash" "text",
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "wallet_passes_pkey" PRIMARY KEY ("serial_number")
+);
+
+ALTER TABLE "public"."wallet_passes" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "public"."wallet_devices" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "device_library_identifier" "text" NOT NULL,
+    "pass_type_identifier" "text" NOT NULL,
+    "serial_number" "text" NOT NULL,
+    "push_token" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"(),
+    "updated_at" timestamp with time zone DEFAULT "now"(),
+    CONSTRAINT "wallet_devices_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "wallet_devices_device_library_identifier_pass_type_identifi_key" UNIQUE ("device_library_identifier", "pass_type_identifier", "serial_number"),
+    CONSTRAINT "wallet_devices_serial_number_fkey" FOREIGN KEY ("serial_number") REFERENCES "public"."wallet_passes"("serial_number") ON DELETE CASCADE
+);
+
+ALTER TABLE "public"."wallet_devices" OWNER TO "postgres";
+
+GRANT ALL ON TABLE "public"."wallet_devices" TO "authenticated";
+GRANT ALL ON TABLE "public"."wallet_devices" TO "service_role";
+GRANT ALL ON TABLE "public"."wallet_passes" TO "authenticated";
+GRANT ALL ON TABLE "public"."wallet_passes" TO "service_role";
+
+
 
 
 

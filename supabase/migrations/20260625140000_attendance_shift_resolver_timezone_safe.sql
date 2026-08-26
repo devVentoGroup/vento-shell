@@ -27,8 +27,16 @@ as $function$
       s.id,
       case
         when p_action = 'check_in'
-          then abs(extract(epoch from (p_occurred_at - public._shift_start_at_bogota(s.shift_date, s.start_time))))
-        else abs(extract(epoch from (p_occurred_at - public._shift_end_at_bogota(s.shift_date, s.end_time))))
+          then abs(extract(epoch from (
+            p_occurred_at - ((s.shift_date + s.start_time) at time zone 'America/Bogota')
+          )))
+        else abs(extract(epoch from (
+          p_occurred_at - (
+            s.shift_date
+            + s.end_time
+            + case when s.end_time <= s.start_time then interval '1 day' else interval '0' end
+          ) at time zone 'America/Bogota'
+        )))
       end as distance_seconds
     from public.employee_shifts s
     cross join policy p
@@ -47,14 +55,22 @@ as $function$
       and (
         (
           p_action = 'check_in'
-          and p_occurred_at >= public._shift_start_at_bogota(s.shift_date, s.start_time) - make_interval(mins => p.early_checkin)
-          and p_occurred_at <= public._shift_start_at_bogota(s.shift_date, s.start_time) + make_interval(mins => p.late_checkin)
+          and p_occurred_at >= ((s.shift_date + s.start_time) at time zone 'America/Bogota') - make_interval(mins => p.early_checkin)
+          and p_occurred_at <= ((s.shift_date + s.start_time) at time zone 'America/Bogota') + make_interval(mins => p.late_checkin)
         )
         or
         (
           p_action = 'check_out'
-          and p_occurred_at >= public._shift_end_at_bogota(s.shift_date, s.end_time) - make_interval(mins => p.early_checkout)
-          and p_occurred_at <= public._shift_end_at_bogota(s.shift_date, s.end_time) + make_interval(mins => p.late_checkout)
+          and p_occurred_at >= ((
+              s.shift_date
+              + s.end_time
+              + case when s.end_time <= s.start_time then interval '1 day' else interval '0' end
+            ) at time zone 'America/Bogota') - make_interval(mins => p.early_checkout)
+          and p_occurred_at <= ((
+              s.shift_date
+              + s.end_time
+              + case when s.end_time <= s.start_time then interval '1 day' else interval '0' end
+            ) at time zone 'America/Bogota') + make_interval(mins => p.late_checkout)
         )
       )
     order by distance_seconds asc, s.shift_date asc, s.start_time asc

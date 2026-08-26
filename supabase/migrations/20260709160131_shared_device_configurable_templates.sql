@@ -1,4 +1,4 @@
-﻿create table if not exists public.shared_operational_device_templates (
+create table if not exists public.shared_operational_device_templates (
   id uuid primary key default gen_random_uuid(),
   code text not null unique,
   label text not null,

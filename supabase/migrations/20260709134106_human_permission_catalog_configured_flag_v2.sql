@@ -1,4 +1,4 @@
-﻿create or replace view public.permission_catalog_human_v1 as
+create or replace view public.permission_catalog_human_v1 as
 select
   ap.id,
   a.code as app_code,

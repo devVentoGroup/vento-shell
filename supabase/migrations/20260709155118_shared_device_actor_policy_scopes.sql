@@ -1,4 +1,4 @@
-﻿create table if not exists public.shared_operational_device_actor_policies (
+create table if not exists public.shared_operational_device_actor_policies (
   id uuid primary key default gen_random_uuid(),
   device_id uuid not null references public.shared_operational_devices(id) on delete cascade,
   policy_type text not null,

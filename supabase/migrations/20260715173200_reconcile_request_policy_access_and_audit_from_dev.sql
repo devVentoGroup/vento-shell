@@ -1,5 +1,7 @@
 -- Vista de auditoría, RLS y permisos del dominio de políticas de solicitud.
 
+drop view if exists public.product_request_policy_audit_summary;
+
 create or replace view public.product_request_policy_audit_summary
 with (security_invoker = true)
 as

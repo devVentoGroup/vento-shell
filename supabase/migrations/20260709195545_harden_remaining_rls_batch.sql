@@ -1,4 +1,4 @@
-﻿begin;
+begin;
 
 -- Security Advisor batch: enable RLS on remaining exposed tables without
 -- turning internal/staging data into client-readable data.
@@ -23,7 +23,17 @@ alter table public.inventory_unit_aliases enable row level security;
 alter table public.inventory_units enable row level security;
 alter table public.operational_roles enable row level security;
 alter table public.procurement_supplier_product_costs enable row level security;
-alter table public.product_categories_backup_20260316_preparaciones enable row level security;
+do $$
+begin
+  if to_regclass('public.product_categories_backup_20260316_preparaciones') is not null then
+    execute 'alter table public.product_categories_backup_20260316_preparaciones enable row level security';
+    execute 'drop policy if exists no_client_access_product_categories_backup_preparaciones on public.product_categories_backup_20260316_preparaciones';
+    execute 'create policy no_client_access_product_categories_backup_preparaciones on public.product_categories_backup_20260316_preparaciones for all to anon, authenticated using (false) with check (false)';
+  else
+    raise notice 'Backup-table RLS hardening skipped: public.product_categories_backup_20260316_preparaciones does not exist.';
+  end if;
+end
+$$;
 alter table public.product_cost_events enable row level security;
 alter table public.product_site_production_routes enable row level security;
 alter table public.production_batch_consumptions enable row level security;
@@ -473,14 +483,6 @@ with check (
 drop policy if exists no_client_access_asistencia_logs on public.asistencia_logs;
 create policy no_client_access_asistencia_logs
 on public.asistencia_logs
-for all
-to anon, authenticated
-using (false)
-with check (false);
-
-drop policy if exists no_client_access_product_categories_backup_preparaciones on public.product_categories_backup_20260316_preparaciones;
-create policy no_client_access_product_categories_backup_preparaciones
-on public.product_categories_backup_20260316_preparaciones
 for all
 to anon, authenticated
 using (false)

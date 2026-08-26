@@ -1,10 +1,27 @@
-﻿do $$
+do $$
 declare
   v_auth_user_id uuid := 'f39717c8-20e4-4bfb-913b-ce89668f94c1'::uuid;
   v_site_id uuid := '407ccca3-bc35-4252-8998-7280623de78f'::uuid;
   v_area_id uuid := '1c013f8f-2020-4fa3-b8a9-33e055842209'::uuid;
   v_device_id uuid;
 begin
+  if not exists (select 1 from auth.users where id = v_auth_user_id) then
+    raise notice 'KIOSCO_BODEGA_CP registration skipped: legacy Auth user is not provisioned in this environment.';
+    return;
+  end if;
+
+  if not exists (select 1 from public.sites where id = v_site_id) then
+    raise notice 'KIOSCO_BODEGA_CP registration skipped: target site is not provisioned in this environment.';
+    return;
+  end if;
+
+  if not exists (
+    select 1 from public.areas where id = v_area_id and site_id = v_site_id
+  ) then
+    raise notice 'KIOSCO_BODEGA_CP registration skipped: target area is not provisioned for the configured site.';
+    return;
+  end if;
+
   insert into public.shared_operational_devices (
     code,
     label,

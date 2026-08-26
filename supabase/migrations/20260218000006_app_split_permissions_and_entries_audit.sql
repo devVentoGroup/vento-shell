@@ -84,7 +84,7 @@ on conflict do nothing;
 
 -- Operational site grants.
 insert into public.role_permissions (role, permission_id, scope_type, scope_site_type)
-select r.role, ap.id, 'site'::public.permission_scope_type, r.scope_site_type::public.site_type
+select r.role, ap.id, 'site_type'::public.permission_scope_type, r.scope_site_type::public.site_type
 from public.app_permissions ap
 join public.apps a on a.id = ap.app_id
 join (
