@@ -57,12 +57,12 @@ La ausencia, ambigüedad, retiro, cancelación, invalidez temporal o indisponibi
 
 ANIMA adopta un contrato previo al check-in con cuatro resultados funcionales:
 
-| Resultado | Significado | Continuación |
-| --- | --- | --- |
-| `RESOLVED` | existe exactamente una publicación laboral aplicable y temporalmente utilizable para el actor | entregar la referencia del turno y sus hechos publicados a `ANIMA-AUTH-002` |
-| `NO_PUBLISHED_SHIFT` | no existe publicación laboral utilizable | denegar la marcación, conservar la sesión y producir cero efectos de asistencia |
-| `AMBIGUOUS_PUBLISHED_SHIFT` | más de una publicación pretende ser aplicable y no existe resolución canónica inequívoca | fallar cerrado; no escoger por orden, cliente, check-in ni último turno |
-| `SOURCE_UNAVAILABLE` | la fuente necesaria no puede resolverse de forma concluyente | fallar cerrado y conservar la indisponibilidad como fallo técnico, no como ausencia ordinaria |
+| Resultado                   | Significado                                                                                   | Continuación                                                                                  |
+| --------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `RESOLVED`                  | existe exactamente una publicación laboral aplicable y temporalmente utilizable para el actor | entregar la referencia del turno y sus hechos publicados a `ANIMA-AUTH-002`                   |
+| `NO_PUBLISHED_SHIFT`        | no existe publicación laboral utilizable                                                      | denegar la marcación, conservar la sesión y producir cero efectos de asistencia               |
+| `AMBIGUOUS_PUBLISHED_SHIFT` | más de una publicación pretende ser aplicable y no existe resolución canónica inequívoca      | fallar cerrado; no escoger por orden, cliente, check-in ni último turno                       |
+| `SOURCE_UNAVAILABLE`        | la fuente necesaria no puede resolverse de forma concluyente                                  | fallar cerrado y conservar la indisponibilidad como fallo técnico, no como ausencia ordinaria |
 
 Cuando existe una única publicación pero la hora de servidor está fuera de su intervalo autorizado, el resultado funcional es `OUTSIDE_SHIFT_WINDOW`; el check-in no continúa.
 
@@ -146,18 +146,18 @@ La lógica especial de turnos que cruzan medianoche pertenece a `ANIMA-AUTH-013`
 
 #### 6. Matriz de decisión previa al check-in
 
-| Caso | Publicación | Tiempo | Cardinalidad | Decisión |
-| --- | --- | --- | --- | --- |
-| A | publicada y laboral | dentro de ventana | exactamente una | `RESOLVED` |
-| B | ninguna utilizable | no aplica | cero | `NO_PUBLISHED_SHIFT` |
-| C | borrador o no publicada | cualquiera | cero utilizable | `NO_PUBLISHED_SHIFT` |
-| D | cancelada, retirada o sustituida | cualquiera | cero utilizable | `NO_PUBLISHED_SHIFT` |
-| E | publicada y laboral | antes del inicio | exactamente una | `OUTSIDE_SHIFT_WINDOW` |
-| F | publicada y laboral | en o después del fin | exactamente una | `OUTSIDE_SHIFT_WINDOW` |
-| G | candidatas incompatibles | cualquiera | más de una | `AMBIGUOUS_PUBLISHED_SHIFT` |
-| H | fuente requerida no verificable | desconocido | desconocida | `SOURCE_UNAVAILABLE` |
-| I | cliente propone un turno distinto al resuelto por servidor | cualquiera | cualquiera | ignorar la propuesta como autoridad y conservar la resolución server-side |
-| J | existe intención offline de check-in todavía no confirmada | cualquiera | cualquiera | no tratar la intención local como evidencia de turno ni de asistencia |
+| Caso | Publicación                                                | Tiempo               | Cardinalidad    | Decisión                                                                  |
+| ---- | ---------------------------------------------------------- | -------------------- | --------------- | ------------------------------------------------------------------------- |
+| A    | publicada y laboral                                        | dentro de ventana    | exactamente una | `RESOLVED`                                                                |
+| B    | ninguna utilizable                                         | no aplica            | cero            | `NO_PUBLISHED_SHIFT`                                                      |
+| C    | borrador o no publicada                                    | cualquiera           | cero utilizable | `NO_PUBLISHED_SHIFT`                                                      |
+| D    | cancelada, retirada o sustituida                           | cualquiera           | cero utilizable | `NO_PUBLISHED_SHIFT`                                                      |
+| E    | publicada y laboral                                        | antes del inicio     | exactamente una | `OUTSIDE_SHIFT_WINDOW`                                                    |
+| F    | publicada y laboral                                        | en o después del fin | exactamente una | `OUTSIDE_SHIFT_WINDOW`                                                    |
+| G    | candidatas incompatibles                                   | cualquiera           | más de una      | `AMBIGUOUS_PUBLISHED_SHIFT`                                               |
+| H    | fuente requerida no verificable                            | desconocido          | desconocida     | `SOURCE_UNAVAILABLE`                                                      |
+| I    | cliente propone un turno distinto al resuelto por servidor | cualquiera           | cualquiera      | ignorar la propuesta como autoridad y conservar la resolución server-side |
+| J    | existe intención offline de check-in todavía no confirmada | cualquiera           | cualquiera      | no tratar la intención local como evidencia de turno ni de asistencia     |
 
 No existe una rama `ALLOW` que se base únicamente en que el usuario esté autenticado, pertenezca a una empresa o haya seleccionado una sede.
 
@@ -348,13 +348,13 @@ La enumeración anterior es trazabilidad de cobertura ya vigente; no representa 
 
 #### 16. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | la batería real del repositorio se ejecuta después de insertar y normalizar la tarea en su rama |
-| LOCAL | PASS | artefacto único, metadata obligatoria, secciones requeridas, continuidad y regla de cero requisitos comprobadas sobre el descargable |
-| REMOTA | PASS | owner, continuidad, topología, políticas, catálogo de prerrequisitos y cobertura 04A fueron contrastados contra `main` |
-| OPERATIVA | NOT_EXECUTED | no se ejecutó un check-in real ni se modificó comportamiento operativo durante la definición documental |
-| FÍSICA | NOT_EXECUTED | la materialización por unidad de implementación queda diferida al gate físico aplicable |
+| Clase     | Estado       | Evidencia                                                                                                                            |
+| --------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED | la batería real del repositorio se ejecuta después de insertar y normalizar la tarea en su rama                                      |
+| LOCAL     | PASS         | artefacto único, metadata obligatoria, secciones requeridas, continuidad y regla de cero requisitos comprobadas sobre el descargable |
+| REMOTA    | PASS         | owner, continuidad, topología, políticas, catálogo de prerrequisitos y cobertura 04A fueron contrastados contra `main`               |
+| OPERATIVA | NOT_EXECUTED | no se ejecutó un check-in real ni se modificó comportamiento operativo durante la definición documental                              |
+| FÍSICA    | NOT_EXECUTED | la materialización por unidad de implementación queda diferida al gate físico aplicable                                              |
 
 ---
 
@@ -658,21 +658,21 @@ Si una solicitud explícitamente dirigida a una sede contradice la sede publicad
 
 #### 8. Matriz de decisión
 
-| Situación observada | Clasificación contractual | Resultado |
-| --- | --- | --- |
-| Turno publicado resuelto, `site_id` presente, sede existente, activa y compatible | sede del turno válida | continuar con `ANIMA-AUTH-003` |
-| No existe turno publicado utilizable | precondición de esta tarea incumplida | conservar la razón propietaria de publicación y no evaluar una sede sintética |
-| Turno publicado fuera de su ventana | precondición temporal incumplida | conservar la razón propietaria de temporalidad |
-| `shift.site_id` nulo o ausente | sede activa operativa no resoluble | denegar; no aplicar fallback |
-| `shift.site_id` referencia una sede inexistente | configuración territorial no reproducible | fallar cerrado y conservar la razón transversal correspondiente |
-| Sede existente pero inactiva | sede activa operativa no disponible | denegar sin sustituirla |
-| Sede resuelta es únicamente punto técnico o de marcación no asignable | territorio operativo inválido | denegar sin reinterpretar su tipo |
-| Actor carece de relación canónica compatible cuando es exigible | falta de asignación de sede | conservar la razón transversal propietaria |
-| La relación existe pero está inactiva o es contradictoria | no es ausencia limpia | conservar diagnóstico distinto y fallar cerrado |
-| Cliente envía otra sede | dato no autoritativo | ignorar como fuente y no cambiar el turno |
-| Punto de check-in pertenece a otra sede | no reemplaza `shift.site_id` | conservar sede publicada; la compatibilidad de marcación se resuelve en su control propietario |
-| Fuente territorial no puede verificarse | indisponibilidad técnica | no convertir en ausencia de sede ni continuar |
-| Cambio concurrente invalida publicación o sede antes del efecto | decisión obsoleta | revalidar o exigir nueva solicitud |
+| Situación observada                                                               | Clasificación contractual                 | Resultado                                                                                      |
+| --------------------------------------------------------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Turno publicado resuelto, `site_id` presente, sede existente, activa y compatible | sede del turno válida                     | continuar con `ANIMA-AUTH-003`                                                                 |
+| No existe turno publicado utilizable                                              | precondición de esta tarea incumplida     | conservar la razón propietaria de publicación y no evaluar una sede sintética                  |
+| Turno publicado fuera de su ventana                                               | precondición temporal incumplida          | conservar la razón propietaria de temporalidad                                                 |
+| `shift.site_id` nulo o ausente                                                    | sede activa operativa no resoluble        | denegar; no aplicar fallback                                                                   |
+| `shift.site_id` referencia una sede inexistente                                   | configuración territorial no reproducible | fallar cerrado y conservar la razón transversal correspondiente                                |
+| Sede existente pero inactiva                                                      | sede activa operativa no disponible       | denegar sin sustituirla                                                                        |
+| Sede resuelta es únicamente punto técnico o de marcación no asignable             | territorio operativo inválido             | denegar sin reinterpretar su tipo                                                              |
+| Actor carece de relación canónica compatible cuando es exigible                   | falta de asignación de sede               | conservar la razón transversal propietaria                                                     |
+| La relación existe pero está inactiva o es contradictoria                         | no es ausencia limpia                     | conservar diagnóstico distinto y fallar cerrado                                                |
+| Cliente envía otra sede                                                           | dato no autoritativo                      | ignorar como fuente y no cambiar el turno                                                      |
+| Punto de check-in pertenece a otra sede                                           | no reemplaza `shift.site_id`              | conservar sede publicada; la compatibilidad de marcación se resuelve en su control propietario |
+| Fuente territorial no puede verificarse                                           | indisponibilidad técnica                  | no convertir en ausencia de sede ni continuar                                                  |
+| Cambio concurrente invalida publicación o sede antes del efecto                   | decisión obsoleta                         | revalidar o exigir nueva solicitud                                                             |
 
 La matriz no crea códigos públicos nuevos. Reutiliza el catálogo transversal de razones aprobado.
 
@@ -863,13 +863,13 @@ La enumeración es trazabilidad de cobertura ya vigente y no representa requisit
 
 #### 18. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | la batería real del checkout se ejecuta después de insertar y normalizar la tarea en su rama |
-| LOCAL | PASS | artefacto único, metadata obligatoria, secciones requeridas, continuidad, cero requisitos derivados y representación UTF-8 comprobados sobre el descargable |
-| REMOTA | PASS | continuidad, owner, topología, políticas, modelo de sede, publicación de turno, 04A, razones y consumidor ANIMA fueron contrastados contra `main` |
-| OPERATIVA | NOT_EXECUTED | no se registró una entrada real ni se alteró comportamiento de asistencia durante esta definición |
-| FÍSICA | NOT_EXECUTED | la materialización por unidad de implementación permanece diferida al gate físico aplicable |
+| Clase     | Estado       | Evidencia                                                                                                                                                   |
+| --------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | la batería real del checkout se ejecuta después de insertar y normalizar la tarea en su rama                                                                |
+| LOCAL     | PASS         | artefacto único, metadata obligatoria, secciones requeridas, continuidad, cero requisitos derivados y representación UTF-8 comprobados sobre el descargable |
+| REMOTA    | PASS         | continuidad, owner, topología, políticas, modelo de sede, publicación de turno, 04A, razones y consumidor ANIMA fueron contrastados contra `main`           |
+| OPERATIVA | NOT_EXECUTED | no se registró una entrada real ni se alteró comportamiento de asistencia durante esta definición                                                           |
+| FÍSICA    | NOT_EXECUTED | la materialización por unidad de implementación permanece diferida al gate físico aplicable                                                                 |
 
 ---
 
@@ -1143,20 +1143,20 @@ Si el turno declara un área de otra sede:
 
 #### 9. Matriz de decisión
 
-| Situación | Decisión | Handoff |
-| --- | --- | --- |
-| `area_id` válido, activo y de la sede confirmada | confirmar | área válida |
-| `area_id = null` | conservar ausencia explícita | `area_id = null` |
-| área inexistente | bloquear | ninguno |
-| área inactiva | bloquear | ninguno |
-| área de otra sede | bloquear | ninguno |
-| coincidencia solo por nombre o tipo | no sustituir | ninguno |
-| `employee_areas` vacío y turno con área válida | no bloquear | área del turno |
-| `employee_areas` contiene otra área | no sustituir | área del turno |
-| cliente propone otra área | ignorar como autoridad | resolución server-side |
-| check-in o dispositivo aporta otra área | no sustituir | área del turno |
-| fuente no verificable | bloquear | indisponibilidad técnica |
-| publicación cambia durante la evaluación | invalidar | nueva resolución |
+| Situación                                        | Decisión                     | Handoff                  |
+| ------------------------------------------------ | ---------------------------- | ------------------------ |
+| `area_id` válido, activo y de la sede confirmada | confirmar                    | área válida              |
+| `area_id = null`                                 | conservar ausencia explícita | `area_id = null`         |
+| área inexistente                                 | bloquear                     | ninguno                  |
+| área inactiva                                    | bloquear                     | ninguno                  |
+| área de otra sede                                | bloquear                     | ninguno                  |
+| coincidencia solo por nombre o tipo              | no sustituir                 | ninguno                  |
+| `employee_areas` vacío y turno con área válida   | no bloquear                  | área del turno           |
+| `employee_areas` contiene otra área              | no sustituir                 | área del turno           |
+| cliente propone otra área                        | ignorar como autoridad       | resolución server-side   |
+| check-in o dispositivo aporta otra área          | no sustituir                 | área del turno           |
+| fuente no verificable                            | bloquear                     | indisponibilidad técnica |
+| publicación cambia durante la evaluación         | invalidar                    | nueva resolución         |
 
 ---
 
@@ -1337,13 +1337,13 @@ Esta enumeración es trazabilidad y no representa requisitos afectados.
 
 #### 20. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea. |
-| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, secciones, continuidad, UTF-8, EOL y cero TREQ en la sección derivada. |
-| REMOTA | PASS | Se contrastaron en `main` continuidad, owner, topología, políticas, modelo de áreas, catálogo, 04A y superficies físicas relevantes. |
-| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se alteró el comportamiento real de ANIMA. |
-| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, datos, código, RLS, RPC ni despliegues. |
+| Clase     | Estado       | Evidencia                                                                                                                            |
+| --------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea.                                                   |
+| LOCAL     | PASS         | El artefacto aislado fue comprobado por estructura, metadata, secciones, continuidad, UTF-8, EOL y cero TREQ en la sección derivada. |
+| REMOTA    | PASS         | Se contrastaron en `main` continuidad, owner, topología, políticas, modelo de áreas, catálogo, 04A y superficies físicas relevantes. |
+| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se alteró el comportamiento real de ANIMA.                                                              |
+| FÍSICA    | NOT_EXECUTED | No se ejecutaron migraciones, datos, código, RLS, RPC ni despliegues.                                                                |
 
 ---
 
@@ -1647,14 +1647,14 @@ La presencia de un string no demuestra un rol válido.
 
 Se distinguen obligatoriamente:
 
-| Estado observado | Interpretación | Tratamiento |
-| --- | --- | --- |
-| `null`, vacío u omitido | ausencia limpia y concluyente | `AUTH_OPERATIONAL_ROLE_REQUIRED` |
-| código existente y activo | identidad operativa confirmada | continuar |
-| código inexistente | referencia administrada inválida | fallar cerrado como configuración inconsistente |
-| código inactivo o deprecado | turno publicado contra catálogo no utilizable | fallar cerrado como configuración inconsistente |
-| catálogo no verificable | indisponibilidad técnica | fallar cerrado como fallo técnico |
-| dos snapshots autoritativos incompatibles | resolución no reproducible | fallar cerrado como configuración inconsistente |
+| Estado observado                          | Interpretación                                | Tratamiento                                     |
+| ----------------------------------------- | --------------------------------------------- | ----------------------------------------------- |
+| `null`, vacío u omitido                   | ausencia limpia y concluyente                 | `AUTH_OPERATIONAL_ROLE_REQUIRED`                |
+| código existente y activo                 | identidad operativa confirmada                | continuar                                       |
+| código inexistente                        | referencia administrada inválida              | fallar cerrado como configuración inconsistente |
+| código inactivo o deprecado               | turno publicado contra catálogo no utilizable | fallar cerrado como configuración inconsistente |
+| catálogo no verificable                   | indisponibilidad técnica                      | fallar cerrado como fallo técnico               |
+| dos snapshots autoritativos incompatibles | resolución no reproducible                    | fallar cerrado como configuración inconsistente |
 
 Un código inválido nunca se convierte en ausencia limpia.
 
@@ -1726,23 +1726,23 @@ No se inventa un área desde el rol y no se rechaza un rol únicamente porque el
 
 #### 11. Matriz de decisión de ANIMA-AUTH-004
 
-| Entrada observada | Decisión de esta tarea | Continuación |
-| --- | --- | --- |
-| rol presente, código canónico y activo | confirmar identidad del rol | `ANIMA-AUTH-005` |
-| rol `null` | bloquear | no continuar |
-| rol vacío o whitespace | normalizar a ausencia limpia y bloquear | no continuar |
-| rol omitido en la revisión publicada | bloquear | no continuar |
-| rol base coincide con uno operativo pero el turno no trae rol | no inferir | no continuar |
-| perfil predeterminado contiene rol pero el turno no | no inferir | no continuar |
-| dispositivo declara `navigation_role` | no inferir | no continuar |
-| cliente propone `role_code` | ignorar como autoridad | conservar resolución server-side |
-| último turno contiene rol | no reutilizar | conservar turno actual |
-| código presente pero inexistente en catálogo | configuración inconsistente | no continuar |
-| código presente pero inactivo | configuración inconsistente | no continuar |
-| rol válido pero no habilitado en la sede | fuera del alcance de esta tarea | entregar a `ANIMA-AUTH-005` |
-| rol válido pero incompatible con el área | fuera del alcance de esta tarea | entregar a `ANIMA-AUTH-005` y luego `ANIMA-AUTH-006` |
-| catálogo no disponible o lectura no verificable | fallo técnico | no continuar |
-| publicación cambia durante la evaluación | invalidar snapshot | resolver de nuevo |
+| Entrada observada                                             | Decisión de esta tarea                  | Continuación                                         |
+| ------------------------------------------------------------- | --------------------------------------- | ---------------------------------------------------- |
+| rol presente, código canónico y activo                        | confirmar identidad del rol             | `ANIMA-AUTH-005`                                     |
+| rol `null`                                                    | bloquear                                | no continuar                                         |
+| rol vacío o whitespace                                        | normalizar a ausencia limpia y bloquear | no continuar                                         |
+| rol omitido en la revisión publicada                          | bloquear                                | no continuar                                         |
+| rol base coincide con uno operativo pero el turno no trae rol | no inferir                              | no continuar                                         |
+| perfil predeterminado contiene rol pero el turno no           | no inferir                              | no continuar                                         |
+| dispositivo declara `navigation_role`                         | no inferir                              | no continuar                                         |
+| cliente propone `role_code`                                   | ignorar como autoridad                  | conservar resolución server-side                     |
+| último turno contiene rol                                     | no reutilizar                           | conservar turno actual                               |
+| código presente pero inexistente en catálogo                  | configuración inconsistente             | no continuar                                         |
+| código presente pero inactivo                                 | configuración inconsistente             | no continuar                                         |
+| rol válido pero no habilitado en la sede                      | fuera del alcance de esta tarea         | entregar a `ANIMA-AUTH-005`                          |
+| rol válido pero incompatible con el área                      | fuera del alcance de esta tarea         | entregar a `ANIMA-AUTH-005` y luego `ANIMA-AUTH-006` |
+| catálogo no disponible o lectura no verificable               | fallo técnico                           | no continuar                                         |
+| publicación cambia durante la evaluación                      | invalidar snapshot                      | resolver de nuevo                                    |
 
 ---
 
@@ -1947,13 +1947,13 @@ Esta enumeración es trazabilidad de cobertura existente y no representa requisi
 
 #### 21. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea en su rama documental. |
-| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata obligatoria, secciones requeridas, continuidad, UTF-8, EOL y ausencia de TREQ en la sección derivada. |
-| REMOTA | PASS | Se contrastaron en `main` continuidad, owner, topología, políticas, catálogo operativo, migraciones de turno, contratos AUTH-ERR, 04A y el consumidor ANIMA vigente. |
-| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se modificó comportamiento operativo de ANIMA durante esta definición. |
-| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, datos, RLS, RPC, código, Auth ni despliegues. |
+| Clase     | Estado       | Evidencia                                                                                                                                                            |
+| --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea en su rama documental.                                                             |
+| LOCAL     | PASS         | El artefacto aislado fue comprobado por estructura, metadata obligatoria, secciones requeridas, continuidad, UTF-8, EOL y ausencia de TREQ en la sección derivada.   |
+| REMOTA    | PASS         | Se contrastaron en `main` continuidad, owner, topología, políticas, catálogo operativo, migraciones de turno, contratos AUTH-ERR, 04A y el consumidor ANIMA vigente. |
+| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se modificó comportamiento operativo de ANIMA durante esta definición.                                                                  |
+| FÍSICA    | NOT_EXECUTED | No se ejecutaron migraciones, datos, RLS, RPC, código, Auth ni despliegues.                                                                                          |
 
 ---
 
@@ -2090,14 +2090,14 @@ El handoff consumido conserva, como mínimo:
 
 La evaluación conserva los estados contractuales ya definidos para la habilitación sede–rol:
 
-| Estado | Significado | Continuación |
-| --- | --- | --- |
-| `PRESENT_SITE_WIDE` | existe una habilitación activa del rol para la sede con alcance site-wide | continuar a `ANIMA-AUTH-006` |
+| Estado                | Significado                                                                          | Continuación                                                   |
+| --------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| `PRESENT_SITE_WIDE`   | existe una habilitación activa del rol para la sede con alcance site-wide            | continuar a `ANIMA-AUTH-006`                                   |
 | `PRESENT_AREA_SCOPED` | existe una o más habilitaciones activas del rol dentro de la sede, acotadas por área | el gate de sede queda satisfecho; continuar a `ANIMA-AUTH-006` |
-| `CONCLUSIVE_ABSENT` | no existe habilitación activa del rol en la sede | bloquear el carril operativo |
-| `INACTIVE_ONLY` | solo existen relaciones inactivas o retiradas para ese par | bloquear el carril operativo |
-| `CONTRADICTORY` | las fuentes o versiones producen una configuración incompatible | fallar cerrado por configuración |
-| `UNAVAILABLE` | la fuente necesaria no pudo verificarse | fallar cerrado por indisponibilidad técnica |
+| `CONCLUSIVE_ABSENT`   | no existe habilitación activa del rol en la sede                                     | bloquear el carril operativo                                   |
+| `INACTIVE_ONLY`       | solo existen relaciones inactivas o retiradas para ese par                           | bloquear el carril operativo                                   |
+| `CONTRADICTORY`       | las fuentes o versiones producen una configuración incompatible                      | fallar cerrado por configuración                               |
+| `UNAVAILABLE`         | la fuente necesaria no pudo verificarse                                              | fallar cerrado por indisponibilidad técnica                    |
 
 La existencia de una relación area-scoped dentro de la sede demuestra únicamente que el rol está admitido en esa sede. No demuestra que el área concreta del turno sea compatible.
 
@@ -2280,30 +2280,30 @@ La existencia de un grant no crea habilitación territorial.
 
 #### 11. Matriz de decisión
 
-| Caso | Hecho concluyente | Decisión |
-| ---: | --- | --- |
-| 1 | `BASE_ONLY`, sin carril operativo | esta tarea no aplica |
-| 2 | rol y sede exactos con habilitación site-wide activa | gate de sede satisfecho |
-| 3 | rol y sede exactos con una habilitación area-scoped activa | gate de sede satisfecho; continuar a área |
-| 4 | rol y sede exactos con varias habilitaciones area-scoped activas coherentes | gate de sede satisfecho; continuar a área |
-| 5 | ninguna relación del rol en la sede | bloquear |
-| 6 | solo relaciones inactivas o retiradas en la sede | bloquear |
-| 7 | el rol está habilitado únicamente en otra sede | bloquear |
-| 8 | el rol está habilitado en la sede, pero solo en otra área | gate de sede satisfecho; `ANIMA-AUTH-006` decide el área |
-| 9 | rol faltante | conservar propietario anterior; no evaluar sede |
-| 10 | rol desconocido, inactivo o deprecado | configuración inválida; no evaluar sede |
-| 11 | sede del turno nula, inexistente o inactiva | conservar razón territorial/configuracional anterior |
-| 12 | cliente propone otra sede donde el rol sí está habilitado | ignorar propuesta |
-| 13 | check-in pertenece a otra sede | no sustituir la sede del turno |
-| 14 | dispositivo está fijado a otra sede | no sustituir la sede del turno |
-| 15 | `is_default = true` en otra relación | no sustituir |
-| 16 | grant del permiso existe, pero no existe habilitación rol–sede | bloquear |
-| 17 | habilitación rol–sede existe, pero falta grant | continuar; el grant se evalúa después |
-| 18 | relaciones activas contradictorias | fallar cerrado por configuración |
-| 19 | fuente de matriz o catálogo no verificable | fallar cerrado por indisponibilidad |
-| 20 | relación retirada después de una decisión previa | invalidar y resolver de nuevo |
-| 21 | simulación propone una sede distinta | no modificar autoridad real |
-| 22 | coincidencia únicamente por nombre o tipo | no autorizar |
+| Caso | Hecho concluyente                                                           | Decisión                                                 |
+| ---: | --------------------------------------------------------------------------- | -------------------------------------------------------- |
+|    1 | `BASE_ONLY`, sin carril operativo                                           | esta tarea no aplica                                     |
+|    2 | rol y sede exactos con habilitación site-wide activa                        | gate de sede satisfecho                                  |
+|    3 | rol y sede exactos con una habilitación area-scoped activa                  | gate de sede satisfecho; continuar a área                |
+|    4 | rol y sede exactos con varias habilitaciones area-scoped activas coherentes | gate de sede satisfecho; continuar a área                |
+|    5 | ninguna relación del rol en la sede                                         | bloquear                                                 |
+|    6 | solo relaciones inactivas o retiradas en la sede                            | bloquear                                                 |
+|    7 | el rol está habilitado únicamente en otra sede                              | bloquear                                                 |
+|    8 | el rol está habilitado en la sede, pero solo en otra área                   | gate de sede satisfecho; `ANIMA-AUTH-006` decide el área |
+|    9 | rol faltante                                                                | conservar propietario anterior; no evaluar sede          |
+|   10 | rol desconocido, inactivo o deprecado                                       | configuración inválida; no evaluar sede                  |
+|   11 | sede del turno nula, inexistente o inactiva                                 | conservar razón territorial/configuracional anterior     |
+|   12 | cliente propone otra sede donde el rol sí está habilitado                   | ignorar propuesta                                        |
+|   13 | check-in pertenece a otra sede                                              | no sustituir la sede del turno                           |
+|   14 | dispositivo está fijado a otra sede                                         | no sustituir la sede del turno                           |
+|   15 | `is_default = true` en otra relación                                        | no sustituir                                             |
+|   16 | grant del permiso existe, pero no existe habilitación rol–sede              | bloquear                                                 |
+|   17 | habilitación rol–sede existe, pero falta grant                              | continuar; el grant se evalúa después                    |
+|   18 | relaciones activas contradictorias                                          | fallar cerrado por configuración                         |
+|   19 | fuente de matriz o catálogo no verificable                                  | fallar cerrado por indisponibilidad                      |
+|   20 | relación retirada después de una decisión previa                            | invalidar y resolver de nuevo                            |
+|   21 | simulación propone una sede distinta                                        | no modificar autoridad real                              |
+|   22 | coincidencia únicamente por nombre o tipo                                   | no autorizar                                             |
 
 La matriz de esta tarea decide exclusivamente el gate de sede.
 
@@ -2551,22 +2551,22 @@ La experiencia reutiliza el contrato de `AUTH-ERR-013`. El diseño final de la e
 
 La inspección de solo lectura del estado desplegado vigente observó:
 
-| Elemento | Resultado observado |
-| --- | ---: |
-| roles operativos físicos activos | 13 |
-| roles canónicos consumibles por esta cadena | 12 |
-| habilitaciones activas en `site_operational_roles` | 16 |
-| sedes representadas por habilitaciones activas | 5 |
-| pares activos distintos sede–rol | 16 |
-| habilitaciones site-wide activas | 3 |
-| habilitaciones area-scoped activas | 13 |
-| filas activas de matriz con rol desconocido o inactivo | 0 |
-| turnos laborales publicados y no cancelados | 2801 |
-| turnos de ese conjunto sin rol | 1535 |
-| turnos de ese conjunto con rol presente y canónico activo | 1266 |
-| turnos con rol presente sin habilitación activa en su sede | 0 |
-| turnos con rol habilitado en sede | 1266 |
-| turnos con incompatibilidad de área después de pasar sede | 2 |
+| Elemento                                                   | Resultado observado |
+| ---------------------------------------------------------- | ------------------: |
+| roles operativos físicos activos                           |                  13 |
+| roles canónicos consumibles por esta cadena                |                  12 |
+| habilitaciones activas en `site_operational_roles`         |                  16 |
+| sedes representadas por habilitaciones activas             |                   5 |
+| pares activos distintos sede–rol                           |                  16 |
+| habilitaciones site-wide activas                           |                   3 |
+| habilitaciones area-scoped activas                         |                  13 |
+| filas activas de matriz con rol desconocido o inactivo     |                   0 |
+| turnos laborales publicados y no cancelados                |                2801 |
+| turnos de ese conjunto sin rol                             |                1535 |
+| turnos de ese conjunto con rol presente y canónico activo  |                1266 |
+| turnos con rol presente sin habilitación activa en su sede |                   0 |
+| turnos con rol habilitado en sede                          |                1266 |
+| turnos con incompatibilidad de área después de pasar sede  |                   2 |
 
 El valor cero de casos actuales de rol inválido para sede no certifica implementación.
 
@@ -2645,13 +2645,13 @@ Esta enumeración es trazabilidad y no representa requisitos afectados por la ta
 
 #### 26. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea. |
-| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, secciones obligatorias, continuidad, UTF-8, EOL y ausencia de requisitos afectados en la sección derivada. |
-| REMOTA | PASS | Se contrastaron `main`, continuidad, owner, topología, políticas, contrato de `AUTH-ERR-013`, registro 04A, migraciones, consumidor ANIMA y un snapshot Supabase de solo lectura. |
-| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se ejercitó un flujo real de ANIMA. |
-| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, backfills, RLS, RPC, código ni despliegues. |
+| Clase     | Estado       | Evidencia                                                                                                                                                                         |
+| --------- | ------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea.                                                                                                |
+| LOCAL     | PASS         | El artefacto aislado fue comprobado por estructura, metadata, secciones obligatorias, continuidad, UTF-8, EOL y ausencia de requisitos afectados en la sección derivada.          |
+| REMOTA    | PASS         | Se contrastaron `main`, continuidad, owner, topología, políticas, contrato de `AUTH-ERR-013`, registro 04A, migraciones, consumidor ANIMA y un snapshot Supabase de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se ejercitó un flujo real de ANIMA.                                                                                                                  |
+| FÍSICA    | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, backfills, RLS, RPC, código ni despliegues.                                                                                               |
 
 ---
 
@@ -2791,16 +2791,16 @@ OPERATIONAL_CONTEXT_CREATED = TRUE
 
 La evaluación produce uno de los siguientes estados contractuales:
 
-| Estado | Significado | Continuación |
-| --- | --- | --- |
-| `PRESENT_SITE_WIDE` | existe una habilitación activa site-wide para el rol en la sede | gate de área satisfecho; continuar a `ANIMA-AUTH-007` |
-| `PRESENT_EXACT_AREA` | existe una habilitación activa para el área exacta del turno | gate de área satisfecho; continuar a `ANIMA-AUTH-007` |
-| `AREA_NULL_SITE_WIDE` | el turno conserva `area_id = null` y el rol está habilitado site-wide | gate de área satisfecho sin fabricar área |
-| `PRESENT_OTHER_AREA_ONLY` | el área del turno es válida, pero el rol solo está habilitado en otra área de la misma sede | bloquear el carril operativo |
-| `INACTIVE_EXACT_AREA_ONLY` | existió relación para el área exacta, pero ya no está activa, mientras el rol sigue habilitado en otra área de la sede | bloquear el carril operativo |
-| `AREA_NULL_AREA_SCOPED_ONLY` | el turno no aporta área y el rol solo tiene habilitaciones area-scoped | configuración o contexto inválido; no elegir área |
-| `CONTRADICTORY` | matriz, revisión o cardinalidad impiden una decisión única | fallar cerrado por configuración |
-| `UNAVAILABLE` | la fuente necesaria no pudo verificarse | fallar cerrado por indisponibilidad técnica |
+| Estado                       | Significado                                                                                                            | Continuación                                          |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `PRESENT_SITE_WIDE`          | existe una habilitación activa site-wide para el rol en la sede                                                        | gate de área satisfecho; continuar a `ANIMA-AUTH-007` |
+| `PRESENT_EXACT_AREA`         | existe una habilitación activa para el área exacta del turno                                                           | gate de área satisfecho; continuar a `ANIMA-AUTH-007` |
+| `AREA_NULL_SITE_WIDE`        | el turno conserva `area_id = null` y el rol está habilitado site-wide                                                  | gate de área satisfecho sin fabricar área             |
+| `PRESENT_OTHER_AREA_ONLY`    | el área del turno es válida, pero el rol solo está habilitado en otra área de la misma sede                            | bloquear el carril operativo                          |
+| `INACTIVE_EXACT_AREA_ONLY`   | existió relación para el área exacta, pero ya no está activa, mientras el rol sigue habilitado en otra área de la sede | bloquear el carril operativo                          |
+| `AREA_NULL_AREA_SCOPED_ONLY` | el turno no aporta área y el rol solo tiene habilitaciones area-scoped                                                 | configuración o contexto inválido; no elegir área     |
+| `CONTRADICTORY`              | matriz, revisión o cardinalidad impiden una decisión única                                                             | fallar cerrado por configuración                      |
+| `UNAVAILABLE`                | la fuente necesaria no pudo verificarse                                                                                | fallar cerrado por indisponibilidad técnica           |
 
 `PRESENT_OTHER_AREA_ONLY` e `INACTIVE_EXACT_AREA_ONLY` reutilizan el bloqueo canónico de rol inválido para área. `AREA_NULL_AREA_SCOPED_ONLY` no se degrada a ese bloqueo porque no existe un área válida contra la cual probar incompatibilidad ordinaria.
 
@@ -3050,32 +3050,32 @@ ANIMA puede transportar el área publicada para UX y correlación, pero no puede
 
 #### 12. Matriz de decisión
 
-| Caso | Hecho concluyente | Decisión |
-| ---: | --- | --- |
-| 1 | `BASE_ONLY`, sin carril operativo | esta tarea no aplica |
-| 2 | área válida y habilitación site-wide activa | gate satisfecho |
-| 3 | área válida y habilitación activa exacta | gate satisfecho |
-| 4 | área válida y varias relaciones area-scoped, incluida la exacta | gate satisfecho |
-| 5 | área válida y el rol solo está habilitado en otra área de la misma sede | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA` |
-| 6 | relación exacta inactiva, pero otra relación activa mantiene el rol habilitado en la sede | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA` |
-| 7 | mismo nombre de área, identificador distinto | no equivale; bloquear si no existe coincidencia exacta |
-| 8 | mismo `area_kind`, identificador distinto | no equivale; bloquear si no existe coincidencia exacta |
-| 9 | `area_id = null` y existe habilitación site-wide | continuar sin fabricar área |
-| 10 | `area_id = null` y solo existen habilitaciones area-scoped | configuración o contexto inválido |
-| 11 | área inexistente | configuración o contexto inválido |
-| 12 | área inactiva | configuración o contexto inválido |
-| 13 | área perteneciente a otra sede | configuración o contexto inválido |
-| 14 | no existe ninguna habilitación activa del rol en la sede | conservar propietario anterior; `ANIMA-AUTH-005` |
-| 15 | rol faltante | conservar propietario anterior; `ANIMA-AUTH-004` |
-| 16 | rol desconocido, inactivo o deprecado | configuración inválida |
-| 17 | cliente propone un área compatible distinta | ignorar propuesta |
-| 18 | check-in contiene otra área | no sustituir el turno |
-| 19 | dispositivo o perfil contienen un área compatible | no sustituir el turno |
-| 20 | grant existe, pero el área es incompatible | bloquear por área |
-| 21 | área compatible, pero grant falta | continuar; grant posterior |
-| 22 | configuración activa mezcla site-wide y area-scoped sin regla versionada | configuración contradictoria |
-| 23 | cardinalidad o revisión impiden una lectura única | configuración contradictoria |
-| 24 | fuente de área, catálogo o matriz no disponible | indisponibilidad técnica |
+| Caso | Hecho concluyente                                                                         | Decisión                                               |
+| ---: | ----------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+|    1 | `BASE_ONLY`, sin carril operativo                                                         | esta tarea no aplica                                   |
+|    2 | área válida y habilitación site-wide activa                                               | gate satisfecho                                        |
+|    3 | área válida y habilitación activa exacta                                                  | gate satisfecho                                        |
+|    4 | área válida y varias relaciones area-scoped, incluida la exacta                           | gate satisfecho                                        |
+|    5 | área válida y el rol solo está habilitado en otra área de la misma sede                   | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`               |
+|    6 | relación exacta inactiva, pero otra relación activa mantiene el rol habilitado en la sede | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`               |
+|    7 | mismo nombre de área, identificador distinto                                              | no equivale; bloquear si no existe coincidencia exacta |
+|    8 | mismo `area_kind`, identificador distinto                                                 | no equivale; bloquear si no existe coincidencia exacta |
+|    9 | `area_id = null` y existe habilitación site-wide                                          | continuar sin fabricar área                            |
+|   10 | `area_id = null` y solo existen habilitaciones area-scoped                                | configuración o contexto inválido                      |
+|   11 | área inexistente                                                                          | configuración o contexto inválido                      |
+|   12 | área inactiva                                                                             | configuración o contexto inválido                      |
+|   13 | área perteneciente a otra sede                                                            | configuración o contexto inválido                      |
+|   14 | no existe ninguna habilitación activa del rol en la sede                                  | conservar propietario anterior; `ANIMA-AUTH-005`       |
+|   15 | rol faltante                                                                              | conservar propietario anterior; `ANIMA-AUTH-004`       |
+|   16 | rol desconocido, inactivo o deprecado                                                     | configuración inválida                                 |
+|   17 | cliente propone un área compatible distinta                                               | ignorar propuesta                                      |
+|   18 | check-in contiene otra área                                                               | no sustituir el turno                                  |
+|   19 | dispositivo o perfil contienen un área compatible                                         | no sustituir el turno                                  |
+|   20 | grant existe, pero el área es incompatible                                                | bloquear por área                                      |
+|   21 | área compatible, pero grant falta                                                         | continuar; grant posterior                             |
+|   22 | configuración activa mezcla site-wide y area-scoped sin regla versionada                  | configuración contradictoria                           |
+|   23 | cardinalidad o revisión impiden una lectura única                                         | configuración contradictoria                           |
+|   24 | fuente de área, catálogo o matriz no disponible                                           | indisponibilidad técnica                               |
 
 La matriz decide únicamente la compatibilidad territorial de área.
 
@@ -3154,15 +3154,15 @@ Cuando existe una relación area-scoped, un área ausente o inválida no es una 
 
 Propiedad de causas:
 
-| Situación | Propietario |
-| --- | --- |
-| rol faltante | `AUTH-ERR-012` |
-| rol canónico sin habilitación en sede | `AUTH-ERR-013` |
+| Situación                                                                 | Propietario    |
+| ------------------------------------------------------------------------- | -------------- |
+| rol faltante                                                              | `AUTH-ERR-012` |
+| rol canónico sin habilitación en sede                                     | `AUTH-ERR-013` |
 | área válida, rol habilitado en sede, sin site-wide ni coincidencia exacta | `AUTH-ERR-014` |
-| área nula bajo alcance exclusivamente area-scoped | `AUTH-ERR-017` |
-| área inexistente, inactiva, ajena a la sede o contradictoria | `AUTH-ERR-017` |
-| matriz o revisión contradictoria | `AUTH-ERR-017` |
-| fuente no verificable | `AUTH-ERR-019` |
+| área nula bajo alcance exclusivamente area-scoped                         | `AUTH-ERR-017` |
+| área inexistente, inactiva, ajena a la sede o contradictoria              | `AUTH-ERR-017` |
+| matriz o revisión contradictoria                                          | `AUTH-ERR-017` |
+| fuente no verificable                                                     | `AUTH-ERR-019` |
 
 La razón pública de área incompatible exige primero un área válida.
 
@@ -3331,30 +3331,30 @@ El diseño final del diagnóstico visible de ANIMA permanece en `ANIMA-AUTH-016`
 
 La inspección de solo lectura del estado desplegado vigente observó:
 
-| Elemento | Resultado |
-| --- | ---: |
-| roles operativos físicos activos | 13 |
-| roles canónicos consumibles por esta cadena | 12 |
-| habilitaciones activas en `site_operational_roles` | 16 |
-| sedes representadas por habilitaciones activas | 5 |
-| pares activos distintos sede–rol | 16 |
-| habilitaciones site-wide activas | 3 |
-| habilitaciones area-scoped activas | 13 |
-| habilitaciones activas con rol desconocido | 0 |
-| habilitaciones activas con rol inactivo | 0 |
-| relaciones area-scoped con área inexistente | 0 |
-| relaciones area-scoped con área inactiva | 0 |
-| relaciones area-scoped cuyo área pertenece a otra sede | 0 |
-| pares activos con mezcla site-wide y area-scoped | 0 |
-| turnos laborales publicados y no cancelados | 2801 |
-| turnos de ese conjunto sin rol | 1535 |
-| turnos con rol presente y canónico activo | 1266 |
-| turnos con rol no habilitado en la sede | 0 |
-| turnos con rol habilitado en la sede | 1266 |
-| turnos compatibles por habilitación site-wide | 144 |
-| turnos compatibles por coincidencia de área exacta | 1120 |
-| turnos con área presente y sin coincidencia exacta | 0 |
-| turnos con área nula y habilitación exclusivamente area-scoped | 2 |
+| Elemento                                                       | Resultado |
+| -------------------------------------------------------------- | --------: |
+| roles operativos físicos activos                               |        13 |
+| roles canónicos consumibles por esta cadena                    |        12 |
+| habilitaciones activas en `site_operational_roles`             |        16 |
+| sedes representadas por habilitaciones activas                 |         5 |
+| pares activos distintos sede–rol                               |        16 |
+| habilitaciones site-wide activas                               |         3 |
+| habilitaciones area-scoped activas                             |        13 |
+| habilitaciones activas con rol desconocido                     |         0 |
+| habilitaciones activas con rol inactivo                        |         0 |
+| relaciones area-scoped con área inexistente                    |         0 |
+| relaciones area-scoped con área inactiva                       |         0 |
+| relaciones area-scoped cuyo área pertenece a otra sede         |         0 |
+| pares activos con mezcla site-wide y area-scoped               |         0 |
+| turnos laborales publicados y no cancelados                    |      2801 |
+| turnos de ese conjunto sin rol                                 |      1535 |
+| turnos con rol presente y canónico activo                      |      1266 |
+| turnos con rol no habilitado en la sede                        |         0 |
+| turnos con rol habilitado en la sede                           |      1266 |
+| turnos compatibles por habilitación site-wide                  |       144 |
+| turnos compatibles por coincidencia de área exacta             |      1120 |
+| turnos con área presente y sin coincidencia exacta             |         0 |
+| turnos con área nula y habilitación exclusivamente area-scoped |         2 |
 
 Los 144 turnos cubiertos por site-wide conservan `area_id = null` en el snapshot consultado y no requieren que ANIMA fabrique un área.
 
@@ -3454,13 +3454,13 @@ Esta enumeración es trazabilidad y no representa requisitos afectados por la ta
 
 #### 28. Evidencia de validación
 
-| Clase | Estado | Evidencia |
-| --- | --- | --- |
-| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea. |
-| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, secciones obligatorias, continuidad, UTF-8, EOL y ausencia de requisitos afectados en la sección derivada. |
-| REMOTA | PASS | Se contrastaron `main`, continuidad, owner, topología, políticas, contrato de `AUTH-ERR-014`, registro 04A, migraciones, consumidor ANIMA y snapshot Supabase de solo lectura. |
-| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se ejercitó un flujo real de ANIMA. |
-| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, backfills, RLS, RPC, código ni despliegues. |
+| Clase     | Estado       | Evidencia                                                                                                                                                                      |
+| --------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| BUILD     | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea.                                                                                             |
+| LOCAL     | PASS         | El artefacto aislado fue comprobado por estructura, metadata, secciones obligatorias, continuidad, UTF-8, EOL y ausencia de requisitos afectados en la sección derivada.       |
+| REMOTA    | PASS         | Se contrastaron `main`, continuidad, owner, topología, políticas, contrato de `AUTH-ERR-014`, registro 04A, migraciones, consumidor ANIMA y snapshot Supabase de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se ejercitó un flujo real de ANIMA.                                                                                                               |
+| FÍSICA    | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, backfills, RLS, RPC, código ni despliegues.                                                                                            |
 
 ---
 
@@ -3535,7 +3535,1149 @@ No crea tablas, migraciones, constraints, índices, RPC, policies, tipos, rutas 
 `ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada`
 
 
-### [ ] ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada
+### ✅ ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área
+**Tarea siguiente:** ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno
+**Tipo de tarea:** documental; definición contractual de la activación autoritativa del contexto operativo de ANIMA después de confirmar una entrada válida, preservando la separación entre hecho de asistencia, sesión de check-in, snapshot de AccessContext y autorización final
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología PER_IMPLEMENTATION_UNIT y al gate POST_E5_PACKAGE
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué significa en ANIMA crear contexto operativo al registrar una entrada.
+
+La creación no ocurre cuando el trabajador toca el botón, cuando el cliente encola una intención ni cuando la interfaz muestra un turno. Ocurre únicamente después de que una frontera autoritativa server-side:
+
+1. conserva el actor efectivo;
+2. revalida el turno publicado y vigente;
+3. conserva la misma revisión publicada aplicable;
+4. confirma la sede, el área o ausencia explícita, el rol y su compatibilidad;
+5. valida la marcación y su punto físico cuando aplique;
+6. confirma la persistencia idempotente del evento de entrada;
+7. establece una única sesión de check-in activa y compatible;
+8. permite resolver un nuevo snapshot de `AccessContext` con el carril operativo estructuralmente disponible.
+
+La regla raíz queda:
+
+```text
+INTENCION DE CHECK-IN
++
+ANIMA-AUTH-001..006 SATISFECHAS Y FRESCAS
++
+VALIDACIONES DE MARCACION SATISFECHAS
++
+EVENTO DE ENTRADA CONFIRMADO POR SERVIDOR
++
+SESION DE CHECK-IN ACTIVA, UNICA Y COMPATIBLE
++
+NUEVA RESOLUCION DE ACCESS CONTEXT
+->
+CONTEXTO OPERATIVO ACTIVADO
+```
+
+Ese contexto sigue sin equivaler a un permiso concedido sobre un recurso.
+
+---
+
+#### 2. Entrada contractual desde ANIMA-AUTH-006
+
+`ANIMA-AUTH-007` consume exactamente el handoff aprobado por la tarea anterior:
+
+- actor efectivo;
+- turno laboral publicado, vigente e inequívoco;
+- referencia de publicación o revisión;
+- sede exacta confirmada;
+- área exacta confirmada o ausencia explícita compatible con una habilitación site-wide;
+- rol operativo canónico y activo;
+- confirmación de habilitación del rol en la sede;
+- confirmación de compatibilidad territorial por `SITE_WIDE` o `EXACT_AREA`;
+- estado de check-in cuando la cadena aplicable ya lo exige;
+- instante server-side de resolución;
+- versiones o fingerprints disponibles.
+
+El handoff afirma:
+
+```text
+ROLE_ENABLED_IN_SITE = TRUE
+ROLE_AREA_COMPATIBILITY = SATISFIED
+```
+
+No afirma:
+
+```text
+ATTENDANCE_INSERTED = TRUE
+ACTIVE_CHECKIN_SESSION = PRESENT
+ACCESS_CONTEXT_RESOLVED = TRUE
+PERMISSION_GRANTED = TRUE
+RESOURCE_IN_SCOPE = TRUE
+```
+
+Por tanto, esta tarea comienza en la frontera entre una intención de marcación todavía no confirmada y un hecho de asistencia capaz de originar contexto operativo.
+
+---
+
+#### 3. Significado exacto de “crear contexto operativo”
+
+En esta tarea:
+
+```text
+CREAR CONTEXTO OPERATIVO
+```
+
+significa:
+
+```text
+CONFIRMAR EL HECHO DE ENTRADA
++
+ESTABLECER O RESOLVER LA SESION DE CHECK-IN ACTIVA
++
+RESOLVER UN SNAPSHOT NUEVO DE ACCESS CONTEXT
+CON LOS HECHOS OPERATIVOS CONFIRMADOS
+```
+
+No significa obligatoriamente:
+
+- insertar una fila en una tabla denominada `operational_context`;
+- mantener un objeto mutable durante toda la jornada;
+- usar el estado React como contexto;
+- copiar permisos dentro de una sesión;
+- emitir un token que contenga autoridad permanente;
+- convertir `context_id` en identidad de jornada;
+- convertir el check-in en fuente de turno, sede, área o rol.
+
+La implementación física futura podrá utilizar una proyección, función, vista, sesión materializada o combinación controlada, siempre que preserve el contrato canónico.
+
+---
+
+#### 4. Cuatro identidades que deben permanecer separadas
+
+La activación distingue cuatro identidades:
+
+| Identidad            | Qué representa                                               | Duración lógica                                                  | Fuente                                  |
+| -------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------- | --------------------------------------- |
+| `client_event_id`    | intención idempotente de entrada                             | estable durante retries y replay de la misma intención           | productor autorizado de la intención    |
+| `attendance_log_id`  | hecho de entrada persistido y confirmado                     | histórico e inmutable salvo corrección auditada                  | persistencia autoritativa de asistencia |
+| `checkin_session_id` | sesión de check-in abierta derivada de asistencia confirmada | desde entrada confirmada hasta cierre, expiración o invalidación | resolutor canónico de asistencia        |
+| `context_id`         | identidad de una resolución concreta de `AccessContext`      | un snapshot; no una sesión permanente                            | resolutor server-side de contexto       |
+
+Invariantes:
+
+```text
+client_event_id != attendance_log_id
+attendance_log_id != checkin_session_id
+checkin_session_id != context_id
+context_id != permiso
+```
+
+La reutilización accidental de una identidad para representar otra queda prohibida.
+
+---
+
+#### 5. Condición canónica de activación
+
+La activación solo puede producirse cuando todas las condiciones aplicables sean verdaderas de manera simultánea y concluyente:
+
+```text
+ACTOR_EFFECTIVE = RESOLVED_EMPLOYEE
+AND
+EMPLOYEE_ACTIVE = TRUE
+AND
+PUBLISHED_SHIFT = RESOLVED
+AND
+SHIFT_WINDOW = CURRENT
+AND
+SHIFT_SITE = VALID
+AND
+SHIFT_AREA = VALID_OR_EXPLICITLY_ABSENT
+AND
+OPERATIONAL_ROLE = VALID
+AND
+ROLE_ENABLED_IN_SITE = TRUE
+AND
+ROLE_AREA_COMPATIBILITY = SATISFIED
+AND
+CHECKIN_POINT = VALID_WHEN_REQUIRED
+AND
+GEOFENCE = SATISFIED_WHEN_REQUIRED
+AND
+ACTIVE_SESSION_COUNT_BEFORE = 0
+AND
+ATTENDANCE_EVENT = SERVER_CONFIRMED
+AND
+ACTIVE_SESSION_COUNT_AFTER = 1
+AND
+POST_COMMIT_CONTEXT_RESOLUTION = CONCLUSIVE
+```
+
+Si alguna condición deja de ser cierta antes del commit autoritativo, no se activa contexto con el snapshot anterior.
+
+---
+
+#### 6. Fuentes autoritativas
+
+La activación puede consumir únicamente fuentes propietarias y verificables.
+
+| Hecho                     | Fuente contractual                                    |
+| ------------------------- | ----------------------------------------------------- |
+| actor efectivo            | resolución server-side de principal y actor           |
+| identidad laboral activa  | catálogo y relación laboral canónicos                 |
+| turno                     | revisión publicada aplicable                          |
+| sede operativa            | turno publicado                                       |
+| área operativa            | turno publicado                                       |
+| rol operativo             | turno publicado                                       |
+| habilitación rol-sede     | matriz operativa canónica                             |
+| compatibilidad rol-área   | matriz operativa canónica                             |
+| punto físico de marcación | configuración de asistencia aplicable                 |
+| hecho de entrada          | persistencia autoritativa de asistencia               |
+| sesión activa             | proyección canónica derivada de asistencia confirmada |
+| snapshot de contexto      | resolutor canónico de `AccessContext`                 |
+| tiempo de autorización    | reloj de servidor                                     |
+
+No adquieren autoridad por sí solos:
+
+- selección de sede o área en interfaz;
+- perfil habitual del trabajador;
+- rol base;
+- último turno mostrado;
+- último check-in observado en cliente;
+- caché;
+- estado de cola;
+- notificación;
+- respuesta optimista;
+- GPS sin validación;
+- `device_info`;
+- parámetro enviado por cliente;
+- último contexto conocido.
+
+---
+
+#### 7. Frontera server-side y atomicidad
+
+La creación del contexto operativo requiere una frontera server-side que impida estados intermedios autoritativos.
+
+Conceptualmente:
+
+```text
+BEGIN AUTHORITY BOUNDARY
+  resolver y revalidar hechos
+  serializar la decision por actor cuando sea necesario
+  verificar ausencia de sesion activa incompatible
+  persistir o reconocer el evento idempotente
+  confirmar el hecho
+  derivar una unica sesion activa
+COMMIT
+  resolver un AccessContext nuevo
+END
+```
+
+No se exige una tecnología transaccional específica en esta tarea documental.
+
+Sí se exige que ningún consumidor pueda observar como autoridad una combinación imposible, por ejemplo:
+
+```text
+check-in confirmado
++
+turno diferente
+```
+
+o:
+
+```text
+contexto operativo activo
++
+evento de entrada revertido
+```
+
+o:
+
+```text
+dos sesiones activas
+```
+
+---
+
+#### 8. Actor efectivo
+
+El evento de entrada y la sesión activa pertenecen al actor efectivo.
+
+Para una sesión personal:
+
+```text
+principal humano
+-> actor efectivo empleado
+-> attendance.employee_id
+-> shift.employee_id
+```
+
+deben converger sobre la misma identidad laboral.
+
+En un dispositivo compartido:
+
+```text
+principal tecnico
+!= actor humano
+```
+
+La identidad técnica no se convierte en empleado. El actor humano debe estar resuelto de forma válida por el contrato propietario del dispositivo antes de originar efectos de asistencia o contexto operativo.
+
+Una identidad `UNRESOLVED`, un empleado inactivo o un actor diferente al titular del turno impiden la activación.
+
+---
+
+#### 9. Turno y revisión publicada fijados
+
+Todo check-in operativo nuevo debe quedar vinculado a exactamente un turno publicado aplicable.
+
+La activación conserva conceptualmente:
+
+```text
+shift_id
++
+published_revision
+```
+
+La revisión que justificó la entrada queda fijada como referencia reproducible del inicio de la sesión.
+
+Queda prohibido:
+
+- activar contexto con `shift_id = null`;
+- usar un turno histórico para reparar autoridad actual;
+- escoger una revisión por “última fila”;
+- combinar hechos de dos revisiones;
+- aceptar una revisión retirada o sustituida;
+- tomar el `shift_id` enviado por cliente como prueba suficiente.
+
+Un evento histórico sin turno puede permanecer como hecho de asistencia o incidencia, pero no crea contexto operativo.
+
+---
+
+#### 10. Sede, área y rol del snapshot inicial
+
+El contexto inicial copia semánticamente los hechos ya validados de la misma revisión del turno:
+
+```text
+operational_site.site_id = active_shift.site_id
+operational_role.role_code = active_shift.operational_role
+operational_role.site_id = active_shift.site_id
+operational_role.area_id = active_shift.area_id
+```
+
+Cuando existe área:
+
+```text
+operational_area.area_id = active_shift.area_id
+operational_area.site_id = active_shift.site_id
+```
+
+Cuando el turno conserva ausencia explícita de área y la compatibilidad site-wide fue satisfecha:
+
+```text
+operational_area = null
+```
+
+No se fabrica un área.
+
+La entrada no puede cambiar la sede, el área o el rol para hacer que la marcación resulte válida.
+
+---
+
+#### 11. Punto físico de marcación y territorio operativo
+
+El punto físico de check-in permanece separado de la sede operativa:
+
+```text
+geofence_site_id != operational_site_id
+```
+
+aunque en algunos casos sus identificadores puedan coincidir.
+
+El punto de marcación responde dónde se capturó físicamente la asistencia.
+
+El turno responde dónde opera laboralmente el trabajador.
+
+Por tanto:
+
+- una geocerca válida no crea sede operativa;
+- una sede operativa válida no evita la geocerca cuando la política la exige;
+- un punto técnico oculto puede ser válido sin convertirse en sede laboral;
+- el punto de check-in no reemplaza área ni rol;
+- la ubicación no amplía permisos.
+
+---
+
+#### 12. Tiempo confiable
+
+La intención puede conservar:
+
+```text
+client_occurred_at
+```
+
+como evidencia del instante capturado.
+
+La autoridad temporal del contexto utiliza:
+
+```text
+server_evaluated_at
+```
+
+La implementación debe impedir que alterar el reloj del cliente:
+
+- adelante el inicio del turno;
+- extienda su fin;
+- reabra una sesión expirada;
+- mantenga contexto después de invalidación;
+- cambie el orden autoritativo de eventos.
+
+La marca temporal de cliente puede participar en conciliación y auditoría, pero no sustituye el tiempo de servidor para decidir vigencia.
+
+---
+
+#### 13. Idempotencia de la entrada
+
+Una intención reintentable debe tener identidad estable antes de su primer envío.
+
+Regla:
+
+```text
+MISMO ACTOR
++
+MISMO client_event_id
++
+MISMO CONTENIDO SEMANTICO
+->
+MISMO RESULTADO EMPRESARIAL
++
+CERO EFECTOS ADICIONALES
+```
+
+En cambio:
+
+```text
+MISMO ACTOR
++
+MISMO client_event_id
++
+CONTENIDO SEMANTICO DISTINTO
+->
+CONFLICT
++
+CERO NUEVO EFECTO
+```
+
+Un retry por respuesta perdida no puede producir:
+
+- un segundo evento de entrada;
+- una segunda sesión;
+- otro turno;
+- un nuevo efecto de geocerca;
+- otra activación de contexto.
+
+La deduplicación por existencia del identificador no es suficiente si no puede comprobarse que el contenido representa la misma intención.
+
+---
+
+#### 14. Concurrencia y unicidad de sesión
+
+Antes de confirmar una entrada debe existir:
+
+```text
+ACTIVE_CHECKIN_SESSION_COUNT = 0
+```
+
+Después del efecto aplicado:
+
+```text
+ACTIVE_CHECKIN_SESSION_COUNT = 1
+```
+
+Dos solicitudes concurrentes del mismo actor deben serializarse o resolverse de forma equivalente.
+
+Resultados permitidos:
+
+| Primera intención                     | Segunda intención       | Resultado                                               |
+| ------------------------------------- | ----------------------- | ------------------------------------------------------- |
+| misma identidad y mismo contenido     | replay                  | devolver resultado existente                            |
+| identidad diferente concurrente       | una gana                | la otra no crea otra sesión                             |
+| misma identidad y contenido diferente | conflicto               | cero efecto adicional                                   |
+| sesión previa activa                  | nueva entrada           | denegar o devolver conflicto según contrato propietario |
+| sesión candidata ambigua              | cualquier entrada nueva | fallar cerrado                                          |
+
+Queda prohibido resolver multiplicidad mediante `ORDER BY ... LIMIT 1` como regla de autoridad.
+
+---
+
+#### 15. Persistencia confirmada antes de activar autoridad
+
+La secuencia contractual es:
+
+```text
+INTENCION
+-> VALIDACION
+-> PERSISTENCIA
+-> COMMIT
+-> EVENTO CONFIRMADO
+-> SESION ACTIVA
+-> CONTEXTO OPERATIVO RESOLUBLE
+```
+
+No es:
+
+```text
+INTENCION
+-> CONTEXTO ACTIVO
+-> INTENTAR PERSISTIR DESPUES
+```
+
+Un insert rechazado, revertido, en conflicto o cuyo outcome autoritativo permanece desconocido no puede activar un contexto nuevo en el cliente.
+
+Cuando el servidor devuelve éxito, la respuesta debe poder correlacionarse con el hecho realmente confirmado.
+
+---
+
+#### 16. `ActiveCheckinContext` conservado
+
+Esta tarea reutiliza sin ampliar la forma conceptual vigente:
+
+```ts
+type ActiveCheckinContext = {
+  checkin_session_id: string;
+  employee_id: string;
+  shift_id: string;
+  site_id: string;
+  area_id: string | null;
+  checked_in_at: string;
+  expires_at: string | null;
+  checked_out_at: string | null;
+  status: "ACTIVE" | "EXPIRED" | "CLOSED" | "INVALID";
+};
+```
+
+Para que participe en el contexto operativo inicial:
+
+```text
+status = ACTIVE
+checked_out_at = null
+employee_id = actor efectivo
+shift_id = active_shift.shift_id
+site_id = active_shift.site_id
+```
+
+Cuando existe área, `area_id` debe ser compatible con el turno según el contrato vigente.
+
+Una sesión cerrada, expirada o inválida no se presenta como activa.
+
+---
+
+#### 17. `OperationalRoleContext` conservado
+
+La creación reutiliza exactamente:
+
+```ts
+type OperationalRoleContext = {
+  role_code: string;
+  shift_id: string;
+  site_id: string;
+  area_id: string | null;
+  valid_for_site: boolean;
+  valid_for_area: boolean;
+};
+```
+
+El snapshot inicial debe conservar:
+
+```text
+valid_for_site = true
+valid_for_area = true
+```
+
+de acuerdo con los gates ya resueltos.
+
+La entrada no crea el rol y no convierte el rol base en rol operativo.
+
+---
+
+#### 18. `OperationalSiteContext` y `OperationalAreaContext` conservados
+
+La sede conserva:
+
+```ts
+type OperationalSiteContext = {
+  site_id: string;
+  source_shift_id: string;
+  site_active: boolean;
+  assignment_valid: boolean;
+};
+```
+
+El área, cuando existe, conserva:
+
+```ts
+type OperationalAreaContext = {
+  area_id: string;
+  site_id: string;
+  area_kind: string;
+  source: "SHIFT" | "CHECKIN_CONFIRMED_SHIFT";
+  area_active: boolean;
+  compatible_with_role: boolean;
+};
+```
+
+Después de una entrada confirmada, `CHECKIN_CONFIRMED_SHIFT` puede expresar que la misma área del turno fue corroborada por una sesión de check-in compatible.
+
+Esa fuente solo es válida cuando:
+
+1. existe `active_checkin_session`;
+2. pertenece al mismo actor;
+3. coincide con el mismo turno;
+4. coincide con la misma sede;
+5. declara exactamente la misma área;
+6. no existe incompatibilidad estructural.
+
+El check-in nunca crea un área distinta.
+
+---
+
+#### 19. Fragmento operativo de `AccessContext`
+
+La activación de entrada permite que una resolución nueva de `AccessContext` represente simultáneamente:
+
+```text
+active_shift != null
+active_checkin_session != null
+operational_role != null
+operational_site != null
+operational_area = valor valido o null site-wide
+lane_readiness.operational = estructuralmente disponible
+```
+
+El resto de `AccessContext` continúa resolviéndose bajo su contrato completo.
+
+El snapshot:
+
+- es server-side;
+- es inmutable;
+- usa una única realidad temporal coherente;
+- no mezcla datos obtenidos antes y después de un cambio material;
+- no contiene la decisión final de permiso;
+- no se reutiliza una vez obsoleto.
+
+---
+
+#### 20. `context_id` no es una sesión persistente
+
+`AccessContext.context_id` identifica una resolución concreta.
+
+Por tanto:
+
+```text
+MISMA SESION DE CHECK-IN
++
+NUEVA SOLICITUD
++
+NUEVA RESOLUCION
+->
+NUEVO context_id
+```
+
+puede ser correcto.
+
+La sesión de check-in puede permanecer igual mientras se produzcan varios snapshots frescos.
+
+Consecuencias:
+
+- no almacenar `context_id` como si fuera el identificador laboral de toda la jornada;
+- no usar un `context_id` antiguo como bearer token de autoridad;
+- no cerrar la asistencia “cerrando” un `context_id`;
+- no actualizar el snapshot in-place cuando cambia un hecho;
+- `ANIMA-AUTH-008` puede obligar a resolver otro snapshot sin que eso signifique una segunda entrada.
+
+---
+
+#### 21. Matriz de resultados de creación
+
+| Caso | Evento                                                                 | Sesión                                             | Contexto operativo                                      |
+| ---: | ---------------------------------------------------------------------- | -------------------------------------------------- | ------------------------------------------------------- |
+|    1 | entrada validada y aplicada                                            | una activa compatible                              | crear resolución nueva                                  |
+|    2 | replay idéntico de entrada aplicada                                    | misma sesión                                       | devolver estado coherente; cero efecto adicional        |
+|    3 | mismo `client_event_id`, payload distinto                              | no crear otra                                      | conflicto                                               |
+|    4 | validación previa falla                                                | ninguna nueva                                      | no activar                                              |
+|    5 | turno dejó de ser vigente antes del commit                             | ninguna nueva                                      | revalidar y denegar                                     |
+|    6 | revisión cambió antes del commit                                       | ninguna nueva                                      | invalidar snapshot previo                               |
+|    7 | sede, área o rol cambiaron                                             | ninguna nueva                                      | volver a resolver cadena                                |
+|    8 | geocerca requerida falla                                               | ninguna nueva                                      | no activar                                              |
+|    9 | ya existe una sesión activa compatible                                 | ninguna nueva                                      | no crear segunda; resolver según idempotencia/duplicado |
+|   10 | dos sesiones activas candidatas                                        | ambiguo                                            | fail closed                                             |
+|   11 | persistencia falla                                                     | ninguna nueva                                      | no activar                                              |
+|   12 | commit confirmado pero respuesta se pierde                             | ya existe                                          | retry recupera resultado sin duplicar                   |
+|   13 | intención permanece offline                                            | ninguna confirmada                                 | no activar autoridad                                    |
+|   14 | evento histórico con `shift_id = null`                                 | no utilizable para operación                       | no activar                                              |
+|   15 | entrada confirmada, pero resolución post-commit descubre contradicción | conservar hecho histórico; contexto no confirmable | fail closed y escalar causa propietaria                 |
+|   16 | capacidad base independiente                                           | no depende de esta activación                      | conservar evaluación base propia                        |
+
+---
+
+#### 22. Cero efectos ante fallo cerrado
+
+Cuando no puede confirmarse el contexto:
+
+- no se crea una segunda sesión;
+- no se modifica el turno;
+- no se cambia sede;
+- no se cambia área;
+- no se cambia rol;
+- no se concede un permiso;
+- no se crea un recurso empresarial;
+- no se ejecuta una mutación protegida posterior;
+- no se convierte un error técnico en ausencia ordinaria;
+- no se corrige automáticamente la programación;
+- no se borra un hecho histórico ya confirmado para ocultar la inconsistencia.
+
+Si el evento de entrada ya fue confirmado antes de descubrir una contradicción posterior, se conserva como hecho de asistencia y se bloquea la autoridad operativa hasta que el resolutor pueda producir un contexto válido o un flujo propietario corrija la situación.
+
+---
+
+#### 23. Operación offline
+
+Una intención offline conserva:
+
+- identidad estable;
+- actor esperado;
+- turno propuesto;
+- instante capturado;
+- sitio y punto físico;
+- geolocalización cuando aplique;
+- contexto auxiliar necesario para reconciliar;
+- estado de cola.
+
+Pero:
+
+```text
+OFFLINE_QUEUED
+!=
+SERVER_CONFIRMED
+```
+
+y:
+
+```text
+OFFLINE_QUEUED
+!=
+ACTIVE_CHECKIN_SESSION
+```
+
+Por tanto, no activa un contexto operativo autoritativo.
+
+La sincronización, retry y reconciliación completas permanecen en `ANIMA-AUTH-014` y `ANIMA-AUTH-015`.
+
+---
+
+#### 24. Respuesta perdida y recuperación
+
+Una pérdida de respuesta después del commit no cambia la semántica empresarial.
+
+El cliente debe poder consultar o repetir la misma identidad de intención y obtener un resultado estable.
+
+Queda prohibido:
+
+- generar un nuevo `client_event_id` porque hubo timeout;
+- insertar un segundo check-in para “asegurarse”;
+- inferir éxito únicamente porque cambió la pantalla;
+- inferir fallo únicamente porque no llegó la respuesta;
+- activar contexto local sin evidencia autoritativa posterior.
+
+El estado `unknown outcome` requiere recuperación por identidad, no repetición ciega del efecto.
+
+---
+
+#### 25. Contradicción y ambigüedad
+
+Impiden crear un contexto autoritativo, entre otros:
+
+- dos turnos aplicables;
+- dos revisiones incompatibles;
+- dos sesiones activas;
+- sesión activa de otro actor;
+- sesión activa de otro turno;
+- sesión cuyo sitio contradice el turno;
+- sesión residual después de un checkout concluyente;
+- rol, sede o área ya no válidos;
+- snapshot compuesto con versiones incompatibles;
+- fuente obligatoria no verificable.
+
+La primera causa concluyente mantiene su propietario contractual.
+
+No se reduce todo a un booleano `can_operate = false` sin conservar causa y trazabilidad.
+
+---
+
+#### 26. Revalidación inmediatamente antes del efecto
+
+Los gates resueltos por `ANIMA-AUTH-001` a `ANIMA-AUTH-006` no son autorizaciones eternas.
+
+Justo antes del efecto de entrada deben continuar vigentes, al menos:
+
+- identidad del actor;
+- estado del empleado;
+- turno y revisión publicada;
+- ventana temporal;
+- sede;
+- área;
+- rol;
+- habilitación rol-sede;
+- compatibilidad rol-área;
+- configuración del punto físico y geocerca aplicables;
+- ausencia de una sesión concurrente incompatible.
+
+Si uno cambió:
+
+```text
+PREFLIGHT_PREVIO
+-> STALE
+-> NO REUTILIZAR
+```
+
+Se ejecuta una nueva resolución dentro de la frontera autoritativa.
+
+---
+
+#### 27. Relación con la autorización final
+
+Crear contexto operativo no concede autoridad universal.
+
+```text
+OPERATIONAL_CONTEXT_READY
++
+PERMISSION_MISSING
+->
+DENY
+```
+
+```text
+OPERATIONAL_CONTEXT_READY
++
+RESOURCE_OUT_OF_SCOPE
+->
+DENY
+```
+
+```text
+OPERATIONAL_CONTEXT_READY
++
+DEVICE_RESTRICTED
+->
+DENY
+```
+
+La autorización de capacidades sigue evaluándose por permiso, modalidad, grants, deny, territorio, recurso, dispositivo y demás contratos aplicables.
+
+ANIMA no otorga permisos directamente al registrar entrada.
+
+---
+
+#### 28. Handoff a ANIMA-AUTH-008
+
+Cuando la entrada queda confirmada y existe contexto operativo resoluble, `ANIMA-AUTH-008` recibe una base coherente formada por:
+
+- actor efectivo;
+- referencia estable de la sesión de check-in;
+- evento de entrada confirmado;
+- turno y revisión publicada usados para iniciar la sesión;
+- sede operativa;
+- área operativa o ausencia site-wide válida;
+- rol operativo;
+- compatibilidad territorial;
+- instante de confirmación;
+- snapshot o referencias de versión necesarias para detectar cambios posteriores.
+
+El handoff afirma:
+
+```text
+CHECKIN_SERVER_CONFIRMED = TRUE
+ACTIVE_CHECKIN_SESSION = PRESENT
+OPERATIONAL_CONTEXT_RESOLVABLE = TRUE
+```
+
+No afirma que ese mismo snapshot siga siendo válido después de un cambio de turno.
+
+`ANIMA-AUTH-008` conserva la propiedad de actualizar o volver a resolver el contexto cuando cambie el turno después de la entrada.
+
+---
+
+#### 29. Estado físico observado
+
+La inspección de solo lectura del estado desplegado registró:
+
+| Elemento                                                      | Resultado |
+| ------------------------------------------------------------- | --------: |
+| filas en `attendance_logs`                                    |      5825 |
+| eventos `check_in`                                            |      2915 |
+| eventos `check_out`                                           |      2910 |
+| filas sin `shift_id`                                          |      2629 |
+| filas sin `client_event_id`                                   |      5823 |
+| filas con `client_event_id`                                   |         2 |
+| filas con `shift_id` y `client_event_id`                      |         1 |
+| candidatos abiertos por último evento `check_in`              |         5 |
+| candidatos abiertos sin `shift_id`                            |         0 |
+| candidatos abiertos vinculados a turno publicado laboral      |         5 |
+| candidatos abiertos temporalmente aplicables en la inspección |         5 |
+| candidatos abiertos con rol canónico activo                   |         5 |
+| candidatos abiertos compatibles con rol-sede-área             |         5 |
+| candidatos abiertos cuyo `site_id` coincide con el turno      |         5 |
+| candidatos abiertos con `client_event_id`                     |         0 |
+| tabla base `attendance_sessions` observada                    |         0 |
+| triggers `BEFORE INSERT` observados sobre `attendance_logs`   |         4 |
+
+La ausencia histórica de `shift_id` o `client_event_id` no convierte automáticamente una fila histórica en inválida para reportes de asistencia. Sí impide usar esos datos incompletos como prueba suficiente de una nueva autoridad operativa bajo el contrato final.
+
+Los cinco candidatos abiertos observados son un snapshot dinámico. Su validez futura debe revalidarse y no se congela documentalmente.
+
+---
+
+#### 30. Brechas físicas de adopción
+
+La inspección detectó brechas relevantes para la futura materialización:
+
+1. `attendance_logs.shift_id` continúa nullable y una parte sustancial del histórico no está vinculada a turno;
+2. casi todo el histórico carece de `client_event_id`;
+3. no existe una tabla base `attendance_sessions`; la sesión real se deriva actualmente de eventos;
+4. `attendance_logs` tiene cuatro triggers `BEFORE INSERT`, incluidos dos resolutores de contexto de turno que se solapan parcialmente;
+5. la secuencia física vigente alterna eventos usando el último registro global del empleado y un advisory lock, pero no materializa una identidad estable de sesión;
+6. `sync_attendance_events` recibe `shiftId` del cliente y depende de resolutores y triggers posteriores para normalización;
+7. el contrato físico observado no transporta una identidad explícita de revisión publicada en `attendance_logs`;
+8. el índice de idempotencia existe únicamente cuando `client_event_id` no es nulo;
+9. `sync_attendance_events` trata cualquier `unique_violation` como `duplicate` sin demostrar por esa rama que el contenido sea semánticamente idéntico;
+10. el catálogo físico de `source` admite `mobile`, `web`, `kiosk` y `system`, mientras el modelo conceptual de asistencia contempla más procedencias;
+11. `get_operational_context` deriva una sesión abierta a partir de eventos y conserva fallbacks legacy de sede y área que no constituyen el contrato final;
+12. `get_effective_context_v1` consume ese resolutor legacy para el contexto real y no representa por sí mismo la forma contractual final de `AccessContext`.
+
+Estas brechas no autorizan cambios físicos en esta tarea.
+
+---
+
+#### 31. Propietarios de las brechas
+
+Las brechas quedan asignadas a propietarios ya existentes:
+
+| Brecha                                                      | Propietario o frontera existente     | Condición de salida                                                  |
+| ----------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------------- |
+| hechos autoritativos de actor, turno, check-in y territorio | `AUTH-DB-033`                        | producir hechos reproducibles y compatibles con el contrato canónico |
+| precedencia, gates y razones                                | `AUTH-DB-034`                        | evaluador único conserva la primera causa concluyente                |
+| frescura e invalidación                                     | `AUTH-DB-035`                        | snapshots stale dejan de ser reutilizables                           |
+| activación específica de ANIMA                              | instancia futura de `ANIMA-AUTH-007` | entrada confirmada produce sesión y contexto conforme a esta tarea   |
+| cambios de turno posteriores                                | `ANIMA-AUTH-008`                     | contexto se vuelve a resolver sin crear otra entrada                 |
+| cierre por salida                                           | `ANIMA-AUTH-009`                     | checkout cierra la sesión exacta y revoca contexto dependiente       |
+| descansos                                                   | `ANIMA-AUTH-010`                     | pausa no se confunde con checkout                                    |
+| offline y reconciliación                                    | `ANIMA-AUTH-014` y `ANIMA-AUTH-015`  | intención offline conserva idempotencia y se reautoriza              |
+| diagnóstico visible                                         | `ANIMA-AUTH-016` y `ANIMA-AUTH-017`  | experiencia muestra estado correcto sin inventar autoridad           |
+| auditoría                                                   | `ANIMA-AUTH-018`                     | creación y cambios quedan reconstruibles                             |
+| prohibición de otorgar permisos desde ANIMA                 | `ANIMA-AUTH-019`                     | check-in y contexto no se convierten en grant                        |
+| confirmación transversal de contexto                        | `INT-WORK-004`                       | Supabase y resolutores confirman contexto coherente y fresco         |
+| consumo por aplicaciones                                    | `INT-WORK-005`                       | consumidores dejan de reconstruir contexto por su cuenta             |
+
+No se crea una tarea adicional.
+
+---
+
+#### 32. Seguridad, privacidad y observabilidad
+
+La respuesta de activación debe entregar al trabajador solo lo necesario para confirmar el estado de su propia marcación.
+
+No debe revelar automáticamente:
+
+- otros turnos;
+- otros trabajadores;
+- relaciones de matriz;
+- grants;
+- denies;
+- identificadores internos innecesarios;
+- detalles de RLS o RPC;
+- SQL;
+- fingerprints internos no necesarios para el cliente;
+- candidatos alternativos de turno;
+- causas técnicas sensibles.
+
+La evidencia operativa futura debe permitir correlacionar, según finalidad autorizada:
+
+- intención idempotente;
+- hecho confirmado;
+- sesión;
+- turno y revisión;
+- actor;
+- sede y área;
+- rol;
+- instante de servidor;
+- resultado;
+- causa de rechazo o conflicto;
+- contexto resuelto posterior.
+
+Logs y telemetría siguen siendo evidencia, no fuente de autorización.
+
+---
+
+#### 33. Topología y materialización física
+
+La definición documental se aprueba una sola vez en este marcador.
+
+```text
+MODE = PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE = POST_E5_PACKAGE
+INSTANCE_PATTERN = ANIMA-AUTH-007::<implementation_unit_id>
+```
+
+La materialización futura:
+
+- requiere una unidad de implementación real;
+- requiere el paquete propietario aplicable;
+- requiere el gate E5 correspondiente;
+- debe limitarse a los productores y consumidores físicos de la activación;
+- debe conservar idempotencia, concurrencia y rollback;
+- debe evitar una tabla de contexto persistente si no es necesaria;
+- si materializa sesión o proyección, debe conservar las identidades separadas;
+- debe ejecutar todos los cambios Supabase desde `vento-group-sas/vento-shell`.
+
+Esta tarea no autoriza DDL, DML, migraciones, RLS, RPC, Edge Functions, cambios de código, datos productivos ni despliegues.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya protege check-in confirmado, sesión activa, unicidad, precedencia, territorio, idempotencia, offline, paridad de canales y separación entre contexto y autorización. Esta tarea especializa esas obligaciones para la activación inicial de ANIMA sin cambiar el registro.
+
+---
+
+#### 35. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-AUTH-008`: capacidades operativas consumen turno vigente, check-in activo, rol y territorio compatibles;
+- `TREQ-AUTH-009`: sede y área efectivas se resuelven determinísticamente;
+- `TREQ-AUTH-229`: ausencia de check-in requerido produce denegación y cero efectos;
+- `TREQ-AUTH-230`: el requisito de check-in se aplica por permiso, modalidad y carril;
+- `TREQ-AUTH-231`: sesión activa pertenece al actor, turno y sede exactos, está confirmada y es única;
+- `TREQ-AUTH-232`: ausencia, cierre normal, contradicción, multiplicidad e indisponibilidad conservan causas distintas;
+- `TREQ-AUTH-233`: precedencia de turno, check-in, rol y territorio;
+- `TREQ-AUTH-234`: paridad entre canales;
+- `TREQ-AUTH-235`: ANIMA conserva disponible el flujo que crea asistencia;
+- `TREQ-AUTH-236`: experiencia y privacidad del check-in requerido;
+- `TREQ-ANIMA-003`: intención offline durable e idempotente con `client_event_id` estable.
+
+Esta enumeración es trazabilidad y no representa requisitos afectados por la tarea.
+
+---
+
+#### 36. Evidencia de validación
+
+| Clase     | Estado       | Evidencia                                                                                                                                                                                       |
+| --------- | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| BUILD     | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea.                                                                                                              |
+| LOCAL     | PASS         | El artefacto aislado fue comprobado por estructura, metadata, continuidad, secciones obligatorias, UTF-8, EOL y cero requisitos afectados en la sección derivada.                               |
+| REMOTA    | PASS         | Se contrastaron `main`, continuidad, owner, topología, políticas, contratos `AccessContext`, check-in, contexto efectivo, 04A, migraciones y estado Supabase mediante lecturas de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se registró una entrada real ni se ejercitó un flujo de trabajador.                                                                                                                          |
+| FÍSICA    | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, RLS, RPC, cambios de código ni despliegues.                                                                                                             |
+
+---
+
+#### 37. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. consume exactamente el handoff de `ANIMA-AUTH-006`;
+2. separa intención, hecho, sesión y snapshot de contexto;
+3. conserva `client_event_id`, `attendance_log_id`, `checkin_session_id` y `context_id` como identidades distintas;
+4. `context_id` permanece identidad de resolución y no sesión permanente;
+5. la activación exige evento de entrada confirmado por servidor;
+6. una intención local o encolada no activa autoridad;
+7. `shift_id = null` no crea contexto operativo;
+8. se conserva conceptualmente la revisión publicada usada al entrar;
+9. actor, turno y sesión convergen sobre el mismo empleado;
+10. sede, área y rol proceden del turno y no del check-in;
+11. el punto físico permanece separado de la sede operativa;
+12. la geocerca no crea territorio;
+13. tiempo de cliente no controla vigencia;
+14. mismo evento y contenido reproducen el mismo resultado;
+15. mismo identificador con contenido distinto produce conflicto;
+16. respuesta perdida se recupera por identidad sin duplicar efecto;
+17. existe máximo una sesión activa compatible por actor;
+18. multiplicidad no se resuelve con primera fila;
+19. la persistencia se confirma antes de activar contexto;
+20. `ActiveCheckinContext` conserva su forma canónica;
+21. `OperationalRoleContext` conserva su forma canónica;
+22. `OperationalSiteContext` conserva su forma canónica;
+23. `OperationalAreaContext` conserva su forma canónica;
+24. `AccessContext` se resuelve de nuevo después del hecho confirmado;
+25. contexto operativo no equivale a permiso;
+26. grant o scope posteriores siguen evaluándose por sus contratos;
+27. los gates `ANIMA-AUTH-001..006` se revalidan cuando puedan haber quedado stale;
+28. un fallo previo produce cero efectos de asistencia y contexto;
+29. una contradicción posterior a un hecho ya confirmado conserva el histórico y bloquea autoridad;
+30. `ANIMA-AUTH-008` conserva la propiedad de cambios de turno posteriores;
+31. `ANIMA-AUTH-009` conserva la propiedad del cierre por checkout;
+32. `ANIMA-AUTH-014` y `ANIMA-AUTH-015` conservan offline y reconciliación;
+33. `ANIMA-AUTH-018` conserva auditoría detallada;
+34. `ANIMA-AUTH-019` conserva la prohibición de que ANIMA otorgue permisos directamente;
+35. se reconocen las brechas físicas sin corregirlas;
+36. no se crean ni modifican requisitos de prueba;
+37. no se ejecutan cambios físicos.
+
+---
+
+#### 38. Límites
+
+Esta tarea no define:
+
+- publicación y vigencia del turno, propiedad de `ANIMA-AUTH-001`;
+- sede del turno, propiedad de `ANIMA-AUTH-002`;
+- área del turno, propiedad de `ANIMA-AUTH-003`;
+- rol operativo del turno, propiedad de `ANIMA-AUTH-004`;
+- habilitación rol-sede, propiedad de `ANIMA-AUTH-005`;
+- compatibilidad rol-área, propiedad de `ANIMA-AUTH-006`;
+- actualización después de cambiar el turno, propiedad de `ANIMA-AUTH-008`;
+- cierre del contexto al registrar salida, propiedad de `ANIMA-AUTH-009`;
+- descansos, propiedad de `ANIMA-AUTH-010`;
+- cambio temporal de área, propiedad de `ANIMA-AUTH-011`;
+- reemplazos de turno, propiedad de `ANIMA-AUTH-012`;
+- turnos cruzados de medianoche, propiedad de `ANIMA-AUTH-013`;
+- sincronización y reconciliación offline, propiedad de `ANIMA-AUTH-014` y `ANIMA-AUTH-015`;
+- diseño final de diagnóstico, propiedad de `ANIMA-AUTH-016` y `ANIMA-AUTH-017`;
+- auditoría detallada, propiedad de `ANIMA-AUTH-018`;
+- grants, scopes, recursos o autorización final;
+- esquema físico definitivo de una sesión;
+- tabla física de contexto;
+- migraciones o cambios productivos.
+
+---
+
+#### 39. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno`
+
+
 ### [ ] ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno
 ### [ ] ANIMA-AUTH-009 — Cerrar contexto al registrar salida
 ### [ ] ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización
