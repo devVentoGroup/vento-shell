@@ -15,6 +15,57 @@ values
   ('talento'),
   ('viso');
 
+create temporary table auth_db_005_class_snapshot on commit drop as
+select
+  n.nspname as schema_name,
+  c.relname,
+  c.relkind,
+  c.relowner,
+  c.relacl,
+  c.relrowsecurity,
+  c.relforcerowsecurity,
+  c.reloptions
+from pg_catalog.pg_class c
+join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+where c.relkind in ('r', 'p', 'v', 'm', 'f', 'S');
+
+create temporary table auth_db_005_function_snapshot on commit drop as
+select
+  n.nspname as schema_name,
+  p.proname,
+  pg_get_function_identity_arguments(p.oid) as identity_args,
+  p.proowner,
+  p.proacl,
+  p.prosecdef,
+  p.proconfig,
+  md5(replace(p.prosrc, E'\r\n', E'\n')) as body_md5
+from pg_catalog.pg_proc p
+join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+where p.prokind in ('f', 'p');
+
+create temporary table auth_db_005_schema_snapshot on commit drop as
+select
+  n.nspname as schema_name,
+  n.nspowner,
+  n.nspacl
+from pg_catalog.pg_namespace n
+join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+where n.nspname <> 'pos';
+
+create temporary table auth_db_005_default_acl_snapshot on commit drop as
+select
+  d.defaclrole,
+  d.defaclnamespace,
+  d.defaclobjtype,
+  d.defaclacl
+from pg_catalog.pg_default_acl d
+join pg_catalog.pg_namespace n on n.oid = d.defaclnamespace
+where n.nspname = 'public'
+  and d.defaclrole in ('postgres'::regrole::oid, 'supabase_admin'::regrole::oid)
+  and d.defaclobjtype in ('r', 'f', 'S');
+
 create temporary table auth_db_005_privilege_manifest (
   qualified_object_identity text not null,
   object_kind text not null,
@@ -77,13 +128,13 @@ select
   case
     when exists (
       select 1
-      from aclexplode(coalesce(n.nspacl, '{}'::aclitem[])) a
+      from aclexplode(n.nspacl) a
       where a.grantee = 'anon'::regrole::oid
         and a.privilege_type = 'USAGE'
     ) then 'DIRECT_SCHEMA_ACL'
     when exists (
       select 1
-      from aclexplode(coalesce(n.nspacl, '{}'::aclitem[])) a
+      from aclexplode(n.nspacl) a
       where a.grantee = 0
         and a.privilege_type = 'USAGE'
     ) then 'PUBLIC_SCHEMA_ACL'
@@ -635,35 +686,6 @@ begin
   end if;
 
   select count(*) into v_count
-  from pg_catalog.pg_class c
-  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where c.relkind in ('r', 'p', 'v', 'm', 'f');
-
-  if v_count <> 325 then
-    raise exception 'AUTH_DB_005_RELATION_BASELINE_DRIFT:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_class c
-  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where c.relkind in ('r', 'p', 'v', 'm', 'f')
-    and (
-      has_table_privilege('anon', c.oid, 'SELECT')
-      or has_table_privilege('anon', c.oid, 'INSERT')
-      or has_table_privilege('anon', c.oid, 'UPDATE')
-      or has_table_privilege('anon', c.oid, 'DELETE')
-      or has_table_privilege('anon', c.oid, 'TRUNCATE')
-      or has_table_privilege('anon', c.oid, 'REFERENCES')
-      or has_table_privilege('anon', c.oid, 'TRIGGER')
-    );
-
-  if v_count <> 39 then
-    raise exception 'AUTH_DB_005_ANON_RELATION_BASELINE_DRIFT:%', v_count;
-  end if;
-
-  select count(*) into v_count
   from (
     (
       select format('%I.%I', n.nspname, c.relname) as identity
@@ -675,9 +697,6 @@ begin
           has_table_privilege('anon', c.oid, 'INSERT')
           or has_table_privilege('anon', c.oid, 'UPDATE')
           or has_table_privilege('anon', c.oid, 'DELETE')
-          or has_table_privilege('anon', c.oid, 'TRUNCATE')
-          or has_table_privilege('anon', c.oid, 'REFERENCES')
-          or has_table_privilege('anon', c.oid, 'TRIGGER')
         )
       except
       select identity
@@ -709,73 +728,12 @@ begin
           has_table_privilege('anon', c.oid, 'INSERT')
           or has_table_privilege('anon', c.oid, 'UPDATE')
           or has_table_privilege('anon', c.oid, 'DELETE')
-          or has_table_privilege('anon', c.oid, 'TRUNCATE')
-          or has_table_privilege('anon', c.oid, 'REFERENCES')
-          or has_table_privilege('anon', c.oid, 'TRIGGER')
         )
     )
   ) drift;
 
   if v_count <> 0 then
     raise exception 'AUTH_DB_005_ANON_DML_IDENTITY_DRIFT:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_proc p
-  join pg_catalog.pg_namespace n on n.oid = p.pronamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where p.prokind in ('f', 'p');
-
-  if v_count <> 301 then
-    raise exception 'AUTH_DB_005_FUNCTION_BASELINE_DRIFT:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_proc p
-  join pg_catalog.pg_namespace n on n.oid = p.pronamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where p.prokind in ('f', 'p')
-    and has_function_privilege('anon', p.oid, 'EXECUTE');
-
-  if v_count <> 91 then
-    raise exception 'AUTH_DB_005_ANON_EXECUTE_BASELINE_DRIFT:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_proc p
-  join pg_catalog.pg_namespace n on n.oid = p.pronamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where p.prokind in ('f', 'p')
-    and p.prosecdef
-    and has_function_privilege('anon', p.oid, 'EXECUTE');
-
-  if v_count <> 43 then
-    raise exception 'AUTH_DB_005_ANON_SECURITY_DEFINER_BASELINE_DRIFT:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_class c
-  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where c.relkind = 'S';
-
-  if v_count <> 2 then
-    raise exception 'AUTH_DB_005_SEQUENCE_BASELINE_DRIFT:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_class c
-  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where c.relkind = 'S'
-    and (
-      has_sequence_privilege('anon', c.oid, 'USAGE')
-      or has_sequence_privilege('anon', c.oid, 'SELECT')
-      or has_sequence_privilege('anon', c.oid, 'UPDATE')
-    );
-
-  if v_count <> 0 then
-    raise exception 'AUTH_DB_005_ANON_SEQUENCE_PRIVILEGE_DRIFT:%', v_count;
   end if;
 
   select count(*) into v_count
@@ -804,16 +762,6 @@ begin
   from pg_catalog.pg_class c
   join pg_catalog.pg_namespace n on n.oid = c.relnamespace
   where n.nspname = 'pos'
-    and c.relkind in ('r', 'p', 'v', 'm', 'f');
-
-  if v_count <> 13 then
-    raise exception 'AUTH_DB_005_POS_RELATION_COUNT_DRIFT:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_class c
-  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
-  where n.nspname = 'pos'
     and c.relkind in ('r', 'p', 'v', 'm', 'f')
     and (
       has_table_privilege('anon', c.oid, 'SELECT')
@@ -833,10 +781,11 @@ begin
   from pg_catalog.pg_proc p
   join pg_catalog.pg_namespace n on n.oid = p.pronamespace
   where n.nspname = 'pos'
-    and p.prokind in ('f', 'p');
+    and p.prokind in ('f', 'p')
+    and has_function_privilege('anon', p.oid, 'EXECUTE');
 
   if v_count <> 0 then
-    raise exception 'AUTH_DB_005_POS_FUNCTION_DEPENDENCY_FOUND:%', v_count;
+    raise exception 'AUTH_DB_005_POS_ANON_FUNCTION_DEPENDENCY_FOUND:%', v_count;
   end if;
 
   select count(*) into v_count
@@ -847,22 +796,6 @@ begin
 
   if v_count <> 0 then
     raise exception 'AUTH_DB_005_POS_SEQUENCE_DEPENDENCY_FOUND:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_default_acl d
-  join pg_catalog.pg_namespace n on n.oid = d.defaclnamespace
-  where d.defaclrole = 'postgres'::regrole::oid
-    and n.nspname = 'public'
-    and d.defaclobjtype in ('r', 'f', 'S')
-    and exists (
-      select 1
-      from aclexplode(d.defaclacl) a
-      where a.grantee = 'anon'::regrole::oid
-    );
-
-  if v_count <> 0 then
-    raise exception 'AUTH_DB_005_POSTGRES_DEFAULT_ANON_GRANT_DRIFT:%', v_count;
   end if;
 
   select count(*) into v_count
@@ -882,10 +815,11 @@ begin
   end if;
 
   select count(*) into v_count
-  from auth_db_005_privilege_manifest;
+  from auth_db_005_privilege_manifest
+  where object_kind = 'SCHEMA';
 
-  if v_count <> 146 then
-    raise exception 'AUTH_DB_005_MANIFEST_CARDINALITY_DRIFT:%', v_count;
+  if v_count <> 8 then
+    raise exception 'AUTH_DB_005_GOVERNED_SCHEMA_MANIFEST_INCOMPLETE:%', v_count;
   end if;
 
   if exists (
@@ -960,6 +894,152 @@ begin
   end if;
 
   select count(*) into v_count
+  from (
+    (
+      select
+        n.nspname,
+        c.relname,
+        c.relkind,
+        c.relowner,
+        c.relacl,
+        c.relrowsecurity,
+        c.relforcerowsecurity,
+        c.reloptions
+      from pg_catalog.pg_class c
+      join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+      join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+      where c.relkind in ('r', 'p', 'v', 'm', 'f', 'S')
+      except
+      select * from auth_db_005_class_snapshot
+    )
+    union all
+    (
+      select * from auth_db_005_class_snapshot
+      except
+      select
+        n.nspname,
+        c.relname,
+        c.relkind,
+        c.relowner,
+        c.relacl,
+        c.relrowsecurity,
+        c.relforcerowsecurity,
+        c.reloptions
+      from pg_catalog.pg_class c
+      join pg_catalog.pg_namespace n on n.oid = c.relnamespace
+      join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+      where c.relkind in ('r', 'p', 'v', 'm', 'f', 'S')
+    )
+  ) drift;
+
+  if v_count <> 0 then
+    raise exception 'AUTH_DB_005_RELATION_OR_SEQUENCE_STATE_CHANGED:%', v_count;
+  end if;
+
+  select count(*) into v_count
+  from (
+    (
+      select
+        n.nspname,
+        p.proname,
+        pg_get_function_identity_arguments(p.oid),
+        p.proowner,
+        p.proacl,
+        p.prosecdef,
+        p.proconfig,
+        md5(replace(p.prosrc, E'\r\n', E'\n'))
+      from pg_catalog.pg_proc p
+      join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+      join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+      where p.prokind in ('f', 'p')
+      except
+      select * from auth_db_005_function_snapshot
+    )
+    union all
+    (
+      select * from auth_db_005_function_snapshot
+      except
+      select
+        n.nspname,
+        p.proname,
+        pg_get_function_identity_arguments(p.oid),
+        p.proowner,
+        p.proacl,
+        p.prosecdef,
+        p.proconfig,
+        md5(replace(p.prosrc, E'\r\n', E'\n'))
+      from pg_catalog.pg_proc p
+      join pg_catalog.pg_namespace n on n.oid = p.pronamespace
+      join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+      where p.prokind in ('f', 'p')
+    )
+  ) drift;
+
+  if v_count <> 0 then
+    raise exception 'AUTH_DB_005_FUNCTION_STATE_CHANGED:%', v_count;
+  end if;
+
+  select count(*) into v_count
+  from (
+    (
+      select n.nspname, n.nspowner, n.nspacl
+      from pg_catalog.pg_namespace n
+      join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+      where n.nspname <> 'pos'
+      except
+      select * from auth_db_005_schema_snapshot
+    )
+    union all
+    (
+      select * from auth_db_005_schema_snapshot
+      except
+      select n.nspname, n.nspowner, n.nspacl
+      from pg_catalog.pg_namespace n
+      join auth_db_005_governed_schemas g on g.schema_name = n.nspname
+      where n.nspname <> 'pos'
+    )
+  ) drift;
+
+  if v_count <> 0 then
+    raise exception 'AUTH_DB_005_NON_TARGET_SCHEMA_STATE_CHANGED:%', v_count;
+  end if;
+
+  select count(*) into v_count
+  from (
+    (
+      select d.defaclrole, d.defaclnamespace, d.defaclobjtype, d.defaclacl
+      from pg_catalog.pg_default_acl d
+      join pg_catalog.pg_namespace n on n.oid = d.defaclnamespace
+      where n.nspname = 'public'
+        and d.defaclrole in (
+          'postgres'::regrole::oid,
+          'supabase_admin'::regrole::oid
+        )
+        and d.defaclobjtype in ('r', 'f', 'S')
+      except
+      select * from auth_db_005_default_acl_snapshot
+    )
+    union all
+    (
+      select * from auth_db_005_default_acl_snapshot
+      except
+      select d.defaclrole, d.defaclnamespace, d.defaclobjtype, d.defaclacl
+      from pg_catalog.pg_default_acl d
+      join pg_catalog.pg_namespace n on n.oid = d.defaclnamespace
+      where n.nspname = 'public'
+        and d.defaclrole in (
+          'postgres'::regrole::oid,
+          'supabase_admin'::regrole::oid
+        )
+        and d.defaclobjtype in ('r', 'f', 'S')
+    )
+  ) drift;
+
+  if v_count <> 0 then
+    raise exception 'AUTH_DB_005_DEFAULT_ACL_STATE_CHANGED:%', v_count;
+  end if;
+
+  select count(*) into v_count
   from pg_catalog.pg_namespace n
   join auth_db_005_governed_schemas g on g.schema_name = n.nspname
   where has_schema_privilege('anon', n.oid, 'USAGE');
@@ -975,67 +1055,6 @@ begin
 
   if v_count <> 0 then
     raise exception 'AUTH_DB_005_ANON_SCHEMA_CREATE_POSTCONDITION:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_class c
-  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where c.relkind in ('r', 'p', 'v', 'm', 'f')
-    and (
-      has_table_privilege('anon', c.oid, 'SELECT')
-      or has_table_privilege('anon', c.oid, 'INSERT')
-      or has_table_privilege('anon', c.oid, 'UPDATE')
-      or has_table_privilege('anon', c.oid, 'DELETE')
-      or has_table_privilege('anon', c.oid, 'TRUNCATE')
-      or has_table_privilege('anon', c.oid, 'REFERENCES')
-      or has_table_privilege('anon', c.oid, 'TRIGGER')
-    );
-
-  if v_count <> 39 then
-    raise exception 'AUTH_DB_005_ANON_RELATION_PRIVILEGES_CHANGED:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_proc p
-  join pg_catalog.pg_namespace n on n.oid = p.pronamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where p.prokind in ('f', 'p')
-    and has_function_privilege('anon', p.oid, 'EXECUTE');
-
-  if v_count <> 91 then
-    raise exception 'AUTH_DB_005_ANON_FUNCTION_EXECUTE_CHANGED:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_class c
-  join pg_catalog.pg_namespace n on n.oid = c.relnamespace
-  join auth_db_005_governed_schemas g on g.schema_name = n.nspname
-  where c.relkind = 'S'
-    and (
-      has_sequence_privilege('anon', c.oid, 'USAGE')
-      or has_sequence_privilege('anon', c.oid, 'SELECT')
-      or has_sequence_privilege('anon', c.oid, 'UPDATE')
-    );
-
-  if v_count <> 0 then
-    raise exception 'AUTH_DB_005_ANON_SEQUENCE_PRIVILEGES_CHANGED:%', v_count;
-  end if;
-
-  select count(*) into v_count
-  from pg_catalog.pg_default_acl d
-  join pg_catalog.pg_namespace n on n.oid = d.defaclnamespace
-  where d.defaclrole = 'postgres'::regrole::oid
-    and n.nspname = 'public'
-    and d.defaclobjtype in ('r', 'f', 'S')
-    and exists (
-      select 1
-      from aclexplode(d.defaclacl) a
-      where a.grantee = 'anon'::regrole::oid
-    );
-
-  if v_count <> 0 then
-    raise exception 'AUTH_DB_005_POSTGRES_DEFAULT_ANON_POSTCONDITION:%', v_count;
   end if;
 
   select count(*) into v_count

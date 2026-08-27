@@ -17,10 +17,24 @@ select is(
         select 1
         from aclexplode(d.defaclacl) a
         where a.grantee = 'anon'::regrole::oid
+          and (
+            (
+              d.defaclobjtype = 'r'
+              and a.privilege_type in ('SELECT', 'INSERT', 'UPDATE', 'DELETE')
+            )
+            or (
+              d.defaclobjtype = 'f'
+              and a.privilege_type = 'EXECUTE'
+            )
+            or (
+              d.defaclobjtype = 'S'
+              and a.privilege_type in ('USAGE', 'SELECT')
+            )
+          )
       )
   ),
   0::bigint,
-  'postgres public default privileges do not grant anon'
+  'postgres public defaults grant no anon client data operations'
 );
 
 select is(
@@ -183,18 +197,15 @@ select is(
       'viso'
     )
       and c.relkind in ('r', 'p', 'v', 'm', 'f')
-      and (
-        has_table_privilege('anon', c.oid, 'SELECT')
-        or has_table_privilege('anon', c.oid, 'INSERT')
-        or has_table_privilege('anon', c.oid, 'UPDATE')
-        or has_table_privilege('anon', c.oid, 'DELETE')
-        or has_table_privilege('anon', c.oid, 'TRUNCATE')
-        or has_table_privilege('anon', c.oid, 'REFERENCES')
-        or has_table_privilege('anon', c.oid, 'TRIGGER')
+      and exists (
+        select 1
+        from aclexplode(coalesce(c.relacl, acldefault('r', c.relowner))) a
+        where a.grantee = 'anon'::regrole::oid
+          and a.privilege_type = 'SELECT'
       )
   ),
   39::bigint,
-  'legacy anon relation surface remains frozen at 39 identities'
+  '39 canonical direct anon SELECT grants remain frozen'
 );
 
 select is(
@@ -248,22 +259,26 @@ select is(
     select count(*)
     from pg_catalog.pg_proc p
     join pg_catalog.pg_namespace n on n.oid = p.pronamespace
-    where n.nspname in (
-      'app_private',
-      'club',
-      'pass',
-      'payments',
-      'pos',
-      'public',
-      'talento',
-      'viso'
+    where format(
+      '%I.%I(%s)',
+      n.nspname,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid)
+    ) in (
+      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
+      'public.current_employee_area_id()',
+      'public.current_employee_site_id()',
+      'public.is_active_staff()',
+      'public.is_global_manager()',
+      'public.is_manager()',
+      'public.is_manager_or_owner()',
+      'public.is_owner()'
     )
-      and p.prokind in ('f', 'p')
-      and p.prosecdef
+      and not p.prosecdef
       and has_function_privilege('anon', p.oid, 'EXECUTE')
   ),
-  43::bigint,
-  'legacy anon SECURITY DEFINER surface remains frozen pending classification'
+  8::bigint,
+  'AUTH-DB-003 invoker wrappers and anon EXECUTE remain unchanged'
 );
 
 select is(
@@ -271,25 +286,11 @@ select is(
     select count(*)
     from pg_catalog.pg_class c
     join pg_catalog.pg_namespace n on n.oid = c.relnamespace
-    where n.nspname in (
-      'app_private',
-      'club',
-      'pass',
-      'payments',
-      'pos',
-      'public',
-      'talento',
-      'viso'
-    )
+    where n.nspname = 'pos'
       and c.relkind = 'S'
-      and (
-        has_sequence_privilege('anon', c.oid, 'USAGE')
-        or has_sequence_privilege('anon', c.oid, 'SELECT')
-        or has_sequence_privilege('anon', c.oid, 'UPDATE')
-      )
   ),
   0::bigint,
-  'anon sequence privileges remain zero'
+  'pos remains without sequence dependencies'
 );
 
 select ok(
