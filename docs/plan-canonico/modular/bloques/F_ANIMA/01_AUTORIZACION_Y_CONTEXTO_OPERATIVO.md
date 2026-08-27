@@ -939,7 +939,474 @@ No crea tablas, migraciones, RPC, policies, contratos físicos nuevos, rutas de 
 `ANIMA-AUTH-003 — Confirmar área del turno`
 
 
-### [ ] ANIMA-AUTH-003 — Confirmar área del turno
+### ✅ ANIMA-AUTH-003 — Confirmar área del turno
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-002 — Confirmar sede del turno
+**Tarea siguiente:** ANIMA-AUTH-004 — Confirmar rol operativo del turno
+**Tipo de tarea:** documental; definición contractual de la confirmación del área operativa publicada en el turno antes de resolver el rol operativo y registrar asistencia en ANIMA
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología PER_IMPLEMENTATION_UNIT y al gate POST_E5_PACKAGE
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA confirma el área operativa del turno que ya superó `ANIMA-AUTH-001` y `ANIMA-AUTH-002`.
+
+La fuente operativa es el hecho publicado en el propio turno. La confirmación no reconstruye el área desde afiliaciones permanentes, preferencias, cliente, check-in, dispositivo o recurso.
+
+```text
+TURNO PUBLICADO Y VIGENTE
++
+SEDE DEL TURNO CONFIRMADA
++
+LECTURA DE shift.area_id
++
+SI HAY area_id:
+  AREA EXISTENTE
+  + AREA ACTIVA
+  + AREA PERTENECE A LA SEDE DEL TURNO
++
+SI area_id ES NULL:
+  CONSERVAR AUSENCIA
+  + NO FABRICAR AREA
+->
+CONTINUAR CON ANIMA-AUTH-004
+```
+
+Esta tarea no concede permisos, no decide todavía si el rol exige área y no registra asistencia.
+
+---
+
+#### 2. Entrada contractual
+
+El handoff de `ANIMA-AUTH-002` conserva:
+
+- actor efectivo;
+- turno publicado y vigente;
+- sede exacta del turno ya confirmada;
+- actividad de la sede;
+- referencia de publicación o revisión disponible;
+- instante server-side de resolución;
+- `area_id` publicado, que puede ser nulo;
+- rol operativo publicado cuando exista, todavía sin validar.
+
+`ANIMA-AUTH-003` no vuelve a escoger turno ni sede. Si esos hechos dejan de ser reproducibles, invalida el handoff y no intenta repararlo escogiendo otra área.
+
+---
+
+#### 3. Fuente autoritativa
+
+La fuente del área operativa es:
+
+```text
+public.employee_shifts.area_id
+```
+
+El registro se verifica contra:
+
+```text
+public.areas
+```
+
+La pertenencia territorial se comprueba con:
+
+```text
+public.areas.site_id
+```
+
+Relación obligatoria:
+
+```text
+shift.area_id
+->
+areas.id
+->
+areas.site_id
+=
+shift.site_id confirmado
+```
+
+`area_id` identifica un área concreta. `area_kind` es una clasificación funcional. No son equivalentes.
+
+---
+
+#### 4. Separación de conceptos
+
+Se conservan separados:
+
+```text
+AREA DEL TURNO
+!= AREA ASIGNADA
+!= AREA PRIMARIA
+!= AREA SELECCIONADA
+!= AREA DEL CHECK-IN
+!= AREA DEL DISPOSITIVO
+!= AREA DEL RECURSO
+```
+
+`public.employee_areas` describe afiliación habitual y no es un prerrequisito operativo universal.
+
+`employees.area_id` es una referencia legacy y no puede autorizar ni sustituir el área del turno.
+
+---
+
+#### 5. Ausencia de área
+
+`shift.area_id = null` no equivale automáticamente a denegación.
+
+Existen roles y capacidades de nivel sede. Por tanto:
+
+```text
+shift.area_id = null
+->
+active_area_id = null
+->
+NO FABRICAR AREA
+->
+CONTINUAR A ANIMA-AUTH-004
+```
+
+La dependencia real de área se resolverá cuando estén disponibles el rol y las reglas posteriores.
+
+Queda prohibido convertir `null` en:
+
+- primera área de la sede;
+- área primaria o seleccionada;
+- única área asignada;
+- área del último turno;
+- área del check-in;
+- área del dispositivo;
+- área inferida desde el rol;
+- wildcard de todas las áreas.
+
+---
+
+#### 6. Condiciones de un área válida
+
+Cuando `shift.area_id` no es nulo, el área se confirma únicamente si:
+
+1. existe en `public.areas`;
+2. es única y resoluble;
+3. está activa;
+4. `areas.site_id` coincide exactamente con la sede confirmada;
+5. sigue perteneciendo a la misma publicación o revisión del turno;
+6. no fue sustituida por nombre o `area_kind`;
+7. la lectura fue concluyente;
+8. no existe una contradicción estructural que impida reproducir la resolución.
+
+Una referencia inválida no se degrada a `null`.
+
+---
+
+#### 7. Employee areas no es guard operativo
+
+`public.employee_areas` no es la fuente de `OperationalActiveArea`.
+
+Una rotación válida puede ubicar temporalmente a un trabajador en un área distinta de su afiliación habitual, siempre que las validaciones posteriores de rol, sede y área lo permitan.
+
+Por ello queda prohibido:
+
+- bloquear un turno válido únicamente porque `employee_areas` esté vacío;
+- reemplazar el área del turno con `employee_areas`;
+- exigir `is_primary` para operar;
+- usar `employees.area_id` como fallback;
+- crear afiliación permanente desde el check-in.
+
+---
+
+#### 8. Compatibilidad sede-área
+
+Toda área pertenece a una sola sede.
+
+```text
+areas.site_id
+=
+confirmed_shift_site_id
+```
+
+Si el turno declara un área de otra sede:
+
+- no se cambia la sede;
+- no se cambia el área;
+- no se busca otra área con el mismo nombre;
+- no se reinterpreta `area_kind`;
+- no se continúa hacia la creación de asistencia;
+- se falla cerrado conservando la razón transversal propietaria.
+
+---
+
+#### 9. Matriz de decisión
+
+| Situación | Decisión | Handoff |
+| --- | --- | --- |
+| `area_id` válido, activo y de la sede confirmada | confirmar | área válida |
+| `area_id = null` | conservar ausencia explícita | `area_id = null` |
+| área inexistente | bloquear | ninguno |
+| área inactiva | bloquear | ninguno |
+| área de otra sede | bloquear | ninguno |
+| coincidencia solo por nombre o tipo | no sustituir | ninguno |
+| `employee_areas` vacío y turno con área válida | no bloquear | área del turno |
+| `employee_areas` contiene otra área | no sustituir | área del turno |
+| cliente propone otra área | ignorar como autoridad | resolución server-side |
+| check-in o dispositivo aporta otra área | no sustituir | área del turno |
+| fuente no verificable | bloquear | indisponibilidad técnica |
+| publicación cambia durante la evaluación | invalidar | nueva resolución |
+
+---
+
+#### 10. Dependencia de área por rol y permiso
+
+El contrato transversal distingue:
+
+```text
+REQUIRED
+SITE_SUFFICIENT
+NOT_APPLICABLE
+```
+
+`ANIMA-AUTH-003` confirma el hecho del turno, pero todavía no posee toda la información para decidir si un `null` es permitido.
+
+Por tanto:
+
+- área válida se conserva;
+- área nula se conserva como nula;
+- `ANIMA-AUTH-004` valida el rol;
+- `ANIMA-AUTH-005` valida el rol en la sede;
+- `ANIMA-AUTH-006` valida la compatibilidad del rol con el área;
+- una capacidad `REQUIRED` no podrá operar finalmente sin área válida;
+- `SITE_SUFFICIENT` solo admite ausencia cuando rol y recurso tampoco exigen área concreta;
+- `NOT_APPLICABLE` no fabrica contexto operativo.
+
+---
+
+#### 11. Razones y precedencia
+
+Esta tarea no crea códigos públicos nuevos.
+
+Se conserva la propiedad ya aprobada:
+
+- falta de publicación utilizable: `AUTH-ERR-009`;
+- turno fuera de ventana: `AUTH-ERR-010`;
+- falta de sede asignada exigible: `AUTH-ERR-005`;
+- sede activa no resoluble: `AUTH-ERR-006`;
+- área activa requerida y no disponible: `AUTH-ERR-008`, cuando la dependencia es concluyente;
+- contradicción estructural concluyente: `AUTH-ERR-017`;
+- indisponibilidad o lectura no verificable: `AUTH-ERR-019`.
+
+La falta de `employee_areas` no se convierte en falta de área operativa si el turno aporta un área válida.
+
+---
+
+#### 12. Handoff a ANIMA-AUTH-004
+
+El resultado positivo conserva:
+
+- actor efectivo;
+- turno publicado y vigente;
+- referencia de publicación o revisión;
+- sede confirmada;
+- `area_id` publicado;
+- área presente o ausente;
+- si existe, identidad, actividad y sede propietaria verificadas;
+- instante server-side de resolución;
+- rol publicado todavía pendiente de validación.
+
+Si no hay área, el handoff conserva `area_id = null`.
+
+No afirma todavía que el rol sea válido, que esté permitido en sede o área, que el permiso admita ausencia de área o que exista check-in.
+
+---
+
+#### 13. Continuidad funcional del minibloque
+
+```text
+ANIMA-AUTH-001 -> turno publicado y ventana temporal
+ANIMA-AUTH-002 -> sede del turno
+ANIMA-AUTH-003 -> area del turno o ausencia explicita
+ANIMA-AUTH-004 -> rol operativo del turno
+ANIMA-AUTH-005 -> rol permitido en la sede
+ANIMA-AUTH-006 -> rol permitido en el area
+ANIMA-AUTH-007 -> crear contexto al registrar entrada
+```
+
+Esta tarea no absorbe responsabilidades de `ANIMA-AUTH-004`, `ANIMA-AUTH-005`, `ANIMA-AUTH-006` ni `ANIMA-AUTH-007`.
+
+---
+
+#### 14. Frescura e invalidación
+
+Invalidan la decisión, según corresponda:
+
+- retiro, cancelación o sustitución de la publicación;
+- cambio de `shift.area_id`;
+- cambio de la sede del turno;
+- cambio de `areas.site_id`;
+- activación o desactivación del área;
+- eliminación de la referencia territorial;
+- cambio de actor;
+- expiración de la ventana;
+- contradicción estructural;
+- pérdida de verificabilidad de una fuente obligatoria.
+
+Antes del efecto de asistencia se revalidan los hechos necesarios. Una corrección posterior no reactiva una solicitud antigua.
+
+---
+
+#### 15. Privacidad
+
+Una denegación conserva la sesión y los accesos independientes que sigan autorizados.
+
+No debe revelar automáticamente:
+
+- IDs internos de área;
+- otras áreas de la sede;
+- áreas asignadas, primarias o seleccionadas;
+- causa administrativa de una desactivación;
+- configuraciones incompatibles;
+- rol esperado;
+- permiso;
+- detalles de tablas o constraints.
+
+La experiencia visible se desarrolla en `ANIMA-AUTH-016` y `ANIMA-AUTH-017`.
+
+---
+
+#### 16. Estado físico observado
+
+La base vigente ya contiene `employee_shifts.area_id` referenciado a `public.areas`, y el consumidor ANIMA observado transporta `area_id` en su contexto de turno.
+
+También existe lógica legacy que combina hechos de turno y check-in para producir un área activa.
+
+Ese estado no demuestra cumplimiento de este contrato.
+
+La materialización futura deberá impedir:
+
+- sustituir el área del turno con el área del check-in;
+- usar `employees.area_id` como autoridad;
+- usar área seleccionada como autoridad;
+- usar `employee_areas` como guard operativo universal;
+- tratar `null` como todas las áreas;
+- omitir `areas.site_id = shift.site_id`;
+- aceptar un área inactiva.
+
+Esta tarea no modifica código ni datos.
+
+---
+
+#### 17. Topología y materialización física
+
+La definición documental se aprueba una sola vez.
+
+```text
+MODE: PER_IMPLEMENTATION_UNIT
+GATE: POST_E5_PACKAGE
+```
+
+La materialización futura se identifica por `implementation_unit_id`, exige el package propietario y su gate E5 aplicable, y se limita a los productores y consumidores físicos de esta validación.
+
+Esta tarea no autoriza migraciones, RLS, RPC, Edge Functions, código de aplicación, Auth, despliegues ni cambios productivos.
+
+---
+
+#### 18. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+La cobertura vigente ya protege la separación entre área asignada y operativa, la fuente del área activa desde el turno, actividad y pertenencia territorial, ausencia permitida para capacidades de nivel sede, precedencia, canales, privacidad, frescura y reconciliación física. Esta tarea especializa esas obligaciones para ANIMA sin cambiar el registro.
+
+---
+
+#### 19. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-AUTH-189` a `TREQ-AUTH-198`: asignación de área y separación entre afiliación y operación;
+- `TREQ-AUTH-199` a `TREQ-AUTH-208`: área activa, dependencia, fuente desde turno, territorio, canales y frescura;
+- `TREQ-AUTH-209` a `TREQ-AUTH-218`: publicación y resolución server-side del turno;
+- `TREQ-AUTH-219` a `TREQ-AUTH-228`: vigencia temporal e invalidación.
+
+Esta enumeración es trazabilidad y no representa requisitos afectados.
+
+---
+
+#### 20. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, secciones, continuidad, UTF-8, EOL y cero TREQ en la sección derivada. |
+| REMOTA | PASS | Se contrastaron en `main` continuidad, owner, topología, políticas, modelo de áreas, catálogo, 04A y superficies físicas relevantes. |
+| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se alteró el comportamiento real de ANIMA. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, datos, código, RLS, RPC ni despliegues. |
+
+---
+
+#### 21. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. consume el handoff de `ANIMA-AUTH-002`;
+2. usa `employee_shifts.area_id` como fuente operativa;
+3. verifica un área no nula en `public.areas`;
+4. exige actividad cuando existe;
+5. exige coincidencia exacta entre sede del área y sede confirmada;
+6. separa `area_id` y `area_kind`;
+7. no usa `employee_areas` como fuente operativa;
+8. no usa `employees.area_id`, primaria o selección como autoridad;
+9. no usa check-in, dispositivo, recurso ni cliente como sustitutos;
+10. conserva `area_id = null` sin fabricar área;
+11. no deniega anticipadamente un `null` antes de conocer rol y dependencia;
+12. no convierte área inválida o inactiva en ausencia limpia;
+13. distingue contradicción e indisponibilidad;
+14. conserva precedencia de turno y sede;
+15. entrega área válida o ausencia explícita a `ANIMA-AUTH-004`;
+16. no valida rol, rol-sede ni rol-área;
+17. no crea check-in ni contexto;
+18. invalida ante cambios relevantes;
+19. conserva sesión y cero efectos al bloquear;
+20. no crea ni modifica requisitos de prueba;
+21. no ejecuta cambios físicos.
+
+---
+
+#### 22. Límites
+
+Esta tarea no define:
+
+- publicación y ventana temporal, propiedad de `ANIMA-AUTH-001`;
+- sede del turno, propiedad de `ANIMA-AUTH-002`;
+- rol operativo, propiedad de `ANIMA-AUTH-004`;
+- rol permitido en sede, propiedad de `ANIMA-AUTH-005`;
+- rol permitido en área, propiedad de `ANIMA-AUTH-006`;
+- creación del contexto, propiedad de `ANIMA-AUTH-007`;
+- actualización posterior del contexto, propiedad de `ANIMA-AUTH-008`;
+- diseño final de mensajes;
+- autorización de recursos;
+- sincronización offline;
+- materialización física.
+
+No crea tablas, migraciones, RPC, policies, tipos, rutas ni cambios productivos.
+
+---
+
+#### 23. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-002 — Confirmar sede del turno`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-003 — Confirmar área del turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-004 — Confirmar rol operativo del turno`
+
+
 ### [ ] ANIMA-AUTH-004 — Confirmar rol operativo del turno
 ### [ ] ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede
 ### [ ] ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área
