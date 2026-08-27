@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1057** |
+| Tareas aprobadas | **1058** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **537** |
+| Tareas no iniciadas | **536** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **66.31% (1057/1594)** |
+| Porcentaje de completamiento | **66.37% (1058/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede** |
-| Tarea actual | **ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área** |
+| Última tarea aprobada | **ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área** |
+| Tarea actual | **ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada** |
+| Siguiente tarea | **ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 5 de 37 aprobadas; ANIMA-AUTH-006 pendiente** |
+| Progreso del bloque | **BLOQUE F: 6 de 37 aprobadas; ANIMA-AUTH-007 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-004::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-AUTH-006** |
+| Carril documental | **ACTIVO — ANIMA-AUTH-007** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-004::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-AUTH-005` — Confirmar que el rol esté permitido en la sede |
-| Tarea actual | `ANIMA-AUTH-006` — Confirmar que el rol esté permitido en el área — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-AUTH-007` — Crear contexto operativo al registrar entrada |
+| Última aprobada | `ANIMA-AUTH-006` — Confirmar que el rol esté permitido en el área |
+| Tarea actual | `ANIMA-AUTH-007` — Crear contexto operativo al registrar entrada — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-AUTH-008` — Actualizar contexto cuando cambia el turno |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 5 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-006** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 6 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-007** |
 | Implementación física | **AUTH-DB-004::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede
-        ↓
-TAREA ACTUAL
 ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 5 de 37 tareas aprobadas
+BLOQUE F — 6 de 37 tareas aprobadas
 ```

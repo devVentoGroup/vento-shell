@@ -2722,7 +2722,819 @@ No crea tablas, migraciones, constraints, índices, RPC, policies, tipos, rutas 
 `ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área`
 
 
-### [ ] ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área
+### ✅ ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede
+**Tarea siguiente:** ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada
+**Tipo de tarea:** documental; definición contractual de la compatibilidad del rol operativo canónico del turno con el área exacta ya confirmada, después de satisfacer la habilitación del rol en la sede y antes de crear el contexto operativo de ANIMA
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología PER_IMPLEMENTATION_UNIT y al gate POST_E5_PACKAGE
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA confirma que el rol operativo canónico y activo del turno, ya habilitado para la sede por `ANIMA-AUTH-005`, puede operar dentro del área exacta publicada en ese mismo turno o, cuando el turno conserva ausencia explícita de área, si la habilitación site-wide permite continuar sin fabricar una.
+
+La decisión responde exclusivamente:
+
+```text
+¿LA HABILITACION TERRITORIAL DEL ROL
+CUBRE EL AREA EXACTA DEL TURNO
+O CUBRE TODA LA SEDE MEDIANTE SITE-WIDE?
+```
+
+La tarea no selecciona otra área, no modifica el turno, no concede permisos y no crea todavía el contexto operativo.
+
+---
+
+#### 2. Entrada contractual desde ANIMA-AUTH-005
+
+El handoff consumido conserva, como mínimo:
+
+- actor efectivo;
+- turno laboral publicado, vigente e inequívoco;
+- referencia de publicación o revisión disponible;
+- sede exacta confirmada;
+- área exacta confirmada o ausencia explícita preservada;
+- rol operativo canónico y activo;
+- conjunto autoritativo de habilitaciones activas del rol dentro de la sede;
+- indicación de existencia o ausencia de habilitación site-wide;
+- relaciones area-scoped aplicables dentro de la sede;
+- instante server-side de resolución;
+- versiones o fingerprints disponibles.
+
+El handoff afirma únicamente:
+
+```text
+ROLE_ENABLED_IN_SITE = TRUE
+```
+
+No afirma:
+
+```text
+ROLE_ENABLED_IN_AREA = TRUE
+PERMISSION_GRANTED = TRUE
+RESOURCE_IN_SCOPE = TRUE
+CHECKIN_CREATED = TRUE
+OPERATIONAL_CONTEXT_CREATED = TRUE
+```
+
+---
+
+#### 3. Resultado de esta etapa
+
+La evaluación produce uno de los siguientes estados contractuales:
+
+| Estado | Significado | Continuación |
+| --- | --- | --- |
+| `PRESENT_SITE_WIDE` | existe una habilitación activa site-wide para el rol en la sede | gate de área satisfecho; continuar a `ANIMA-AUTH-007` |
+| `PRESENT_EXACT_AREA` | existe una habilitación activa para el área exacta del turno | gate de área satisfecho; continuar a `ANIMA-AUTH-007` |
+| `AREA_NULL_SITE_WIDE` | el turno conserva `area_id = null` y el rol está habilitado site-wide | gate de área satisfecho sin fabricar área |
+| `PRESENT_OTHER_AREA_ONLY` | el área del turno es válida, pero el rol solo está habilitado en otra área de la misma sede | bloquear el carril operativo |
+| `INACTIVE_EXACT_AREA_ONLY` | existió relación para el área exacta, pero ya no está activa, mientras el rol sigue habilitado en otra área de la sede | bloquear el carril operativo |
+| `AREA_NULL_AREA_SCOPED_ONLY` | el turno no aporta área y el rol solo tiene habilitaciones area-scoped | configuración o contexto inválido; no elegir área |
+| `CONTRADICTORY` | matriz, revisión o cardinalidad impiden una decisión única | fallar cerrado por configuración |
+| `UNAVAILABLE` | la fuente necesaria no pudo verificarse | fallar cerrado por indisponibilidad técnica |
+
+`PRESENT_OTHER_AREA_ONLY` e `INACTIVE_EXACT_AREA_ONLY` reutilizan el bloqueo canónico de rol inválido para área. `AREA_NULL_AREA_SCOPED_ONLY` no se degrada a ese bloqueo porque no existe un área válida contra la cual probar incompatibilidad ordinaria.
+
+---
+
+#### 4. Fuentes autoritativas de rol, sede y área
+
+Rol, sede y área proceden de la misma revisión publicada del turno:
+
+```text
+active_shift.operational_role_code
+active_shift.site_id
+active_shift.area_id
+```
+
+La matriz se consume desde el contrato canónico equivalente a:
+
+```text
+site_operational_roles
+WHERE role_code = active_shift.operational_role_code
+  AND site_id = active_shift.site_id
+  AND is_active = true
+```
+
+La compatibilidad se decide mediante identidad estable:
+
+```text
+area_id IS NULL en la habilitacion
+-> SITE_WIDE
+
+area_id = active_shift.area_id
+-> EXACT_AREA
+
+area_id distinto
+-> NO CUBRE EL AREA DEL TURNO
+```
+
+La lectura debe usar el conjunto completo aplicable al rol y la sede. El orden físico de filas no participa en la decisión.
+
+---
+
+#### 5. Identidad exacta rol–sede–área
+
+Cuando existe un área concreta en el turno, la identidad evaluada es:
+
+```text
+ROLE_SITE_AREA_KEY =
+(
+  active_shift.operational_role_code,
+  active_shift.site_id,
+  active_shift.area_id
+)
+```
+
+La comparación es por identificadores estables.
+
+No son equivalentes:
+
+```text
+role_code
+!= role_label
+!= role_family
+
+site_id
+!= site_code
+!= site_name
+!= site_kind
+
+area_id
+!= area_code
+!= area_name
+!= area_kind
+```
+
+La coincidencia semántica de nombre, tipo o etiqueta no crea compatibilidad.
+
+---
+
+#### 6. Semántica exacta de compatibilidad de área
+
+Con un área concreta, válida y perteneciente a la sede del turno:
+
+```text
+SITE_WIDE_ENABLEMENT = PRESENT
+OR
+EXACT_AREA_ENABLEMENT = PRESENT
+->
+AREA_GATE = SATISFIED
+```
+
+Si no existe habilitación site-wide:
+
+```text
+AREA_ID = VALID
+AND
+ACTIVE_ENABLEMENTS_IN_SITE >= 1
+AND
+EXACT_AREA_ENABLEMENT = ABSENT
+AND
+READ = CONCLUSIVE
+->
+AREA_GATE = DENIED
+```
+
+No basta con que el rol exista en la sede. Debe existir cobertura site-wide o coincidencia exacta con el área del turno.
+
+---
+
+#### 7. Validez previa del área
+
+`ANIMA-AUTH-003` ya resolvió el área publicada.
+
+Cuando `area_id` está presente, esta tarea presupone que:
+
+1. el identificador existe;
+2. el área está activa;
+3. pertenece a la sede exacta del turno;
+4. la resolución fue concluyente;
+5. el área procede de la misma revisión publicada.
+
+Si cualquiera de esos hechos deja de sostenerse durante la revalidación, el handoff se invalida.
+
+Un área nula, inexistente, inactiva, perteneciente a otra sede o ambigua no puede ser convertida en una incompatibilidad ordinaria de rol–área.
+
+---
+
+#### 8. Habilitación site-wide
+
+Una habilitación activa con:
+
+```text
+site_operational_roles.area_id = null
+```
+
+representa alcance site-wide del rol dentro de la sede.
+
+Consecuencias:
+
+- satisface el gate territorial de esta tarea para cualquier área válida de esa sede;
+- también permite continuar cuando el turno conserva ausencia explícita de área;
+- no concede el permiso solicitado;
+- no amplía el scope de un recurso;
+- no convierte un área inválida o ajena a la sede en válida;
+- no autoriza otra sede;
+- no crea un área física ni lógica.
+
+El alcance site-wide pertenece a la relación de la matriz, no a que el turno tenga `area_id = null`.
+
+---
+
+#### 9. Habilitación area-scoped y operación multiárea
+
+Una relación activa con `area_id` concreto representa una habilitación area-scoped.
+
+Cuando el rol opera en varias áreas de una sede, la matriz contractual debe poder representar varias identidades:
+
+```text
+(role_code, site_id, area_id_A)
+(role_code, site_id, area_id_B)
+(role_code, site_id, area_id_C)
+```
+
+Cada relación cubre exclusivamente su área exacta.
+
+Queda prohibido:
+
+- escoger la primera relación;
+- escoger el área predeterminada;
+- reducir varias relaciones a un único par `site_id + role_code`;
+- comparar solo `area_kind`;
+- heredar cobertura desde un área hermana;
+- interpretar una relación en otra área como permiso para toda la sede.
+
+Varias relaciones area-scoped coherentes no son una contradicción. Son la cardinalidad contractual necesaria para un rol multiárea.
+
+---
+
+#### 10. Ausencia explícita de área
+
+El handoff puede conservar:
+
+```text
+active_shift.area_id = null
+```
+
+La decisión depende del alcance territorial del rol.
+
+Caso site-wide:
+
+```text
+area_id = null
++
+PRESENT_SITE_WIDE
+->
+AREA_GATE = SATISFIED
+->
+NO FABRICAR AREA
+```
+
+Caso area-scoped:
+
+```text
+area_id = null
++
+NO SITE_WIDE
++
+PRESENT_AREA_SCOPED
+->
+AREA_NULL_AREA_SCOPED_ONLY
+->
+CONFIGURACION O CONTEXTO INVALIDO
+->
+NO ELEGIR AREA
+```
+
+La ausencia de área no funciona como wildcard.
+
+Una relación area-scoped no puede autorizar un turno sin área mediante la condición `area_id is null`.
+
+---
+
+#### 11. Fuentes que no pueden sustituir el área
+
+Queda prohibido completar o sustituir el área mediante:
+
+- área del check-in;
+- área seleccionada en interfaz;
+- área primaria o predeterminada del empleado;
+- área del dispositivo;
+- área de otro turno;
+- última área utilizada;
+- cookie, query, body o header;
+- primer área de la sede;
+- `area_kind`;
+- nombre o código textual;
+- perfil operativo predeterminado;
+- recurso solicitado;
+- ubicación física del dispositivo;
+- grant del permiso;
+- aplicación abierta;
+- heurística por rol;
+- una simulación presentada como contexto real.
+
+ANIMA puede transportar el área publicada para UX y correlación, pero no puede convertir el estado del cliente en autoridad territorial.
+
+---
+
+#### 12. Matriz de decisión
+
+| Caso | Hecho concluyente | Decisión |
+| ---: | --- | --- |
+| 1 | `BASE_ONLY`, sin carril operativo | esta tarea no aplica |
+| 2 | área válida y habilitación site-wide activa | gate satisfecho |
+| 3 | área válida y habilitación activa exacta | gate satisfecho |
+| 4 | área válida y varias relaciones area-scoped, incluida la exacta | gate satisfecho |
+| 5 | área válida y el rol solo está habilitado en otra área de la misma sede | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA` |
+| 6 | relación exacta inactiva, pero otra relación activa mantiene el rol habilitado en la sede | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA` |
+| 7 | mismo nombre de área, identificador distinto | no equivale; bloquear si no existe coincidencia exacta |
+| 8 | mismo `area_kind`, identificador distinto | no equivale; bloquear si no existe coincidencia exacta |
+| 9 | `area_id = null` y existe habilitación site-wide | continuar sin fabricar área |
+| 10 | `area_id = null` y solo existen habilitaciones area-scoped | configuración o contexto inválido |
+| 11 | área inexistente | configuración o contexto inválido |
+| 12 | área inactiva | configuración o contexto inválido |
+| 13 | área perteneciente a otra sede | configuración o contexto inválido |
+| 14 | no existe ninguna habilitación activa del rol en la sede | conservar propietario anterior; `ANIMA-AUTH-005` |
+| 15 | rol faltante | conservar propietario anterior; `ANIMA-AUTH-004` |
+| 16 | rol desconocido, inactivo o deprecado | configuración inválida |
+| 17 | cliente propone un área compatible distinta | ignorar propuesta |
+| 18 | check-in contiene otra área | no sustituir el turno |
+| 19 | dispositivo o perfil contienen un área compatible | no sustituir el turno |
+| 20 | grant existe, pero el área es incompatible | bloquear por área |
+| 21 | área compatible, pero grant falta | continuar; grant posterior |
+| 22 | configuración activa mezcla site-wide y area-scoped sin regla versionada | configuración contradictoria |
+| 23 | cardinalidad o revisión impiden una lectura única | configuración contradictoria |
+| 24 | fuente de área, catálogo o matriz no disponible | indisponibilidad técnica |
+
+La matriz decide únicamente la compatibilidad territorial de área.
+
+---
+
+#### 13. Relaciones inactivas o retiradas
+
+Una relación histórica no concede autoridad.
+
+Con área exacta:
+
+```text
+EXACT_AREA_RELATION_EXISTS
++
+EXACT_AREA_ACTIVE = FALSE
++
+OTHER_ACTIVE_ENABLEMENT_IN_SITE = TRUE
+->
+INACTIVE_EXACT_AREA_ONLY
+```
+
+La recuperación no reactiva la relación desde caché, historial, `is_default`, un grant o una decisión anterior.
+
+La fuente administrativa debe corregirse o reactivarse por su flujo propietario y la solicitud posterior debe resolver un contexto nuevo.
+
+---
+
+#### 14. Nombres, tipos y equivalencias semánticas
+
+La compatibilidad utiliza `area_id`.
+
+No se autoriza por:
+
+```text
+area_name igual
+area_code parecido
+area_kind igual
+misma funcion operativa
+misma ubicacion fisica aparente
+misma etiqueta visual
+```
+
+Dos áreas con el mismo `kind` siguen siendo territorios distintos si sus identificadores son distintos.
+
+La equivalencia semántica solo puede existir mediante un contrato explícito y versionado. No se infiere durante autorización.
+
+---
+
+#### 15. Frontera con la habilitación de sede
+
+La frontera con `ANIMA-AUTH-005` permanece:
+
+```text
+ACTIVE_ENABLEMENTS_FOR_ROLE_AND_SITE = 0
+->
+ANIMA-AUTH-005 BLOQUEA
+```
+
+```text
+ACTIVE_ENABLEMENTS_FOR_ROLE_AND_SITE >= 1
+->
+ANIMA-AUTH-005 PASA
+->
+ANIMA-AUTH-006 EVALUA AREA
+```
+
+Por tanto, una relación activa del rol en otra área de la misma sede demuestra que el gate de sede ya fue satisfecho, pero no que el área del turno sea compatible.
+
+Si un cambio concurrente retira la última habilitación de la sede, esta tarea no convierte el caso en área inválida: invalida el handoff y obliga a reejecutar la cadena desde el propietario anterior.
+
+---
+
+#### 16. Frontera con área inválida o no resoluble
+
+Cuando existe una relación area-scoped, un área ausente o inválida no es una incompatibilidad ordinaria.
+
+Propiedad de causas:
+
+| Situación | Propietario |
+| --- | --- |
+| rol faltante | `AUTH-ERR-012` |
+| rol canónico sin habilitación en sede | `AUTH-ERR-013` |
+| área válida, rol habilitado en sede, sin site-wide ni coincidencia exacta | `AUTH-ERR-014` |
+| área nula bajo alcance exclusivamente area-scoped | `AUTH-ERR-017` |
+| área inexistente, inactiva, ajena a la sede o contradictoria | `AUTH-ERR-017` |
+| matriz o revisión contradictoria | `AUTH-ERR-017` |
+| fuente no verificable | `AUTH-ERR-019` |
+
+La razón pública de área incompatible exige primero un área válida.
+
+---
+
+#### 17. Frontera con grants, scope y recurso
+
+La compatibilidad territorial no concede el permiso.
+
+```text
+AREA_GATE = SATISFIED
+!=
+OPERATIONAL_GRANT = PRESENT
+```
+
+Un grant tampoco corrige el territorio:
+
+```text
+OPERATIONAL_GRANT = PRESENT
++
+AREA_GATE = DENIED
+->
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+```
+
+Después del gate de área, los consumidores posteriores pueden evaluar grants, scope y recurso según sus contratos propietarios.
+
+Esta tarea no decide si el recurso pertenece al área ni si la capacidad requiere un área para un propósito adicional.
+
+---
+
+#### 18. Razón pública y precedencia
+
+Cuando existe un área válida y la lectura concluyente demuestra que el rol está habilitado en la sede, pero no site-wide ni para el área exacta, se reutiliza:
+
+```text
+reason_code = AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+public_state = OPERATIONAL_ROLE_NOT_ENABLED_FOR_ACTIVE_AREA
+```
+
+La sesión se conserva. El carril operativo queda denegado. Si la modalidad permite un carril base independiente completo, ese carril conserva su evaluación propia.
+
+La precedencia relevante permanece:
+
+```text
+turno publicado
+-> vigencia temporal
+-> check-in cuando aplique
+-> presencia del rol
+-> validez del rol
+-> validez de la sede
+-> habilitacion rol-sede
+-> validez o ausencia explicita del area
+-> compatibilidad rol-area
+-> dispositivo y simulacion
+-> grant
+-> scope y recurso
+```
+
+La primera causa concluyente aplicable prevalece.
+
+---
+
+#### 19. Cero efectos y comportamiento de ANIMA
+
+Una denegación o invalidación en esta etapa ocurre antes de registrar una entrada que dependa del contexto operativo validado.
+
+Queda prohibido:
+
+- crear un área alternativa;
+- cambiar el área del turno;
+- cambiar el rol o la sede;
+- modificar la matriz;
+- crear contexto operativo parcial;
+- registrar como exitosa una entrada que dependa de un contexto incompatible;
+- usar un grant como bypass territorial;
+- reintentar con otra área;
+- conservar un `ALLOW` anterior después de retirar la relación;
+- ejecutar efectos empresariales dependientes del contexto.
+
+Las capacidades base independientes que sigan autorizadas permanecen disponibles.
+
+---
+
+#### 20. Handoff a ANIMA-AUTH-007
+
+Cuando el gate de área queda satisfecho, `ANIMA-AUTH-007` recibe:
+
+- actor efectivo;
+- turno laboral publicado, vigente e inequívoco;
+- referencia de publicación o revisión;
+- sede exacta confirmada;
+- área exacta confirmada o ausencia explícita compatible con site-wide;
+- rol operativo canónico y activo;
+- confirmación de habilitación del rol en la sede;
+- confirmación de compatibilidad territorial por `SITE_WIDE` o `EXACT_AREA`;
+- estado de check-in cuando la cadena aplicable ya lo exige;
+- instante server-side de resolución;
+- versiones o fingerprints disponibles.
+
+El handoff afirma:
+
+```text
+ROLE_ENABLED_IN_SITE = TRUE
+ROLE_AREA_COMPATIBILITY = SATISFIED
+```
+
+No afirma:
+
+```text
+PERMISSION_GRANTED = TRUE
+RESOURCE_IN_SCOPE = TRUE
+OPERATIONAL_CONTEXT_CREATED = TRUE
+ATTENDANCE_INSERTED = TRUE
+```
+
+`ANIMA-AUTH-007` conserva la propiedad exclusiva de crear el contexto operativo al registrar entrada.
+
+---
+
+#### 21. Frescura e invalidación
+
+Invalidan la decisión anterior:
+
+- cambio del rol del turno;
+- cambio de sede o área del turno;
+- cancelación, retiro o republicación;
+- activación o desactivación del rol;
+- activación o desactivación de sede o área;
+- corrección de pertenencia área–sede;
+- creación, activación, retiro o modificación de habilitaciones;
+- cambio entre site-wide y area-scoped;
+- nueva relación multiárea;
+- cambio de actor;
+- fin de la ventana temporal;
+- cambio de versión de catálogo o matriz;
+- detección de contradicción posterior.
+
+Antes del efecto de asistencia o de la creación de contexto se revalidan los hechos necesarios.
+
+Una corrección nunca reanuda automáticamente la solicitud anterior.
+
+---
+
+#### 22. Privacidad y experiencia
+
+El bloqueo no debe revelar automáticamente:
+
+- otras áreas donde el rol sí está habilitado;
+- áreas alternativas de la sede;
+- código interno del rol;
+- identificadores internos de sede, área o matriz;
+- relaciones inactivas;
+- quién creó o retiró la relación;
+- grants;
+- permisos;
+- detalles de tablas, índices o constraints.
+
+La experiencia reutiliza el contrato de `AUTH-ERR-014`.
+
+El diseño final del diagnóstico visible de ANIMA permanece en `ANIMA-AUTH-016` y `ANIMA-AUTH-017`.
+
+---
+
+#### 23. Estado físico observado
+
+La inspección de solo lectura del estado desplegado vigente observó:
+
+| Elemento | Resultado |
+| --- | ---: |
+| roles operativos físicos activos | 13 |
+| roles canónicos consumibles por esta cadena | 12 |
+| habilitaciones activas en `site_operational_roles` | 16 |
+| sedes representadas por habilitaciones activas | 5 |
+| pares activos distintos sede–rol | 16 |
+| habilitaciones site-wide activas | 3 |
+| habilitaciones area-scoped activas | 13 |
+| habilitaciones activas con rol desconocido | 0 |
+| habilitaciones activas con rol inactivo | 0 |
+| relaciones area-scoped con área inexistente | 0 |
+| relaciones area-scoped con área inactiva | 0 |
+| relaciones area-scoped cuyo área pertenece a otra sede | 0 |
+| pares activos con mezcla site-wide y area-scoped | 0 |
+| turnos laborales publicados y no cancelados | 2801 |
+| turnos de ese conjunto sin rol | 1535 |
+| turnos con rol presente y canónico activo | 1266 |
+| turnos con rol no habilitado en la sede | 0 |
+| turnos con rol habilitado en la sede | 1266 |
+| turnos compatibles por habilitación site-wide | 144 |
+| turnos compatibles por coincidencia de área exacta | 1120 |
+| turnos con área presente y sin coincidencia exacta | 0 |
+| turnos con área nula y habilitación exclusivamente area-scoped | 2 |
+
+Los 144 turnos cubiertos por site-wide conservan `area_id = null` en el snapshot consultado y no requieren que ANIMA fabrique un área.
+
+Los dos casos con `area_id = null` y alcance exclusivamente area-scoped corresponden, de forma agregada y sin identificar trabajadores, a `SAUDO` con rol `cocinero_satelite`. El contrato los clasifica como configuración o contexto inválido, no como una incompatibilidad ordinaria contra un área concreta.
+
+Las cifras son una observación dinámica. No certifican implementación, no alteran requisitos históricos y no autorizan correcciones automáticas de datos.
+
+---
+
+#### 24. Brechas físicas de adopción
+
+El estado físico conserva brechas directamente relevantes:
+
+1. `get_operational_context` combina rol y área y emite `invalid_operational_role` tanto para fallos diferentes como para una ausencia de coincidencia territorial;
+2. `has_operational_permission` admite la condición `v_area_id is null` como rama permisiva dentro del chequeo de `site_operational_roles`;
+3. `has_operational_role_permission` admite igualmente `p_area_id is null` como rama permisiva;
+4. esas ramas pueden convertir ausencia de área en wildcard frente a una relación area-scoped;
+5. el índice legacy único por `site_id + role_code` impide representar varias áreas simultáneas para el mismo rol dentro de una sede;
+6. existe además un índice por `site_id + coalesce(area_id) + role_code`, pero el índice legacy más restrictivo sigue limitando la cardinalidad;
+7. la foreign key desplegada de `site_operational_roles.role_code` permanece `NOT VALID`;
+8. el conjunto de constraints desplegado no contiene una foreign key de `site_operational_roles.area_id` a `areas(id)`, aunque una migración posterior define esa referencia al crear la tabla desde cero;
+9. ANIMA transporta `area_id` y `operational_role` desde el turno en su flujo de asistencia, pero no consume `site_operational_roles` como autoridad cliente;
+10. por tanto, la decisión final debe permanecer server-side y no puede delegarse al estado React, geofence, selección o payload del dispositivo.
+
+Destinos ya existentes para la materialización:
+
+- integridad, cardinalidad y catálogo: `AUTH-DB-020` y `AUTH-DB-030`;
+- resolución de hechos de turno y territorio: `AUTH-DB-033`;
+- evaluación, precedencia y razones: `AUTH-DB-034`;
+- invalidación y frescura: `AUTH-DB-035`;
+- contratos y consumidores compartidos: `SHELL-AUTH-002`, `SHELL-AUTH-004` y `SHELL-AUTH-005`;
+- adopción específica de este contrato: la instancia futura correspondiente de `ANIMA-AUTH-006` por unidad de implementación.
+
+No se crea una tarea adicional.
+
+---
+
+#### 25. Topología y materialización física
+
+La definición documental se aprueba una sola vez en este marcador.
+
+```text
+MODE = PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE = POST_E5_PACKAGE
+INSTANCE_PATTERN = ANIMA-AUTH-006::<implementation_unit_id>
+```
+
+La materialización futura:
+
+- requiere una unidad de implementación real;
+- requiere el paquete propietario aplicable;
+- requiere el gate E5 correspondiente antes de ejecutar cambios;
+- debe separar compatibilidad de sede y compatibilidad de área;
+- debe tratar el área nula como ausencia, nunca como wildcard;
+- debe soportar cardinalidad multiárea cuando el contrato la requiera;
+- debe resolver la matriz en servidor;
+- no crea una instancia global implícita.
+
+Esta tarea documental no autoriza migraciones, DDL, DML, backfills, RLS, RPC, Edge Functions, código de aplicación, despliegues ni cambios productivos.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura transversal vigente ya protege compatibilidad exacta de área, site-wide, separación entre sede y área, fuentes autoritativas, precedencia, canales, privacidad, frescura y reconciliación física. Esta tarea especializa esas obligaciones para ANIMA sin cambiar el registro.
+
+---
+
+#### 27. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-AUTH-259`: denegación del carril operativo cuando existe área válida pero no habilitación site-wide ni coincidencia exacta;
+- `TREQ-AUTH-260`: aplicabilidad por permiso, modalidad y carril, con site-wide o área exacta;
+- `TREQ-AUTH-261`: rol, sede y área desde la misma revisión del turno y prohibición de fallbacks;
+- `TREQ-AUTH-262`: separación entre rol faltante, sede, área nula o inválida, incompatibilidad, grant y fallo técnico;
+- `TREQ-AUTH-263`: precedencia antes y después del gate de área;
+- `TREQ-AUTH-264`: equivalencia de respuesta entre canales;
+- `TREQ-AUTH-265`: cobertura por aplicación sin convertir estado cliente en autoridad;
+- `TREQ-AUTH-266`: privacidad, recuperación y experiencia;
+- `TREQ-AUTH-267`: invalidación y frescura;
+- `TREQ-AUTH-268`: reconciliación física y regresión territorial.
+
+Esta enumeración es trazabilidad y no representa requisitos afectados por la tarea.
+
+---
+
+#### 28. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, secciones obligatorias, continuidad, UTF-8, EOL y ausencia de requisitos afectados en la sección derivada. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, owner, topología, políticas, contrato de `AUTH-ERR-014`, registro 04A, migraciones, consumidor ANIMA y snapshot Supabase de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se ejercitó un flujo real de ANIMA. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, backfills, RLS, RPC, código ni despliegues. |
+
+---
+
+#### 29. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. consume exactamente el handoff de `ANIMA-AUTH-005`;
+2. conserva rol, sede y área de la misma revisión publicada;
+3. evalúa la identidad exacta `role_code + site_id + area_id` cuando existe área;
+4. una habilitación site-wide satisface el gate de área;
+5. una coincidencia activa del área exacta satisface el gate;
+6. una habilitación en otra área no autoriza el área del turno;
+7. una relación exacta inactiva no autoriza;
+8. varias relaciones area-scoped coherentes son admisibles contractualmente;
+9. `area_id = null` con site-wide puede continuar sin fabricar área;
+10. `area_id = null` con alcance únicamente area-scoped falla cerrado por configuración;
+11. ausencia de área nunca funciona como wildcard;
+12. área inexistente, inactiva o ajena a la sede no se presenta como incompatibilidad ordinaria;
+13. nombre, código visual y `area_kind` no sustituyen `area_id`;
+14. área del check-in no sustituye el área del turno;
+15. selección, perfil, dispositivo, cookie y cliente no sustituyen el área;
+16. grant y compatibilidad territorial permanecen separados;
+17. un grant no corrige un área incompatible;
+18. una incompatibilidad válida reutiliza `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`;
+19. se conserva `OPERATIONAL_ROLE_NOT_ENABLED_FOR_ACTIVE_AREA`;
+20. la sesión se conserva;
+21. el carril operativo produce cero efectos ante bloqueo;
+22. la retirada concurrente de la última relación de sede invalida el handoff y no se reetiqueta como área;
+23. cambios de turno, rol, sede, área o matriz invalidan la decisión;
+24. el handoff a `ANIMA-AUTH-007` afirma compatibilidad territorial, no creación de contexto;
+25. el snapshot físico se registra sin presentarlo como conformidad;
+26. se reconocen explícitamente los dos casos actuales de área nula bajo alcance area-scoped sin corregirlos;
+27. se identifica el fail-open físico por área nula en los helpers booleanos;
+28. se identifica la limitación física de cardinalidad multiárea;
+29. no se crean ni modifican requisitos de prueba;
+30. no se ejecutan cambios físicos.
+
+---
+
+#### 30. Límites
+
+Esta tarea no define:
+
+- publicación y vigencia del turno, propiedad de `ANIMA-AUTH-001`;
+- sede del turno, propiedad de `ANIMA-AUTH-002`;
+- validez o ausencia explícita del área del turno, propiedad de `ANIMA-AUTH-003`;
+- presencia y validez canónica del rol, propiedad de `ANIMA-AUTH-004`;
+- habilitación del rol en la sede, propiedad de `ANIMA-AUTH-005`;
+- creación del contexto operativo, propiedad de `ANIMA-AUTH-007`;
+- actualización posterior del contexto, propiedad de `ANIMA-AUTH-008`;
+- cierre del contexto, propiedad de `ANIMA-AUTH-009`;
+- grants, scopes o autorización final de recursos;
+- administración de la matriz;
+- diseño final de mensajes;
+- corrección de los dos casos físicos observados;
+- materialización física.
+
+No crea tablas, migraciones, constraints, índices, RPC, policies, tipos, rutas ni cambios productivos.
+
+---
+
+#### 31. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada`
+
+
 ### [ ] ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada
 ### [ ] ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno
 ### [ ] ANIMA-AUTH-009 — Cerrar contexto al registrar salida
