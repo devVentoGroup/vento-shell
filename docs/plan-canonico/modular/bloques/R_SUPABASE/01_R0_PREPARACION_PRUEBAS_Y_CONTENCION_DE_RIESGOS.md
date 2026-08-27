@@ -6150,6 +6150,67 @@ No comenzar sin baseline, drift, entorno reproducible, pruebas negativas, respal
 - 029: rollback del trigger/función con protección temporal.
 - 003: owner, grants, search path y mensajes.
 
+#### REGISTRO OPERATIVO — CORTE DE BASELINE SUPABASE 2026-08-27
+
+**Estado:** APROBADO_MATERIALIZADO_LOCALMENTE_PENDIENTE_DE_PUBLICACION
+**Aprobador:** VENTO_OWNER
+**Proyecto fuente AS-IS:** vento-os-dev / clzdpinthhtknkmefsxx
+**Motivo:** el historial legacy no constituye replay autoritativo por cambios históricos directos en SQL Editor y por incompatibilidad reproducible detectada antes de AUTH-DB-004.
+**Decisión:** 00000000000000_baseline.sql será reemplazado por un baseline capturado desde el estado remoto AS-IS aceptado; las migraciones legacy anteriores a AUTH-DB-001 saldrán de la cadena ejecutable pero permanecerán preservadas en Git.
+**Overlays TO-BE conservados:** AUTH-DB-001, AUTH-DB-002, AUTH-DB-003, AUTH-DB-004 y AUTH-DB-005.
+**AUTH-DB-005:** permanece IMPLEMENTED; checkpoint local fee1b21 creado en el portátil; publicación remota del checkpoint pendiente hasta volver a ese equipo.
+**quality:repair:** ya ejecutado una sola vez para AUTH-DB-005; NO repetir.
+**Mutaciones remotas de schema/datos por el corte:** ninguna ejecutada.
+**Reconciliación supabase_migrations:** pendiente.
+**Watcher:** OFF.
+**Siguiente tarea reservada:** AUTH-DB-016 — Crear esquemas empresariales aprobados; permanece bloqueada hasta cerrar AUTH-DB-005.
+
+##### ACTUALIZACION DE EJECUCION - BASELINE LOCAL MATERIALIZADO 2026-08-27
+
+- Baseline AS-IS materializado localmente: SI.
+- Cadena ejecutable resultante en main candidato: 5 migraciones.
+- Storage policies incorporadas al baseline: 39.
+- Trigger custom de auth incorporado: on_auth_user_created.
+- Storage buckets incorporados: 14.
+- Relaciones de supabase_realtime incorporadas: 6.
+- Clean replay definitivo: PASS.
+- Migration manifest: PASS con 5 archivos, 0 vacios, 0 duplicados y 0 violaciones de nombre.
+- Configuracion local SMTP actualizada de inbucket a local_smtp.
+- Schema remoto modificado por el corte: NO.
+- Datos remotos modificados por el corte: NO.
+- Ledger remoto supabase_migrations modificado: NO; reconciliacion pendiente despues de publicar el baseline.
+- Publicacion del baseline: PENDIENTE mediante PR a main y VENTO Required Gate.
+- AUTH-DB-005: permanece IMPLEMENTED; checkpoint fee1b21 conservado en el portatil y pendiente de rebase despues del nuevo main.
+- quality:repair: NO repetir.
+- Watcher: OFF hasta finish de AUTH-DB-005.
+- AUTH-DB-016 permanece reservada y bloqueada hasta cerrar AUTH-DB-005.
+
+#### RECONCILIACIÓN CANÓNICA — EXCEPCIÓN PROPIETARIA DE REBASELINE 2026-08-27
+
+**Autoridad:** VENTO_OWNER — autorización explícita confirmada el 2026-08-27.
+
+**Precedencia:** esta decisión constituye la excepción canónica explícita requerida por la regla de inmutabilidad de AUTH-DB-015 y prevalece, únicamente para este corte, sobre cualquier cláusula anterior que obligue a conservar el legacy pre-AUTH-DB-001 dentro de la cadena ejecutable vigente o que impida usar el remoto identificado como autoridad temporal de captura AS-IS.
+
+**Reconciliación AUTH-DB-015:** después del corte, el universo físico vigente es el contenido realmente versionado bajo `supabase/migrations/` en la nueva época. El legacy retirado permanece auditable mediante Git history y deja de pertenecer al manifiesto ejecutable actual. Los registros VERIFIED históricos de AUTH-DB-015 no se reescriben.
+
+**Reconciliación AUTH-DB-028:** EXPECTED vs OBSERVED sigue siendo la regla permanente. El remoto `vento-os-dev / clzdpinthhtknkmefsxx` fue autoridad únicamente para esta captura AS-IS excepcional. Después de publicar el baseline, `vento-shell` vuelve a ser EXPECTED y el remoto vuelve a ser OBSERVED. Los registros VERIFIED históricos de AUTH-DB-028 no se reescriben.
+
+**Cadena candidata de main:** baseline + AUTH-DB-001 + AUTH-DB-002 + AUTH-DB-003 + AUTH-DB-004 = 5 migraciones ejecutables.
+
+**AUTH-DB-005:** permanece fuera del candidato de main hasta rebasar posteriormente el checkpoint conservado en el portátil sobre el nuevo baseline.
+
+**Reproducibilidad comprobada:** clean harness PASS sobre la nueva época migratoria.
+
+**Superficies incorporadas:** 39 policies de Storage, 1 trigger custom de Auth, 14 buckets, 6 relaciones Realtime, 15 roles estáticos y 26 reglas role/site_type.
+
+**Seguridad remota:** no se autoriza `db reset --linked`, reset destructivo, DDL remoto derivado del corte ni modificación de datos empresariales remotos.
+
+**Ledger remoto:** la reconciliación de `supabase_migrations` permanece pendiente y, cuando se ejecute, será únicamente reconciliación de historial después de publicar y certificar el baseline.
+
+**Cron y secretos:** cron permanece como runtime separado; ningún comando, header, token, credential o secret observado se incorpora al baseline.
+
+**Regla posterior al corte:** desde la nueva época vuelven a regir inmutabilidad por defecto, migraciones forward y autoridad versionada de `vento-shell`.
+
 ---
 
 #### 39. Continuidad
