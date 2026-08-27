@@ -128,9 +128,9 @@ select is(
         'talento',
         'viso'
       )
-      and has_sequence_privilege('authenticated', c.oid, 'USAGE')
-      and has_sequence_privilege('authenticated', c.oid, 'SELECT')
-      and has_sequence_privilege('authenticated', c.oid, 'UPDATE')
+      and case when c.relkind = 'S' then has_sequence_privilege('authenticated', c.oid, 'USAGE') else false end
+      and case when c.relkind = 'S' then has_sequence_privilege('authenticated', c.oid, 'SELECT') else false end
+      and case when c.relkind = 'S' then has_sequence_privilege('authenticated', c.oid, 'UPDATE') else false end
   ),
   2::bigint,
   'existing authenticated sequence compatibility remains intact'
