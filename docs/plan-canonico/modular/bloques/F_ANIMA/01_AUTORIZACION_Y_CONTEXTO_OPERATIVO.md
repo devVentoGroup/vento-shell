@@ -2024,7 +2024,704 @@ No crea tablas, columnas, constraints, migraciones, RPC, policies, rutas, tipos 
 `ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede`
 
 
-### [ ] ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede
+### ✅ ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-004 — Confirmar rol operativo del turno
+**Tarea siguiente:** ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área
+**Tipo de tarea:** documental; definición contractual de la habilitación del rol operativo canónico del turno en la sede exacta ya confirmada antes de evaluar compatibilidad de área y crear contexto operativo en ANIMA
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología PER_IMPLEMENTATION_UNIT y al gate POST_E5_PACKAGE
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA confirma que el rol operativo ya validado por `ANIMA-AUTH-004` está habilitado para la sede exacta del turno confirmada por `ANIMA-AUTH-002`.
+
+La decisión no selecciona otra sede, no cambia el rol del turno y no evalúa todavía si ese rol puede operar en el área exacta.
+
+```text
+TURNO PUBLICADO Y VIGENTE
++
+SEDE DEL TURNO CONFIRMADA
++
+AREA DEL TURNO CONFIRMADA O AUSENCIA EXPLICITA
++
+ROL OPERATIVO PRESENTE, CANONICO Y ACTIVO
++
+LECTURA CONCLUYENTE DE HABILITACIONES ACTIVAS
++
+AL MENOS UNA HABILITACION DEL PAR EXACTO ROL-SEDE
+->
+SEDE HABILITADA PARA EL ROL
+->
+CONTINUAR CON ANIMA-AUTH-006
+```
+
+Cuando no existe ninguna habilitación activa para el par exacto rol–sede, el carril operativo no puede continuar.
+
+---
+
+#### 2. Entrada contractual desde ANIMA-AUTH-004
+
+El handoff consumido conserva, como mínimo:
+
+- actor efectivo;
+- turno laboral publicado, vigente e inequívoco;
+- referencia de publicación o revisión disponible;
+- sede exacta del turno ya confirmada;
+- área exacta del turno o ausencia explícita ya preservada;
+- rol operativo tomado del turno;
+- identidad del rol resuelta en el catálogo operativo;
+- confirmación de que el rol es canónico y activo;
+- instante server-side de resolución;
+- estado del check-in cuando la cadena aplicable ya lo exige.
+
+`ANIMA-AUTH-005` no vuelve a resolver el rol desde una fuente alternativa ni modifica los hechos territoriales heredados.
+
+---
+
+#### 3. Resultado de esta etapa
+
+La evaluación conserva los estados contractuales ya definidos para la habilitación sede–rol:
+
+| Estado | Significado | Continuación |
+| --- | --- | --- |
+| `PRESENT_SITE_WIDE` | existe una habilitación activa del rol para la sede con alcance site-wide | continuar a `ANIMA-AUTH-006` |
+| `PRESENT_AREA_SCOPED` | existe una o más habilitaciones activas del rol dentro de la sede, acotadas por área | el gate de sede queda satisfecho; continuar a `ANIMA-AUTH-006` |
+| `CONCLUSIVE_ABSENT` | no existe habilitación activa del rol en la sede | bloquear el carril operativo |
+| `INACTIVE_ONLY` | solo existen relaciones inactivas o retiradas para ese par | bloquear el carril operativo |
+| `CONTRADICTORY` | las fuentes o versiones producen una configuración incompatible | fallar cerrado por configuración |
+| `UNAVAILABLE` | la fuente necesaria no pudo verificarse | fallar cerrado por indisponibilidad técnica |
+
+La existencia de una relación area-scoped dentro de la sede demuestra únicamente que el rol está admitido en esa sede. No demuestra que el área concreta del turno sea compatible.
+
+---
+
+#### 4. Fuente autoritativa de habilitación sede–rol
+
+El rol y la sede proceden de la misma revisión publicada del turno:
+
+```text
+active_shift.operational_role_code
+active_shift.site_id
+```
+
+La habilitación procede del contrato canónico equivalente a:
+
+```text
+site_operational_roles
+WHERE role_code = active_shift.operational_role_code
+  AND site_id = active_shift.site_id
+  AND is_active = true
+```
+
+La implementación física vigente utiliza `public.site_operational_roles`.
+
+La fuente deberá leerse como conjunto completo aplicable al par exacto; no se autoriza escoger una fila por conveniencia ni sustituir el par mediante otra sede.
+
+---
+
+#### 5. Identidad exacta del par rol–sede
+
+La identidad evaluada es:
+
+```text
+ROLE_SITE_KEY =
+(
+  active_shift.operational_role_code,
+  active_shift.site_id
+)
+```
+
+La comparación usa identificadores estables.
+
+No son equivalentes:
+
+```text
+role_code
+!= role_label
+!= role_family
+
+site_id
+!= site_code
+!= site_name
+!= site_kind
+```
+
+Una coincidencia por texto, etiqueta, familia o tipo no sustituye el par canónico.
+
+---
+
+#### 6. Semántica exacta de “permitido en la sede”
+
+El rol está permitido en la sede si y solo si la lectura autoritativa y concluyente encuentra al menos una habilitación activa para el par exacto.
+
+```text
+ACTIVE_ENABLEMENTS_FOR_ROLE_AND_SITE >= 1
+->
+SITE_GATE = SATISFIED
+```
+
+```text
+ACTIVE_ENABLEMENTS_FOR_ROLE_AND_SITE = 0
++
+READ = CONCLUSIVE
+->
+SITE_GATE = DENIED
+```
+
+La semántica de esta tarea no exige todavía coincidencia con `area_id`.
+
+Una habilitación area-scoped en otra área de la misma sede satisface el gate de sede y deja la compatibilidad exacta de área para `ANIMA-AUTH-006`.
+
+---
+
+#### 7. Actividad y vigencia de la relación
+
+Una relación únicamente puede contribuir al gate cuando:
+
+1. pertenece al rol exacto del turno;
+2. pertenece a la sede exacta del turno;
+3. está activa;
+4. sus referencias son resolubles;
+5. el rol continúa activo;
+6. la sede continúa activa;
+7. pertenece a la versión o vigencia contractual aplicable cuando el modelo físico la materialice;
+8. no forma parte de una configuración contradictoria.
+
+Una fila inactiva, retirada, obsoleta o perteneciente a otra sede no concede autoridad.
+
+`is_default` no participa en la autorización.
+
+---
+
+#### 8. Cardinalidad y multiplicidad
+
+La cardinalidad del gate de sede es de conjunto:
+
+```text
+0 filas activas exactas
+-> sede no habilitada para el rol
+
+1 o mas filas activas exactas
+-> sede habilitada para el rol
+```
+
+Varias filas area-scoped del mismo rol dentro de una sede no constituyen por sí mismas una contradicción: pueden representar un rol válido en varias áreas y deberán ser evaluadas por `ANIMA-AUTH-006`.
+
+Sí existe una contradicción cuando la configuración activa no puede interpretarse mediante las reglas canónicas, por ejemplo:
+
+- duplicados semánticamente incompatibles;
+- versiones simultáneamente autoritativas que discrepan;
+- mezcla site-wide y area-scoped sin una regla versionada que la haga inequívoca;
+- referencias territoriales imposibles;
+- una cardinalidad física que impide representar la cardinalidad contractual necesaria.
+
+La contradicción no se resuelve con `limit 1`.
+
+---
+
+#### 9. Site-wide y area-scoped
+
+La evaluación distingue:
+
+```text
+PRESENT_SITE_WIDE
+-> existe una relacion activa con area_id = null
+-> el rol esta habilitado en la sede
+
+PRESENT_AREA_SCOPED
+-> existe una o mas relaciones activas con area_id concreto
+-> el rol esta habilitado en la sede
+-> la compatibilidad exacta se decide despues
+```
+
+Esta tarea no declara que `area_id = null` en el turno equivalga a site-wide.
+
+El alcance site-wide pertenece a la habilitación de la matriz, no a la ausencia de área en el turno.
+
+---
+
+#### 10. Fuentes que no pueden sustituir la habilitación
+
+Queda prohibido autorizar el gate sede–rol mediante:
+
+- sede seleccionada en interfaz;
+- sede primaria o predeterminada del empleado;
+- sede del check-in;
+- sede del dispositivo;
+- última sede utilizada;
+- sede enviada por cliente, query, body, cookie o header;
+- rol base;
+- perfil operativo predeterminado;
+- `navigation_role`;
+- rol de otro turno;
+- rol habilitado en otra sede;
+- nombre o etiqueta del rol;
+- nombre, código o tipo de sede;
+- `is_default`;
+- `sort_order`;
+- `role_label`;
+- `area_kind`;
+- grant de permiso;
+- recurso solicitado;
+- primera fila obtenida;
+- heurística por aplicación.
+
+La existencia de un grant no crea habilitación territorial.
+
+---
+
+#### 11. Matriz de decisión
+
+| Caso | Hecho concluyente | Decisión |
+| ---: | --- | --- |
+| 1 | `BASE_ONLY`, sin carril operativo | esta tarea no aplica |
+| 2 | rol y sede exactos con habilitación site-wide activa | gate de sede satisfecho |
+| 3 | rol y sede exactos con una habilitación area-scoped activa | gate de sede satisfecho; continuar a área |
+| 4 | rol y sede exactos con varias habilitaciones area-scoped activas coherentes | gate de sede satisfecho; continuar a área |
+| 5 | ninguna relación del rol en la sede | bloquear |
+| 6 | solo relaciones inactivas o retiradas en la sede | bloquear |
+| 7 | el rol está habilitado únicamente en otra sede | bloquear |
+| 8 | el rol está habilitado en la sede, pero solo en otra área | gate de sede satisfecho; `ANIMA-AUTH-006` decide el área |
+| 9 | rol faltante | conservar propietario anterior; no evaluar sede |
+| 10 | rol desconocido, inactivo o deprecado | configuración inválida; no evaluar sede |
+| 11 | sede del turno nula, inexistente o inactiva | conservar razón territorial/configuracional anterior |
+| 12 | cliente propone otra sede donde el rol sí está habilitado | ignorar propuesta |
+| 13 | check-in pertenece a otra sede | no sustituir la sede del turno |
+| 14 | dispositivo está fijado a otra sede | no sustituir la sede del turno |
+| 15 | `is_default = true` en otra relación | no sustituir |
+| 16 | grant del permiso existe, pero no existe habilitación rol–sede | bloquear |
+| 17 | habilitación rol–sede existe, pero falta grant | continuar; el grant se evalúa después |
+| 18 | relaciones activas contradictorias | fallar cerrado por configuración |
+| 19 | fuente de matriz o catálogo no verificable | fallar cerrado por indisponibilidad |
+| 20 | relación retirada después de una decisión previa | invalidar y resolver de nuevo |
+| 21 | simulación propone una sede distinta | no modificar autoridad real |
+| 22 | coincidencia únicamente por nombre o tipo | no autorizar |
+
+La matriz de esta tarea decide exclusivamente el gate de sede.
+
+---
+
+#### 12. Relaciones inactivas, retiradas o históricas
+
+Una relación histórica no es una habilitación vigente.
+
+```text
+EXACT_ROLE_SITE_RELATIONS_EXIST
++
+ACTIVE_RELATIONS = 0
+->
+INACTIVE_ONLY
+```
+
+`INACTIVE_ONLY` produce el mismo bloqueo público de rol no habilitado en sede cuando la lectura es concluyente.
+
+No se reactiva una relación mediante:
+
+- caché;
+- una decisión previa;
+- `is_default`;
+- historial del trabajador;
+- un turno anterior;
+- un grant;
+- una aplicación abierta.
+
+---
+
+#### 13. Rol habilitado únicamente en otra sede
+
+Una coincidencia del mismo rol en otra sede no satisface el gate.
+
+```text
+role_code = exacto
++
+site_id != active_shift.site_id
+->
+NO MATCH
+```
+
+El evaluador no puede buscar “alguna sede compatible” ni mover el turno hacia una sede donde el rol esté habilitado.
+
+La corrección, si corresponde, debe ocurrir en la fuente administrativa propietaria y producir un contexto nuevo.
+
+---
+
+#### 14. Frontera con compatibilidad de área
+
+La frontera queda:
+
+```text
+NO EXISTE NINGUNA HABILITACION ACTIVA DEL ROL EN LA SEDE
+->
+ANIMA-AUTH-005 BLOQUEA
+```
+
+```text
+EXISTE AL MENOS UNA HABILITACION ACTIVA DEL ROL EN LA SEDE
+->
+ANIMA-AUTH-005 PASA
+->
+ANIMA-AUTH-006 EVALUA EL AREA
+```
+
+Por tanto, un rol habilitado en la sede únicamente para un área distinta no se clasifica como rol inválido para sede.
+
+`ANIMA-AUTH-005` tampoco fabrica ni reemplaza el área para lograr una coincidencia.
+
+---
+
+#### 15. Frontera con sede inválida o no resoluble
+
+Esta tarea presupone que `ANIMA-AUTH-002` ya confirmó una sede válida y activa.
+
+Si durante la revalidación esa condición deja de sostenerse:
+
+- no se busca otra sede;
+- no se convierte la condición en rol no habilitado;
+- se invalida el handoff;
+- se conserva la razón territorial o de configuración propietaria.
+
+Una sede inválida no es una ausencia ordinaria de habilitación rol–sede.
+
+---
+
+#### 16. Frontera con grants, permisos y recursos
+
+La relación territorial y el grant son controles independientes.
+
+```text
+ROLE_SITE_ENABLEMENT = PRESENT
+!=
+OPERATIONAL_PERMISSION_GRANTED
+```
+
+```text
+OPERATIONAL_PERMISSION_GRANTED
+!=
+ROLE_SITE_ENABLEMENT = PRESENT
+```
+
+Esta tarea no concede permisos ni valida scope o recurso.
+
+Un rol territorialmente habilitado puede carecer del permiso solicitado. Esa denegación ocurre después de las validaciones de contexto aplicables.
+
+---
+
+#### 17. Razón pública y precedencia
+
+Cuando la ausencia de habilitación sede–rol es concluyente y el carril operativo debe continuar por esa vía, se reutiliza:
+
+```text
+reason_code = AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE
+public_state = OPERATIONAL_ROLE_NOT_ENABLED_FOR_ACTIVE_SITE
+```
+
+La sesión se conserva y los efectos empresariales son cero.
+
+La precedencia relevante permanece:
+
+```text
+turno publicado
+-> vigencia temporal
+-> check-in cuando aplique
+-> presencia del rol
+-> validez del rol
+-> validez de la sede
+-> habilitacion rol-sede
+-> compatibilidad de area
+-> dispositivo y simulacion
+-> grant
+-> scope y recurso
+```
+
+Propiedad de causas:
+
+- ausencia de publicación: `AUTH-ERR-009`;
+- fuera de ventana: `AUTH-ERR-010`;
+- check-in requerido: `AUTH-ERR-011`;
+- rol faltante: `AUTH-ERR-012`;
+- rol válido no habilitado en la sede: `AUTH-ERR-013`;
+- rol habilitado en sede pero incompatible con área: `AUTH-ERR-014`;
+- contradicción estructural: `AUTH-ERR-017`;
+- indisponibilidad técnica: `AUTH-ERR-019`.
+
+---
+
+#### 18. Cero efectos y comportamiento de ANIMA
+
+Una denegación en esta etapa ocurre antes de crear el contexto operativo o registrar una entrada que dependa de ese contexto.
+
+Queda prohibido:
+
+- crear un rol alternativo;
+- cambiar la sede del turno;
+- crear o modificar la matriz;
+- registrar un contexto operativo parcial;
+- producir una asistencia que presuponga el rol habilitado;
+- ejecutar una mutación empresarial dependiente;
+- reintentar automáticamente con otra sede o rol;
+- conservar un `ALLOW` anterior después de retirar la habilitación.
+
+La sesión autenticada y las capacidades base independientes que sigan autorizadas permanecen disponibles.
+
+---
+
+#### 19. Handoff a ANIMA-AUTH-006
+
+Cuando el gate de sede queda satisfecho, `ANIMA-AUTH-006` recibe:
+
+- actor efectivo;
+- turno publicado y vigente;
+- referencia de publicación o revisión;
+- sede exacta confirmada;
+- área exacta o ausencia explícita preservada;
+- rol operativo canónico y activo;
+- conjunto autoritativo de habilitaciones activas del rol dentro de la sede;
+- indicación de existencia o ausencia de habilitación site-wide;
+- relaciones area-scoped aplicables dentro de la sede;
+- instante server-side de resolución;
+- versiones o fingerprints disponibles.
+
+El handoff afirma únicamente:
+
+```text
+ROLE_ENABLED_IN_SITE = TRUE
+```
+
+No afirma:
+
+```text
+ROLE_ENABLED_IN_AREA = TRUE
+PERMISSION_GRANTED = TRUE
+RESOURCE_IN_SCOPE = TRUE
+CHECKIN_CREATED = TRUE
+OPERATIONAL_CONTEXT_CREATED = TRUE
+```
+
+---
+
+#### 20. Frescura e invalidación
+
+Invalidan la decisión anterior:
+
+- cambio del rol del turno;
+- cambio de sede del turno;
+- cambio de área del turno;
+- cancelación, retiro o republicación del turno;
+- activación o desactivación del rol;
+- activación o desactivación de la sede;
+- creación, activación, retiro o modificación de una habilitación sede–rol;
+- cambio de modalidad site-wide o area-scoped;
+- corrección de una referencia territorial;
+- cambio de actor;
+- fin de la ventana temporal;
+- cambio de versión del catálogo o de la matriz.
+
+Antes del efecto de asistencia o de la creación de contexto se revalidan los hechos necesarios. Una corrección no reactiva la solicitud anterior.
+
+---
+
+#### 21. Privacidad y experiencia
+
+El bloqueo no debe revelar automáticamente:
+
+- otras sedes donde el rol sí está habilitado;
+- otras áreas de la sede;
+- código interno del rol;
+- identificadores internos de sede o matriz;
+- relaciones inactivas;
+- quién creó o retiró la habilitación;
+- grants;
+- permisos;
+- detalles de tablas, índices o constraints;
+- configuraciones alternativas.
+
+La experiencia reutiliza el contrato de `AUTH-ERR-013`. El diseño final de la experiencia de ANIMA permanece en `ANIMA-AUTH-016` y `ANIMA-AUTH-017`.
+
+---
+
+#### 22. Estado físico observado y brechas de adopción
+
+La inspección de solo lectura del estado desplegado vigente observó:
+
+| Elemento | Resultado observado |
+| --- | ---: |
+| roles operativos físicos activos | 13 |
+| roles canónicos consumibles por esta cadena | 12 |
+| habilitaciones activas en `site_operational_roles` | 16 |
+| sedes representadas por habilitaciones activas | 5 |
+| pares activos distintos sede–rol | 16 |
+| habilitaciones site-wide activas | 3 |
+| habilitaciones area-scoped activas | 13 |
+| filas activas de matriz con rol desconocido o inactivo | 0 |
+| turnos laborales publicados y no cancelados | 2801 |
+| turnos de ese conjunto sin rol | 1535 |
+| turnos de ese conjunto con rol presente y canónico activo | 1266 |
+| turnos con rol presente sin habilitación activa en su sede | 0 |
+| turnos con rol habilitado en sede | 1266 |
+| turnos con incompatibilidad de área después de pasar sede | 2 |
+
+El valor cero de casos actuales de rol inválido para sede no certifica implementación.
+
+El estado físico conserva brechas relevantes:
+
+- `get_operational_context` agrupa rol faltante, sede y área bajo `invalid_operational_role`;
+- el resolver físico combina rol, sede y área en una misma búsqueda;
+- la sede activa puede construirse mediante valores seleccionados, check-in o defaults;
+- existen bypasses por nombres de roles administrativos;
+- la foreign key física de `site_operational_roles.role_code` permanece `NOT VALID`;
+- el estado desplegado conserva un índice único legacy por `site_id + role_code`, incompatible con representar libremente varias áreas para el mismo rol en una sede;
+- no se observó una foreign key física de `site_operational_roles.area_id` en el snapshot consultado;
+- la aplicación ANIMA transporta hechos del turno, pero no constituye autoridad cliente para la matriz sede–rol.
+
+Estas brechas pertenecen a la materialización física posterior y no se corrigen en esta tarea.
+
+---
+
+#### 23. Topología y materialización física
+
+La definición documental se aprueba una sola vez en este marcador.
+
+```text
+MODE: PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE: POST_E5_PACKAGE
+```
+
+La materialización futura:
+
+- se identifica por `implementation_unit_id`;
+- requiere el package propietario y su gate E5 aplicable;
+- debe resolver la habilitación en servidor;
+- debe separar el gate de sede del gate de área;
+- debe retirar fallbacks y razones genéricas incompatibles;
+- debe preservar compatibilidad y rollback para cambios de matriz;
+- no crea una instancia global implícita.
+
+Esta tarea no autoriza migraciones, DDL, DML, backfills, RLS, RPC, Edge Functions, código de aplicación, despliegues ni cambios productivos.
+
+---
+
+#### 24. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura transversal vigente ya protege la habilitación exacta del rol en sede, la separación entre sede y área, la precedencia, la equivalencia entre canales, la privacidad, la frescura y la reconciliación física. Esta tarea especializa esas obligaciones para ANIMA sin cambiar el registro.
+
+---
+
+#### 25. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-AUTH-249`: denegación del carril operativo cuando no existe habilitación activa del rol en la sede exacta;
+- `TREQ-AUTH-250`: aplicabilidad por permiso, modalidad y carril;
+- `TREQ-AUTH-251`: rol y sede procedentes de la misma revisión del turno;
+- `TREQ-AUTH-252`: separación de rol faltante, sede, área, configuración, grant e indisponibilidad;
+- `TREQ-AUTH-253`: precedencia del gate sede–rol antes de área, dispositivo, grant, scope y recurso;
+- `TREQ-AUTH-254`: equivalencia de respuesta entre canales;
+- `TREQ-AUTH-255`: cobertura por aplicación sin convertir la aplicación en autoridad;
+- `TREQ-AUTH-256`: privacidad, recuperación y experiencia;
+- `TREQ-AUTH-257`: invalidación y frescura;
+- `TREQ-AUTH-258`: reconciliación física y regresión.
+
+Esta enumeración es trazabilidad y no representa requisitos afectados por la tarea.
+
+---
+
+#### 26. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, secciones obligatorias, continuidad, UTF-8, EOL y ausencia de requisitos afectados en la sección derivada. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, owner, topología, políticas, contrato de `AUTH-ERR-013`, registro 04A, migraciones, consumidor ANIMA y un snapshot Supabase de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se ejercitó un flujo real de ANIMA. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, backfills, RLS, RPC, código ni despliegues. |
+
+---
+
+#### 27. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. consume exactamente el handoff de `ANIMA-AUTH-004`;
+2. usa el rol canónico del turno y la sede confirmada;
+3. evalúa el par exacto `role_code + site_id`;
+4. exige una lectura autoritativa y concluyente;
+5. una o más habilitaciones activas satisfacen el gate de sede;
+6. cero habilitaciones activas producen el bloqueo de sede;
+7. relaciones inactivas o retiradas no autorizan;
+8. una habilitación en otra sede no autoriza;
+9. `is_default` no autoriza;
+10. selected site, default site, check-in, dispositivo y cliente no sustituyen la sede del turno;
+11. rol base, perfil, navegación e historial no sustituyen el rol del turno;
+12. grant y habilitación territorial permanecen separados;
+13. una relación area-scoped dentro de la sede satisface únicamente el gate de sede;
+14. una relación en otra área de la misma sede no se clasifica como sede inválida;
+15. site-wide y area-scoped permanecen diferenciados;
+16. varias filas area-scoped coherentes no se reducen mediante `limit 1`;
+17. una configuración contradictoria falla cerrado;
+18. indisponibilidad técnica no se convierte en ausencia limpia;
+19. se reutiliza `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE`;
+20. la sesión se conserva;
+21. los efectos empresariales son cero ante bloqueo;
+22. el handoff a `ANIMA-AUTH-006` no afirma compatibilidad de área;
+23. cambios de turno, rol, sede o matriz invalidan la decisión;
+24. la respuesta no revela sedes o áreas alternativas;
+25. el snapshot físico se registra sin presentarlo como conformidad;
+26. no se crean ni modifican requisitos de prueba;
+27. no se ejecutan cambios físicos.
+
+---
+
+#### 28. Límites
+
+Esta tarea no define:
+
+- publicación y vigencia del turno, propiedad de `ANIMA-AUTH-001`;
+- sede del turno, propiedad de `ANIMA-AUTH-002`;
+- área del turno, propiedad de `ANIMA-AUTH-003`;
+- presencia y validez canónica del rol, propiedad de `ANIMA-AUTH-004`;
+- compatibilidad del rol con el área, propiedad de `ANIMA-AUTH-006`;
+- creación del contexto operativo, propiedad de `ANIMA-AUTH-007`;
+- actualización posterior del contexto, propiedad de `ANIMA-AUTH-008`;
+- cierre del contexto, propiedad de `ANIMA-AUTH-009`;
+- grants, scopes o autorización de recursos;
+- administración de la matriz;
+- diseño final de mensajes;
+- materialización física.
+
+No crea tablas, migraciones, constraints, índices, RPC, policies, tipos, rutas ni cambios productivos.
+
+---
+
+#### 29. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-004 — Confirmar rol operativo del turno`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área`
+
+
 ### [ ] ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área
 ### [ ] ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada
 ### [ ] ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno
