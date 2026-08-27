@@ -1,10 +1,139 @@
 {
   "instance_id": "AUTH-DB-005::GLOBAL",
   "task_id": "AUTH-DB-005",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260827153413_auth_db_005_anon_grant_containment.sql",
+      "change": "CREATE",
+      "scope": "Create exactly one Supabase-CLI-generated forward AUTH-DB-005 migration. Derive the complete anon privilege manifest for governed Vento schemas and reduce only anon USAGE on pos after proving zero anon object, function and sequence dependencies. Preserve relation grants, function EXECUTE grants, DML compatibility, zero anon sequence access, restrictive postgres anon defaults, managed supabase_admin defaults, authenticated and service_role grants, RLS, policies, owners, security modes, api absence, VITAL and managed platform surfaces."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/024_auth_db_005_anon_grant_containment.test.sql",
+      "change": "CREATE",
+      "scope": "Create the AUTH-DB-005 pgTAP containment test for pos schema USAGE reduction and preservation of legacy anon relation, DML, function, sequence, default privilege, api and cross-role invariants."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest only through scripts/supabase/migration-manifest.mjs after adding the authorized migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-005__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record only AUTH-DB-005::GLOBAL authorization, lifecycle state and consolidated evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying the script."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the clean local Supabase database harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict local candidate and drift certification without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run quality:repair exactly once after complete materialization and before IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative physical lifecycle."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validate the physical implementation against the exact authorized instance scope."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-27T10:11:51-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "SIGAMOS IMPLEMENTANDO DE LA MISMA FORMA",
+    "source_contract_sha256": "4fc99bc74c8f47c6bfcd56d2f1569f849b512c07b02984a6e570b015d542ae89"
+  },
+  "evidence": [
+    "MATERIALIZATION migration supabase/migrations/20260827153413_auth_db_005_anon_grant_containment.sql",
+    "MATERIALIZATION test supabase/tests/database/024_auth_db_005_anon_grant_containment.test.sql",
+    "MATERIALIZATION manifest supabase/MIGRATION_MANIFEST.md",
+    "MATERIALIZATION pos_anon_schema_usage_revoked=true",
+    "MATERIALIZATION anon_relation_grants_changed=0",
+    "MATERIALIZATION anon_function_execute_grants_changed=0",
+    "MATERIALIZATION anon_sequence_grants_changed=0",
+    "MATERIALIZATION anon_dml_legacy_changed=0",
+    "MATERIALIZATION authenticated_grants_changed=0",
+    "MATERIALIZATION service_role_grants_changed=0",
+    "MATERIALIZATION rls_changed=0",
+    "MATERIALIZATION policies_changed=0",
+    "MATERIALIZATION security_mode_changed=0",
+    "MATERIALIZATION api_created=0",
+    "MATERIALIZATION vital_changes=0",
+    "MATERIALIZATION managed_supabase_admin_defaults_changed=0",
+    "REMOTE_BASELINE_READ_ONLY governed_relations=325 anon_relations=39 anon_dml_tables=4",
+    "REMOTE_BASELINE_READ_ONLY governed_functions=301 anon_execute=91 anon_security_definer=43",
+    "REMOTE_BASELINE_READ_ONLY sequences=2 anon_sequence_privileges=0",
+    "REMOTE_BASELINE_READ_ONLY anon_schema_usage_before=4 pos_anon_usage=true",
+    "REMOTE_BASELINE_READ_ONLY postgres_public_default_anon=0 managed_supabase_admin_default_anon=3",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 4fc99bc74c8f47c6bfcd56d2f1569f849b512c07b02984a6e570b015d542ae89",
+    "BASELINE_RECONCILIATION local_bootstrap_relation_acl_not_used_as_remote_cardinality_invariant=true",
+    "BASELINE_RECONCILIATION governed_pre_post_privilege_snapshots_exact=true",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS migrations=6 tests=9 assertions=128",
+    "VALIDATION npm run supabase:recovery:local PASS rpo=0 rto_ms=31576",
+    "VALIDATION node scripts/supabase/environment-drift.mjs local --strict PASS drift_total=0",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check origin/main...HEAD PASS",
+    "REPOSITORY_GATE npm run docs:eol:check PASS governed_files=565",
+    "REPOSITORY_GATE npm run docs:plan:check PASS",
+    "REPOSITORY_GATE npm run docs:plan:test PASS tests=261",
+    "REPOSITORY_GATE npm run docs:treq:check PASS requirements=7066",
+    "REPOSITORY_GATE npm run docs:treq:test PASS tests=56",
+    "REPOSITORY_GATE npm test PASS tests=432",
+    "FILE_SHA256 supabase/migrations/20260827153413_auth_db_005_anon_grant_containment.sql 5f3c471e303e7d9aa492b4b3a5dbf145b31c6c6ea4c2a2bb2ba877e7e7575f63",
+    "FILE_SHA256 supabase/tests/database/024_auth_db_005_anon_grant_containment.test.sql 4c379cbbe1cb11dff4ae86b5c3185f2d2c3da1e3fe037d92999c3ab7f7653b16",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md c2a2cdf0bed3db7c06d6453757309511b8c59dad9babf8fd09b707cc42bb2c2c",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "QUALITY_REPAIR_RERUN NO",
+    "RESULT AUTH-DB-005::GLOBAL VERIFIED"
+  ]
 }
