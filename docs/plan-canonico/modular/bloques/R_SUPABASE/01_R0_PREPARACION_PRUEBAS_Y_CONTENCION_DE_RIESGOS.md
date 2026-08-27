@@ -6152,7 +6152,7 @@ No comenzar sin baseline, drift, entorno reproducible, pruebas negativas, respal
 
 #### REGISTRO OPERATIVO — CORTE DE BASELINE SUPABASE 2026-08-27
 
-**Estado:** APROBADO_MATERIALIZADO_LOCALMENTE_PENDIENTE_DE_PUBLICACION
+**Estado:** APROBADO
 **Aprobador:** VENTO_OWNER
 **Proyecto fuente AS-IS:** vento-os-dev / clzdpinthhtknkmefsxx
 **Motivo:** el historial legacy no constituye replay autoritativo por cambios históricos directos en SQL Editor y por incompatibilidad reproducible detectada antes de AUTH-DB-004.
@@ -6210,6 +6210,62 @@ No comenzar sin baseline, drift, entorno reproducible, pruebas negativas, respal
 **Cron y secretos:** cron permanece como runtime separado; ningún comando, header, token, credential o secret observado se incorpora al baseline.
 
 **Regla posterior al corte:** desde la nueva época vuelven a regir inmutabilidad por defecto, migraciones forward y autoridad versionada de `vento-shell`.
+
+##### ACTUALIZACION DE EJECUCION - LEDGER REMOTO RECONCILIADO 2026-08-27
+
+**Autoridad:** VENTO_OWNER.
+
+**Baseline publicado:** PR #211 incorporado a `main`.
+
+**Commit de `main` certificado antes de este registro:** `15e8cebf0639b9d905bdf09ba3442939befd15fa`.
+
+**Proyecto Supabase observado:** `clzdpinthhtknkmefsxx`.
+
+**Ledger remoto antes de la reconciliacion:** 550 registros.
+
+**Registros legacy retirados del ledger:** 549.
+
+**Ledger remoto despues de la reconciliacion:** 1 registro.
+
+**Registro remoto conservado:** `00000000000000 | baseline`.
+
+**AUTH-DB-001 a AUTH-DB-004 en ledger remoto:** 0; permanecen pendientes y no fueron marcadas artificialmente como aplicadas.
+
+**Naturaleza de la operacion:** `migration repair --status reverted` sobre metadata de `supabase_migrations.schema_migrations` exclusivamente.
+
+**DDL remoto ejecutado por la reconciliacion:** no.
+
+**DML empresarial remoto ejecutado por la reconciliacion:** no.
+
+**Reset remoto:** no.
+
+**Verificacion posterior directa:**
+
+- universo gobernado de funciones: 348;
+- SECURITY DEFINER total: 211;
+- SECURITY DEFINER VENTO: 206;
+- SECURITY DEFINER vital: 5;
+- SECURITY DEFINER directo: 179;
+- SECURITY DEFINER trigger: 32;
+- policies de `storage.objects`: 39;
+- trigger `on_auth_user_created`: 1;
+- buckets Storage: 14;
+- relaciones publicadas en `supabase_realtime`: 6;
+- roles estaticos: 15;
+- reglas role/site_type: 26;
+- `authenticated` conserva EXECUTE sobre `pass.validate_catalog_item_product_site()`: si;
+- `anon` conserva ausencia de EXECUTE sobre esa funcion: si;
+- `service_role` conserva EXECUTE sobre esa funcion: si.
+
+**Cadena ejecutable de `main`:** baseline + AUTH-DB-001 + AUTH-DB-002 + AUTH-DB-003 + AUTH-DB-004 = 5 migraciones.
+
+**AUTH-DB-005:** continua IMPLEMENTED en el checkpoint `fee1b21` conservado en el portatil y debe incorporar este nuevo `main` antes de su bateria final.
+
+**quality:repair:** no volver a ejecutar para AUTH-DB-005.
+
+**Watcher:** permanece OFF.
+
+**AUTH-DB-016:** permanece reservada y bloqueada hasta cierre explicito de AUTH-DB-005.
 
 ---
 
