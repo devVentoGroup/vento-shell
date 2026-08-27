@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-005::GLOBAL",
   "task_id": "AUTH-DB-005",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -114,6 +114,26 @@
     "PRE_VALIDATION_GATE quality:repair PASS exactly once",
     "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
     "SOURCE CONTRACT SHA256 4fc99bc74c8f47c6bfcd56d2f1569f849b512c07b02984a6e570b015d542ae89",
-    "REMOTE_DIRECT_MUTATIONS NO"
+    "BASELINE_RECONCILIATION local_bootstrap_relation_acl_not_used_as_remote_cardinality_invariant=true",
+    "BASELINE_RECONCILIATION governed_pre_post_privilege_snapshots_exact=true",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS migrations=6 tests=9 assertions=128",
+    "VALIDATION npm run supabase:recovery:local PASS rpo=0 rto_ms=31576",
+    "VALIDATION node scripts/supabase/environment-drift.mjs local --strict PASS drift_total=0",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check origin/main...HEAD PASS",
+    "REPOSITORY_GATE npm run docs:eol:check PASS governed_files=565",
+    "REPOSITORY_GATE npm run docs:plan:check PASS",
+    "REPOSITORY_GATE npm run docs:plan:test PASS tests=261",
+    "REPOSITORY_GATE npm run docs:treq:check PASS requirements=7066",
+    "REPOSITORY_GATE npm run docs:treq:test PASS tests=56",
+    "REPOSITORY_GATE npm test PASS tests=432",
+    "FILE_SHA256 supabase/migrations/20260827153413_auth_db_005_anon_grant_containment.sql 5f3c471e303e7d9aa492b4b3a5dbf145b31c6c6ea4c2a2bb2ba877e7e7575f63",
+    "FILE_SHA256 supabase/tests/database/024_auth_db_005_anon_grant_containment.test.sql 4c379cbbe1cb11dff4ae86b5c3185f2d2c3da1e3fe037d92999c3ab7f7653b16",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md c2a2cdf0bed3db7c06d6453757309511b8c59dad9babf8fd09b707cc42bb2c2c",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "QUALITY_REPAIR_RERUN NO",
+    "RESULT AUTH-DB-005::GLOBAL VERIFIED"
   ]
 }
