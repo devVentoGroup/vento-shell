@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1053** |
+| Aprobadas | **1054** |
 | En propuesta | **0** |
-| No iniciadas | **541** |
+| No iniciadas | **540** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **66.06% (1053/1594)** |
+| Porcentaje de completamiento | **66.12% (1054/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-001` — Confirmar turno publicado antes del check-in | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-002` — Confirmar sede del turno | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-003` — Confirmar área del turno | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-002` — Confirmar sede del turno | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-003` — Confirmar área del turno | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-004` — Confirmar rol operativo del turno | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -597,7 +597,7 @@
 | ✅ APROBADA | `E5-GATE-007` | Confirmar trazabilidad desde cada requisito `TREQ-*` hasta su prueba, paquete y evidencia de cierre | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ✅ APROBADA | `E5-GATE-008` | Aprobar entrada a implementación física por paquetes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ✅ APROBADA | `ANIMA-AUTH-001` | Confirmar turno publicado antes del check-in | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-002` | Confirmar sede del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-002` | Confirmar sede del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-003` | Confirmar área del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-004` | Confirmar rol operativo del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-005` | Confirmar que el rol esté permitido en la sede | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
