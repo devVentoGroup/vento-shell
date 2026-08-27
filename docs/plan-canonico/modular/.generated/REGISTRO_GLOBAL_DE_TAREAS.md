@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1054** |
+| Aprobadas | **1055** |
 | En propuesta | **0** |
-| No iniciadas | **540** |
+| No iniciadas | **539** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **66.12% (1054/1594)** |
+| Porcentaje de completamiento | **66.19% (1055/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-002` — Confirmar sede del turno | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-003` — Confirmar área del turno | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-004` — Confirmar rol operativo del turno | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-003` — Confirmar área del turno | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-004` — Confirmar rol operativo del turno | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-005` — Confirmar que el rol esté permitido en la sede | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -598,7 +598,7 @@
 | ✅ APROBADA | `E5-GATE-008` | Aprobar entrada a implementación física por paquetes | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/06_PUERTA_DE_SALIDA_DE_E5.md` |
 | ✅ APROBADA | `ANIMA-AUTH-001` | Confirmar turno publicado antes del check-in | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-002` | Confirmar sede del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-003` | Confirmar área del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-003` | Confirmar área del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-004` | Confirmar rol operativo del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-005` | Confirmar que el rol esté permitido en la sede | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-006` | Confirmar que el rol esté permitido en el área | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
