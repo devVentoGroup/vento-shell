@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-003::GLOBAL",
   "task_id": "AUTH-DB-003",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -113,6 +113,19 @@
     "FILE_SHA256 supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql 0a04092e1baf74f5b1fe2d75714a5a5808516a6c7dc340ed290573627baff59e",
     "FILE_SHA256 supabase/MIGRATION_MANIFEST.md ae61f50feb6f807d42cae66aa58bbacc33f0656494bb16d11dfdc56e7a893bda",
     "REMOTE_TARGETS_USED NO",
-    "REMOTE_DIRECT_MUTATIONS NO"
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "FINAL_CANDIDATE_SHA d72590fc829338f3e05134df7537e2c26ea5d108",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS",
+    "VALIDATION npm run supabase:recovery:local PASS",
+    "RECOVERY_EVIDENCE .delivery/supabase-recovery/20260827020215862-d72590fc8293-e22e183a/evidence.json",
+    "RECOVERY_OUTCOME PASS_ROLLBACK_VERIFIED",
+    "RECOVERY_RPO actual=0 target=0",
+    "RECOVERY_RTO_MS actual=31327 target=900000",
+    "VALIDATION node scripts/supabase/environment-drift.mjs local --strict PASS",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check origin/main...HEAD PASS",
+    "REMOTE_TARGETS_USED NO",
+    "RESULT AUTH-DB-003::GLOBAL VERIFIED"
   ]
 }
