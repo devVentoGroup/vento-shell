@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1055** |
+| Aprobadas | **1056** |
 | En propuesta | **0** |
-| No iniciadas | **539** |
+| No iniciadas | **538** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **66.19% (1055/1594)** |
+| Porcentaje de completamiento | **66.25% (1056/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-003` — Confirmar área del turno | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-004` — Confirmar rol operativo del turno | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-005` — Confirmar que el rol esté permitido en la sede | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-004` — Confirmar rol operativo del turno | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-005` — Confirmar que el rol esté permitido en la sede | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-006` — Confirmar que el rol esté permitido en el área | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -599,7 +599,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-001` | Confirmar turno publicado antes del check-in | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-002` | Confirmar sede del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-003` | Confirmar área del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-004` | Confirmar rol operativo del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-004` | Confirmar rol operativo del turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-005` | Confirmar que el rol esté permitido en la sede | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-006` | Confirmar que el rol esté permitido en el área | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-007` | Crear contexto operativo al registrar entrada | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |

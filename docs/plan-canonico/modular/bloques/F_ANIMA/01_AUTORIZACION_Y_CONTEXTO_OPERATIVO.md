@@ -1407,7 +1407,623 @@ No crea tablas, migraciones, RPC, policies, tipos, rutas ni cambios productivos.
 `ANIMA-AUTH-004 — Confirmar rol operativo del turno`
 
 
-### [ ] ANIMA-AUTH-004 — Confirmar rol operativo del turno
+### ✅ ANIMA-AUTH-004 — Confirmar rol operativo del turno
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-003 — Confirmar área del turno
+**Tarea siguiente:** ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede
+**Tipo de tarea:** documental; definición contractual de la confirmación del rol operativo publicado en el turno antes de validar su habilitación territorial y crear contexto operativo en ANIMA
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología PER_IMPLEMENTATION_UNIT y al gate POST_E5_PACKAGE
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable cómo ANIMA confirma el rol operativo contenido en el mismo turno publicado, vigente y territorialmente resuelto por `ANIMA-AUTH-001`, `ANIMA-AUTH-002` y `ANIMA-AUTH-003` antes de permitir que la cadena continúe hacia la habilitación rol-sede.
+
+La regla raíz queda:
+
+```text
+TURNO PUBLICADO Y VIGENTE
++
+SEDE DEL TURNO CONFIRMADA
++
+AREA DEL TURNO CONFIRMADA O AUSENCIA EXPLICITA CONSERVADA
++
+LECTURA AUTORITATIVA DEL ROL PUBLICADO
++
+CODIGO PRESENTE
++
+CODIGO CANONICO EXISTENTE
++
+ROL OPERATIVO ACTIVO
+->
+ROL OPERATIVO DEL TURNO CONFIRMADO
+->
+CONTINUAR CON ANIMA-AUTH-005
+```
+
+La tarea confirma identidad y vigencia del rol operativo. No decide todavía si ese rol está habilitado en la sede, si es compatible con el área, si posee permisos suficientes ni si puede ejecutarse una acción empresarial concreta.
+
+---
+
+#### 2. Entrada contractual desde ANIMA-AUTH-003
+
+La tarea consume exclusivamente el handoff válido de `ANIMA-AUTH-003`.
+
+Como mínimo conserva:
+
+- actor efectivo;
+- identidad estable del turno publicado y vigente;
+- referencia de publicación o revisión disponible;
+- instante server-side de resolución;
+- sede del turno ya confirmada;
+- área del turno ya confirmada o `area_id = null` conservado como ausencia explícita;
+- valor de rol operativo publicado en el mismo snapshot del turno.
+
+`ANIMA-AUTH-004` no vuelve a escoger turno, sede ni área.
+
+Si cualquiera de esos hechos deja de pertenecer a la misma revisión reproducible, el handoff se invalida y debe ejecutarse una nueva resolución. No se corrige la inconsistencia tomando el rol desde otra fuente.
+
+---
+
+#### 3. Fuente autoritativa del rol operativo
+
+El concepto canónico consumido por esta tarea es:
+
+```text
+active_shift.operational_role_code
+```
+
+Debe proceder de la misma revisión publicada que aportó:
+
+```text
+shift_id
+site_id
+area_id
+starts_at
+ends_at
+revision_ref
+```
+
+En la estructura física versionada vigente, el dato equivalente se encuentra en:
+
+```text
+public.employee_shifts.operational_role
+```
+
+La normalización lógica es:
+
+```text
+employee_shifts.operational_role
+->
+active_shift.operational_role_code
+```
+
+Esta equivalencia documental no crea una columna nueva ni autoriza una migración.
+
+---
+
+#### 4. Catálogo canónico del rol
+
+Cuando el turno contiene un código no vacío, ANIMA debe resolverlo exclusivamente contra:
+
+```text
+public.operational_roles.code
+```
+
+Para que el rol quede confirmado en esta tarea deben cumplirse simultáneamente:
+
+```text
+role_code existe
+AND
+operational_roles.is_active = true
+```
+
+El código es una identidad estable; la etiqueta humana no participa como autoridad.
+
+Queda prohibido validar por:
+
+- coincidencia de `label`;
+- traducción del nombre;
+- semejanza de texto;
+- familia de rol;
+- nombre de pantalla;
+- nombre de aplicación;
+- nombre de cargo base.
+
+`role_family` puede clasificar, pero no sustituye `code`.
+
+---
+
+#### 5. Separación entre rol base y rol operativo
+
+ANIMA conserva la separación canónica:
+
+```text
+ROL BASE
+!=
+ROL OPERATIVO
+```
+
+El rol base describe una relación laboral estable o administrativa.
+
+El rol operativo describe la función temporal asignada en un turno.
+
+Por tanto:
+
+```text
+employees.role
+!=
+active_shift.operational_role_code
+```
+
+Aunque ambos valores tengan nombres parecidos, el rol base no completa ni repara un rol operativo faltante.
+
+Ejemplos prohibidos:
+
+```text
+employees.role = bodeguero
+shift.operational_role = null
+-> NO inferir bodeguero
+```
+
+```text
+employees.role = propietario
+shift.operational_role = null
+-> NO crear bypass operativo
+```
+
+La autoridad temporal proviene del turno, no de jerarquía, cargo o permanencia laboral.
+
+---
+
+#### 6. Fuentes que no pueden crear el rol operativo
+
+No son fuente de autoridad para esta tarea:
+
+- `employees.role`;
+- un perfil operativo predeterminado;
+- `navigation_role` de un dispositivo;
+- el rol del último turno;
+- el rol del último check-in;
+- una cookie;
+- almacenamiento local;
+- un selector de interfaz;
+- query string, body o header del cliente;
+- una preferencia del trabajador;
+- la aplicación abierta;
+- el permiso solicitado;
+- el área o la sede por sí solas;
+- un rol simulado;
+- una heurística derivada de tareas anteriores.
+
+Un valor predeterminado puede ayudar a planificar un turno antes de publicarlo, pero no puede adquirir autoridad en tiempo de ejecución.
+
+---
+
+#### 7. Rol faltante
+
+Existe ausencia limpia de rol operativo cuando:
+
+```text
+TURNO = exactamente uno y ya resuelto
+AND
+PUBLICACION = concluyente
+AND
+ROL EN EL TURNO = null, vacio u omitido
+AND
+FUENTE = disponible y verificable
+```
+
+En el flujo de check-in de ANIMA, ese estado no se completa automáticamente.
+
+Resultado:
+
+```text
+DENY DE LA CONTINUACION OPERATIVA
++
+AUTH_OPERATIONAL_ROLE_REQUIRED
++
+SESION PRESERVADA
++
+CERO EFECTOS DE ASISTENCIA
+```
+
+La corrección pertenece a la fuente administrativa del turno: asignar el rol, publicar la revisión correspondiente y producir una solicitud nueva.
+
+No corresponde pedir al trabajador que elija localmente su rol para desbloquear la marcación.
+
+---
+
+#### 8. Código desconocido, inactivo o deprecado
+
+La presencia de un string no demuestra un rol válido.
+
+Se distinguen obligatoriamente:
+
+| Estado observado | Interpretación | Tratamiento |
+| --- | --- | --- |
+| `null`, vacío u omitido | ausencia limpia y concluyente | `AUTH_OPERATIONAL_ROLE_REQUIRED` |
+| código existente y activo | identidad operativa confirmada | continuar |
+| código inexistente | referencia administrada inválida | fallar cerrado como configuración inconsistente |
+| código inactivo o deprecado | turno publicado contra catálogo no utilizable | fallar cerrado como configuración inconsistente |
+| catálogo no verificable | indisponibilidad técnica | fallar cerrado como fallo técnico |
+| dos snapshots autoritativos incompatibles | resolución no reproducible | fallar cerrado como configuración inconsistente |
+
+Un código inválido nunca se convierte en ausencia limpia.
+
+La razón de rol faltante no debe ocultar una configuración contradictoria ni un fallo técnico.
+
+---
+
+#### 9. Frontera con ANIMA-AUTH-005 y ANIMA-AUTH-006
+
+`ANIMA-AUTH-004` termina cuando confirma:
+
+```text
+ROL PRESENTE
++
+ROL CANONICO
++
+ROL ACTIVO
+```
+
+No consulta como decisión final la habilitación territorial de:
+
+```text
+public.site_operational_roles
+```
+
+Esa responsabilidad se divide después:
+
+```text
+ANIMA-AUTH-005
+-> confirmar que el rol este permitido en la sede
+
+ANIMA-AUTH-006
+-> confirmar que el rol este permitido en el area cuando corresponda
+```
+
+Por tanto, un rol canónico activo puede superar esta tarea y fallar posteriormente por sede o área.
+
+`ANIMA-AUTH-004` no debe colapsar esas causas en una razón genérica de rol inválido.
+
+---
+
+#### 10. Relación con un área ausente
+
+El handoff de `ANIMA-AUTH-003` puede contener:
+
+```text
+area_id = null
+```
+
+Eso no impide confirmar la identidad del rol operativo.
+
+La tarea debe mantener separados:
+
+```text
+ROL VALIDO
+!=
+ROL HABILITADO PARA SEDE
+!=
+ROL HABILITADO PARA AREA
+!=
+PERMISO OPERATIVO AUTORIZADO
+```
+
+Si el rol posteriormente exige un área concreta, `ANIMA-AUTH-006` será quien determine la compatibilidad.
+
+No se inventa un área desde el rol y no se rechaza un rol únicamente porque el turno tenga área nula antes de aplicar la regla territorial propietaria.
+
+---
+
+#### 11. Matriz de decisión de ANIMA-AUTH-004
+
+| Entrada observada | Decisión de esta tarea | Continuación |
+| --- | --- | --- |
+| rol presente, código canónico y activo | confirmar identidad del rol | `ANIMA-AUTH-005` |
+| rol `null` | bloquear | no continuar |
+| rol vacío o whitespace | normalizar a ausencia limpia y bloquear | no continuar |
+| rol omitido en la revisión publicada | bloquear | no continuar |
+| rol base coincide con uno operativo pero el turno no trae rol | no inferir | no continuar |
+| perfil predeterminado contiene rol pero el turno no | no inferir | no continuar |
+| dispositivo declara `navigation_role` | no inferir | no continuar |
+| cliente propone `role_code` | ignorar como autoridad | conservar resolución server-side |
+| último turno contiene rol | no reutilizar | conservar turno actual |
+| código presente pero inexistente en catálogo | configuración inconsistente | no continuar |
+| código presente pero inactivo | configuración inconsistente | no continuar |
+| rol válido pero no habilitado en la sede | fuera del alcance de esta tarea | entregar a `ANIMA-AUTH-005` |
+| rol válido pero incompatible con el área | fuera del alcance de esta tarea | entregar a `ANIMA-AUTH-005` y luego `ANIMA-AUTH-006` |
+| catálogo no disponible o lectura no verificable | fallo técnico | no continuar |
+| publicación cambia durante la evaluación | invalidar snapshot | resolver de nuevo |
+
+---
+
+#### 12. Precedencia de razones
+
+Esta tarea no crea códigos públicos nuevos.
+
+La precedencia conserva propietarios ya aprobados:
+
+- sin turno publicado utilizable: `AUTH-ERR-009`;
+- turno fuera de ventana: `AUTH-ERR-010`;
+- check-in requerido cuando el carril correspondiente ya lo exige y esa etapa precede a la resolución aplicable: `AUTH-ERR-011`;
+- rol operativo faltante: `AUTH-ERR-012`;
+- rol operativo no habilitado en sede: `AUTH-ERR-013`;
+- rol operativo incompatible con área: `AUTH-ERR-014`;
+- configuración concluyentemente contradictoria: `AUTH-ERR-017`;
+- fuente no verificable o indisponible: `AUTH-ERR-019`.
+
+La primera causa concluyente aplicable no puede ser ocultada por una causa posterior.
+
+Un consumidor no puede volver a usar una única razón `invalid_operational_role` para representar ausencia, catálogo inválido, sede incompatible y área incompatible.
+
+---
+
+#### 13. Handoff a ANIMA-AUTH-005
+
+Cuando la tarea concluye positivamente, el handoff conserva:
+
+- actor efectivo;
+- identidad del turno;
+- referencia de publicación o revisión;
+- instante server-side de resolución;
+- sede del turno confirmada;
+- área del turno confirmada o ausencia explícita;
+- `operational_role_code` exacto;
+- evidencia de que el código existe en el catálogo canónico;
+- evidencia de que el rol está activo;
+- identidad o versión del catálogo cuando el contrato físico la materialice.
+
+El handoff no afirma todavía:
+
+- que exista una fila activa rol-sede;
+- que la habilitación rol-sede sea única;
+- que el rol pueda operar sin área;
+- que el rol esté habilitado para el área concreta;
+- que el actor posea el permiso final;
+- que el recurso esté dentro del scope;
+- que el dispositivo permita la acción;
+- que exista autorización final.
+
+---
+
+#### 14. Cadena del minibloque
+
+```text
+ANIMA-AUTH-001
+-> turno publicado y ventana temporal
+
+ANIMA-AUTH-002
+-> sede del turno
+
+ANIMA-AUTH-003
+-> area del turno o ausencia explicita
+
+ANIMA-AUTH-004
+-> presencia, identidad canonica y actividad del rol operativo
+
+ANIMA-AUTH-005
+-> habilitacion del rol en la sede
+
+ANIMA-AUTH-006
+-> compatibilidad del rol con el area
+
+ANIMA-AUTH-007
+-> crear contexto operativo al registrar entrada
+```
+
+Ninguna etapa puede apropiarse de una validación reservada a otra para simplificar el consumidor.
+
+---
+
+#### 15. Frescura, concurrencia e invalidación
+
+La confirmación del rol es válida únicamente para el snapshot que la produjo.
+
+Deben invalidarla, según corresponda:
+
+- una nueva publicación del turno;
+- retiro o cancelación de la revisión utilizada;
+- cambio de `operational_role`;
+- cambio de actor;
+- cambio de sede o área del mismo turno;
+- expiración de la ventana temporal;
+- activación, desactivación o deprecación del rol en el catálogo;
+- cambio de identidad del código;
+- pérdida de verificabilidad del catálogo;
+- detección de una contradicción de versiones.
+
+Antes de crear asistencia o contexto, el productor físico deberá revalidar los hechos necesarios para impedir que un rol obsoleto llegue al efecto.
+
+Una corrección posterior exige nueva resolución; no reactiva una solicitud anterior.
+
+---
+
+#### 16. Privacidad y experiencia
+
+Al bloquear por rol faltante o inválido:
+
+- se conserva la sesión autenticada;
+- se conservan capacidades base independientes que sigan autorizadas;
+- no se crea check-in;
+- no se crea contexto operativo;
+- no se aplican permisos del rol ausente o inválido;
+- no se selecciona otro rol automáticamente.
+
+La respuesta visible no debe revelar automáticamente:
+
+- todos los roles posibles de la sede;
+- roles de otros trabajadores;
+- el rol histórico del actor;
+- permisos asociados al rol;
+- matrices de habilitación;
+- detalles de tablas, constraints o claves;
+- identificadores internos innecesarios.
+
+La experiencia concreta se mantiene reservada para las tareas posteriores de experiencia y diagnóstico de ANIMA.
+
+---
+
+#### 17. Estado físico observado y brecha de adopción
+
+El repositorio versionado ya contiene:
+
+- `public.employee_shifts.operational_role` como texto del rol planeado por turno;
+- `public.operational_roles` como catálogo controlado;
+- `public.site_operational_roles` como matriz territorial posterior;
+- un `get_operational_context(...)` que lee `employee_shifts.operational_role`.
+
+El consumidor ANIMA observado transporta el valor `operational_role` dentro de su contexto de turno y lo adjunta al contexto técnico de asistencia.
+
+Sin embargo, el estado físico versionado todavía presenta brechas relevantes para este contrato:
+
+1. la columna física de turno es texto y la evolución histórica no demuestra una referencia estricta y vigente al catálogo para cada publicación;
+2. la función legacy `get_operational_context(...)` colapsa rol faltante y rol no habilitado territorialmente en `invalid_operational_role`;
+3. esa función combina la validación de presencia del rol con `site_operational_roles`, absorbiendo fronteras que documentalmente pertenecen a `ANIMA-AUTH-005` y `ANIMA-AUTH-006`;
+4. persiste un bypass por nombres de rol base para `propietario` y `gerente_general`, incompatible con usar el turno como fuente exclusiva del rol operativo;
+5. el consumidor ANIMA inspeccionado normaliza y transporta el string `operational_role`, pero no materializa por sí mismo una consulta al catálogo `operational_roles` antes de completar este gate.
+
+Estas observaciones registran frontera de adopción. No autorizan modificaciones físicas en esta tarea.
+
+---
+
+#### 18. Topología y materialización física
+
+La definición documental se aprueba una sola vez en este marcador.
+
+La topología vigente de `PHASE-04-F-ANIMA` es:
+
+```text
+PER_IMPLEMENTATION_UNIT
+```
+
+La materialización física posterior:
+
+- se identifica por `implementation_unit_id`;
+- no crea una instancia global implícita;
+- requiere el gate `POST_E5_PACKAGE`;
+- requiere el package propietario aplicable y su gate E5 correspondiente;
+- debe limitarse a los productores y consumidores físicos que materialicen esta validación;
+- no se ejecuta desde este carril documental.
+
+Esta tarea no autoriza migraciones, RLS, RPC, funciones, Edge Functions, código de aplicación, Auth, datos, despliegues ni cambios productivos.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+La cobertura vigente ya exige que el rol operativo proceda exclusivamente del turno publicado, distingue ausencia de código de código desconocido o inactivo, separa rol de sede y área, preserva precedencia, canales, experiencia, frescura y reconciliación física. `ANIMA-AUTH-004` especializa esa cobertura para la cadena de check-in de ANIMA sin crear ni modificar requisitos del registro.
+
+---
+
+#### 20. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza, sin modificarlos:
+
+- `TREQ-AUTH-239`: rol operativo faltante, sesión preservada y cero efectos;
+- `TREQ-AUTH-240`: dependencia por permiso, modalidad y carril;
+- `TREQ-AUTH-241`: fuente exclusiva del rol desde la revisión publicada del turno;
+- `TREQ-AUTH-242`: separación entre ausencia, código desconocido o inactivo, sede, área, grants y fallo técnico;
+- `TREQ-AUTH-243`: precedencia entre turno, vigencia, check-in, rol y validaciones posteriores;
+- `TREQ-AUTH-244`: equivalencia multicanal;
+- `TREQ-AUTH-245`: cobertura de las aplicaciones y prohibición de que ANIMA complete el rol al marcar entrada;
+- `TREQ-AUTH-246`: experiencia y privacidad;
+- `TREQ-AUTH-247`: invalidación, concurrencia, caché y replay;
+- `TREQ-AUTH-248`: reconciliación física y regresión.
+
+Esta enumeración es trazabilidad de cobertura existente y no representa requisitos afectados por esta entrega.
+
+---
+
+#### 21. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea en su rama documental. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata obligatoria, secciones requeridas, continuidad, UTF-8, EOL y ausencia de TREQ en la sección derivada. |
+| REMOTA | PASS | Se contrastaron en `main` continuidad, owner, topología, políticas, catálogo operativo, migraciones de turno, contratos AUTH-ERR, 04A y el consumidor ANIMA vigente. |
+| OPERATIVA | NOT_EXECUTED | No se registró asistencia ni se modificó comportamiento operativo de ANIMA durante esta definición. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, datos, RLS, RPC, código, Auth ni despliegues. |
+
+---
+
+#### 22. Criterios de aceptación
+
+La tarea queda documentalmente aceptable cuando:
+
+1. consume exclusivamente el handoff de `ANIMA-AUTH-003`;
+2. conserva turno, sede y área del mismo snapshot publicado;
+3. toma el rol operativo únicamente de la revisión publicada del turno;
+4. normaliza el campo físico vigente sin convertir esa normalización en una migración;
+5. trata `null`, vacío u omitido como ausencia limpia cuando la fuente es concluyente;
+6. produce `AUTH_OPERATIONAL_ROLE_REQUIRED` para esa ausencia en la cadena operativa aplicable;
+7. no completa el rol desde `employees.role`;
+8. no completa el rol desde perfiles predeterminados;
+9. no completa el rol desde dispositivo o `navigation_role`;
+10. no completa el rol desde cliente, cookie, selector, historial o aplicación;
+11. verifica el código contra `public.operational_roles`;
+12. exige que el rol canónico esté activo;
+13. no convierte código desconocido o inactivo en rol faltante;
+14. distingue configuración inconsistente de fallo técnico;
+15. no consulta la habilitación territorial como decisión final de esta tarea;
+16. entrega un rol canónico activo a `ANIMA-AUTH-005`;
+17. permite que un rol válido falle después por sede en `ANIMA-AUTH-005`;
+18. permite que un rol válido falle después por área en `ANIMA-AUTH-006`;
+19. no fabrica un área desde el rol;
+20. conserva la precedencia de razones anteriores;
+21. no crea check-in ni contexto operativo;
+22. conserva sesión y cero efectos al bloquear;
+23. invalida la decisión ante cambios de turno, rol, catálogo o territorio;
+24. no crea ni modifica requisitos de prueba;
+25. no ejecuta cambios físicos.
+
+---
+
+#### 23. Límites
+
+Esta tarea no define:
+
+- publicación y ventana temporal, propiedad de `ANIMA-AUTH-001`;
+- sede del turno, propiedad de `ANIMA-AUTH-002`;
+- área del turno, propiedad de `ANIMA-AUTH-003`;
+- habilitación del rol en la sede, propiedad de `ANIMA-AUTH-005`;
+- habilitación del rol en el área, propiedad de `ANIMA-AUTH-006`;
+- creación del contexto operativo, propiedad de `ANIMA-AUTH-007`;
+- actualización posterior del contexto;
+- permisos finales del rol;
+- autorización de recursos;
+- límites de dispositivos compartidos;
+- simulación;
+- copy final de experiencia;
+- sincronización offline;
+- materialización física de Supabase o aplicaciones.
+
+No crea tablas, columnas, constraints, migraciones, RPC, policies, rutas, tipos ni cambios productivos.
+
+---
+
+#### 24. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-003 — Confirmar área del turno`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-004 — Confirmar rol operativo del turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede`
+
+
 ### [ ] ANIMA-AUTH-005 — Confirmar que el rol esté permitido en la sede
 ### [ ] ANIMA-AUTH-006 — Confirmar que el rol esté permitido en el área
 ### [ ] ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada
