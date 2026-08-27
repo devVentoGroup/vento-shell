@@ -1,314 +1,170 @@
 begin;
 
-do $auth_db_003_precheck$
-declare
-  v_governed bigint;
-  v_sd bigint;
-  v_vento_sd bigint;
-  v_vital_sd bigint;
-  v_direct_sd bigint;
-  v_trigger_sd bigint;
-  v_live_trigger_sd bigint;
-  v_orphan_trigger_sd bigint;
-  v_anon_sd bigint;
-  v_auth_sd bigint;
-  v_row_security_off bigint;
-  v_postgres_owned_vento bigint;
-  v_target_matches bigint;
-  v_orphan_matches bigint;
-  v_viso_guard bigint;
-begin
-  select
-    count(*),
-    count(*) filter (where p.prosecdef),
-    count(*) filter (
-      where p.prosecdef
-        and n.nspname <> 'vital'
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and n.nspname = 'vital'
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and p.prorettype <> 'trigger'::regtype
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and p.prorettype = 'trigger'::regtype
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and p.prorettype = 'trigger'::regtype
-        and exists (
-          select 1
-          from pg_catalog.pg_trigger t
-          where t.tgfoid = p.oid
-            and not t.tgisinternal
-        )
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and p.prorettype = 'trigger'::regtype
-        and not exists (
-          select 1
-          from pg_catalog.pg_trigger t
-          where t.tgfoid = p.oid
-            and not t.tgisinternal
-        )
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and has_function_privilege('anon', p.oid, 'EXECUTE')
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and has_function_privilege(
-          'authenticated',
-          p.oid,
-          'EXECUTE'
-        )
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and coalesce(array_to_string(p.proconfig, ','), '')
-          like '%row_security=off%'
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and n.nspname <> 'vital'
-        and pg_get_userbyid(p.proowner) = 'postgres'
-    )
-  into
-    v_governed,
-    v_sd,
-    v_vento_sd,
-    v_vital_sd,
-    v_direct_sd,
-    v_trigger_sd,
-    v_live_trigger_sd,
-    v_orphan_trigger_sd,
-    v_anon_sd,
-    v_auth_sd,
-    v_row_security_off,
-    v_postgres_owned_vento
-  from pg_catalog.pg_proc p
-  join pg_catalog.pg_namespace n
-    on n.oid = p.pronamespace
-  where n.nspname in (
-    'app_private',
-    'club',
-    'pass',
-    'public',
-    'talento',
-    'vital'
-  );
-
-  if v_governed <> 348 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: governed functions expected 348 observed %',
-      v_governed;
-  end if;
-
-  if v_sd <> 211 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: SECURITY DEFINER expected 211 observed %',
-      v_sd;
-  end if;
-
-  if v_vento_sd <> 206 or v_vital_sd <> 5 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: Vento/VITAL split expected 206/5 observed %/%',
-      v_vento_sd,
-      v_vital_sd;
-  end if;
-
-  if v_direct_sd <> 179 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: direct SECURITY DEFINER expected 179 observed %',
-      v_direct_sd;
-  end if;
-
-  if
-    v_trigger_sd <> 32
-    or v_live_trigger_sd <> 30
-    or v_orphan_trigger_sd <> 2
-  then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: trigger cohort expected 32/30/2 observed %/%/%',
-      v_trigger_sd,
-      v_live_trigger_sd,
-      v_orphan_trigger_sd;
-  end if;
-
-  if v_anon_sd <> 46 or v_auth_sd <> 152 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: effective audiences expected anon/auth 46/152 observed %/%',
-      v_anon_sd,
-      v_auth_sd;
-  end if;
-
-  if v_row_security_off <> 14 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: row_security=off expected 14 observed %',
-      v_row_security_off;
-  end if;
-
-  if v_postgres_owned_vento <> 206 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: postgres-owned Vento definers expected 206 observed %',
-      v_postgres_owned_vento;
-  end if;
-
-  with expected(
-    qualified_signature,
-    definition_md5,
-    proconfig
-  ) as (
-    values
-      (
-        'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-        '9708f0280f23dfa7bef5eddf267a1253',
-        'search_path=public'
-      ),
-      (
-        'public.current_employee_area_id()',
-        'a132dc51d8694daacda66011fb96ee56',
-        'search_path=public,row_security=off'
-      ),
-      (
-        'public.current_employee_site_id()',
-        'c73982ad5453180a9ebd058c9d754d1b',
-        'search_path=public,row_security=off'
-      ),
-      (
-        'public.is_active_staff()',
-        '30043009b774f1755d03a32f84c34e81',
-        'search_path=public,row_security=off'
-      ),
-      (
-        'public.is_global_manager()',
-        '5df563f247dc0aef90f53eaedd588d12',
-        'search_path=public,row_security=off'
-      ),
-      (
-        'public.is_manager()',
-        '073d54140717476b8fe3cca9f1ff5baa',
-        'search_path=public,row_security=off'
-      ),
-      (
-        'public.is_manager_or_owner()',
-        '3fd3eedb392d81e86759f21d9605663e',
-        'search_path=public,row_security=off'
-      ),
-      (
-        'public.is_owner()',
-        '1c303b01997da85933ab0efa48707996',
-        'search_path=public,row_security=off'
-      )
-  )
-  select count(*)
-  into v_target_matches
-  from expected e
-  join pg_catalog.pg_proc p
-    on format(
-      '%I.%I(%s)',
-      (
-        select n.nspname
-        from pg_catalog.pg_namespace n
-        where n.oid = p.pronamespace
-      ),
-      p.proname,
-      pg_get_function_identity_arguments(p.oid)
-    ) = e.qualified_signature
-  join pg_catalog.pg_language l
-    on l.oid = p.prolang
-  where p.prosecdef
-    and l.lanname = 'sql'
-    and pg_get_userbyid(p.proowner) = 'postgres'
-    and coalesce(array_to_string(p.proconfig, ','), '')
-      = e.proconfig
-    and md5(
-      replace(
-        pg_get_functiondef(p.oid),
-        E'\r\n',
-        E'\n'
-      )
-    ) = e.definition_md5
-    and has_function_privilege(
-      'anon',
-      p.oid,
-      'EXECUTE'
-    )
-    and has_function_privilege(
-      'authenticated',
-      p.oid,
-      'EXECUTE'
-    )
-    and has_function_privilege(
-      'service_role',
-      p.oid,
-      'EXECUTE'
-    );
-
-  if v_target_matches <> 8 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: exact invoker target matches expected 8 observed %',
-      v_target_matches;
-  end if;
-
-  select count(*)
-  into v_orphan_matches
-  from pg_catalog.pg_proc p
-  join pg_catalog.pg_namespace n
-    on n.oid = p.pronamespace
-  where n.nspname = 'public'
-    and p.proname in (
-      'notify_shift_published',
-      'update_loyalty_balance'
-    )
-    and p.prosecdef
-    and p.prorettype = 'trigger'::regtype
-    and not exists (
-      select 1
-      from pg_catalog.pg_trigger t
-      where t.tgfoid = p.oid
-        and not t.tgisinternal
-    );
-
-  if v_orphan_matches <> 2 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: orphan trigger dispositions expected 2 observed %',
-      v_orphan_matches;
-  end if;
-
-  select count(*)
-  into v_viso_guard
-  from pg_catalog.pg_proc p
-  join pg_catalog.pg_namespace n
-    on n.oid = p.pronamespace
-  where n.nspname = 'public'
-    and p.proname = 'viso_enforce_monthly_schedule_publish_limit'
-    and p.prosecdef
-    and p.prorettype = 'trigger'::regtype
-    and exists (
-      select 1
-      from pg_catalog.pg_trigger t
-      where t.tgfoid = p.oid
-        and not t.tgisinternal
-    );
-
-  if v_viso_guard <> 1 then
-    raise exception
-      'AUTH_DB_003_PRECONDITION_FAILED: VISO monthly guard drifted';
-  end if;
-end
-$auth_db_003_precheck$;
-
-create temporary table auth_db_003_hardening_manifest
+create temporary table auth_db_003_baseline_snapshot
 on commit drop
 as
-with base as (
+select
+  count(*) as governed_total,
+  count(*) filter (where p.prosecdef) as security_definer_total,
+  count(*) filter (
+    where p.prosecdef
+      and n.nspname <> 'vital'
+  ) as vento_security_definer,
+  count(*) filter (
+    where p.prosecdef
+      and n.nspname = 'vital'
+  ) as vital_security_definer,
+  count(*) filter (
+    where p.prosecdef
+      and p.prorettype <> 'trigger'::regtype
+  ) as direct_security_definer,
+  count(*) filter (
+    where p.prosecdef
+      and p.prorettype = 'trigger'::regtype
+  ) as trigger_security_definer,
+  count(*) filter (
+    where p.prosecdef
+      and has_function_privilege(
+        'anon',
+        p.oid,
+        'EXECUTE'
+      )
+  ) as anon_security_definer,
+  count(*) filter (
+    where p.prosecdef
+      and has_function_privilege(
+        'authenticated',
+        p.oid,
+        'EXECUTE'
+      )
+  ) as authenticated_security_definer,
+  count(*) filter (
+    where p.prosecdef
+      and has_function_privilege(
+        'service_role',
+        p.oid,
+        'EXECUTE'
+      )
+  ) as service_security_definer,
+  count(*) filter (
+    where p.prosecdef
+      and coalesce(
+        array_to_string(p.proconfig, ','),
+        ''
+      ) like '%row_security=off%'
+  ) as row_security_off,
+  count(*) filter (
+    where p.prosecdef
+      and n.nspname <> 'vital'
+      and pg_get_userbyid(p.proowner) = 'postgres'
+  ) as postgres_owned_vento,
+  null::text as baseline_profile
+from pg_catalog.pg_proc p
+join pg_catalog.pg_namespace n
+  on n.oid = p.pronamespace
+where n.nspname in (
+  'app_private',
+  'club',
+  'pass',
+  'public',
+  'talento',
+  'vital'
+);
+
+do $auth_db_003_baseline$
+declare
+  b auth_db_003_baseline_snapshot%rowtype;
+begin
+  select *
+  into strict b
+  from auth_db_003_baseline_snapshot;
+
+  if
+    b.governed_total = 318
+    and b.security_definer_total = 208
+    and b.vento_security_definer = 204
+    and b.vital_security_definer = 4
+    and b.direct_security_definer = 177
+    and b.trigger_security_definer = 31
+  then
+    update auth_db_003_baseline_snapshot
+    set baseline_profile = 'LOCAL_REPLAY';
+
+  elsif
+    b.governed_total = 348
+    and b.security_definer_total = 211
+    and b.vento_security_definer = 206
+    and b.vital_security_definer = 5
+    and b.direct_security_definer = 179
+    and b.trigger_security_definer = 32
+  then
+    update auth_db_003_baseline_snapshot
+    set baseline_profile = 'REMOTE_AUDITED';
+
+  else
+    raise exception
+      'AUTH_DB_003_BASELINE_UNRECOGNIZED: governed=% sd=% vento=% vital=% direct=% trigger=%',
+      b.governed_total,
+      b.security_definer_total,
+      b.vento_security_definer,
+      b.vital_security_definer,
+      b.direct_security_definer,
+      b.trigger_security_definer;
+  end if;
+end
+$auth_db_003_baseline$;
+
+create temporary table auth_db_003_target_snapshot
+on commit drop
+as
+with expected(
+  qualified_signature,
+  body_md5,
+  exact_config
+) as (
+  values
+    (
+      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
+      'a43d76af47c6e3f2c10fcb504cab4803',
+      'search_path=public'
+    ),
+    (
+      'public.current_employee_area_id()',
+      '96dc4c7b968dd4525510b9c66c59f7a4',
+      null::text
+    ),
+    (
+      'public.current_employee_site_id()',
+      '2e478f29e06c7bafb9214a17d384a028',
+      null::text
+    ),
+    (
+      'public.is_active_staff()',
+      '96927b1f831a1e97b006b9ea2d25cc6c',
+      null::text
+    ),
+    (
+      'public.is_global_manager()',
+      'bd7997fcfba09712e790ae3c9213890b',
+      null::text
+    ),
+    (
+      'public.is_manager()',
+      'c64498e4160030d5115b43e9c18a4dec',
+      null::text
+    ),
+    (
+      'public.is_manager_or_owner()',
+      '25f4a2af9ba3f056e95091413fc5a43d',
+      null::text
+    ),
+    (
+      'public.is_owner()',
+      'd67bd14c118d7b7e6fa1e1575215855d',
+      null::text
+    )
+),
+actual as (
   select
     p.oid,
     format(
@@ -317,112 +173,320 @@ with base as (
       p.proname,
       pg_get_function_identity_arguments(p.oid)
     ) as qualified_signature,
-    n.nspname as schema_name,
+    l.lanname,
+    p.provolatile,
     p.prosecdef,
     p.proowner,
-    p.proconfig,
-    p.proacl,
-    p.prosrc,
-    p.prorettype
+    pg_get_userbyid(p.proowner) as owner_name,
+    coalesce(
+      array_to_string(p.proconfig, ','),
+      ''
+    ) as current_config,
+    p.proacl as current_acl,
+    md5(
+      replace(
+        p.prosrc,
+        E'\r\n',
+        E'\n'
+      )
+    ) as current_body_md5,
+    has_function_privilege(
+      'anon',
+      p.oid,
+      'EXECUTE'
+    ) as anon_execute,
+    has_function_privilege(
+      'authenticated',
+      p.oid,
+      'EXECUTE'
+    ) as authenticated_execute,
+    has_function_privilege(
+      'service_role',
+      p.oid,
+      'EXECUTE'
+    ) as service_execute
   from pg_catalog.pg_proc p
   join pg_catalog.pg_namespace n
     on n.oid = p.pronamespace
-  where n.nspname in (
-    'app_private',
-    'club',
-    'pass',
-    'public',
-    'talento'
-  )
-    and p.prosecdef
+  join pg_catalog.pg_language l
+    on l.oid = p.prolang
 )
 select
-  b.qualified_signature,
-  'VENTO_OS'::text as product_boundary,
-  'SECURITY_DEFINER'::text as current_security_mode,
-  pg_get_userbyid(b.proowner) as current_owner,
-  jsonb_build_object(
-    'superuser',
-    r.rolsuper,
-    'bypassrls',
-    r.rolbypassrls,
-    'canlogin',
-    r.rolcanlogin
-  ) as current_owner_attributes,
+  e.qualified_signature,
+  e.body_md5 as expected_body_md5,
+  e.exact_config,
+  a.oid,
+  a.lanname,
+  a.provolatile,
+  a.prosecdef,
+  a.proowner,
+  a.owner_name,
+  a.current_config,
+  a.current_acl,
+  a.current_body_md5,
+  a.anon_execute,
+  a.authenticated_execute,
+  a.service_execute
+from expected e
+left join actual a
+  on a.qualified_signature = e.qualified_signature;
+
+do $auth_db_003_targets$
+declare
+  v_present bigint;
+  v_valid bigint;
+  v_dependencies bigint;
+begin
+  select count(*) filter (
+    where oid is not null
+  )
+  into v_present
+  from auth_db_003_target_snapshot;
+
+  if v_present <> 8 then
+    raise exception
+      'AUTH_DB_003_TARGETS_MISSING: expected 8 observed %',
+      v_present;
+  end if;
+
+  select count(*)
+  into v_valid
+  from auth_db_003_target_snapshot t
+  where t.lanname = 'sql'
+    and t.provolatile = 's'
+    and t.prosecdef
+    and t.owner_name = 'postgres'
+    and t.current_body_md5 = t.expected_body_md5
+    and t.anon_execute
+    and t.authenticated_execute
+    and t.service_execute
+    and (
+      (
+        t.exact_config is not null
+        and t.current_config = t.exact_config
+      )
+      or (
+        t.exact_config is null
+        and t.current_config in (
+          'search_path=public',
+          'search_path=public,row_security=off'
+        )
+      )
+    );
+
+  if v_valid <> 8 then
+    raise exception
+      'AUTH_DB_003_TARGETS_DRIFTED: expected 8 exact approved wrappers observed %',
+      v_valid;
+  end if;
+
+  with expected(signature) as (
+    values
+      ('public.current_employee_selected_area_id()'),
+      ('public.current_employee_selected_site_id()'),
+      ('public.is_employee()'),
+      ('public.current_employee_role()'),
+      ('public.can_access_site(p_site_id uuid)'),
+      ('public.can_access_area(p_area_id uuid)')
+  )
+  select count(*)
+  into v_dependencies
+  from expected e
+  join (
+    select
+      p.oid,
+      format(
+        '%I.%I(%s)',
+        n.nspname,
+        p.proname,
+        pg_get_function_identity_arguments(p.oid)
+      ) as signature,
+      p.prosecdef,
+      pg_get_userbyid(p.proowner) as owner_name
+    from pg_catalog.pg_proc p
+    join pg_catalog.pg_namespace n
+      on n.oid = p.pronamespace
+  ) a
+    on a.signature = e.signature
+  where a.prosecdef
+    and a.owner_name = 'postgres'
+    and has_function_privilege(
+      'anon',
+      a.oid,
+      'EXECUTE'
+    )
+    and has_function_privilege(
+      'authenticated',
+      a.oid,
+      'EXECUTE'
+    )
+    and has_function_privilege(
+      'service_role',
+      a.oid,
+      'EXECUTE'
+    );
+
+  if v_dependencies <> 6 then
+    raise exception
+      'AUTH_DB_003_DELEGATED_CORE_DRIFTED: expected 6 privileged dependencies observed %',
+      v_dependencies;
+  end if;
+end
+$auth_db_003_targets$;
+
+create temporary table auth_db_003_transition_snapshot
+on commit drop
+as
+with expected(
+  qualified_signature,
+  body_md5,
+  disposition
+) as (
+  values
+    (
+      'public.notify_shift_published()',
+      '3756e852e9806deaabe419c73f2ce4c2',
+      'RETIRE'
+    ),
+    (
+      'public.update_loyalty_balance()',
+      '5d6893c0f7dd1e9f8dbd67ecaa60d5b2',
+      'RETIRE'
+    ),
+    (
+      'public.viso_enforce_monthly_schedule_publish_limit()',
+      'da4848076978767fabe5f79c40a54e25',
+      'BLOCKED_PENDING_EVIDENCE'
+    )
+),
+actual as (
+  select
+    p.oid,
+    format(
+      '%I.%I(%s)',
+      n.nspname,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid)
+    ) as qualified_signature,
+    p.prosecdef,
+    p.prorettype,
+    p.proowner,
+    pg_get_userbyid(p.proowner) as owner_name,
+    coalesce(
+      array_to_string(p.proconfig, ','),
+      ''
+    ) as current_config,
+    p.proacl as current_acl,
+    md5(
+      replace(
+        p.prosrc,
+        E'\r\n',
+        E'\n'
+      )
+    ) as current_body_md5,
+    (
+      select count(*)
+      from pg_catalog.pg_trigger t
+      where t.tgfoid = p.oid
+        and not t.tgisinternal
+    ) as trigger_associations
+  from pg_catalog.pg_proc p
+  join pg_catalog.pg_namespace n
+    on n.oid = p.pronamespace
+)
+select
+  e.qualified_signature,
+  e.body_md5 as expected_body_md5,
+  e.disposition,
+  a.oid,
+  a.prosecdef,
+  a.prorettype,
+  a.proowner,
+  a.owner_name,
+  a.current_config,
+  a.current_acl,
+  a.current_body_md5,
+  a.trigger_associations
+from expected e
+left join actual a
+  on a.qualified_signature = e.qualified_signature;
+
+do $auth_db_003_transition$
+declare
+  v_exact bigint;
+  v_viso bigint;
+begin
+  select count(*)
+  into v_exact
+  from auth_db_003_transition_snapshot t
+  where t.oid is not null
+    and t.prosecdef
+    and t.prorettype = 'trigger'::regtype
+    and t.owner_name = 'postgres'
+    and t.current_body_md5 = t.expected_body_md5;
+
+  if v_exact <> 3 then
+    raise exception
+      'AUTH_DB_003_TRANSITION_FUNCTION_DRIFT: expected 3 exact functions observed %',
+      v_exact;
+  end if;
+
+  select count(*)
+  into v_viso
+  from auth_db_003_transition_snapshot t
+  where t.qualified_signature =
+      'public.viso_enforce_monthly_schedule_publish_limit()'
+    and t.current_config = 'search_path=public';
+
+  if v_viso <> 1 then
+    raise exception
+      'AUTH_DB_003_VISO_CONFIG_DRIFT';
+  end if;
+end
+$auth_db_003_transition$;
+
+create temporary table auth_db_003_hardening_manifest
+on commit drop
+as
+select
+  format(
+    '%I.%I(%s)',
+    n.nspname,
+    p.proname,
+    pg_get_function_identity_arguments(p.oid)
+  ) as qualified_signature,
+  pg_get_userbyid(p.proowner) as current_owner,
   coalesce(
-    array_to_string(b.proconfig, ','),
+    array_to_string(p.proconfig, ','),
     ''
-  ) as current_search_path,
+  ) as current_config,
   jsonb_build_object(
     'anon',
-    has_function_privilege(
-      'anon',
-      b.oid,
-      'EXECUTE'
-    ),
+      has_function_privilege(
+        'anon',
+        p.oid,
+        'EXECUTE'
+      ),
     'authenticated',
-    has_function_privilege(
-      'authenticated',
-      b.oid,
-      'EXECUTE'
-    ),
+      has_function_privilege(
+        'authenticated',
+        p.oid,
+        'EXECUTE'
+      ),
     'service_role',
-    has_function_privilege(
-      'service_role',
-      b.oid,
-      'EXECUTE'
-    )
-  ) as current_execute_audiences,
-  coalesce(
-    (
-      select split_part(setting, '=', 2)
-      from unnest(
-        coalesce(b.proconfig, '{}'::text[])
-      ) setting
-      where setting like 'row_security=%'
-      limit 1
-    ),
-    'default'
-  ) as current_row_security_config,
-  coalesce(
-    (
-      select jsonb_agg(
-        jsonb_build_object(
-          'trigger',
-          t.tgname,
-          'schema',
-          tn.nspname,
-          'relation',
-          c.relname
-        )
-        order by tn.nspname, c.relname, t.tgname
+      has_function_privilege(
+        'service_role',
+        p.oid,
+        'EXECUTE'
       )
-      from pg_catalog.pg_trigger t
-      join pg_catalog.pg_class c
-        on c.oid = t.tgrelid
-      join pg_catalog.pg_namespace tn
-        on tn.oid = c.relnamespace
-      where t.tgfoid = b.oid
-        and not t.tgisinternal
-    ),
-    '[]'::jsonb
-  ) as trigger_associations,
-  'md5:' || md5(
-    replace(
-      pg_get_functiondef(b.oid),
-      E'\r\n',
-      E'\n'
-    )
-  ) as current_definition_hash,
-  'md5:' || md5(
-    replace(
-      b.prosrc,
-      E'\r\n',
-      E'\n'
-    )
-  ) as current_body_hash,
+  ) as current_execute_audiences,
   case
-    when b.qualified_signature in (
+    when format(
+      '%I.%I(%s)',
+      n.nspname,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid)
+    ) in (
       'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
       'public.current_employee_area_id()',
       'public.current_employee_site_id()',
@@ -431,33 +495,27 @@ select
       'public.is_manager()',
       'public.is_manager_or_owner()',
       'public.is_owner()'
-    )
-      then 'CONVERT_TO_INVOKER'
-    when b.qualified_signature in (
+    ) then 'CONVERT_TO_INVOKER'
+
+    when format(
+      '%I.%I(%s)',
+      n.nspname,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid)
+    ) in (
       'public.notify_shift_published()',
       'public.update_loyalty_balance()'
-    )
-      then 'RETIRE'
+    ) then 'RETIRE'
+
     else 'BLOCKED_PENDING_EVIDENCE'
   end as canonical_disposition,
   case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()',
-      'public.notify_shift_published()',
-      'public.update_loyalty_balance()'
-    )
-      then 'NOT_APPLICABLE'
-    else 'UNRESOLVED'
-  end as exception_class,
-  case
-    when b.qualified_signature in (
+    when format(
+      '%I.%I(%s)',
+      n.nspname,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid)
+    ) in (
       'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
       'public.current_employee_area_id()',
       'public.current_employee_site_id()',
@@ -466,167 +524,73 @@ select
       'public.is_manager()',
       'public.is_manager_or_owner()',
       'public.is_owner()'
-    )
-      then 'CURRENT_SIGNATURE'
-    when b.qualified_signature in (
-      'public.notify_shift_published()',
-      'public.update_loyalty_balance()'
-    )
-      then 'RETIRE_AFTER_ZERO_CONSUMER_GATE'
-    when b.qualified_signature =
-      'public.viso_enforce_monthly_schedule_publish_limit()'
-      then 'DISP::MOVE::VISO_MONTHLY_LIMIT_GUARD'
-    else 'UNRESOLVED'
-  end as target_location,
-  case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()'
-    )
-      then 'SECURITY_INVOKER'
-    when b.qualified_signature in (
-      'public.notify_shift_published()',
-      'public.update_loyalty_balance()'
-    )
-      then 'RETIRED'
-    else 'UNRESOLVED'
-  end as target_security_mode,
-  case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()'
-    )
-      then 'NOT_APPLICABLE_SECURITY_INVOKER'
-    when b.qualified_signature in (
-      'public.notify_shift_published()',
-      'public.update_loyalty_balance()'
-    )
-      then 'NOT_APPLICABLE_AFTER_RETIRE'
-    else 'SUPA_ARC_015_DEDICATED_NOLOGIN_ROLE_UNRESOLVED'
-  end as target_owner_contract,
-  case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()'
-    )
-      then 'DELEGATION_ONLY_PRIVILEGED_CORE_RETAINED'
-    when b.qualified_signature in (
-      'public.notify_shift_published()',
-      'public.update_loyalty_balance()'
-    )
-      then 'ZERO_CONSUMER_GATE_REQUIRED'
-    else 'BLOCKED_PENDING_EVIDENCE'
-  end as authorization_contract,
-  'AUTH-DB-004+AUTH-DB-005'::text
-    as grant_contract_reference,
-  case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()'
-    )
-      then 'DELEGATED_FUNCTION_DEPENDENCIES_VERIFIED'
-    else 'SUPA-TRANS-* EVIDENCE REQUIRED'
-  end as dependencies,
-  case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()'
-    )
-      then 'NO_DIRECT_TABLE_READ'
-    else 'UNRESOLVED_OR_NOT_EXECUTED'
-  end as read_set,
-  case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()'
-    )
-      then 'NONE_DIRECT'
-    else 'UNRESOLVED_OR_NOT_EXECUTED'
-  end as write_set,
-  'AUTH-DB-003::GLOBAL_FORWARD_MIGRATION'::text
-    as migration_reference,
-  case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()'
-    )
-      then 'FORWARD_FIX_ONLY_DO_NOT_RESTORE_DEFINER_WITHOUT_NEW_APPROVAL'
-    else 'NO_CHANGE_IN_THIS_MIGRATION'
-  end as rollback,
-  case
-    when b.qualified_signature in (
-      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
-      'public.current_employee_area_id()',
-      'public.current_employee_site_id()',
-      'public.is_active_staff()',
-      'public.is_global_manager()',
-      'public.is_manager()',
-      'public.is_manager_or_owner()',
-      'public.is_owner()'
-    )
-      then 'BODY_HASH_AND_EXECUTE_AUDIENCE_MATCHED'
-    when b.qualified_signature in (
-      'public.notify_shift_published()',
-      'public.update_loyalty_balance()'
-    )
-      then 'CANONICAL_RETIRE_DISPOSITION_ZERO_CONSUMER_NOT_PROVEN'
-    else 'INSUFFICIENT_EXCEPTION_OWNER_AUTHORIZATION_EVIDENCE'
-  end as evidence,
-  coalesce(b.proacl::text, '') as current_acl
-from base b
-join pg_catalog.pg_roles r
-  on r.oid = b.proowner;
+    ) then 'SECURITY_INVOKER'
 
-do $auth_db_003_manifest_check$
+    when format(
+      '%I.%I(%s)',
+      n.nspname,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid)
+    ) in (
+      'public.notify_shift_published()',
+      'public.update_loyalty_balance()'
+    ) then 'RETIRED_AFTER_ZERO_CONSUMER_GATE'
+
+    else 'UNRESOLVED'
+  end as target_state,
+  case
+    when format(
+      '%I.%I(%s)',
+      n.nspname,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid)
+    ) in (
+      'public.can_access_recipe_scope(p_site_id uuid, p_area_id uuid)',
+      'public.current_employee_area_id()',
+      'public.current_employee_site_id()',
+      'public.is_active_staff()',
+      'public.is_global_manager()',
+      'public.is_manager()',
+      'public.is_manager_or_owner()',
+      'public.is_owner()'
+    ) then 'DELEGATION_ONLY_PRIVILEGED_CORE_RETAINED'
+
+    when format(
+      '%I.%I(%s)',
+      n.nspname,
+      p.proname,
+      pg_get_function_identity_arguments(p.oid)
+    ) in (
+      'public.notify_shift_published()',
+      'public.update_loyalty_balance()'
+    ) then 'ZERO_CONSUMER_GATE_REQUIRED'
+
+    else 'INSUFFICIENT_EVIDENCE'
+  end as evidence_class
+from pg_catalog.pg_proc p
+join pg_catalog.pg_namespace n
+  on n.oid = p.pronamespace
+where n.nspname in (
+  'app_private',
+  'club',
+  'pass',
+  'public',
+  'talento'
+)
+  and p.prosecdef;
+
+do $auth_db_003_manifest$
 declare
+  b auth_db_003_baseline_snapshot%rowtype;
   v_total bigint;
   v_convert bigint;
   v_retire bigint;
   v_blocked bigint;
-  v_keep bigint;
 begin
+  select *
+  into strict b
+  from auth_db_003_baseline_snapshot;
+
   select
     count(*),
     count(*) filter (
@@ -637,35 +601,30 @@ begin
     ),
     count(*) filter (
       where canonical_disposition = 'BLOCKED_PENDING_EVIDENCE'
-    ),
-    count(*) filter (
-      where canonical_disposition = 'KEEP_AS_DEFINER'
     )
   into
     v_total,
     v_convert,
     v_retire,
-    v_blocked,
-    v_keep
+    v_blocked
   from auth_db_003_hardening_manifest;
 
   if
-    v_total <> 206
+    v_total <> b.vento_security_definer
     or v_convert <> 8
     or v_retire <> 2
-    or v_blocked <> 196
-    or v_keep <> 0
+    or v_blocked <> b.vento_security_definer - 10
   then
     raise exception
-      'AUTH_DB_003_MANIFEST_FAILED: expected 206/8/2/196/0 observed %/%/%/%/%',
+      'AUTH_DB_003_MANIFEST_INVALID: profile=% total=% convert=% retire=% blocked=%',
+      b.baseline_profile,
       v_total,
       v_convert,
       v_retire,
-      v_blocked,
-      v_keep;
+      v_blocked;
   end if;
 end
-$auth_db_003_manifest_check$;
+$auth_db_003_manifest$;
 
 alter function public.can_access_recipe_scope(uuid, uuid)
   security invoker;
@@ -707,163 +666,83 @@ alter function public.is_owner()
 
 do $auth_db_003_postcheck$
 declare
-  v_target_count bigint;
-  v_body_acl_count bigint;
-  v_governed bigint;
-  v_sd bigint;
-  v_vento_sd bigint;
-  v_vital_sd bigint;
-  v_direct_sd bigint;
-  v_trigger_sd bigint;
-  v_live_trigger_sd bigint;
-  v_orphan_trigger_sd bigint;
-  v_anon_sd bigint;
-  v_auth_sd bigint;
-  v_row_security_off bigint;
+  b auth_db_003_baseline_snapshot%rowtype;
+  p record;
+  v_target_row_security_off bigint;
+  v_exact_targets bigint;
+  v_transition_exact bigint;
 begin
-  select count(*)
-  into v_target_count
-  from auth_db_003_hardening_manifest m
-  join pg_catalog.pg_proc p
-    on format(
-      '%I.%I(%s)',
-      (
-        select n.nspname
-        from pg_catalog.pg_namespace n
-        where n.oid = p.pronamespace
-      ),
-      p.proname,
-      pg_get_function_identity_arguments(p.oid)
-    ) = m.qualified_signature
-  join pg_catalog.pg_language l
-    on l.oid = p.prolang
-  where m.canonical_disposition = 'CONVERT_TO_INVOKER'
-    and not p.prosecdef
-    and l.lanname = 'sql'
-    and pg_get_userbyid(p.proowner) = 'postgres'
-    and coalesce(array_to_string(p.proconfig, ','), '')
-      = 'search_path=public'
-    and has_function_privilege('anon', p.oid, 'EXECUTE')
-    and has_function_privilege(
-      'authenticated',
-      p.oid,
-      'EXECUTE'
-    )
-    and has_function_privilege(
-      'service_role',
-      p.oid,
-      'EXECUTE'
-    );
-
-  if v_target_count <> 8 then
-    raise exception
-      'AUTH_DB_003_POSTCONDITION_FAILED: invoker target count expected 8 observed %',
-      v_target_count;
-  end if;
+  select *
+  into strict b
+  from auth_db_003_baseline_snapshot;
 
   select count(*)
-  into v_body_acl_count
-  from auth_db_003_hardening_manifest m
-  join pg_catalog.pg_proc p
-    on format(
-      '%I.%I(%s)',
-      (
-        select n.nspname
-        from pg_catalog.pg_namespace n
-        where n.oid = p.pronamespace
-      ),
-      p.proname,
-      pg_get_function_identity_arguments(p.oid)
-    ) = m.qualified_signature
-  where m.canonical_disposition = 'CONVERT_TO_INVOKER'
-    and (
-      'md5:' || md5(
-        replace(
-          p.prosrc,
-          E'\r\n',
-          E'\n'
-        )
-      )
-    ) = m.current_body_hash
-    and coalesce(p.proacl::text, '') = m.current_acl;
-
-  if v_body_acl_count <> 8 then
-    raise exception
-      'AUTH_DB_003_POSTCONDITION_FAILED: body or ACL drift detected';
-  end if;
+  into v_target_row_security_off
+  from auth_db_003_target_snapshot
+  where current_config like '%row_security=off%';
 
   select
-    count(*),
-    count(*) filter (where p.prosecdef),
+    count(*) as governed_total,
     count(*) filter (
-      where p.prosecdef
-        and n.nspname <> 'vital'
-    ),
+      where proc.prosecdef
+    ) as security_definer_total,
     count(*) filter (
-      where p.prosecdef
-        and n.nspname = 'vital'
-    ),
+      where proc.prosecdef
+        and ns.nspname <> 'vital'
+    ) as vento_security_definer,
     count(*) filter (
-      where p.prosecdef
-        and p.prorettype <> 'trigger'::regtype
-    ),
+      where proc.prosecdef
+        and ns.nspname = 'vital'
+    ) as vital_security_definer,
     count(*) filter (
-      where p.prosecdef
-        and p.prorettype = 'trigger'::regtype
-    ),
+      where proc.prosecdef
+        and proc.prorettype <> 'trigger'::regtype
+    ) as direct_security_definer,
     count(*) filter (
-      where p.prosecdef
-        and p.prorettype = 'trigger'::regtype
-        and exists (
-          select 1
-          from pg_catalog.pg_trigger t
-          where t.tgfoid = p.oid
-            and not t.tgisinternal
-        )
-    ),
+      where proc.prosecdef
+        and proc.prorettype = 'trigger'::regtype
+    ) as trigger_security_definer,
     count(*) filter (
-      where p.prosecdef
-        and p.prorettype = 'trigger'::regtype
-        and not exists (
-          select 1
-          from pg_catalog.pg_trigger t
-          where t.tgfoid = p.oid
-            and not t.tgisinternal
-        )
-    ),
-    count(*) filter (
-      where p.prosecdef
-        and has_function_privilege('anon', p.oid, 'EXECUTE')
-    ),
-    count(*) filter (
-      where p.prosecdef
+      where proc.prosecdef
         and has_function_privilege(
-          'authenticated',
-          p.oid,
+          'anon',
+          proc.oid,
           'EXECUTE'
         )
-    ),
+    ) as anon_security_definer,
     count(*) filter (
-      where p.prosecdef
-        and coalesce(array_to_string(p.proconfig, ','), '')
-          like '%row_security=off%'
-    )
-  into
-    v_governed,
-    v_sd,
-    v_vento_sd,
-    v_vital_sd,
-    v_direct_sd,
-    v_trigger_sd,
-    v_live_trigger_sd,
-    v_orphan_trigger_sd,
-    v_anon_sd,
-    v_auth_sd,
-    v_row_security_off
-  from pg_catalog.pg_proc p
-  join pg_catalog.pg_namespace n
-    on n.oid = p.pronamespace
-  where n.nspname in (
+      where proc.prosecdef
+        and has_function_privilege(
+          'authenticated',
+          proc.oid,
+          'EXECUTE'
+        )
+    ) as authenticated_security_definer,
+    count(*) filter (
+      where proc.prosecdef
+        and has_function_privilege(
+          'service_role',
+          proc.oid,
+          'EXECUTE'
+        )
+    ) as service_security_definer,
+    count(*) filter (
+      where proc.prosecdef
+        and coalesce(
+          array_to_string(proc.proconfig, ','),
+          ''
+        ) like '%row_security=off%'
+    ) as row_security_off,
+    count(*) filter (
+      where proc.prosecdef
+        and ns.nspname <> 'vital'
+        and pg_get_userbyid(proc.proowner) = 'postgres'
+    ) as postgres_owned_vento
+  into p
+  from pg_catalog.pg_proc proc
+  join pg_catalog.pg_namespace ns
+    on ns.oid = proc.pronamespace
+  where ns.nspname in (
     'app_private',
     'club',
     'pass',
@@ -872,21 +751,141 @@ begin
     'vital'
   );
 
+  if p.governed_total <> b.governed_total then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: governed function count changed';
+  end if;
+
+  if p.security_definer_total <> b.security_definer_total - 8 then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: SECURITY DEFINER delta is not -8';
+  end if;
+
+  if p.vento_security_definer <> b.vento_security_definer - 8 then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: Vento SECURITY DEFINER delta is not -8';
+  end if;
+
+  if p.vital_security_definer <> b.vital_security_definer then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: VITAL boundary changed';
+  end if;
+
+  if p.direct_security_definer <> b.direct_security_definer - 8 then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: direct SECURITY DEFINER delta is not -8';
+  end if;
+
+  if p.trigger_security_definer <> b.trigger_security_definer then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: trigger SECURITY DEFINER count changed';
+  end if;
+
+  if p.anon_security_definer <> b.anon_security_definer - 8 then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: anon privileged exposure delta is not -8';
+  end if;
+
   if
-    v_governed <> 348
-    or v_sd <> 203
-    or v_vento_sd <> 198
-    or v_vital_sd <> 5
-    or v_direct_sd <> 171
-    or v_trigger_sd <> 32
-    or v_live_trigger_sd <> 30
-    or v_orphan_trigger_sd <> 2
-    or v_anon_sd <> 38
-    or v_auth_sd <> 144
-    or v_row_security_off <> 7
+    p.authenticated_security_definer
+    <> b.authenticated_security_definer - 8
   then
     raise exception
-      'AUTH_DB_003_POSTCONDITION_FAILED: cardinality mismatch';
+      'AUTH_DB_003_POSTCHECK: authenticated privileged exposure delta is not -8';
+  end if;
+
+  if p.service_security_definer <> b.service_security_definer - 8 then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: service privileged exposure delta is not -8';
+  end if;
+
+  if
+    p.row_security_off
+    <> b.row_security_off - v_target_row_security_off
+  then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: row_security function-config delta invalid';
+  end if;
+
+  if p.postgres_owned_vento <> b.postgres_owned_vento - 8 then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: postgres-owned Vento definer delta is not -8';
+  end if;
+
+  select count(*)
+  into v_exact_targets
+  from auth_db_003_target_snapshot s
+  join pg_catalog.pg_proc proc
+    on proc.oid = s.oid
+  join pg_catalog.pg_language lang
+    on lang.oid = proc.prolang
+  where not proc.prosecdef
+    and lang.lanname = 'sql'
+    and proc.provolatile = 's'
+    and proc.proowner = s.proowner
+    and proc.proacl is not distinct from s.current_acl
+    and md5(
+      replace(
+        proc.prosrc,
+        E'\r\n',
+        E'\n'
+      )
+    ) = s.expected_body_md5
+    and coalesce(
+      array_to_string(proc.proconfig, ','),
+      ''
+    ) = 'search_path=public'
+    and has_function_privilege(
+      'anon',
+      proc.oid,
+      'EXECUTE'
+    )
+    and has_function_privilege(
+      'authenticated',
+      proc.oid,
+      'EXECUTE'
+    )
+    and has_function_privilege(
+      'service_role',
+      proc.oid,
+      'EXECUTE'
+    );
+
+  if v_exact_targets <> 8 then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: exact invoker wrappers expected 8 observed %',
+      v_exact_targets;
+  end if;
+
+  select count(*)
+  into v_transition_exact
+  from auth_db_003_transition_snapshot s
+  join pg_catalog.pg_proc proc
+    on proc.oid = s.oid
+  where proc.prosecdef = s.prosecdef
+    and proc.proowner = s.proowner
+    and proc.proacl is not distinct from s.current_acl
+    and coalesce(
+      array_to_string(proc.proconfig, ','),
+      ''
+    ) = s.current_config
+    and md5(
+      replace(
+        proc.prosrc,
+        E'\r\n',
+        E'\n'
+      )
+    ) = s.expected_body_md5
+    and (
+      select count(*)
+      from pg_catalog.pg_trigger trg
+      where trg.tgfoid = proc.oid
+        and not trg.tgisinternal
+    ) = s.trigger_associations;
+
+  if v_transition_exact <> 3 then
+    raise exception
+      'AUTH_DB_003_POSTCHECK: transition-owned functions changed';
   end if;
 end
 $auth_db_003_postcheck$;

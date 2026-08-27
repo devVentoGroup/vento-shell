@@ -91,9 +91,6 @@
   },
   "evidence": [
     "MATERIALIZATION migration supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql",
-    "FILE_SHA256 supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql 74a70ca3ac4334e53df5a321afe42c3ac945ae27a086643aadc5b8b3636d74b9",
-    "FILE_SHA256 supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql 3ebc76b19ce2b66128df2a4a461cbad2f79c4351088ac015438c64b571281d9a",
-    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md 3e0f75dd86044a9f0d2e784681b3f263c0590fd0c26caae978ff8e834f662f26",
     "REMOTE_BASELINE governed=348 security_definer=211 vital=5 vento=206 direct=179 trigger_return=32 trigger_live=30 trigger_orphan=2 anon_effective=46 authenticated_effective=152 row_security_off=14",
     "HARDENING_MANIFEST signatures=206 convert_to_invoker=8 retire=2 blocked_pending_evidence=196 keep_as_definer=0",
     "MATERIALIZATION converted_security_definer_to_invoker=8",
@@ -103,6 +100,19 @@
     "PRE_VALIDATION_GATE quality:repair PASS exactly once",
     "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
     "SOURCE CONTRACT SHA256 bcf095f1180a57c8094853f499039b58b70760b6b337b4dff0a1d37ab8a0b55f",
-    "REMOTE_TARGETS_USED NO"
+    "REMOTE_TARGETS_USED NO",
+    "BASELINE_PROFILE AUTH_DB_003 LOCAL_REPLAY governed=318 security_definer=208 vento=204 vital=4 direct=177 trigger=31",
+    "BASELINE_PROFILE AUTH_DB_003 REMOTE_AUDITED governed=348 security_definer=211 vento=206 vital=5 direct=179 trigger=32",
+    "AUTH_DB_028_DRIFT_BOUNDARY functions_remote_minus_local=30 security_definer_remote_minus_local=3 vento_security_definer_remote_minus_local=2 vital_security_definer_remote_minus_local=1 action_in_AUTH_DB_003=NONE",
+    "RUNTIME_MANIFEST AUTH_DB_003 local=204/8/2/194 remote=206/8/2/196 canonical_remote=206/8/2/196",
+    "TARGETED_PGTAP AUTH_DB_003 022=PASS",
+    "DIRECT_PGTAP AUTH_DB_003 all_database_tests=PASS",
+    "CORRECTION_PROBE AUTH_DB_003 supabase_db_test_clean=PASS",
+    "QUALITY_REPAIR_RERUN NO_ALREADY_CONSUMED_EXACTLY_ONCE",
+    "FILE_SHA256 supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql aae47b8c3f60501c175e03cecaee44d87a814d9281fdbe4f44daa2e1bf5113eb",
+    "FILE_SHA256 supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql 0a04092e1baf74f5b1fe2d75714a5a5808516a6c7dc340ed290573627baff59e",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md ae61f50feb6f807d42cae66aa58bbacc33f0656494bb16d11dfdc56e7a893bda",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO"
   ]
 }
