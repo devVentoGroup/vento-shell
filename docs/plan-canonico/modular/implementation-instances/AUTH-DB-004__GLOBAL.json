@@ -1,10 +1,123 @@
 {
   "instance_id": "AUTH-DB-004::GLOBAL",
   "task_id": "AUTH-DB-004",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260827143711_auth_db_004_authenticated_grant_containment.sql",
+      "change": "CREATE",
+      "scope": "Create exactly one Supabase-CLI-generated forward AUTH-DB-004 migration. Derive the authenticated privilege manifest for Vento-owned governed schemas, harden only postgres/public default privileges for authenticated, revoke authenticated EXECUTE only from pass.validate_catalog_item_product_site(), preserve existing relation grants, existing sequence grants, anon grants, VITAL, managed supabase_admin defaults, RLS, owners, security modes, consumers and api schema."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/023_auth_db_004_authenticated_grant_containment.test.sql",
+      "change": "CREATE",
+      "scope": "Create the AUTH-DB-004 pgTAP containment test for postgres/public default privilege hardening, trigger EXECUTE reduction, managed-default preservation and no unintended sequence, schema, api, anon or security-mode changes."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest only through scripts/supabase/migration-manifest.mjs after adding the authorized migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-004__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record only AUTH-DB-004::GLOBAL authorization, lifecycle state and consolidated evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying the script."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the clean local Supabase database harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict local candidate and drift certification without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run quality:repair exactly once after complete materialization and before IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative lifecycle."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validate the physical implementation against the exact authorized instance scope."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-27T09:18:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "SIGAMOS IMPLEMENTANDO",
+    "source_contract_sha256": "412bd6f1a65c13734dcd3bdf1550b4ffd509fde7beb411e0edddbb65338b81de"
+  },
+  "evidence": [
+    "MATERIALIZATION migration supabase/migrations/20260827143711_auth_db_004_authenticated_grant_containment.sql",
+    "MATERIALIZATION test supabase/tests/database/023_auth_db_004_authenticated_grant_containment.test.sql",
+    "MATERIALIZATION manifest supabase/MIGRATION_MANIFEST.md",
+    "MATERIALIZATION postgres_public_default_privileges_authenticated_hardened=true",
+    "MATERIALIZATION pass.validate_catalog_item_product_site_authenticated_execute_revoked=true",
+    "MATERIALIZATION existing_relation_grants_changed=0",
+    "MATERIALIZATION existing_sequence_grants_changed=0",
+    "MATERIALIZATION anon_grants_changed=0",
+    "MATERIALIZATION vital_changes=0",
+    "MATERIALIZATION rls_changed=0",
+    "MATERIALIZATION security_mode_changed=0",
+    "MATERIALIZATION api_created=0",
+    "MATERIALIZATION managed_supabase_admin_defaults_changed=0",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 412bd6f1a65c13734dcd3bdf1550b4ffd509fde7beb411e0edddbb65338b81de",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS",
+    "VALIDATION npm run supabase:recovery:local PASS",
+    "VALIDATION node scripts/supabase/environment-drift.mjs local --strict PASS",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check origin/main...HEAD PASS",
+    "FILE_SHA256 supabase/migrations/20260827143711_auth_db_004_authenticated_grant_containment.sql d8336666b50345aa1eb206f6aaf985e9a35a957d6c4d2470b4499a3de1683bf3",
+    "FILE_SHA256 supabase/tests/database/023_auth_db_004_authenticated_grant_containment.test.sql 1d4c06ad87c3dbeb99c0beecbabd17b83c145d5468b1d7a93b90f50d070aa8f2",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md 59cf8310a56ec73d183817a56440edb909f6def8b3a0de68386d7973fe81ff59",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "RESULT AUTH-DB-004::GLOBAL VERIFIED"
+  ]
 }
