@@ -1,10 +1,131 @@
 {
   "instance_id": "AUTH-DB-003::GLOBAL",
   "task_id": "AUTH-DB-003",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql",
+      "change": "CREATE",
+      "scope": "Create exactly one CLI-generated forward AUTH-DB-003 migration. Reconcile exactly 348 governed functions, 211 SECURITY DEFINER, 5 VITAL excluded and 206 Vento OS SECURITY DEFINER. Convert exactly 8 approved delegation-only wrappers to SECURITY INVOKER. Reset row_security only on the 7 converted wrappers that currently declare row_security=off. Derive a 206-signature hardening manifest with 8 CONVERT_TO_INVOKER, 2 RETIRE not executed and 196 BLOCKED_PENDING_EVIDENCE. Do not alter grants, owners, roles, memberships, RLS, FORCE RLS, data, VITAL, historical migrations, consumers or remote environments."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql",
+      "change": "CREATE",
+      "scope": "Create the AUTH-DB-003 pgTAP containment test. Verify exact post-hardening cardinalities, the 8 invoker conversions, body and EXECUTE preservation, the 2 orphan trigger dispositions remaining unexecuted, the VISO guard remaining blocked, and positive and negative authorization behavior for the converted context wrappers."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest only through scripts/supabase/migration-manifest.mjs after adding the authorized migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-003__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record only AUTH-DB-003::GLOBAL authorization, lifecycle state and consolidated evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying the script."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the VERIFIED clean local database harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict local candidate and drift certification without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the VERIFIED local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run quality:repair exactly once after complete materialization and before IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative lifecycle."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validate the intermediate materialization commit against the exact authorized instance scope."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-26T18:47:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "bcf095f1180a57c8094853f499039b58b70760b6b337b4dff0a1d37ab8a0b55f"
+  },
+  "evidence": [
+    "MATERIALIZATION migration supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql",
+    "REMOTE_BASELINE governed=348 security_definer=211 vital=5 vento=206 direct=179 trigger_return=32 trigger_live=30 trigger_orphan=2 anon_effective=46 authenticated_effective=152 row_security_off=14",
+    "HARDENING_MANIFEST signatures=206 convert_to_invoker=8 retire=2 blocked_pending_evidence=196 keep_as_definer=0",
+    "MATERIALIZATION converted_security_definer_to_invoker=8",
+    "MATERIALIZATION row_security_off_reset=7",
+    "MATERIALIZATION retire_executed=0",
+    "MATERIALIZATION vital_changes=0 grants_changed=0 owners_changed=0 roles_changed=0 memberships_changed=0 rls_changed=0 data_changed=0 consumers_changed=0",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 bcf095f1180a57c8094853f499039b58b70760b6b337b4dff0a1d37ab8a0b55f",
+    "REMOTE_TARGETS_USED NO",
+    "BASELINE_PROFILE AUTH_DB_003 LOCAL_REPLAY governed=318 security_definer=208 vento=204 vital=4 direct=177 trigger=31",
+    "BASELINE_PROFILE AUTH_DB_003 REMOTE_AUDITED governed=348 security_definer=211 vento=206 vital=5 direct=179 trigger=32",
+    "AUTH_DB_028_DRIFT_BOUNDARY functions_remote_minus_local=30 security_definer_remote_minus_local=3 vento_security_definer_remote_minus_local=2 vital_security_definer_remote_minus_local=1 action_in_AUTH_DB_003=NONE",
+    "RUNTIME_MANIFEST AUTH_DB_003 local=204/8/2/194 remote=206/8/2/196 canonical_remote=206/8/2/196",
+    "TARGETED_PGTAP AUTH_DB_003 022=PASS",
+    "DIRECT_PGTAP AUTH_DB_003 all_database_tests=PASS",
+    "CORRECTION_PROBE AUTH_DB_003 supabase_db_test_clean=PASS",
+    "QUALITY_REPAIR_RERUN NO_ALREADY_CONSUMED_EXACTLY_ONCE",
+    "FILE_SHA256 supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql aae47b8c3f60501c175e03cecaee44d87a814d9281fdbe4f44daa2e1bf5113eb",
+    "FILE_SHA256 supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql 0a04092e1baf74f5b1fe2d75714a5a5808516a6c7dc340ed290573627baff59e",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md ae61f50feb6f807d42cae66aa58bbacc33f0656494bb16d11dfdc56e7a893bda",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "FINAL_CANDIDATE_SHA d72590fc829338f3e05134df7537e2c26ea5d108",
+    "VALIDATION npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION npm run supabase:db:test:clean PASS",
+    "VALIDATION npm run supabase:recovery:local PASS",
+    "RECOVERY_EVIDENCE .delivery/supabase-recovery/20260827020215862-d72590fc8293-e22e183a/evidence.json",
+    "RECOVERY_OUTCOME PASS_ROLLBACK_VERIFIED",
+    "RECOVERY_RPO actual=0 target=0",
+    "RECOVERY_RTO_MS actual=31327 target=900000",
+    "VALIDATION node scripts/supabase/environment-drift.mjs local --strict PASS",
+    "VALIDATION npm run quality:lint:ratchet PASS",
+    "VALIDATION git --no-pager diff --check origin/main...HEAD PASS",
+    "REMOTE_TARGETS_USED NO",
+    "RESULT AUTH-DB-003::GLOBAL VERIFIED"
+  ]
 }
