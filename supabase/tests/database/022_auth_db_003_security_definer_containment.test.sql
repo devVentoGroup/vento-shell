@@ -195,8 +195,8 @@ select is(
       'vital'
     )
   ),
-  318::bigint,
-  'local governed function universe remains 318'
+  348::bigint,
+  'authoritative baseline governed function universe remains 348'
 );
 
 select is(
@@ -215,8 +215,8 @@ select is(
     )
       and p.prosecdef
   ),
-  200::bigint,
-  'local SECURITY DEFINER total decreases by exactly eight'
+  203::bigint,
+  'authoritative baseline SECURITY DEFINER total decreases by exactly eight to 203'
 );
 
 select is(
@@ -234,8 +234,8 @@ select is(
     )
       and p.prosecdef
   ),
-  196::bigint,
-  'local Vento SECURITY DEFINER total decreases to 196'
+  198::bigint,
+  'authoritative Vento SECURITY DEFINER total decreases to 198'
 );
 
 select is(
@@ -247,8 +247,8 @@ select is(
     where n.nspname = 'vital'
       and p.prosecdef
   ),
-  4::bigint,
-  'VITAL local boundary remains unchanged at four'
+  5::bigint,
+  'VITAL authoritative boundary remains unchanged at five'
 );
 
 select is(
@@ -268,8 +268,8 @@ select is(
       and p.prosecdef
       and p.prorettype <> 'trigger'::regtype
   ),
-  169::bigint,
-  'direct SECURITY DEFINER total decreases by exactly eight'
+  171::bigint,
+  'authoritative direct SECURITY DEFINER total decreases by exactly eight to 171'
 );
 
 select is(
@@ -289,8 +289,8 @@ select is(
       and p.prosecdef
       and p.prorettype = 'trigger'::regtype
   ),
-  31::bigint,
-  'trigger SECURITY DEFINER cohort remains unchanged'
+  32::bigint,
+  'authoritative trigger SECURITY DEFINER cohort remains unchanged at 32'
 );
 
 with expected(signature) as (

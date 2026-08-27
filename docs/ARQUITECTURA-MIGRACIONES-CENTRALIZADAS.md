@@ -105,6 +105,39 @@ historial existente
 
 Los archivos vacíos, los duplicados de contenido y las excepciones legacy permanecen dentro del universo canónico hasta que una decisión propietaria explícita autorice otra disposición.
 
+## Excepción propietaria de rebaseline Supabase — 2026-08-27
+
+Esta sección tiene precedencia únicamente para el corte de época migratoria aprobado explícitamente por VENTO_OWNER el 2026-08-27 durante AUTH-DB-005. No modifica la regla normal aplicable a futuras migraciones.
+
+**Fuente temporal AS-IS autorizada:** `vento-os-dev / clzdpinthhtknkmefsxx`.
+
+**Motivo del corte:** el historial legacy anterior a AUTH-DB-001 dejó de constituir un replay autoritativo debido a cambios históricos directos fuera de la cadena de migraciones y a incompatibilidades reproducibles demostradas durante la implementación de AUTH-DB-005.
+
+Para este corte único se autoriza expresamente:
+
+1. reemplazar `00000000000000_baseline.sql` por un baseline capturado desde el estado remoto AS-IS aceptado;
+2. retirar de la cadena ejecutable vigente las migraciones legacy anteriores a AUTH-DB-001;
+3. preservar ese historial anterior mediante Git history, sin exigir que continúe físicamente dentro de `supabase/migrations/` ni del manifiesto vigente;
+4. conservar sobre el nuevo baseline AUTH-DB-001, AUTH-DB-002, AUTH-DB-003 y AUTH-DB-004 en el candidato de `main`, y AUTH-DB-005 posteriormente sobre su rama rebasada;
+5. incorporar explícitamente al baseline las personalizaciones VENTO que el dump normal no reconstruye por sí solo, incluyendo Auth, Storage, buckets, Realtime y datos estáticos de autorización necesarios para reproducibilidad;
+6. reconciliar posteriormente el ledger remoto de migraciones únicamente como metadata de historial, sin usar esa reconciliación para ejecutar DDL o DML;
+7. mantener prohibido `db reset --linked` y cualquier reset destructivo de schema o datos remotos;
+8. mantener cron como superficie runtime separada y no versionar comandos, cabeceras, credenciales ni secretos;
+9. no modificar datos empresariales remotos como consecuencia del corte.
+
+El remoto es autoridad únicamente para la captura AS-IS de este corte. Una vez certificado y publicado el nuevo baseline, `vento-shell` vuelve a ser la autoridad EXPECTED y todo entorno remoto vuelve a ser OBSERVED conforme a AUTH-DB-028.
+
+La autorización de este corte proviene de la decisión propietaria explícita y no de un resultado de drift. Detectar drift continúa sin autorizar reparaciones por inferencia.
+
+Desde la nueva época migratoria vuelve a regir la política normal:
+
+```text
+baseline versionado vigente
+-> migraciones forward nuevas
+-> historial de la nueva época inmutable por defecto
+-> remoto observado, no autoridad de diseño
+```
+
 ## Separación de estado por entorno
 
 El repositorio demuestra qué migraciones están versionadas. No demuestra, por sí solo, qué migraciones están aplicadas en local, staging o producción.
@@ -207,7 +240,7 @@ Toda reparación pertenece a su tarea o paquete propietario y debe volver a prod
 | `AUTH-DB-028` | Baseline y drift entre local, staging y producción mediante observación read-only. |
 | `AUTH-DB-029` | Respaldo, restauración y rollback. |
 
-`AUTH-DB-015` y `AUTH-DB-027` no representan estado remoto. `AUTH-DB-028` puede observar estado remoto únicamente en modo read-only y no lo convierte en fuente canónica. Ninguna de estas tareas aplica migraciones o repara drift por inferencia.
+`AUTH-DB-015` y `AUTH-DB-027` no representan estado remoto. Como regla general, `AUTH-DB-028` observa entornos remotos únicamente en modo read-only y no los convierte en fuente canónica. La única excepción vigente es el corte propietario de rebaseline Supabase del 2026-08-27 definido en este documento, durante cuya captura el remoto identificado fue autoridad AS-IS temporal. Finalizada esa captura, el candidato versionado vuelve a ser EXPECTED y el remoto vuelve a ser OBSERVED. Ninguna de estas tareas aplica migraciones o repara drift por inferencia.
 
 ## Flujo para una migración nueva
 
