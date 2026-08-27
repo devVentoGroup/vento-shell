@@ -563,10 +563,11 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260731082600 | 20260731082600_viso_monthly_schedule_186_hour_publish_guard.sql | 2c016978c5d06406def5c0cfe27b98947c16ea35efc628e4bfcf549869a98660 | 3754 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260826191458 | 20260826191458_auth_db_001_enable_rls_containment.sql | e334ae3c90e0b512b90fee1fde5a65c52117c3e3e62636536651da5bd5a0334e | 6812 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260826213609 | 20260826213609_auth_db_002_rls_hardening.sql | aca1a4b69e8f9c483b25a88a2c0ffc18a1a9f507fc5b3bcdb72dec7cdf0320b7 | 15542 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260827000725 | 20260827000725_auth_db_003_security_definer_hardening.sql | 74a70ca3ac4334e53df5a321afe42c3ac945ae27a086643aadc5b8b3636d74b9 | 22870 | STANDARD |  |  | SIN_HALLAZGO |
 
 ## Inventory summary
 
-- Physical files: 552
+- Physical files: 553
 - Empty files: 1
 - Content-duplicate groups: 5
 - Same-logical-family groups: 16

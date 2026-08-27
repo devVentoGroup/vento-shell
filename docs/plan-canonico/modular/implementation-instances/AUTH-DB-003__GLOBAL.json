@@ -1,10 +1,108 @@
 {
   "instance_id": "AUTH-DB-003::GLOBAL",
   "task_id": "AUTH-DB-003",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "IMPLEMENTED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql",
+      "change": "CREATE",
+      "scope": "Create exactly one CLI-generated forward AUTH-DB-003 migration. Reconcile exactly 348 governed functions, 211 SECURITY DEFINER, 5 VITAL excluded and 206 Vento OS SECURITY DEFINER. Convert exactly 8 approved delegation-only wrappers to SECURITY INVOKER. Reset row_security only on the 7 converted wrappers that currently declare row_security=off. Derive a 206-signature hardening manifest with 8 CONVERT_TO_INVOKER, 2 RETIRE not executed and 196 BLOCKED_PENDING_EVIDENCE. Do not alter grants, owners, roles, memberships, RLS, FORCE RLS, data, VITAL, historical migrations, consumers or remote environments."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql",
+      "change": "CREATE",
+      "scope": "Create the AUTH-DB-003 pgTAP containment test. Verify exact post-hardening cardinalities, the 8 invoker conversions, body and EXECUTE preservation, the 2 orphan trigger dispositions remaining unexecuted, the VISO guard remaining blocked, and positive and negative authorization behavior for the converted context wrappers."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest only through scripts/supabase/migration-manifest.mjs after adding the authorized migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-003__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record only AUTH-DB-003::GLOBAL authorization, lifecycle state and consolidated evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying the script."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the VERIFIED clean local database harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict local candidate and drift certification without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the VERIFIED local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run quality:repair exactly once after complete materialization and before IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative lifecycle."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validate the intermediate materialization commit against the exact authorized instance scope."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-26T18:47:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "bcf095f1180a57c8094853f499039b58b70760b6b337b4dff0a1d37ab8a0b55f"
+  },
+  "evidence": [
+    "MATERIALIZATION migration supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql",
+    "FILE_SHA256 supabase/migrations/20260827000725_auth_db_003_security_definer_hardening.sql 74a70ca3ac4334e53df5a321afe42c3ac945ae27a086643aadc5b8b3636d74b9",
+    "FILE_SHA256 supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql 3ebc76b19ce2b66128df2a4a461cbad2f79c4351088ac015438c64b571281d9a",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md 3e0f75dd86044a9f0d2e784681b3f263c0590fd0c26caae978ff8e834f662f26",
+    "REMOTE_BASELINE governed=348 security_definer=211 vital=5 vento=206 direct=179 trigger_return=32 trigger_live=30 trigger_orphan=2 anon_effective=46 authenticated_effective=152 row_security_off=14",
+    "HARDENING_MANIFEST signatures=206 convert_to_invoker=8 retire=2 blocked_pending_evidence=196 keep_as_definer=0",
+    "MATERIALIZATION converted_security_definer_to_invoker=8",
+    "MATERIALIZATION row_security_off_reset=7",
+    "MATERIALIZATION retire_executed=0",
+    "MATERIALIZATION vital_changes=0 grants_changed=0 owners_changed=0 roles_changed=0 memberships_changed=0 rls_changed=0 data_changed=0 consumers_changed=0",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 bcf095f1180a57c8094853f499039b58b70760b6b337b4dff0a1d37ab8a0b55f",
+    "REMOTE_TARGETS_USED NO"
+  ]
 }
