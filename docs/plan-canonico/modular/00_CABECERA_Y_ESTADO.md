@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1068** |
+| Tareas aprobadas | **1069** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **526** |
+| Tareas no iniciadas | **525** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **67.00% (1068/1594)** |
+| Porcentaje de completamiento | **67.06% (1069/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador** |
-| Tarea actual | **ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso** |
+| Última tarea aprobada | **ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso** |
+| Tarea actual | **ANIMA-AUTH-018 — Auditar creación y cierre del contexto** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-AUTH-018 — Auditar creación y cierre del contexto** |
+| Siguiente tarea | **ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 16 de 37 aprobadas; ANIMA-AUTH-017 pendiente** |
+| Progreso del bloque | **BLOQUE F: 17 de 37 aprobadas; ANIMA-AUTH-018 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-017::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-AUTH-017** |
+| Carril documental | **ACTIVO — ANIMA-AUTH-018** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-017::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-AUTH-016` — Mostrar diagnóstico de contexto al trabajador |
-| Tarea actual | `ANIMA-AUTH-017` — Diferenciar falta de turno y falta de permiso — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-AUTH-018` — Auditar creación y cierre del contexto |
+| Última aprobada | `ANIMA-AUTH-017` — Diferenciar falta de turno y falta de permiso |
+| Tarea actual | `ANIMA-AUTH-018` — Auditar creación y cierre del contexto — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-AUTH-019` — Evitar que ANIMA otorgue permisos directamente |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 16 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-017** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 17 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-018** |
 | Implementación física | **AUTH-DB-017::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador
-        ↓
-TAREA ACTUAL
 ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-AUTH-018 — Auditar creación y cierre del contexto
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 16 de 37 tareas aprobadas
+BLOQUE F — 17 de 37 tareas aprobadas
 ```

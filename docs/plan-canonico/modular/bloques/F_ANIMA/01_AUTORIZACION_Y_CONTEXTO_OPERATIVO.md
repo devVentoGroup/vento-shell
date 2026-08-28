@@ -15266,7 +15266,882 @@ Toda brecha física descrita conserva la condición de salida indicada y deberá
 **SIGUIENTE TAREA RESERVADA**
 `ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso`
 
-### [ ] ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso
+### ✅ ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador
+**Tarea siguiente:** ANIMA-AUTH-018 — Auditar creación y cierre del contexto
+**Tipo de tarea:** documental; definición contractual de la precedencia y presentación diferenciada en ANIMA entre ausencia de turno publicado y denegación de permiso, preservando las razones canónicas, el contexto válido y la recuperación segura sin crear autorización local
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma inequívoca cómo ANIMA distingue y presenta dos causas que no son equivalentes:
+
+1. el trabajador no dispone de un turno laboral publicado utilizable para una acción que exige carril operativo; y
+2. el trabajador sí dispone del contexto operativo requerido, pero la autorización concluyente deniega la acción solicitada.
+
+La tarea impide que un booleano local, una ausencia de datos o un mensaje genérico conviertan una causa en la otra.
+
+La regla principal queda:
+
+```text
+FALTA DE TURNO
+!=
+FALTA DE PERMISO
+```
+
+La diferencia debe conservarse desde la decisión autoritativa hasta la presentación al trabajador, la recuperación, la auditoría y la sincronización offline.
+
+---
+
+#### 2. Resultado canónico
+
+ANIMA consumirá razones canónicas distintas y mutuamente no sustituibles:
+
+```text
+AUTH_PUBLISHED_SHIFT_REQUIRED
+=
+NO EXISTE UNA PUBLICACION LABORAL UTILIZABLE
+PARA UN CARRIL QUE EXIGE TURNO
+```
+
+```text
+AUTH_OPERATIONAL_PERMISSION_DENIED
+=
+LOS PRERREQUISITOS OPERATIVOS APLICABLES YA FUERON RESUELTOS
+Y LA AUTORIZACION CONCLUYENTE DENIEGA LA ACCION
+```
+
+Para acciones administrativas se conserva separadamente:
+
+```text
+AUTH_ADMIN_PERMISSION_DENIED
+```
+
+ANIMA no creará una categoría local denominada genéricamente `NO_ACCESS`, `NO_SHIFT_OR_PERMISSION`, `OUT_OF_SHIFT_OR_PERMISSION` ni equivalente.
+
+---
+
+#### 3. Handoff recibido de ANIMA-AUTH-016
+
+ANIMA-AUTH-016 ya estableció que:
+
+- la proyección visible de contexto no es autoridad;
+- una acción puede estar denegada mientras el contexto permanece `ACTIVE`;
+- una falta de permiso no puede degradar un contexto laboral válido a “sin turno”;
+- una falta de turno no puede presentarse como “sin permiso”;
+- el copy contractual procede del catálogo compartido;
+- la razón autoritativa debe conservarse sin inferencias locales.
+
+ANIMA-AUTH-017 completa exclusivamente la precedencia y adaptación específica de esos casos.
+
+---
+
+#### 4. Frontera con ANIMA-AUTH-018 a ANIMA-AUTH-020
+
+La responsabilidad permanece separada:
+
+| Tarea | Responsabilidad reservada |
+| --- | --- |
+| `ANIMA-AUTH-017` | Diferenciar ausencia de turno y denegación de permiso, incluida precedencia, presentación y recuperación. |
+| `ANIMA-AUTH-018` | Auditar creación y cierre del contexto conforme a su alcance canónico. |
+| `ANIMA-AUTH-019` | Evitar que ANIMA otorgue permisos directamente. |
+| `ANIMA-AUTH-020` | Mantener Supabase como fuente de verdad conforme a su alcance canónico. |
+
+Esta tarea no crea sesiones, no asigna turnos, no concede permisos y no redefine la fuente de verdad.
+
+---
+
+#### 5. Invariante de clasificación
+
+Una razón visible solo puede proceder de una resolución concluyente y compatible con el contrato vigente.
+
+Se prohíbe:
+
+```text
+permission_boolean = false
+->
+"sin turno"
+```
+
+También se prohíbe:
+
+```text
+shift = null
+->
+"sin permiso"
+```
+
+Y se prohíbe:
+
+```text
+error_de_rpc
+->
+permission_boolean = false
+->
+DENY
+```
+
+La ausencia de evidencia suficiente no autoriza a escoger ninguna de las dos causas.
+
+---
+
+#### 6. Vocabulario contractual
+
+En esta tarea:
+
+- **turno publicado utilizable**: publicación laboral autoritativa que satisface la dependencia de turno del carril solicitado y puede seguir siendo evaluada temporalmente;
+- **falta de turno**: ausencia concluyente de una publicación utilizable para un carril que la exige;
+- **denegación operativa**: resultado `DENY` producido después de resolver satisfactoriamente los prerrequisitos que deben anteceder a la evaluación operativa;
+- **denegación administrativa**: falta de autorización para una acción administrativa que no adquiere dependencia laboral de turno por el nombre de la aplicación;
+- **razón principal**: única clasificación pública que explica el primer bloqueo concluyente aplicable;
+- **hechos subordinados**: información privada útil para auditoría que no sustituye la razón principal;
+- **indisponibilidad**: incapacidad técnica para obtener una decisión concluyente; no equivale a denegación;
+- **contexto preservado**: dimensiones autoritativas que continúan válidas aunque una acción concreta esté bloqueada.
+
+---
+
+#### 7. La acción determina primero su carril
+
+Antes de preguntar por turno, ANIMA debe conocer el contrato de autorización de la acción solicitada.
+
+La dependencia de turno no se deriva de:
+
+- estar dentro de ANIMA;
+- ser trabajador;
+- tener un rol determinado;
+- estar en una pantalla de asistencia;
+- existir un turno en el historial;
+- la presencia de un botón visible.
+
+Una acción que no exige carril operativo con turno no puede ser bloqueada por ausencia de turno únicamente por pertenecer a ANIMA.
+
+---
+
+#### 8. Separación entre permiso base, administrativo y operativo
+
+ANIMA conservará tres conceptos diferentes:
+
+1. acceso o permiso base aplicable;
+2. permiso administrativo cuando la acción pertenezca a ese carril;
+3. autorización operativa cuando la acción dependa de contexto laboral efectivo.
+
+Por tanto:
+
+- una denegación administrativa no se convierte en falta de turno;
+- una falta de turno no prueba que el permiso base sea falso;
+- una denegación operativa no invalida automáticamente el acceso general a ANIMA;
+- la misma persona puede conservar acceso a superficies personales o permitidas aunque una acción operativa quede bloqueada.
+
+---
+
+#### 9. Ausencia de turno publicado
+
+Cuando una acción exige turno y el servidor concluye que no existe una publicación laboral utilizable, la razón pública será:
+
+```text
+AUTH_PUBLISHED_SHIFT_REQUIRED
+```
+
+ANIMA deberá:
+
+- preservar la sesión cuando otra regla no exija cerrarla;
+- no fabricar un turno desde selección, perfil, check-in, sede, dispositivo, historial o cliente;
+- no ejecutar la acción protegida;
+- no evaluar un supuesto permiso operativo como sustituto del prerrequisito faltante;
+- no afirmar que el trabajador carece de permiso;
+- utilizar el perfil compartido aprobado para esta razón.
+
+---
+
+#### 10. Turno publicado fuera de ventana
+
+Tener una publicación laboral no equivale a estar dentro de la jornada vigente.
+
+Si existe exactamente una publicación aplicable pero el instante autoritativo está fuera de `[starts_at, ends_at)`, la razón es:
+
+```text
+AUTH_OUTSIDE_SHIFT_WINDOW
+```
+
+No se usa `AUTH_PUBLISHED_SHIFT_REQUIRED` porque el turno sí existe.
+
+Tampoco se usa una denegación de permiso para representar una frontera temporal.
+
+---
+
+#### 11. Check-in requerido
+
+Si el carril exige `T+C`, el turno ya está publicado y vigente, pero falta una sesión de check-in compatible y concluyentemente ausente, la razón es:
+
+```text
+AUTH_CHECKIN_REQUIRED
+```
+
+Este estado demuestra que:
+
+- existe un turno utilizable;
+- la falta de check-in no debe presentarse como falta de turno;
+- la falta de check-in no debe presentarse como falta de permiso;
+- la recuperación puede dirigir al flujo autorizado de registro únicamente cuando el contrato compartido lo permita.
+
+---
+
+#### 12. Denegación de permiso operativo
+
+Solo después de resolver satisfactoriamente los prerrequisitos exigidos por la acción podrá utilizarse:
+
+```text
+AUTH_OPERATIONAL_PERMISSION_DENIED
+```
+
+Esta razón aplica cuando la evaluación concluyente determina, según el contrato canónico, una denegación explícita, ausencia concluyente de `ALLOW` aplicable o incompatibilidad de scope que pertenezca realmente a la fase de permiso.
+
+En ese caso ANIMA deberá:
+
+- conservar el contexto operativo válido;
+- bloquear la acción afectada;
+- no cambiar la jornada a ausente;
+- no dirigir al trabajador a resolver horarios por la sola denegación;
+- no exponer la clave de permiso, grants, denies o scopes internos.
+
+---
+
+#### 13. Denegación de permiso administrativo
+
+Cuando la acción sea administrativa y su contrato no exija turno operativo, una denegación concluyente utiliza:
+
+```text
+AUTH_ADMIN_PERMISSION_DENIED
+```
+
+La ausencia de turno no se evalúa como prerrequisito inventado.
+
+La interfaz no puede exigir check-in, turno o rol operativo para justificar una denegación administrativa que ya tiene su propia razón.
+
+---
+
+#### 14. Precedencia mínima obligatoria
+
+Para una acción operativa, la precedencia conceptual será:
+
+```text
+1. SESION E IDENTIDAD APLICABLES
+2. ACCESO BASE Y CONTRATO DE LA ACCION
+3. DEPENDENCIA DE TURNO PUBLICADO
+4. VIGENCIA TEMPORAL DEL TURNO
+5. CHECK-IN CUANDO EL CARRIL LO EXIJA
+6. ROL OPERATIVO
+7. SEDE Y AREA APLICABLES
+8. DISPOSITIVO Y SIMULACION CUANDO APLIQUEN
+9. CONSISTENCIA DE CONFIGURACION Y CATALOGO
+10. EVALUACION DE PERMISO OPERATIVO
+11. DECISION FINAL Y PROYECCION SEGURA
+```
+
+Una causa anterior concluyente impide publicar como razón principal una causa posterior.
+
+---
+
+#### 15. Matriz de decisión principal
+
+| Acción / estado autoritativo | Resultado público |
+| --- | --- |
+| Acción sin dependencia operativa de turno; permiso administrativo permitido | Continúa sin exigir turno. |
+| Acción sin dependencia operativa de turno; permiso administrativo denegado | `AUTH_ADMIN_PERMISSION_DENIED`. |
+| Acción operativa que exige turno; no existe publicación utilizable | `AUTH_PUBLISHED_SHIFT_REQUIRED`. |
+| Existe publicación aplicable, pero aún no inicia o ya finalizó | `AUTH_OUTSIDE_SHIFT_WINDOW`. |
+| Turno publicado y vigente; carril `T+C`; check-in requerido ausente | `AUTH_CHECKIN_REQUIRED`. |
+| Turno y demás prerrequisitos aplicables resueltos; permiso operativo denegado | `AUTH_OPERATIONAL_PERMISSION_DENIED`. |
+| Resolución de turno ambigua o configuración contradictoria | Razón de configuración/inconsistencia correspondiente; no se inventa falta de turno ni permiso. |
+| Fuente o evaluador indisponible | `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE`. |
+| Clave contractual de permiso inexistente | `AUTH_PERMISSION_NOT_REGISTERED`. |
+
+La tabla define clasificación, no copy nuevo.
+
+---
+
+#### 16. Casos que no admiten inferencia
+
+ANIMA no inferirá falta de turno ni falta de permiso cuando observe solamente:
+
+- una consulta que devuelve cero filas sin contrato suficiente para interpretar el resultado;
+- un RPC con error;
+- una respuesta `null` cuya semántica no esté definida;
+- un mapa de permisos vacío después de una excepción;
+- un booleano `false` sin razón y versión;
+- un timeout;
+- una lectura cacheada incompatible;
+- un resolver que devuelve candidatos ambiguos;
+- una versión de catálogo desconocida.
+
+Esos estados deben conservar la clasificación técnica o contractual que corresponda y fallar cerrados.
+
+---
+
+#### 17. Un solo reason code público
+
+Una solicitud no mostrará simultáneamente:
+
+```text
+AUTH_PUBLISHED_SHIFT_REQUIRED
++
+AUTH_OPERATIONAL_PERMISSION_DENIED
+```
+
+La primera causa concluyente aplicable según precedencia será la razón pública principal.
+
+La auditoría privada puede conservar que una evaluación posterior no se ejecutó, fue omitida o quedó bloqueada por el prerrequisito anterior, pero no fabricará una segunda denegación pública.
+
+---
+
+#### 18. Estado de evaluación posterior
+
+Cuando falte turno, la evaluación de permiso operativo posterior deberá distinguirse conceptualmente como:
+
+```text
+NOT_EVALUATED_DUE_TO_PREREQUISITE
+```
+
+La etiqueta anterior describe semántica contractual y no crea un nuevo `AuthorizationReasonCode` ni exige un campo físico nuevo en esta tarea.
+
+No será válido registrar internamente un `DENY` de permiso solo porque la evaluación no llegó a ejecutarse.
+
+---
+
+#### 19. Efecto sobre el contexto visible
+
+La clasificación afecta la proyección de forma diferente:
+
+| Causa | Contexto visible |
+| --- | --- |
+| Falta de turno publicado requerido | La dimensión operativa dependiente del turno no puede presentarse como activa; se preservan sesión y hechos seguros que sigan siendo válidos. |
+| Turno fuera de ventana | Se reconoce que existe programación, pero no se presenta jornada operativa vigente. |
+| Check-in requerido | El turno puede permanecer válido; falta la presencia requerida por la acción. |
+| Permiso operativo denegado | El contexto puede permanecer `ACTIVE`; se bloquea la acción afectada. |
+| Permiso administrativo denegado | El contexto laboral no se degrada; se bloquea la acción administrativa. |
+| Fallo técnico | La proyección pasa a indisponibilidad o frescura correspondiente; no se fabrica una causa empresarial. |
+
+---
+
+#### 20. Copy compartido para falta de turno
+
+ANIMA consumirá el perfil compartido:
+
+```text
+AUTH_PUBLISHED_SHIFT_REQUIRED/default
+```
+
+Título aprobado:
+
+```text
+Necesitas un turno publicado
+```
+
+Mensaje aprobado:
+
+```text
+No tienes un turno laboral publicado disponible para continuar con esta acción. Solicita a un administrador autorizado que revise tu programación.
+```
+
+ANIMA no reescribe el mensaje como “no tienes permisos”, “no estás autorizado”, “fuera de turno” ni otra causa distinta.
+
+---
+
+#### 21. Copy compartido para permiso operativo
+
+ANIMA consumirá el perfil compartido:
+
+```text
+AUTH_OPERATIONAL_PERMISSION_DENIED/default
+```
+
+Título aprobado:
+
+```text
+No tienes permiso para completar esta operación
+```
+
+Mensaje aprobado:
+
+```text
+Tu sesión y contexto operativo están activos, pero no tienes la autorización operativa necesaria para completar esta acción.
+```
+
+ANIMA no sustituye este mensaje por instrucciones de horario, check-in o publicación de turno.
+
+---
+
+#### 22. Copy compartido para permiso administrativo
+
+Cuando corresponda una denegación administrativa, ANIMA consumirá:
+
+```text
+AUTH_ADMIN_PERMISSION_DENIED/default
+```
+
+Título aprobado:
+
+```text
+No tienes permiso para realizar esta acción
+```
+
+Mensaje aprobado:
+
+```text
+Tu cuenta puede usar esta aplicación, pero no tiene el permiso administrativo necesario para completar esta acción.
+```
+
+La interfaz no añade una dependencia de turno para explicar este caso.
+
+---
+
+#### 23. Recuperación segura ante falta de turno
+
+La recuperación visible procede únicamente del perfil compartido y de hechos autorizados.
+
+ANIMA podrá presentar las acciones aprobadas por el descriptor de `AUTH_PUBLISHED_SHIFT_REQUIRED/default`, incluida la navegación segura correspondiente.
+
+No podrá:
+
+- publicar un turno;
+- elegir una publicación por el trabajador;
+- fabricar una sesión de asistencia;
+- abrir una pantalla administrativa de programación sin autorización independiente;
+- reintentar automáticamente una mutación anterior después de que aparezca un turno.
+
+Una corrección de programación exige una solicitud nueva y una nueva resolución.
+
+---
+
+#### 24. Recuperación segura ante falta de permiso
+
+La recuperación visible procede del perfil compartido de la denegación aplicable.
+
+ANIMA no ofrecerá como solución automática:
+
+- “crear turno”;
+- “registrar entrada”;
+- “cambiar de sede”;
+- “cambiar de rol”;
+- “pedir permisos” mediante una mutación directa desde la aplicación;
+- “usar otra cuenta”.
+
+Una futura modificación autorizada de roles o permisos pertenece a sus superficies propietarias y no cambia la decisión ya emitida.
+
+---
+
+#### 25. No sugerir la solución equivocada
+
+La distinción debe mantenerse también en las acciones secundarias y ayudas.
+
+Ejemplos prohibidos:
+
+```text
+FALTA DE TURNO
+->
+"Solicitar permiso"
+```
+
+```text
+DENEGACION DE PERMISO
+->
+"Registrar entrada"
+```
+
+```text
+FALLO TECNICO
+->
+"Pide que te asignen un turno"
+```
+
+La recuperación nunca reinterpreta la causa para hacerla más conveniente a la UI existente.
+
+---
+
+#### 26. Superficies con varias acciones
+
+Una pantalla puede contener acciones con contratos distintos.
+
+La falta de turno de una acción operativa no obliga a bloquear como “sin turno”:
+
+- consulta de información propia permitida;
+- navegación general autorizada;
+- acciones administrativas cuyo contrato no exige turno;
+- soporte u otras capacidades independientes permitidas.
+
+Cada acción material conserva su propia evaluación.
+
+No se convierte el estado de una acción en un bloqueo global de toda ANIMA salvo que exista una razón autoritativa de alcance global.
+
+---
+
+#### 27. Entrada y bootstrap de ANIMA
+
+El bootstrap no usará la ausencia de turno como sinónimo de “sin acceso a la aplicación”.
+
+Una persona puede autenticarse y tener acceso válido a ANIMA sin disponer en ese instante de un turno utilizable para una acción operativa concreta.
+
+Del mismo modo, poseer un turno no concede por sí solo acceso a una acción o aplicación.
+
+La navegación inicial y el control de acceso general conservarán sus razones propietarias.
+
+---
+
+#### 28. Sede, área y rol no sustituyen la distinción
+
+Una sede o área ausente, una incompatibilidad territorial o un rol operativo faltante mantienen sus propias razones.
+
+No será válido:
+
+```text
+sin_area
+->
+sin_turno
+```
+
+ni:
+
+```text
+rol_invalido
+->
+sin_permiso
+```
+
+La precedencia canónica determina la primera causa concluyente y ANIMA la preserva.
+
+---
+
+#### 29. Dispositivo, simulación y configuración
+
+Las restricciones de dispositivo, simulación y configuración tampoco se convierten en falta de turno ni permiso.
+
+ANIMA conservará, según corresponda:
+
+- `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`;
+- `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`;
+- `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT`;
+- `AUTH_PERMISSION_NOT_REGISTERED`;
+- `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE`.
+
+La UI no colapsará esas razones en un booleano de autorización.
+
+---
+
+#### 30. Sincronización offline
+
+Al sincronizar una intención offline, la reautorización definida en ANIMA-AUTH-015 puede concluir con falta de turno o denegación de permiso.
+
+ANIMA deberá conservar exactamente la razón devuelta por la decisión vigente:
+
+```text
+SYNC
+-> AUTH_PUBLISHED_SHIFT_REQUIRED
+-> presentar falta de turno
+```
+
+```text
+SYNC
+-> AUTH_OPERATIONAL_PERMISSION_DENIED
+-> presentar denegacion operativa
+```
+
+No se recalcula la causa en el cliente mediante el estado actual de la pantalla, un booleano de permiso ni el turno visible localmente.
+
+El evento original y su `occurred_at` permanecen separados de la autoridad de ejecución al sincronizar.
+
+---
+
+#### 31. Intenciones en cola y efectos
+
+Una intención denegada durante reautorización:
+
+- conserva cero efectos nuevos;
+- no se presenta como aplicada;
+- no se reencola con un nuevo identificador para esquivar la causa;
+- no cambia automáticamente a otra razón por un refresh de la UI;
+- requiere una nueva intención cuando la condición se corrige y el contrato así lo permita.
+
+El historial visible puede conservar la razón segura y el estado de la intención sin exponer evidencia privada de autorización.
+
+---
+
+#### 32. Caché, Realtime y cambios posteriores
+
+Un cache o evento Realtime puede indicar que el contexto necesita refrescarse, pero no puede transformar por sí mismo una razón.
+
+Después de:
+
+- publicación o retiro de turno;
+- cambio de horario;
+- check-in o checkout;
+- cambio de rol;
+- cambio territorial;
+- revocación o concesión de permiso;
+- cambio de catálogo;
+
+la acción deberá obtener una decisión nueva antes de producir efectos.
+
+Una decisión anterior no se reescribe retrospectivamente.
+
+---
+
+#### 33. Privacidad
+
+La presentación de falta de turno no revelará:
+
+- borradores de programación;
+- publicaciones canceladas o retiradas;
+- quién publicó;
+- horarios alternativos;
+- sedes o áreas candidatas;
+- causa administrativa interna;
+- identificadores de turno.
+
+La presentación de falta de permiso no revelará:
+
+- clave exacta de permiso;
+- roles que sí lo tienen;
+- grants o denies;
+- scopes internos;
+- políticas RLS;
+- recursos o capacidades no visibles;
+- reglas de precedencia internas.
+
+Ambos casos aplican minimización y una referencia de soporte opaca cuando corresponda.
+
+---
+
+#### 34. Accesibilidad y lenguaje
+
+La diferencia no dependerá solo de color, icono o ubicación visual.
+
+Cada bloqueo debe conservar:
+
+- título y mensaje humanos del perfil aprobado;
+- lectura accesible;
+- foco o anuncio cuando el bloqueo sea material;
+- acción siguiente inequívoca;
+- estado de sesión preservada cuando sea relevante;
+- lenguaje directo, neutral y no punitivo.
+
+ANIMA no mostrará `reason_code`, nombres de RPC, tablas o códigos internos como explicación principal al trabajador.
+
+---
+
+#### 35. Evidencia privada y auditoría
+
+La evidencia privada deberá permitir reconstruir por qué se escogió una razón sin ampliar la información visible.
+
+Cuando aplique, conservará de forma minimizada:
+
+- actor y principal efectivos;
+- acción y contrato evaluados;
+- carril y dependencias aplicables;
+- versión de contexto y catálogo;
+- resultado de turno y temporalidad;
+- resultado de check-in;
+- resultado de permiso cuando efectivamente se evaluó;
+- razón principal;
+- causa técnica separada cuando exista;
+- correlación y timestamp de servidor.
+
+Si la falta de turno detuvo la evaluación, la auditoría no inventará un `DENY` de permiso posterior.
+
+---
+
+#### 36. Baseline físico actual de ANIMA
+
+El código actual de `vento-anima` aún no materializa esta distinción de extremo a extremo.
+
+Se observaron tres brechas relevantes:
+
+1. `use-app-permissions.ts` reduce cada consulta de `has_permission` a un booleano y convierte un error RPC en `false`, por lo que no conserva razón, versión ni frontera entre deny e indisponibilidad;
+2. `use-attendance.ts` contiene copy local para ausencia de turno y rol, y su resolución actual de publicación usa decisiones cliente que no constituyen el contrato final de reason codes compartidos;
+3. `error-messages.ts` clasifica fallos mediante substrings y dominios genéricos, sin consumir el catálogo compartido de autorización.
+
+Estas observaciones describen el baseline y no autorizan cambios físicos durante esta tarea.
+
+---
+
+#### 37. Brechas, propietarios y condición de salida
+
+| Brecha | Estado | Propietario canónico | Condición de salida |
+| --- | --- | --- | --- |
+| El helper móvil colapsa error y deny a booleano. | PENDIENTE_DE_IMPLEMENTACION | `SHELL-AUTH-001`, `SHELL-AUTH-002`, `SHELL-AUTH-005` | ANIMA consume un resultado estructurado que conserva decisión, reason code y fallo técnico sin fallback booleano. |
+| El flujo de asistencia mantiene copy local para ausencia de turno/rol. | PENDIENTE_DE_IMPLEMENTACION | `AUTH-ERR-020`, `SHELL-AUTH-005`, `SHELL-CI-016` | El consumidor usa los perfiles compartidos versionados y las pruebas rechazan copy contractual paralelo. |
+| La precedencia completa depende de resolvers server-side todavía pendientes. | PENDIENTE_DE_IMPLEMENTACION | `AUTH-DB-033`, `AUTH-DB-034`, `SHELL-CI-018` | El evaluador produce una razón principal determinista después de resolver prerrequisitos en el orden canónico. |
+| ANIMA no discrimina de extremo a extremo los estados compartidos en todas las superficies. | PENDIENTE_DE_IMPLEMENTACION | `SHELL-AUTH-005`, `SHELL-CI-016` | La certificación del consumidor demuestra paridad para turno ausente, ventana, check-in, permiso, configuración y fallo técnico. |
+| La aplicación no debe poder otorgarse autoridad para corregir una denegación. | RESERVADO | `ANIMA-AUTH-019` | La tarea propietaria cierre el contrato que impide concesión directa de permisos desde ANIMA. |
+| La fuente de verdad final de contexto de ANIMA permanece reservada. | RESERVADO | `ANIMA-AUTH-020` | La tarea propietaria cierre su contrato de fuente de verdad sin fallback local. |
+
+No se crean tareas nuevas para estas brechas.
+
+---
+
+#### 38. Topología y materialización física
+
+ANIMA-AUTH-017 pertenece al modo:
+
+```text
+PER_IMPLEMENTATION_UNIT
+```
+
+con gate:
+
+```text
+POST_E5_PACKAGE
+```
+
+La aprobación documental no crea una instancia física propia lista para ejecutar.
+
+La materialización exige la unidad de implementación y package correspondientes, gate E5 satisfecho, dependencias físicas disponibles y autorización del carril físico.
+
+En el estado observado no existe un package `IMPLEMENTATION_READY` para esta tarea.
+
+---
+
+#### 39. Compatibilidad y rollback
+
+Durante la adopción futura:
+
+- un consumidor que no pueda interpretar la versión del resultado no mapeará el caso a falta de turno ni permiso;
+- la incompatibilidad fallará cerrada mediante la clasificación técnica/contractual correspondiente;
+- no se mantendrá un fallback permanente de copy local;
+- un rollback de presentación no podrá restaurar semántica que fusione causas;
+- las decisiones persistidas conservarán su razón original y versión; no se reetiquetarán por el código desplegado después.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos obsoletos:** 0
+
+La tarea especializa para ANIMA reglas ya protegidas por los contratos de turno publicado, ventana temporal, check-in, autorización operativa, catálogo compartido, contexto visible, explicación humana, offline y fallos técnicos.
+
+No modifica el registro canónico de requisitos.
+
+---
+
+#### 41. Cobertura de prueba vigente reutilizada
+
+Sin modificarla, se reutiliza la cobertura existente de:
+
+- `TREQ-AUTH-008` y `TREQ-AUTH-009`: separación de carriles, contexto operativo y territorio;
+- `TREQ-AUTH-209` a `TREQ-AUTH-218`: dependencia y ausencia de turno publicado, precedencia, experiencia y paridad;
+- `TREQ-AUTH-219` a `TREQ-AUTH-228`: vigencia temporal, fronteras de turno y razones diferenciadas;
+- `TREQ-AUTH-229` a `TREQ-AUTH-238`: check-in requerido, precedencia y separación de causas de asistencia;
+- `TREQ-AUTH-319` a `TREQ-AUTH-331`: catálogo compartido, perfiles, paridad, recuperación, denegación operativa y fronteras entre razones;
+- `TREQ-UX-077` a `TREQ-UX-096`: contexto visible, turno/check-in diferenciados, frescura, privacidad y ausencia de fallbacks;
+- `TREQ-UX-097` a `TREQ-UX-117`: explicación humana, denegaciones, recuperación, offline, fallo técnico, lenguaje y ciclo de mensajes;
+- `TREQ-ANIMA-003` y `TREQ-ANIMA-004`: cola offline, idempotencia y reconciliación de asistencia.
+
+Esta enumeración es trazabilidad heredada y no representa una modificación del registro.
+
+---
+
+#### 42. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería del checkout se ejecuta después de incorporar y normalizar la tarea en su archivo propietario. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, continuidad, UTF-8, EOL, ausencia de trailing whitespace, ausencia de placeholders, compatibilidad con la regla de alcance físico, cero TREQ en la sección derivada y consistencia de la matriz de causas. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, topología, políticas documentales, los registros AUTH y UX, AUTH-ERR-020 y el `main` vigente de `vento-anima`, incluidos los helpers de permisos, asistencia y mapeo de errores. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron casos reales de jornada, denegación, offline, cambio de contexto ni recuperación con trabajadores. |
+| FÍSICA | NOT_EXECUTED | No se modificaron código, Supabase, migraciones, datos, paquetes, configuración, aplicaciones ni infraestructura. |
+
+---
+
+#### 43. Criterios de aceptación
+
+La tarea es documentalmente aceptable cuando se cumple todo lo siguiente:
+
+1. falta de turno y falta de permiso son causas distintas y no intercambiables;
+2. el contrato de la acción determina si el turno es un prerrequisito;
+3. acciones administrativas sin dependencia de turno no son bloqueadas por jornada ausente;
+4. ausencia de publicación usa `AUTH_PUBLISHED_SHIFT_REQUIRED`;
+5. turno fuera de ventana usa `AUTH_OUTSIDE_SHIFT_WINDOW`;
+6. check-in faltante usa `AUTH_CHECKIN_REQUIRED`;
+7. denegación operativa solo se publica después de resolver los prerrequisitos aplicables;
+8. denegación administrativa conserva su propia razón;
+9. una causa anterior concluyente no se sustituye por una posterior;
+10. una solicitud publica una sola razón principal;
+11. error, `null`, cero filas o booleano opaco no se interpretan automáticamente como ninguna de las dos causas;
+12. fallo técnico conserva indisponibilidad y no fabrica deny;
+13. clave de permiso no registrada conserva su razón propia;
+14. configuración contradictoria conserva su razón propia;
+15. el contexto válido no se borra por una denegación de acción;
+16. falta de turno no se presenta como pérdida total de sesión o de acceso general salvo otra razón;
+17. el copy de los tres perfiles relevantes procede del catálogo compartido;
+18. la recuperación de turno no concede permisos;
+19. la recuperación de permiso no publica turnos ni crea check-in;
+20. superficies con acciones distintas evalúan cada acción según su contrato;
+21. bootstrap no convierte turno ausente en acceso de aplicación denegado;
+22. sede, área, rol, dispositivo y simulación conservan razones independientes;
+23. sincronización offline conserva la razón autoritativa de reautorización;
+24. una intención denegada no produce efectos nuevos ni se duplica para eludir la causa;
+25. caché y Realtime no reescriben decisiones anteriores;
+26. privacidad impide revelar programación, permisos, grants, scopes o candidatos internos;
+27. la experiencia es accesible y no punitiva;
+28. la auditoría distingue permiso no evaluado de permiso denegado;
+29. las brechas físicas tienen propietario y condición de salida;
+30. no se crea ni modifica ningún TREQ;
+31. no se modifica 04A;
+32. no se ejecutan cambios físicos;
+33. ANIMA-AUTH-018 permanece reservada.
+
+---
+
+#### 44. Límites
+
+ANIMA-AUTH-017 no:
+
+- implementa componentes;
+- modifica `vento-anima`;
+- modifica Supabase;
+- crea migraciones, RPC, RLS, tablas o funciones;
+- crea permisos;
+- concede permisos;
+- publica, cambia o asigna turnos;
+- crea o cierra sesiones de asistencia;
+- redefine el catálogo de `AUTH-ERR-020`;
+- crea reason codes;
+- modifica `AccessContext` o `AuthorizationDecision`;
+- resuelve físicamente los helpers booleanos actuales;
+- materializa el evaluador server-side;
+- adelanta la auditoría de creación/cierre reservada a ANIMA-AUTH-018;
+- adelanta la prohibición de concesión directa reservada a ANIMA-AUTH-019;
+- adelanta la fuente de verdad reservada a ANIMA-AUTH-020;
+- autoriza implementación física;
+- inicia la tarea siguiente.
+
+---
+
+#### 45. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-018 — Auditar creación y cierre del contexto`
+
+
 ### [ ] ANIMA-AUTH-018 — Auditar creación y cierre del contexto
 ### [ ] ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
 ### [ ] ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad
