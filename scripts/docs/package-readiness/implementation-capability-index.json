@@ -1,0 +1,346 @@
+{
+  "schema_version": 1,
+  "index_id": "VENTO-IMPLEMENTATION-CAPABILITY-INDEX-001",
+  "discovery_mode": "EXPLICIT_CANONICAL_MAPPINGS_ONLY",
+  "rule": "No inferir capacidades implementables por similitud semántica. Una capacidad entra al scanner únicamente cuando existe una identidad canónica o un mapping explícito y trazable en este índice.",
+  "capabilities": {
+    "VISO_SCHEDULE_MONTHLY": {
+      "objective": "Programar, publicar, corregir y auditar la programación mensual VISO bajo el package reservado por el delta canónico.",
+      "owner_application": "viso",
+      "package_slug": "VISO-SCHEDULE-MONTHLY",
+      "canonical_package_id": "VISO-SCHEDULE-MONTHLY-001",
+      "source_note": "Identidad reservada por DELTA-VISO-SCHEDULE-20260731-001 y secuencia explícita de 90_ORDEN_DE_IMPLEMENTACION.md. VISO-SCH-008 exige CODE-AUD-021, AUTH-UI-061, datos/publicación, pruebas, rollback y ausencia de fuente competidora antes de E5.",
+      "contributors": {
+        "functional_result": [
+          {
+            "task_refs": [
+              "VISO-SCH-001",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "scope": [
+          {
+            "task_refs": [
+              "VISO-SCH-001",
+              "VISO-SCH-002",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "process": [
+          {
+            "task_refs": [
+              "VISO-SCH-001",
+              "VISO-SCH-005",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "states": [
+          {
+            "task_refs": [
+              "VISO-SCH-005",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "auth": [
+          {
+            "task_refs": [
+              "VISO-SCH-007",
+              "AUTH-UI-061",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "ux": [
+          {
+            "task_refs": [
+              "VISO-SCH-002",
+              "VISO-SCH-003",
+              "AUTH-UI-061",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "data": [
+          {
+            "task_refs": [
+              "VISO-SCH-001",
+              "VISO-SCH-006",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "integrations": [
+          {
+            "task_refs": [
+              "VISO-SCH-007",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "migration": [
+          {
+            "task_refs": [
+              "CODE-AUD-021",
+              "VISO-SCH-006",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "business_rules": [
+          {
+            "task_refs": [
+              "VISO-SCH-003",
+              "VISO-SCH-004",
+              "VISO-SCH-005",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "errors": [
+          {
+            "task_refs": [
+              "VISO-SCH-006",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "tests": [
+          {
+            "task_refs": [
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "contradictions": [
+          {
+            "task_refs": [
+              "CODE-AUD-021",
+              "VISO-SCH-008"
+            ]
+          }
+        ],
+        "decisions": [
+          {
+            "task_refs": [
+              "VISO-SCH-008"
+            ]
+          }
+        ]
+      },
+      "not_applicable": [],
+      "physical_dependencies": []
+    },
+    "NEXO_REMISSIONS": {
+      "objective": "Operar remisiones NEXO desde solicitud hasta recepción, conciliación y excepciones bajo un package E5 nuevo si la ruta vuelve a habilitarse.",
+      "owner_application": "nexo",
+      "package_slug": "NEXO-REMISSIONS",
+      "canonical_package_id": "NEXO-REMISSIONS-001",
+      "priority_lane_id": "NEXO-REMISSIONS-001",
+      "source_note": "La identidad proviene de priority-delivery-lanes.json. El registro histórico de CONDITIONAL_IMPLEMENTATION_SCOPE es inactivo y no constituye package E5 vigente.",
+      "contributors": {
+        "functional_result": [
+          {
+            "task_range": {
+              "prefix": "NEXO-UX",
+              "from": 1,
+              "to": 25
+            }
+          }
+        ],
+        "scope": [
+          {
+            "task_refs": [
+              "NEXO-DOM-001"
+            ]
+          },
+          {
+            "task_range": {
+              "prefix": "NEXO-UX",
+              "from": 1,
+              "to": 25
+            }
+          }
+        ],
+        "process": [
+          {
+            "task_range": {
+              "prefix": "NEXO-UX",
+              "from": 1,
+              "to": 25
+            }
+          }
+        ],
+        "states": [
+          {
+            "task_range": {
+              "prefix": "NEXO-UX",
+              "from": 1,
+              "to": 25
+            }
+          }
+        ],
+        "auth": [
+          {
+            "task_range": {
+              "prefix": "AUTH-UI",
+              "from": 52,
+              "to": 60
+            }
+          }
+        ],
+        "ux": [
+          {
+            "task_range": {
+              "prefix": "NEXO-UX",
+              "from": 1,
+              "to": 25
+            }
+          },
+          {
+            "task_range": {
+              "prefix": "AUTH-UI",
+              "from": 52,
+              "to": 60
+            }
+          }
+        ],
+        "data": [
+          {
+            "task_range": {
+              "prefix": "SUPA-AUD",
+              "from": 1,
+              "to": 24
+            }
+          },
+          {
+            "task_range": {
+              "prefix": "DATA-NORM-AUD",
+              "from": 1,
+              "to": 7
+            }
+          },
+          {
+            "task_range": {
+              "prefix": "SUPA-ARC",
+              "from": 1,
+              "to": 25
+            }
+          },
+          {
+            "task_range": {
+              "prefix": "DATA-NORM-ARC",
+              "from": 1,
+              "to": 12
+            }
+          }
+        ],
+        "integrations": [
+          {
+            "task_range": {
+              "prefix": "INT-APP",
+              "from": 1,
+              "to": 10
+            }
+          }
+        ],
+        "migration": [
+          {
+            "task_range": {
+              "prefix": "SUPA-TRANS",
+              "from": 1,
+              "to": 16
+            }
+          },
+          {
+            "task_range": {
+              "prefix": "DATA-NORM-TRANS",
+              "from": 1,
+              "to": 9
+            }
+          }
+        ],
+        "business_rules": [
+          {
+            "task_refs": [
+              "NEXO-DOM-001"
+            ]
+          },
+          {
+            "task_range": {
+              "prefix": "NEXO-UX",
+              "from": 1,
+              "to": 25
+            }
+          }
+        ],
+        "errors": [
+          {
+            "task_range": {
+              "prefix": "AUTH-ERR",
+              "from": 1,
+              "to": 20
+            }
+          },
+          {
+            "task_range": {
+              "prefix": "NEXO-UX",
+              "from": 1,
+              "to": 25
+            }
+          }
+        ],
+        "tests": [],
+        "contradictions": [
+          {
+            "task_refs": [
+              "GAP-CTRL-008"
+            ]
+          }
+        ],
+        "decisions": [
+          {
+            "file": "docs/plan-canonico/modular/priority-delivery-lanes.json",
+            "contains": [
+              "NEXO-REMISSIONS-001"
+            ]
+          }
+        ]
+      },
+      "not_applicable": [],
+      "physical_dependencies": [
+        {
+          "global_task_refs": [
+            "AUTH-DB-015",
+            "AUTH-DB-027",
+            "AUTH-DB-028",
+            "AUTH-DB-029",
+            "AUTH-DB-001",
+            "AUTH-DB-002",
+            "AUTH-DB-003",
+            "AUTH-DB-004",
+            "AUTH-DB-005"
+          ]
+        },
+        {
+          "global_task_refs": [
+            "AUTH-DB-016",
+            "AUTH-DB-018",
+            "AUTH-DB-017",
+            "AUTH-DB-019",
+            "AUTH-DB-033",
+            "AUTH-DB-035",
+            "AUTH-DB-034",
+            "AUTH-DB-032",
+            "AUTH-DB-012",
+            "AUTH-DB-013",
+            "AUTH-DB-014"
+          ]
+        }
+      ]
+    }
+  }
+}

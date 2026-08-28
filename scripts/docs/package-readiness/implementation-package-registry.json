@@ -1,0 +1,7 @@
+{
+  "schema_version": 1,
+  "registry_id": "VENTO-IMPLEMENTATION-PACKAGE-REGISTRY-001",
+  "status_scope": "DOCUMENTARY_READINESS",
+  "physical_status_projection": ".delivery/package-readiness-scan.json",
+  "packages": []
+}

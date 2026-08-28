@@ -3,7 +3,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
-import { writeChatgptWorkStarter } from './chatgpt-work-starter.mjs';
+import { scanPackageReadiness } from './package-readiness-scanner.mjs';
+import { writeReadinessChatgptWorkStarter } from './chatgpt-work-starter-readiness.mjs';
 
 const MANIFEST_RELATIVE_PATH = 'docs/plan-canonico/modular/manifest.json';
 const STARTER_RELATIVE_PATH = 'INICIADOR_VENTO_ACTUAL.txt';
@@ -142,10 +143,27 @@ export function syncLocalDerivedArtifacts({
 
   ensureIgnored(repositoryRoot, STARTER_RELATIVE_PATH);
   const compiled = syncCompiledCache(repositoryRoot, manifest);
-  const starter = writeChatgptWorkStarter({ root: repositoryRoot });
+  const readiness = scanPackageReadiness({
+    root: repositoryRoot,
+    check: true,
+    trigger: 'local-derived-sync',
+  });
+  const starter = writeReadinessChatgptWorkStarter({
+    root: repositoryRoot,
+    readinessResult: readiness,
+  });
 
   verifyCanonicalState(repositoryRoot);
-  writeChatgptWorkStarter({ root: repositoryRoot, check: true });
+  scanPackageReadiness({
+    root: repositoryRoot,
+    check: true,
+    trigger: 'local-derived-sync-postcheck',
+  });
+  writeReadinessChatgptWorkStarter({
+    root: repositoryRoot,
+    check: true,
+    readinessResult: readiness,
+  });
 
   const afterStatus = repositoryStatus(repositoryRoot);
   if (afterStatus !== beforeStatus) {
@@ -159,6 +177,8 @@ export function syncLocalDerivedArtifacts({
     compiledChanged: compiled.changed,
     starter: STARTER_RELATIVE_PATH,
     starterChanged: starter.changed,
+    packageReadiness: 'PASS',
+    implementationReadyCount: readiness.registry.implementation_ready_queue.length,
     worktreePreserved: true,
   };
 
@@ -169,6 +189,8 @@ export function syncLocalDerivedArtifacts({
     console.log('OPERACION: LOCAL_DERIVED_SYNC');
     console.log(`COMPILED_CACHE: ${compiled.changed ? 'REFRESHED' : 'FRESH'}`);
     console.log(`CHATGPT_STARTER: ${starter.changed ? 'REFRESHED' : 'FRESH'}`);
+    console.log('PACKAGE_READINESS: PASS');
+    console.log(`IMPLEMENTATION_READY_QUEUE: ${readiness.registry.implementation_ready_queue.length}`);
     console.log('VERSIONED_WORKTREE: UNCHANGED');
     console.log(RESULT_END);
   }

@@ -566,11 +566,11 @@ test('package.json expone ciclos de tarea, infraestructura y documentacion opera
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
   assert.equal(
     packageJson.scripts['docs:task:start'],
-    'node scripts/docs/task-branch-lifecycle.mjs start',
+    'node scripts/docs/task-branch-lifecycle-readiness.mjs start',
   );
   assert.equal(
     packageJson.scripts['docs:task:finish'],
-    'node scripts/docs/task-branch-lifecycle.mjs finish',
+    'node scripts/docs/task-branch-lifecycle-readiness.mjs finish',
   );
   assert.equal(
     packageJson.scripts['docs:infra:publish'],

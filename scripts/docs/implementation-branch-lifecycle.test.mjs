@@ -354,7 +354,9 @@ test('sync local de derivados protege watcher y no cambia el worktree versionado
 
   const source = fs.readFileSync('scripts/docs/sync-local-derived-artifacts.mjs', 'utf8');
   assert.match(source, /git\(\s*\['check-ignore', '--quiet', '--', relativePath\]/u);
-  assert.match(source, /writeChatgptWorkStarter\(\{ root: repositoryRoot \}\)/u);
+  assert.match(source, /scanPackageReadiness\(\{/u);
+  assert.match(source, /writeReadinessChatgptWorkStarter\(\{/u);
+  assert.match(source, /readinessResult: readiness/u);
   assert.match(source, /build-plan-canonico-core\.mjs', '--check'/u);
   assert.match(source, /afterStatus !== beforeStatus/u);
   assert.match(source, /VERSIONED_WORKTREE: UNCHANGED/u);
