@@ -6827,7 +6827,1214 @@ Esta tarea no define:
 `ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización`
 
 
-### [ ] ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización
+### ✅ ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-009 — Cerrar contexto al registrar salida
+**Tarea siguiente:** ANIMA-AUTH-011 — Manejar cambio temporal de área
+**Tipo de tarea:** documental; definición contractual del inicio, permanencia, cierre y reconciliación de descansos sobre una sesión de asistencia exacta sin convertir el descanso en checkout ni revocar por sí solo la autorización operativa
+**Bloque:** `F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a la topología `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable cómo ANIMA debe manejar el inicio y fin de un descanso durante una sesión de asistencia válida sin cerrar la sesión laboral ni retirar por sí solo la autorización que depende del check-in.
+
+La regla raíz queda:
+
+```text
+SESION DE ASISTENCIA EXACTA Y ACTIVA
++
+INTENCION DE DESCANSO CONFIRMADA
+->
+DESCANSO ABIERTO
++
+MISMA SESION DE ASISTENCIA
++
+MISMO TURNO Y REVISION
++
+SIN CHECKOUT
++
+SIN REVOCACION AUTOMATICA DE AUTORIZACION
+```
+
+y al finalizar:
+
+```text
+DESCANSO ABIERTO EXACTO
++
+INTENCION DE FIN CONFIRMADA
+->
+DESCANSO CERRADO
++
+MISMA SESION DE ASISTENCIA
++
+SIN CREAR UNA NUEVA SESION
++
+SIN CREAR CHECKOUT
+```
+
+El descanso pertenece al dominio de asistencia. No se convierte en una nueva fuente de autoridad.
+
+---
+
+#### 2. Handoff consumido desde ANIMA-AUTH-009
+
+`ANIMA-AUTH-010` consume sin reabrir la decisión de `ANIMA-AUTH-009`:
+
+```text
+CHECKOUT CONFIRMADO
+->
+SESION DE ASISTENCIA CLOSED
+->
+ACTIVE_CHECKIN_SESSION = NULL
+->
+CONTEXTO DEPENDIENTE INVALIDADO
+```
+
+La tarea anterior reservó expresamente a esta tarea la semántica exacta de un descanso cuando la sesión padre permanece abierta o alcanza un estado terminal.
+
+Por tanto:
+
+- un descanso normal no equivale a checkout;
+- un checkout sí es terminal para la sesión padre;
+- ningún descanso puede mantener autoridad después de que la sesión padre deje de ser utilizable;
+- esta tarea define cómo reconciliar esos estados sin fabricar eventos ni borrar historia.
+
+---
+
+#### 3. Base normativa preservada
+
+La tarea conserva sin redefinir las decisiones vigentes de:
+
+- `AUTH-MOD-010`, que separa check-in, sesión activa, descanso y checkout;
+- `AUTH-CTX-011`, que publica `active_checkin_session` únicamente cuando la sesión normalizada es `ACTIVE`;
+- `INT-WORK-003`, que define entrada, salida, inicio de descanso y fin de descanso como acciones distintas de asistencia;
+- `ANIMA-AUTH-007`, que crea el contexto después del check-in;
+- `ANIMA-AUTH-008`, que actualiza contexto ante cambios de turno;
+- `ANIMA-AUTH-009`, que cierra la sesión ante checkout;
+- la topología `PER_IMPLEMENTATION_UNIT`;
+- la separación entre contexto, autorización, asistencia y programación;
+- la idempotencia, retry, resultado desconocido y recuperación ya aprobados para operaciones reintentables;
+- la obligación de resolver identidad, sesión y referencias autoritativas en servidor.
+
+No se amplía `AccessContext@1.0.0`.
+
+---
+
+#### 4. Reconciliación entre estado interno y contrato público
+
+El modelo histórico de asistencia admite conceptualmente una sesión en descanso como una sesión todavía abierta.
+
+El contrato público vigente de `ActiveCheckinContext` no publica `ON_BREAK` como valor.
+
+La reconciliación canónica queda:
+
+```text
+ESTADO INTERNO DE ASISTENCIA = EN DESCANSO
+->
+SESION PADRE SIGUE ABIERTA
+->
+ACTIVE_CHECKIN_SESSION.status = ACTIVE
+```
+
+siempre que la sesión continúe siendo válida por actor, turno, territorio, temporalidad y ausencia de evento terminal.
+
+Por tanto:
+
+```text
+ON_BREAK INTERNO
+!=
+NUEVO ESTADO PUBLICO DE AccessContext
+```
+
+Esta tarea no agrega un quinto valor al contrato público.
+
+---
+
+#### 5. Forma de ActiveCheckinContext conservada
+
+Se conserva exactamente:
+
+```ts
+type ActiveCheckinContext = {
+  checkin_session_id: string;
+  employee_id: string;
+  shift_id: string;
+  site_id: string;
+  area_id: string | null;
+  checked_in_at: string;
+  expires_at: string | null;
+  checked_out_at: string | null;
+  status: "ACTIVE" | "EXPIRED" | "CLOSED" | "INVALID";
+};
+```
+
+Un descanso no agrega:
+
+- `break_id`;
+- `break_status`;
+- `on_break`;
+- `break_started_at`;
+- `break_ends_at`;
+- `is_on_break`;
+- `break_policy`;
+- campos equivalentes.
+
+La información de descanso permanece fuera de este shape mínimo.
+
+---
+
+#### 6. Separación conceptual obligatoria
+
+Deben mantenerse separados:
+
+| Concepto | Significado |
+| --- | --- |
+| sesión de asistencia | presencia laboral abierta vinculada al check-in |
+| descanso | intervalo subordinado a una sesión de asistencia |
+| intención de descanso | solicitud aún no confirmada |
+| descanso confirmado | hecho persistido y autoritativo |
+| `active_checkin_session` | snapshot de autorización de una sesión válida |
+| checkout | transición terminal de la sesión de asistencia |
+| expiración | pérdida temporal de vigencia de la sesión para autorización |
+| permiso | decisión sobre una capacidad concreta |
+
+Regla:
+
+```text
+DESCANSO
+!=
+SESION DE ASISTENCIA
+!=
+AUTORIZACION
+```
+
+---
+
+#### 7. Propiedad del descanso
+
+El descanso pertenece al proceso de asistencia.
+
+Debe quedar subordinado a una única sesión de asistencia y conservar, directa o derivadamente, referencias resolubles a:
+
+- actor;
+- empleado;
+- `checkin_session_id`;
+- `shift_id`;
+- revisión publicada aplicable;
+- sede de la sesión;
+- área cuando corresponda;
+- instante de inicio;
+- instante de fin cuando exista;
+- fuente;
+- intención idempotente;
+- resultado;
+- evidencia de corrección o reconciliación.
+
+La implementación física puede normalizar estas referencias sin cambiar la semántica.
+
+---
+
+#### 8. Identidad exacta de la sesión padre
+
+Un descanso no puede existir como estado operativo autónomo.
+
+Debe pertenecer a:
+
+```text
+exactamente un checkin_session_id
+```
+
+Queda prohibido asociarlo únicamente mediante:
+
+- `employee_id`;
+- último `check_in`;
+- último evento del trabajador;
+- fecha del día;
+- `site_id`;
+- `shift_id` aislado;
+- orden de inserción;
+- última fila visible;
+- sesión inferida desde el cliente.
+
+La sesión padre es la frontera de pertenencia.
+
+---
+
+#### 9. Identidad del descanso
+
+Cada descanso confirmado debe poseer identidad estable dentro del dominio de asistencia.
+
+Conceptualmente:
+
+```text
+break_id
+```
+
+identifica el intervalo de descanso confirmado.
+
+La identidad de la intención que solicita iniciar o finalizar el descanso permanece separada de `break_id`.
+
+No se utilizará como identidad única del descanso:
+
+- timestamp;
+- empleado;
+- turno;
+- sede;
+- posición en una lista;
+- combinación no protegida contra carreras.
+
+---
+
+#### 10. Inicio de descanso: precondiciones
+
+Un inicio de descanso puede producir efecto únicamente cuando la frontera autoritativa demuestra:
+
+1. actor efectivo válido;
+2. empleado activo;
+3. sesión padre exacta;
+4. sesión padre abierta y no terminal;
+5. pertenencia de la sesión al actor;
+6. turno y revisión históricos resolubles;
+7. sede compatible;
+8. área compatible cuando aplique;
+9. secuencia válida;
+10. inexistencia de otro descanso incompatible abierto en la misma sesión;
+11. identidad idempotente estable;
+12. ausencia de colisión material;
+13. persistencia confirmable;
+14. autoridad técnica suficiente para registrar asistencia.
+
+Una precondición aplicable desconocida o ambigua falla cerrada.
+
+---
+
+#### 11. Inicio de descanso: transición
+
+La transición lógica es:
+
+```text
+SESION PADRE ABIERTA
++
+SIN DESCANSO ABIERTO INCOMPATIBLE
++
+START_BREAK CONFIRMADO
+->
+DESCANSO ABIERTO
+```
+
+No produce:
+
+- otro check-in;
+- checkout;
+- otra sesión de asistencia;
+- nuevo turno;
+- nueva revisión de turno;
+- cambio de rol;
+- cambio de sede;
+- cambio de área;
+- cierre de autenticación;
+- denegación general de permisos.
+
+El evento original y su outcome permanecen recuperables.
+
+---
+
+#### 12. Fin de descanso: precondiciones
+
+Un fin de descanso debe resolver exactamente el descanso abierto que pretende cerrar.
+
+Debe demostrar:
+
+1. actor efectivo;
+2. pertenencia del descanso al actor o autoridad administrativa explícita;
+3. `break_id` o identidad equivalente resoluble;
+4. sesión padre;
+5. relación entre descanso y sesión;
+6. estado abierto del descanso antes de aplicar la transición;
+7. secuencia temporal coherente;
+8. identidad idempotente de la intención de fin;
+9. ausencia de colisión material;
+10. concurrencia controlada.
+
+No se selecciona arbitrariamente un descanso cuando existen varias candidatas.
+
+---
+
+#### 13. Fin de descanso: transición
+
+La transición lógica es:
+
+```text
+DESCANSO ABIERTO EXACTO
++
+END_BREAK CONFIRMADO
+->
+MISMO DESCANSO CERRADO
+```
+
+El fin del descanso:
+
+- no crea otra sesión;
+- no ejecuta checkout;
+- no cambia `checked_out_at`;
+- no termina el turno;
+- no crea una revisión de programación;
+- no cambia la identidad del trabajador;
+- no concede permisos por sí solo.
+
+La sesión padre continúa bajo su estado autoritativo real.
+
+---
+
+#### 14. Autorización durante un descanso válido
+
+Mientras el descanso está abierto y la sesión padre sigue siendo válida:
+
+```text
+active_checkin_session != null
+active_checkin_session.status = ACTIVE
+active_checkin_session.checked_out_at = null
+```
+
+El descanso por sí solo no elimina el prerrequisito de check-in.
+
+No se crea una política transversal:
+
+```text
+ON_BREAK -> DENY
+```
+
+Una capacidad que deba bloquearse específicamente durante descanso requerirá una regla explícita en su contrato propietario.
+
+---
+
+#### 15. Carriles T y T+C
+
+El descanso no cambia la modalidad de un permiso.
+
+Para un contexto válido:
+
+- un carril `T` continúa gobernado por turno y demás prerrequisitos propios;
+- un carril `T+C` continúa satisfaciendo el componente `C` mientras la sesión padre siga activa;
+- un permiso sin carril operativo no adquiere dependencia de descanso;
+- un permiso no se vuelve más amplio por estar en descanso.
+
+El descanso no redefine el catálogo de permisos.
+
+---
+
+#### 16. Carril base y capacidades administrativas
+
+El descanso no revoca por sí solo:
+
+- autenticación;
+- identidad;
+- rol base;
+- cobertura administrativa;
+- capacidades base;
+- sesiones administrativas;
+- sesión técnica de dispositivo compartido.
+
+La separación se conserva:
+
+```text
+DESCANSO OPERATIVO
+-/>
+CIERRE DEL CARRIL BASE
+```
+
+La autoridad administrativa se evalúa por su propio contrato.
+
+---
+
+#### 17. Rol, sede y área durante el descanso
+
+Un descanso no cambia el territorio operativo de la sesión.
+
+Mientras la sesión padre siga válida:
+
+```text
+operational_role
+operational_site
+operational_area
+```
+
+continúan resolviéndose desde las fuentes aprobadas.
+
+El descanso no puede:
+
+- inventar otra sede;
+- seleccionar otra área;
+- ampliar cobertura;
+- convertir `null` en wildcard;
+- usar ubicación física temporal como nuevo territorio operativo.
+
+El cambio temporal de área permanece reservado a `ANIMA-AUTH-011`.
+
+---
+
+#### 18. Inicio idempotente
+
+La intención de iniciar descanso debe recibir una identidad estable antes del primer envío.
+
+Para:
+
+```text
+MISMA IDENTIDAD
++
+MISMO CONTENIDO LOGICO
+```
+
+el resultado debe ser recuperable y producir como máximo un descanso.
+
+Un replay no crea un segundo intervalo.
+
+La implementación futura debe poder distinguir entre:
+
+- aplicado;
+- resultado ya aplicado;
+- conflicto;
+- fallo temporal;
+- resultado desconocido.
+
+No se crea aquí un catálogo público nuevo de códigos.
+
+---
+
+#### 19. Fin idempotente
+
+La intención de finalizar descanso también posee identidad estable propia.
+
+Un replay idéntico:
+
+```text
+NO CAMBIA ended_at
+NO CIERRA OTRO DESCANSO
+NO CREA CHECKOUT
+```
+
+Devuelve el outcome ya determinado.
+
+La identidad de `START_BREAK` no se reutiliza como identidad de `END_BREAK`.
+
+---
+
+#### 20. Misma identidad con contenido distinto
+
+Si una identidad idempotente reaparece con contenido materialmente diferente:
+
+```text
+CONFLICT
++
+CERO EFECTO ADICIONAL
+```
+
+Son diferencias materiales, según aplique:
+
+- actor;
+- sesión padre;
+- descanso objetivo;
+- tipo de acción;
+- instante declarado;
+- sede o evidencia física requerida;
+- contenido cuya igualdad pruebe que se trata de la misma intención.
+
+No se corrige silenciosamente.
+
+---
+
+#### 21. Concurrencia entre dos inicios
+
+Dos solicitudes concurrentes de inicio contra la misma sesión no pueden abrir dos descansos incompatibles.
+
+Resultado requerido:
+
+```text
+MAXIMO UN DESCANSO ABIERTO COMPATIBLE POR SESION
+```
+
+La materialización puede usar:
+
+- restricción única;
+- lock;
+- versión;
+- transición atómica;
+- mecanismo equivalente.
+
+Una protección física por empleado no sustituye la pertenencia contractual a la sesión exacta.
+
+---
+
+#### 22. Concurrencia entre dos cierres
+
+Dos solicitudes concurrentes de fin sobre el mismo descanso deben converger.
+
+Resultado:
+
+```text
+UNA TRANSICION DE ABIERTO A CERRADO
++
+RESULTADO RECUPERABLE
+```
+
+No se permiten dos horas de cierre independientes.
+
+La solicitud perdedora recupera el estado ya determinado o produce conflicto sin efecto adicional.
+
+---
+
+#### 23. Carrera entre inicio de descanso y checkout
+
+Un checkout confirmado es terminal para la sesión padre.
+
+Si `START_BREAK` y checkout compiten:
+
+- el descanso solo puede abrirse si la transición de inicio fue válida antes del cierre autoritativo de la sesión;
+- el checkout nunca se rechaza únicamente porque exista un descanso;
+- una sesión ya cerrada no acepta un nuevo descanso;
+- un descanso confirmado antes del checkout queda subordinado al cierre posterior de la sesión;
+- no se reabre la sesión para preservar el descanso.
+
+La autoridad posterior se resuelve desde el estado terminal de la sesión.
+
+---
+
+#### 24. Checkout mientras existe un descanso abierto
+
+Cuando la sesión padre recibe un checkout válido mientras existe un descanso abierto:
+
+```text
+SESION PADRE -> CLOSED
+ACTIVE_CHECKIN_SESSION -> NULL
+DESCANSO -> NO OPERATIVO
+```
+
+El descanso no puede sobrevivir como fuente de presencia o autorización.
+
+La reconciliación debe conservar:
+
+- inicio original del descanso;
+- ausencia de un fin voluntario cuando sea el caso;
+- instante terminal de la sesión;
+- causa terminal;
+- relación con sesión y turno.
+
+No se fabrica silenciosamente una acción voluntaria de `END_BREAK`.
+
+La materialización podrá cerrar el intervalo derivado al límite terminal de la sesión o representar una terminación reconciliada equivalente, siempre preservando la causa real y la historia.
+
+---
+
+#### 25. Expiración mientras existe un descanso abierto
+
+La expiración de la sesión puede retirar autoridad sin esperar un checkout.
+
+Si ocurre durante un descanso:
+
+```text
+ACTIVE_CHECKIN_SESSION = NULL
+```
+
+y el descanso deja de tener relevancia operativa.
+
+No se interpreta como:
+
+- fin voluntario del descanso;
+- checkout voluntario;
+- extensión de presencia;
+- permiso para seguir operando.
+
+La reconciliación posterior conserva la expiración como causa independiente.
+
+---
+
+#### 26. Fin, cancelación o retiro del turno durante descanso
+
+Si el turno deja de ser utilizable de forma autoritativa:
+
+- la sesión padre se evalúa según su contrato;
+- el descanso no crea un turno alternativo;
+- el descanso no conserva autoridad;
+- la relación histórica con el turno y revisión originales se preserva;
+- una revisión nueva no reescribe el intervalo anterior.
+
+La resolución de programación permanece en VISO y en los contratos de contexto correspondientes.
+
+---
+
+#### 27. Cambio de turno durante descanso
+
+Un descanso está ligado a la sesión padre original.
+
+Ante un cambio de turno:
+
+```text
+DESCANSO
+-/>
+REASIGNACION AUTOMATICA A OTRO TURNO
+```
+
+Si la sesión padre continúa siendo compatible después de la transición aprobada por `ANIMA-AUTH-008`, el descanso puede continuar subordinado a esa misma sesión.
+
+Si la sesión padre deja de ser válida, el descanso pierde relevancia operativa y se reconcilia sin reatarlo a una sesión o turno distinto.
+
+---
+
+#### 28. Dispositivo compartido
+
+En un dispositivo compartido deben mantenerse separadas:
+
+```text
+IDENTIDAD TECNICA DEL DISPOSITIVO
+SESION DE ACTOR HUMANO
+SESION DE ASISTENCIA
+DESCANSO
+```
+
+El descanso pertenece al empleado actor.
+
+Un cambio de actor del dispositivo no:
+
+- transfiere el descanso;
+- permite finalizar el descanso de otro empleado;
+- cambia la sesión padre;
+- convierte el PIN en autoridad empresarial suficiente.
+
+Toda transición conserva atribución humana.
+
+---
+
+#### 29. occurred_at y tiempo de confirmación
+
+El instante real de la intención y el instante de confirmación server-side son conceptos distintos.
+
+Una intención puede conservar un `occurred_at` capturado fuera de línea, pero la frontera autoritativa debe validar:
+
+- plausibilidad;
+- orden;
+- relación con la sesión;
+- relación con el descanso;
+- zona temporal;
+- secuencia con checkout y otros terminales;
+- concurrencia.
+
+El servidor no sustituye silenciosamente el hecho histórico por la hora de recepción.
+
+---
+
+#### 30. Inicio offline
+
+Una intención offline de inicio:
+
+```text
+PERSISTIDA LOCALMENTE
+!=
+DESCANSO CONFIRMADO
+```
+
+La interfaz solo puede mostrarla como encolada después de confirmar persistencia durable local.
+
+No puede:
+
+- cambiar la sesión server-side a estado terminal;
+- declarar un descanso autoritativo;
+- asumir que la sesión seguirá abierta al sincronizar;
+- crear una segunda intención por reconexión.
+
+La cola conserva la misma identidad durante retries.
+
+---
+
+#### 31. Fin offline
+
+Una intención offline de fin de descanso conserva:
+
+- identidad estable;
+- descanso objetivo;
+- sesión padre;
+- `occurred_at`;
+- estado de sincronización;
+- evidencia necesaria.
+
+Mientras no exista confirmación server-side, ANIMA no presenta el cierre como definitivo.
+
+Si la sesión padre cambió o terminó antes de sincronizar, la intención debe reconciliarse contra la historia real y no cerrar un descanso distinto por conveniencia.
+
+---
+
+#### 32. Revalidación al sincronizar
+
+La sincronización debe revalidar, según aplique:
+
+- actor;
+- empleado;
+- sesión padre;
+- descanso;
+- turno y revisión;
+- estado terminal de la sesión;
+- sede;
+- área;
+- estado del dispositivo;
+- secuencia;
+- concurrencia;
+- idempotencia.
+
+Una intención creada bajo un contexto anterior no transporta autoridad indefinida.
+
+La revalidación no cambia su `occurred_at` ni destruye la evidencia original.
+
+---
+
+#### 33. Resultado desconocido
+
+Un timeout puede ocurrir después del commit y antes de que ANIMA reciba la respuesta.
+
+La regla es:
+
+```text
+UNKNOWN OUTCOME
+->
+RECUPERAR POR IDENTIDAD
+->
+NO REPETIR A CIEGAS
+```
+
+La recuperación debe determinar si:
+
+- el descanso abrió;
+- el descanso cerró;
+- la operación fue un replay;
+- existe conflicto;
+- no hubo efecto.
+
+No se crea una nueva intención como mecanismo de recuperación.
+
+---
+
+#### 34. Frescura, caché y context_id
+
+El inicio o fin de un descanso no debe revocar autorización únicamente porque cambió el estado de asistencia subordinado.
+
+La implementación puede volver a resolver `AccessContext` o emitir un nuevo `context_id` cuando su mecanismo de frescura lo requiera.
+
+Esta tarea no exige estabilidad ni rotación de `context_id` solo por descanso.
+
+Sí exige invariancia semántica:
+
+```text
+DESCANSO VALIDO
++
+MISMA SESION PADRE VALIDA
+->
+EL PRERREQUISITO DE CHECK-IN SIGUE SATISFECHO
+```
+
+Un cache de asistencia puede invalidarse sin convertir el descanso en una denegación de autorización.
+
+---
+
+#### 35. Realtime
+
+Realtime puede anunciar:
+
+- inicio confirmado;
+- fin confirmado;
+- reconciliación;
+- conflicto;
+- cambio de la sesión padre.
+
+Su payload es una señal de convergencia.
+
+No puede:
+
+- conceder permiso;
+- cerrar sesión por sí solo;
+- elegir el descanso correcto;
+- sustituir una lectura autoritativa;
+- convertir estado local en hecho confirmado.
+
+Una pérdida de Realtime no altera la verdad server-side.
+
+---
+
+#### 36. Geocerca y punto físico
+
+Esta tarea no introduce una geocerca nueva para descansos.
+
+Cuando una política futura o vigente exija evidencia física para una transición de descanso:
+
+- debe validarse server-side;
+- el punto físico no cambia la sede operativa;
+- el cliente no define el threshold;
+- una excepción requiere contrato propio;
+- el resultado no concede autoridad adicional.
+
+Sin regla explícita, el descanso no hereda automáticamente requisitos de geocerca de check-in o checkout.
+
+---
+
+#### 37. Tiempo trabajado, nómina y reportes
+
+El descanso produce evidencia para cómputos posteriores, pero esta tarea no define:
+
+- duración mínima o máxima;
+- descansos remunerados;
+- descuentos de nómina;
+- horas extras;
+- redondeos;
+- tolerancias;
+- legislación laboral parametrizada;
+- reglas de liquidación.
+
+Los consumidores económicos o laborales deben usar el intervalo reconciliado y su historia, no recalcular autoridad a partir del frontend.
+
+---
+
+#### 38. Corrección y reconciliación histórica
+
+Una corrección no sobrescribe el hecho original.
+
+Debe preservar, según aplique:
+
+- intención original;
+- `break_id`;
+- sesión padre;
+- intervalo observado;
+- intervalo reconciliado;
+- motivo;
+- actor que corrige;
+- antes;
+- después;
+- evidencia;
+- impacto derivado.
+
+Una corrección histórica de descanso:
+
+```text
+!=
+AUTORIZACION RETROACTIVA
+```
+
+La autorización se decide con el contexto vigente de cada acción.
+
+---
+
+#### 39. Seguridad, privacidad y respuesta visible
+
+La interfaz puede mostrar, según estado:
+
+- descanso iniciado;
+- descanso finalizado;
+- pendiente de sincronización;
+- resultado recuperado;
+- conflicto que requiere atención;
+- imposibilidad temporal de confirmar.
+
+No debe revelar automáticamente:
+
+- sesiones de terceros;
+- otros trabajadores;
+- candidatos alternativos;
+- identificadores internos innecesarios;
+- SQL;
+- políticas RLS;
+- fingerprints;
+- razones técnicas sensibles;
+- información laboral ajena.
+
+Los errores de infraestructura no se convierten en confirmaciones optimistas.
+
+---
+
+#### 40. Observabilidad y auditoría
+
+Debe poder reconstruirse:
+
+```text
+ACTOR
++
+INTENCION
++
+ACCION START/END
++
+BREAK
++
+SESION PADRE
++
+TURNO Y REVISION
++
+SEDE
++
+AREA CUANDO APLIQUE
++
+OCCURRED_AT
++
+CONFIRMED_AT
++
+FUENTE
++
+OUTCOME
++
+CONFLICTO O RECONCILIACION
+```
+
+La auditoría distingue:
+
+- acción humana;
+- sincronización offline;
+- replay;
+- cierre por sesión terminal;
+- corrección administrativa;
+- fallo técnico.
+
+No se registra un checkout ficticio para representar un descanso.
+
+---
+
+#### 41. Estado físico observado
+
+La inspección de solo lectura del entorno desplegado muestra un modelo de descansos todavía previo al contrato final:
+
+| Superficie | Estado observado |
+| --- | --- |
+| `public.attendance_breaks` | 11 filas |
+| descansos abiertos | 0 |
+| descansos cerrados | 11 |
+| intervalos con `ended_at < started_at` | 0 |
+| `checkin_session_id` en `attendance_breaks` | no observado |
+| `shift_id` en `attendance_breaks` | no observado |
+| referencia de revisión publicada | no observada |
+| identidad idempotente de inicio/fin | no observada |
+| RLS en `attendance_breaks` | habilitado |
+| RLS forzado | no |
+| políticas directas visibles sobre `attendance_breaks` | no observadas |
+| unicidad de descanso abierto | existe protección física parcial por empleado |
+| `start_attendance_break` | usa `auth.uid()`, exige empleado activo, inspecciona el último evento de asistencia y crea el descanso con hora de servidor |
+| `end_attendance_break` | busca el descanso abierto más reciente del empleado, lo bloquea y lo finaliza con hora de servidor |
+
+Los conteos describen el snapshot observado y no son invariantes contractuales.
+
+---
+
+#### 42. Brechas físicas y propietarios existentes
+
+Ninguna brecha observada crea una tarea nueva.
+
+| Brecha | Propietario existente | Condición de salida |
+| --- | --- | --- |
+| sesión exacta como padre del descanso | `AUTH-DB-033` | la sesión canónica deja de inferirse desde el último evento y es referenciable de forma estable |
+| aplicación uniforme de modalidad y contexto | `AUTH-DB-034` | el evaluador usa el contexto canónico sin reglas locales de descanso |
+| frescura ante cambios terminales de sesión | `AUTH-DB-035` | checkout, expiración e invalidación impiden reutilizar autoridad stale |
+| materialización específica de descansos ANIMA | instancia futura de `ANIMA-AUTH-010` | inicio y fin operan sobre sesión exacta, con idempotencia y concurrencia |
+| cola offline de descanso y asistencia | `ANIMA-AUTH-014` | las intenciones sobreviven reinicio y conservan identidad estable |
+| revalidación de intenciones offline | `ANIMA-AUTH-015` | sincronización reevalúa sesión, turno, territorio y secuencia |
+| auditoría detallada | `ANIMA-AUTH-018` | intención, break, sesión, resultado y reconciliación son reconstruibles |
+| contrato transversal de asistencia | `INT-WORK-003` | inicio y fin de descanso son transiciones atómicas, idempotentes y ligadas a la sesión |
+| confirmación del contexto efectivo | `INT-WORK-004` | consumidores convergen al estado autoritativo sin fuente competidora |
+| adaptación desde resolutores legacy | `AUTH-CTX-028` | el último evento deja de utilizarse como autoridad final |
+
+---
+
+#### 43. Rollback y recuperación
+
+Un descanso confirmado no se borra para restaurar el estado anterior.
+
+Ante:
+
+```text
+BREAK COMMIT CONFIRMADO
++
+FALLO DE PROYECCION O RESPUESTA
+```
+
+se conserva el hecho y se recupera el outcome.
+
+Si el inicio no llegó a commit:
+
+- no existe descanso confirmado;
+- la sesión padre conserva su estado real;
+- el cliente no puede declararlo activo.
+
+Si el fin no llegó a commit:
+
+- el descanso conserva su estado autoritativo previo;
+- el cliente no puede declararlo cerrado.
+
+Las correcciones posteriores son auditadas.
+
+---
+
+#### 44. Topología y materialización física
+
+La definición documental se aprueba una sola vez.
+
+```text
+MODE = PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE = POST_E5_PACKAGE
+INSTANCE_PATTERN = ANIMA-AUTH-010::implementation_unit_id
+```
+
+La materialización futura:
+
+- requiere una unidad de implementación real;
+- requiere el paquete propietario aplicable;
+- requiere `E5-GATE-008` del paquete en `PASS`;
+- debe limitarse a productores y consumidores físicos del contrato;
+- debe preservar la forma pública de `AccessContext`;
+- debe integrar idempotencia, concurrencia, offline, auditoría y recuperación;
+- debe ejecutar toda modificación Supabase desde `vento-group-sas/vento-shell`.
+
+Esta tarea documental no autoriza DDL, DML, migraciones, RLS, RPC, Edge Functions, código de aplicación, datos productivos ni despliegues.
+
+---
+
+#### 45. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya exige idempotencia de descansos, transición atómica, replay estable, conflicto por reutilización material de identidad, sincronización durable, sesión exacta, autorización contextual, resultado recuperable y trazabilidad. Esta tarea especializa esas obligaciones para el efecto del descanso sobre el contexto sin crear una superficie ejecutable nueva.
+
+---
+
+#### 46. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-ANIMA-003`: persistencia durable e idempotencia para intenciones offline de asistencia;
+- `TREQ-ANIMA-004`: inicio y fin de descanso idempotentes, atómicos, resistentes a concurrencia, replay, respuestas perdidas y orden adverso;
+- `TREQ-AUTH-008`: separación entre carril base y carril operativo, con turno y check-in cuando el permiso los exige;
+- `TREQ-AUTH-014`: invalidación de contexto y derivados ante cambios que sí alteran autoridad;
+- `TREQ-AUTH-015`: trazabilidad de contexto, decisión y acción;
+- `TREQ-AUTH-229` a `TREQ-AUTH-237`: sesión de check-in exacta, modalidades `T` y `T+C`, precedencia, canales, offline y concurrencia;
+- `TREQ-INTEGRATION-003`: identidad estable, contenido lógico, efecto único, retry y resultado recuperable;
+- `TREQ-INTEGRATION-007`: programación y asistencia vinculadas por trabajador, turno, revisión y hechos inmutables.
+
+Esta enumeración es trazabilidad heredada y no representa modificación del registro.
+
+---
+
+#### 47. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del repositorio se ejecuta después de incorporar y normalizar la tarea en su archivo propietario. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, continuidad, secciones obligatorias, UTF-8, EOL y cero requisitos afectados dentro de la sección derivada. |
+| REMOTA | PASS | Se contrastaron `main`, owner, continuidad, topología, políticas, contratos de check-in, checkout, contexto y asistencia, registro 04A pertinente, scripts vigentes y estado Supabase mediante lecturas de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se inició ni finalizó un descanso real de un trabajador. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, RLS, RPC, cambios de código, datos ni despliegues. |
+
+---
+
+#### 48. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. consume `ANIMA-AUTH-009` sin reabrir la semántica de checkout;
+2. distingue sesión, descanso, intención, autorización y permiso;
+3. conserva exactamente `ActiveCheckinContext@1.0.0`;
+4. no agrega `ON_BREAK` al estado público;
+5. normaliza una sesión válida en descanso como `ACTIVE` para el contexto de autorización;
+6. el descanso pertenece a una sesión exacta;
+7. la sesión padre se identifica mediante `checkin_session_id`;
+8. el descanso posee identidad estable independiente de la intención;
+9. el inicio valida actor, sesión, secuencia e inexistencia de descanso incompatible;
+10. iniciar descanso no crea otra sesión;
+11. iniciar descanso no ejecuta checkout;
+12. finalizar descanso resuelve el descanso exacto;
+13. finalizar descanso no ejecuta checkout;
+14. el descanso por sí solo no revoca autorización;
+15. no se crea una regla transversal `ON_BREAK -> DENY`;
+16. permisos `T` y `T+C` conservan su modalidad;
+17. un `T+C` mantiene el prerrequisito `C` mientras la sesión padre siga activa;
+18. el carril base permanece independiente;
+19. sede, área y rol no cambian por descanso;
+20. el cambio temporal de área permanece reservado a `ANIMA-AUTH-011`;
+21. inicio y fin tienen identidades idempotentes propias;
+22. replay idéntico produce el mismo outcome;
+23. misma identidad con contenido distinto produce conflicto;
+24. dos inicios concurrentes producen como máximo un descanso abierto compatible;
+25. dos cierres concurrentes producen como máximo un fin efectivo;
+26. checkout concurrente prevalece como terminal de la sesión padre;
+27. un descanso abierto no bloquea checkout;
+28. checkout no fabrica un `END_BREAK` voluntario;
+29. un descanso no mantiene autoridad después de sesión `CLOSED`;
+30. expiración tampoco mantiene autoridad por descanso;
+31. cambio de turno no reata automáticamente el descanso;
+32. dispositivo compartido conserva actor humano separado;
+33. `occurred_at` y confirmación server-side permanecen distintos;
+34. una intención offline no se trata como descanso confirmado;
+35. fin offline no cierra optimistamente el descanso remoto;
+36. sincronización revalida sesión, descanso, turno, territorio y secuencia;
+37. resultado desconocido se recupera antes de repetir;
+38. descanso no obliga por sí solo a rotar ni conservar `context_id`;
+39. la semántica de autorización permanece equivalente mientras la sesión padre sea válida;
+40. Realtime es señal y no autoridad;
+41. no se inventan thresholds de geocerca;
+42. cálculo de nómina y reglas laborales cuantitativas quedan fuera;
+43. correcciones preservan historia;
+44. la respuesta visible minimiza información;
+45. observabilidad correlaciona actor, intención, break, sesión, turno y outcome;
+46. las brechas físicas observadas tienen propietario existente;
+47. rollback no borra hechos confirmados;
+48. la topología queda `PER_IMPLEMENTATION_UNIT` con gate `POST_E5_PACKAGE`;
+49. no se crean ni modifican requisitos de prueba;
+50. no se ejecutan cambios físicos.
+
+---
+
+#### 49. Límites
+
+Esta tarea no define:
+
+- creación del contexto al registrar entrada, propiedad de `ANIMA-AUTH-007`;
+- actualización por cambio de turno, propiedad de `ANIMA-AUTH-008`;
+- checkout, propiedad de `ANIMA-AUTH-009`;
+- cambio temporal de área, propiedad de `ANIMA-AUTH-011`;
+- reemplazos de turno, propiedad de `ANIMA-AUTH-012`;
+- turnos cruzados de medianoche, propiedad de `ANIMA-AUTH-013`;
+- almacenamiento completo de cola offline, propiedad de `ANIMA-AUTH-014`;
+- revalidación completa de cola offline, propiedad de `ANIMA-AUTH-015`;
+- diagnóstico visible, propiedad de `ANIMA-AUTH-016` y `ANIMA-AUTH-017`;
+- auditoría detallada, propiedad de `ANIMA-AUTH-018`;
+- cálculo de nómina;
+- duración legal o empresarial del descanso;
+- descansos remunerados o no remunerados;
+- thresholds de geocerca;
+- nuevos reason codes públicos;
+- un nuevo shape de `AccessContext`;
+- implementación física de sesiones o descansos;
+- cambios productivos.
+
+---
+
+#### 50. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-009 — Cerrar contexto al registrar salida`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-011 — Manejar cambio temporal de área`
+
+
 ### [ ] ANIMA-AUTH-011 — Manejar cambio temporal de área
 ### [ ] ANIMA-AUTH-012 — Manejar reemplazos de turno
 ### [ ] ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche

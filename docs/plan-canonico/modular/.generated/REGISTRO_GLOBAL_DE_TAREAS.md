@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1061** |
+| Aprobadas | **1062** |
 | En propuesta | **0** |
-| No iniciadas | **533** |
+| No iniciadas | **532** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **66.56% (1061/1594)** |
+| Porcentaje de completamiento | **66.62% (1062/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-009` — Cerrar contexto al registrar salida | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-010` — Manejar descansos sin cerrar autorización | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-011` — Manejar cambio temporal de área | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-010` — Manejar descansos sin cerrar autorización | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-011` — Manejar cambio temporal de área | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-012` — Manejar reemplazos de turno | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -605,7 +605,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-007` | Crear contexto operativo al registrar entrada | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-008` | Actualizar contexto cuando cambia el turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-009` | Cerrar contexto al registrar salida | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-010` | Manejar descansos sin cerrar autorización | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-010` | Manejar descansos sin cerrar autorización | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-011` | Manejar cambio temporal de área | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-012` | Manejar reemplazos de turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-013` | Manejar turnos cruzados de medianoche | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
