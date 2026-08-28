@@ -16142,7 +16142,976 @@ ANIMA-AUTH-017 no:
 `ANIMA-AUTH-018 — Auditar creación y cierre del contexto`
 
 
-### [ ] ANIMA-AUTH-018 — Auditar creación y cierre del contexto
+### ✅ ANIMA-AUTH-018 — Auditar creación y cierre del contexto
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso
+**Tarea siguiente:** ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
+**Tipo de tarea:** documental; definición contractual de la evidencia auditable que permite reconstruir creación, sustitución, invalidación y cierre del contexto operativo de ANIMA sin convertir auditoría, telemetría ni historial en fuente de autoridad
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA debe dejar evidencia suficiente, correlacionable y no ambigua para reconstruir el ciclo de vida del contexto operativo asociado a un trabajador: qué hecho lo originó, qué snapshot autoritativo fue resuelto, qué cambios lo sustituyeron o invalidaron, qué hecho produjo su cierre y qué decisiones de autorización consumieron ese contexto.
+
+La tarea no crea una nueva fuente de verdad ni convierte el historial de asistencia, la telemetría, una cola local, un log técnico o un registro de auditoría en autoridad. La auditoría demuestra qué ocurrió y con qué datos autoritativos se decidió; no decide por sí misma qué puede hacer el trabajador.
+
+---
+
+#### 2. Resultado canónico
+
+El ciclo de vida auditable queda gobernado por la composición:
+
+```text
+HECHO EMPRESARIAL CONFIRMADO
++
+SNAPSHOT DE CONTEXTO AUTORITATIVO
++
+DECISIÓN DE AUTORIZACIÓN CUANDO APLICA
++
+IDENTIDAD Y CAUSALIDAD
++
+RESULTADO DE LA TRANSICIÓN
+=
+EVIDENCIA RECONSTRUIBLE DEL CICLO DE VIDA
+```
+
+Y por la separación obligatoria:
+
+```text
+EVIDENCIA DE AUDITORÍA
+≠
+FUENTE DE AUTORIDAD
+≠
+CONTEXTO ACTIVO
+≠
+PERMISO
+≠
+CHECK-IN
+≠
+TOKEN DE CAPACIDAD
+```
+
+Una investigación posterior debe poder responder, sin inferencias desde valores visuales o cachés:
+
+- quién era el actor humano efectivo;
+- cuál era el principal técnico o personal;
+- cuál era el dispositivo cuando aplicaba;
+- qué hecho de asistencia fue confirmado;
+- qué turno y revisión publicada se resolvieron;
+- qué sede, área y rol operativo formaban el snapshot;
+- cuándo se resolvió ese snapshot;
+- qué identificador o fingerprint permite distinguirlo de snapshots anteriores y posteriores;
+- qué evento lo creó, cambió, invalidó o cerró;
+- qué decisión de autorización lo consumió;
+- qué efecto empresarial fue confirmado, rechazado, duplicado, conflictivo o quedó pendiente de conciliación.
+
+---
+
+#### 3. Frontera de responsabilidad
+
+`ANIMA-AUTH-018` no redefine las reglas funcionales ya asignadas a tareas anteriores. Su responsabilidad es la reconstrucción auditable de esas transiciones.
+
+La propiedad permanece así:
+
+| Responsabilidad | Propietario canónico | Uso en esta tarea |
+| --- | --- | --- |
+| creación de contexto al iniciar jornada | `ANIMA-AUTH-007` | registrar evidencia del antes, hecho confirmado y contexto resultante |
+| actualización por cambio de turno | `ANIMA-AUTH-008` | enlazar snapshot anterior y snapshot nuevo |
+| cierre por checkout | `ANIMA-AUTH-009` | demostrar qué contexto exacto quedó cerrado |
+| descanso | `ANIMA-AUTH-010` | demostrar que pausa y cierre son transiciones diferentes |
+| cambio temporal de área | `ANIMA-AUTH-011` | conservar origen, transición confirmada y área efectiva resultante |
+| reemplazo de turno | `ANIMA-AUTH-012` | conservar identidades separadas y causalidad |
+| cruce de medianoche | `ANIMA-AUTH-013` | conservar continuidad por intervalo absoluto |
+| cola offline de asistencia | `ANIMA-AUTH-014` | conservar intención estable sin anticipar confirmación |
+| revalidación al sincronizar | `ANIMA-AUTH-015` | enlazar replay con nueva autorización y resultado |
+| diagnóstico visible | `ANIMA-AUTH-016` | consumir una proyección segura, no el detalle privado de auditoría |
+| diferenciación turno/permiso | `ANIMA-AUTH-017` | preservar razón concluyente sin mezclarla en auditoría |
+| concesión directa de permisos | `ANIMA-AUTH-019` | permanece prohibida y fuera de esta tarea |
+| Supabase como fuente de verdad | `ANIMA-AUTH-020` | permanece como frontera posterior |
+
+---
+
+#### 4. Vocabulario contractual
+
+A efectos de esta tarea:
+
+- **hecho de asistencia:** transición confirmada por servidor relacionada con entrada, salida o descanso;
+- **intención local:** solicitud creada en cliente y todavía no confirmada por la frontera autoritativa;
+- **snapshot de contexto:** conjunto resuelto de actor, turno, sede, área, rol, check-in y demás dimensiones aplicables en un instante;
+- **identidad de contexto:** referencia estable o fingerprint que distingue un snapshot de otro sin volverlo autoridad transferible;
+- **evento de ciclo de vida:** evidencia de creación, sustitución, invalidación o cierre;
+- **correlation_id:** referencia que agrupa una misma solicitud o caso a través de resolución, decisión, ejecución y evidencia;
+- **causation_id:** referencia al hecho inmediato que provocó otro hecho;
+- **resultado confirmado:** estado autoritativo observado después de aplicar o reconciliar una transición;
+- **resultado desconocido:** estado en el que no se puede afirmar ni éxito ni ausencia de efecto;
+- **reconciliación:** proceso de consultar evidencia autoritativa para resolver duplicado, conflicto, timeout o resultado desconocido;
+- **invalidez:** condición que impide seguir usando un contexto como autoridad;
+- **cierre:** finalización explícita del contexto asociado a una salida confirmada cuando ese es el contrato aplicable.
+
+---
+
+#### 5. Auditoría no concede autoridad
+
+Ningún registro de auditoría podrá utilizarse como prueba ejecutable para una acción futura.
+
+En particular:
+
+- encontrar un contexto histórico no lo reactiva;
+- encontrar un check-in histórico no demuestra presencia actual;
+- encontrar un `ALLOW` histórico no autoriza una nueva acción;
+- encontrar una sede o área en un payload antiguo no la vuelve efectiva;
+- un `correlation_id` no concede permiso;
+- un `decision_id` no es un token de capacidad;
+- un fingerprint no extiende frescura;
+- un evento de cierre no autentica al actor;
+- una evidencia de auditoría no sustituye resolución server-side.
+
+Toda acción protegida debe obtener una resolución y una decisión vigentes según los contratos propietarios.
+
+---
+
+#### 6. Unidad de evidencia del ciclo de vida
+
+La unidad documental mínima de auditoría de contexto se representa conceptualmente como:
+
+```text
+ContextLifecycleEvidence
+- lifecycle_event_id
+- lifecycle_event_type
+- context_reference
+- previous_context_reference
+- resulting_context_reference
+- attendance_event_reference
+- actor_reference
+- principal_reference
+- device_reference
+- shift_reference
+- shift_revision_reference
+- site_reference
+- area_reference
+- operational_role_reference
+- checkin_reference
+- correlation_id
+- causation_id
+- source_intent_reference
+- authorization_decision_reference
+- context_fingerprint
+- occurred_at
+- resolved_at
+- recorded_at
+- result
+- reconciliation_state
+- schema_version
+```
+
+La forma física definitiva, nombres de columnas y almacenamiento pertenecen a la arquitectura transversal y a su materialización posterior. Esta tarea fija las semánticas y relaciones que no pueden perderse.
+
+---
+
+#### 7. Identidades separadas
+
+Las siguientes identidades no son intercambiables:
+
+```text
+attendance_event_id
+≠
+client_event_id
+≠
+context_reference
+≠
+decision_id
+≠
+lifecycle_event_id
+≠
+correlation_id
+```
+
+`client_event_id` puede estabilizar una intención de asistencia e idempotencia, pero no se convierte por ello en identidad del contexto, de una decisión ni de una evidencia de auditoría.
+
+Un mismo hecho de asistencia puede provocar:
+
+1. confirmación del evento;
+2. nueva resolución del contexto;
+3. nueva decisión de autorización;
+4. uno o más registros técnicos de entrega o reconciliación.
+
+Cada elemento conserva su propia identidad y relación causal.
+
+---
+
+#### 8. Creación de contexto: precondición
+
+La creación auditable de contexto operativo requiere un hecho confirmado por la frontera autoritativa y una resolución válida del contexto resultante.
+
+Una intención de check-in creada localmente no significa que el contexto exista.
+
+La secuencia conceptual es:
+
+```text
+INTENCIÓN
+→ validación/revalidación
+→ confirmación del hecho de asistencia
+→ resolución autoritativa
+→ snapshot resultante
+→ evidencia de creación
+```
+
+Si la frontera autoritativa rechaza la intención, no existe creación de contexto. Si el resultado queda desconocido, tampoco puede declararse creación hasta reconciliar.
+
+---
+
+#### 9. Evidencia mínima de creación
+
+Una creación confirmada debe poder reconstruir como mínimo:
+
+- identidad del actor humano;
+- identidad del principal;
+- dispositivo cuando aplique;
+- referencia del hecho de check-in confirmado;
+- referencia del turno y de la revisión publicada usada;
+- sede operativa resultante;
+- área operativa cuando aplique;
+- rol operativo cuando aplique;
+- referencia de la sesión de check-in;
+- instante del hecho;
+- instante de resolución server-side;
+- referencia o fingerprint del contexto resultante;
+- correlación con la solicitud que produjo la transición;
+- estado final confirmado;
+- versión del contrato o esquema necesario para interpretar la evidencia.
+
+Los datos sensibles se minimizan conforme a la sección de privacidad.
+
+---
+
+#### 10. Atomicidad semántica de la creación
+
+La auditoría no puede afirmar simultáneamente:
+
+```text
+CHECK-IN = NO CONFIRMADO
+CONTEXTO = CREADO
+```
+
+cuando el contexto depende de ese check-in.
+
+Tampoco puede declarar una creación usando una combinación de datos tomados de momentos diferentes, por ejemplo:
+
+- turno de una revisión;
+- sede de otra;
+- rol leído antes de una republicación;
+- área seleccionada localmente después;
+- check-in de una sesión distinta.
+
+Si la frontera física no puede producir un snapshot coherente, la creación queda sin confirmar y debe fallar cerrada o ir a reconciliación según el contrato aplicable.
+
+---
+
+#### 11. Referencia al snapshot de contexto
+
+La evidencia debe distinguir el snapshot que existía antes de una transición y el que resultó después.
+
+Para una creación ordinaria:
+
+```text
+previous_context_reference = null
+resulting_context_reference = contexto confirmado
+```
+
+Para una sustitución:
+
+```text
+previous_context_reference = contexto anterior
+resulting_context_reference = contexto nuevo
+```
+
+Para un cierre:
+
+```text
+previous_context_reference = contexto que se cierra
+resulting_context_reference = null
+```
+
+`null` expresa ausencia según la transición; no significa wildcard, contexto global ni error silencioso.
+
+---
+
+#### 12. Correlación y causalidad
+
+La correlación debe permitir seguir la cadena:
+
+```text
+solicitud
+→ resolución de contexto
+→ decisión de autorización
+→ ejecución o rechazo
+→ hecho de asistencia
+→ evento de ciclo de vida
+→ evento de dominio o compensación cuando aplique
+```
+
+`correlation_id` agrupa la cadena investigable.
+
+`causation_id` identifica el antecedente inmediato y evita reconstruir causalidad únicamente por timestamps.
+
+Dos eventos con la misma correlación pueden tener causalidad distinta. La correlación no implica orden total ni autoridad.
+
+---
+
+#### 13. Actor, principal y dispositivo
+
+La auditoría conserva separadas:
+
+- persona que actúa;
+- principal autenticado;
+- actor efectivo cuando exista mediación;
+- dispositivo técnico;
+- instancia compartida cuando aplique.
+
+Un dispositivo no sustituye al trabajador y una sesión administrativa no se convierte en actor operativo.
+
+Cuando cambia el trabajador en un dispositivo compartido, la evidencia debe mostrar la frontera entre ambos contextos y no transferir el contexto anterior al actor nuevo.
+
+---
+
+#### 14. Semántica temporal
+
+Deben conservarse al menos cuatro conceptos temporales distintos cuando apliquen:
+
+- tiempo observado o capturado por cliente;
+- `occurred_at` del hecho empresarial;
+- `resolved_at` de la resolución autoritativa;
+- `recorded_at` de la evidencia persistida.
+
+Un timestamp de cliente puede ayudar a conciliación, pero no sustituye el tiempo autoritativo usado para resolver vigencia.
+
+Ordenar por `occurred_at` tampoco reemplaza causalidad, versión ni identidad del agregado.
+
+---
+
+#### 15. Turno y revisión
+
+La auditoría debe permitir conocer qué turno y qué revisión publicada fueron usados en cada resolución.
+
+Una referencia bare de turno no basta si el turno puede ser republicado o cambiado.
+
+Cuando el contexto se resuelve de nuevo por cambio de turno:
+
+- se conserva el contexto anterior como histórico;
+- se conserva la revisión anterior;
+- se registra la revisión nueva;
+- se produce un fingerprint nuevo cuando cambia una dimensión material;
+- no se edita retroactivamente la evidencia anterior.
+
+---
+
+#### 16. Sede, área y rol operativo
+
+Sede, área y rol que aparecen en auditoría describen el snapshot autoritativo observado.
+
+No pueden rellenarse desde:
+
+- selección visual;
+- último valor usado;
+- perfil del empleado;
+- primera asignación disponible;
+- geofence;
+- dispositivo;
+- nombre de aplicación;
+- caché local.
+
+La evidencia histórica conserva el valor que fue resuelto en ese momento; no lo convierte en fallback para una resolución posterior.
+
+---
+
+#### 17. Relación con check-in
+
+Check-in y contexto permanecen relacionados pero no son la misma identidad.
+
+La evidencia debe distinguir:
+
+- intención de check-in;
+- evento confirmado;
+- sesión abierta compatible;
+- snapshot de contexto que la consume;
+- cierre posterior.
+
+Una lectura reciente de `attendance_logs` no basta para declarar por sí sola que existe un contexto actual.
+
+---
+
+#### 18. Cambio de turno
+
+Cuando `ANIMA-AUTH-008` obliga a recalcular el contexto por un cambio de turno:
+
+```text
+contexto A
+→ señal de cambio
+→ invalidación de A
+→ resolución fresca
+→ contexto B
+```
+
+La auditoría debe poder responder:
+
+- qué cambio disparó la invalidación;
+- qué contexto quedó obsoleto;
+- cuál fue el nuevo turno/revisión;
+- cuál fue el contexto resultante;
+- qué operaciones quedaron bloqueadas entre ambas resoluciones.
+
+No se crea otra entrada laboral solo por recalcular el contexto.
+
+---
+
+#### 19. Cambio temporal de área
+
+Un cambio temporal de área confirmado debe conservar:
+
+- contexto previo;
+- solicitud de cambio;
+- autoridad que permitió la transición;
+- área destino validada;
+- contexto resultante;
+- instante efectivo;
+- eventual retorno o nueva sustitución.
+
+La selección local del área destino no es evidencia de transición confirmada.
+
+---
+
+#### 20. Reemplazo de turno
+
+En un reemplazo se preservan por separado:
+
+- trabajador originalmente programado;
+- trabajador sustituto;
+- ocurrencia/revisión de turno;
+- hecho que habilita el reemplazo;
+- contexto del sustituto;
+- contexto histórico del trabajador reemplazado.
+
+El sustituto no hereda el check-in, contexto, actor, decisión ni evidencia de autorización del otro trabajador.
+
+---
+
+#### 21. Continuidad overnight
+
+Cruzar medianoche no crea ni cierra automáticamente un contexto.
+
+La auditoría conserva la continuidad del mismo turno cuando la ocurrencia vigente atraviesa la medianoche.
+
+No se debe producir una creación artificial a las 00:00 ni un cierre artificial al cambiar la fecha civil.
+
+La identidad del turno, su revisión, intervalo absoluto y contexto efectivo determinan la continuidad.
+
+---
+
+#### 22. Descansos
+
+El inicio o fin de un descanso no equivale a checkout.
+
+La auditoría debe distinguir:
+
+```text
+BREAK_STARTED
+BREAK_ENDED
+CONTEXT_CLOSED
+```
+
+Un descanso puede afectar disponibilidad de ciertas acciones, pero no borra ni recrea automáticamente sede, área, turno o rol.
+
+Si una política exige una resolución nueva al terminar el descanso, esa resolución se audita como revalidación o sustitución, no como una entrada laboral nueva.
+
+---
+
+#### 23. Cierre por checkout confirmado
+
+El cierre laboral de contexto asociado a salida ocurre únicamente cuando el checkout correspondiente queda confirmado por la frontera autoritativa y se identifica el contexto exacto que deja de estar vigente.
+
+Secuencia conceptual:
+
+```text
+INTENCIÓN DE CHECKOUT
+→ revalidación
+→ confirmación del checkout
+→ invalidación del contexto dependiente
+→ evidencia de cierre
+```
+
+Una intención local o un botón pulsado no equivalen a cierre.
+
+---
+
+#### 24. Evidencia mínima de cierre
+
+Un cierre confirmado debe permitir reconstruir:
+
+- actor;
+- principal;
+- dispositivo cuando aplique;
+- referencia del checkout confirmado;
+- sesión de check-in que se cierra;
+- contexto previo;
+- turno/revisión;
+- sede/área/rol históricos del contexto previo;
+- instante del checkout;
+- instante de resolución;
+- causa del cierre;
+- correlación y causalidad;
+- resultado confirmado;
+- ausencia de contexto resultante cuando corresponda.
+
+El cierre no elimina el histórico necesario para auditoría.
+
+---
+
+#### 25. Invalidación distinta de checkout
+
+Un contexto puede quedar inválido por causas distintas de una salida laboral, por ejemplo:
+
+- expiración o revocación de sesión;
+- cambio de actor;
+- cambio de dispositivo;
+- cambio o revocación de asignación;
+- cambio de rol;
+- cambio de turno o revisión;
+- cambio territorial;
+- configuración contradictoria;
+- indisponibilidad que impide demostrar vigencia.
+
+Estas situaciones invalidan autoridad pero no deben registrarse falsamente como checkout si no existe un hecho de salida confirmado.
+
+---
+
+#### 26. Eventos que no cierran contexto por sí solos
+
+Por sí solos no constituyen un checkout:
+
+- cerrar la aplicación;
+- bloquear la pantalla;
+- perder conectividad;
+- perder geolocalización;
+- cambiar de red;
+- recibir una notificación;
+- cambiar de fecha civil;
+- expirar un caché;
+- cerrar una sesión técnica si no existe hecho laboral de salida;
+- descartar un borrador;
+- fallar una sincronización.
+
+Pueden producir invalidación o requerir nueva resolución, pero la auditoría mantiene separada esa consecuencia del hecho de checkout.
+
+---
+
+#### 27. Creación offline
+
+Una captura offline de check-in conserva una intención durable y su identidad estable.
+
+Mientras no exista confirmación server-side:
+
+```text
+attendance_intent = PENDING
+context_creation = NOT_CONFIRMED
+```
+
+La interfaz puede orientar al trabajador sobre el estado pendiente, pero la auditoría no puede presentar un contexto como creado por haberlo guardado localmente.
+
+Al sincronizar se reautoriza y solo entonces se registra creación, duplicado, rechazo, conflicto o resultado a reconciliar.
+
+---
+
+#### 28. Cierre offline
+
+La misma regla aplica a checkout offline.
+
+Guardar la intención localmente no cierra el contexto autoritativo.
+
+Mientras el servidor no confirme el efecto:
+
+```text
+checkout_intent = PENDING
+context_close = NOT_CONFIRMED
+```
+
+El cliente puede impedir acciones locales por seguridad, pero eso no modifica retroactivamente el hecho autoritativo.
+
+---
+
+#### 29. Duplicados e idempotencia
+
+Un replay con la misma identidad empresarial y el mismo contenido no crea un segundo contexto ni un segundo cierre.
+
+La evidencia debe poder distinguir:
+
+- primera aplicación confirmada;
+- replay reconocido;
+- referencia al mismo resultado;
+- ausencia de efecto duplicado.
+
+La idempotencia conserva una sola transición empresarial aunque existan varios intentos técnicos.
+
+---
+
+#### 30. Conflicto de identidad o contenido
+
+Si una identidad idempotente reaparece con contenido materialmente distinto, el resultado es conflicto.
+
+No debe:
+
+- crear otro contexto;
+- cerrar otro contexto;
+- sobrescribir la primera evidencia;
+- elegir silenciosamente el payload más reciente;
+- convertir la diferencia en duplicado exitoso.
+
+El conflicto queda correlacionado y exige conciliación según la política propietaria.
+
+---
+
+#### 31. Resultado desconocido
+
+Timeout, pérdida de respuesta o interrupción posterior al envío pueden dejar el resultado desconocido.
+
+En ese estado queda prohibido asumir:
+
+```text
+NO RESPUESTA = NO EFECTO
+```
+
+Antes de reintentar debe consultarse receipt, identidad idempotente o estado autoritativo equivalente.
+
+La evidencia conserva el intento, la incertidumbre y la resolución posterior.
+
+---
+
+#### 32. Reconciliación
+
+La reconciliación debe producir un resultado explícito, como mínimo:
+
+- aplicado;
+- duplicado del mismo contenido;
+- conflicto;
+- rechazado;
+- no ejecutado y reintentable;
+- resultado todavía desconocido.
+
+Cuando la reconciliación descubre un hecho ya confirmado, se enlaza con la transición original; no se crea retroactivamente una segunda transición por el acto de descubrirla.
+
+---
+
+#### 33. Vinculación con auditoría de autorización
+
+Cuando una creación, cambio o cierre depende de una decisión de autorización, la evidencia de contexto enlaza esa decisión mediante una referencia, pero no duplica ni redefine su contrato.
+
+La cadena mínima queda:
+
+```text
+context_reference
+↔ authorization_decision_reference
+↔ correlation_id
+```
+
+La decisión conserva sus propias razones, versiones, fingerprints y outcome.
+
+El ciclo de vida conserva la transición de contexto que esa decisión permitió, denegó o dejó sin ejecutar.
+
+---
+
+#### 34. Relación con AUTH-CTX-024
+
+`AUTH-CTX-024` gobierna la evidencia de una `AuthorizationDecision`.
+
+`ANIMA-AUTH-018` consume esa evidencia para reconstruir qué decisión observó un contexto determinado.
+
+Cuando exista una decisión:
+
+- `decision_id` identifica la decisión;
+- `context_fingerprint` identifica el snapshot consumido;
+- `correlation_id` enlaza solicitud, resolución, decisión, ejecución y evidencia;
+- actor, principal y dispositivo permanecen separados;
+- una realidad materialmente diferente exige una decisión nueva.
+
+Esta tarea no transforma `decision_id` en identidad de asistencia ni de contexto.
+
+---
+
+#### 35. Relación con SUPA-ARC-007
+
+La arquitectura transversal de auditoría y eventos mantiene identidades distintas para:
+
+- entrada de auditoría;
+- evento de dominio;
+- elemento de outbox;
+- entrega;
+- intento;
+- efecto.
+
+`ANIMA-AUTH-018` respeta esa separación.
+
+Un evento de contexto no se duplica para simular entrega, retry o efecto externo.
+
+La causalidad se expresa mediante referencias explícitas y no por proximidad de timestamps.
+
+---
+
+#### 36. Privacidad y minimización
+
+La evidencia debe conservar lo necesario para reproducibilidad, seguridad e investigación sin copiar datos innecesarios.
+
+Queda prohibido persistir como detalle ordinario de auditoría:
+
+- JWT;
+- access tokens;
+- refresh tokens;
+- secretos;
+- credenciales completas;
+- cookies de sesión;
+- stack traces como contenido de negocio;
+- SQL;
+- payloads completos cuando basten referencias o hashes;
+- geolocalización precisa fuera de la necesidad y retención aprobadas;
+- datos de terceros no relacionados con la transición.
+
+Las referencias internas sensibles no se proyectan directamente al trabajador.
+
+---
+
+#### 37. Inmutabilidad histórica
+
+Una corrección posterior no reescribe silenciosamente una transición histórica.
+
+Si cambia una dimensión material:
+
+```text
+evidencia anterior permanece
++
+nueva evidencia describe la corrección
++
+causalidad enlaza ambas
+```
+
+No se modifica el pasado para hacerlo parecer coherente con la configuración actual.
+
+La auditoría distingue qué se sabía y qué se resolvió en cada momento.
+
+---
+
+#### 38. Retención y recuperación
+
+La evidencia necesaria para investigar creación y cierre debe sobrevivir a:
+
+- reinicio de aplicación;
+- cierre de sesión;
+- cambio de dispositivo;
+- republicación de turno;
+- rotación de rol;
+- conciliación posterior;
+- migración compatible de esquema.
+
+La restauración de evidencia no restaura autoridad.
+
+Una recuperación operativa debe volver a resolver el contexto vigente desde sus fuentes autoritativas.
+
+---
+
+#### 39. Observabilidad y soporte
+
+La observabilidad puede registrar:
+
+- etapa;
+- duración;
+- resultado;
+- familia de error;
+- número de reintentos;
+- identificadores opacos de correlación;
+- estado de reconciliación.
+
+No debe mezclar:
+
+- deny con error técnico;
+- creación confirmada con intención local;
+- cierre confirmado con invalidación;
+- resultado desconocido con fallo definitivo.
+
+Una referencia de soporte puede enlazar la investigación sin revelar al trabajador detalles internos.
+
+---
+
+#### 40. Estado físico observado
+
+El código físico vigente de ANIMA conserva información útil de asistencia, pero todavía no materializa el contrato completo de esta tarea.
+
+Se observa actualmente:
+
+- eventos de asistencia con actor, sede, acción, tiempo, fuente y datos de dispositivo;
+- `clientEventId` usado para estabilizar eventos de asistencia;
+- `shift_id` asociado cuando está disponible;
+- lectura del último evento de asistencia para reconstrucción local;
+- contexto de turno proyectado en estructuras del cliente;
+- colas offline para asistencia y descanso.
+
+También se observa que la aplicación cliente puede reconstruir estado a partir de `attendance_logs` y estructuras locales. Ese baseline no se considera todavía la evidencia canónica completa del ciclo de vida de contexto.
+
+---
+
+#### 41. Brechas físicas y condición de salida
+
+La materialización posterior debe cerrar, como mínimo, estas brechas:
+
+1. identidad explícita o fingerprint estable del snapshot de contexto consumido;
+2. vínculo verificable entre hecho de asistencia y contexto resultante;
+3. vínculo entre contexto y `AuthorizationDecision` cuando aplique;
+4. `correlation_id` y causalidad end-to-end;
+5. distinción física entre creación, sustitución, invalidación y cierre;
+6. evidencia de `previous_context_reference` y `resulting_context_reference`;
+7. reconciliación de resultado desconocido sin duplicar transición;
+8. separación entre timestamps de captura, hecho, resolución y registro;
+9. evidencia durable que no dependa de reconstrucción heurística del cliente;
+10. pruebas de que auditoría o historial no pueden reutilizarse como autoridad.
+
+La condición de salida física exige implementación, pruebas y evidencia en el carril físico correspondiente; no forma parte del cambio documental actual.
+
+---
+
+#### 42. Topología y materialización física
+
+El subbloque `PHASE-04-F-ANIMA` utiliza topología `PER_IMPLEMENTATION_UNIT`.
+
+La definición documental de esta tarea queda separada de cualquier instancia física. La materialización solo podrá ocurrir mediante la instancia y el gate que correspondan a la unidad de implementación autorizada.
+
+No se crean en esta tarea:
+
+- migraciones;
+- tablas;
+- vistas;
+- RPC;
+- policies;
+- Edge Functions;
+- contratos físicos nuevos;
+- cambios de aplicación;
+- modificaciones productivas.
+
+---
+
+#### 43. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La obligación de reconstrucción, invalidación, correlación, idempotencia y auditoría ya está protegida por requisitos canónicos vigentes. Esta tarea especializa su aplicación documental en el ciclo de vida de contexto de ANIMA sin cambiar el registro.
+
+---
+
+#### 44. Cobertura de prueba vigente reutilizada
+
+La trazabilidad existente reutilizada es:
+
+- `TREQ-AUTH-014`: invalidación comprobable de contexto, caché y autoridad ante checkout y cambios materiales;
+- `TREQ-AUTH-015`: evidencia correlacionable de principal, actor, contexto, decisión, razones, versiones y timestamp para acciones protegidas;
+- `TREQ-AUTH-016`: revocación coordinada con preservación de asistencia e histórico de auditoría;
+- `TREQ-ANIMA-003`: identidad estable, persistencia durable, contexto e idempotencia para eventos offline de asistencia;
+- `TREQ-ANIMA-004`: identidad estable, atomicidad, duplicados, conflicto y reconciliación auditable para descansos.
+
+Estas referencias expresan cobertura heredada y no constituyen una modificación de sus filas.
+
+---
+
+#### 45. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La tarea no autoriza build ni materialización física. |
+| LOCAL | PASS | El artefacto documental aislado fue comprobado contra estructura, metadata, continuidad, evidencia, reglas de cero requisitos y restricciones del contrato de entrega vigente. |
+| REMOTA | PASS | El estado remoto confirma cierre de `ANIMA-AUTH-017`, continuidad actual en `ANIMA-AUTH-018`, propietario canónico, políticas vigentes y fuentes de auditoría consumidas. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutan pruebas con trabajadores ni procesos productivos en una tarea documental. |
+| FÍSICA | NOT_EXECUTED | No se realizan cambios de aplicación, Supabase, infraestructura ni datos. |
+
+---
+
+#### 46. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando:
+
+1. creación de contexto queda separada de intención local;
+2. checkout confirmado queda separado de intención de salida;
+3. cierre queda separado de invalidación por otras causas;
+4. check-in, contexto, decisión y auditoría conservan identidades distintas;
+5. `client_event_id` no se trata como identidad universal;
+6. creación exige hecho confirmado y snapshot autoritativo;
+7. cierre exige identificar el contexto previo exacto;
+8. cambio de turno produce sustitución/revalidación, no un check-in nuevo;
+9. cambio temporal de área conserva antes y después;
+10. reemplazo conserva actores separados;
+11. medianoche no crea ni cierra artificialmente un contexto overnight;
+12. descanso no se confunde con checkout;
+13. replay idempotente no duplica creación ni cierre;
+14. payload distinto con identidad repetida produce conflicto;
+15. resultado desconocido exige reconciliación antes de repetir;
+16. timestamps de cliente y servidor conservan semánticas distintas;
+17. correlación y causalidad son explícitas;
+18. el contexto usado por una decisión puede vincularse con `AUTH-CTX-024`;
+19. eventos de auditoría y eventos de dominio conservan identidades distintas conforme a la arquitectura transversal;
+20. la evidencia histórica no se reescribe silenciosamente;
+21. privacidad y minimización excluyen secretos y credenciales;
+22. la auditoría no puede reutilizarse como autoridad;
+23. las brechas físicas quedan identificadas sin ejecutar correcciones;
+24. `ANIMA-AUTH-019` conserva la prohibición de grants directos;
+25. `ANIMA-AUTH-020` conserva la autoridad de Supabase;
+26. no se crean ni modifican requisitos de prueba;
+27. no se ejecutan cambios físicos.
+
+---
+
+#### 47. Límites
+
+Quedan fuera de `ANIMA-AUTH-018`:
+
+- redefinir la creación funcional de contexto de `ANIMA-AUTH-007`;
+- redefinir actualización por turno de `ANIMA-AUTH-008`;
+- redefinir checkout de `ANIMA-AUTH-009`;
+- redefinir descansos de `ANIMA-AUTH-010`;
+- redefinir cambios temporales de área de `ANIMA-AUTH-011`;
+- redefinir reemplazos de `ANIMA-AUTH-012`;
+- redefinir overnight de `ANIMA-AUTH-013`;
+- redefinir colas y sincronización de `ANIMA-AUTH-014` y `ANIMA-AUTH-015`;
+- rediseñar la presentación de `ANIMA-AUTH-016` o `ANIMA-AUTH-017`;
+- conceder, modificar o inferir permisos, responsabilidad de `ANIMA-AUTH-019`;
+- sustituir las fuentes autoritativas o la propiedad de Supabase, responsabilidad reforzada por `ANIMA-AUTH-020`;
+- redefinir `AuthorizationDecision`, propiedad de `AUTH-CTX-024`;
+- redefinir la arquitectura transversal de auditoría y eventos, propiedad de `SUPA-ARC-007`;
+- decidir nombres físicos de tablas, columnas, funciones o schemas;
+- ejecutar migraciones, código, configuración o cambios productivos.
+
+---
+
+#### 48. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-018 — Auditar creación y cierre del contexto`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente`
+
+
 ### [ ] ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
 ### [ ] ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad
 
