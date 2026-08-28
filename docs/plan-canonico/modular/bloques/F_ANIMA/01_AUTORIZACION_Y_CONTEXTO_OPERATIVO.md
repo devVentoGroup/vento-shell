@@ -8035,7 +8035,1121 @@ Esta tarea no define:
 `ANIMA-AUTH-011 — Manejar cambio temporal de área`
 
 
-### [ ] ANIMA-AUTH-011 — Manejar cambio temporal de área
+### ✅ ANIMA-AUTH-011 — Manejar cambio temporal de área
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización
+**Tarea siguiente:** ANIMA-AUTH-012 — Manejar reemplazos de turno
+**Tipo de tarea:** documental; definición contractual del cambio temporal del área operativa aplicable a una misma ocurrencia de turno, preservando programación publicada, sesión de asistencia, autorización contextual y afiliaciones laborales como conceptos separados
+**Bloque:** `F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología `PER_IMPLEMENTATION_UNIT`, al gate `POST_E5_PACKAGE` y a autorización física explícita
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo debe manejar Vento OS un cambio **temporal** del área operativa de un trabajador durante una misma ocurrencia de turno sin convertir esa excepción en una segunda fuente de programación, sin modificar su afiliación habitual, sin reescribir la asistencia ya confirmada y sin conservar autorización obsoleta.
+
+La decisión raíz queda:
+
+```text
+MISMO TRABAJADOR
++
+MISMO SHIFT_ID
++
+MISMA SEDE OPERATIVA
++
+MISMO ROL OPERATIVO
++
+NUEVA AREA TEMPORAL VALIDA
++
+AUTORIDAD ADMINISTRATIVA RESUELTA EN SERVIDOR
++
+TRANSICION AUTORITATIVA DE PROGRAMACION
+->
+NUEVA REVISION / ESTADO APLICABLE DEL TURNO
+->
+INVALIDAR CONTEXTO ANTERIOR
+->
+RESOLVER CONTEXTO FRESCO
+->
+REAUTORIZAR ACCIONES POSTERIORES
+```
+
+Un cambio temporal de área no concede permisos, no cambia la sede, no cambia por sí mismo el rol, no crea una nueva sesión de check-in y no convierte ANIMA en propietario de la programación laboral.
+
+---
+
+#### 2. Resultado canónico
+
+`ANIMA-AUTH-011` fija un único contrato para consumir y reconciliar una rotación temporal de área dentro de la misma ocurrencia laboral.
+
+El resultado exige simultáneamente:
+
+1. conservar la identidad del trabajador;
+2. conservar el mismo `shift_id`;
+3. conservar la sede del turno;
+4. conservar el rol operativo cuando el caso sea realmente un cambio de área;
+5. cambiar únicamente el área operativa aplicable mediante autoridad de programación;
+6. preservar la revisión o estado anterior como historia;
+7. producir una nueva resolución de contexto;
+8. revalidar compatibilidad rol-área;
+9. no alterar `employee_areas` para representar temporalidad;
+10. no reescribir el check-in histórico;
+11. no usar el cliente como autoridad;
+12. hacer que toda acción posterior consuma el contexto nuevo.
+
+Esta tarea define semántica y fronteras. No decide la forma física final de tablas, RPC, eventos, contratos serializados ni UI administrativa.
+
+---
+
+#### 3. Vocabulario contractual
+
+##### 3.1. Área asignada
+
+Afiliación laboral permanente o habitual del trabajador.
+
+Su existencia puede servir para organización, planificación o administración, pero no es la fuente del área operativa vigente.
+
+##### 3.2. Área operativa
+
+Área efectiva resuelta para una ocurrencia de turno publicada.
+
+La fuente canónica continúa siendo el turno y su revisión aplicable.
+
+##### 3.3. Cambio temporal de área
+
+Transición autorizada que mantiene trabajador, `shift_id`, sede y rol, pero cambia el área operativa aplicable durante una parte de la vida de esa ocurrencia.
+
+##### 3.4. Retorno de área
+
+Nueva transición autoritativa que vuelve a un área anterior o a otra área válida. No es un fallback automático a la afiliación habitual.
+
+##### 3.5. Mismatch de área
+
+Diferencia no explicada por una transición autoritativa válida entre el área que exige el contexto actual y otra referencia territorial.
+
+Un mismatch ordinario continúa siendo una contradicción; una transición temporal debidamente trazada no se clasifica como corrupción por el mero hecho de que el área anterior sea distinta.
+
+---
+
+#### 4. Separaciones obligatorias
+
+Se conservan las siguientes identidades:
+
+```text
+AREA ASIGNADA
+!=
+AREA PRIMARIA
+!=
+AREA SELECCIONADA
+!=
+AREA ADMINISTRATIVA
+!=
+AREA OPERATIVA
+!=
+AREA DEL RECURSO
+!=
+AREA DEL PUNTO FISICO
+```
+
+Y también:
+
+```text
+CAMBIO TEMPORAL DE AREA
+!=
+CAMBIO PERMANENTE DE AFILIACION
+!=
+CAMBIO DE SEDE
+!=
+CAMBIO DE ROL
+!=
+REEMPLAZO DE TURNO
+!=
+NUEVO CHECK-IN
+!=
+GRANT
+!=
+SCOPE
+```
+
+Ninguna de esas fuentes puede sustituir a otra por conveniencia del consumidor.
+
+---
+
+#### 5. Autoridad sobre la programación
+
+La programación laboral continúa siendo propiedad de VISO y del proceso autoritativo de programación.
+
+ANIMA:
+
+- consume la programación publicada;
+- detecta que el contexto cambió;
+- invalida proyecciones obsoletas;
+- muestra o usa el área efectiva;
+- reautoriza acciones con contexto fresco.
+
+ANIMA no puede:
+
+- publicar una revisión por sí solo;
+- mutar `area_id` desde estado local;
+- convertir una selección visual en programación;
+- crear una fuente durable paralela de override;
+- conservar un área anterior porque todavía aparece en pantalla.
+
+Una solicitud administrativa solo adquiere efecto operativo cuando la transición propietaria queda confirmada de forma autoritativa.
+
+---
+
+#### 6. Unidad de cambio
+
+La unidad de esta tarea es una **misma ocurrencia lógica de turno**.
+
+Para que el caso pertenezca a `ANIMA-AUTH-011` deben mantenerse:
+
+```text
+employee_id = MISMO
+shift_id = MISMO
+site_id = MISMO
+operational_role = MISMO
+area_id = CAMBIA
+```
+
+Si cambia además la identidad del turno, el caso deja de ser un cambio temporal de área puro y entra en las reglas de cambio o reemplazo de turno.
+
+Si cambia la sede, esta tarea tampoco absorbe el caso.
+
+Si cambia el rol, la transición debe tratarse como cambio material de turno y volver a ejecutar la cadena de validación correspondiente; esta tarea no selecciona un rol alternativo.
+
+---
+
+#### 7. La temporalidad no crea una segunda fuente de verdad
+
+El estado temporal no se modela conceptualmente como:
+
+```text
+TURNO DICE AREA_A
++
+OVERRIDE LOCAL DICE AREA_B
+->
+ESCOGER AREA_B
+```
+
+El resultado correcto es:
+
+```text
+REVISION / ESTADO AUTORITATIVO ANTERIOR
+->
+TRANSICION CONFIRMADA
+->
+REVISION / ESTADO AUTORITATIVO APLICABLE CON AREA_B
+```
+
+ANIMA consume únicamente el hecho autoritativo vigente.
+
+Cuando deba terminar la temporalidad, el retorno también debe quedar representado por una transición autoritativa aplicable. El consumidor no vuelve por sí mismo a `employee_areas`, a un valor inicial ni al área vista al comenzar el turno.
+
+---
+
+#### 8. Precondiciones de un cambio temporal válido
+
+Antes de confirmar el cambio deben poder demostrarse, según aplique:
+
+1. trabajador existente y activo;
+2. ocurrencia de turno exacta y resoluble;
+3. revisión o estado vigente de programación conocido;
+4. turno publicado y no cancelado;
+5. sede del turno válida y activa;
+6. área objetivo existente;
+7. área objetivo activa;
+8. área objetivo perteneciente a la misma sede del turno;
+9. rol operativo canónico y activo;
+10. rol habilitado para la sede;
+11. rol compatible con el área objetivo mediante cobertura site-wide o coincidencia exacta;
+12. actor administrativo con autoridad sobre la mutación resuelto server-side;
+13. ausencia de una restricción canónica que bloquee la transición;
+14. base de concurrencia suficientemente fresca para no sobrescribir otro cambio;
+15. capacidad de conservar auditoría del antes y el después.
+
+La pertenencia del trabajador a `employee_areas` para el área objetivo no es un prerrequisito operativo.
+
+---
+
+#### 9. Autoridad administrativa
+
+La posibilidad de solicitar o aprobar el cambio no se deriva de:
+
+- ser el propio trabajador;
+- estar autenticado;
+- compartir dispositivo;
+- conocer el `employee_id`;
+- seleccionar un área;
+- tener un rol con nombre de gerente;
+- estar físicamente en el área;
+- poseer un grant operativo sobre un recurso;
+- haber realizado el check-in.
+
+La autoridad administrativa se resuelve mediante los contratos de autorización vigentes y la propiedad de programación.
+
+Esta tarea no crea un permiso nuevo ni fija un código de permiso.
+
+---
+
+#### 10. Frontera de sede
+
+`ANIMA-AUTH-011` solo gobierna cambios entre áreas de la **misma sede operativa**.
+
+Debe cumplirse:
+
+```text
+target_area.site_id = active_shift.site_id
+```
+
+Una solicitud cuyo `target_area.site_id` sea distinto:
+
+- no se interpreta como cambio temporal de área;
+- no cambia la sede por efecto secundario;
+- no conserva la sesión por conveniencia;
+- no se repara con un área homónima;
+- debe resolverse por el flujo propietario de cambio territorial o programación que corresponda.
+
+El nombre o `area_kind` no sustituyen la identidad exacta.
+
+---
+
+#### 11. Compatibilidad rol-área
+
+El cambio no elige un rol nuevo para lograr compatibilidad.
+
+Con rol site-wide válido en la sede:
+
+```text
+SITE_WIDE
++
+TARGET_AREA VALIDA EN LA MISMA SEDE
+->
+AREA_GATE SATISFIED
+```
+
+Con rol area-scoped:
+
+```text
+EXACT_AREA_ENABLEMENT = PRESENT
+->
+AREA_GATE SATISFIED
+```
+
+Si solo existe habilitación para otra área:
+
+```text
+TARGET_AREA VALIDA
++
+NO SITE_WIDE
++
+NO EXACT_AREA_ENABLEMENT
+->
+DENEGAR CAMBIO
+```
+
+La respuesta conserva la semántica canónica de incompatibilidad de área y no inventa un bypass.
+
+---
+
+#### 12. `employee_areas` permanece como afiliación habitual
+
+Un cambio temporal no modifica automáticamente:
+
+- `employee_areas`;
+- área primaria;
+- afiliaciones organizacionales;
+- área seleccionada;
+- preferencias del empleado.
+
+La regla permanece:
+
+```text
+employee_areas
+->
+AFILIACION HABITUAL
+
+turno publicado y revision aplicable
+->
+AREA OPERATIVA
+```
+
+Por tanto, un trabajador puede operar temporalmente en un área válida de la sede aunque esa área no sea una afiliación habitual, siempre que la transición de programación y la compatibilidad del rol sean válidas.
+
+---
+
+#### 13. Relación con el turno publicado
+
+La transición debe conservar la identidad y linaje de la programación.
+
+Debe ser posible reconstruir:
+
+- `shift_id`;
+- revisión o estado autoritativo anterior;
+- área anterior;
+- revisión o estado autoritativo sucesor;
+- área nueva;
+- instante efectivo;
+- actor que ejerció la autoridad;
+- motivo cuando el contrato propietario lo exija.
+
+No se permite mezclar campos de dos revisiones para fabricar un turno híbrido.
+
+La sola actualización visible de un campo sin identidad, precedencia o historia suficiente no satisface el contrato objetivo.
+
+---
+
+#### 14. Momento efectivo
+
+El cambio entra en autoridad únicamente cuando la transición queda confirmada por la fuente propietaria.
+
+Se distinguen:
+
+```text
+requested_at
+!=
+confirmed_at
+!=
+effective_at
+```
+
+cuando el contrato aplicable necesite esas diferencias.
+
+El reloj de cliente no decide el instante efectivo.
+
+Una UI puede mostrar una solicitud pendiente, pero no puede adoptar el área nueva para autorización antes de que la fuente autoritativa la confirme.
+
+---
+
+#### 15. Duración y retorno
+
+La palabra temporal no autoriza un timer local.
+
+Si la programación propietaria representa un intervalo temporal explícito, el servidor debe poder resolver qué estado o revisión es aplicable en cada instante.
+
+Si no existe una transición de retorno autoritativa, queda prohibido:
+
+- restaurar automáticamente el área inicial;
+- usar `employee_areas` como fallback;
+- usar el área primaria;
+- usar el área del check-in;
+- usar la última área almacenada en cliente.
+
+El retorno debe ser tan trazable como el cambio inicial.
+
+---
+
+#### 16. Caso sin check-in activo
+
+Una transición de área puede existir en programación aunque todavía no exista una sesión de check-in.
+
+En ese caso:
+
+- no se crea una sesión;
+- no se crea asistencia;
+- no se satisface artificialmente un permiso `T+C`;
+- el próximo check-in aplicable debe consumir el área vigente;
+- el contexto operativo previo al check-in conserva los prerrequisitos que correspondan.
+
+Cambiar programación no equivale a registrar presencia.
+
+---
+
+#### 17. Caso con check-in activo
+
+Cuando existe una sesión activa compatible con la misma ocurrencia:
+
+1. se conserva `checkin_session_id`;
+2. no se crea un segundo check-in;
+3. no se ejecuta checkout;
+4. el evento histórico de entrada no se reescribe;
+5. el área operativa vigente cambia por la transición de programación;
+6. el contexto anterior deja de ser reutilizable;
+7. la sesión se vuelve a evaluar contra el estado vigente.
+
+La sesión puede continuar como prerrequisito únicamente si la transición temporal queda reconocida como compatible por el contrato canónico de sesión y conserva actor, turno, sede, estado activo y demás invariantes.
+
+---
+
+#### 18. Diferencia entre evidencia histórica y área actual
+
+El área asociada a una marcación previa puede conservar valor histórico.
+
+Eso no significa que siga siendo autoridad operacional después de una transición válida.
+
+La regla queda:
+
+```text
+AREA OBSERVADA AL CHECK-IN
+->
+EVIDENCIA HISTORICA
+
+AREA DE LA PROGRAMACION AUTORITATIVA VIGENTE
+->
+AUTORIDAD OPERATIVA ACTUAL
+```
+
+Una diferencia explicada por una transición temporal trazable no debe corregirse reescribiendo la marcación.
+
+Una diferencia sin transición autoritativa sigue siendo un mismatch y falla cerrado.
+
+---
+
+#### 19. Compatibilidad de la sesión después del cambio
+
+La revalidación conserva al menos:
+
+```text
+session.employee_id = active_shift.employee_id
+session.shift_id = active_shift.shift_id
+session.site_id = active_shift.site_id
+session.status = ACTIVE
+session.checked_out_at = null
+session no expirada
+sesion unica
+```
+
+El área histórica de entrada no puede convertirse en autoridad permanente.
+
+Cuando el modelo físico de sesión utilice un área como invariante operacional, la materialización futura debe distinguir una transición temporal autorizada de una contradicción ordinaria. No puede resolverla mutando historia silenciosamente.
+
+Si no puede demostrar compatibilidad, el carril que exige check-in queda sin sesión utilizable hasta que el propietario físico reconcilie el estado de forma válida.
+
+---
+
+#### 20. Efecto sobre `AccessContext`
+
+`AccessContext` es un snapshot inmutable.
+
+Después de confirmar un cambio temporal relevante:
+
+```text
+CONTEXTO ANTERIOR
+->
+STALE / NO REUTILIZABLE
+->
+RESOLVER FUENTES ACTUALES
+->
+NUEVO ACCESS CONTEXT
+->
+NUEVA DECISION DE AUTORIZACION
+```
+
+El nuevo snapshot debe reflejar el área operativa vigente.
+
+No se edita un `context_id` anterior para cambiarle `area_id`.
+
+Dos contextos consecutivos pueden conservar actor, turno, sede, rol y sesión, pero diferir en área, frescura y decisiones derivadas.
+
+---
+
+#### 21. Revalidación completa del territorio
+
+El nuevo contexto vuelve a verificar:
+
+1. existencia de sede;
+2. actividad de sede;
+3. existencia de área;
+4. actividad de área;
+5. pertenencia del área a la sede;
+6. rol operativo;
+7. habilitación rol-sede;
+8. compatibilidad rol-área;
+9. sesión cuando el permiso la exija;
+10. recurso y su territorio para la acción concreta.
+
+El hecho de que el cambio haya sido autorizado administrativamente no concede automáticamente acceso a todos los recursos del área nueva.
+
+---
+
+#### 22. Grants, scopes y recursos
+
+La transición territorial no crea grants.
+
+```text
+AREA CAMBIA
+->
+RECALCULAR CONTEXTO
+->
+REEVALUAR GRANTS Y DENIES EXISTENTES
+->
+REEVALUAR SCOPE
+->
+REEVALUAR RECURSO
+```
+
+Queda prohibido:
+
+- copiar permisos del área anterior;
+- ampliar un permiso area-scoped a la sede;
+- usar el área nueva como prueba de grant;
+- mantener acceso a un recurso del área anterior por una decisión cacheada;
+- interpretar site-wide como global entre sedes.
+
+El recurso conserva su propio territorio autoritativo.
+
+---
+
+#### 23. Efecto sobre capacidades base
+
+Un cambio temporal del carril operativo no elimina por sí mismo capacidades base que sean independientes del turno, check-in o área.
+
+La regla permanece:
+
+```text
+CAMBIO DE AREA OPERATIVA
+->
+RECALCULAR CARRIL OPERATIVO
+
+NO IMPLICA
+->
+BORRAR CARRIL BASE
+```
+
+Los permisos se evalúan según su modalidad canónica.
+
+---
+
+#### 24. Descanso activo
+
+Estar en descanso no congela el área ni convierte el descanso en fuente territorial.
+
+Una transición temporal válida durante un descanso:
+
+- no ejecuta `END_BREAK`;
+- no crea otro descanso;
+- no cierra la sesión padre;
+- no usa el área del descanso como autoridad;
+- invalida el contexto operativo igual que cualquier cambio territorial relevante;
+- obliga a que las acciones posteriores utilicen el área nueva.
+
+Si el descanso conserva evidencia de sitio o área previa, esa evidencia permanece histórica.
+
+---
+
+#### 25. Checkout concurrente
+
+El checkout es terminal para la sesión de check-in.
+
+Si concurren:
+
+```text
+CAMBIO TEMPORAL DE AREA
+vs
+CHECKOUT
+```
+
+la materialización debe evitar un estado en el que un cambio de área reviva o prolongue una sesión ya cerrada.
+
+Una vez confirmado el checkout:
+
+- la sesión deja de ser utilizable;
+- el cambio de área no crea otra sesión;
+- cualquier respuesta tardía debe reconciliarse contra el estado cerrado;
+- la programación puede conservar su historia independientemente del cierre de asistencia.
+
+---
+
+#### 26. Frontera con reemplazos de turno
+
+`ANIMA-AUTH-012` conserva la propiedad de reemplazos de turno.
+
+Esta tarea no define:
+
+- sustitución de trabajador;
+- sustitución de `shift_id`;
+- préstamo de una sesión a otra ocurrencia;
+- reemplazo entre dos trabajadores;
+- aprobación empresarial del reemplazo.
+
+Si una operación cambia la identidad de la ocurrencia, no se clasifica como cambio temporal de área.
+
+Una concurrencia entre cambio de área y reemplazo debe resolverse por la linaje autoritativa de programación; ANIMA no elige cuál gana desde el cliente.
+
+---
+
+#### 27. Cancelación, retiro o cambio material concurrente
+
+Si mientras se tramita el cambio:
+
+- el turno es cancelado;
+- la revisión base deja de ser vigente;
+- cambia el trabajador;
+- cambia la sede;
+- cambia el rol;
+- se alcanza una frontera que hace inaplicable el turno;
+
+la solicitud no puede aplicarse sobre una base stale.
+
+Debe:
+
+```text
+DETECTAR CAMBIO
+->
+NO SOBREESCRIBIR
+->
+RESOLVER ESTADO ACTUAL
+->
+DEVOLVER OUTCOME CONCLUYENTE
+```
+
+No se recrea el contexto anterior para completar la intención.
+
+---
+
+#### 28. Idempotencia y retry
+
+Toda materialización futura de una mutación de área debe permitir distinguir la identidad lógica de la operación de su transporte.
+
+Propiedades mínimas:
+
+1. misma identidad y mismo contenido lógico -> mismo outcome;
+2. misma identidad y contenido materialmente distinto -> conflicto;
+3. retry después de timeout -> recuperar antes de duplicar;
+4. respuesta perdida después de commit -> no crear otra transición;
+5. operación ya aplicada -> resultado recuperable;
+6. operación no aplicada -> estado anterior permanece.
+
+La identidad física concreta se define en la implementación propietaria; esta tarea no inventa una columna.
+
+---
+
+#### 29. Concurrencia y base esperada
+
+Dos cambios incompatibles no pueden quedar ambos como autoridad simultánea para la misma ocurrencia e instante.
+
+La materialización futura debe comparar una base autoritativa suficientemente específica, por ejemplo mediante identidad de revisión, versión, generación o control equivalente gobernado por la fuente propietaria.
+
+La regla conceptual es:
+
+```text
+BASE ESPERADA = BASE ACTUAL
+->
+PUEDE INTENTAR TRANSICION
+
+BASE ESPERADA != BASE ACTUAL
+->
+CONFLICTO / RELECTURA
+```
+
+No se usa last-write-wins silencioso para esconder un cambio concurrente.
+
+---
+
+#### 30. Matriz de decisión
+
+| Caso | Estado inicial | Solicitud | Decisión |
+| --- | --- | --- | --- |
+| A | mismo turno, sede y rol válidos | área distinta, activa, misma sede y rol compatible | aceptar transición propietaria; invalidar contexto y resolver de nuevo |
+| B | mismo turno | área objetivo igual al área vigente | resultado estable sin cambio material; no duplicar transición |
+| C | mismo turno | área inexistente | rechazar; no mutar programación ni contexto |
+| D | mismo turno | área inactiva | rechazar |
+| E | mismo turno | área de otra sede | fuera del alcance de esta tarea; no cambiar sede |
+| F | mismo turno y sede | rol no compatible con área objetivo | rechazar; no seleccionar otro rol |
+| G | turno publicado, sin check-in | cambio válido | programación puede cambiar; no fabricar presencia |
+| H | sesión activa compatible | cambio válido | conservar identidad de sesión; invalidar contexto y reautorizar |
+| I | sesión cerrada | respuesta tardía o retry | no revivir sesión |
+| J | revisión base stale | cambio solicitado | conflicto; releer estado autoritativo |
+| K | dos cambios concurrentes incompatibles | ambos válidos sobre la misma base | como máximo uno progresa sobre esa base |
+| L | trabajador en descanso | cambio válido | no terminar descanso; contexto posterior usa área nueva |
+| M | fuente necesaria no verificable | cualquiera | fail closed técnico |
+| N | cliente propone área sin transición propietaria | cualquiera | ignorar como autoridad |
+| O | retorno solicitado | área anterior válida | nueva transición autoritativa; no fallback automático |
+
+---
+
+#### 31. Resultado y respuesta
+
+La implementación futura debe poder distinguir internamente, como mínimo:
+
+- transición aplicada;
+- replay de transición ya aplicada;
+- no-op porque el área ya era la efectiva;
+- conflicto de identidad o versión;
+- área objetivo inválida;
+- incompatibilidad de rol-área;
+- cambio fuera de alcance por sede, turno o rol;
+- fuente no disponible;
+- sesión ya cerrada cuando el resultado dependa de presencia.
+
+Estos outcomes internos no crean por sí mismos nuevos reason codes públicos.
+
+La experiencia visible y el diagnóstico final pertenecen a las tareas de UX y diagnóstico ya reservadas.
+
+---
+
+#### 32. Offline y acciones pendientes
+
+Una intención offline conserva el contexto observado, no autoridad futura.
+
+Si el área cambia mientras el dispositivo está desconectado:
+
+- la acción pendiente no conserva grants del área anterior;
+- no se ejecuta con una decisión cacheada;
+- no se reescribe para apuntar silenciosamente al área nueva;
+- al sincronizar se resuelven turno, sesión, territorio y autorización actuales;
+- un conflicto se conserva como conflicto, no como éxito optimista.
+
+Esta tarea no crea una cola offline específica para cambios administrativos de área.
+
+---
+
+#### 33. Caché, memoización y frescura
+
+El cambio de área es una invalidación material del carril operativo.
+
+Por tanto, una generación, token, fingerprint o mecanismo equivalente de frescura debe cambiar cuando la transición pasa a ser efectiva.
+
+Queda prohibido autorizar usando:
+
+- `context_id` previo;
+- memoización previa;
+- área previa visible;
+- resultado de autorización previo;
+- snapshot offline previo;
+- payload de Realtime como nueva autoridad.
+
+La caché puede acelerar lectura después de demostrar que corresponde a la generación vigente.
+
+---
+
+#### 34. Realtime y señales
+
+Realtime, push, polling o eventos internos pueden anunciar que la programación cambió.
+
+Su semántica es:
+
+```text
+SIGNAL
+->
+INVALIDATE
+->
+FETCH AUTHORITATIVE STATE
+->
+RESOLVE CONTEXT
+```
+
+No:
+
+```text
+SIGNAL PAYLOAD
+->
+SET AREA
+->
+AUTHORIZE
+```
+
+La pérdida de una señal no cambia la verdad persistida.
+
+---
+
+#### 35. Seguridad y privacidad
+
+La respuesta al trabajador debe minimizar información.
+
+No debe exponer automáticamente:
+
+- quién tiene autoridad administrativa;
+- IDs internos innecesarios;
+- matriz completa de rol-área;
+- afiliaciones de terceros;
+- detalles de RLS;
+- SQL;
+- políticas internas;
+- revisiones candidatas competidoras;
+- razones técnicas sensibles.
+
+Un conflicto de programación no se presenta como autorización válida.
+
+---
+
+#### 36. Auditoría mínima
+
+Debe poder reconstruirse, sin usar la auditoría como fuente de autorización:
+
+```text
+TRABAJADOR
++
+SHIFT_ID
++
+REVISION / ESTADO BASE
++
+AREA ANTERIOR
++
+AREA NUEVA
++
+SEDE
++
+ROL
++
+SESION CUANDO EXISTA
++
+ACTOR ADMINISTRATIVO
++
+MOTIVO CUANDO APLIQUE
++
+INSTANTE SOLICITADO
++
+INSTANTE CONFIRMADO / EFECTIVO
++
+OUTCOME
++
+REFERENCIA DE LA TRANSICION SUCESORA
+```
+
+La historia debe permitir distinguir:
+
+- cambio temporal;
+- retorno;
+- retry;
+- conflicto;
+- corrección administrativa;
+- cancelación;
+- reemplazo de turno.
+
+La auditoría detallada de ANIMA permanece bajo `ANIMA-AUTH-018`.
+
+---
+
+#### 37. Estado físico observado
+
+La inspección read-only del entorno `vento-os-dev` muestra un modelo todavía previo al contrato completo:
+
+| Superficie | Estado observado |
+| --- | --- |
+| `public.employee_shifts` | 3436 filas en el snapshot |
+| turnos con `published_at` | 3309 |
+| turnos publicados con `area_id` | 1120 |
+| turnos publicados con área sin relación activa equivalente en `employee_areas` | 1120 |
+| `public.employee_areas` | 1 relación total y activa |
+| `public.employee_area_purpose_assignments` | 45 relaciones activas; 23 `operational` y 22 `remission` |
+| relación o función específica con nombre de override temporal de área | no observada en la inspección por nombre |
+| `public.get_operational_context` | consume `employee_shifts.area_id`; mantiene resolución legacy y fallbacks territoriales que no representan el contrato final |
+| ANIMA móvil | el contexto de turno observado consume `area_id` de `employee_shifts`; no se observó una autoridad paralela de cambio temporal |
+
+Estos conteos describen un snapshot y no son invariantes empresariales.
+
+La escasa cardinalidad de `employee_areas` frente a los turnos publicados con área confirma que la afiliación habitual no puede convertirse en prerrequisito del área operativa.
+
+---
+
+#### 38. Brechas físicas y propietarios existentes
+
+Ninguna brecha observada crea una tarea nueva.
+
+| Brecha | Propietario existente | Condición de salida |
+| --- | --- | --- |
+| resolución canónica de turno, sesión, rol y territorio sin fallbacks legacy | `AUTH-DB-033` | el contexto efectivo se deriva de fuentes canónicas y una sola revisión aplicable |
+| evaluación con contexto fresco | `AUTH-DB-034` | toda acción usa contexto vigente y conserva precedencia |
+| invalidación transaccional por cambio de área o turno | `AUTH-DB-035` | la escritura relevante cambia la generación y evita reutilizar decisiones stale |
+| publicación y linaje de programación | `INT-WORK-001` | una revisión publicada conserva identidad, historia, autor y cambio aplicable |
+| confirmación autoritativa del contexto efectivo | `INT-WORK-004` | consumidoras convergen al contexto confirmado sin fuente competidora |
+| reacción de ANIMA al cambio temporal de área | instancia futura de `ANIMA-AUTH-011` | ANIMA invalida, relee y reautoriza sin mutar afiliación ni asistencia histórica |
+| auditoría detallada de contexto | `ANIMA-AUTH-018` | antes, transición y después pueden reconstruirse |
+| reemplazo de turno | `ANIMA-AUTH-012` | cambios de identidad de ocurrencia se mantienen fuera de esta tarea |
+
+---
+
+#### 39. Rollback y recuperación
+
+Un cambio confirmado no se elimina para fingir que nunca ocurrió.
+
+Si:
+
+```text
+TRANSICION CONFIRMADA
++
+RESPUESTA PERDIDA
+```
+
+se recupera el outcome por identidad y estado autoritativo.
+
+Si la transición no llegó a confirmarse:
+
+- el área anterior conserva autoridad;
+- no se adopta el objetivo en cliente;
+- no se invalida historia para simular éxito.
+
+Si el cambio confirmado debe revertirse empresarialmente, se crea una nueva transición autoritativa hacia el área válida correspondiente.
+
+Rollback técnico no equivale a borrar auditoría ni reescribir el check-in original.
+
+---
+
+#### 40. Topología y materialización física
+
+La definición documental se aprueba una sola vez.
+
+```text
+MODE = PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE = POST_E5_PACKAGE
+INSTANCE_PATTERN = ANIMA-AUTH-011::implementation_unit_id
+```
+
+La materialización futura:
+
+- requiere una unidad de implementación real;
+- requiere un `package_id` propietario aplicable;
+- requiere `E5-GATE-008` del paquete en `PASS`;
+- requiere autorización física explícita;
+- debe limitarse a productores y consumidores reales del cambio de área;
+- debe preservar programación, asistencia, contexto, grants y auditoría como capas separadas;
+- debe ejecutar toda modificación de Supabase desde `vento-group-sas/vento-shell`.
+
+Esta tarea documental no autoriza DDL, DML, migraciones, RLS, RPC, Edge Functions, código de aplicación, datos productivos ni despliegues.
+
+---
+
+#### 41. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya protege separación entre afiliación y área operativa, resolución del área desde turno, compatibilidad rol-área, sesión exacta, invalidación de contexto, idempotencia, concurrencia, offline, auditoría y vínculo entre programación y asistencia. Esta tarea especializa esas obligaciones para la rotación temporal de área sin ampliar el registro.
+
+---
+
+#### 42. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-AUTH-008`: capacidades operativas dependen de turno vigente, check-in cuando aplique, rol y territorio compatibles;
+- `TREQ-AUTH-009`: sede y área efectivas se resuelven determinísticamente y una rotación recalcula permisos;
+- `TREQ-AUTH-014`: cambio de turno, área, trabajador, dispositivo, rol o asignación invalida contexto, caché y tokens derivados;
+- `TREQ-AUTH-015`: decisiones y acciones conservan evidencia correlacionable de turno, check-in, rol, territorio, contexto y timestamp;
+- `TREQ-AUTH-189` a `TREQ-AUTH-208`: separación entre área asignada y área operativa, fuente desde turno, validez territorial, precedencia, canales y frescura;
+- `TREQ-AUTH-229` a `TREQ-AUTH-237`: sesión de check-in exacta, modalidad por carril, precedencia, canales, offline y concurrencia;
+- `TREQ-AUTH-259` a `TREQ-AUTH-268`: compatibilidad exacta rol-área, site-wide, fallbacks prohibidos, causas, paridad, privacidad, frescura y reconciliación;
+- `TREQ-ANIMA-003`: intención offline durable e idempotente que debe revalidarse al sincronizar;
+- `TREQ-INTEGRATION-003`: identidad estable, efecto único, retry y resultado recuperable;
+- `TREQ-INTEGRATION-007`: programación y asistencia vinculadas por trabajador, turno, revisión y hechos inmutables.
+
+Esta enumeración es trazabilidad heredada y no representa modificación del registro.
+
+---
+
+#### 43. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del repositorio se ejecuta después de incorporar y normalizar la tarea en su archivo propietario. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, continuidad, secciones obligatorias, UTF-8, EOL, ausencia de placeholders y cero TREQ afectados dentro de la sección derivada. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, topología, políticas, tareas ANIMA previas, modelo de áreas, contratos de programación y contexto, 04A pertinente, código ANIMA y estado `vento-os-dev` mediante lecturas de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se realizó un cambio temporal real de área sobre un trabajador ni una sesión real. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, RLS, RPC, cambios de código, datos ni despliegues. |
+
+---
+
+#### 44. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. conserva el cambio temporal de área separado de la afiliación habitual;
+2. mantiene `employee_areas` fuera de la autoridad operativa;
+3. conserva VISO y la programación publicada como autoridad del turno;
+4. no crea un override durable paralelo como segunda fuente;
+5. mantiene trabajador, `shift_id`, sede y rol para clasificar el caso como cambio de área puro;
+6. reserva cambios de `shift_id` a los flujos de turno o reemplazo;
+7. rechaza usar esta tarea para cambiar de sede;
+8. no elige un rol alternativo para lograr compatibilidad;
+9. exige área objetivo existente, activa y perteneciente a la sede;
+10. exige rol válido para la sede y el área;
+11. admite cobertura site-wide sin convertirla en global;
+12. no exige afiliación activa en `employee_areas` para el área temporal;
+13. conserva identidad e historia de la revisión o estado anterior;
+14. no mezcla campos de revisiones distintas;
+15. usa tiempo autoritativo y no reloj de cliente;
+16. no adopta el área nueva antes de confirmación;
+17. un retorno exige autoridad equivalente al cambio inicial;
+18. no usa timer local para restaurar área;
+19. sin check-in no fabrica sesión ni presencia;
+20. con check-in no crea otra entrada;
+21. no reescribe el hecho histórico de entrada;
+22. una transición temporal trazable se distingue de un mismatch ordinario;
+23. la sesión se conserva solo cuando sigue siendo compatible;
+24. una sesión cerrada no puede revivirse;
+25. `AccessContext` no se actualiza in-place;
+26. el contexto anterior queda no reutilizable;
+27. se produce una nueva resolución con área vigente;
+28. se revalidan sede, área, rol, sesión y territorio;
+29. la transición no crea grants;
+30. grants, denies, scope y recurso se reevaluan;
+31. el carril base no se elimina por un cambio de área operativo;
+32. un descanso no congela el territorio ni se cierra por esta transición;
+33. checkout concurrente prevalece como terminal de sesión;
+34. reemplazos permanecen bajo `ANIMA-AUTH-012`;
+35. cancelación o revisión stale impiden aplicar sobre base obsoleta;
+36. retry no duplica una transición ya confirmada;
+37. misma identidad con contenido distinto produce conflicto;
+38. cambios concurrentes incompatibles no quedan ambos como autoridad;
+39. no se usa last-write-wins silencioso;
+40. una acción offline se reautoriza con territorio actual;
+41. caché, token y decisiones previas se invalidan;
+42. Realtime actúa como señal y no como autoridad;
+43. la respuesta visible minimiza información;
+44. la auditoría reconstruye trabajador, turno, áreas, autoridad, tiempo y outcome;
+45. las brechas físicas observadas conservan propietarios existentes;
+46. rollback no borra historia confirmada;
+47. la topología queda `PER_IMPLEMENTATION_UNIT`;
+48. el gate físico queda `POST_E5_PACKAGE`;
+49. no se crean ni modifican requisitos de prueba;
+50. no se ejecutan cambios físicos.
+
+---
+
+#### 45. Límites
+
+Esta tarea no define:
+
+- afiliación permanente del trabajador a áreas;
+- selección o navegación administrativa de área;
+- publicación general de turnos;
+- UI administrativa de VISO;
+- cambio de sede;
+- cambio de rol como parte de la misma operación;
+- reemplazo de turno, propiedad de `ANIMA-AUTH-012`;
+- turnos cruzados de medianoche, propiedad de `ANIMA-AUTH-013`;
+- cola offline general, propiedad de `ANIMA-AUTH-014`;
+- revalidación completa de cola, propiedad de `ANIMA-AUTH-015`;
+- diagnóstico visible final, propiedad de `ANIMA-AUTH-016` y `ANIMA-AUTH-017`;
+- auditoría detallada final, propiedad de `ANIMA-AUTH-018`;
+- concesión directa de permisos, prohibida por `ANIMA-AUTH-019`;
+- una fuente paralela distinta de Supabase, frontera de `ANIMA-AUTH-020`;
+- un código nuevo de permiso;
+- un reason code público nuevo;
+- un nuevo shape público de `AccessContext`;
+- un contrato físico de tablas o RPC;
+- implementación física;
+- cambios productivos.
+
+---
+
+#### 46. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-011 — Manejar cambio temporal de área`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-012 — Manejar reemplazos de turno`
+
+
 ### [ ] ANIMA-AUTH-012 — Manejar reemplazos de turno
 ### [ ] ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche
 ### [ ] ANIMA-AUTH-014 — Manejar cola offline de check-in
