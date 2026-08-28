@@ -5629,7 +5629,1204 @@ Esta tarea no define:
 `ANIMA-AUTH-009 — Cerrar contexto al registrar salida`
 
 
-### [ ] ANIMA-AUTH-009 — Cerrar contexto al registrar salida
+### ✅ ANIMA-AUTH-009 — Cerrar contexto al registrar salida
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno
+**Tarea siguiente:** ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización
+**Tipo de tarea:** documental; definición contractual del cierre de la sesión de asistencia y de la invalidación del contexto dependiente cuando una salida queda confirmada, preservando identidad de sesión, idempotencia, evidencia histórica, carril base y reautorización posterior
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología PER_IMPLEMENTATION_UNIT y al gate POST_E5_PACKAGE
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué significa cerrar el contexto de ANIMA al registrar una salida.
+
+La salida debe cerrar exactamente la sesión de asistencia que estaba abierta y retirar toda autoridad que dependa de esa sesión, sin borrar el turno, sin cerrar la autenticación, sin revocar capacidades base independientes y sin convertir el checkout en una decisión general de autorización.
+
+La regla raíz queda:
+
+```text
+INTENCION DE SALIDA
++
+ACTOR EFECTIVO RESUELTO
++
+SESION DE ASISTENCIA EXACTA
++
+VALIDACIONES APLICABLES
++
+PERSISTENCIA CONFIRMADA
++
+COMMIT
+->
+SESION CLOSED
++
+ACTIVE_CHECKIN_SESSION = NULL EN LA NUEVA RESOLUCION
++
+CONTEXTO DEPENDIENTE INVALIDADO
++
+NUEVA DECISION PARA TODA ACCION POSTERIOR
+```
+
+No existe cierre autoritativo por cambio optimista de interfaz.
+
+---
+
+#### 2. Handoff consumido desde ANIMA-AUTH-008
+
+`ANIMA-AUTH-009` consume el resultado de `ANIMA-AUTH-008` sin reabrir la semántica de actualización por cambio de turno.
+
+Antes de la salida puede existir un contexto fresco con:
+
+- actor efectivo;
+- empleado;
+- `active_shift`;
+- referencia de revisión publicada;
+- `active_checkin_session`;
+- rol operativo;
+- sede operativa;
+- área operativa cuando corresponda;
+- dispositivo o sesión de actor cuando aplique;
+- `context_id`;
+- evidencia de frescura.
+
+La tarea actual añade una transición terminal sobre la sesión de asistencia.
+
+No modifica retroactivamente el contexto con el que se registró la entrada.
+
+---
+
+#### 3. Separación conceptual obligatoria
+
+Deben permanecer separados:
+
+| Concepto | Significado |
+| --- | --- |
+| intención de salida | solicitud todavía no confirmada |
+| evento de salida recibido | solicitud dentro de la frontera server-side |
+| evento de salida confirmado | hecho persistido y confirmado |
+| sesión cerrada | sesión exacta alcanzó un estado terminal por salida aplicable |
+| contexto invalidado | un snapshot anterior ya no puede reutilizarse |
+| contexto fresco posterior | nueva resolución después del cierre |
+| permiso posterior | decisión nueva sobre una acción concreta |
+
+Por tanto:
+
+```text
+BOTON "SALIR"
+!=
+CHECKOUT CONFIRMADO
+```
+
+y:
+
+```text
+CHECKOUT CONFIRMADO
+!=
+LOGOUT DE AUTENTICACION
+```
+
+y:
+
+```text
+SESION CLOSED
+!=
+TODOS LOS PERMISOS DENEGADOS
+```
+
+---
+
+#### 4. Forma contractual de la sesión conservada
+
+La tarea reutiliza sin ampliar la forma conceptual vigente:
+
+```ts
+type ActiveCheckinContext = {
+  checkin_session_id: string;
+  employee_id: string;
+  shift_id: string;
+  site_id: string;
+  area_id: string | null;
+  checked_in_at: string;
+  expires_at: string | null;
+  checked_out_at: string | null;
+  status: "ACTIVE" | "EXPIRED" | "CLOSED" | "INVALID";
+};
+```
+
+Para una sesión activa:
+
+```text
+status = ACTIVE
+checked_out_at = null
+```
+
+Después de una salida confirmada aplicable:
+
+```text
+status normalizado = CLOSED
+checked_out_at = instante autoritativo del cierre
+```
+
+y el nuevo `AccessContext` no presenta esa sesión como `active_checkin_session`.
+
+---
+
+#### 5. Identidad exacta de la sesión que se cierra
+
+El checkout debe aplicarse a una única sesión de asistencia.
+
+La identidad propietaria es:
+
+```text
+checkin_session_id
+```
+
+La sesión no se identifica únicamente mediante:
+
+- `employee_id`;
+- `shift_id`;
+- `site_id`;
+- timestamp;
+- último `check_in`;
+- último evento del trabajador;
+- última fila recibida;
+- última sede utilizada;
+- estado local de ANIMA.
+
+Una salida no puede cerrar una sesión distinta porque parezca ser la candidata más reciente.
+
+---
+
+#### 6. Resolución server-side de la sesión
+
+La frontera autoritativa debe resolver o validar en servidor la sesión objetivo.
+
+Para aceptar el cierre deben poder demostrarse, según corresponda:
+
+1. identidad del actor;
+2. vínculo del actor con el empleado;
+3. identidad estable de la intención;
+4. sesión objetivo;
+5. pertenencia de la sesión al mismo empleado;
+6. estado previo de la sesión;
+7. relación con turno y revisión;
+8. secuencia temporal;
+9. política territorial o física aplicable;
+10. ausencia de una transición terminal incompatible ya confirmada;
+11. idempotencia;
+12. concurrencia;
+13. resultado de persistencia.
+
+El cliente puede transportar referencias, pero no declarar que una sesión está abierta.
+
+---
+
+#### 7. Checkout accesible sin permiso operativo vigente
+
+Cerrar una sesión de asistencia no puede depender de conservar el mismo permiso operativo que el propio checkout debe retirar.
+
+La regla es:
+
+```text
+SIN PERMISO OPERATIVO
+!=
+BLOQUEAR CHECKOUT
+```
+
+Esto permite cerrar una sesión cuando:
+
+- el permiso operativo ya no está disponible;
+- el turno terminó;
+- el contexto quedó obsoleto;
+- una revisión cambió;
+- el carril operativo dejó de ser utilizable;
+- la interfaz ya no puede ejecutar otras acciones operativas.
+
+La accesibilidad del cierre no elimina los controles de identidad, sesión, secuencia, idempotencia, territorio físico cuando aplique ni auditoría.
+
+---
+
+#### 8. Ausencia de `active_shift` no impide cerrar una sesión histórica abierta
+
+La resolución de autorización puede producir:
+
+```text
+active_shift = null
+```
+
+mientras el dominio de asistencia todavía necesita reconciliar una sesión abierta.
+
+La salida debe seguir vinculándose a la sesión realmente abierta y a su historia.
+
+Queda prohibido:
+
+- fabricar un `active_shift` para permitir el cierre;
+- elegir el turno actual visible;
+- reasignar la sesión a otro turno;
+- borrar la sesión porque el turno ya no esté vigente;
+- usar la ausencia de permiso como razón para impedir el cierre.
+
+El resultado posterior de autorización se calcula desde la nueva realidad.
+
+---
+
+#### 9. Turno y revisión de la sesión
+
+La salida conserva la relación histórica de la sesión con:
+
+```text
+shift_id
++
+revisión publicada con la que la sesión quedó contextualizada
+```
+
+Una revisión posterior del turno no reescribe la sesión de origen.
+
+Si existe una decisión autoritativa que modifica la relación histórica, debe pertenecer a su flujo propietario de corrección y conservar evidencia.
+
+El checkout ordinario no corrige programación.
+
+---
+
+#### 10. Actor efectivo
+
+La sesión que se cierra debe pertenecer al actor humano aplicable.
+
+Regla:
+
+```text
+session.employee_id
+=
+effective_actor.employee_id
+```
+
+cuando el checkout es personal.
+
+Queda prohibido:
+
+- cerrar una sesión de otro trabajador;
+- usar el último actor del dispositivo;
+- usar un rol compartido como identidad;
+- confiar en un `employee_id` manipulable como única prueba;
+- transferir una sesión porque dos trabajadores usan la misma sede.
+
+Una corrección o cierre administrativo sigue un contrato distinto y exige autoridad explícita.
+
+---
+
+#### 11. Dispositivo compartido
+
+En un dispositivo compartido deben permanecer separadas:
+
+```text
+SESION TECNICA DEL DISPOSITIVO
+SESION DE ACTOR HUMANO
+SESION DE ASISTENCIA
+```
+
+Cerrar la sesión de asistencia:
+
+- no cierra automáticamente la sesión técnica;
+- no cierra automáticamente la sesión ligera del actor;
+- no convierte al dispositivo en trabajador;
+- no permite cerrar la sesión del actor anterior;
+- no presta autoridad administrativa del principal técnico.
+
+La atribución del checkout conserva al humano efectivo.
+
+---
+
+#### 12. Intención idempotente de salida
+
+Toda salida reintentable debe poseer una identidad estable antes del primer envío.
+
+Conceptualmente:
+
+```text
+checkout_intent_id
++
+contenido logico
++
+checkin_session_id
+```
+
+deben permitir recuperar un resultado estable.
+
+La implementación puede reutilizar el identificador canónico de intención de asistencia ya aprobado; esta tarea no crea un namespace público nuevo.
+
+---
+
+#### 13. Replay de la misma salida
+
+Para la misma identidad y el mismo contenido:
+
+```text
+PRIMER INTENTO
+->
+CIERRE CONFIRMADO
+
+REPLAY
+->
+MISMO RESULTADO
++
+CERO EFECTO ADICIONAL
+```
+
+El replay no crea:
+
+- un segundo checkout;
+- otra sesión;
+- otra hora de cierre;
+- otro cierre de contexto;
+- una corrección implícita.
+
+La respuesta debe permitir al cliente converger al resultado ya confirmado.
+
+---
+
+#### 14. Misma identidad con contenido distinto
+
+Si la misma identidad idempotente reaparece con contenido materialmente distinto:
+
+```text
+CONFLICT
+```
+
+No se corrige silenciosamente.
+
+Son diferencias materiales, según el contrato propietario aplicable:
+
+- sesión objetivo;
+- actor;
+- acción;
+- turno o revisión contextualizada;
+- instante declarado cuando forme parte de la intención;
+- sede o punto físico cuando sea obligatorio;
+- contenido cuya igualdad sea necesaria para demostrar el mismo evento lógico.
+
+El conflicto produce cero efecto adicional.
+
+---
+
+#### 15. Sesión ya cerrada
+
+Se distinguen dos casos:
+
+##### Replay del mismo evento lógico
+
+Devuelve el resultado existente.
+
+##### Nueva intención distinta contra una sesión ya cerrada
+
+No produce un segundo cierre.
+
+La frontera puede clasificarla como sesión ya cerrada o conflicto según el contrato de asistencia, pero siempre debe cumplir:
+
+```text
+SECOND_TERMINAL_EFFECT = 0
+```
+
+No se cambia `checked_out_at` por el último intento.
+
+---
+
+#### 16. Concurrencia entre dos checkouts
+
+Dos solicitudes concurrentes contra la misma sesión deben serializarse o producir un resultado equivalente.
+
+Resultado permitido:
+
+```text
+UNA TRANSICION TERMINAL
++
+UN RESULTADO RECUPERABLE
+```
+
+No permitido:
+
+```text
+DOS CHECKOUTS CONFIRMADOS COMO EFECTOS INDEPENDIENTES
+```
+
+La implementación futura puede usar lock, versión, comparación atómica o mecanismo equivalente, sin cambiar la semántica.
+
+---
+
+#### 17. Concurrencia con otro evento terminal
+
+El checkout puede competir con:
+
+- auto-close;
+- cierre administrativo;
+- expiración;
+- invalidación;
+- reemplazo;
+- otro checkout;
+- una corrección propietaria.
+
+La primera transición terminal autoritativa aplicable determina el estado.
+
+Las demás operaciones deben:
+
+- recuperar el estado;
+- no duplicar efectos;
+- conservar la causa real;
+- no sobrescribir el cierre ya confirmado.
+
+El orden de recepción por sí solo no sustituye el orden autoritativo.
+
+---
+
+#### 18. Concurrencia con un cambio de turno
+
+Si el turno cambia mientras se procesa la salida:
+
+1. la sesión no se reata al turno nuevo;
+2. la salida sigue apuntando a la sesión exacta;
+3. la relación histórica con el turno de origen se conserva;
+4. la autorización posterior se resuelve con la realidad vigente;
+5. ningún snapshot anterior se reutiliza como autoridad.
+
+`ANIMA-AUTH-008` conserva la propiedad del cambio de turno; esta tarea conserva la propiedad del cierre de la sesión.
+
+---
+
+#### 19. `occurred_at` y confirmación server-side
+
+El instante de ocurrencia y el instante de confirmación son distintos.
+
+Una salida puede conservar un `occurred_at` capturado por el cliente, incluido offline, pero el servidor debe:
+
+- validarlo;
+- preservar su zona o interpretación contractual;
+- validar secuencia;
+- evitar tiempos imposibles;
+- registrar el instante de confirmación;
+- no usar el reloj cliente como autoridad para decidir permisos actuales.
+
+El contexto deja de usar la sesión solo cuando el estado autoritativo permite concluir el cierre o cuando otra causa autoritativa ya la invalidó.
+
+---
+
+#### 20. Persistencia antes de revocar por checkout
+
+La secuencia de un checkout normal es:
+
+```text
+INTENCION
+->
+VALIDACION
+->
+PERSISTENCIA
+->
+COMMIT
+->
+EVENTO DE SALIDA CONFIRMADO
+->
+SESION CLOSED
+->
+INVALIDACION DEL CONTEXTO DEPENDIENTE
+```
+
+No es:
+
+```text
+TOCAR "SALIR"
+->
+QUITAR AUTORIDAD LOCAL
+->
+INTENTAR PERSISTIR DESPUES
+```
+
+Un fallo de persistencia no puede presentarse como cierre confirmado.
+
+---
+
+#### 21. Resultado desconocido
+
+Una respuesta puede perderse después del commit.
+
+En ese caso:
+
+```text
+UNKNOWN OUTCOME
+->
+RECUPERAR POR IDENTIDAD
+->
+NO REPETIR A CIEGAS
+```
+
+El cliente no genera automáticamente una nueva intención.
+
+Debe recuperar si:
+
+- el checkout fue aplicado;
+- fue duplicado idempotentemente;
+- quedó en conflicto;
+- no produjo efecto.
+
+La pérdida de respuesta no cambia la historia empresarial.
+
+---
+
+#### 22. Cola offline
+
+Una salida offline:
+
+```text
+PERSISTIDA LOCALMENTE
+!=
+CERRADA EN SERVIDOR
+```
+
+Mientras permanezca pendiente:
+
+- la interfaz puede mostrar estado pendiente;
+- el evento mantiene su identidad;
+- no se crea un segundo evento al reconectar;
+- la sincronización revalida actor, sesión, turno/revisión histórica, secuencia, territorio y políticas aplicables;
+- el contexto server-side no se declara cerrado por la sola cola local.
+
+La arquitectura de cola permanece en `ANIMA-AUTH-014` y la revalidación al sincronizar en `ANIMA-AUTH-015`.
+
+---
+
+#### 23. Efecto autoritativo sobre `ActiveCheckinContext`
+
+Después del checkout confirmado:
+
+```text
+session.status = CLOSED
+session.checked_out_at != null
+```
+
+En la siguiente resolución real:
+
+```text
+active_checkin_session = null
+```
+
+Una sesión `CLOSED` puede conservarse en historial y auditoría, pero no aparece como sesión activa.
+
+No se elimina para hacer que el contexto “quede limpio”.
+
+---
+
+#### 24. Efecto sobre `AccessContext`
+
+El `AccessContext` utilizado antes del checkout queda obsoleto para acciones posteriores.
+
+Debe ocurrir:
+
+```text
+CONTEXTO ANTERIOR
+->
+NO REUTILIZABLE
+
+NUEVA SOLICITUD
+->
+NUEVA RESOLUCION
+->
+NUEVO context_id
+```
+
+El checkout no actualiza `context_id` in-place.
+
+El mismo turno puede seguir vigente, pero el nodo `active_checkin_session` cambia.
+
+---
+
+#### 25. `active_shift` puede permanecer vigente
+
+Cerrar el check-in no equivale a terminar el turno publicado.
+
+Si el turno todavía es temporalmente vigente:
+
+```text
+active_shift != null
+active_checkin_session = null
+```
+
+puede ser un resultado válido.
+
+Por tanto, esta tarea no fuerza:
+
+```text
+active_shift = null
+```
+
+solo porque ocurrió un checkout.
+
+El fin, cancelación o retiro del turno se rigen por sus propios contratos.
+
+---
+
+#### 26. Efecto por modalidad de autorización
+
+Después del checkout, toda acción nueva se evalúa desde contexto fresco.
+
+La consecuencia depende del contrato del permiso:
+
+| Modalidad operativa | Efecto de `active_checkin_session = null` |
+| --- | --- |
+| sin carril operativo | no adquiere dependencia de check-in por esta tarea |
+| `T` | no se convierte en `T+C`; continúa sujeto a turno y demás gates |
+| `T+C` | el carril operativo no satisface el prerrequisito de check-in |
+
+Así se evita convertir el checkout en una revocación indiscriminada de capacidades no dependientes de presencia.
+
+---
+
+#### 27. Carril base y capacidades administrativas
+
+El checkout no revoca por sí solo:
+
+- autenticación;
+- identidad;
+- rol base;
+- cobertura administrativa;
+- capacidades base;
+- acceso a funciones administrativas cuyo contrato no exige check-in;
+- sesión técnica del dispositivo.
+
+La regla es:
+
+```text
+CHECKOUT
+->
+CIERRA PRESENCIA Y CONTEXTO DEPENDIENTE
+
+CHECKOUT
+-/>
+BORRA CARRIL BASE
+```
+
+Una denegación o revocación independiente conserva sus propias reglas.
+
+---
+
+#### 28. Rol y territorio después del checkout
+
+El turno vigente puede continuar aportando hechos de rol, sede y área a una resolución fresca.
+
+Esto no significa que exista presencia.
+
+Por tanto:
+
+```text
+operational_role != null
+operational_site != null
+active_checkin_session = null
+```
+
+puede coexistir cuando el turno siga vigente y los resolutores lo permitan.
+
+La decisión final de cada permiso conserva sus prerrequisitos exactos.
+
+---
+
+#### 29. Caché, memoización y freshness
+
+El checkout confirmado es un hecho invalidante para todo contexto cuya autoridad dependa de la sesión.
+
+La materialización futura debe asegurar que:
+
+- la generación o mecanismo de frescura aplicable cambie;
+- una entrada compartida stale no pueda servirse;
+- la memoización de solicitud no sobreviva una barrera de escritura relevante;
+- una proyección de cliente no se utilice como autoridad;
+- una decisión anterior no se reutilice como bearer token.
+
+La purga de caché es optimización; la prueba de frescura es la barrera de corrección.
+
+---
+
+#### 30. Realtime y actualización de interfaz
+
+Una señal Realtime puede acelerar la convergencia después del checkout.
+
+Su semántica es:
+
+```text
+CHECKOUT CONFIRMADO
+->
+SIGNAL
+->
+INVALIDAR / REFRESCAR
+->
+RESOLVER
+```
+
+No:
+
+```text
+PAYLOAD REALTIME
+->
+AUTORIDAD NUEVA
+```
+
+Si Realtime falla, el servidor no puede seguir autorizando con la sesión cerrada.
+
+---
+
+#### 31. Acción protegida concurrente con checkout
+
+Puede ocurrir que una acción operativa y el checkout compitan.
+
+Ninguna decisión tomada antes del checkout conserva automáticamente derecho a ejecutar después.
+
+La frontera propietaria de la acción debe aplicar:
+
+- contexto actual;
+- recurso actual;
+- autorización actual;
+- control de concurrencia;
+- revalidación antes del efecto cuando el contrato lo exige.
+
+Una UI abierta antes del checkout no garantiza autoridad posterior.
+
+---
+
+#### 32. Checkout durante un descanso
+
+Descanso y checkout son conceptos distintos:
+
+```text
+ON_BREAK
+!=
+CHECKOUT
+```
+
+Una sesión cerrada no puede seguir aportando autoridad por existir un descanso abierto asociado.
+
+Sin embargo, esta tarea no define si el checkout:
+
+- finaliza explícitamente el descanso;
+- produce un evento terminal de descanso;
+- requiere una transición previa;
+- conserva un intervalo de descanso abierto para reconciliación.
+
+Esa semántica pertenece a `ANIMA-AUTH-010`.
+
+La obligación de esta tarea es que una sesión `CLOSED` no mantenga un descanso como fuente de autoridad operativa.
+
+---
+
+#### 33. Expiración sin checkout
+
+La expiración puede retirar autoridad antes de existir un evento de salida.
+
+Por tanto:
+
+```text
+EXPIRACION
+->
+ACTIVE_CHECKIN_SESSION = NULL
+```
+
+no necesita esperar un checkout.
+
+Si el trabajador registra o sincroniza después una salida válida:
+
+- la salida puede cerrar o reconciliar la sesión histórica;
+- no crea autoridad retroactiva;
+- no cambia la hora original de expiración;
+- no transforma el periodo posterior a la expiración en tiempo autorizado.
+
+La expiración y el checkout conservan causas distintas.
+
+---
+
+#### 34. Auto-close
+
+Un auto-close confirmado es una transición terminal distinta de una salida manual.
+
+Debe ser:
+
+- atribuible al mecanismo que lo produjo;
+- correlacionable con la sesión;
+- idempotente;
+- auditable;
+- compatible con el turno y la política que lo habilitó;
+- incapaz de generar un segundo cierre si ya existe uno.
+
+La revocación de autoridad no puede depender exclusivamente de que un job de auto-close llegue a ejecutarse.
+
+---
+
+#### 35. Cierre administrativo y corrección
+
+Un cierre administrativo requiere autoridad propia y auditoría.
+
+No se confunde con checkout personal.
+
+Una corrección posterior:
+
+```text
+CORRECCION
+!=
+BORRADO DEL CHECKOUT ORIGINAL
+```
+
+Debe preservar, según corresponda:
+
+- evento original;
+- sesión;
+- antes;
+- después;
+- actor que corrige;
+- razón;
+- evidencia;
+- instante;
+- impacto derivado.
+
+La corrección histórica no concede autorización retroactiva.
+
+---
+
+#### 36. Geocerca y punto físico de salida
+
+Cuando la política de salida exija geocerca, precisión o punto físico:
+
+- la evidencia debe validarse en servidor;
+- el punto físico no reemplaza la sede operativa;
+- no se inventa un radio en esta tarea;
+- no se acepta ubicación manipulada como autoridad;
+- una excepción debe tener contrato propio.
+
+La accesibilidad del checkout sin permiso operativo no significa bypass de las políticas físicas que realmente sean aplicables.
+
+---
+
+#### 37. Clases funcionales de resultado
+
+Sin crear un catálogo público nuevo, la implementación futura debe poder distinguir al menos estas clases:
+
+| Clase funcional | Significado |
+| --- | --- |
+| cierre aplicado | una sesión abierta exacta quedó cerrada |
+| replay recuperado | la misma intención ya había determinado el cierre |
+| sesión ya cerrada | no existe segundo efecto para una intención nueva |
+| conflicto | identidad, contenido, actor, sesión o secuencia incompatibles |
+| sesión no resoluble | no puede demostrarse qué sesión debe cerrarse |
+| sesión de otro actor | la sesión no pertenece al actor efectivo |
+| fuente no disponible | no puede verificarse concluyentemente el estado |
+| resultado desconocido | debe recuperarse el outcome antes de repetir |
+
+Estas clases no sustituyen los reason codes transversales existentes ni autorizan a inventar nuevos códigos públicos.
+
+---
+
+#### 38. Matriz de cierre
+
+| Caso | Estado previo | Evento | Resultado |
+| --- | --- | --- | --- |
+| salida normal | sesión exacta `ACTIVE` | confirmado | sesión `CLOSED`; nuevo contexto sin check-in activo |
+| mismo evento repetido | ya aplicado | replay idéntico | mismo resultado; cero efecto adicional |
+| nueva salida contra sesión cerrada | `CLOSED` | identidad nueva | cero efecto adicional |
+| identidad repetida con contenido distinto | cualquiera | conflicto | cero efecto adicional |
+| sesión de otro actor | activa | solicitud | denegar cierre |
+| sesión ambigua | más de una candidata | solicitud | fail closed |
+| turno terminó pero sesión histórica sigue abierta | no hay `active_shift` utilizable | salida exacta | permitir reconciliar/cerrar sesión bajo contrato de asistencia |
+| salida pendiente offline | activa server-side | solo local | no declarar cierre server-side |
+| commit confirmado y respuesta perdida | `CLOSED` real | outcome desconocido en cliente | recuperar por identidad |
+| checkout y auto-close concurrentes | activa | dos transiciones | una transición terminal; la otra recupera estado |
+| checkout y acción protegida concurrentes | activa al inicio | carrera | acción debe revalidar antes de su efecto |
+| checkout durante descanso | sesión padre activa | salida | sesión cerrada no conserva autoridad; detalle de descanso pertenece a la tarea siguiente |
+
+---
+
+#### 39. Estado físico observado
+
+La inspección de solo lectura del entorno desplegado muestra una implementación todavía legacy respecto de la identidad de sesión final:
+
+| Superficie | Estado observado |
+| --- | --- |
+| `attendance_logs` | 5832 filas observadas |
+| eventos `check_in` | 2919 |
+| eventos `check_out` | 2913 |
+| filas con `client_event_id` | 2 |
+| filas con `shift_id` | 3203 |
+| candidatos cuyo último evento es `check_in` | 6 |
+| columna física `checkin_session_id` en `attendance_logs` | no observada |
+| índice de idempotencia | único por `employee_id + client_event_id` cuando el identificador no es nulo |
+| triggers `BEFORE INSERT` sobre `attendance_logs` | 4 observados |
+| resolución física de secuencia | usa el último evento global del empleado y alternancia de acciones |
+| resolución física de turno | contiene selección por cercanía temporal con `limit 1` |
+| sincronización de asistencia | `sync_attendance_events` acepta entrada/salida e identidad cliente |
+| tratamiento de `unique_violation` en sincronización | responde `duplicate` sin demostrar en esa rama igualdad semántica del contenido |
+| auto-cierre de sesiones antiguas | existen funciones que infieren apertura desde el último evento por empleado |
+| `attendance_breaks` | 11 filas observadas; 0 abiertas en el snapshot |
+| vínculo explícito de `attendance_breaks` a `checkin_session_id` | no observado |
+
+Los conteos son evidencia del instante de inspección y no se congelan como invariantes.
+
+---
+
+#### 40. Brechas físicas y propietarios existentes
+
+Ninguna brecha detectada crea una tarea nueva.
+
+| Brecha | Propietario existente | Condición de salida |
+| --- | --- | --- |
+| identidad y resolución canónica de sesión | `AUTH-DB-033` | el resolutor deja de depender del último evento y produce una sesión exacta |
+| decisión posterior al cierre | `AUTH-DB-034` | toda acción usa contexto y modalidad actuales |
+| invalidación por checkout | `AUTH-DB-035` | el cambio de sesión invalida contexto, caché y decisiones stale |
+| materialización específica del cierre en ANIMA | instancia futura de `ANIMA-AUTH-009` | checkout confirmado cierra una sesión exacta e invalida contexto dependiente |
+| descansos asociados a una sesión cerrada | `ANIMA-AUTH-010` | la semántica de descanso no deja estados operativos huérfanos |
+| checkout offline y retry | `ANIMA-AUTH-014` y `ANIMA-AUTH-015` | la intención persiste, se recupera y se reautoriza sin duplicar cierre |
+| auditoría detallada del cierre | `ANIMA-AUTH-018` | intención, sesión, evento, resultado e invalidación son reconstruibles |
+| contrato propietario de asistencia | `INT-WORK-003` | salida cierra la sesión correcta y preserva turno/revisión |
+| confirmación transversal del contexto | `INT-WORK-004` | el contexto posterior refleja la sesión cerrada sin reconstrucciones competidoras |
+| compatibilidad legacy de sesión | `AUTH-CTX-028` | consumidores legacy dejan de usar último evento como autoridad final |
+
+---
+
+#### 41. Seguridad, privacidad y observabilidad
+
+La respuesta visible al trabajador debe minimizar información.
+
+Puede confirmar, según estado autorizado:
+
+- salida registrada;
+- salida pendiente;
+- resultado recuperado;
+- conflicto que requiere acción;
+- imposibilidad temporal de confirmar.
+
+No debe revelar automáticamente:
+
+- otras sesiones;
+- otros trabajadores;
+- candidatos alternativos;
+- identificadores internos innecesarios;
+- reglas RLS;
+- SQL;
+- fingerprints internos;
+- datos completos de turno;
+- razones técnicas sensibles.
+
+La evidencia interna debe poder correlacionar:
+
+- intención;
+- evento de salida;
+- sesión;
+- actor;
+- turno y revisión;
+- hora declarada;
+- hora confirmada;
+- fuente;
+- estado previo;
+- estado posterior;
+- resultado;
+- invalidación del contexto;
+- nueva resolución posterior cuando exista.
+
+---
+
+#### 42. Rollback y reconciliación
+
+Después de un checkout confirmado no se restaura autoridad borrando el evento.
+
+Ante un fallo posterior:
+
+```text
+CHECKOUT COMMIT CONFIRMADO
++
+FALLO DE INVALIDACION O PROYECCION
+->
+CONSERVAR CHECKOUT
++
+FALLAR CERRADO PARA AUTORIDAD DEPENDIENTE
++
+RECONCILIAR
+```
+
+No:
+
+```text
+BORRAR CHECKOUT
+->
+REABRIR AUTORIDAD
+```
+
+Si el checkout no llegó a commit, la sesión permanece bajo su estado autoritativo previo y el cliente no puede fingir cierre.
+
+---
+
+#### 43. Topología y materialización física
+
+La definición documental se aprueba una sola vez en este marcador.
+
+```text
+MODE = PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE = POST_E5_PACKAGE
+INSTANCE_PATTERN = ANIMA-AUTH-009::implementation_unit_id
+```
+
+La materialización futura:
+
+- requiere una unidad de implementación real;
+- requiere el paquete propietario aplicable;
+- requiere `E5-GATE-008` de ese paquete en PASS;
+- debe limitarse a productores y consumidores físicos del cierre;
+- debe conservar idempotencia, concurrencia, rollback y auditoría;
+- debe preservar el contrato de asistencia histórica;
+- debe integrar los mecanismos canónicos de contexto y frescura disponibles;
+- debe ejecutar toda modificación Supabase desde `vento-group-sas/vento-shell`.
+
+Esta tarea documental no autoriza DDL, DML, migraciones, RLS, RPC, Edge Functions, cambios de código, datos productivos ni despliegues.
+
+---
+
+#### 44. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya protege sesión exacta, cierre normal, idempotencia, concurrencia, offline, invalidación, reautorización, consistencia de canales, auditoría y separación entre carril base y presencia. Esta tarea especializa esas obligaciones para el checkout de ANIMA sin cambiar el registro.
+
+---
+
+#### 45. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-AUTH-014`: checkout y otros cambios relevantes invalidan contexto, caché y tokens derivados;
+- `TREQ-AUTH-015`: toda decisión y acción protegida conserva evidencia correlacionable;
+- `TREQ-AUTH-229`: los carriles `T+C` sin sesión compatible producen denegación y cero efectos;
+- `TREQ-AUTH-230`: solo el carril que exige check-in adquiere ese prerrequisito;
+- `TREQ-AUTH-231`: una sesión activa pertenece al actor, turno y sede exactos, está abierta, confirmada y es única;
+- `TREQ-AUTH-232`: cierre normal, contradicción, multiplicidad, residual e indisponibilidad conservan causas distintas;
+- `TREQ-AUTH-233`: publicación, vigencia, check-in y controles posteriores conservan precedencia;
+- `TREQ-AUTH-234`: los canales producen comportamiento equivalente y exigen nueva decisión después del cambio de check-in;
+- `TREQ-AUTH-237`: offline, concurrencia y replay no duplican sesiones ni conservan autoridad stale;
+- `TREQ-ANIMA-003`: la intención offline de asistencia es durable e idempotente;
+- `TREQ-INTEGRATION-003`: operaciones reintentables conservan identidad, contenido, resultado recuperable y efecto único;
+- `TREQ-INTEGRATION-007`: entrada, salida y descansos se vinculan determinísticamente con trabajador, turno y revisión.
+
+Esta enumeración es trazabilidad y no representa requisitos afectados por la tarea.
+
+---
+
+#### 46. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, continuidad, secciones obligatorias, UTF-8, EOL y cero requisitos afectados en la sección derivada. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, owner, topología, políticas, contratos de turno, check-in, asistencia, contexto, 04A, validadores vigentes y estado Supabase mediante lecturas de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se registró una salida real ni se ejercitó un flujo de trabajador. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, RLS, RPC, cambios de código, datos ni despliegues. |
+
+---
+
+#### 47. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. consume la continuidad de `ANIMA-AUTH-008`;
+2. distingue intención, evento confirmado, sesión cerrada, invalidación y nueva decisión;
+3. conserva exactamente la forma de `ActiveCheckinContext`;
+4. identifica la sesión mediante `checkin_session_id`;
+5. no usa empleado, turno, timestamp ni último evento como sustituto de identidad de sesión;
+6. la sesión objetivo se resuelve o valida en servidor;
+7. un checkout personal solo cierra una sesión del actor efectivo;
+8. la salida permanece accesible aunque el permiso operativo ya no esté disponible;
+9. esa accesibilidad no elimina controles de identidad, sesión, política física, idempotencia ni auditoría;
+10. ausencia de `active_shift` no impide reconciliar una sesión histórica abierta;
+11. el checkout no fabrica un turno;
+12. conserva `shift_id` y revisión histórica de la sesión;
+13. un dispositivo compartido no confunde identidad técnica, actor humano y sesión de asistencia;
+14. la intención de salida obtiene identidad estable;
+15. replay idéntico produce el mismo resultado sin segundo efecto;
+16. misma identidad con contenido distinto produce conflicto;
+17. una nueva intención sobre sesión cerrada no modifica `checked_out_at`;
+18. dos checkouts concurrentes producen como máximo una transición terminal;
+19. checkout, auto-close, cierre administrativo y otras terminales no duplican efectos;
+20. un cambio concurrente de turno no reata la sesión;
+21. `occurred_at` y confirmación server-side permanecen separados;
+22. el checkout no se declara aplicado antes del commit;
+23. resultado desconocido se recupera antes de repetir;
+24. una salida offline no cierra optimistamente la sesión server-side;
+25. checkout confirmado produce estado `CLOSED`;
+26. una sesión `CLOSED` no aparece como `active_checkin_session`;
+27. el `AccessContext` anterior queda obsoleto;
+28. una nueva resolución produce un nuevo `context_id` cuando corresponde;
+29. `active_shift` puede seguir vigente después del checkout;
+30. el checkout no convierte permisos `T` en `T+C`;
+31. los carriles `T+C` dejan de satisfacer el prerrequisito de check-in;
+32. el carril base no se borra por checkout;
+33. autenticación y sesión técnica del dispositivo no se cierran automáticamente;
+34. rol, sede y área pueden seguir siendo hechos resolubles sin representar presencia;
+35. caché, memoización y proyecciones stale dejan de ser utilizables para autoridad dependiente;
+36. Realtime es señal de convergencia y no fuente de autoridad;
+37. acciones concurrentes revalidan antes de su efecto;
+38. un descanso no conserva autoridad después de cerrar la sesión padre;
+39. la semántica exacta del descanso permanece en `ANIMA-AUTH-010`;
+40. expiración puede retirar autoridad antes del checkout;
+41. auto-close conserva causa e idempotencia propias;
+42. cierre administrativo permanece separado del checkout personal;
+43. geocerca se valida cuando la política aplicable la exija sin inventar thresholds;
+44. la respuesta visible minimiza información;
+45. un checkout confirmado no se borra para restaurar autoridad;
+46. cada brecha física observada tiene propietario existente;
+47. no se crean ni modifican requisitos de prueba;
+48. no se ejecutan cambios físicos.
+
+---
+
+#### 48. Límites
+
+Esta tarea no define:
+
+- publicación del turno;
+- creación del contexto al registrar entrada, propiedad de `ANIMA-AUTH-007`;
+- cambio de turno, propiedad de `ANIMA-AUTH-008`;
+- semántica detallada de descansos, propiedad de `ANIMA-AUTH-010`;
+- cambio temporal de área, propiedad de `ANIMA-AUTH-011`;
+- reemplazos, propiedad de `ANIMA-AUTH-012`;
+- turnos cruzados de medianoche, propiedad de `ANIMA-AUTH-013`;
+- almacenamiento y sincronización completos de la cola offline, propiedad de `ANIMA-AUTH-014` y `ANIMA-AUTH-015`;
+- diagnóstico visible, propiedad de `ANIMA-AUTH-016` y `ANIMA-AUTH-017`;
+- auditoría detallada, propiedad de `ANIMA-AUTH-018`;
+- grants, scopes ni autorización universal;
+- esquema físico definitivo de sesiones;
+- formato físico de freshness tokens;
+- cierre administrativo completo;
+- correcciones laborales;
+- cálculo de nómina;
+- thresholds de geocerca;
+- migraciones o cambios productivos.
+
+---
+
+#### 49. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-009 — Cerrar contexto al registrar salida`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización`
+
+
 ### [ ] ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización
 ### [ ] ANIMA-AUTH-011 — Manejar cambio temporal de área
 ### [ ] ANIMA-AUTH-012 — Manejar reemplazos de turno
