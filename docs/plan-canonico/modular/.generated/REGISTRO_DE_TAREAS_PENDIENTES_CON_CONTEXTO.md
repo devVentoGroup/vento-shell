@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `ANIMA-AUTH-012` — Manejar reemplazos de turno | `ANIMA-AUTH-013` — Manejar turnos cruzados de medianoche | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `AUTH-DB-018::GLOBAL` — Separar vistas y RPC expuestas de helpers internos | `AUTH-DB-017::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `IN_PROGRESS` | `AUTH-DB-018::GLOBAL` — Separar vistas y RPC expuestas de helpers internos | `AUTH-DB-017::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -25,7 +25,7 @@
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-F-ANIMA` — ANIMA
 - **Siguiente etapa documental:** `PHASE-04-G-VISO-CORE`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `AUTH-DB-018::GLOBAL`
+- **Acción física prioritaria:** `EJECUTAR_IMPLEMENTACION` — `AUTH-DB-018::GLOBAL`
 - **Instancias físicas en espera de predecesora:** **9**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
@@ -35,7 +35,7 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `AUTH-DB-018::GLOBAL` | Separar vistas y RPC expuestas de helpers internos | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 1 | **ACTUAL** | `AUTH-DB-018::GLOBAL` | Separar vistas y RPC expuestas de helpers internos | `IN_PROGRESS` | ACTUAL — EJECUTAR_IMPLEMENTACION |
 | 2 | PENDIENTE | `AUTH-DB-017::GLOBAL` | Configurar esquemas expuestos y privilegios de Data API | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-018::GLOBAL. |
 | 3 | PENDIENTE | `AUTH-DB-019::GLOBAL` | Implementar vínculos canónicos entre Auth e identidades empresariales | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-018::GLOBAL. |
 | 4 | PENDIENTE | `AUTH-DB-033::GLOBAL` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-018::GLOBAL. |

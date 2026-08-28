@@ -1,10 +1,113 @@
 {
   "instance_id": "AUTH-DB-018::GLOBAL",
   "task_id": "AUTH-DB-018",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "IN_PROGRESS",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-018__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record AUTH-DB-018::GLOBAL authorization, lifecycle state, inventory and classification evidence, materialization evidence, and consolidated validation evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use the canonical physical implementation lifecycle without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run governed drift validation without modifying the script."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed local Supabase database harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the migration manifest if materialization later requires a migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run quality:repair exactly once after complete materialization and before IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260828152129_auth_db_018_contract_separation.sql",
+      "change": "CREATE",
+      "scope": "Materialize AUTH-DB-018 classification-first contract separation using wrapper-first api projections and RPC wrappers without changing Data API grants."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/025_auth_db_016_canonical_schema_foundation.test.sql",
+      "change": "MODIFY",
+      "scope": "Remove AUTH-DB-016 point-in-time empty-schema assertions that conflict with authorized downstream materialization while preserving permanent namespace and privilege invariants."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/026_auth_db_018_contract_separation.test.sql",
+      "change": "CREATE",
+      "scope": "Validate AUTH-DB-018 inventory reconciliation, api contract separation, security-invoker views, RPC wrappers, privileged-view blocks, and AUTH-DB-017 boundary."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest after adding the AUTH-DB-018 forward migration."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-28T08:56:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "f868348ed13fc1930f8c984bab48e7ce6db94fbf156ace7cff521259e081b1d0"
+  },
+  "evidence": [
+    "HUMAN AUTHORIZATION APROBADO",
+    "SOURCE CONTRACT SHA256 f868348ed13fc1930f8c984bab48e7ce6db94fbf156ace7cff521259e081b1d0",
+    "PRE_MATERIALIZATION INVENTORY AND CLASSIFICATION REQUIRED",
+    "REMOTE DIRECT MUTATIONS BEFORE CLASSIFICATION NO",
+    "AUTH-DB-018 CURRENT INVENTORY views=62 security_invoker=58 privileged_views=4 direct_vento_routines=224 direct_vento_security_definer=174 trigger_functions=73 platform_managed_extension_routines=4 primary_universe=286",
+    "AUTH-DB-018 LOCAL PREDECESSOR RECONCILIATION direct_vento_security_definer=166 after AUTH-DB-003 converts exactly 8 remote-observed SECURITY DEFINER routines to SECURITY INVOKER",
+    "AUTH-SRV-003 RECONCILIATION canonical_rpc_contracts=100 current=93 missing=7 client_executable=83 server_only=10",
+    "MATERIALIZATION migration=supabase/migrations/20260828152129_auth_db_018_contract_separation.sql test=supabase/tests/database/026_auth_db_018_contract_separation.test.sql manifest=supabase/MIGRATION_MANIFEST.md",
+    "AUTH-DB-017 BOUNDARY no api.schemas extra_search_path USAGE SELECT EXECUTE default_privileges or Data API configuration changes",
+    "AUTH-DB-018 CLASSIFICATION STRATEGY views: 57 PUBLISH_API, public.sell_products_by_site KEEP_COMPATIBILITY, 4 privileged views BLOCKED; observed client RPC names=PUBLISH_API by exact schema+name with signature-preserving wrappers; other direct routines=KEEP_OWNER_INTERNAL; trigger_functions=KEEP_OWNER_INTERNAL; extension routines=PLATFORM_MANAGED",
+    "AUTH-DB-018 SQL REPAIR current_schema reserved identifier replaced by source_schema_name before local DB reset",
+    "AUTH-DB-018 VIEW RECONCILIATION public.sell_products_by_site is an explicit compatibility view whose canonical view is pass.sell_products_by_site; legacy identity preserved and only pass source publishes api.sell_products_by_site",
+    "AUTH-DB-016 TEST COMPATIBILITY point-in-time empty-schema assertions removed; permanent namespace and privilege invariants remain in 025 while AUTH-DB-018 object invariants remain owned by 026",
+    "FOCAL PGTAP PASS files=2 assertions=46 tests=AUTH-DB-016+AUTH-DB-018",
+    "CLEAN DATABASE HARNESS PASS migrations=8 test_files=11 assertions=174 categories=SCHEMA+INTEGRITY+RLS+RPC+MIGRATIONS",
+    "LOCAL RECOVERY PASS rpo_actual=0 rto_actual_ms=27147 backup=PASS restore=PASS post_recovery_harness=PASS post_recovery_drift=PASS",
+    "LOCAL STATIC VALIDATION PASS migration_manifest=PASS lint_ratchet=PASS working_tree_diff_check=PASS",
+    "STRICT LOCAL DRIFT PASS certification=LOCAL_CERTIFIED drift_total=0 unauthorized_drift=0 insufficient_evidence=0",
+    "QUALITY_REPAIR EXECUTED IN PRIOR ATTEMPT EXACTLY ONCE; NOT REPEATED DURING RESUME"
+  ]
 }
