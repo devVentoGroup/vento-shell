@@ -929,8 +929,8 @@ views_total = 62
 views_security_invoker = 58
 views_privileged = 4
 direct_vento_routines = 226
-direct_vento_security_definer = 192
-trigger_functions = 72
+direct_vento_security_definer = 176
+trigger_functions = 71
 
 primary_classification_universe
 = 62 views + 226 direct Vento routines
@@ -957,7 +957,7 @@ La observación read-only de `vento-os-dev` muestra:
 | `public`      |     61 |                 57 |                    4 |                    184 |                         146 |                59 |
 | `talento`     |      0 |                  0 |                    0 |                     15 |                          11 |                 1 |
 | `viso`        |      0 |                  0 |                    0 |                      0 |                           0 |                 0 |
-| **TOTAL**     | **62** |             **58** |                **4** |                **226** |                     **192** |            **72** |
+| **TOTAL**     | **62** |             **58** |                **4** |                **226** |                     **176** |            **71** |
 
 Esta línea base describe implementación actual. No convierte `public`, `club`, `pass`, `talento` ni ningún otro schema legacy en owner objetivo por mera existencia.
 
@@ -1237,7 +1237,7 @@ Los trigger functions:
 - se reconcilian por owner del objeto protegido o del efecto producido;
 - pueden pertenecer a una capa técnica transversal solo cuando su semántica sea realmente transversal.
 
-La línea base actual contiene 72 trigger functions en los schemas observados.
+La línea base actual contiene 71 trigger functions en los schemas observados.
 
 Su recuento se conserva como evidencia de ownership interno, no como inventario de RPC cliente.
 
@@ -1539,7 +1539,7 @@ No se modifica ninguna fila del registro de requisitos.
 | --------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | BUILD     | NOT_EXECUTED   | la tarea documental no materializa migraciones ni código de producto                                                                                                    |
 | LOCAL     | NOT_EXECUTED   | pendiente del lifecycle documental y validadores del checkout de la tarea                                                                                               |
-| REMOTA    | PASS           | fuentes canónicas vigentes y línea base read-only de `vento-os-dev` reconciliadas: 62 vistas, 226 rutinas Vento directas, 72 trigger functions y 4 vistas privilegiadas |
+| REMOTA    | PASS           | fuentes canónicas vigentes y línea base read-only de `vento-os-dev` reconciliadas: 62 vistas, 226 rutinas Vento directas, 71 trigger functions y 4 vistas privilegiadas |
 | OPERATIVA | NOT_APPLICABLE | no se alteran consumidores, procesos ni comportamiento runtime                                                                                                          |
 | FÍSICA    | NOT_APPLICABLE | `AUTH-DB-018::GLOBAL` permanece sin autorización física                                                                                                                 |
 
@@ -1559,9 +1559,9 @@ No se modifica ninguna fila del registro de requisitos.
 10. La línea base remota actual contiene 62 vistas.
 11. De esas vistas, 58 usan `security_invoker` y 4 son privilegiadas.
 12. La línea base contiene 226 rutinas Vento directas.
-13. La línea base contiene 72 trigger functions.
+13. La línea base contiene 71 trigger functions.
 14. El universo primario observado es de 288 identidades.
-15. Los 72 trigger functions permanecen fuera del universo primario de contratos.
+15. Los 71 trigger functions permanecen fuera del universo primario de contratos.
 16. Las cuatro vistas privilegiadas actuales quedan bloqueadas para publicación directa tal como están.
 17. Toda `READ_VIEW` objetivo usa `security_invoker=true` por defecto.
 18. `api` mantiene objetivo de cero RPC `SECURITY DEFINER` por defecto.
@@ -1594,7 +1594,7 @@ No se modifica ninguna fila del registro de requisitos.
 - se definan únicamente `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC` como contratos de `api`;
 - se cierre la identidad física de vistas y rutinas;
 - las sobrecargas no puedan colapsarse;
-- la línea base remota de 62 vistas, 226 rutinas directas y 72 trigger functions quede registrada como evidencia;
+- la línea base remota de 62 vistas, 226 rutinas directas y 71 trigger functions quede registrada como evidencia;
 - las cuatro vistas privilegiadas queden bloqueadas para publicación directa tal como están;
 - `security_invoker=true` quede fijado como default de vistas expuestas;
 - `SECURITY DEFINER` no quede heredado automáticamente hacia `api`;
