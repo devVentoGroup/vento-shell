@@ -57,20 +57,34 @@ try {
   console.error(error instanceof Error ? error.message : String(error));
   process.exit(1);
 }
+
 const { syncPendingTaskContext } = await import('./sync-pending-task-context.mjs');
 syncPendingTaskContext();
+
+let readinessResult;
+let implementationControl;
+try {
+  const { scanPackageReadiness } = await import('./package-readiness-scanner.mjs');
+  const { writeImplementationControlArtifacts } = await import('./implementation-control.mjs');
+  const { writeReadinessChatgptWorkStarter: writeChatgptWorkStarter } = await import('./chatgpt-work-starter-readiness.mjs');
+
+  readinessResult = scanPackageReadiness({ root, write: true, trigger: 'plan-build' });
+  implementationControl = writeImplementationControlArtifacts({ root }).control;
+  writeChatgptWorkStarter({ root, readinessResult });
+} catch (error) {
+  console.error('[PACKAGE READINESS] Compilaci\u00f3n bloqueada:');
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+}
 
 try {
   const path = await import('node:path');
   const { derivePreflight } = await import('./canonical-task-preflight.mjs');
   const { prepareImplementationReadinessArtifacts } = await import('./implementation-readiness-artifacts.mjs');
-  const { writeImplementationControlArtifacts } = await import('./implementation-control.mjs');
-  const { writeChatgptWorkStarter } = await import('./chatgpt-work-starter.mjs');
   const { writeCurrentTaskDevelopmentArtifacts } = await import('./task-development-artifacts.mjs');
   const { writePlanWatchStatus } = await import('./plan-watch-runtime.mjs');
   const completedAt = new Date().toISOString();
-  const { control: implementationControl } = writeImplementationControlArtifacts({ root });
-  writeChatgptWorkStarter({ root });
+
   writePlanWatchStatus(path.join(root, '.delivery', 'plan-status.md'), {
     state: 'COMPILACI\u00d3N COMPLETADA',
     pid: null,
@@ -78,7 +92,7 @@ try {
     updatedAt: completedAt,
     result: 'OK',
     reason: 'docs:plan:build',
-    message: 'Fuentes can\u00f3nicas compiladas y contexto pendiente sincronizado.',
+    message: 'Fuentes can\u00f3nicas compiladas, contexto pendiente sincronizado y PACKAGE READINESS SCAN actualizado.',
     preflight: derivePreflight({ root }),
     implementationControl,
   });
@@ -88,11 +102,16 @@ try {
     `[PLAN CAN\u00d3NICO] \u279c ACCI\u00d3N PRINCIPAL: ${implementationControl.primaryAction.type} `
     + `${implementationControl.primaryAction.target}`,
   );
+  console.log(`[PACKAGE READINESS] packages listos: ${readinessResult.registry.implementation_ready_queue.length}.`);
+  if (readinessResult.registry.implementation_ready_queue.length > 0) {
+    const first = readinessResult.registry.implementation_ready_queue[0];
+    console.log(`[PACKAGE READINESS] siguiente candidato: ${first.next_execution}; autorizacion fisica requerida.`);
+  }
   console.log('[PLAN CAN\u00d3NICO]   Iniciador documental: .delivery/INICIADOR_VENTO_DOCUMENTACION.txt');
   console.log('[PLAN CAN\u00d3NICO]   Iniciador implementaci\u00f3n: .delivery/INICIADOR_VENTO_IMPLEMENTACION.txt');
   console.log('[PLAN CAN\u00d3NICO]   Selector legacy: INICIADOR_VENTO_ACTUAL.txt');
 } catch (error) {
   console.warn(
-    `[PLAN CAN\u00d3NICO] No se pudieron actualizar todos los artefactos locales: ${error instanceof Error ? error.message : String(error)}`,
+    `[PLAN CAN\u00d3NICO] No se pudieron actualizar todos los artefactos locales no cr\u00edticos: ${error instanceof Error ? error.message : String(error)}`,
   );
 }

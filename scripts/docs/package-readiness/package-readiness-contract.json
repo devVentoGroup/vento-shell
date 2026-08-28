@@ -1,0 +1,326 @@
+{
+  "schema_version": 1,
+  "contract_id": "PACKAGE-READINESS-001",
+  "check_statuses": [
+    "PASS",
+    "FAIL",
+    "UNKNOWN",
+    "NOT_APPLICABLE"
+  ],
+  "capability_statuses": [
+    "BLOCKED",
+    "READY_FOR_COMPILATION"
+  ],
+  "package_statuses": [
+    "DISCOVERED",
+    "MATURING",
+    "READY_FOR_COMPILATION",
+    "COMPILED",
+    "READY_FOR_GATE",
+    "IMPLEMENTATION_READY",
+    "IMPLEMENTING",
+    "DEPLOYED",
+    "CLOSED"
+  ],
+  "unknown_blocks": true,
+  "fail_blocks": true,
+  "package_ready_status": "IMPLEMENTATION_READY",
+  "implementation_entry_task": "SHELL-CI-020",
+  "capability_conditions": [
+    {
+      "id": "FUNCTIONAL_RESULT_DEFINED",
+      "label": "Resultado funcional definido",
+      "group": "functional_result",
+      "allow_not_applicable": false
+    },
+    {
+      "id": "SCOPE_CLOSED",
+      "label": "Scope cerrado",
+      "group": "scope",
+      "allow_not_applicable": false
+    },
+    {
+      "id": "TO_BE_CLOSED",
+      "label": "TO-BE operativo cerrado",
+      "group": "process",
+      "allow_not_applicable": false
+    },
+    {
+      "id": "STATES_TRANSITIONS_CLOSED",
+      "label": "Estados/transiciones cerrados",
+      "group": "states",
+      "allow_not_applicable": false
+    },
+    {
+      "id": "AUTH_CLOSED",
+      "label": "AUTH/permisos cerrados",
+      "group": "auth",
+      "allow_not_applicable": true
+    },
+    {
+      "id": "UX_CLOSED",
+      "label": "UX necesaria cerrada",
+      "group": "ux",
+      "allow_not_applicable": true
+    },
+    {
+      "id": "DATA_CLOSED",
+      "label": "Contratos de datos cerrados",
+      "group": "data",
+      "allow_not_applicable": true
+    },
+    {
+      "id": "INTEGRATIONS_CLOSED",
+      "label": "Integraciones cerradas",
+      "group": "integrations",
+      "allow_not_applicable": true
+    },
+    {
+      "id": "LEGACY_TRANSITION_CLOSED",
+      "label": "Estrategia legacy/transición cerrada",
+      "group": "migration",
+      "allow_not_applicable": true
+    },
+    {
+      "id": "BUSINESS_RULES_CLOSED",
+      "label": "Reglas de negocio cerradas",
+      "group": "business_rules",
+      "allow_not_applicable": false
+    },
+    {
+      "id": "ERROR_CASES_CLOSED",
+      "label": "Casos de error cerrados",
+      "group": "errors",
+      "allow_not_applicable": false
+    },
+    {
+      "id": "ACCEPTANCE_TREQ_CLOSED",
+      "label": "Criterios de aceptación/TREQ",
+      "group": "tests",
+      "allow_not_applicable": false
+    },
+    {
+      "id": "NO_CANONICAL_CONTRADICTIONS",
+      "label": "Sin contradicciones canónicas",
+      "group": "contradictions",
+      "allow_not_applicable": false
+    },
+    {
+      "id": "NO_OPEN_CRITICAL_DECISIONS",
+      "label": "Sin decisiones abiertas críticas",
+      "group": "decisions",
+      "allow_not_applicable": false
+    }
+  ],
+  "dossier_conditions": [
+    {
+      "id": "DELIV_PKG_001",
+      "label": "DELIV-PKG-001",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-001"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_002",
+      "label": "DELIV-PKG-002",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-002"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_003",
+      "label": "DELIV-PKG-003",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-003"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_004",
+      "label": "DELIV-PKG-004",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-004"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_005",
+      "label": "DELIV-PKG-005",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-005"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_006",
+      "label": "DELIV-PKG-006",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-006"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_007",
+      "label": "DELIV-PKG-007",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-007"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_008",
+      "label": "DELIV-PKG-008",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-008"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_009",
+      "label": "DELIV-PKG-009",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-009"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_010",
+      "label": "DELIV-PKG-010",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-010"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_011",
+      "label": "DELIV-PKG-011",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-011"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_012",
+      "label": "DELIV-PKG-012",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-012"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_013",
+      "label": "DELIV-PKG-013",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-013"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_014",
+      "label": "DELIV-PKG-014",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-014"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_015",
+      "label": "DELIV-PKG-015",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-015"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_016",
+      "label": "DELIV-PKG-016",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-016"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_017",
+      "label": "DELIV-PKG-017",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-017"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_018",
+      "label": "DELIV-PKG-018",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-018"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_019",
+      "label": "DELIV-PKG-019",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-019"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_020",
+      "label": "DELIV-PKG-020",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-020"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_021",
+      "label": "DELIV-PKG-021",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-021"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_022",
+      "label": "DELIV-PKG-022",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-022"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_023",
+      "label": "DELIV-PKG-023",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-023"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_024",
+      "label": "DELIV-PKG-024",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-024"
+      ]
+    },
+    {
+      "id": "DELIV_PKG_025",
+      "label": "DELIV-PKG-025",
+      "deliv_pkg_refs": [
+        "DELIV-PKG-025"
+      ]
+    }
+  ],
+  "gate": {
+    "task_id": "E5-GATE-008",
+    "require_template_approved": true,
+    "require_dossier_complete": true,
+    "require_zero_blockers": true,
+    "require_physical_dependencies": true
+  },
+  "physical_dependencies": {
+    "global_verified_ranges": [
+      {
+        "prefix": "SHELL-CI",
+        "from": 1,
+        "to": 19
+      }
+    ]
+  },
+  "persistent_package_statuses": [
+    "DISCOVERED",
+    "MATURING",
+    "READY_FOR_COMPILATION",
+    "COMPILED",
+    "READY_FOR_GATE"
+  ],
+  "effective_package_statuses": [
+    "DISCOVERED",
+    "MATURING",
+    "READY_FOR_COMPILATION",
+    "COMPILED",
+    "READY_FOR_GATE",
+    "IMPLEMENTATION_READY",
+    "IMPLEMENTING",
+    "DEPLOYED",
+    "CLOSED"
+  ]
+}
