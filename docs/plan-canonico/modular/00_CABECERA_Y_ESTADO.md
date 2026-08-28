@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1063** |
+| Tareas aprobadas | **1064** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **531** |
+| Tareas no iniciadas | **530** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **66.69% (1063/1594)** |
+| Porcentaje de completamiento | **66.75% (1064/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-AUTH-011 — Manejar cambio temporal de área** |
-| Tarea actual | **ANIMA-AUTH-012 — Manejar reemplazos de turno** |
+| Última tarea aprobada | **ANIMA-AUTH-012 — Manejar reemplazos de turno** |
+| Tarea actual | **ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche** |
+| Siguiente tarea | **ANIMA-AUTH-014 — Manejar cola offline de check-in** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 11 de 37 aprobadas; ANIMA-AUTH-012 pendiente** |
+| Progreso del bloque | **BLOQUE F: 12 de 37 aprobadas; ANIMA-AUTH-013 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-017::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-AUTH-012** |
+| Carril documental | **ACTIVO — ANIMA-AUTH-013** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-017::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-AUTH-011` — Manejar cambio temporal de área |
-| Tarea actual | `ANIMA-AUTH-012` — Manejar reemplazos de turno — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-AUTH-013` — Manejar turnos cruzados de medianoche |
+| Última aprobada | `ANIMA-AUTH-012` — Manejar reemplazos de turno |
+| Tarea actual | `ANIMA-AUTH-013` — Manejar turnos cruzados de medianoche — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-AUTH-014` — Manejar cola offline de check-in |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 11 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-012** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 12 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-013** |
 | Implementación física | **AUTH-DB-017::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-AUTH-011 — Manejar cambio temporal de área
-        ↓
-TAREA ACTUAL
 ANIMA-AUTH-012 — Manejar reemplazos de turno
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-AUTH-014 — Manejar cola offline de check-in
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 11 de 37 tareas aprobadas
+BLOQUE F — 12 de 37 tareas aprobadas
 ```

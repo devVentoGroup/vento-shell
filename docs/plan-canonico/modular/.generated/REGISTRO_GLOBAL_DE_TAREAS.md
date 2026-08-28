@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1063** |
+| Aprobadas | **1064** |
 | En propuesta | **0** |
-| No iniciadas | **531** |
+| No iniciadas | **530** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **66.69% (1063/1594)** |
+| Porcentaje de completamiento | **66.75% (1064/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-011` — Manejar cambio temporal de área | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-012` — Manejar reemplazos de turno | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-013` — Manejar turnos cruzados de medianoche | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-012` — Manejar reemplazos de turno | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-013` — Manejar turnos cruzados de medianoche | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-014` — Manejar cola offline de check-in | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -607,7 +607,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-009` | Cerrar contexto al registrar salida | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-010` | Manejar descansos sin cerrar autorización | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-011` | Manejar cambio temporal de área | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-012` | Manejar reemplazos de turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-012` | Manejar reemplazos de turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-013` | Manejar turnos cruzados de medianoche | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-014` | Manejar cola offline de check-in | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-015` | Revalidar permisos al sincronizar una cola offline | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
