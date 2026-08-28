@@ -4678,7 +4678,957 @@ Esta tarea no define:
 `ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno`
 
 
-### [ ] ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno
+### ✅ ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada
+**Tarea siguiente:** ANIMA-AUTH-009 — Cerrar contexto al registrar salida
+**Tipo de tarea:** documental; definición contractual de invalidación y nueva resolución del contexto operativo de ANIMA cuando cambia el turno autoritativo durante una sesión de check-in ya confirmada, sin reescribir la asistencia histórica ni convertir el cambio de turno en autorización
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología PER_IMPLEMENTATION_UNIT y al gate POST_E5_PACKAGE
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir con el contexto operativo de ANIMA cuando, después de una entrada confirmada, cambia el turno autoritativo que participa en la resolución.
+
+La tarea protege tres hechos simultáneos:
+
+```text
+LA ASISTENCIA HISTORICA NO SE REESCRIBE
++
+EL CONTEXTO VIEJO NO CONSERVA AUTORIDAD
++
+LA REALIDAD NUEVA SE RESUELVE DE NUEVO EN SERVIDOR
+```
+
+La regla raíz queda:
+
+```text
+CONTEXTO OPERATIVO RESUELTO
++
+CAMBIO RELEVANTE DEL TURNO O DE SU APLICABILIDAD
+->
+INVALIDAR REUTILIZACION DEL SNAPSHOT ANTERIOR
+->
+RESOLVER NUEVO ACCESS CONTEXT
+->
+REEVALUAR AUTORIZACION PARA TODA ACCION POSTERIOR
+```
+
+Actualizar contexto no significa mutar un `AccessContext` existente ni editar la sesión de asistencia para que coincida con el nuevo turno.
+
+---
+
+#### 2. Entrada contractual desde ANIMA-AUTH-007
+
+`ANIMA-AUTH-008` consume exactamente el handoff aprobado por `ANIMA-AUTH-007`:
+
+- actor efectivo;
+- referencia estable de la sesión de check-in;
+- evento de entrada confirmado;
+- turno y revisión publicada usados para iniciar la sesión;
+- sede operativa;
+- área operativa o ausencia site-wide válida;
+- rol operativo;
+- compatibilidad territorial;
+- instante de confirmación;
+- snapshot o referencias de versión necesarias para detectar cambios posteriores.
+
+El handoff afirma:
+
+```text
+CHECKIN_SERVER_CONFIRMED = TRUE
+ACTIVE_CHECKIN_SESSION = PRESENT
+OPERATIONAL_CONTEXT_RESOLVABLE = TRUE
+```
+
+No afirma:
+
+```text
+SHIFT_WILL_NEVER_CHANGE = TRUE
+CONTEXT_WILL_REMAIN_FRESH = TRUE
+SESSION_CAN_BE_REBOUND = TRUE
+PERMISSION_WILL_REMAIN_GRANTED = TRUE
+```
+
+La tarea actual comienza cuando uno de los hechos que sostienen ese contexto deja de poder reutilizarse sin una nueva resolución.
+
+---
+
+#### 3. Qué significa “cambia el turno”
+
+Para esta tarea existe cambio relevante cuando una fuente autoritativa o una frontera temporal puede modificar el `active_shift` que se resolvería ahora.
+
+Incluye, según corresponda:
+
+- publicación efectiva de una revisión sucesora;
+- retiro de la revisión vigente;
+- cancelación;
+- cambio de inicio o fin;
+- llegada al inicio o fin temporal;
+- cambio de sede;
+- cambio de área;
+- cambio de rol operativo;
+- cambio de trabajador atribuido al turno;
+- desactivación de sede, área o rol;
+- corrección de solapamientos;
+- aparición de ambigüedad;
+- transición temporal hacia otra ocurrencia de turno.
+
+No todo cambio almacenado es todavía autoritativo. Un borrador posterior sin publicar no modifica el contexto operativo vigente.
+
+---
+
+#### 4. Tres clases de cambio
+
+Toda observación se clasifica primero como una de estas clases:
+
+| Clase | Significado | Efecto contextual |
+| --- | --- | --- |
+| `NON_AUTHORITATIVE_CHANGE` | borrador, edición no publicada o dato auxiliar sin autoridad | no reemplaza el turno autoritativo |
+| `AUTHORITATIVE_CHANGE_SAME_SHIFT` | cambia la revisión o los hechos vigentes de la misma ocurrencia lógica | invalidar el snapshot anterior y volver a resolver |
+| `AUTHORITATIVE_CHANGE_DIFFERENT_SHIFT` | la resolución vigente pasa a otra ocurrencia lógica | invalidar el snapshot; no reatar la sesión anterior al nuevo `shift_id` |
+
+La clasificación se hace server-side desde fuentes canónicas. El cliente no puede declarar que un cambio es inocuo.
+
+---
+
+#### 5. Inmutabilidad de la evidencia de entrada
+
+El hecho de asistencia confirmado permanece ligado a la realidad con la que fue aceptado.
+
+Conceptualmente se conserva:
+
+```text
+CHECKIN CONFIRMADO
+->
+shift_id de origen
++
+revisión publicada de origen
++
+actor
++
+instante
++
+territorio de origen
++
+evidencia de marcacion
+```
+
+Una revisión nueva no reescribe retrospectivamente:
+
+- `checked_in_at`;
+- el evento original;
+- la identidad idempotente;
+- el turno de origen;
+- la revisión de origen;
+- el punto físico;
+- la evidencia de geocerca;
+- la decisión de validación original.
+
+La actualización del contexto es prospectiva para acciones posteriores.
+
+---
+
+#### 6. Sesión de check-in y snapshot de sesión
+
+La sesión de asistencia conserva su snapshot histórico.
+
+La regla heredada es:
+
+```text
+SESSION SNAPSHOT = INMUTABLE
+```
+
+Por tanto, un cambio de turno no autoriza:
+
+- modificar silenciosamente el `shift_id` de la sesión;
+- sustituir la revisión con la que comenzó;
+- cambiar el actor;
+- reescribir el check-in;
+- reemplazar evidencia territorial histórica;
+- convertir una sesión residual en compatible mediante actualización in-place.
+
+La sesión puede continuar siendo utilizable únicamente si, al resolver de nuevo, sigue satisfaciendo las reglas vigentes de compatibilidad.
+
+---
+
+#### 7. `AccessContext` nunca se actualiza in-place
+
+`AccessContext` es un snapshot inmutable.
+
+Ante un cambio relevante:
+
+```text
+context_id anterior
+->
+STALE / NO REUTILIZABLE
+```
+
+y después:
+
+```text
+resolver fuentes actuales
+->
+nuevo AccessContext
+->
+nuevo context_id
+```
+
+Dos resoluciones pueden producir el mismo contenido semántico si el cambio observado no altera finalmente los hechos aplicables, pero la decisión de reutilizar autoridad nunca se basa en mutar el snapshot anterior.
+
+---
+
+#### 8. Revisión sucesora de la misma ocurrencia
+
+Cuando se publica una revisión sucesora de la misma ocurrencia lógica de turno:
+
+1. la revisión anterior deja de ser la fuente autoritativa para nuevas resoluciones cuando la sucesora ya sea efectiva;
+2. la sesión de check-in conserva como evidencia la revisión con la que inició;
+3. se resuelve un nuevo `active_shift`;
+4. se comprueba nuevamente actor, vigencia, sede, área y rol;
+5. se comprueba si la sesión activa continúa siendo compatible;
+6. se produce un nuevo `AccessContext` o se deja el carril operativo no utilizable.
+
+La existencia del mismo `shift_id` no permite omitir la revalidación.
+
+---
+
+#### 9. Revisión guardada pero no publicada
+
+Caso:
+
+```text
+REVISION A = PUBLICADA Y VIGENTE
+REVISION B = BORRADOR POSTERIOR
+```
+
+Resultado:
+
+```text
+ACTIVE_SHIFT CONTINUA DESDE A
+```
+
+La revisión B:
+
+- no invalida por sí sola la autoridad de A;
+- no cambia sede, área o rol en el contexto;
+- no modifica la sesión;
+- no habilita nueva autorización;
+- no se mezcla campo a campo con A.
+
+Solo una transición autoritativa de publicación puede cambiar la revisión usada para nuevas resoluciones.
+
+---
+
+#### 10. Revisión sucesora todavía no efectiva
+
+Una revisión publicada puede contener una frontera temporal futura.
+
+Mientras la nueva realidad todavía no sea aplicable en el instante server-side:
+
+- no se anticipa el cambio;
+- no se proyecta el nuevo rol;
+- no se cambia sede o área;
+- no se extiende ni reduce el turno usando el reloj del cliente.
+
+El `next_temporal_boundary_at` aplicable debe impedir que un snapshot sobreviva a la frontera en la que la realidad pueda cambiar.
+
+---
+
+#### 11. Cambio de hora de inicio
+
+Si la revisión autoritativa cambia el inicio:
+
+- si el nuevo inicio sigue siendo anterior o igual al instante de resolución y el resto de condiciones continúa válido, el contexto se vuelve a resolver con la nueva revisión;
+- si el nuevo inicio queda en el futuro, `active_shift` deja de existir hasta alcanzar la nueva frontera;
+- una sesión de asistencia que permanezca abierta no convierte por sí sola un turno futuro en vigente;
+- las capacidades base independientes permanecen separadas.
+
+La entrada histórica no cambia de hora.
+
+---
+
+#### 12. Cambio de hora de fin
+
+Si la revisión autoritativa acorta el turno de modo que:
+
+```text
+resolved_at >= nuevo ends_at
+```
+
+entonces:
+
+```text
+active_shift = null
+active_checkin_session = null para autorización
+```
+
+aunque no exista check-out.
+
+Si el turno se extiende:
+
+- la extensión no revive una sesión ya cerrada, expirada o invalidada;
+- una sesión todavía abierta puede continuar únicamente si su propia vigencia y compatibilidad lo permiten;
+- una expiración explícita de sesión ya alcanzada no se amplía retroactivamente;
+- toda acción nueva se evalúa con el contexto fresco.
+
+---
+
+#### 13. Fin temporal sin escritura
+
+El fin del turno invalida por tiempo.
+
+No requiere:
+
+- actualización manual de `status`;
+- job previo;
+- check-out previo;
+- evento Realtime;
+- escritura de invalidación;
+- interacción del usuario.
+
+La condición temporal canónica permanece semiabierta:
+
+```text
+starts_at <= resolved_at < ends_at
+```
+
+Al llegar a `ends_at`, el contexto anterior deja de ser utilizable.
+
+---
+
+#### 14. Cambio de sede
+
+Si cambia autoritativamente la sede de la misma ocurrencia:
+
+1. el snapshot anterior queda obsoleto;
+2. `operational_site` se resuelve desde el turno actualizado;
+3. no se copia la sede del check-in para reparar el turno;
+4. la sesión de check-in solo continúa como prerrequisito si su contrato permanece compatible con la nueva resolución;
+5. un mismatch concluyente deja `active_checkin_session = null` para autorización;
+6. la sede histórica de la entrada no se reescribe.
+
+La geocerca o punto físico de la marcación tampoco se transforma en la nueva sede operativa.
+
+---
+
+#### 15. Cambio de área
+
+Si cambia autoritativamente el área:
+
+- el snapshot anterior queda obsoleto;
+- la nueva área se resuelve desde el turno;
+- el rol se vuelve a validar contra sede y área;
+- el check-in no inventa ni corrige el área;
+- una sesión cuyo `area_id` contradice el nuevo turno deja de ser utilizable para el prerrequisito de check-in;
+- un rol site-wide puede conservar `operational_area = null` únicamente cuando el contrato aplicable lo permite.
+
+La mecánica empresarial de un cambio temporal de área permanece reservada a `ANIMA-AUTH-011`; esta tarea define solo su efecto de invalidación y nueva resolución.
+
+---
+
+#### 16. Cambio de rol operativo
+
+Si cambia autoritativamente el rol del turno:
+
+1. el rol anterior deja de participar en nuevas decisiones;
+2. se valida que el rol nuevo exista y esté activo;
+3. se valida nuevamente habilitación por sede;
+4. se valida nuevamente compatibilidad por área;
+5. `OperationalRoleContext` se vuelve a producir desde el turno;
+6. grants o denies se evalúan de nuevo para cada acción.
+
+El check-in no selecciona el rol y el rol base no sirve como fallback.
+
+La sesión histórica puede conservar el rol observado al iniciar para auditoría sin convertir ese snapshot histórico en autoridad actual.
+
+---
+
+#### 17. Cambio de trabajador
+
+Una ocurrencia que deja de pertenecer al mismo actor efectivo no puede mantener el contexto previo.
+
+Si:
+
+```text
+current_shift.employee_id != actor_effective.actor_id
+```
+
+entonces el turno no es candidato operativo para ese actor.
+
+Queda prohibido:
+
+- reasignar la sesión de check-in;
+- cambiar `employee_id` del evento histórico;
+- prestar la sesión a otro trabajador;
+- mantener el rol o territorio anterior;
+- conservar un permiso porque el mismo dispositivo siga activo.
+
+El cambio requiere resolución bajo la identidad correcta y los flujos propietarios correspondientes.
+
+---
+
+#### 18. Cancelación o retiro
+
+Una cancelación o retiro autoritativo produce:
+
+```text
+active_shift = null
+active_checkin_session = null para autorización
+```
+
+La sesión residual no conserva autoridad.
+
+El hecho de asistencia confirmado:
+
+- permanece en historia;
+- puede requerir reconciliación administrativa;
+- puede originar una novedad o corrección según procesos propietarios;
+- no se borra para ocultar la divergencia.
+
+La creación de un evento terminal o el cierre administrativo de asistencia no se define aquí.
+
+---
+
+#### 19. Desactivación de sede, área o rol
+
+Aunque la fila de turno no cambie, una dependencia estructural puede volverla no utilizable.
+
+Si se desactiva:
+
+- la sede;
+- el área requerida;
+- el rol operativo;
+- una habilitación rol-sede;
+- una compatibilidad rol-área;
+
+el snapshot operativo queda obsoleto y debe resolverse de nuevo.
+
+Un dato referenciado pero inactivo no se mantiene como autoridad por estar presente en la sesión previa.
+
+---
+
+#### 20. Transición a otra ocurrencia de turno
+
+Cuando la resolución server-side pasa de:
+
+```text
+active_shift.shift_id = S1
+```
+
+a:
+
+```text
+active_shift.shift_id = S2
+```
+
+la sesión asociada a S1 no se reata a S2.
+
+La regla de sesión exige coincidencia exacta:
+
+```text
+active_checkin_session.shift_id
+=
+active_shift.shift_id
+```
+
+Por tanto, una nueva resolución con S2 solo puede presentar una sesión activa si existe exactamente una sesión server-confirmed compatible con S2.
+
+La tarea no crea esa sesión por inferencia.
+
+---
+
+#### 21. Turnos consecutivos
+
+En dos turnos consecutivos:
+
+```text
+S1.ends_at = S2.starts_at
+```
+
+la semántica semiabierta hace que exista exactamente un turno vigente en la frontera.
+
+Al llegar al límite:
+
+```text
+S1 deja de ser active_shift
+S2 puede convertirse en active_shift
+```
+
+La sesión de S1 no se convierte automáticamente en sesión de S2.
+
+Para permisos que requieran `T+C`, S2 necesita una sesión activa compatible con S2.
+
+Para permisos cuyo contrato requiera únicamente turno, la evaluación utiliza el nuevo `active_shift` sin inventar check-in.
+
+---
+
+#### 22. Reemplazo de turno
+
+La creación, aprobación y semántica empresarial de un reemplazo de turno pertenecen a `ANIMA-AUTH-012`.
+
+Esta tarea solo fija una consecuencia transversal:
+
+```text
+SI EL REEMPLAZO CAMBIA EL ACTIVE_SHIFT AUTORITATIVO
+->
+EL CONTEXTO ANTERIOR SE INVALIDA
+->
+SE RESUELVE DE NUEVO
+```
+
+No se define aquí:
+
+- cómo se solicita el reemplazo;
+- quién lo aprueba;
+- cómo se vinculan dos ocurrencias;
+- qué notificación se envía;
+- qué compensación de asistencia se aplica.
+
+---
+
+#### 23. Turnos que cruzan medianoche
+
+La semántica especial de turnos overnight pertenece a `ANIMA-AUTH-013`.
+
+`ANIMA-AUTH-008` exige únicamente que la invalidación use timestamps absolutos y no interprete el cambio de fecha civil como cambio automático de turno.
+
+```text
+CAMBIO DE DIA
+!=
+CAMBIO DE TURNO
+```
+
+El contexto cambia cuando cambia la resolución autoritativa o se alcanza una frontera temporal real.
+
+---
+
+#### 24. Ambigüedad y solapamiento
+
+Si una actualización produce dos o más candidatos vigentes incompatibles:
+
+```text
+active_shift = null
+```
+
+y el contexto operativo no puede reconstruirse seleccionando:
+
+- primera fila;
+- última fila;
+- turno con check-in;
+- turno de la sede seleccionada;
+- turno más reciente;
+- turno con rol más específico.
+
+La sesión previa no resuelve la ambigüedad.
+
+La inconsistencia se corrige en la fuente propietaria y las acciones nuevas fallan cerrado.
+
+---
+
+#### 25. Compatibilidad de la sesión después del cambio
+
+Después de resolver el nuevo `active_shift`, la sesión candidata se valida otra vez.
+
+Debe conservar, como mínimo:
+
+```text
+session.employee_id = active_shift.employee_id
+session.shift_id = active_shift.shift_id
+session.site_id = active_shift.site_id
+session.status = ACTIVE
+session.checked_out_at = null
+session no expirada
+candidato unico
+```
+
+Cuando exista área en la sesión, debe ser compatible con el área del turno.
+
+Un cambio que rompa estas relaciones no se “repara” modificando la sesión histórica.
+
+---
+
+#### 26. Diferencia entre sesión histórica y autoridad actual
+
+La misma sesión puede ser:
+
+```text
+HISTORICAMENTE VALIDA
+```
+
+y simultáneamente:
+
+```text
+NO UTILIZABLE PARA UNA NUEVA AUTORIZACION
+```
+
+Esto ocurre, por ejemplo, cuando:
+
+- el turno fue cancelado después de la entrada;
+- cambió la sede;
+- cambió el `shift_id` activo;
+- terminó la ventana temporal;
+- la sesión expiró;
+- apareció una contradicción concluyente.
+
+Conservar evidencia no equivale a conservar autoridad.
+
+---
+
+#### 27. Frescura e invalidación
+
+Un cambio relevante debe afectar la frescura del carril operativo.
+
+La materialización futura debe preservar la semántica de `operational_lane_generation`, que cambia cuando cambia cualquiera de:
+
+- turno;
+- publicación;
+- cancelación;
+- revisión;
+- check-in;
+- check-out;
+- sesión laboral;
+- rol operativo;
+- sede operativa;
+- área operativa;
+- compatibilidad rol-sede o rol-área.
+
+El token o mecanismo equivalente sirve para demostrar frescura. No constituye una fuente empresarial paralela.
+
+---
+
+#### 28. Barrera de escritura
+
+Cuando una escritura autoritativa modifica un hecho que afecta contexto, la secuencia conceptual es:
+
+```text
+CONFIRMAR ESCRITURA EMPRESARIAL
++
+ACTUALIZAR MECANISMO DE FRESCURA EN LA MISMA BARRERA DE CORRECCION
+->
+MARCAR CONTEXTO PREVIO COMO NO REUTILIZABLE
+->
+DESCARTAR MEMOIZACION APLICABLE
+->
+RESOLVER CONTEXTO NUEVO
+->
+PRODUCIR NUEVA DECISION
+```
+
+No es aceptable:
+
+```text
+COMMIT DEL CAMBIO
++
+INVALIDACION BEST EFFORT COMO UNICA GARANTIA
+```
+
+La implementación física transaccional permanece bajo `AUTH-DB-035` y consumidores relacionados.
+
+---
+
+#### 29. Caché y proyecciones de cliente
+
+Una caché o proyección visual no conserva autoridad después de un cambio de turno.
+
+Queda prohibido:
+
+- stale-while-revalidate para contexto que influya en autorización;
+- servir un snapshot con token de frescura anterior;
+- conservar “el último rol” mientras se actualiza;
+- mantener la sede anterior hasta que llegue Realtime;
+- autorizar usando una proyección de cliente todavía visible.
+
+Una proyección segura puede mostrar estado transitorio, pero las acciones nuevas deben usar servidor y contexto fresco.
+
+---
+
+#### 30. Realtime y señales de cambio
+
+Realtime, notificaciones, polling o eventos internos pueden acelerar la convergencia.
+
+Su semántica es:
+
+```text
+SIGNAL
+->
+INVALIDATE / REFRESH
+```
+
+No:
+
+```text
+SIGNAL PAYLOAD
+->
+NEW AUTHORITY
+```
+
+El consumidor no adopta ciegamente sede, área, rol, horario o revisión desde un payload de notificación.
+
+Después de la señal se leen fuentes autoritativas.
+
+---
+
+#### 31. Acciones en vuelo y TOCTOU
+
+Un cambio puede ocurrir entre render, evaluación y mutación.
+
+Por tanto, toda acción protegida posterior debe:
+
+1. resolver o validar el contexto actual;
+2. resolver el recurso actual;
+3. evaluar autorización actual;
+4. aplicar controles de concurrencia;
+5. ejecutar el efecto solo si todo sigue vigente.
+
+Una decisión tomada antes del cambio no es un token de ejecución.
+
+Si el turno cambia después de mostrar un botón pero antes de la escritura, la visibilidad del botón no conserva autoridad.
+
+---
+
+#### 32. Cola offline
+
+Una acción pendiente offline conserva intención, no autoridad.
+
+Si el turno cambia mientras el dispositivo está desconectado:
+
+- no se usa el contexto capturado como autorización futura;
+- no se reata el evento a otro turno;
+- no se ejecuta con el rol anterior;
+- no se conserva territorio anterior;
+- la sincronización debe reautorizar con contexto fresco.
+
+La arquitectura de cola pertenece a `ANIMA-AUTH-014` y la revalidación completa al sincronizar pertenece a `ANIMA-AUTH-015`.
+
+---
+
+#### 33. Matriz de actualización
+
+| Cambio observado | `active_shift` nuevo | Sesión previa | Resultado para contexto nuevo |
+| --- | --- | --- | --- |
+| borrador no publicado | mismo | misma | no cambia por ese borrador |
+| revisión publicada misma ocurrencia, sin cambio material aplicable | mismo hecho semántico | compatible | nueva resolución puede conservar contenido equivalente |
+| misma ocurrencia, cambio de rol válido | misma ocurrencia | puede seguir abierta | revalidar rol y producir contexto nuevo |
+| misma ocurrencia, cambio de sede | nueva sede | incompatible si conserva sede anterior | no usar sesión incompatible |
+| misma ocurrencia, cambio de área | nueva área | revalidar | conservar solo si compatible |
+| inicio movido al futuro | `null` hasta nueva frontera | puede existir históricamente | sin contexto operativo vigente |
+| fin movido antes o igual a ahora | `null` | deja de ser activa para autorización | sin contexto operativo |
+| turno cancelado o retirado | `null` | residual | sin contexto operativo |
+| transición S1 a S2 | S2 | sesión S1 | no reatar; S2 necesita sesión compatible cuando el permiso exige check-in |
+| dos candidatos vigentes | `null` | no resuelve ambigüedad | fail closed |
+| sede, área o rol desactivados | inválido o `null` | no repara | fail closed |
+| fuente obligatoria no verificable | no concluyente | no usar como prueba | fail closed técnico |
+
+---
+
+#### 34. Estado físico observado
+
+La inspección de solo lectura del entorno desplegado muestra una implementación todavía legacy respecto de este contrato:
+
+| Superficie | Estado observado |
+| --- | --- |
+| `employee_shifts` | 3436 filas observadas; 3309 con `published_at` |
+| identidad explícita de revisión/version en `employee_shifts` | no observada |
+| triggers de `employee_shifts` | 2 observados; control mensual de publicación y `updated_at` |
+| invalidación/generación de contexto disparada por cambio de turno | no observada en los triggers inspeccionados |
+| tabla o función con nombre de freshness/context generation/cache | no observada |
+| `attendance_shift_events` | existe; 210 filas observadas en el snapshot |
+| referencia explícita de revisión de turno en `attendance_shift_events` | no observada |
+| `get_operational_context` | resolver legacy que selecciona turno y check-in por consultas separadas |
+| selección legacy de turno | usa orden temporal y `limit 1` |
+| selección legacy de check-in abierto | usa el último evento abierto y `limit 1` |
+| fallback territorial legacy | puede mezclar sede solicitada, seleccionada, check-in, turno y sede del empleado |
+| bypass legacy | todavía contiene excepciones de administración global y permiso de bypass |
+
+Estas observaciones son evidencia de adopción física pendiente, no definición del contrato objetivo.
+
+Los conteos corresponden al instante de inspección y no se congelan como invariantes empresariales.
+
+---
+
+#### 35. Brechas físicas y propietarios
+
+Las brechas detectadas ya tienen propietarios canónicos:
+
+| Brecha | Propietario existente | Condición de salida |
+| --- | --- | --- |
+| resolver un `AccessContext` canónico sin fallbacks legacy | `AUTH-DB-033` | actor, turno, check-in, rol y territorio se resuelven desde fuentes canónicas |
+| evaluar autorización con contexto fresco | `AUTH-DB-034` | toda decisión usa el contexto actual y conserva precedencia |
+| invalidación transaccional por cambio de turno | `AUTH-DB-035` | una escritura relevante cambia la generación aplicable y evita reutilizar stale |
+| memoización, caché y single-flight seguros | `SHELL-CTX-006` | ninguna entrada stale puede influir en autorización |
+| reacción específica de ANIMA al cambio | instancia futura de `ANIMA-AUTH-008` | cliente y servidor convergen a un nuevo contexto sin reescribir asistencia |
+| cierre por salida | `ANIMA-AUTH-009` | checkout cierra la sesión exacta y revoca contexto dependiente |
+| cambio temporal de área | `ANIMA-AUTH-011` | flujo propio cambia área sin mezclar autoridad histórica |
+| reemplazo de turno | `ANIMA-AUTH-012` | reemplazo conserva identidad, historia y transición propietaria |
+| overnight | `ANIMA-AUTH-013` | fronteras usan intervalos absolutos |
+| cola y sincronización | `ANIMA-AUTH-014` y `ANIMA-AUTH-015` | toda intención pendiente se reautoriza y reconcilia |
+| auditoría | `ANIMA-AUTH-018` | antes, cambio y después pueden reconstruirse |
+| prohibición de grants locales | `ANIMA-AUTH-019` | ANIMA nunca convierte cambio de turno en concesión |
+| confirmación transversal | `INT-WORK-004` | contexto efectivo se invalida y revalida ante cambio relevante |
+
+No se crea una tarea adicional.
+
+---
+
+#### 36. Topología y materialización física
+
+La definición documental se aprueba una sola vez en este marcador.
+
+```text
+MODE = PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE = POST_E5_PACKAGE
+INSTANCE_PATTERN = ANIMA-AUTH-008::implementation_unit_id
+```
+
+La materialización futura:
+
+- requiere una unidad de implementación real;
+- requiere el paquete propietario aplicable;
+- requiere el gate E5 correspondiente;
+- debe identificar productores y consumidores físicos del cambio;
+- debe conservar rollback;
+- debe conservar compatibilidad con asistencia histórica;
+- debe usar los mecanismos canónicos de frescura cuando estén materializados;
+- debe ejecutar todo cambio Supabase desde `vento-group-sas/vento-shell`.
+
+Esta tarea no autoriza DDL, DML, migraciones, RLS, RPC, Edge Functions, cambios de código, datos productivos ni despliegues.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya exige invalidación comprobable por cambio de turno, reautorización, consistencia de contexto operativo, compatibilidad territorial, auditoría y rechazo de decisiones obsoletas. La tarea especializa esas obligaciones para ANIMA sin cambiar el registro.
+
+---
+
+#### 38. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-AUTH-008`: capacidades operativas dependen de turno vigente, check-in cuando aplique, rol y territorio compatibles;
+- `TREQ-AUTH-009`: sede y área efectivas se resuelven determinísticamente y una rotación recalcula permisos;
+- `TREQ-AUTH-014`: cambio de turno, área, trabajador, dispositivo, rol o asignación invalida contexto, caché y tokens derivados;
+- `TREQ-AUTH-015`: decisiones y acciones conservan evidencia correlacionable de turno, check-in, rol, territorio, contexto y timestamp;
+- `TREQ-ANIMA-003`: una intención offline conserva identidad estable y no produce efectos duplicados al sincronizar.
+
+Esta enumeración es trazabilidad y no representa requisitos afectados por la tarea.
+
+---
+
+#### 39. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del checkout se ejecuta después de insertar y normalizar la tarea. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, continuidad, secciones obligatorias, UTF-8, EOL y cero requisitos afectados en la sección derivada. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, owner, topología, contratos de turno/check-in, invalidación, integración, 04A, scripts vigentes y estado Supabase mediante lecturas de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se modificó un turno real ni se ejercitó una sesión de trabajador. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, RLS, RPC, cambios de código, datos ni despliegues. |
+
+---
+
+#### 40. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. consume exactamente el handoff de `ANIMA-AUTH-007`;
+2. distingue borrador no autoritativo, cambio autoritativo de la misma ocurrencia y transición a otra ocurrencia;
+3. un borrador no publicado no cambia el contexto vigente;
+4. una revisión sucesora efectiva invalida el snapshot anterior;
+5. el evento de entrada original nunca se reescribe para coincidir con la revisión nueva;
+6. la sesión conserva su identidad y evidencia histórica;
+7. `AccessContext` no se actualiza in-place;
+8. un cambio relevante produce una nueva resolución;
+9. `context_id` no se usa como sesión permanente;
+10. el turno se resuelve siempre en servidor;
+11. una revisión se consume completa y no se mezclan campos de versiones distintas;
+12. mover el inicio al futuro elimina `active_shift` hasta la nueva frontera;
+13. acortar el fin por debajo del instante actual elimina autoridad operativa;
+14. extender el turno no revive una sesión cerrada o expirada;
+15. el fin temporal invalida sin depender de una escritura;
+16. un cambio de sede revalida sesión y territorio;
+17. un cambio de área revalida sesión, rol y territorio;
+18. un cambio de rol revalida catálogo, sede, área y permisos;
+19. un cambio de trabajador nunca reasigna una sesión existente;
+20. cancelación o retiro eliminan el contexto operativo dependiente;
+21. desactivación de sede, área, rol o compatibilidad invalida el snapshot;
+22. una transición a otro `shift_id` no reata la sesión anterior;
+23. turnos consecutivos usan la frontera semiabierta;
+24. un nuevo turno que exige check-in necesita una sesión compatible propia;
+25. la semántica empresarial de reemplazos permanece en `ANIMA-AUTH-012`;
+26. la semántica especial overnight permanece en `ANIMA-AUTH-013`;
+27. una ambigüedad de turnos falla cerrada;
+28. el check-in no se usa para escoger entre turnos;
+29. la sesión se valida nuevamente contra el `active_shift`;
+30. una sesión históricamente válida puede dejar de ser utilizable para nueva autorización;
+31. los cambios relevantes afectan la frescura del carril operativo;
+32. la barrera de escritura impide reutilizar memoización previa;
+33. caché y proyecciones cliente no conservan autoridad stale;
+34. Realtime es señal de relectura y no fuente propietaria;
+35. toda mutación protegida revalida contexto y recurso actuales;
+36. las colas offline se reautorizan al sincronizar;
+37. los estados base independientes no se eliminan por un cambio operativo;
+38. el contexto actualizado no equivale a permiso concedido;
+39. las brechas físicas permanecen asignadas a propietarios existentes;
+40. no se crean ni modifican requisitos de prueba;
+41. no se ejecutan cambios físicos.
+
+---
+
+#### 41. Límites
+
+Esta tarea no define:
+
+- creación inicial del contexto al entrar, propiedad de `ANIMA-AUTH-007`;
+- cierre del contexto al registrar salida, propiedad de `ANIMA-AUTH-009`;
+- semántica de descansos, propiedad de `ANIMA-AUTH-010`;
+- flujo empresarial de cambio temporal de área, propiedad de `ANIMA-AUTH-011`;
+- flujo empresarial de reemplazos, propiedad de `ANIMA-AUTH-012`;
+- construcción específica de turnos cruzados de medianoche, propiedad de `ANIMA-AUTH-013`;
+- cola offline, propiedad de `ANIMA-AUTH-014`;
+- revalidación completa de cola sincronizada, propiedad de `ANIMA-AUTH-015`;
+- diagnóstico visible, propiedad de `ANIMA-AUTH-016` y `ANIMA-AUTH-017`;
+- auditoría detallada, propiedad de `ANIMA-AUTH-018`;
+- grants o permisos directos, prohibidos y gobernados por `ANIMA-AUTH-019`;
+- esquema físico de revisiones;
+- tabla física de sesiones;
+- diseño físico de freshness token;
+- estrategia final de caché;
+- publicación administrativa del turno;
+- migraciones o cambios productivos.
+
+---
+
+#### 42. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-007 — Crear contexto operativo al registrar entrada`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-008 — Actualizar contexto cuando cambia el turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-009 — Cerrar contexto al registrar salida`
+
+
 ### [ ] ANIMA-AUTH-009 — Cerrar contexto al registrar salida
 ### [ ] ANIMA-AUTH-010 — Manejar descansos sin cerrar autorización
 ### [ ] ANIMA-AUTH-011 — Manejar cambio temporal de área
