@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1066** |
+| Aprobadas | **1067** |
 | En propuesta | **0** |
-| No iniciadas | **528** |
+| No iniciadas | **527** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **66.88% (1066/1594)** |
+| Porcentaje de completamiento | **66.94% (1067/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-014` — Manejar cola offline de check-in | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-015` — Revalidar permisos al sincronizar una cola offline | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-016` — Mostrar diagnóstico de contexto al trabajador | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-015` — Revalidar permisos al sincronizar una cola offline | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-016` — Mostrar diagnóstico de contexto al trabajador | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-017` — Diferenciar falta de turno y falta de permiso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -610,7 +610,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-012` | Manejar reemplazos de turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-013` | Manejar turnos cruzados de medianoche | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-014` | Manejar cola offline de check-in | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-015` | Revalidar permisos al sincronizar una cola offline | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-015` | Revalidar permisos al sincronizar una cola offline | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-016` | Mostrar diagnóstico de contexto al trabajador | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-017` | Diferenciar falta de turno y falta de permiso | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-018` | Auditar creación y cierre del contexto | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
