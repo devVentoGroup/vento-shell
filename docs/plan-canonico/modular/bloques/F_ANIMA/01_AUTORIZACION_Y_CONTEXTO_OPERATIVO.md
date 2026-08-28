@@ -14097,7 +14097,1175 @@ SIGUIENTE TAREA RESERVADA
 **SIGUIENTE TAREA RESERVADA**
 `ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador`
 
-### [ ] ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador
+### ✅ ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline
+**Tarea siguiente:** ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso
+**Tipo de tarea:** documental; definición contractual de la proyección de contexto y diagnóstico seguro que ANIMA presenta al trabajador, separando hechos operativos, frescura, bloqueos, recuperación y soporte de la autoridad real de autorización
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA debe explicar al trabajador cuál es su contexto laboral y operativo efectivo sin obligarlo a interpretar IDs, contratos, reason codes, tablas, RPC, permisos, grants o estados técnicos.
+
+El trabajador debe poder comprender, cuando sea aplicable:
+
+1. qué jornada o turno está siendo usado como contexto;
+2. en qué sede está operando;
+3. en qué área está operando;
+4. con qué rol operativo;
+5. si existe una sesión de asistencia activa;
+6. si está en descanso sin haber cerrado su jornada;
+7. si el contexto está confirmado, cambiando, desactualizado, inválido o temporalmente no disponible;
+8. qué parte de su experiencia continúa disponible;
+9. qué acción concreta no puede realizar;
+10. cuál es la recuperación segura disponible.
+
+La presentación existe para explicar el estado resuelto por el servidor. No constituye ni sustituye la autorización.
+
+---
+
+#### 2. Resultado canónico
+
+ANIMA tendrá una proyección humana de contexto coherente con `UX-BASE-005`, la gramática de explicación de `UX-BASE-006` y el catálogo compartido de `AUTH-ERR-020`.
+
+La regla raíz queda:
+
+```text
+HECHOS AUTORITATIVOS RESUELTOS
++
+FRESCURA
++
+RESULTADO DE AUTORIZACIÓN CUANDO EXISTA
++
+PERFIL DE MENSAJE COMPARTIDO
+=
+DIAGNÓSTICO SEGURO PARA EL TRABAJADOR
+```
+
+y simultáneamente:
+
+```text
+DIAGNÓSTICO VISIBLE
+≠
+FUENTE DE AUTORIDAD
+≠
+PERMISO
+≠
+TURNO
+≠
+CHECK-IN
+≠
+SEDE SELECCIONADA
+≠
+GEOFENCE
+```
+
+Una etiqueta visible nunca podrá convertir una selección, una preferencia, un valor cacheado o una inferencia del cliente en contexto efectivo.
+
+---
+
+#### 3. Principio de doble plano
+
+ANIMA conservará dos planos distintos:
+
+```text
+PLANO A
+DIAGNÓSTICO DEL CONTEXTO
+```
+
+Responde si el contexto laboral y operativo está resuelto, fresco y utilizable.
+
+```text
+PLANO B
+DIAGNÓSTICO DE LA ACCIÓN
+```
+
+Responde por qué una operación concreta puede o no ejecutarse.
+
+La separación es obligatoria porque un trabajador puede tener:
+
+- contexto `ACTIVE` y una acción denegada por permiso;
+- contexto `ACTIVE` y una acción que exige reautenticación adicional;
+- contexto `STALE` aunque la última pantalla aún muestre datos;
+- contexto `INVALID` aunque conserve una sesión técnica autenticada;
+- contexto `UNAVAILABLE` porque el servidor no puede resolverlo, sin que eso signifique una denegación empresarial.
+
+ANIMA no reducirá estos casos a un único booleano como `can_operate`.
+
+---
+
+#### 4. Frontera con ANIMA-AUTH-015
+
+`ANIMA-AUTH-015` conserva la autoridad sobre la revalidación de cada intención offline al sincronizar.
+
+ANIMA-AUTH-016 consume el resultado ya resuelto para explicar al trabajador:
+
+- si la intención sigue pendiente;
+- si fue aplicada;
+- si fue reconocida como duplicada;
+- si quedó en conflicto;
+- si fue denegada después de una nueva autorización;
+- si el resultado es todavía desconocido y exige reconciliación;
+- si existe indisponibilidad técnica.
+
+ANIMA-AUTH-016 no decide si la intención puede ejecutarse y no altera el evento original.
+
+---
+
+#### 5. Frontera con ANIMA-AUTH-017
+
+`ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso` permanece como propietaria de la distinción específica entre ambas causas dentro de la experiencia ANIMA.
+
+ANIMA-AUTH-016 fija desde ahora que:
+
+1. las dos causas no pueden colapsarse en un mensaje genérico;
+2. la proyección debe preservar la clasificación autoritativa recibida;
+3. una falta de permiso no puede degradar un contexto laboral válido a “sin turno”;
+4. una falta de turno no puede presentarse como “sin permiso”;
+5. el copy visible debe proceder del catálogo compartido;
+6. la precedencia y adaptación específica de esos dos casos se completará en ANIMA-AUTH-017.
+
+No se adelanta el contrato específico de la tarea siguiente.
+
+---
+
+#### 6. Fronteras posteriores
+
+La responsabilidad queda distribuida así:
+
+| Tarea | Responsabilidad conservada |
+| --- | --- |
+| `ANIMA-AUTH-016` | Proyección humana del contexto, frescura, seguridad de la información y relación entre contexto y mensaje. |
+| `ANIMA-AUTH-017` | Diferenciación específica entre falta de turno y falta de permiso en ANIMA. |
+| `ANIMA-AUTH-018` | Auditoría de creación y cierre de sesiones conforme a su alcance canónico. |
+| `ANIMA-AUTH-019` | Impedir que ANIMA otorgue permisos directamente. |
+| `ANIMA-AUTH-020` | Cerrar la fuente de verdad de Supabase aplicable a ANIMA. |
+
+Ninguna de estas fronteras autoriza a ANIMA-AUTH-016 a crear permisos, modificar programación, corregir asignaciones o materializar infraestructura.
+
+---
+
+#### 7. Vocabulario contractual
+
+Para esta tarea:
+
+- **contexto autoritativo:** hechos laborales y operativos resueltos por fuentes canónicas;
+- **diagnóstico de contexto:** proyección segura de esos hechos para comprensión humana;
+- **diagnóstico de acción:** explicación segura del resultado de autorización de una operación concreta;
+- **descriptor compartido:** perfil de mensaje proveniente del catálogo de autorización aprobado;
+- **frescura:** condición que indica si la proyección todavía representa un contexto utilizable;
+- **selección:** preferencia o navegación del cliente que nunca sustituye territorio efectivo;
+- **geocerca:** evidencia física o restricción de marcación que no define por sí misma la sede operativa;
+- **referencia de soporte:** identificador opaco y seguro para correlacionar una incidencia;
+- **dato interno:** identificador, regla, causa, grant, permiso, fingerprint o detalle de infraestructura no destinado al trabajador.
+
+---
+
+#### 8. Fuente de verdad
+
+La proyección visible deberá derivarse de contexto y decisiones resueltas por la capa autoritativa correspondiente.
+
+No serán fuente de verdad del diagnóstico:
+
+- `selectedSiteId`;
+- sede primaria del perfil;
+- primera sede disponible;
+- última sede mostrada;
+- `employees.site_id`;
+- `employees.area_id`;
+- `employees.role`;
+- `navigation_role`;
+- superficie solicitante actual;
+- parámetros de navegación;
+- localStorage, SecureStore o estado React;
+- valor de una tarjeta anterior;
+- `geofenceState.siteName`;
+- ubicación GPS aislada;
+- check-in aislado;
+- una fila de turno escogida por fecha civil sin resolución temporal canónica;
+- un mensaje textual recibido de una excepción;
+- una respuesta técnica legacy usada como fallback.
+
+Una proyección cacheada podrá informar “última verificación” cuando la política lo permita, pero no podrá reasignarse como autoridad actual.
+
+---
+
+#### 9. Diagnóstico no concede autoridad
+
+El diagnóstico será estrictamente informativo.
+
+Mostrar:
+
+```text
+Sede A
+Área B
+Rol C
+Jornada activa
+```
+
+no concede ninguna de esas propiedades.
+
+Ocultar una fila tampoco las revoca.
+
+La mutación protegida seguirá exigiendo su evaluación canónica independiente y fresca.
+
+No se aceptarán como controles de seguridad:
+
+- visibilidad de un botón;
+- color de una tarjeta;
+- presencia de una etiqueta;
+- texto “listo”;
+- pantalla abierta;
+- valor de un hook;
+- bandera local;
+- copia de una decisión anterior.
+
+---
+
+#### 10. Unidad de presentación
+
+La unidad visible se construirá para el actor efectivo actual y no para la cuenta técnica, dispositivo o trabajador anterior.
+
+En un dispositivo personal ordinario, ANIMA podrá evitar repetir datos de identidad que ya son inequívocos.
+
+Cuando exista riesgo de ambigüedad, por ejemplo en una superficie compartida, el actor efectivo deberá quedar explícito antes de mostrar contexto operativo.
+
+La unidad de presentación no se compartirá entre:
+
+- trabajadores distintos;
+- sesiones distintas;
+- actores efectivos distintos;
+- simulación y contexto real;
+- aplicaciones distintas;
+- dispositivos después de un cambio de actor;
+- contextos separados por una invalidación material.
+
+---
+
+#### 11. Estados canónicos de presentación
+
+ANIMA reutiliza los seis estados conceptuales aprobados para contexto visible:
+
+| Estado | Semántica en ANIMA | Mutaciones dependientes del contexto |
+| --- | --- | --- |
+| `RESOLVING` | El servidor todavía está resolviendo el contexto actual. | No se confirman con un contexto anterior. |
+| `ACTIVE` | Existe una proyección fresca y coherente de los hechos aplicables. | Pueden continuar únicamente si su autorización concreta también lo permite. |
+| `CHANGING` | Existe una transición solicitada o detectada que todavía no fue confirmada como nuevo contexto. | Permanecen bloqueadas cuando podrían usar el contexto anterior de forma incorrecta. |
+| `STALE` | Se conserva una proyección previa para continuidad visual, pero ya no es autoridad suficiente. | Se rigen por la política offline y deben revalidarse antes del efecto. |
+| `INVALID` | Existe contradicción, expiración o condición concluyente que invalida el contexto requerido. | Se bloquean las operaciones dependientes. |
+| `UNAVAILABLE` | No fue posible resolver el contexto por indisponibilidad técnica. | Fallan cerrado; no se transforma el error en una denegación empresarial. |
+
+La aplicación no creará estados locales equivalentes con semántica distinta.
+
+---
+
+#### 12. Contexto mínimo ordinario del trabajador
+
+Cuando los hechos sean aplicables y estén autorizados para su propia experiencia, ANIMA deberá poder proyectar:
+
+1. estado de jornada;
+2. sede operativa;
+3. área operativa cuando aplique;
+4. rol operativo cuando aplique;
+5. estado de check-in;
+6. estado de descanso;
+7. frescura o última verificación cuando sea relevante;
+8. advertencia o bloqueo cuando el contexto no sea utilizable.
+
+La aplicación no está obligada a mostrar todos los campos con la misma prominencia.
+
+El orden de prioridad será:
+
+```text
+BLOQUEO O CAMBIO MATERIAL
+→ JORNADA
+→ SEDE / ÁREA
+→ ROL
+→ CHECK-IN / DESCANSO
+→ FRESCURA
+```
+
+---
+
+#### 13. Identidad del trabajador
+
+La interfaz ordinaria minimizará la identidad personal.
+
+Podrá utilizar:
+
+- nombre de pila;
+- alias aprobado;
+- referencia “Tú” cuando el actor sea inequívoco.
+
+No utilizará como identificador ordinario:
+
+- correo electrónico;
+- documento;
+- teléfono;
+- UUID;
+- `employee_id`;
+- `auth.uid`;
+- identificador de sesión.
+
+En un contexto compartido, el nombre visible deberá corresponder al actor efectivo actual y desaparecer al terminar o cambiar la sesión del actor.
+
+---
+
+#### 14. Sede operativa visible
+
+La sede mostrada como **operativa** procederá exclusivamente de la sede efectiva resuelta.
+
+Queda prohibido construirla mediante una cadena de fallback como:
+
+```text
+geocerca
+→ selección
+→ sede primaria
+→ primera sede asignada
+→ último valor
+```
+
+Las siguientes identidades permanecerán separadas:
+
+- sede operativa;
+- sede asignada;
+- sede primaria;
+- sede seleccionada para navegación;
+- sede de geocerca de entrada;
+- sede de geocerca de salida;
+- sede del recurso;
+- filtro administrativo.
+
+Una selección podrá mostrarse como selección cuando sea útil, pero no con la etiqueta de sede operativa si el servidor no la confirmó.
+
+---
+
+#### 15. Área operativa visible
+
+El área mostrada como **operativa** procederá del área efectiva resuelta para la ocurrencia vigente.
+
+No podrá tomar prestada:
+
+- afiliación habitual de `employee_areas`;
+- `employees.area_id`;
+- selección del usuario;
+- área del dispositivo;
+- área de un recurso;
+- área del último turno;
+- primera área compatible.
+
+Si el rol o la capacidad son legítimamente site-wide y el contrato no exige área, la ausencia de área no se presentará como error.
+
+Si el área sí es requisito y no puede resolverse, la proyección deberá mostrar el bloqueo seguro correspondiente, sin revelar candidatos ni reglas internas.
+
+---
+
+#### 16. Turno y jornada
+
+ANIMA distinguirá al menos conceptualmente:
+
+- turno próximo;
+- turno vigente sin jornada iniciada cuando el check-in sea requerido;
+- jornada activa;
+- descanso dentro de una jornada activa;
+- turno finalizado;
+- cierre pendiente cuando el dominio lo reconozca;
+- ausencia de turno aplicable;
+- contexto temporal inconsistente.
+
+La fecha civil del dispositivo no decide qué turno está vigente.
+
+Los turnos overnight conservarán una sola ocurrencia a través de medianoche.
+
+La proyección podrá mostrar al trabajador su horario propio cuando esa lectura esté autorizada, pero no publicará:
+
+- `shift_id`;
+- identidad de revisión;
+- fingerprint;
+- publicador;
+- historial de candidatos;
+- causa interna de retiro.
+
+---
+
+#### 17. Estado de check-in
+
+El diagnóstico deberá separar:
+
+```text
+TURNO
+≠
+CHECK-IN
+```
+
+Un turno vigente no implica check-in activo.
+
+Un check-in existente no inventa un turno.
+
+Cuando una capacidad exija presencia y la sesión compatible no exista, el diagnóstico de acción consumirá la razón y recuperación compartidas.
+
+La interfaz no podrá usar el último log local como prueba suficiente de una sesión operativa autoritativa.
+
+---
+
+#### 18. Descanso
+
+Un descanso activo no equivale a checkout ni revoca por sí solo la jornada.
+
+Durante el descanso:
+
+- la jornada puede seguir activa;
+- la sede, área y rol no se reescriben;
+- la presentación debe diferenciar “en descanso” de “jornada cerrada”;
+- las operaciones prohibidas durante descanso se deciden por sus contratos, no por una inferencia visual;
+- el cierre del descanso no crea un nuevo turno.
+
+Una transición offline de descanso conserva las reglas de idempotencia y revalidación ya aprobadas.
+
+---
+
+#### 19. Cambio temporal de área
+
+Cuando exista un cambio temporal de área aprobado:
+
+1. la proyección antigua entra en transición o se invalida según la señal recibida;
+2. el área destino no se presenta como efectiva antes de resolución server-side;
+3. después de la confirmación, se presenta la nueva área efectiva;
+4. la afiliación habitual no se reescribe como explicación;
+5. un retorno posterior se trata como otra transición autoritativa.
+
+La interfaz no mostrará simultáneamente dos áreas como si ambas fueran autoridad del trabajador.
+
+---
+
+#### 20. Reemplazo de turno
+
+Ante un reemplazo:
+
+- el actor efectivo conserva su propia identidad;
+- el nuevo contexto solo se muestra después de resolución autoritativa;
+- el turno reemplazado queda como historia, no como opción de fallback;
+- rol, sede y área se proyectan desde la ocurrencia aplicable;
+- el check-in del trabajador reemplazado no se presta al reemplazo;
+- una referencia al cambio puede mostrarse solo si el dominio la autoriza y sin revelar datos de terceros.
+
+---
+
+#### 21. Turnos overnight
+
+Medianoche no genera por sí sola un cambio de contexto.
+
+Si la misma ocurrencia continúa vigente:
+
+- se conserva la misma jornada;
+- se conserva el mismo turno lógico;
+- se conserva la misma sesión compatible;
+- no se reinicia la proyección por “nuevo día”;
+- no se cambia la sede por un filtro de fecha;
+- no se muestra un turno del nuevo día como autoridad por preferencia de calendario.
+
+La frescura se evalúa contra los instantes y eventos invalidantes reales.
+
+---
+
+#### 22. Cambios de contexto
+
+Un cambio material podrá provenir, entre otros, de:
+
+- cambio de actor;
+- cambio de turno o revisión aplicable;
+- cambio de sede;
+- cambio de área;
+- cambio de rol;
+- cambio de check-in;
+- checkout;
+- expiración temporal;
+- modificación de asignaciones;
+- revocación;
+- cambio de dispositivo compartido;
+- cambio de simulación;
+- invalidación explícita de servidor.
+
+La experiencia debe pasar por una nueva resolución.
+
+Queda prohibido actualizar solo la etiqueta afectada y conservar el resto de una proyección anterior sin demostrar que pertenece al mismo snapshot.
+
+---
+
+#### 23. Estado CHANGING
+
+`CHANGING` comunica transición, no autoridad futura.
+
+Mientras el nuevo contexto no esté confirmado:
+
+- el contexto anterior no se marca como nuevo;
+- el destino solicitado no se marca como activo;
+- las mutaciones sensibles no se confirman con datos mezclados;
+- se preservan borradores cuando el proceso lo permita;
+- se informa que la operación debe esperar o revalidarse;
+- se evita borrar trabajo silenciosamente.
+
+Una transición rechazada vuelve a una nueva resolución de los hechos reales; no aplica optimismo permanente.
+
+---
+
+#### 24. Frescura
+
+Toda proyección deberá poder distinguir entre:
+
+- valor actual resuelto;
+- valor en transición;
+- valor anterior conservado únicamente para continuidad visual;
+- contexto inválido;
+- resolución técnicamente no disponible.
+
+Cuando sea útil, ANIMA podrá presentar una indicación humana de última verificación.
+
+No se requiere mostrar timestamps internos exactos como requisito visual universal.
+
+La frescura no se amplía porque:
+
+- la aplicación continúe abierta;
+- el dispositivo conserve conexión parcial;
+- un card siga renderizado;
+- exista un geofence latch;
+- una cola tenga elementos;
+- el usuario no haya cambiado de pantalla.
+
+---
+
+#### 25. Modo offline
+
+En offline, ANIMA puede conservar una proyección íntegra compatible para orientación del trabajador.
+
+La presentación deberá indicar de forma humana que el contexto puede estar desactualizado y que determinadas acciones se confirmarán al reconectar.
+
+Queda prohibido que una proyección offline:
+
+- extienda un turno expirado;
+- preserve un permiso revocado;
+- cambie sede o área;
+- convierta una selección en autoridad;
+- certifique como aplicado un evento que solo está en cola;
+- oculte un conflicto;
+- presente una autorización anterior como token reutilizable.
+
+La política de cada operación determina si puede capturarse, quedar solo lectura o exigir conexión.
+
+---
+
+#### 26. Diagnóstico de cola offline
+
+La experiencia de cola distinguirá semánticamente:
+
+| Estado de intención | Presentación contractual |
+| --- | --- |
+| Persistida localmente y pendiente | Debe dejar claro que todavía requiere sincronización y confirmación. |
+| En proceso de sincronización | Debe evitar acciones duplicadas que produzcan una segunda intención. |
+| Aplicada | Puede confirmarse como completada después de evidencia server-side. |
+| Duplicada con mismo contenido | Se presenta como resultado ya reconocido, no como un segundo efecto. |
+| Conflicto | Requiere atención o recuperación segura; no se auto-presenta como éxito. |
+| Denegada en revalidación | Consume el mensaje compartido de la causa autoritativa y conserva cero efectos nuevos. |
+| Resultado desconocido | Se presenta como pendiente de reconciliación, no como éxito ni como fallo definitivo. |
+| Fallo técnico | Se presenta como indisponibilidad, no como falta de permiso. |
+
+No se muestran detalles de fingerprint, payload, SQL o estado interno de retry al trabajador ordinario.
+
+---
+
+#### 27. Contexto válido con acción denegada
+
+Una denegación de una acción no invalida automáticamente todo el contexto.
+
+Ejemplo contractual:
+
+```text
+CONTEXTO
+ACTIVE
+
+ACCIÓN
+DENY
+```
+
+En este caso ANIMA deberá:
+
+- conservar la sede, área, jornada y rol válidos que sean seguros de mostrar;
+- bloquear únicamente la acción afectada y cualquier dependencia que comparta la misma causa;
+- presentar la explicación compartida;
+- no cambiar el diagnóstico a “sin jornada” por conveniencia;
+- no cerrar sesión salvo que otra regla autoritativa lo exija.
+
+Esta separación es obligatoria para evitar que falta de permiso y falta de contexto se vuelvan indistinguibles.
+
+---
+
+#### 28. Contexto inválido
+
+Cuando la causa invalide el contexto operativo requerido, ANIMA deberá:
+
+- marcar la proyección como no utilizable;
+- dejar de usarla para confirmar mutaciones;
+- preservar únicamente los datos seguros necesarios para explicar la transición;
+- ofrecer la recuperación autorizada;
+- pedir una nueva resolución cuando la condición pueda haber cambiado.
+
+Un contexto inválido no obliga a destruir la sesión técnica del usuario.
+
+---
+
+#### 29. Indisponibilidad técnica
+
+Una caída de red, RPC, resolver, fuente o dependencia que impida concluir no se presenta como una denegación empresarial.
+
+El estado será `UNAVAILABLE` o la categoría técnica equivalente proporcionada por el contrato compartido.
+
+La experiencia deberá:
+
+- conservar sesión cuando corresponda;
+- confirmar que no se produjo un cambio cuando esa afirmación esté respaldada;
+- permitir retry únicamente cuando sea seguro;
+- ofrecer referencia de soporte cuando exista;
+- evitar revelar infraestructura;
+- no culpar al trabajador;
+- no convertir el fallo en permiso faltante, turno faltante o área faltante.
+
+---
+
+#### 30. Catálogo compartido de mensajes
+
+ANIMA consumirá el catálogo versionado aprobado en `AUTH-ERR-020`.
+
+La aplicación no creará un catálogo paralelo.
+
+Para un resultado de autorización, la secuencia será conceptualmente:
+
+```text
+RESULTADO AUTORITATIVO
+→ REASON CODE
+→ PERFIL APROBADO
+→ LOCALE
+→ DESCRIPTOR SEGURO
+→ RENDER ANIMA
+```
+
+El renderer de ANIMA podrá adaptar layout, densidad y navegación permitida, pero no cambiar:
+
+- causa;
+- copy contractual;
+- recuperación;
+- privacidad;
+- decisión;
+- semántica de retry;
+- preservación de sesión.
+
+---
+
+#### 31. Cobertura de las veinte razones compartidas
+
+ANIMA deberá conservar una política explícita para todo `AuthorizationReasonCode` del catálogo compartido.
+
+El código se usa para integración y pruebas; no será el texto primario mostrado al trabajador.
+
+| Reason code | Familia de diagnóstico | Efecto sobre la proyección |
+| --- | --- | --- |
+| `AUTH_NO_SESSION` | Sesión | No presenta contexto laboral como vigente; deriva a la recuperación de sesión aprobada. |
+| `AUTH_USER_INACTIVE` | Identidad laboral | Invalida capacidades laborales sin exponer la causa administrativa interna. |
+| `AUTH_APP_ACCESS_DENIED` | Acceso a aplicación | Puede conservar información mínima segura, pero no presenta acceso empresarial como habilitado. |
+| `AUTH_ADMIN_PERMISSION_DENIED` | Permiso administrativo | No invalida por sí sola el contexto operativo; bloquea la acción administrativa afectada. |
+| `AUTH_OPERATIONAL_PERMISSION_DENIED` | Permiso operativo | Puede coexistir con contexto `ACTIVE`; bloquea la acción afectada. |
+| `AUTH_SITE_ASSIGNMENT_REQUIRED` | Territorio administrativo | Explica falta de relación requerida sin inventar sede operativa. |
+| `AUTH_ACTIVE_SITE_REQUIRED` | Sede activa | Invalida la dependencia territorial que exige sede activa. |
+| `AUTH_AREA_ASSIGNMENT_REQUIRED` | Territorio administrativo | No sustituye la afiliación faltante con el área del turno o del dispositivo. |
+| `AUTH_ACTIVE_AREA_REQUIRED` | Área activa | Invalida la dependencia que exige área activa, sin revelar candidatos. |
+| `AUTH_PUBLISHED_SHIFT_REQUIRED` | Turno | Conserva la causa como turno requerido; la adaptación específica con permisos queda para ANIMA-AUTH-017. |
+| `AUTH_OUTSIDE_SHIFT_WINDOW` | Temporalidad | Contexto operativo dependiente del turno no puede presentarse como vigente. |
+| `AUTH_CHECKIN_REQUIRED` | Asistencia | Puede existir turno válido, pero falta la presencia requerida para la acción. |
+| `AUTH_OPERATIONAL_ROLE_REQUIRED` | Rol | No inventa rol desde perfil, navegación o historial. |
+| `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE` | Rol y sede | Mantiene la sede resuelta, pero bloquea el carril operativo incompatible. |
+| `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA` | Rol y área | Mantiene los hechos resueltos, pero no presenta el rol como válido para el área. |
+| `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` | Dispositivo | No transforma la identidad técnica del dispositivo en autoridad del trabajador. |
+| `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION` | Simulación | Mantiene visible que el contexto es simulado y evita presentarlo como operación real. |
+| `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT` | Configuración | Se presenta como inconsistencia segura sin enumerar configuración interna. |
+| `AUTH_PERMISSION_NOT_REGISTERED` | Catálogo | Se presenta como función no disponible conforme al descriptor compartido; no expone la clave solicitada. |
+| `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE` | Disponibilidad técnica | Se presenta como imposibilidad de verificar, nunca como `DENY` empresarial fabricado. |
+
+La matriz no redefine el copy ni la precedencia canónica de las razones.
+
+---
+
+#### 32. Información interna no visible
+
+El diagnóstico ordinario no mostrará:
+
+- UUID de empleado;
+- UUID de turno;
+- UUID de sede;
+- UUID de área;
+- IDs de check-in;
+- IDs de eventos;
+- IDs de revisión;
+- fingerprint;
+- `decision_id`;
+- `client_event_id`;
+- `reason_code` como explicación primaria;
+- permission key;
+- grant o deny;
+- RLS;
+- tabla;
+- policy;
+- función;
+- RPC;
+- SQLSTATE;
+- stack trace;
+- payload;
+- token;
+- cookie;
+- claims;
+- nombre del publicador;
+- usuario que retiró un turno;
+- candidatos alternativos;
+- trabajadores reemplazados salvo una necesidad funcional autorizada;
+- detalles de geolocalización crudos;
+- contador técnico de retries.
+
+Una referencia de soporte opaca es la excepción permitida cuando el contrato compartido la habilite.
+
+---
+
+#### 33. Privacidad
+
+La presentación aplicará minimización.
+
+No se utilizará un diagnóstico de contexto para revelar:
+
+- horarios de otros trabajadores;
+- áreas alternativas;
+- roles posibles;
+- permisos existentes;
+- cobertura administrativa;
+- motivos disciplinarios;
+- estado laboral de terceros;
+- configuración de un dispositivo;
+- estructura del catálogo;
+- recursos protegidos.
+
+Las notificaciones push, widgets, pantallas bloqueadas o superficies visibles desde la pantalla de bloqueo no contendrán un resumen laboral sensible salvo que exista un contrato específico que lo autorice.
+
+---
+
+#### 34. Referencia de soporte
+
+Cuando el descriptor compartido autorice una referencia de soporte:
+
+- será opaca;
+- podrá copiarse separadamente;
+- no incorporará permiso, destino técnico, actor, turno, sede, área o secreto;
+- podrá correlacionarse con evidencia privada;
+- no se utilizará como token de reintento;
+- no sustituirá `decision_id` ni una nueva evaluación.
+
+El trabajador no necesita interpretar la referencia.
+
+---
+
+#### 35. Recuperación segura
+
+Cada bloqueo utilizará únicamente acciones de recuperación aprobadas.
+
+Una acción visible de recuperación:
+
+- no concede permisos;
+- no crea turno;
+- no crea asignación;
+- no ejecuta check-in salvo que esa sea una operación autorizada y revalidada;
+- no cambia sede ni área por sí sola;
+- no vuelve a enviar automáticamente una mutación;
+- no transporta cuerpos, tokens o permisos en una URL;
+- crea una nueva solicitud cuando se reintenta una operación.
+
+Si no existe recuperación aprobada, ANIMA no inventará una.
+
+---
+
+#### 36. Superficie persistente
+
+El contexto relevante para una jornada activa deberá ser accesible sin exigir que el trabajador abra una pantalla técnica de diagnóstico.
+
+La implementación futura deberá favorecer una proyección compacta y persistente o fácilmente accesible en la experiencia operativa principal.
+
+Una pantalla QA o de soporte técnico no satisface por sí sola esta obligación.
+
+Los detalles técnicos permanecen separados de la presentación del trabajador.
+
+---
+
+#### 37. Relación con la pantalla de horario
+
+La pantalla de horario puede ser una recuperación segura cuando el catálogo lo autorice para una causa temporal.
+
+Mostrar el horario propio:
+
+- no publica un turno;
+- no modifica su revisión;
+- no concede acceso;
+- no cambia el check-in;
+- no selecciona automáticamente un candidato;
+- no permite editar la programación si el trabajador no posee la capacidad administrativa correspondiente.
+
+La lectura del horario propio y la resolución del turno operativo siguen siendo responsabilidades distintas.
+
+---
+
+#### 38. Tarea abierta durante un cambio de contexto
+
+Si el trabajador tiene una tarea o formulario abierto y cambia materialmente el contexto:
+
+1. la confirmación con el contexto anterior se detiene;
+2. el borrador se conserva cuando el dominio lo permita;
+3. se informa que el contexto cambió;
+4. se resuelve el nuevo contexto;
+5. el recurso y su versión se revalidan;
+6. se ofrece continuar, recargar, transferir o cancelar únicamente cuando el proceso lo autorice.
+
+No se aplica silenciosamente el nuevo contexto a una mutación preparada bajo el anterior.
+
+---
+
+#### 39. Accesibilidad
+
+La presentación deberá:
+
+- usar texto además de color e iconografía;
+- mantener orden lógico de lectura;
+- anunciar cambios materiales;
+- mover el foco al bloqueo cuando la acción quede impedida;
+- preservar navegación por tecnología asistiva;
+- soportar zoom y reflow;
+- evitar toasts efímeros como única explicación;
+- mantener acciones con etiquetas comprensibles;
+- no depender de códigos internos para soporte del trabajador.
+
+Un cambio de sede, área, rol o jornada deberá ser perceptible sin depender únicamente de una variación cromática.
+
+---
+
+#### 40. Localización
+
+El catálogo compartido conserva `es-CO` como locale fuente aprobado.
+
+ANIMA no traducirá por cuenta propia reason codes ni copy contractual.
+
+Cuando exista soporte para otro locale:
+
+- la semántica no cambia;
+- la recuperación no cambia;
+- la privacidad no cambia;
+- la decisión no cambia;
+- no se mezclan strings de versiones distintas.
+
+Si la versión del catálogo no puede resolverse de forma compatible, se aplica una superficie técnica segura y fail closed.
+
+---
+
+#### 41. Dispositivos compartidos
+
+Cuando ANIMA opere en una superficie compartida conforme a contratos futuros aplicables:
+
+- el actor humano actual deberá ser inequívoco;
+- el dispositivo no aporta rol, turno, área ni permiso;
+- el cambio de actor invalida la proyección anterior;
+- no queda visible el nombre o contexto del trabajador anterior;
+- una restricción del dispositivo se explica mediante el descriptor seguro correspondiente;
+- un PIN o mecanismo de identificación no se presenta como grant.
+
+La experiencia personal ordinaria no debe importar complejidad de dispositivo compartido cuando no aplique.
+
+---
+
+#### 42. Simulación
+
+Si una superficie ANIMA llegara a representar un contexto simulado bajo un contrato autorizado:
+
+- la simulación deberá permanecer visualmente inequívoca;
+- no se mezclará con contexto real;
+- no se ocultará el indicador al cambiar de pantalla;
+- el resultado hipotético no se presentará como autorización ejecutable;
+- una acción prohibida en simulación utilizará el mensaje compartido correspondiente.
+
+ANIMA-AUTH-016 no habilita simulación en ANIMA.
+
+---
+
+#### 43. Realtime y señales de actualización
+
+Realtime, refresh, AppState, focus, invalidation events o polling pueden solicitar una nueva resolución.
+
+Ninguna señal es fuente de autoridad por sí misma.
+
+La secuencia correcta es:
+
+```text
+SEÑAL
+→ INVALIDAR O MARCAR FRESCURA
+→ RESOLVER
+→ PROYECTAR RESULTADO
+```
+
+Queda prohibido:
+
+```text
+SEÑAL
+→ EDITAR ETIQUETA LOCAL
+→ CONTINUAR CON AUTORIZACIÓN PREVIA
+```
+
+---
+
+#### 44. Estado físico observado
+
+La inspección del `main` actual de `vento-anima` muestra una implementación previa que no representa todavía este contrato final.
+
+Se observaron, entre otros, estos hechos:
+
+1. `home.tsx` construye `activeSiteName` combinando `geofenceState.siteName`, sede seleccionada y fallbacks del empleado;
+2. el mismo home utiliza `selectedSiteId`, sede del perfil y lista de sedes para construir experiencia de ubicación;
+3. `use-attendance.ts` obtiene un `PublishedShiftContext` directamente desde `employee_shifts` y proyecta `area_id` y `operational_role` dentro de `device_info`;
+4. `error-messages.ts` clasifica errores mediante substrings de mensajes y códigos técnicos en lugar de consumir el catálogo compartido de autorización;
+5. existe un `AttendanceDiagnosticsCard` opcional que muestra latencias, etapas de fallo y contadores técnicos;
+6. existe `app/anima-diagnostics.tsx`, una superficie QA con acceso restringido por una lista local de correos y utilidades que pueden mostrar datos técnicos;
+7. esa superficie QA aplica fallback de rol desde turno hacia campos del empleado;
+8. no se observó una proyección del trabajador equivalente a `ActiveContextPresentation` alimentada exclusivamente por el contexto autoritativo compartido.
+
+Estos hechos son evidencia de brecha, no decisiones canónicas que deban conservarse.
+
+---
+
+#### 45. Brechas físicas y condición de salida
+
+| Brecha | Riesgo | Propiedad de salida |
+| --- | --- | --- |
+| Sede visible construida con geocerca, selección y fallbacks. | El trabajador puede creer activo un territorio que no es autoridad. | La materialización futura de ANIMA-AUTH-016 deberá consumir exclusivamente la proyección autoritativa aplicable. |
+| Contexto de turno resuelto directamente por heurística del cliente. | Turno, área o rol pueden divergir del resolver canónico. | La unidad física correspondiente deberá adoptar el resolver y contrato compartidos definidos por las tareas propietarias. |
+| Error mapping por substrings. | Deny, conflicto, geocerca y fallo técnico pueden producir explicaciones divergentes. | La adopción futura deberá consumir el catálogo de AUTH-ERR-020 y retirar el copy local equivalente. |
+| Diagnóstico técnico expuesto como card opcional. | Métricas técnicas pueden confundirse con diagnóstico humano. | La experiencia del trabajador y la telemetría técnica deberán quedar separadas. |
+| Pantalla QA con fallbacks y datos técnicos. | Una herramienta interna puede confundirse con fuente de contexto del trabajador. | La pantalla QA permanecerá una herramienta separada o se retirará conforme a su propietario; nunca será autoridad. |
+| No existe proyección canónica persistente del contexto del trabajador. | El trabajador no puede verificar fácilmente sede, área, rol, jornada y frescura. | La unidad física de ANIMA-AUTH-016 deberá materializar la presentación aprobada tras el gate correspondiente. |
+
+No se crea una tarea administrativa adicional: la materialización de este contrato sigue la topología canónica de la propia familia ANIMA y las dependencias compartidas ya existentes.
+
+---
+
+#### 46. Auditoría y observabilidad
+
+La presentación visible y la evidencia privada permanecerán separadas.
+
+La evidencia privada podrá conservar, según los contratos propietarios:
+
+- actor efectivo;
+- contexto resuelto;
+- versiones;
+- reason code;
+- decisión;
+- correlación;
+- canal;
+- timestamp;
+- evento de invalidación;
+- resultado de reintento o reconciliación.
+
+La interfaz ordinaria no serializará esa evidencia completa.
+
+La telemetría no convertirá una corrección de contexto, una falla GPS o una denegación en una métrica disciplinaria del trabajador.
+
+---
+
+#### 47. Rollback y recuperación
+
+La futura materialización deberá permitir retirar una versión defectuosa de la presentación sin alterar las fuentes de autoridad.
+
+Rollback de UI o catálogo:
+
+- no restaura una autorización anterior;
+- no revive un turno terminado;
+- no recupera un permiso revocado;
+- no cambia sede ni área;
+- no reabre una sesión;
+- no borra evidencia;
+- no reutiliza una proyección incompatible.
+
+Si una versión de presentación es incompatible, la aplicación deberá fallar cerrado para las operaciones dependientes y usar la recuperación técnica segura aprobada.
+
+---
+
+#### 48. Topología y materialización física
+
+La topología vigente para `ANIMA-AUTH-001` a `ANIMA-AUTH-020` es:
+
+```text
+PER_IMPLEMENTATION_UNIT
+```
+
+con gate:
+
+```text
+POST_E5_PACKAGE
+```
+
+Por tanto:
+
+1. esta tarea define una vez el contrato documental;
+2. no crea una implementación global inmediata;
+3. no crea ahora una instancia física;
+4. la implementación se materializará únicamente en las unidades derivadas de paquetes E5 aprobados;
+5. cada unidad deberá conservar el mismo contrato y no introducir copy, razones o fuentes paralelas;
+6. la ausencia de una unidad lista no bloquea la aprobación documental.
+
+---
+
+#### 49. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos obsoletos:** 0
+
+La tarea especializa cobertura ya existente para contexto visible, lenguaje humano, privacidad, accesibilidad, frescura, invalidación, catálogo compartido, offline y paridad de consumidores.
+
+No modifica el registro canónico de requisitos.
+
+---
+
+#### 50. Cobertura de prueba vigente reutilizada
+
+Sin modificarla, se reutiliza la cobertura existente de:
+
+- `TREQ-UX-077` a `TREQ-UX-096`: fuente autoritativa, contexto visible, separación entre asignado/activo/seleccionado, estados de frescura, cambios, offline, privacidad, accesibilidad y contexto mínimo por producto;
+- `TREQ-UX-097` a `TREQ-UX-117`: taxonomía de explicaciones, anatomía del mensaje, recuperación, accesibilidad, lenguaje no punitivo, referencia segura y observabilidad;
+- `TREQ-AUTH-014`: invalidación comprobable de contexto, caché y autoridad derivada, incluida reautorización offline;
+- `TREQ-AUTH-015`: evidencia correlacionable de decisiones y acciones protegidas;
+- `TREQ-AUTH-217`: invalidación ante cambios de publicación, actor, horario, territorio, rol o frontera temporal;
+- `TREQ-AUTH-220`: vigencia temporal por instantes absolutos y frontera semiabierta;
+- `TREQ-AUTH-224`: resolución de turnos overnight y candidatos mediante intervalos absolutos;
+- `TREQ-AUTH-243`: precedencia entre turno, check-in, rol y validaciones posteriores;
+- `TREQ-AUTH-247`: invalidación del snapshot ante cambios de turno, rol, sede, área, catálogo, check-in, simulación o dispositivo;
+- `TREQ-AUTH-319` a `TREQ-AUTH-331`: catálogo compartido de mensajes, perfiles, ownership, localización, paridad, privacidad, selección determinista, supply chain y fronteras entre razones;
+- `TREQ-ANIMA-003`: persistencia durable, identidad estable y reconciliación de marcaciones offline;
+- `TREQ-ANIMA-004`: idempotencia y concurrencia de descansos.
+
+Esta enumeración es trazabilidad heredada y no representa una modificación del registro.
+
+---
+
+#### 51. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería del checkout se ejecuta después de incorporar y normalizar la tarea en su archivo propietario. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, continuidad, secciones obligatorias, UTF-8, EOL, ausencia de placeholders, cobertura completa de los veinte reason codes compartidos y cero requisitos afectados dentro de la sección derivada. |
+| REMOTA | PASS | Se contrastaron el `main` vigente, continuidad, topología, políticas documentales, UX-BASE-005, UX-BASE-006, AUTH-ERR-020, el registro modular aplicable y el código actual de `vento-anima`, incluidos home, attendance, error mapping y superficies de diagnóstico. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutó una jornada real, cambio de contexto, bloqueo, lector asistivo, reconexión ni dispositivo móvil controlado. |
+| FÍSICA | NOT_EXECUTED | No se modificaron código, Supabase, migraciones, datos, paquetes, aplicaciones, configuración ni infraestructura. |
+
+---
+
+#### 52. Criterios de aceptación
+
+La tarea queda aceptable cuando se cumple documentalmente todo lo siguiente:
+
+1. el diagnóstico visible no es autoridad;
+2. contexto y diagnóstico de acción son planos distintos;
+3. contexto `ACTIVE` puede coexistir con una acción `DENY`;
+4. fallo técnico no se presenta como denegación;
+5. la sede operativa no usa selección, geocerca ni perfil como fallback;
+6. el área operativa no usa afiliación habitual, dispositivo o recurso como fallback;
+7. área no aplicable no se trata como área faltante;
+8. turno y check-in permanecen separados;
+9. descanso no se interpreta como checkout;
+10. cambio temporal de área solo cambia la proyección después de resolución autoritativa;
+11. reemplazos no prestan contexto del trabajador reemplazado;
+12. medianoche no reinicia un turno overnight;
+13. `RESOLVING`, `ACTIVE`, `CHANGING`, `STALE`, `INVALID` y `UNAVAILABLE` conservan semánticas distintas;
+14. una proyección stale puede orientar, pero no autoriza una mutación;
+15. offline no extiende turno ni permiso;
+16. una intención en cola no se presenta como aplicada antes de evidencia server-side;
+17. duplicado, conflicto, denegación, resultado desconocido y fallo técnico se distinguen;
+18. una acción denegada no borra hechos válidos del contexto;
+19. una condición que invalida el contexto impide usar la proyección anterior para mutar;
+20. ANIMA consume el catálogo de mensajes de `AUTH-ERR-020`;
+21. ANIMA no inventa copy contractual local;
+22. los veinte reason codes tienen tratamiento explícito;
+23. reason code no es el texto primario del trabajador;
+24. IDs, grants, permisos, SQL y candidatos internos permanecen ocultos;
+25. soporte utiliza referencia opaca cuando está autorizada;
+26. recuperación no concede autoridad ni reintenta silenciosamente;
+27. el contexto relevante puede consultarse sin una pantalla técnica QA;
+28. el horario propio no se convierte en fuente de turno ni publicación;
+29. un formulario abierto no se confirma silenciosamente con un contexto distinto;
+30. la experiencia es accesible y no depende de color;
+31. localización no cambia semántica;
+32. un dispositivo compartido no presta contexto entre actores;
+33. una simulación, si existiera, no se presenta como autoridad real;
+34. Realtime es señal de invalidación o refresh, no autoridad;
+35. la pantalla QA existente no se eleva a contrato del trabajador;
+36. el card técnico de asistencia no sustituye el diagnóstico humano;
+37. no se crea un nuevo permiso, razón, RPC, tabla o campo de `AccessContext`;
+38. la distinción específica falta de turno vs falta de permiso permanece reservada a ANIMA-AUTH-017;
+39. no se modifica 04A porque la cobertura existente es suficiente;
+40. la materialización física permanece sujeta a `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`.
+
+---
+
+#### 53. Límites
+
+ANIMA-AUTH-016 no:
+
+- implementa componentes;
+- modifica `vento-anima`;
+- modifica Supabase;
+- crea migraciones;
+- crea RPC;
+- crea RLS;
+- crea tablas;
+- crea permisos;
+- crea reason codes;
+- cambia el catálogo de `AUTH-ERR-020`;
+- cambia `AccessContext`;
+- cambia `AuthorizationDecision`;
+- publica horarios;
+- crea o cierra sesiones de asistencia;
+- asigna sedes;
+- asigna áreas;
+- asigna roles;
+- resuelve la precedencia específica entre falta de turno y falta de permiso;
+- convierte la pantalla QA actual en experiencia canónica;
+- autoriza trabajo físico;
+- inicia ANIMA-AUTH-017.
+
+Toda brecha física descrita conserva la condición de salida indicada y deberá materializarse únicamente bajo el gate y la unidad que correspondan.
+
+---
+
+#### 54. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso`
+
 ### [ ] ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso
 ### [ ] ANIMA-AUTH-018 — Auditar creación y cierre del contexto
 ### [ ] ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
