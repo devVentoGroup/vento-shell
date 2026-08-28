@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `ANIMA-AUTH-010` — Manejar descansos sin cerrar autorización | `ANIMA-AUTH-011` — Manejar cambio temporal de área | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `AUTH-DB-016::GLOBAL` — Crear esquemas empresariales aprobados | `AUTH-DB-018::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `IN_PROGRESS` | `AUTH-DB-016::GLOBAL` — Crear esquemas empresariales aprobados | `AUTH-DB-018::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -25,7 +25,7 @@
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-F-ANIMA` — ANIMA
 - **Siguiente etapa documental:** `PHASE-04-G-VISO-CORE`
-- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `AUTH-DB-016::GLOBAL`
+- **Acción física prioritaria:** `EJECUTAR_IMPLEMENTACION` — `AUTH-DB-016::GLOBAL`
 - **Instancias físicas en espera de predecesora:** **10**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
@@ -35,7 +35,7 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `AUTH-DB-016::GLOBAL` | Crear esquemas empresariales aprobados | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 1 | **ACTUAL** | `AUTH-DB-016::GLOBAL` | Crear esquemas empresariales aprobados | `IN_PROGRESS` | ACTUAL — EJECUTAR_IMPLEMENTACION |
 | 2 | PENDIENTE | `AUTH-DB-018::GLOBAL` | Separar vistas y RPC expuestas de helpers internos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-016::GLOBAL. |
 | 3 | PENDIENTE | `AUTH-DB-017::GLOBAL` | Configurar esquemas expuestos y privilegios de Data API | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-016::GLOBAL. |
 | 4 | PENDIENTE | `AUTH-DB-019::GLOBAL` | Implementar vínculos canónicos entre Auth e identidades empresariales | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-016::GLOBAL. |
