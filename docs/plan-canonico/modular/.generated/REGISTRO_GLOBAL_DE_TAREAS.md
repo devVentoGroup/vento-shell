@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1065** |
+| Aprobadas | **1066** |
 | En propuesta | **0** |
-| No iniciadas | **529** |
+| No iniciadas | **528** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **66.81% (1065/1594)** |
+| Porcentaje de completamiento | **66.88% (1066/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-013` — Manejar turnos cruzados de medianoche | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-014` — Manejar cola offline de check-in | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-015` — Revalidar permisos al sincronizar una cola offline | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-014` — Manejar cola offline de check-in | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-015` — Revalidar permisos al sincronizar una cola offline | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-016` — Mostrar diagnóstico de contexto al trabajador | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -609,7 +609,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-011` | Manejar cambio temporal de área | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-012` | Manejar reemplazos de turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-013` | Manejar turnos cruzados de medianoche | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-014` | Manejar cola offline de check-in | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-014` | Manejar cola offline de check-in | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-015` | Revalidar permisos al sincronizar una cola offline | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-016` | Mostrar diagnóstico de contexto al trabajador | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-017` | Diferenciar falta de turno y falta de permiso | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
