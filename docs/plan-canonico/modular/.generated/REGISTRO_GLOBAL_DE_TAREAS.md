@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1069** |
+| Aprobadas | **1070** |
 | En propuesta | **0** |
-| No iniciadas | **525** |
+| No iniciadas | **524** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **67.06% (1069/1594)** |
+| Porcentaje de completamiento | **67.13% (1070/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-017` — Diferenciar falta de turno y falta de permiso | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-018` — Auditar creación y cierre del contexto | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-019` — Evitar que ANIMA otorgue permisos directamente | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-018` — Auditar creación y cierre del contexto | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-019` — Evitar que ANIMA otorgue permisos directamente | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-020` — Mantener Supabase como fuente de verdad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -613,7 +613,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-015` | Revalidar permisos al sincronizar una cola offline | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-016` | Mostrar diagnóstico de contexto al trabajador | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-017` | Diferenciar falta de turno y falta de permiso | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-018` | Auditar creación y cierre del contexto | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-018` | Auditar creación y cierre del contexto | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-019` | Evitar que ANIMA otorgue permisos directamente | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-020` | Mantener Supabase como fuente de verdad | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-001` | Inventariar pantallas personales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
