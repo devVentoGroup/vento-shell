@@ -1,10 +1,146 @@
 {
   "instance_id": "AUTH-DB-016::GLOBAL",
   "task_id": "AUTH-DB-016",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260828023253_auth_db_016_canonical_schema_foundation.sql",
+      "change": "CREATE",
+      "scope": "Create exactly one Supabase-CLI-generated forward AUTH-DB-016 migration. Reconcile exactly the 29 canonical Vento target schemas; preserve app_private and payments; create only missing target namespaces; grant no new anon or authenticated schema access; change no Data API configuration; move no objects or data; preserve legacy schemas and VITAL; create no roles or memberships; fail closed on incompatible baseline or ACL drift."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/025_auth_db_016_canonical_schema_foundation.test.sql",
+      "change": "CREATE",
+      "scope": "Create the AUTH-DB-016 pgTAP SCHEMA test covering the exact 29 target schemas, 26 owner schemas, three transversal schemas, preservation of app_private and payments, legacy and VITAL boundaries, zero new client CREATE, zero anon USAGE, no new authenticated USAGE beyond preserved payments compatibility, no persistent objects in newly created schemas, and no broad default privileges."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical Supabase migration manifest only through scripts/supabase/migration-manifest.mjs after adding the authorized AUTH-DB-016 migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-016__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record only AUTH-DB-016::GLOBAL authorization, lifecycle state, materialization evidence and consolidated validation evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying the script."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the clean local Supabase database harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict local candidate and drift certification without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run quality:repair exactly once after materialization and before IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative physical lifecycle."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validate physical implementation scope against the authorized instance."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/023_auth_db_004_authenticated_grant_containment.test.sql",
+      "change": "MODIFY",
+      "scope": "Replace only the stale final-state assertion that api must not exist with a migration-history assertion proving AUTH-DB-004 itself did not create api. Required because AUTH-DB-016 canonically creates the api namespace during cumulative replay. Preserve all other AUTH-DB-004 assertions and plan cardinality."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/024_auth_db_005_anon_grant_containment.test.sql",
+      "change": "MODIFY",
+      "scope": "Replace only the stale final-state assertion that api must not exist with a migration-history assertion proving AUTH-DB-005 itself did not create api. AUTH-DB-016 canonically creates api during cumulative replay. Preserve all other AUTH-DB-005 assertions and plan cardinality."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-27",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "5e01cdb5d6b76af93a1377f2278d0597013efb4e323ab0cd4cbb8fdf755ee314"
+  },
+  "evidence": [
+    "MATERIALIZATION migration supabase/migrations/20260828023253_auth_db_016_canonical_schema_foundation.sql",
+    "MATERIALIZATION test supabase/tests/database/025_auth_db_016_canonical_schema_foundation.test.sql",
+    "MATERIALIZATION manifest supabase/MIGRATION_MANIFEST.md",
+    "MATERIALIZATION target_schema_contract=29 owner_schemas=26 transversal_schemas=3",
+    "MATERIALIZATION baseline_existing_targets=2 app_private,payments missing_targets=27",
+    "REMOTE_BASELINE_READ_ONLY target_schema_count=29 existing_target_count=2 missing_target_count=27",
+    "REMOTE_BASELINE_READ_ONLY app_private owner=postgres anon_usage=false authenticated_usage=false",
+    "REMOTE_BASELINE_READ_ONLY payments owner=postgres anon_usage=false authenticated_usage=true",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "PRE_VALIDATION_GATE READY_FOR_VALIDATION SI",
+    "SOURCE CONTRACT SHA256 5e01cdb5d6b76af93a1377f2278d0597013efb4e323ab0cd4cbb8fdf755ee314",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "SCOPE_AMENDMENT AUTH-DB-016 allows forward-compatible maintenance of 023_auth_db_004_authenticated_grant_containment.test.sql because AUTH-DB-016 canonically creates api while AUTH-DB-004 historical provenance must remain testable",
+    "SCOPE_AMENDMENT AUTH-DB-016 allows forward-compatible maintenance of 024_auth_db_005_anon_grant_containment.test.sql because AUTH-DB-016 canonically creates api while AUTH-DB-005 historical provenance must remain testable",
+    "CORRECTION DB004 historical api assertion uses migration provenance instead of future final-state absence",
+    "CORRECTION DB005 historical api assertion uses migration provenance instead of future final-state absence",
+    "VALIDATION 023_auth_db_004_authenticated_grant_containment.test.sql PASS after forward-compatible correction",
+    "VALIDATION 024_auth_db_005_anon_grant_containment.test.sql PASS after forward-compatible correction",
+    "VALIDATION npm run supabase:db:test:clean PASS after historical test compatibility corrections",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS",
+    "VALIDATION DB004 historical forward compatibility PASS",
+    "VALIDATION DB005 historical forward compatibility PASS",
+    "VALIDATION #3 npm run supabase:recovery:local PASS outcome=PASS_ROLLBACK_VERIFIED rpo_actual=0 rto_actual_ms=17260",
+    "RECOVERY_EVIDENCE .delivery/supabase-recovery/20260828035141706-5430f7199dca-fb31493a/evidence.json",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0",
+    "VALIDATION #4 candidate_sha=5c8d20cb36b9983313062f2b7fbce2a2ec90ec08",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS historical_errors=10 historical_warnings=11 clean_files_touched=0",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS",
+    "CHECKPOINT_LOCAL 5c8d20cb36b9983313062f2b7fbce2a2ec90ec08",
+    "DERIVED_PROJECTIONS_PRESERVED SI",
+    "QUALITY_REPAIR_RERUN NO",
+    "RESULT AUTH-DB-016::GLOBAL VERIFIED",
+    "FILE_SHA256 supabase/migrations/20260828023253_auth_db_016_canonical_schema_foundation.sql 0156b717c6a9ae43ab72c9eadedb6113c993aa227eda8a9d041fe8203aaa9174",
+    "FILE_SHA256 supabase/tests/database/023_auth_db_004_authenticated_grant_containment.test.sql ede6db1be1809c494b9deb16f3ce50323567e84827067b8cf76ece528053d2fb",
+    "FILE_SHA256 supabase/tests/database/024_auth_db_005_anon_grant_containment.test.sql 9ef6b2f9c0002adf8c3bbaf08ae62ecb4f4af691498763937102d3edcdf813b6",
+    "FILE_SHA256 supabase/tests/database/025_auth_db_016_canonical_schema_foundation.test.sql 0b4cecc45b68b5f8a5ac9f6550faa9a03924a3edfc3192fe330ba6cf0b79d85d",
+    "FILE_SHA256 supabase/MIGRATION_MANIFEST.md bc9ae1e484807eb99b25f11853794ce7d4e7243291e2259f7e1199104f148d44"
+  ]
 }

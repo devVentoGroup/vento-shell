@@ -294,12 +294,20 @@ select is(
 );
 
 select ok(
-  not exists (
+  exists (
     select 1
-    from pg_catalog.pg_namespace
-    where nspname = 'api'
+    from supabase_migrations.schema_migrations m
+    where m.version = '20260827153413'
+      and cardinality(m.statements) > 0
+  )
+  and not exists (
+    select 1
+    from supabase_migrations.schema_migrations m
+    cross join lateral unnest(m.statements) as s(statement)
+    where m.version = '20260827153413'
+      and s.statement ~* 'create[[:space:]]+schema[[:space:]]+(if[[:space:]]+not[[:space:]]+exists[[:space:]]+)?("?api"?)([[:space:];]|$)'
   ),
-  'AUTH-DB-005 does not create the api schema'
+  'AUTH-DB-005 migration does not create the api schema'
 );
 
 select * from finish();
