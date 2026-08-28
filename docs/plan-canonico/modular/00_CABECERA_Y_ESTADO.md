@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1067** |
+| Tareas aprobadas | **1068** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **527** |
+| Tareas no iniciadas | **526** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **66.94% (1067/1594)** |
+| Porcentaje de completamiento | **67.00% (1068/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline** |
-| Tarea actual | **ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador** |
+| Última tarea aprobada | **ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador** |
+| Tarea actual | **ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso** |
+| Siguiente tarea | **ANIMA-AUTH-018 — Auditar creación y cierre del contexto** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 15 de 37 aprobadas; ANIMA-AUTH-016 pendiente** |
+| Progreso del bloque | **BLOQUE F: 16 de 37 aprobadas; ANIMA-AUTH-017 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-017::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-AUTH-016** |
+| Carril documental | **ACTIVO — ANIMA-AUTH-017** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-017::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-AUTH-015` — Revalidar permisos al sincronizar una cola offline |
-| Tarea actual | `ANIMA-AUTH-016` — Mostrar diagnóstico de contexto al trabajador — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-AUTH-017` — Diferenciar falta de turno y falta de permiso |
+| Última aprobada | `ANIMA-AUTH-016` — Mostrar diagnóstico de contexto al trabajador |
+| Tarea actual | `ANIMA-AUTH-017` — Diferenciar falta de turno y falta de permiso — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-AUTH-018` — Auditar creación y cierre del contexto |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 15 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-016** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 16 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-017** |
 | Implementación física | **AUTH-DB-017::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline
-        ↓
-TAREA ACTUAL
 ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-AUTH-018 — Auditar creación y cierre del contexto
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 15 de 37 tareas aprobadas
+BLOQUE F — 16 de 37 tareas aprobadas
 ```
