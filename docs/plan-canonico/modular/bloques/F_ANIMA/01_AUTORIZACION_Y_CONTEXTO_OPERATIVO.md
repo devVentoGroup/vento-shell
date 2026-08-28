@@ -9150,7 +9150,1224 @@ Esta tarea no define:
 `ANIMA-AUTH-012 — Manejar reemplazos de turno`
 
 
-### [ ] ANIMA-AUTH-012 — Manejar reemplazos de turno
+### ✅ ANIMA-AUTH-012 — Manejar reemplazos de turno
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-011 — Manejar cambio temporal de área
+**Tarea siguiente:** ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche
+**Tipo de tarea:** documental; definición contractual del reemplazo autoritativo de una ocurrencia de turno o de su trabajador asignado, preservando identidad, revisión, linaje, asistencia, contexto, autorización y tiempo trabajado sin transferir sesiones ni sobrescribir historia
+**Bloque:** `F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología `PER_IMPLEMENTATION_UNIT`, al gate `POST_E5_PACKAGE` y a autorización física explícita
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo debe reaccionar ANIMA cuando la programación autoritativa sustituye una ocurrencia de turno, cambia el trabajador responsable de cubrirla o enlaza dos ocurrencias mediante un reemplazo explícito, sin convertir esa sustitución en una edición destructiva del pasado, sin prestar una sesión de asistencia entre trabajadores y sin conservar autorización basada en un turno que dejó de ser aplicable.
+
+La regla raíz queda:
+
+```text
+REEMPLAZO AUTORITATIVO CONFIRMADO
++
+LINAJE EXPLICITO ENTRE ORIGEN Y SUCESOR
++
+HISTORIA DEL ORIGEN PRESERVADA
+->
+INVALIDAR CONTEXTO OBSOLETO
+->
+RESOLVER TURNO VIGENTE POR ACTOR
+->
+RESOLVER SESION COMPATIBLE POR ACTOR
+->
+REAUTORIZAR ACCIONES POSTERIORES
+```
+
+El reemplazo no concede permisos, no crea presencia por sí mismo, no transfiere check-in, no altera retroactivamente el tiempo trabajado y no convierte ANIMA en propietario de la programación.
+
+---
+
+#### 2. Resultado canónico
+
+`ANIMA-AUTH-012` fija un contrato único de consumo y reconciliación de reemplazos de turno con las siguientes propiedades:
+
+1. VISO y el proceso propietario de programación continúan siendo la autoridad del reemplazo;
+2. la ocurrencia original conserva identidad e historia;
+3. una sustitución real por otra ocurrencia utiliza una identidad de turno sucesora distinta;
+4. el vínculo entre original y sucesora es explícito y reconstruible;
+5. un cambio de trabajador no se representa sobrescribiendo silenciosamente al trabajador original de una ocurrencia ya publicada;
+6. cada trabajador conserva su propia sesión de asistencia;
+7. ninguna sesión de check-in se transfiere entre ocurrencias o actores;
+8. la autorización posterior se resuelve con el turno y contexto vigentes de cada actor;
+9. las acciones offline no se retargetean silenciosamente hacia el reemplazo;
+10. la concurrencia no puede producir dos sucesores autoritativos incompatibles para la misma base;
+11. un reemplazo confirmado conserva resultado recuperable ante retry o respuesta perdida;
+12. las correcciones posteriores preservan el reemplazo y su historia en lugar de borrar evidencia.
+
+La tarea define semántica, identidad, fronteras y handoffs. No fija el esquema físico final de tablas, columnas, RPC, eventos, contratos serializados ni interfaz administrativa.
+
+---
+
+#### 3. Vocabulario contractual
+
+Para esta tarea se distinguen los siguientes conceptos.
+
+**Ocurrencia original:** turno publicado o estado autoritativo que es objeto de sustitución.
+
+**Ocurrencia sucesora:** nueva ocurrencia lógica que pasa a cubrir total o parcialmente la obligación laboral sustituida y posee identidad propia cuando existe sustitución real de ocurrencia.
+
+**Trabajador original:** actor laboral asociado a la ocurrencia original antes del reemplazo.
+
+**Trabajador reemplazante:** actor laboral que queda asociado a la ocurrencia sucesora cuando el reemplazo cambia la persona que cubre el trabajo.
+
+**Linaje de reemplazo:** relación autoritativa que permite reconstruir qué ocurrencia fue sustituida, por cuál, bajo qué decisión, en qué momento y por qué autoridad.
+
+**Corrección de revisión:** modificación versionada de una misma ocurrencia que conserva su identidad lógica y no constituye por sí sola una sustitución real por otra ocurrencia.
+
+**Intercambio de turnos:** operación empresarial que relaciona dos sustituciones coordinadas entre trabajadores u ocurrencias. No implica intercambio de sesiones de asistencia.
+
+---
+
+#### 4. Separaciones obligatorias
+
+Se conservan las siguientes diferencias:
+
+```text
+REEMPLAZO DE TURNO
+!=
+EDICION DE BORRADOR
+!=
+CORRECCION DE LA MISMA OCURRENCIA
+!=
+CAMBIO TEMPORAL DE AREA
+!=
+CAMBIO DE ROL AISLADO
+!=
+CHECK-IN
+!=
+CHECKOUT
+!=
+TRANSFERENCIA DE SESION
+!=
+GRANT
+!=
+SCOPE
+```
+
+También:
+
+```text
+TURNO ORIGINAL
+!=
+TURNO SUCESOR
+
+TRABAJADOR ORIGINAL
+!=
+TRABAJADOR REEMPLAZANTE
+
+HECHO DE ASISTENCIA ORIGINAL
+!=
+HECHO DE ASISTENCIA DEL REEMPLAZANTE
+```
+
+Una coincidencia de horario, sede, área o rol no fusiona esas identidades.
+
+---
+
+#### 5. Autoridad sobre el reemplazo
+
+La programación laboral continúa siendo propiedad de VISO y de `VPROC-0007`.
+
+ANIMA puede:
+
+- consumir el estado publicado vigente;
+- detectar que una ocurrencia dejó de ser autoritativa para un actor;
+- reconocer el linaje de reemplazo que entregue el contrato propietario;
+- invalidar contexto local o cacheado;
+- presentar el nuevo turno aplicable;
+- exigir nueva resolución de asistencia y autorización.
+
+ANIMA no puede:
+
+- aprobar un reemplazo por sí solo;
+- elegir quién reemplaza a quién;
+- fabricar una ocurrencia sucesora desde estado local;
+- reasignar una sesión de check-in;
+- modificar el trabajador del turno por conveniencia del cliente;
+- decidir cuál de dos reemplazos concurrentes prevalece;
+- inferir el reemplazo porque otro trabajador apareció físicamente en la sede.
+
+La autoridad administrativa y la atomicidad empresarial pertenecen a los contratos propietarios de programación, autorización y concurrencia.
+
+---
+
+#### 6. Identidad estable de la ocurrencia
+
+`shift_id` identifica una ocurrencia lógica de turno.
+
+Una revisión nueva de la misma ocurrencia puede conservar `shift_id` cuando el contrato propietario la clasifica como corrección o evolución de esa ocurrencia.
+
+Una sustitución real por otra ocurrencia exige:
+
+```text
+original_shift_id != replacement_shift_id
+```
+
+La ocurrencia sucesora no reutiliza la identidad de la original para ocultar que existió una sustitución.
+
+El sistema debe poder distinguir históricamente ambas identidades incluso cuando compartan:
+
+- fecha;
+- hora;
+- sede;
+- área;
+- rol;
+- duración;
+- motivo operacional.
+
+---
+
+#### 7. Linaje explícito entre original y sucesora
+
+Una sustitución real debe preservar una relación explícita y resoluble entre las dos ocurrencias.
+
+El contrato lógico debe poder responder, como mínimo:
+
+```text
+QUE TURNO FUE REEMPLAZADO
+POR CUAL TURNO
+PARA QUE TRABAJADOR ORIGINAL
+CON QUE TRABAJADOR REEMPLAZANTE
+BAJO QUE REVISION O ESTADO
+DESDE QUE INSTANTE
+POR QUE AUTORIDAD
+CON QUE MOTIVO CUANDO APLIQUE
+```
+
+Esta tarea no impone nombres de columnas como `replaced_by` o `replacement_id`.
+
+Sí prohíbe depender exclusivamente de:
+
+- notas libres;
+- proximidad temporal;
+- igualdad de horario;
+- último registro creado;
+- orden por `updated_at`;
+- texto de notificación;
+- inferencia desde asistencia.
+
+---
+
+#### 8. Reemplazo frente a corrección de la misma ocurrencia
+
+No toda modificación posterior a publicación es un reemplazo.
+
+Cuando se conserva la misma ocurrencia y solo cambia una revisión autoritativa de sus hechos, aplica el contrato de corrección y actualización de contexto correspondiente.
+
+Conceptualmente:
+
+```text
+MISMO SHIFT_ID
++
+NUEVA REVISION
+->
+CORRECCION / ACTUALIZACION DE LA MISMA OCURRENCIA
+```
+
+En cambio:
+
+```text
+OCURRENCIA S1 DEJA DE CUBRIR LA OBLIGACION
++
+OCURRENCIA S2 ASUME ESA COBERTURA
+->
+REEMPLAZO
+```
+
+El consumidor no puede degradar un reemplazo real a una simple edición in-place porque hacerlo perdería identidad, linaje y auditabilidad.
+
+---
+
+#### 9. Reemplazo frente a cambio temporal de área
+
+`ANIMA-AUTH-011` conserva la propiedad del cambio temporal de área dentro de la misma ocurrencia.
+
+La frontera queda:
+
+```text
+MISMO EMPLOYEE_ID
++
+MISMO SHIFT_ID
++
+MISMA SEDE
++
+MISMO ROL
++
+CAMBIA AREA
+->
+ANIMA-AUTH-011
+```
+
+Si cambia la identidad de la ocurrencia o el trabajador que la cubre, el caso pertenece a `ANIMA-AUTH-012`.
+
+Un cambio de área concurrente con un reemplazo se resuelve mediante la fuente autoritativa y su linaje. ANIMA no combina arbitrariamente el área de una revisión con el trabajador de otra.
+
+---
+
+#### 10. Reemplazo frente a cancelación o retiro
+
+Una cancelación sin sucesor no es un reemplazo.
+
+```text
+ORIGINAL CANCELADO
++
+SIN OCURRENCIA SUCESORA AUTORITATIVA
+->
+CANCELACION
+```
+
+```text
+ORIGINAL DEJA DE SER APLICABLE
++
+SUCESORA EXPLICITA ASUME LA COBERTURA
+->
+REEMPLAZO
+```
+
+Queda prohibido inventar una sucesora porque exista otro turno parecido o porque un trabajador distinto realice una marcación.
+
+La ausencia de sucesor conserva su causa real y no se presenta como reemplazo exitoso.
+
+---
+
+#### 11. Reemplazo de trabajador
+
+Cuando la sustitución cambia al trabajador que debe cubrir la obligación, el trabajador original no se sobrescribe retroactivamente dentro de la ocurrencia publicada como si nunca hubiera sido asignado.
+
+La transición debe preservar:
+
+- identidad del trabajador original;
+- identidad del reemplazante;
+- ocurrencia original;
+- ocurrencia sucesora cuando exista sustitución real;
+- revisión o estado anterior;
+- decisión de reemplazo;
+- instante efectivo;
+- historia de notificación y auditoría cuando aplique.
+
+El reemplazante debe ser elegible bajo el contrato de programación y autorización vigente. La mera disponibilidad o presencia física no basta.
+
+---
+
+#### 12. Reemplazo de ocurrencia sin cambio de trabajador
+
+También puede existir una sustitución de ocurrencia para el mismo trabajador cuando el turno original deja de ser la unidad válida y una nueva ocurrencia lo reemplaza.
+
+En ese caso:
+
+```text
+employee_id puede conservarse
+original_shift_id cambia a replacement_shift_id
+```
+
+La sesión activa del turno original no se reata automáticamente a la sucesora.
+
+Si la nueva ocurrencia requiere check-in para una capacidad `T+C`, debe existir una sesión confirmada y compatible con la nueva ocurrencia según el contrato vigente.
+
+---
+
+#### 13. Intercambio entre dos trabajadores
+
+Un intercambio de turnos entre dos trabajadores no se representa intercambiando `employee_id` destructivamente sobre dos filas publicadas.
+
+Debe conservarse una relación empresarial reconstruible entre:
+
+- las dos ocurrencias originales;
+- los dos trabajadores originales;
+- las ocurrencias sucesoras aplicables;
+- la autoridad que aprobó el intercambio;
+- el instante efectivo;
+- el resultado de cada lado.
+
+ANIMA consume únicamente el estado autoritativo ya confirmado.
+
+Si el propietario exige atomicidad del intercambio, ambos lados deben quedar confirmados o reconciliados bajo ese contrato. Esta tarea no redefine la atomicidad propietaria de `VISO-SCH-005` y `VISO-SCH-006`.
+
+---
+
+#### 14. Precondiciones del reemplazo
+
+Antes de que una sustitución pueda considerarse aplicable deben poder demostrarse, según el caso:
+
+1. ocurrencia original existente y resoluble;
+2. revisión o estado base conocido;
+3. trabajador original resoluble;
+4. autoridad administrativa válida;
+5. sucesora identificada de manera inequívoca;
+6. trabajador reemplazante válido cuando cambie el actor laboral;
+7. vínculo laboral aplicable del reemplazante;
+8. sede de la sucesora válida;
+9. área válida o ausencia compatible cuando corresponda;
+10. rol operativo canónico y activo;
+11. habilitación rol-sede;
+12. compatibilidad rol-área;
+13. intervalo temporal válido;
+14. ausencia de conflicto irresoluble con otra programación autoritativa;
+15. base de concurrencia suficientemente fresca;
+16. capacidad de preservar historia y linaje.
+
+La tarea no convierte esas comprobaciones en un permiso nuevo.
+
+---
+
+#### 15. Trabajador reemplazante y elegibilidad
+
+El reemplazante no hereda elegibilidad del trabajador original.
+
+Se resuelven de nuevo, como mínimo:
+
+- identidad efectiva;
+- vínculo laboral;
+- cobertura territorial requerida;
+- turno sucesor;
+- sede;
+- área;
+- rol operativo;
+- compatibilidad del rol;
+- restricciones temporales;
+- requisitos de check-in aplicables a cada permiso.
+
+Queda prohibido copiar:
+
+- grants;
+- rol efectivo;
+- área efectiva;
+- sesión;
+- dispositivo;
+- contexto;
+- excepciones;
+- bypass;
+- decisión previa.
+
+---
+
+#### 16. Revisión publicada y reemplazo efectivo
+
+Un reemplazo pendiente no constituye todavía autoridad para ANIMA.
+
+La secuencia conceptual es:
+
+```text
+SOLICITUD / PROPUESTA
+->
+VALIDACION PROPIETARIA
+->
+APROBACION CUANDO APLIQUE
+->
+PUBLICACION / CONFIRMACION AUTORITATIVA
+->
+EFECTIVIDAD
+->
+CONSUMO EN ANIMA
+```
+
+El cliente puede mostrar una propuesta o aviso, pero no puede cambiar el `active_shift` utilizado para autorización antes de que la fuente propietaria confirme el estado aplicable.
+
+---
+
+#### 17. Momento efectivo
+
+Cuando el contrato propietario distinga tiempos, se preserva:
+
+```text
+requested_at
+!=
+approved_at
+!=
+published_at
+!=
+effective_at
+```
+
+El reloj del cliente no decide la efectividad.
+
+Una sustitución futura no invalida prematuramente el turno vigente.
+
+Una sustitución ya efectiva no puede seguir tratándose como futura porque una caché o pantalla todavía muestre el turno anterior.
+
+---
+
+#### 18. Reemplazo antes del inicio del turno
+
+Cuando el reemplazo queda efectivo antes de que comience la ocurrencia original:
+
+- el original deja de ser candidato operativo para el trabajador original desde la efectividad aplicable;
+- la sucesora puede convertirse en candidata del reemplazante cuando alcance su ventana temporal;
+- no se crea asistencia para ninguno;
+- no se crea check-in automático;
+- no se transfiere una intención local previa;
+- ANIMA debe mostrar el estado autoritativo vigente cuando corresponda.
+
+Una notificación no sustituye la lectura de la fuente autoritativa.
+
+---
+
+#### 19. Reemplazo durante una ocurrencia en curso
+
+Un reemplazo efectivo mientras el trabajo ya está en curso exige separar programación, asistencia y autorización.
+
+El reemplazo puede cambiar quién debe cubrir la obligación hacia adelante, pero no reescribe quién realizó trabajo antes del instante efectivo.
+
+Debe preservarse:
+
+```text
+TRABAJO YA CONFIRMADO
+->
+HISTORIA DEL ACTOR QUE LO REALIZO
+
+TRABAJO POSTERIOR AL REEMPLAZO
+->
+CONTEXTO DEL ACTOR AUTORITATIVO VIGENTE
+```
+
+La frontera exacta de tiempo trabajado se deriva de hechos de asistencia reconciliados y del contrato propietario; no se calcula sustituyendo el `employee_id` histórico.
+
+---
+
+#### 20. Sesión del trabajador original
+
+Si el trabajador original ya posee una sesión de check-in asociada a la ocurrencia sustituida:
+
+1. la sesión conserva su identidad histórica;
+2. no cambia de `employee_id`;
+3. no cambia de `shift_id` para seguir a la sucesora;
+4. no se presta al reemplazante;
+5. puede dejar de ser utilizable para nuevas autorizaciones cuando el turno original deje de ser aplicable;
+6. su cierre real continúa gobernado por el contrato de checkout, expiración o reconciliación correspondiente;
+7. el reemplazo por sí solo no fabrica un evento de checkout que no ocurrió.
+
+La historia de presencia y la autoridad para acciones nuevas son conceptos distintos.
+
+---
+
+#### 21. Sesión del trabajador reemplazante
+
+El reemplazante necesita su propia evidencia de presencia cuando el permiso o carril la exija.
+
+```text
+TURNO SUCESOR VALIDO
++
+TRABAJADOR REEMPLAZANTE
+!=
+CHECK-IN CONFIRMADO
+```
+
+Por tanto:
+
+- no se crea sesión al aprobar el reemplazo;
+- no se copia `checkin_session_id`;
+- no se copia hora de entrada;
+- no se copia geolocalización;
+- no se copia punto físico;
+- no se satisface `T+C` sin una sesión propia compatible.
+
+Si el permiso exige solo turno, se evalúa con la sucesora vigente sin inventar presencia.
+
+---
+
+#### 22. Prohibición de transferencia de sesión
+
+La regla es absoluta:
+
+```text
+SESSION(A, SHIFT_ORIGINAL)
+NO PUEDE CONVERTIRSE EN
+SESSION(B, SHIFT_REPLACEMENT)
+```
+
+Tampoco:
+
+```text
+SESSION(A, S1)
+NO PUEDE REATARSE A
+S2
+```
+
+La coincidencia de sede, horario, área, rol o dispositivo no altera esta prohibición.
+
+Una sesión representa asistencia confirmada de un actor respecto de una ocurrencia concreta; no es un cupo laboral transferible.
+
+---
+
+#### 23. Descanso activo durante un reemplazo
+
+Un descanso abierto pertenece a su sesión padre y al trabajador que lo inició.
+
+Si ocurre un reemplazo mientras el original está en descanso:
+
+- el descanso no se transfiere al reemplazante;
+- no se reata a la sucesora;
+- no se cierra automáticamente solo para facilitar el reemplazo;
+- conserva su historia y requiere reconciliación bajo su sesión padre;
+- no mantiene autoridad operativa para el original después de que el turno deje de ser aplicable.
+
+El reemplazante inicia sus propios descansos únicamente sobre su propia sesión cuando corresponda.
+
+---
+
+#### 24. Checkout concurrente
+
+El checkout sigue siendo terminal para la sesión sobre la cual opera.
+
+Si concurren reemplazo y checkout del trabajador original:
+
+- el reemplazo no revive una sesión cerrada;
+- el checkout no cambia la identidad de la sucesora;
+- una respuesta tardía se reconcilia con el estado confirmado;
+- no se inventa un segundo checkout;
+- no se transfiere el cierre al reemplazante.
+
+Si el checkout fue confirmado primero, cualquier contexto que dependa de esa sesión debe reflejar el cierre.
+
+---
+
+#### 25. Efecto sobre `AccessContext` del trabajador original
+
+Cuando el reemplazo vuelve inaplicable el turno original para nuevas decisiones, cualquier snapshot operativo anterior queda obsoleto.
+
+Debe ocurrir:
+
+```text
+CONTEXTO ORIGINAL
+->
+NO REUTILIZABLE
+->
+RESOLVER FUENTES ACTUALES
+->
+NUEVO ACCESS CONTEXT
+```
+
+El nuevo resultado puede carecer de `active_shift` o de `active_checkin_session` si ya no existe una combinación compatible.
+
+No se muta un `AccessContext` anterior in-place.
+
+---
+
+#### 26. Efecto sobre `AccessContext` del reemplazante
+
+El trabajador reemplazante también requiere nueva resolución cuando la sucesora pasa a ser aplicable.
+
+La resolución no reutiliza contexto del original ni una decisión previa del reemplazante tomada antes del cambio.
+
+Debe resolver de nuevo:
+
+- turno vigente;
+- revisión aplicable;
+- sede;
+- área;
+- rol;
+- sesión compatible cuando aplique;
+- dispositivo y simulación cuando correspondan;
+- grants, denies, scope y recurso.
+
+El replacement no es un mecanismo de herencia de contexto.
+
+---
+
+#### 27. Grants, denies, scope y recurso
+
+El reemplazo cambia hechos laborales; no concede autorización por sí mismo.
+
+```text
+REEMPLAZO CONFIRMADO
+!=
+GRANT
+```
+
+Y:
+
+```text
+GRANT DEL ORIGINAL
+!=
+GRANT DEL REEMPLAZANTE
+```
+
+Toda acción posterior se evalúa con el permiso del actor efectivo, su modalidad, el contexto vigente y el recurso real.
+
+Una denegación transversal o territorial no desaparece porque el trabajador haya sido elegido como reemplazante.
+
+---
+
+#### 28. Territorio de la sucesora
+
+La ocurrencia sucesora debe aportar su propio territorio autoritativo.
+
+ANIMA no copia automáticamente sede o área desde la original para completar datos faltantes.
+
+Si la sucesora cambia sede, área o rol respecto de la original, esos hechos se validan bajo la cadena canónica aplicable.
+
+Queda prohibido:
+
+- preservar el territorio original hasta que el usuario cambie de pantalla;
+- usar la sede seleccionada como reparación;
+- usar el check-in del original como sede de la sucesora;
+- inferir área por nombre o `area_kind`;
+- permitir un cruce territorial porque el reemplazo fue aprobado.
+
+---
+
+#### 29. Solapamientos y ambigüedad
+
+El reemplazo no puede crear una ambigüedad operativa que el consumidor resuelva por heurística.
+
+Si después de aplicar el estado autoritativo existen dos candidatos incompatibles para el mismo actor e instante y no existe precedencia inequívoca:
+
+```text
+ACTIVE_SHIFT = NO CONCLUYENTE
+->
+FAIL CLOSED
+```
+
+No se escoge:
+
+- el turno más reciente;
+- el que tenga check-in;
+- el que llegue primero por Realtime;
+- el turno marcado como reemplazo por el cliente;
+- el turno con igual sede;
+- el de menor o mayor `id`.
+
+La inconsistencia se resuelve en la fuente propietaria.
+
+---
+
+#### 30. Concurrencia entre reemplazos
+
+Dos sustituciones incompatibles sobre la misma base no pueden quedar ambas como sucesoras autoritativas.
+
+La materialización futura debe comparar una base suficientemente específica mediante revisión, versión, generación o mecanismo equivalente.
+
+Regla conceptual:
+
+```text
+EXPECTED_BASE = CURRENT_BASE
+->
+PUEDE INTENTAR CONFIRMACION
+
+EXPECTED_BASE != CURRENT_BASE
+->
+CONFLICTO / RELECTURA
+```
+
+Queda prohibido esconder la carrera mediante last-write-wins silencioso.
+
+---
+
+#### 31. Idempotencia y retry
+
+La operación propietaria de reemplazo debe poseer identidad estable suficiente para recuperación.
+
+Propiedades mínimas:
+
+1. mismo identificador y mismo contenido lógico producen el mismo outcome;
+2. mismo identificador y contenido materialmente distinto producen conflicto;
+3. una respuesta perdida después de commit no crea otra sustitución;
+4. un timeout con resultado desconocido se recupera antes de repetir;
+5. retry no genera una cadena duplicada de sucesoras;
+6. el resultado original permanece consultable o reconstruible.
+
+Esta tarea no inventa la columna ni el mecanismo físico que implementará esa identidad.
+
+---
+
+#### 32. Reemplazo y acciones offline pendientes
+
+Una intención offline conserva el contexto observado, no autoridad futura.
+
+Si el turno fue reemplazado antes de sincronizar:
+
+- la intención no cambia silenciosamente de `shift_id`;
+- no cambia silenciosamente de trabajador;
+- no hereda el contexto de la sucesora;
+- no reutiliza grants del original;
+- se reautoriza contra el estado vigente;
+- puede terminar en conflicto, rechazo o reconciliación según su contrato;
+- el sistema no presenta éxito optimista antes de confirmación.
+
+La persistencia y sincronización general de la cola permanecen bajo `ANIMA-AUTH-014` y `ANIMA-AUTH-015`.
+
+---
+
+#### 33. Realtime, push y notificaciones
+
+Realtime, push o notificaciones pueden informar que existe un cambio de programación.
+
+Su semántica permanece:
+
+```text
+SIGNAL
+->
+INVALIDATE
+->
+FETCH AUTHORITATIVE STATE
+->
+RESOLVE
+```
+
+No:
+
+```text
+PAYLOAD DE NOTIFICACION
+->
+CAMBIAR SHIFT_ID / EMPLOYEE_ID
+->
+AUTHORIZE
+```
+
+La pérdida de una notificación no cambia el estado autoritativo.
+
+---
+
+#### 34. Caché, memoización y frescura
+
+Un reemplazo efectivo es una invalidación material del carril operativo de los actores afectados.
+
+Debe dejar no reutilizables, según aplique:
+
+- `context_id` anterior;
+- token o generación de frescura anterior;
+- memoización de `active_shift`;
+- sesión candidata asociada a otra ocurrencia;
+- autorización previa;
+- proyección local del horario;
+- datos offline usados como autoridad.
+
+Una caché puede acelerar lectura solo después de demostrar que corresponde al estado vigente.
+
+---
+
+#### 35. Tiempo trabajado y no duplicación
+
+El reemplazo no puede producir doble contabilización del mismo trabajo por trasladar o copiar asistencia.
+
+Se preserva:
+
+```text
+HECHO DE ASISTENCIA
+->
+ACTOR QUE LO PRODUJO
++
+TURNO / REVISION CON LA QUE FUE CONFIRMADO
+```
+
+El tiempo previo a la sustitución no se reasigna al reemplazante.
+
+El tiempo posterior tampoco se atribuye automáticamente: requiere hechos de asistencia propios o el mecanismo autoritativo correspondiente.
+
+Nómina, recargos, compensaciones y reglas de pago quedan fuera de esta tarea.
+
+---
+
+#### 36. Corrección posterior de un reemplazo
+
+Corregir un reemplazo no significa borrar la relación anterior.
+
+Debe poder conservarse, según aplique:
+
+- reemplazo original;
+- motivo de corrección;
+- actor corrector;
+- estado antes;
+- estado después;
+- nuevas ocurrencias o revisiones;
+- impacto sobre asistencia;
+- impacto derivado.
+
+Una reversión empresarial se representa mediante una nueva transición autoritativa o corrección versionada, no restaurando silenciosamente la fila anterior.
+
+---
+
+#### 37. Matriz de decisión
+
+| Caso | Estado autoritativo | Resultado para ANIMA |
+| --- | --- | --- |
+| A | mismo `shift_id`, nueva revisión sin sustitución de ocurrencia | tratar como actualización/corrección; no fabricar reemplazo |
+| B | S1 sustituida explícitamente por S2 para otro trabajador antes del inicio | invalidar S1 para el original; S2 será candidata del reemplazante cuando corresponda; sin check-in automático |
+| C | S1 sustituida por S2 para el mismo trabajador | no reatar sesión S1; resolver S2 y su sesión compatible por separado |
+| D | reemplazo efectivo con original ya checked-in | preservar sesión/historia original; dejar de usarla para autorización incompatible; no transferirla |
+| E | reemplazante sin check-in y permiso `T+C` | turno puede existir, pero el carril sigue sin satisfacer check-in |
+| F | reemplazante con sesión propia compatible con S2 | resolver contexto fresco y continuar según permisos |
+| G | dos reemplazos incompatibles sobre la misma base | conflicto; no elegir por orden de llegada |
+| H | intercambio A/B confirmado autoritativamente | resolver cada actor y cada sucesora por separado; cero intercambio de sesiones |
+| I | original cancelado sin sucesor | cancelación, no reemplazo |
+| J | cliente propone `replacement_shift_id` sin fuente autoritativa | ignorar como autoridad |
+| K | acción offline conserva S1 después de reemplazo | reautorizar; no retargetear a S2 silenciosamente |
+| L | checkout del original ya confirmado | reemplazo no revive la sesión |
+| M | fuente o linaje obligatorio no verificable | fail closed técnico |
+| N | sucesora crea solapamiento ambiguo para el reemplazante | no resolver por heurística; bloquear hasta estado concluyente |
+
+---
+
+#### 38. Respuesta y outcomes internos
+
+La implementación futura debe poder distinguir internamente, como mínimo:
+
+- reemplazo aplicado;
+- replay de reemplazo ya aplicado;
+- solicitud sin cambio material;
+- conflicto de versión o base;
+- original no resoluble;
+- sucesora no resoluble;
+- reemplazante no elegible;
+- territorio o rol inválido;
+- ambigüedad por solapamiento;
+- sesión incompatible;
+- estado ya cancelado o sustituido;
+- fuente no disponible;
+- resultado recuperado después de una respuesta perdida.
+
+Estos outcomes no crean por sí solos nuevos reason codes públicos.
+
+El diagnóstico visible al trabajador permanece bajo `ANIMA-AUTH-016` y `ANIMA-AUTH-017`.
+
+---
+
+#### 39. Seguridad y privacidad
+
+Una respuesta de ANIMA debe informar lo necesario sin revelar información laboral ajena.
+
+No debe exponer automáticamente:
+
+- horario completo del trabajador sustituido;
+- horario completo del reemplazante;
+- otros candidatos evaluados;
+- motivos sensibles de ausencia;
+- matriz administrativa completa;
+- identificadores internos innecesarios;
+- SQL;
+- políticas RLS;
+- detalles técnicos de concurrencia;
+- quién rechazó a otros candidatos.
+
+La autorización administrativa del reemplazo no se deduce de datos enviados por el cliente.
+
+---
+
+#### 40. Auditoría mínima
+
+Debe poder reconstruirse, sin usar la auditoría como fuente de autorización:
+
+```text
+ORIGINAL_SHIFT_ID
++
+ORIGINAL_REVISION / ESTADO
++
+ORIGINAL_EMPLOYEE
++
+REPLACEMENT_SHIFT_ID
++
+REPLACEMENT_REVISION / ESTADO
++
+REPLACEMENT_EMPLOYEE CUANDO CAMBIE
++
+SEDE / AREA / ROL APLICABLES
++
+REQUESTED_AT
++
+APPROVED_AT CUANDO APLIQUE
++
+EFFECTIVE_AT
++
+AUTORIDAD
++
+MOTIVO CUANDO APLIQUE
++
+OUTCOME
++
+SESIONES Y HECHOS DE ASISTENCIA RELACIONADOS SIN REASIGNARLOS
+```
+
+La auditoría debe distinguir sustitución, corrección, cancelación, intercambio, replay, conflicto y reversión.
+
+La auditoría detallada de ANIMA permanece bajo `ANIMA-AUTH-018`.
+
+---
+
+#### 41. Estado físico observado
+
+La inspección read-only del entorno `vento-os-dev` y de los consumidores actuales muestra un modelo previo al contrato completo de reemplazos:
+
+| Superficie | Estado observado |
+| --- | --- |
+| `public.employee_shifts` | 3436 filas en el snapshot |
+| turnos con `published_at` | 3309 |
+| turnos con `status = cancelled` | 2 |
+| turnos publicados y cancelados | 2 |
+| turnos `laboral` | 2899 |
+| turnos `descanso` | 537 |
+| columnas explícitas de revisión o linaje de reemplazo en `employee_shifts` | no observadas |
+| función específica de reemplazo o sustitución de turno por nombre | no observada en la inspección read-only |
+| VISO semanal actual | crea y edita filas de `employee_shifts`, publica borradores mediante `published_at` y mantiene versionado/corrección completos todavía pendientes en su roadmap |
+| ANIMA | consume turnos publicados y `shift_id`; el contrato final de linaje de reemplazo todavía no está materializado |
+
+Los conteos describen el snapshot observado y no son invariantes empresariales.
+
+La ausencia de columnas físicas de reemplazo no autoriza inferencias por horario, notas o `updated_at`.
+
+---
+
+#### 42. Brechas físicas y propietarios existentes
+
+Ninguna brecha observada crea una tarea nueva.
+
+| Brecha | Propietario existente | Condición de salida |
+| --- | --- | --- |
+| borrador, revisión, publicación y corrección versionada | `VISO-SCH-005` | la programación distingue estados y conserva correcciones sin sobrescritura destructiva |
+| conflictos, concurrencia, idempotencia y recuperación | `VISO-SCH-006` | reemplazos incompatibles no progresan sobre la misma base y todo outcome es recuperable |
+| autorización, auditoría, eventos y notificaciones de programación | `VISO-SCH-007` | la autoridad y comunicación del reemplazo quedan gobernadas por contrato |
+| publicación y linaje de turno/revisión | `INT-WORK-001` | cada publicación y sustitución conserva identidad, versión anterior y relación explícita |
+| asistencia ligada determinísticamente a turno y revisión | `INT-WORK-003` | cada entrada, salida y descanso permanece asociado al actor y ocurrencia correctos |
+| confirmación del contexto efectivo | `INT-WORK-004` | ANIMA y consumidores convergen al contexto autoritativo vigente |
+| consumo coherente por aplicaciones | `INT-WORK-005` | ningún consumidor mantiene una fuente competidora de reemplazo |
+| resolución canónica de contexto | `AUTH-DB-033` | actor, turno, sesión, rol y territorio se resuelven sin fallbacks legacy |
+| evaluación con contexto vigente | `AUTH-DB-034` | toda acción posterior usa el contexto recién resuelto |
+| invalidación transaccional de autoridad stale | `AUTH-DB-035` | el cambio de turno invalida generación, caché y decisiones previas |
+| reacción específica de ANIMA al reemplazo | instancia futura de `ANIMA-AUTH-012` | ANIMA invalida, relee y reautoriza sin transferir sesiones ni historia |
+| auditoría detallada | `ANIMA-AUTH-018` | antes, reemplazo, asistencia y después pueden reconstruirse |
+
+---
+
+#### 43. Rollback y recuperación
+
+Un reemplazo confirmado no se borra para restaurar la apariencia anterior.
+
+Ante:
+
+```text
+REEMPLAZO CONFIRMADO
++
+RESPUESTA PERDIDA
+```
+
+se recupera el outcome por identidad y estado autoritativo.
+
+Si el reemplazo no llegó a confirmarse:
+
+- la base anterior conserva su estado real;
+- ANIMA no adopta la sucesora como autoridad;
+- el cliente no declara éxito.
+
+Si el reemplazo confirmado debe revertirse empresarialmente:
+
+- se utiliza una transición o corrección propietaria nueva;
+- se conserva el linaje anterior;
+- no se reasigna asistencia histórica;
+- no se borra evidencia del reemplazo.
+
+---
+
+#### 44. Topología y materialización física
+
+La definición documental se aprueba una sola vez.
+
+```text
+MODE = PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE = POST_E5_PACKAGE
+INSTANCE_PATTERN = ANIMA-AUTH-012::implementation_unit_id
+```
+
+La materialización futura:
+
+- requiere una unidad de implementación real;
+- requiere un `package_id` propietario aplicable;
+- requiere `E5-GATE-008` del paquete en `PASS`;
+- requiere autorización física explícita;
+- debe limitarse a productores y consumidores reales del reemplazo;
+- debe preservar identidad, linaje, asistencia, contexto, grants y auditoría como capas separadas;
+- debe ejecutar toda modificación de Supabase desde `vento-group-sas/vento-shell`.
+
+Esta tarea documental no autoriza DDL, DML, migraciones, RLS, RPC, Edge Functions, código de aplicación, datos productivos ni despliegues.
+
+---
+
+#### 45. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya protege cambio de turno, invalidación de contexto, sesión exacta, autorización territorial, idempotencia, concurrencia, offline, historia de programación, vínculo entre turno y asistencia y no duplicación de jornadas. Esta tarea especializa esas obligaciones para reemplazos sin ampliar el registro.
+
+---
+
+#### 46. Cobertura de prueba vigente reutilizada
+
+Sin modificarlos, se reutilizan:
+
+- `TREQ-AUTH-008`: operación exige turno vigente, check-in cuando aplique, rol y territorio compatibles;
+- `TREQ-AUTH-009`: sede y área efectivas se resuelven determinísticamente y una rotación recalcula permisos;
+- `TREQ-AUTH-014`: cambio de turno, área, trabajador, dispositivo, rol o asignación invalida contexto, caché y tokens derivados;
+- `TREQ-AUTH-015`: toda decisión y acción conserva evidencia correlacionable del contexto que la produjo;
+- `TREQ-AUTH-229` a `TREQ-AUTH-237`: sesión de check-in exacta, modalidad por carril, precedencia, canales, offline y concurrencia;
+- `TREQ-AUTH-239` a `TREQ-AUTH-268`: rol, sede, área, compatibilidad territorial, causas, frescura y reconciliación;
+- `TREQ-ANIMA-003`: intención offline durable e idempotente que conserva turno y debe revalidarse al sincronizar;
+- `TREQ-INTEGRATION-003`: identidad estable, efecto único, retry, conflicto y resultado recuperable;
+- `TREQ-INTEGRATION-007`: programación y asistencia comparten un contrato único; todo cambio preserva versión anterior y los reemplazos convergen sin duplicar jornadas, contextos ni tiempo trabajado.
+
+Esta enumeración es trazabilidad heredada y no representa modificación del registro.
+
+---
+
+#### 47. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del repositorio se ejecuta después de incorporar y normalizar la tarea en su archivo propietario. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, continuidad, secciones obligatorias, UTF-8, EOL, ausencia de placeholders y cero TREQ afectados dentro de la sección derivada. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, topología, políticas, `ANIMA-AUTH-011`, contratos de programación e integración, 04A pertinente, código VISO y estado `vento-os-dev` mediante lecturas de solo lectura. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutó un reemplazo real de turno ni se modificó una sesión real de trabajador. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, RLS, RPC, cambios de código, datos ni despliegues. |
+
+---
+
+#### 48. Decisiones vinculantes
+
+Quedan fijadas las siguientes decisiones:
+
+1. VISO conserva la propiedad del reemplazo y de la programación;
+2. ANIMA solo consume el resultado autoritativo;
+3. una sustitución real por otra ocurrencia usa identidad de turno distinta;
+4. la ocurrencia original no se sobrescribe para ocultar el reemplazo;
+5. el linaje original-sucesora debe ser explícito;
+6. cambiar de trabajador no transfiere asistencia;
+7. `checkin_session_id` nunca se presta ni se reata a otro actor o `shift_id`;
+8. el reemplazante debe satisfacer sus propios prerrequisitos de turno, sesión, rol y territorio;
+9. un permiso `T+C` no queda satisfecho solo por existir reemplazo;
+10. el tiempo trabajado permanece con quien produjo sus hechos de asistencia;
+11. un intercambio entre trabajadores conserva cada lado y no intercambia sesiones;
+12. cancelación sin sucesor no se clasifica como reemplazo;
+13. corrección de la misma ocurrencia no se fuerza a convertirse en reemplazo;
+14. cambio temporal de área permanece bajo `ANIMA-AUTH-011`;
+15. reemplazo efectivo invalida contexto stale de los actores afectados;
+16. `AccessContext` se resuelve de nuevo y no se muta in-place;
+17. grants, denies y scope no se heredan del trabajador original;
+18. acciones offline no se retargetean silenciosamente a la sucesora;
+19. Realtime y notificaciones son señales, no autoridad;
+20. dos reemplazos incompatibles no pueden quedar simultáneamente autoritativos;
+21. retry no duplica sustituciones;
+22. rollback no borra historia confirmada;
+23. no se crean nuevos reason codes públicos en esta tarea;
+24. no se crean ni modifican requisitos de prueba;
+25. no se ejecutan cambios físicos.
+
+---
+
+#### 49. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. consume `ANIMA-AUTH-011` sin confundir cambio de área con reemplazo;
+2. conserva VISO y `VPROC-0007` como propietarios de programación;
+3. distingue ocurrencia, revisión, trabajador y sesión;
+4. mantiene `shift_id` estable para una misma ocurrencia;
+5. usa identidad distinta para una sustitución real por otra ocurrencia;
+6. exige linaje explícito entre original y sucesora;
+7. no infiere reemplazo por horario, nota, `updated_at` o notificación;
+8. no sobrescribe destructivamente al trabajador original de una ocurrencia publicada;
+9. conserva trabajador original y reemplazante como identidades separadas;
+10. distingue reemplazo de corrección de la misma ocurrencia;
+11. distingue reemplazo de cancelación sin sucesor;
+12. modela intercambio como relación coordinada y no como intercambio de sesiones;
+13. revalida elegibilidad del reemplazante;
+14. revalida sede, área y rol de la sucesora;
+15. no hereda grants ni bypass del original;
+16. no adopta la sucesora antes de confirmación autoritativa;
+17. usa tiempo server-side para efectividad;
+18. no invalida prematuramente un reemplazo futuro;
+19. antes del inicio no crea presencia automática;
+20. durante el turno no reasigna tiempo ya trabajado;
+21. preserva la sesión del original como historia;
+22. impide reatar la sesión del original a otra ocurrencia;
+23. impide transferir sesión a otro trabajador;
+24. exige sesión propia al reemplazante cuando aplique `T+C`;
+25. un descanso del original permanece con su sesión padre;
+26. checkout confirmado no puede revivirse por reemplazo;
+27. contexto del original queda obsoleto cuando el turno deja de ser aplicable;
+28. contexto del reemplazante se resuelve de nuevo;
+29. `AccessContext` no se actualiza in-place;
+30. permisos se reevaluan para cada actor;
+31. territorio de la sucesora no se completa desde la original por fallback;
+32. solapamientos ambiguos fallan cerrado;
+33. concurrencia usa una base esperada o mecanismo equivalente;
+34. no existe last-write-wins silencioso;
+35. retry mantiene un solo efecto lógico;
+36. respuesta perdida se recupera antes de repetir;
+37. acciones offline no cambian silenciosamente de turno;
+38. Realtime no se usa como fuente;
+39. caché y decisiones previas se invalidan;
+40. el tiempo trabajado no se duplica ni se traslada;
+41. una corrección posterior conserva historia;
+42. la respuesta minimiza información de terceros;
+43. auditoría reconstruye original, sucesora, actores, tiempo y outcome;
+44. las brechas físicas observadas tienen propietario canónico existente;
+45. rollback no borra reemplazos confirmados;
+46. la topología queda `PER_IMPLEMENTATION_UNIT`;
+47. el gate físico queda `POST_E5_PACKAGE`;
+48. no se crean ni modifican TREQ;
+49. no se ejecutan cambios físicos;
+50. la continuidad reserva exclusivamente `ANIMA-AUTH-013`.
+
+---
+
+#### 50. Límites
+
+Esta tarea no define:
+
+- interfaz administrativa de VISO para solicitar o aprobar reemplazos;
+- política empresarial de quién puede pedir un intercambio;
+- compensaciones, recargos, nómina o pago por reemplazo;
+- reglas legales de jornada;
+- disponibilidad laboral completa;
+- corrección versionada general de programación, propiedad de `VISO-SCH-005`;
+- motor completo de concurrencia y rollback de programación, propiedad de `VISO-SCH-006`;
+- catálogo de permisos administrativos, propiedad de los contratos de autorización correspondientes;
+- cambio temporal de área, propiedad de `ANIMA-AUTH-011`;
+- tratamiento especializado de turnos que cruzan medianoche, propiedad de `ANIMA-AUTH-013`;
+- almacenamiento general de cola offline, propiedad de `ANIMA-AUTH-014`;
+- revalidación completa de cola, propiedad de `ANIMA-AUTH-015`;
+- diagnóstico visible final, propiedad de `ANIMA-AUTH-016` y `ANIMA-AUTH-017`;
+- auditoría detallada final, propiedad de `ANIMA-AUTH-018`;
+- concesión directa de permisos, prohibida por `ANIMA-AUTH-019`;
+- una fuente de verdad paralela a Supabase, frontera de `ANIMA-AUTH-020`;
+- un reason code público nuevo;
+- un nuevo shape público de `AccessContext`;
+- columnas o tablas físicas específicas de reemplazo;
+- implementación física;
+- cambios productivos.
+
+---
+
+#### 51. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-011 — Manejar cambio temporal de área`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-012 — Manejar reemplazos de turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche`
+
 ### [ ] ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche
 ### [ ] ANIMA-AUTH-014 — Manejar cola offline de check-in
 ### [ ] ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline
