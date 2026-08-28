@@ -1,0 +1,10 @@
+{
+  "instance_id": "AUTH-DB-017::GLOBAL",
+  "task_id": "AUTH-DB-017",
+  "status": "PENDING_AUTHORIZATION",
+  "target_repositories": [],
+  "authorized_changes": [],
+  "validation_commands": [],
+  "authorization": null,
+  "evidence": []
+}
