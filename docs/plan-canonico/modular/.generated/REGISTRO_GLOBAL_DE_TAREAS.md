@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1059** |
+| Aprobadas | **1060** |
 | En propuesta | **0** |
-| No iniciadas | **535** |
+| No iniciadas | **534** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **66.44% (1059/1594)** |
+| Porcentaje de completamiento | **66.50% (1060/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-007` — Crear contexto operativo al registrar entrada | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-008` — Actualizar contexto cuando cambia el turno | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-009` — Cerrar contexto al registrar salida | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-008` — Actualizar contexto cuando cambia el turno | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-009` — Cerrar contexto al registrar salida | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-AUTH-010` — Manejar descansos sin cerrar autorización | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -603,7 +603,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-005` | Confirmar que el rol esté permitido en la sede | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-006` | Confirmar que el rol esté permitido en el área | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-007` | Crear contexto operativo al registrar entrada | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-008` | Actualizar contexto cuando cambia el turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-008` | Actualizar contexto cuando cambia el turno | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-009` | Cerrar contexto al registrar salida | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-010` | Manejar descansos sin cerrar autorización | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-011` | Manejar cambio temporal de área | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
