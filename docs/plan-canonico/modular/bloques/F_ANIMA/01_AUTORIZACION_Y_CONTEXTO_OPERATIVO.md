@@ -11486,7 +11486,1342 @@ Esta tarea no define:
 **SIGUIENTE TAREA RESERVADA**
 `ANIMA-AUTH-014 — Manejar cola offline de check-in`
 
-### [ ] ANIMA-AUTH-014 — Manejar cola offline de check-in
+### ✅ ANIMA-AUTH-014 — Manejar cola offline de check-in
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche
+**Tarea siguiente:** ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline
+**Tipo de tarea:** documental; definición contractual de captura, persistencia durable, identidad, custodia, orden, retry, idempotencia, aislamiento y recuperación de intenciones offline de asistencia en ANIMA, sin convertir la cola local en hecho empresarial ni adelantar la revalidación autoritativa reservada a la sincronización
+**Bloque:** `F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT`, `POST_E5_PACKAGE`, al paquete propietario aplicable y a autorización física explícita
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA debe conservar una intención de check-in cuando la conectividad necesaria para confirmar el efecto server-side no está disponible, evitando que “guardar localmente” se confunda con “registrar asistencia”, evitando pérdida silenciosa al cerrar o reiniciar la aplicación y garantizando que todo replay conserve la misma identidad y el mismo contenido lógico.
+
+La regla raíz queda:
+
+```text
+INTENCION DE ASISTENCIA ELEGIBLE PARA CAPTURA OFFLINE
++
+IDENTIDAD ESTABLE ANTES DEL PRIMER ENVIO
++
+CONTENIDO LOGICO INMUTABLE
++
+PERSISTENCIA LOCAL DURABLE CONFIRMADA
+→
+ESTADO LOCAL PENDIENTE
+→
+CUSTODIA EN EL DISPOSITIVO
+→
+RETRY BAJO CONTRATO DE COLA
+→
+HANDOFF A ANIMA-AUTH-015 PARA REVALIDACION
+→
+FRONTERA SERVIDORA AUTORITATIVA
+```
+
+También se fija:
+
+```text
+ENCOLADO
+!=
+CHECK-IN CONFIRMADO
+!=
+SESION ACTIVA CONFIRMADA
+!=
+CONTEXTO OPERATIVO AUTORITATIVO
+!=
+PERMISO
+```
+
+La pérdida de red puede diferir el intento. No puede fabricar autoridad, extender una ventana laboral ni convertir estado local en fuente de verdad.
+
+---
+
+#### 2. Resultado canónico
+
+`ANIMA-AUTH-014` establece un contrato único de cola offline para la intención de asistencia con las siguientes propiedades:
+
+1. la intención recibe identidad estable antes de cualquier primer envío;
+2. el payload lógico queda fijado y fingerprintable;
+3. la cola solo puede presentarse como durable después de confirmar escritura local exitosa;
+4. cerrar, suspender o reiniciar la aplicación no elimina una intención persistida;
+5. restaurar una intención no genera otra identidad;
+6. el dispositivo conserva custodia local, pero no propiedad del hecho empresarial;
+7. la cola conserva actor, turno, tiempo, territorio, geolocalización y contexto suficientes para revalidación posterior;
+8. cada retry reutiliza la misma identidad y contenido lógico;
+9. la espera por conectividad no se contabiliza como una ejecución contra servidor;
+10. los resultados `applied`, `duplicate`, `conflict`, fallo, incertidumbre y aislamiento conservan semántica distinta;
+11. una respuesta perdida no autoriza retry ciego cuando el efecto pudo ocurrir;
+12. una identidad repetida con contenido distinto es conflicto y no duplicado inocuo;
+13. una frontera server-side ausente o incompatible no habilita escritura alternativa silenciosa;
+14. un elemento inválido no se borra para “destrabar” la cola;
+15. la revalidación de permisos, turno y contexto al sincronizar permanece exclusivamente en `ANIMA-AUTH-015`;
+16. la cola nunca concede grants ni crea `AccessContext` por sí misma.
+
+La tarea especializa para ANIMA los contratos transversales de trabajo asíncrono ya aprobados. No crea otro framework de colas paralelo.
+
+---
+
+#### 3. Fuentes y autoridad
+
+La definición consume sin redefinir:
+
+- `INT-WORK-003`, que fija la asistencia como hecho identificado antes del primer intento y separa intención local, persistencia, recepción, validación y conciliación;
+- `QUEUE-ARC-002` a `QUEUE-ARC-012`, que gobiernan identidad de trabajo, idempotencia, temporalidad, asignación, retry, cancelación, aislamiento, concurrencia, estados, métricas y autorización del trabajo asíncrono;
+- la identidad inventariada `QAI-011`, cola ANIMA de operaciones de asistencia;
+- `QAI-012`, cola separada de descansos;
+- `QAI-013`, worker móvil periódico que procesa pendientes sin crear otra identidad por cada tick;
+- `ANIMA-AUTH-001` a `ANIMA-AUTH-013`, que fijan publicación, territorio, rol, contexto, checkout, descansos, cambios, reemplazos y overnight;
+- `ANIMA-AUTH-015`, reservada para revalidación autoritativa al recuperar conectividad;
+- `ANIMA-AUTH-020`, que impide que el dispositivo se convierta en fuente de verdad paralela a Supabase.
+
+La autoridad queda separada así:
+
+```text
+DISPOSITIVO ANIMA
+→ CAPTURA Y CUSTODIA INTENCION
+
+SERVIDOR / CONTRATO AUTORITATIVO
+→ DECIDE SI EL EFECTO PUEDE APLICARSE
+
+SUPABASE
+→ CONSERVA EL HECHO CONFIRMADO CUANDO CORRESPONDA
+```
+
+Ningún estado del cliente sustituye la decisión servidora.
+
+---
+
+#### 4. Vocabulario contractual
+
+**Intención offline de asistencia:** solicitud capturada localmente para ejecutar posteriormente una transición de asistencia cuando la frontera servidora no pueda completarse en ese momento.
+
+**Identidad de evento:** identificador estable del hecho intentado por el productor, representado en el contrato vigente mediante `client_event_id` o una identidad equivalente preservada end-to-end.
+
+**Identidad local de elemento de cola:** identificador técnico de la entrada persistida en el dispositivo. Puede ser distinto de la identidad de evento y no la sustituye.
+
+**Identidad transversal de operación:** `operation_id` del contrato de trabajo asíncrono cuando la intención sea aceptada o correlacionada con la infraestructura transversal correspondiente. No se presume igual a `client_event_id` salvo contrato explícito.
+
+**Fingerprint lógico:** huella estable del contenido semánticamente relevante de la intención, utilizada para distinguir replay legítimo de reutilización conflictiva de identidad.
+
+**Custodia local:** responsabilidad temporal del dispositivo de preservar la intención mientras no exista un resultado autoritativo recuperable.
+
+**Resultado desconocido:** condición en la que una ejecución pudo producir efecto, pero el cliente no dispone de evidencia suficiente para declararlo aplicado, fallido o seguro de repetir.
+
+**Cuarentena:** aislamiento de una intención que requiere revisión, conciliación o recuperación controlada y que no admite retry automático ordinario.
+
+---
+
+#### 5. Frontera entre `ANIMA-AUTH-014` y `ANIMA-AUTH-015`
+
+Las responsabilidades se separan de forma obligatoria:
+
+| Responsabilidad | Propietaria |
+| --- | --- |
+| crear identidad estable de la intención | `ANIMA-AUTH-014` |
+| fijar contenido lógico y fingerprint | `ANIMA-AUTH-014` |
+| confirmar persistencia durable antes de mostrar “encolado” | `ANIMA-AUTH-014` |
+| restaurar cola después de reinicio | `ANIMA-AUTH-014` |
+| ordenar, reintentar, aislar y conciliar resultado técnico | `ANIMA-AUTH-014` |
+| preservar contexto capturado para evaluación posterior | `ANIMA-AUTH-014` |
+| decidir si el trabajador sigue activo | `ANIMA-AUTH-015` |
+| decidir si el turno/revisión siguen aplicables | `ANIMA-AUTH-015` |
+| decidir si sede, área y rol siguen autorizados | `ANIMA-AUTH-015` |
+| decidir si la ventana temporal sigue permitiendo efecto | `ANIMA-AUTH-015` |
+| decidir si cambios concurrentes invalidaron la intención | `ANIMA-AUTH-015` |
+| autorizar definitivamente la mutación servidora | `ANIMA-AUTH-015` + frontera servidora propietaria |
+
+Regla:
+
+```text
+COLA BIEN FORMADA
+!=
+INTENCION TODAVIA AUTORIZADA
+```
+
+`ANIMA-AUTH-014` no congela una decisión de autorización para reutilizarla horas después.
+
+---
+
+#### 6. Unidad lógica de la cola
+
+La unidad primaria es una **intención individual e inmutable de asistencia**.
+
+Una intención representa exactamente una acción lógica:
+
+```text
+UN ACTOR
++
+UNA ACCION
++
+UN INSTANTE CAPTURADO
++
+UN CONTEXTO LABORAL REFERENCIADO
++
+UNA IDENTIDAD ESTABLE
+=
+UNA INTENCION OFFLINE
+```
+
+No son la unidad primaria:
+
+- toda la cola;
+- una sesión de aplicación;
+- un lote de sincronización;
+- un tick del worker;
+- un día laboral;
+- una sede;
+- un dispositivo;
+- el último check-in visto;
+- una respuesta HTTP.
+
+Enviar varias intenciones en un lote no fusiona sus identidades, orden, outcomes ni evidencia.
+
+---
+
+#### 7. Identidades que deben permanecer separadas
+
+El contrato distingue como mínimo:
+
+```text
+queue_item_id
+!=
+client_event_id
+!=
+operation_id
+!=
+shift_id
+!=
+attendance_log_id
+```
+
+Semántica:
+
+- `queue_item_id` identifica almacenamiento local;
+- `client_event_id` identifica la intención de asistencia para idempotencia de productor;
+- `operation_id` identifica el trabajo asíncrono transversal cuando aplique;
+- `shift_id` identifica la ocurrencia laboral;
+- `attendance_log_id` o identidad equivalente identifica el hecho confirmado por la fuente servidora.
+
+Eliminar y recrear un elemento local no autoriza cambiar `client_event_id`.
+
+Un retry no crea otro `client_event_id`.
+
+Un tick del worker no crea otro `operation_id`.
+
+---
+
+#### 8. Fingerprint lógico e inmutabilidad
+
+Cada intención reintentable debe tener contenido lógico fingerprintable.
+
+El fingerprint debe cubrir los campos semánticamente relevantes de la intención, incluyendo cuando apliquen:
+
+- tipo de acción;
+- actor capturado o referencia resoluble;
+- sede operacional;
+- punto de geocerca;
+- turno referenciado;
+- revisión, snapshot o referencia versionada disponible;
+- instante de ocurrencia;
+- fuente;
+- geolocalización y precisión capturadas;
+- contexto de dispositivo necesario;
+- versión contractual;
+- cualquier dato que pueda cambiar el efecto empresarial.
+
+No se exige aquí un algoritmo criptográfico físico ni un nombre de columna concreto; esos detalles pertenecen al contrato transversal de idempotencia y a la implementación futura.
+
+Regla:
+
+```text
+MISMO client_event_id
++
+MISMO fingerprint
+→
+MISMA INTENCION
+```
+
+```text
+MISMO client_event_id
++
+FINGERPRINT DISTINTO
+→
+CONFLICTO
+```
+
+---
+
+#### 9. Sobre lógico mínimo de una intención offline
+
+La cola debe poder conservar, de forma directa o resoluble, el siguiente sobre lógico:
+
+| Información | Regla |
+| --- | --- |
+| identidad local | estable mientras exista el elemento |
+| `client_event_id` | obligatorio antes del primer envío |
+| tipo de evento | exacto y cerrado al contrato de asistencia aplicable |
+| actor | capturado para trazabilidad; revalidado por servidor |
+| sede operacional | identidad exacta |
+| punto de marcación | cuando sea distinto de la sede operacional |
+| turno | referencia estable cuando haya sido resuelta |
+| revisión/snapshot/versionado | referencia suficiente para reconciliar el estado capturado |
+| `occurred_at` | timestamp absoluto de captura del hecho intentado |
+| geolocalización | snapshot de evidencia cuando la política la exige |
+| precisión | junto con la geolocalización |
+| contexto de dispositivo | mínimo necesario para diagnóstico y correlación |
+| fingerprint | estable para idempotencia y conflicto |
+| instante de creación local | separado de `occurred_at` |
+| número de intentos efectivos | monotónico por intención |
+| siguiente retry | cuando corresponda |
+| último error | clasificado sin sustituir el outcome |
+| estado local | proyección de cola, no estado empresarial |
+| correlación transversal | cuando exista `operation_id`, receipt u otra referencia |
+
+El sobre no almacena secretos ni concede autoridad por contener estos campos.
+
+---
+
+#### 10. Actor, sesión y principal
+
+La identidad del trabajador debe quedar correlacionada con la intención capturada, pero el servidor no confía en un `employee_id` enviado por el cliente como prueba de autoridad.
+
+Al sincronizar:
+
+```text
+ACTOR CAPTURADO
+→ TRAZABILIDAD
+
+PRINCIPAL AUTENTICADO ACTUAL
+→ RESOLUCION SERVIDORA
+```
+
+Reglas:
+
+1. una cola de un usuario no se procesa bajo la sesión de otro;
+2. cambiar de cuenta no retargetea elementos existentes;
+3. restaurar sesión no convierte automáticamente intenciones antiguas en válidas;
+4. el servidor deriva o verifica el actor efectivo desde una identidad autenticada confiable;
+5. tokens, refresh tokens y credenciales de sesión no se preservan como parte durable del payload de trabajo;
+6. perder la sesión deja la intención pendiente o bloqueada; no autoriza envío anónimo.
+
+---
+
+#### 11. Turno y revisión capturados
+
+La intención debe preservar el turno al que pretendía vincularse y una referencia suficiente de su estado versionado cuando el contrato propietario la exponga.
+
+`shift_id` por sí solo conserva identidad de ocurrencia, pero no demuestra qué revisión era aplicable en el instante de captura.
+
+Por tanto, la materialización futura debe permitir reconstruir:
+
+```text
+QUE TURNO
++
+QUE VERSION / SNAPSHOT / REVISION ERA CONOCIBLE
++
+EN QUE INSTANTE SE CAPTURO
+```
+
+La ausencia física actual de una referencia explícita de revisión no autoriza a inventarla desde “la última revisión” al sincronizar.
+
+La resolución final de vigencia y compatibilidad pertenece a `ANIMA-AUTH-015`.
+
+---
+
+#### 12. Sede, área, rol y contexto capturado
+
+La cola preserva hechos necesarios para explicar la intención, no autoridad reutilizable.
+
+Puede conservar como evidencia:
+
+- sede operacional;
+- punto físico de check-in;
+- área conocida;
+- rol operativo conocido;
+- contexto de turno;
+- referencias de geocerca;
+- versión o fingerprint del contexto cuando exista.
+
+Pero:
+
+```text
+CONTEXTO CAPTURADO
+!=
+CONTEXTO AUTORIZADO AL SINCRONIZAR
+```
+
+Una sede desactivada, área modificada, rol retirado o contexto invalidado después de la captura puede impedir el efecto posterior sin borrar la intención histórica.
+
+---
+
+#### 13. Instante de ocurrencia y tiempo de sincronización
+
+`occurred_at` conserva el instante original de captura.
+
+Se distinguen al menos:
+
+```text
+occurred_at
+created_at_local
+attempted_at
+received_at
+applied_at
+```
+
+cuando los contratos físicos correspondientes los materialicen.
+
+Reglas:
+
+1. reconectar no reemplaza `occurred_at` por `now()`;
+2. retry no cambia el instante original;
+3. el servidor puede rechazar un timestamp imposible o no confiable sin reescribirlo silenciosamente;
+4. la edad del elemento se calcula desde hechos explícitos, no desde el último retry;
+5. la zona horaria de la programación no se toma libremente de la configuración del teléfono;
+6. el cambio de fecha civil no altera la identidad del evento.
+
+---
+
+#### 14. Geolocalización como evidencia
+
+Cuando la política exige geolocalización, la intención conserva un snapshot suficiente de la medición usada en la captura.
+
+Ese snapshot puede incluir:
+
+- latitud;
+- longitud;
+- precisión;
+- timestamp de lectura;
+- distancia calculada cuando corresponda;
+- punto de geocerca identificado;
+- metadatos de validación mínimos necesarios.
+
+Reglas:
+
+1. sincronizar no sustituye automáticamente la geolocalización original por una nueva;
+2. una lectura nueva puede servir para una nueva decisión, pero no reescribe la evidencia de la intención previa;
+3. la ubicación capturada no prueba por sí sola turno, rol, sede autorizada ni permiso;
+4. una geolocalización inválida no se “repara” retirándola del payload;
+5. datos de ubicación no se copian íntegramente a logs cuando una referencia o métrica agregada sea suficiente.
+
+---
+
+#### 15. Custodia del dispositivo
+
+La ruta objetivo heredada para la cola de asistencia es:
+
+```text
+DEVICE
+→
+WORKER
+```
+
+El dispositivo:
+
+- conserva temporalmente la intención;
+- mantiene su identidad;
+- conserva su estado de cola;
+- despierta o entrega trabajo cuando existe oportunidad de sincronización;
+- puede presentar estado pendiente al trabajador.
+
+El dispositivo no:
+
+- confirma el hecho empresarial;
+- crea una sesión autoritativa;
+- concede permisos;
+- reemplaza a Supabase;
+- decide que una revisión sigue vigente;
+- convierte un retry local en resultado del servidor.
+
+SecureStore es evidencia de la implementación actual, no una tecnología obligatoria del contrato.
+
+---
+
+#### 16. Elegibilidad para encolar
+
+Una intención solo puede entrar a la cola offline cuando exista evidencia local suficiente de que la acción fue capturada mediante el flujo autorizado para operación degradada.
+
+Como mínimo debe existir:
+
+1. actor localmente resoluble;
+2. acción identificada;
+3. identidad estable creada;
+4. instante de captura válido;
+5. sede operacional resoluble;
+6. política offline aplicable;
+7. evidencia de geocerca válida o latch vigente cuando la política lo exija;
+8. turno/contexto de referencia suficiente cuando el carril lo exija;
+9. payload completo y serializable;
+10. almacenamiento durable disponible;
+11. ausencia de una causa local inequívoca que ya obligue a denegar.
+
+La elegibilidad local permite **guardar una intención**. No permite declarar que el servidor la aplicará después.
+
+---
+
+#### 17. Condiciones que no deben degradarse a cola
+
+No toda falla de un check-in online se convierte en offline.
+
+No se encola por defecto cuando existe:
+
+- denegación explícita de autorización;
+- ausencia conocida de turno requerido;
+- turno conocido fuera de ventana;
+- sede o geocerca inválida;
+- actor no resoluble;
+- rol operativo faltante cuando ya es una causa concluyente;
+- payload corrupto;
+- identidad ausente que no puede preservarse;
+- incompatibilidad contractual conocida;
+- conflicto de secuencia conocido;
+- respuesta servidora definitiva de rechazo;
+- error de validación de contenido.
+
+La cola se usa para indisponibilidad compatible con retry, no para ocultar una denegación conocida.
+
+---
+
+#### 18. Persistencia durable antes de confirmar “encolado”
+
+La secuencia obligatoria es:
+
+```text
+CONSTRUIR INTENCION
+→
+SERIALIZAR
+→
+PERSISTIR
+→
+CONFIRMAR QUE LA PERSISTENCIA TERMINO SIN ERROR
+→
+ACTUALIZAR PROYECCION LOCAL
+→
+MOSTRAR ESTADO ENCOLADO
+```
+
+Queda prohibido:
+
+```text
+ACTUALIZAR UI COMO ENCOLADO
+→
+INTENTAR PERSISTIR
+→
+IGNORAR ERROR DE STORAGE
+```
+
+Si la escritura durable falla:
+
+- el resultado no es `queued`;
+- no se presenta éxito;
+- no se aplica un optimistic state que parezca confirmado;
+- la intención puede permanecer en memoria únicamente como intento no durable y debe tratarse como fallo recuperable o bloqueo visible;
+- la evidencia del error se conserva sin exponer contenido sensible.
+
+Persistir “best effort” no satisface este contrato.
+
+---
+
+#### 19. Experiencia local de estado pendiente
+
+La interfaz puede proyectar que existe una intención pendiente únicamente después de la persistencia durable confirmada.
+
+La experiencia debe distinguir:
+
+```text
+REGISTRO PENDIENTE DE SINCRONIZACION
+```
+
+de:
+
+```text
+ASISTENCIA CONFIRMADA
+```
+
+Una proyección optimista puede facilitar continuidad visual, pero no debe:
+
+- crear `active_checkin_session` autoritativa;
+- habilitar permisos `T+C` como si el servidor hubiera confirmado presencia;
+- ocultar el indicador pendiente;
+- borrar la posibilidad de conflicto posterior;
+- presentar hora o duración como cerradas cuando todavía dependen del resultado servidor.
+
+La redacción final de mensajes y estados visuales permanece en `ANIMA-UX-011`, `ANIMA-UX-012`, `ANIMA-AUTH-016` y `ANIMA-AUTH-017` según corresponda.
+
+---
+
+#### 20. Estados de cola y relación con el contrato transversal
+
+Los estados locales actuales `pending`, `syncing`, `failed` y `conflict` son una proyección técnica y no un vocabulario empresarial.
+
+La implementación futura debe poder mapear cada elemento a la semántica transversal cuando corresponda:
+
+| Condición lógica | Semántica transversal esperable |
+| --- | --- |
+| intención durable lista | `queued` |
+| espera hasta próximo retry | `retry_pending` |
+| ejecución efectiva en curso | `processing` después de adquirir autoridad técnica aplicable |
+| condición temporalmente bloqueada | `blocked` |
+| resultado incierto | `result_unknown` |
+| conciliación activa | `reconciling` |
+| conflicto o unidad no procesable | `quarantined` |
+| presupuesto automático agotado | `dead_letter` cuando el perfil lo exija |
+| resultado confirmado | `succeeded` |
+| fallo definitivo contractual | `failed` |
+| cancelación efectiva | `cancelled` |
+| intención vencida sin efecto ambiguo | `expired` |
+
+Un estado local `syncing` no acredita claim distribuido, lease ni fencing.
+
+Un estado local `failed` no decide por sí solo si el trabajo es terminal.
+
+---
+
+#### 21. Orden y dependencias entre eventos
+
+La cola debe preservar orden lógico sin depender exclusivamente del orden del arreglo persistido.
+
+Reglas:
+
+1. un check-out no puede aplicarse antes del check-in del que depende;
+2. un inicio de descanso no puede aplicarse sin una sesión compatible;
+3. un fin de descanso no puede cerrar otro descanso;
+4. eventos diferentes conservan identidades diferentes;
+5. el orden por `created_at` local no reemplaza `occurred_at` ni dependencias explícitas;
+6. reordenar por tiempo de recepción servidor no autoriza una secuencia imposible;
+7. un evento posterior puede quedar bloqueado mientras un predecesor permanezca incierto;
+8. una intención en cuarentena no se salta si ello cambia la semántica de los elementos dependientes;
+9. eventos independientes pueden procesarse sin crear dependencia artificial.
+
+La resolución empresarial de la secuencia se revalida server-side antes de producir efectos.
+
+---
+
+#### 22. Check-in como caso primario
+
+Para check-in, la cola debe conservar como mínimo:
+
+- identidad estable;
+- actor capturado;
+- turno referenciado;
+- sede operacional;
+- punto físico cuando aplique;
+- instante de captura;
+- geolocalización y precisión cuando aplique;
+- contexto de rol/área disponible;
+- fingerprint;
+- estado de persistencia y retry.
+
+El check-in offline encolado no habilita por sí mismo:
+
+- una sesión confirmada;
+- inicio autoritativo de jornada;
+- permisos operativos dependientes de check-in;
+- consumo por otras aplicaciones como presencia confirmada.
+
+Solo un resultado servidor autoritativo puede materializar esos efectos.
+
+---
+
+#### 23. Reutilización para check-out
+
+El contrato de cola puede reutilizarse para una intención offline de check-out, pero la semántica de cierre sigue perteneciendo a `ANIMA-AUTH-009`.
+
+Una intención de salida debe preservar además la referencia de la sesión o check-in que pretende cerrar cuando el contrato la haga resoluble.
+
+Queda prohibido:
+
+- cerrar “la última sesión” por conveniencia si existe ambigüedad;
+- cambiar de sede para hacer coincidir la salida;
+- generar otra identidad al reiniciar;
+- considerar el checkout aplicado solo porque fue guardado localmente.
+
+La revalidación del cierre al sincronizar permanece bajo `ANIMA-AUTH-015` y los contratos propietarios de asistencia.
+
+---
+
+#### 24. Reutilización para descansos
+
+La cola de descansos puede permanecer físicamente separada, como en la implementación observada, siempre que conserve el mismo gobierno transversal de identidad, retry, concurrencia y recuperación.
+
+Cada inicio o fin de descanso requiere identidad propia.
+
+La separación física entre cola de asistencia y cola de descansos no autoriza:
+
+- contadores de retry reiniciados entre ambas;
+- orden incoherente;
+- start/end sin vínculo a sesión compatible;
+- eliminación de conflicto por procesar primero la otra cola;
+- usar notas libres como única identidad idempotente.
+
+La semántica empresarial del descanso permanece en `ANIMA-AUTH-010`.
+
+---
+
+#### 25. Turnos overnight y cambio de fecha
+
+Se consume íntegramente `ANIMA-AUTH-013`.
+
+Una intención pendiente:
+
+- conserva timestamp absoluto;
+- conserva `shift_id` conocido;
+- no cambia de turno al llegar medianoche;
+- no cambia su `occurred_at` al reconectar;
+- no se retargetea al “turno de hoy”;
+- no se marca vencida únicamente porque cambió la fecha civil;
+- no pierde una dependencia porque el check-in ocurrió el día anterior.
+
+La vigencia real se decide por intervalo y contexto en la revalidación de `ANIMA-AUTH-015`.
+
+---
+
+#### 26. Múltiples dispositivos y concurrencia
+
+Dos dispositivos pueden intentar operar para el mismo trabajador.
+
+La cola debe asumir que:
+
+- otro dispositivo puede haber aplicado una acción mientras uno estaba offline;
+- dos intenciones distintas pueden competir sobre el mismo turno;
+- el mismo evento puede llegar por replay;
+- un resultado puede existir aunque el dispositivo originador no lo conozca.
+
+Por tanto:
+
+1. la exclusión local no es suficiente;
+2. `syncing` no es lease distribuido;
+3. la identidad de evento se verifica server-side;
+4. el estado actual del recurso se revalida antes de mutar;
+5. una carrera no se resuelve “último write gana”;
+6. un segundo dispositivo no hereda la cola del primero por coincidencia de usuario;
+7. un conflicto se conserva para conciliación o decisión controlada.
+
+---
+
+#### 27. Idempotencia y replay
+
+La frontera server-side debe soportar replay seguro.
+
+Regla:
+
+```text
+MISMO ACTOR
++
+MISMO client_event_id
++
+MISMO fingerprint
+→
+NO MAS DE UN EFECTO
+→
+RESULTADO ORIGINAL RECUPERABLE
+```
+
+La respuesta de replay debe ser compatible con el resultado ya confirmado, no una segunda mutación.
+
+La deduplicación no se basa únicamente en:
+
+- proximidad temporal;
+- mismo sitio;
+- mismo tipo de acción;
+- contenido textual de notas;
+- último log observado;
+- un flag local de `syncing`.
+
+La identidad se crea antes del primer intento y se conserva hasta terminalidad o recuperación controlada.
+
+---
+
+#### 28. Misma identidad con contenido distinto
+
+Una colisión de identidad con payload lógico diferente es un conflicto contractual.
+
+```text
+client_event_id = X
+fingerprint = A
+```
+
+seguido de:
+
+```text
+client_event_id = X
+fingerprint = B
+```
+
+no puede responder simplemente `duplicate`.
+
+Debe producir una condición equivalente a conflicto y conservar evidencia suficiente para investigar:
+
+- identidad reutilizada;
+- fingerprint esperado;
+- fingerprint recibido;
+- actor;
+- correlación;
+- recurso/turno afectado;
+- instante.
+
+No se exige exponer el payload sensible completo en logs ni mensajes al trabajador.
+
+---
+
+#### 29. Frontera servidora canónica
+
+La sincronización debe utilizar una frontera server-side versionada y conocida por el consumidor.
+
+La implementación actual expone una RPC `sync_attendance_events`, observada como superficie compatible con este propósito, pero su existencia no basta para declarar cumplimiento completo.
+
+La frontera objetivo debe:
+
+1. autenticar al principal;
+2. resolver actor efectivo;
+3. validar contrato y versión;
+4. aceptar identidad estable;
+5. verificar fingerprint/idempotencia;
+6. aplicar o recuperar un resultado único;
+7. distinguir conflicto de duplicado;
+8. conservar `occurred_at`;
+9. preservar referencias de turno/contexto;
+10. producir outcome recuperable;
+11. registrar incertidumbre cuando no pueda probarse resultado;
+12. permitir la revalidación completa exigida por `ANIMA-AUTH-015`.
+
+El nombre físico final de la RPC puede cambiar bajo la transición correspondiente; esta tarea fija la semántica, no un endpoint eterno.
+
+---
+
+#### 30. Prohibición de fallback de escritura directa
+
+La ausencia o incompatibilidad de la frontera canónica de sincronización debe fallar cerrada.
+
+Queda prohibido:
+
+```text
+RPC CANONICA NO DISPONIBLE
+→
+INSERT DIRECTO AL MISMO RECURSO
+→
+REPORTAR APPLIED
+```
+
+salvo que una ruta de compatibilidad haya sido previamente aprobada y demuestre paridad completa de:
+
+- identidad;
+- fingerprint;
+- autorización;
+- turno/revisión;
+- geocerca;
+- idempotencia;
+- concurrencia;
+- auditoría;
+- resultado recuperable;
+- error y rollback.
+
+Una excepción “function does not exist” no es autorización para omitir el contrato.
+
+---
+
+#### 31. Perfil de retry offline
+
+La cola de asistencia consume el perfil transversal `RR3_DEVICE_OR_OFFLINE` ya aprobado.
+
+La política objetivo conserva:
+
+```text
+max_attempts = 6
+base_waits = 10 s / 1 min / 5 min / 30 min / 2 h
+jitter = acotado
+```
+
+Reglas:
+
+1. esperar conectividad o disponibilidad del SO no consume intento;
+2. un intento se cuenta cuando comienza una ejecución real contra la frontera aplicable;
+3. el tick del worker cada 15 s no es un intento;
+4. reiniciar la aplicación no reinicia `attempts`;
+5. reabrir la cola no reinicia presupuesto;
+6. `Retry-After` se respeta cuando exista y sea compatible con deadline;
+7. un error no reintentable no se repite por temporizador;
+8. resultado ambiguo no consume un retry adicional hasta reconciliar.
+
+---
+
+#### 32. Deadline, edad y expiración
+
+La intención offline es temporalmente sensible.
+
+La cola debe conservar un deadline o criterio de vigencia resoluble bajo el contrato propietario.
+
+La reconexión no amplía ese límite.
+
+Reglas:
+
+1. la edad se calcula desde la intención original, no desde el último retry;
+2. una operación vencida sin efecto ambiguo puede llegar a `expired`;
+3. una operación con posible efecto no se marca `expired` para evitar conciliación;
+4. una ventana de turno terminada no borra la intención histórica;
+5. la intención puede conservarse aislada para evidencia aunque ya no sea ejecutable;
+6. la revalidación exacta de vigencia al sincronizar pertenece a `ANIMA-AUTH-015`.
+
+---
+
+#### 33. Backoff, jitter y recuperación de conectividad
+
+El worker no debe producir una tormenta de reintentos al volver la red.
+
+Se exige:
+
+- backoff según perfil aprobado;
+- jitter acotado;
+- presupuesto persistente;
+- `next_retry_at` durable o semántica equivalente;
+- respeto del orden y dependencias;
+- limitación de concurrencia por recurso cuando corresponda;
+- no disparar todos los elementos históricos si ya vencieron o requieren revalidación;
+- no usar el intervalo de polling como único backoff.
+
+La conectividad recuperada significa “existe oportunidad de evaluar”, no “todos los eventos deben enviarse inmediatamente”.
+
+---
+
+#### 34. Resultado desconocido y conciliación
+
+Si el cliente envía una intención y pierde respuesta después de que el servidor pudo haber producido efecto:
+
+```text
+TIMEOUT / RESPUESTA PERDIDA
++
+EFECTO POSIBLE
+→
+RESULT_UNKNOWN
+→
+RECONCILIACION
+```
+
+No:
+
+```text
+TIMEOUT
+→
+RETRY CIEGO
+```
+
+La conciliación debe consultar una fuente autoritativa por identidad/correlación y determinar, como mínimo:
+
+- aplicado;
+- no aplicado y seguro de reintentar;
+- conflicto;
+- resultado todavía incierto;
+- efecto parcialmente materializado cuando el contrato lo admita.
+
+Una lectura vacía sin garantía fuerte no prueba ausencia de efecto.
+
+---
+
+#### 35. Cuarentena, dead-letter y fallos no automáticos
+
+Las intenciones que no admiten retry ordinario permanecen visibles para recuperación controlada.
+
+`quarantined` aplica, entre otros, a:
+
+- conflicto de identidad/fingerprint;
+- orden imposible;
+- contrato incompatible;
+- referencia de turno/revisión irresoluble;
+- corrupción recuperable que requiere intervención;
+- causa que necesita decisión propietaria.
+
+`dead_letter` aplica cuando el tratamiento automático agota su presupuesto bajo la política correspondiente sin un resultado ambiguo que exija primero conciliación.
+
+Ninguno de estos estados autoriza borrar la intención ni crear otra con identidad nueva para “volver a intentar”.
+
+---
+
+#### 36. Cancelación antes del efecto
+
+Una intención todavía no aplicada puede admitir cancelación bajo la política transversal de `COOPERATIVE_SAFE_POINT`.
+
+La cancelación válida debe:
+
+- quedar asociada a la misma intención;
+- sobrevivir reinicio y reconexión;
+- impedir que el worker vuelva a enviarla;
+- distinguir solicitud de cancelación de cancelación efectiva;
+- no borrar un efecto ya confirmado;
+- entrar a conciliación si llegó demasiado tarde y el resultado es incierto.
+
+Eliminar físicamente un elemento del storage no equivale a una cancelación durable.
+
+Esta tarea no obliga a exponer una acción de cancelación al trabajador en la interfaz actual.
+
+---
+
+#### 37. Cierre, suspensión y reinicio de la aplicación
+
+Una intención confirmada como durable debe sobrevivir:
+
+- cierre normal de la aplicación;
+- kill del proceso;
+- suspensión por el sistema operativo;
+- reinicio de la aplicación;
+- pérdida temporal de conectividad;
+- despertar posterior del worker.
+
+Al restaurar:
+
+1. se lee el estado durable;
+2. se valida su esquema/versionado;
+3. se preserva identidad original;
+4. se preservan attempts y `next_retry_at`;
+5. no se convierte `syncing` abandonado en resultado exitoso;
+6. un intento que pudo haber cruzado la frontera entra a reconciliación antes de retry;
+7. se reconstruye la proyección local sin fabricar asistencia confirmada.
+
+El contrato no exige supervivencia frente a desinstalación o pérdida física del dispositivo cuando no exista una réplica servidora ya aceptada.
+
+---
+
+#### 38. Logout, expiración de sesión y cambio de actor
+
+La cola permanece segregada por actor.
+
+Reglas:
+
+1. logout no procesa pendientes sin principal;
+2. otro usuario no recibe ni procesa la cola ajena;
+3. una cola retenida localmente después de logout se considera bloqueada hasta una sesión compatible;
+4. reautenticarse como el mismo actor no omite la revalidación;
+5. reautenticarse como otro actor no retargetea la intención;
+6. si la relación laboral terminó, la evidencia puede conservarse pero el efecto no se fuerza;
+7. la limpieza local de datos por retiro de cuenta debe respetar obligaciones de auditoría y recuperación aplicables.
+
+---
+
+#### 39. Corrupción, migración de esquema y compatibilidad local
+
+Una cola persistida puede sobrevivir actualizaciones de aplicación.
+
+La implementación debe distinguir:
+
+- elemento válido en versión actual;
+- elemento migrable de forma determinista;
+- elemento incompleto pero identificable;
+- elemento corrupto;
+- elemento con identidad ausente;
+- elemento con contrato incompatible.
+
+Queda prohibido reparar silenciosamente una identidad ausente generando una nueva durante cada restore.
+
+Una migración local solo puede completar campos cuando exista una transformación determinista que no cambie intención ni fingerprint semántico.
+
+Si no puede probarse esa transformación, el elemento se aísla y conserva evidencia suficiente para recuperación.
+
+---
+
+#### 40. Privacidad y seguridad del almacenamiento local
+
+La cola de asistencia contiene información laboral y potencialmente ubicación precisa.
+
+Por tanto:
+
+1. el almacenamiento local debe usar protección apropiada del dispositivo;
+2. no se guardan `service_role`, secret keys, contraseñas ni tokens privados dentro de la intención;
+3. la cola no se exporta a logs completos;
+4. diagnostics deben minimizar coordenadas y datos personales;
+5. una captura de error no debe incluir el payload sensible completo cuando basta una referencia;
+6. las claves de almacenamiento quedan segregadas por actor;
+7. borrar una credencial no debe borrar silenciosamente evidencia pendiente sin proceso definido;
+8. la cola no se usa como caché general de turnos, permisos o perfiles.
+
+---
+
+#### 41. Observabilidad mínima
+
+La implementación futura debe permitir observar sin exponer contenido sensible:
+
+- cantidad de intenciones pendientes;
+- edad del elemento más antiguo;
+- número de intentos por elemento;
+- tiempo hasta próximo retry;
+- cantidad de duplicados recuperados;
+- conflictos;
+- resultados desconocidos;
+- cuarentenas;
+- dead-letter;
+- fallos de persistencia local;
+- restauraciones después de reinicio;
+- latencia desde captura hasta resultado autoritativo;
+- cancelaciones;
+- elementos bloqueados por falta de sesión;
+- elementos bloqueados para revalidación.
+
+Estas métricas no son fuente de autorización ni sustituyen la historia de eventos.
+
+---
+
+#### 42. Reconciliación con la implementación cliente observada
+
+La rama principal observada de `vento-anima` ya contiene una implementación parcial de cola offline.
+
+| Evidencia actual | Evaluación contractual |
+| --- | --- |
+| `SecureStore` por usuario | compatible como custodia local; no fuente del hecho |
+| tipo `PendingAttendanceEvent` con identidad, evento, sitio, tiempo, geo, payload, attempts, estado y retry | base útil y parcialmente alineada |
+| `clientEventId` incorporado al payload antes de envíos ordinarios | converge con identidad estable |
+| estados `pending`, `syncing`, `failed`, `conflict` | proyección local útil, no ciclo transversal completo |
+| worker periódico de 15 s | ejecutor técnico; cada tick no es nueva intención |
+| persistencia helper captura errores y retorna sin propagar fallo | **BRECHA:** el llamador no puede probar que “encolado” fue durable |
+| normalización puede generar un nuevo ID cuando un elemento restaurado no lo trae | **BRECHA:** una identidad ausente no debe regenerarse silenciosamente |
+| política de retry local difiere de `RR3_DEVICE_OR_OFFLINE` | **BRECHA:** presupuesto, waits, jitter y deadline requieren reconciliación física |
+| cola no materializa cancelación durable | **BRECHA:** la política transversal no está acreditada |
+| `failed` / `conflict` se conservan pero no materializan recovery auditado | **BRECHA:** force retry no equivale a recuperación canónica |
+| decisión previa a sync compara principalmente última acción y sede | **BRECHA RESERVADA:** reautorización completa pertenece a `ANIMA-AUTH-015` |
+
+La presencia de código no se presenta como certificación de cumplimiento.
+
+---
+
+#### 43. Reconciliación con la frontera servidora observada
+
+En `vento-os-dev` se observó la RPC `public.sync_attendance_events(jsonb)` y la infraestructura de asistencia relacionada.
+
+La lectura remota del corte de esta tarea evidencia:
+
+```text
+attendance_logs_total = 5858
+attendance_logs_with_client_event_id = 2
+attendance_logs_with_shift_id = 3229
+attendance_logs_with_client_event_id_and_shift_id = 1
+attendance_sync_conflicts_total = 0
+```
+
+Estos conteos describen el estado observado; no son objetivos contractuales permanentes.
+
+La frontera actual demuestra aspectos compatibles:
+
+- deriva actor desde `auth.uid()`;
+- exige empleado activo;
+- valida tipo de evento y fuente;
+- valida sede mediante control servidor;
+- acepta `eventId`;
+- preserva `occurredAt`;
+- puede transportar `shiftId`;
+- registra `client_event_id`;
+- existe índice único parcial por `employee_id + client_event_id`;
+- devuelve `applied`, `duplicate`, `conflict` o `error` según sus ramas actuales.
+
+También existen brechas verificables:
+
+1. `unique_violation` se traduce directamente a `duplicate` sin demostrar igualdad de fingerprint;
+2. por ello, el contrato observado no acredita todavía `same id + different content = conflict`;
+3. la función no acredita por sí sola una referencia explícita de revisión publicada en la intención;
+4. la autorización completa contra turno, revisión, área, rol, ventana y cambios concurrentes no queda certificada por esta RPC y pertenece a `ANIMA-AUTH-015`;
+5. el cliente observado contiene fallback a inserción alternativa cuando la RPC se reporta ausente, incompatible con fail-closed sin paridad demostrada;
+6. la escasa presencia histórica de `client_event_id` demuestra convivencia legacy y exige transición explícita en lugar de asumir que toda asistencia previa ya posee identidad idempotente.
+
+Cero conflictos observados no demuestra ausencia de carreras ni certifica idempotencia de contenido.
+
+---
+
+#### 44. Handoff exacto a `ANIMA-AUTH-015`
+
+`ANIMA-AUTH-014` entrega a la siguiente tarea una intención durable con semántica congelada.
+
+El handoff debe permitir resolver, como mínimo:
+
+```text
+client_event_id ESTABLE
+fingerprint LOGICO
+actor CAPTURADO
+accion
+occurred_at ORIGINAL
+turno REFERENCIADO
+version / snapshot / revision RESOLUBLE CUANDO APLIQUE
+sede / area / rol / geocerca CAPTURADOS COMO EVIDENCIA
+estado DE COLA
+attempts
+next_retry_at
+resultado PREVIO SI EXISTE
+correlacion TECNICA
+```
+
+`ANIMA-AUTH-015` debe consumir ese sobre sin modificar retrospectivamente la intención original y decidir si, en el instante de sincronización, siguen siendo válidos:
+
+- principal y vínculo laboral;
+- publicación y revisión;
+- ventana temporal;
+- sede;
+- área;
+- rol;
+- compatibilidades territoriales;
+- sesión de asistencia previa;
+- orden de eventos;
+- invalidaciones concurrentes;
+- permisos y prerrequisitos aplicables.
+
+014 garantiza que hay **qué revalidar**. 015 decide **si puede ejecutarse ahora**.
+
+---
+
+#### 45. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+**Requisitos diferidos:** 0
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya protege persistencia durable, identidad estable, idempotencia, replay, retry, orden, concurrencia, aislamiento, recuperación, sincronización offline y vínculo con asistencia. Esta tarea especializa esas obligaciones para ANIMA sin alterar el registro canónico.
+
+---
+
+#### 46. Cobertura de prueba vigente reutilizada
+
+Se reutilizan sin modificación:
+
+- `TREQ-ANIMA-003`: persistencia durable antes de mostrar encolado, `client_event_id` estable, conservación de actor/sede/turno/tiempo/geolocalización/contexto, supervivencia a reinicio, efecto único y prohibición de fallback sin paridad;
+- `TREQ-ANIMA-004`: identidad persistente y transición atómica/idempotente para descansos, concurrencia y replay;
+- `TREQ-INTEGRATION-003`: clave estable, fingerprint, estado durable, resultado recuperable, retry con backoff/jitter, timeout incierto, claim/concurrencia y recuperación manual;
+- `TREQ-INTEGRATION-007`: programación y asistencia comparten contrato; eventos offline y retries no duplican jornadas, contexto ni tiempo trabajado;
+- `TREQ-SUPABASE-001`: cualquier wrapper o fallback legacy requiere propietario, consumidores, paridad, rollback y puerta explícita antes de conservarse o retirarse;
+- `TREQ-AUTH-217`: cambios de publicación, actor, tiempo, territorio o rol invalidan contexto y obligan solicitud/revalidación nueva cuando corresponda;
+- `TREQ-AUTH-220`: temporalidad basada en timestamps absolutos y resolución server-side;
+- `TREQ-AUTH-224`: turnos nocturnos y ambigüedad temporal se resuelven mediante intervalos absolutos y fail-closed.
+
+La enumeración anterior es trazabilidad de cobertura existente; no representa actualización de requisitos.
+
+---
+
+#### 47. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | el artefacto todavía no ha sido incorporado al archivo propietario ni compilado por el checkout local del usuario |
+| LOCAL | NOT_EXECUTED | format, quality, delivery, plan, TREQ y diff deben ejecutarse después del reemplazo en la rama documental real |
+| REMOTA | PASS | continuidad, owner, topología, políticas, contratos E4/INT-WORK, 04A vigente, código `vento-anima@8bcfaaa3b6ab79d5839c03719edec7b50fd97d2d` y estado read-only de `vento-os-dev` fueron inspeccionados |
+| OPERATIVA | NOT_EXECUTED | no se ejecutó una marcación offline real en dispositivo, reinicio, reconexión ni escenario de respuesta perdida |
+| FÍSICA | NOT_APPLICABLE | la tarea es documental y no autoriza mutaciones de código, Supabase, datos, configuración ni despliegue |
+
+La evidencia remota demuestra el estado actual y las brechas documentadas. No sustituye la validación física futura de la unidad de implementación.
+
+---
+
+#### 48. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando se demuestra que:
+
+1. existe exactamente una intención lógica por evento offline;
+2. `client_event_id` se crea antes del primer envío;
+3. restore y retry preservan la misma identidad;
+4. existe fingerprint lógico del contenido relevante;
+5. misma identidad y mismo fingerprint recuperan la misma intención/resultado;
+6. misma identidad y fingerprint distinto producen conflicto;
+7. `queue_item_id`, `client_event_id`, `operation_id`, `shift_id` y hecho confirmado permanecen separados;
+8. la cola conserva actor, sede, turno, tiempo, geolocalización y contexto suficientes;
+9. la referencia de revisión/versionado queda resoluble cuando el contrato la requiere;
+10. el cliente no puede presentar “encolado” antes de confirmar persistencia durable;
+11. fallo de storage no se convierte en éxito optimista;
+12. cerrar o reiniciar la app no elimina una intención durable;
+13. restaurar un elemento incompleto no genera identidad nueva silenciosamente;
+14. la cola permanece segregada por actor;
+15. logout no procesa pendientes sin sesión compatible;
+16. cambiar de usuario no retargetea una intención;
+17. SecureStore o tecnología equivalente permanece custodia, no fuente del hecho;
+18. una intención encolada no crea sesión autoritativa;
+19. una intención encolada no habilita permisos `T+C`;
+20. el timestamp original no se sustituye por la hora de reconexión;
+21. el snapshot geográfico original no se reescribe durante sync;
+22. medianoche no retargetea la intención;
+23. check-out y descanso preservan dependencia y orden cuando reutilizan la arquitectura;
+24. múltiples dispositivos se tratan como concurrencia distribuida;
+25. `syncing` local no se presenta como lease distribuido;
+26. la frontera server-side conserva identidad y outcome recuperable;
+27. la ausencia de la frontera canónica falla cerrada sin fallback silencioso;
+28. un timeout con posible efecto usa resultado desconocido y conciliación antes de retry;
+29. el retry consume `RR3_DEVICE_OR_OFFLINE`;
+30. esperar conectividad no consume intento;
+31. el tick de 15 s no crea un intento nuevo;
+32. el presupuesto no se reinicia al reiniciar la aplicación;
+33. retry usa backoff, jitter y deadline;
+34. conflictos no se reintentan a ciegas;
+35. aislamiento conserva identidad e historia;
+36. dead-letter no se confunde con fallo empresarial;
+37. cancelación durable impide futuros envíos antes del efecto;
+38. borrar storage no se usa como sustituto de cancelación;
+39. datos sensibles y secretos no se incrustan en la intención;
+40. diagnostics minimizan payload y ubicación;
+41. la implementación actual queda registrada como parcial, no certificada;
+42. la falta de fingerprint en deduplicación servidora queda identificada como brecha;
+43. la escasa cobertura histórica de `client_event_id` queda tratada como coexistencia legacy;
+44. la revalidación completa permanece reservada a `ANIMA-AUTH-015`;
+45. no se crean ni modifican requisitos de prueba;
+46. no se crea un framework de cola paralelo a `QUEUE-ARC-*`;
+47. topología documental/física permanece `PER_IMPLEMENTATION_UNIT`;
+48. el gate físico permanece `POST_E5_PACKAGE`;
+49. no se ejecutan cambios físicos;
+50. la continuidad reserva exclusivamente `ANIMA-AUTH-015`.
+
+---
+
+#### 49. Límites
+
+Esta tarea no define ni ejecuta:
+
+- la revalidación de permisos al sincronizar, propiedad de `ANIMA-AUTH-015`;
+- el diseño final de mensajes de conflicto o recuperación, propiedad de `ANIMA-AUTH-016` y `ANIMA-AUTH-017`;
+- la auditoría final de creación y cierre de contexto, propiedad de `ANIMA-AUTH-018`;
+- concesión de permisos, prohibida por `ANIMA-AUTH-019`;
+- una fuente de verdad local paralela, prohibida por `ANIMA-AUTH-020`;
+- la semántica empresarial de checkout, propiedad de `ANIMA-AUTH-009`;
+- la semántica empresarial de descansos, propiedad de `ANIMA-AUTH-010`;
+- cambios temporales de área, propiedad de `ANIMA-AUTH-011`;
+- reemplazos, propiedad de `ANIMA-AUTH-012`;
+- semántica overnight, propiedad de `ANIMA-AUTH-013`;
+- un nuevo catálogo transversal de estados de cola;
+- un nuevo perfil de retry distinto de `QUEUE-ARC-*`;
+- el algoritmo físico definitivo del fingerprint;
+- nombres físicos de tablas, columnas, índices o constraints;
+- creación o modificación de RPC;
+- modificación de `sync_attendance_events`;
+- modificación de `attendance_logs`;
+- modificación de `attendance_sync_conflicts`;
+- migraciones;
+- RLS;
+- grants;
+- Edge Functions;
+- cron;
+- cambios en SecureStore;
+- cambios en el worker móvil;
+- cambios de UI;
+- despliegues;
+- cambios productivos;
+- un reason code público nuevo;
+- un permiso nuevo;
+- un nuevo shape público de `AccessContext`.
+
+Toda brecha física identificada queda para la unidad de implementación correspondiente y sus propietarios existentes. La tarea documental no la corrige físicamente.
+
+---
+
+#### 50. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-014 — Manejar cola offline de check-in`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline`
+
 ### [ ] ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline
 ### [ ] ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador
 ### [ ] ANIMA-AUTH-017 — Diferenciar falta de turno y falta de permiso
