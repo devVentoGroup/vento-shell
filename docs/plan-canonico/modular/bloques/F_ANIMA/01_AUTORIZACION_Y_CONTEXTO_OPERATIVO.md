@@ -10368,7 +10368,1124 @@ Esta tarea no define:
 **SIGUIENTE TAREA RESERVADA**
 `ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche`
 
-### [ ] ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche
+### ✅ ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-012 — Manejar reemplazos de turno
+**Tarea siguiente:** ANIMA-AUTH-014 — Manejar cola offline de check-in
+**Tipo de tarea:** documental; definición contractual de resolución temporal, asistencia y autorización para una misma ocurrencia laboral cuyo intervalo real comienza en una fecha civil y termina en la siguiente, sin dividir identidad, sesión, contexto ni autoridad por el cambio de medianoche
+**Bloque:** `F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante esta tarea documental; la materialización futura queda sujeta a la topología `PER_IMPLEMENTATION_UNIT`, al gate `POST_E5_PACKAGE` y a autorización física explícita
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo debe resolver ANIMA una ocurrencia de turno que cruza medianoche sin convertir el cambio de fecha civil en un cambio de turno, sin perder una sesión de asistencia todavía activa, sin adelantar el turno siguiente y sin degradar la vigencia temporal a comparaciones de `shift_date`, `start_time` y `end_time` ejecutadas como si pertenecieran al mismo día.
+
+La regla raíz queda:
+
+```text
+TURNO PUBLICADO
++
+INICIO ABSOLUTO RESUELTO
++
+FIN ABSOLUTO RESUELTO EN FECHA POSTERIOR
++
+INSTANTE ACTUAL DENTRO DE [INICIO, FIN)
+->
+MISMO SHIFT_ID
++
+MISMA OCURRENCIA LOGICA
++
+MISMA SESION COMPATIBLE CUANDO EXISTA
++
+MISMO CONTEXTO MIENTRAS NO EXISTA OTRA INVALIDACION
+```
+
+Medianoche es una frontera de calendario. No es por sí sola una transición de programación, asistencia, contexto ni autorización.
+
+---
+
+#### 2. Resultado canónico
+
+`ANIMA-AUTH-013` fija un contrato único para turnos cross-midnight con las siguientes propiedades:
+
+1. un turno overnight conserva una sola identidad lógica;
+2. inicio y fin se comparan como instantes absolutos y no como horas aisladas;
+3. la zona horaria contractual forma parte de la resolución;
+4. la fecha civil de inicio no limita la vigencia al mismo día calendario;
+5. el cambio de fecha a las `00:00` no termina el turno;
+6. el check-in previo a medianoche puede seguir siendo válido después de medianoche;
+7. el checkout posterior a medianoche cierra la misma sesión exacta;
+8. una pausa abierta no se termina solo porque cambió el día civil;
+9. el contexto operativo no se invalida únicamente por medianoche;
+10. el turno siguiente no sustituye al overnight antes de su frontera real;
+11. duración, orden, filtros, caché y proyecciones usan el intervalo normalizado;
+12. la cola offline conserva instantes completos y nunca retargetea una intención al turno de la nueva fecha por conveniencia;
+13. cualquier ambigüedad entre candidatos falla cerrada;
+14. las funciones de recuperación no pueden cerrar prematuramente una sesión overnight por considerar anterior la fecha del check-in;
+15. la materialización física permanece fuera de esta tarea documental.
+
+---
+
+#### 3. Vocabulario contractual
+
+**Turno overnight:** ocurrencia laboral continua cuyo `starts_at` y `ends_at` pertenecen a fechas civiles distintas dentro de la zona horaria contractual.
+
+**Fecha ancla del turno:** fecha civil a la que pertenece el inicio del turno en la programación propietaria. No equivale a toda la vigencia del turno.
+
+**Inicio absoluto:** instante inequívoco en que comienza la ventana temporal del turno.
+
+**Fin absoluto:** instante inequívoco en que termina la ventana temporal del turno y que debe ser estrictamente posterior al inicio.
+
+**Medianoche:** transición de una fecha civil a la siguiente dentro de una zona horaria. No es una transición de negocio por sí misma.
+
+**Ventana vigente:** intervalo semiabierto `[starts_at, ends_at)` resuelto por servidor.
+
+**Turno siguiente:** ocurrencia distinta cuyo inicio real ocurre después o en la frontera final de la ocurrencia actual y conserva identidad propia.
+
+---
+
+#### 4. Separaciones obligatorias
+
+Se conservan estas diferencias:
+
+```text
+CAMBIO DE FECHA CIVIL
+!=
+CAMBIO DE TURNO
+!=
+CHECKOUT
+!=
+CIERRE DE CONTEXTO
+!=
+REEMPLAZO
+!=
+CAMBIO DE AREA
+!=
+CAMBIO DE ROL
+```
+
+También:
+
+```text
+SHIFT_DATE
+!=
+STARTS_AT
+!=
+ENDS_AT
+!=
+RESOLVED_AT
+```
+
+Y:
+
+```text
+TURNO OVERNIGHT
+!=
+DOS TURNOS DIARIOS
+```
+
+Un consumidor no puede partir una ocurrencia solo para adaptarla a una vista diaria, un filtro SQL o un widget de calendario.
+
+---
+
+#### 5. Autoridad temporal
+
+La autoridad temporal se resuelve en servidor usando el contrato publicado del turno.
+
+Para una decisión dependiente de turno se requieren, como mínimo:
+
+- identidad del turno;
+- revisión publicada aplicable;
+- inicio absoluto;
+- fin absoluto;
+- zona horaria contractual;
+- instante autoritativo de resolución;
+- estado temporal de la ocurrencia.
+
+El reloj del dispositivo no decide vigencia.
+
+La configuración regional del dispositivo puede cambiar formato visual, pero no cambia `starts_at`, `ends_at` ni la pertenencia de un evento a la ocurrencia.
+
+---
+
+#### 6. Zona horaria contractual
+
+La resolución vigente conserva `America/Bogota` como zona temporal empresarial mientras otra decisión canónica posterior no la sustituya.
+
+La regla es:
+
+```text
+HORA LOCAL PROGRAMADA
++
+FECHA CIVIL CORRESPONDIENTE
++
+ZONA HORARIA CONTRACTUAL
+->
+TIMESTAMP ABSOLUTO
+```
+
+Queda prohibido:
+
+- usar la zona horaria del dispositivo como autoridad;
+- construir un `Date` local y asumir que su offset coincide con el contrato empresarial;
+- ordenar o comparar horas de texto sin normalización temporal;
+- inferir que una fecha ISO obtenida en UTC representa necesariamente la fecha empresarial local.
+
+---
+
+#### 7. Intervalo absoluto obligatorio
+
+Toda ocurrencia overnight debe poder resolverse a:
+
+```text
+starts_at < ends_at
+```
+
+La vigencia usa el intervalo semiabierto:
+
+```text
+starts_at <= resolved_at < ends_at
+```
+
+Consecuencias:
+
+- en el inicio exacto la ocurrencia puede ser vigente;
+- durante la noche y después de medianoche permanece vigente;
+- en el fin exacto deja de ser vigente;
+- no existe un minuto adicional implícito;
+- el cambio de fecha civil no introduce una frontera artificial.
+
+---
+
+#### 8. Fecha ancla y fecha de finalización
+
+La fecha ancla identifica el día civil de inicio de la ocurrencia dentro de la programación.
+
+Para un turno que comienza el 28 a las 22:00 y termina el 29 a las 06:00:
+
+```text
+shift_anchor_date = dia 28
+starts_at = dia 28 22:00 en zona contractual
+ends_at = dia 29 06:00 en zona contractual
+```
+
+La ocurrencia no cambia su fecha ancla al llegar el día 29.
+
+La representación física futura puede usar timestamps absolutos, fecha final explícita o un contrato equivalente. Esta tarea no impone columnas.
+
+Queda prohibido que ANIMA invente la fecha final a partir de una comparación ambigua de horas si la fuente propietaria no entrega un intervalo resoluble.
+
+---
+
+#### 9. Compatibilidad con representaciones legacy
+
+El modelo físico observado conserva `shift_date`, `start_time` y `end_time` separados y no posee una columna explícita de fecha final en `employee_shifts`.
+
+Una capa de compatibilidad solo podrá interpretar una hora de fin de la fecha siguiente cuando exista una regla propietaria inequívoca que declare esa codificación.
+
+Por defecto:
+
+- `end_time < start_time` no puede convertirse en overnight por inferencia local del cliente;
+- `end_time = start_time` no representa automáticamente 24 horas;
+- un intervalo imposible o ambiguo falla cerrado;
+- el contrato normalizado que llega a autorización debe contener un `ends_at` posterior a `starts_at`.
+
+La decisión física definitiva de edición, almacenamiento y publicación permanece en `VISO-SCH-003` y los contratos de programación relacionados.
+
+---
+
+#### 10. Identidad de turno a través de medianoche
+
+Un overnight conserva el mismo `shift_id` antes y después de las `00:00`.
+
+```text
+22:00
+-> MISMO SHIFT_ID
+23:59:59
+-> MISMO SHIFT_ID
+00:00
+-> MISMO SHIFT_ID
+05:59:59
+-> MISMO SHIFT_ID
+06:00
+-> TURNO YA NO VIGENTE
+```
+
+No se crea una segunda ocurrencia porque la pantalla cambie de día, porque una consulta filtre por fecha o porque la asistencia continúe después de medianoche.
+
+---
+
+#### 11. Medianoche no invalida contexto
+
+El cruce de medianoche por sí solo no modifica:
+
+- trabajador;
+- `shift_id`;
+- revisión publicada;
+- sede;
+- área;
+- rol operativo;
+- sesión de check-in;
+- pausa activa;
+- grants aplicables;
+- denies;
+- scope;
+- recurso;
+- dispositivo;
+- generación de contexto.
+
+Por tanto:
+
+```text
+MIDNIGHT
++
+SIN OTRO HECHO INVALIDANTE
+->
+NO INVALIDAR CONTEXTO SOLO POR FECHA
+```
+
+Una invalidación real sigue obedeciendo a las causas canónicas: checkout, fin temporal, cambio de turno, reemplazo, cambio de área, rol, asignación, dispositivo, revisión o cualquier otro hecho definido por los contratos vigentes.
+
+---
+
+#### 12. Resolución de `active_shift`
+
+La búsqueda del turno vigente no puede limitarse a:
+
+```text
+shift_date = fecha_actual
+```
+
+La resolución debe considerar publicaciones cuyo intervalo absoluto contenga `resolved_at`, incluso cuando su fecha ancla sea el día anterior.
+
+Resultado conceptual:
+
+```text
+CANDIDATOS PUBLICADOS LABORALES
++
+starts_at <= resolved_at < ends_at
++
+ACTOR Y TERRITORIO COMPATIBLES
+->
+CARDINALIDAD TEMPORAL
+```
+
+La fecha civil participa para construir el intervalo desde la publicación, no como filtro suficiente de vigencia.
+
+---
+
+#### 13. Cardinalidad y ambigüedad
+
+Después de aplicar estado, publicación, temporalidad, actor y contexto:
+
+```text
+0 candidatos
+-> NO ACTIVE SHIFT
+
+1 candidato
+-> ACTIVE SHIFT RESUELTO
+
+mas de 1 candidato incompatible
+-> AMBIGUEDAD / FAIL CLOSED
+```
+
+No se escoge por:
+
+- turno de hoy;
+- último creado;
+- menor `start_time` textual;
+- primer resultado SQL;
+- check-in como selector arbitrario;
+- sede seleccionada en cliente;
+- confirmación;
+- proximidad aproximada cuando persista una incompatibilidad contractual.
+
+---
+
+#### 14. Check-in antes de medianoche
+
+Un check-in realizado antes de medianoche se vincula a la ocurrencia exacta resuelta por servidor.
+
+Si el turno continúa después de medianoche:
+
+- el evento conserva su timestamp absoluto;
+- conserva `shift_id` cuando el contrato físico lo materialice;
+- la sesión resultante pertenece a esa ocurrencia;
+- no necesita ser reabierta a las `00:00`;
+- no se crea un segundo check-in por cambio de día.
+
+La sesión de asistencia es una identidad de ejecución, no un agregado diario.
+
+---
+
+#### 15. Check-in después de medianoche para un turno iniciado el día anterior
+
+Una persona puede intentar check-in después de medianoche mientras la ocurrencia iniciada el día anterior todavía existe.
+
+El cambio de fecha no convierte el turno en inexistente.
+
+La admisibilidad depende de las reglas ordinarias de:
+
+- publicación;
+- ventana autorizada de check-in;
+- estado del turno;
+- trabajador;
+- sede;
+- área;
+- rol;
+- compatibilidad;
+- política de asistencia aplicable.
+
+Esta tarea no inventa minutos de tolerancia.
+
+Si la política permite esa entrada tardía, el servidor debe poder resolver la ocurrencia del día anterior por su intervalo real. Si la política no la permite, se deniega por la causa temporal correspondiente, no por `shift_date != hoy`.
+
+---
+
+#### 16. Sesión activa a través de medianoche
+
+Una sesión confirmada iniciada antes de medianoche puede permanecer activa después de medianoche mientras:
+
+- pertenezca al mismo trabajador;
+- conserve el mismo turno aplicable;
+- no haya checkout;
+- no haya cierre terminal;
+- no haya reemplazo incompatible;
+- no exista otra invalidación canónica.
+
+La detección de sesión activa no puede depender de que el último check-in tenga la misma fecha civil que `now`.
+
+Por tanto, una expresión equivalente a:
+
+```text
+check_in_date = today
+```
+
+no acredita por sí sola que la sesión siga abierta o cerrada.
+
+---
+
+#### 17. Checkout posterior a medianoche
+
+El checkout de un overnight debe cerrar la sesión exacta abierta antes o después de medianoche.
+
+La resolución preferente usa la identidad de sesión y de turno ya vinculada.
+
+Si un evento de salida conserva `shift_id`, ese identificador se valida contra trabajador, sesión, estado y contexto; no se reemplaza por una búsqueda del turno de la fecha actual.
+
+Si falta una referencia histórica suficiente, el resolutor debe usar intervalos absolutos y fallar cerrado ante ambigüedad.
+
+No se reasigna automáticamente la salida al primer turno del nuevo día.
+
+---
+
+#### 18. Fin programado y auto-checkout
+
+Un auto-checkout por fin de turno debe dispararse respecto de `ends_at` real.
+
+Para un turno `22:00 -> 06:00`:
+
+```text
+FIN PROGRAMADO = 06:00 DEL DIA SIGUIENTE
+```
+
+No:
+
+```text
+FIN PROGRAMADO = 06:00 DEL MISMO DIA DEL INICIO
+```
+
+Una tarea programada o procesador no puede cerrar el turno a medianoche por detectar que el check-in pertenece al día anterior.
+
+La recuperación de sesiones abiertas debe distinguir:
+
+- sesión overnight todavía vigente;
+- sesión cuyo `ends_at` ya pasó;
+- sesión sin turno resoluble;
+- sesión legacy cuya temporalidad no puede reconstruirse.
+
+---
+
+#### 19. Procesamiento de sesiones abiertas antiguas
+
+La condición:
+
+```text
+fecha(check_in) < fecha(now)
+```
+
+no es suficiente para clasificar una sesión como stale.
+
+Para una ocurrencia overnight todavía vigente, esa comparación es esperada.
+
+El procesador futuro debe decidir usando, como mínimo:
+
+- sesión abierta exacta;
+- turno vinculado cuando exista;
+- `starts_at`;
+- `ends_at`;
+- estado publicado vigente;
+- tiempo autoritativo;
+- política de recuperación aplicable.
+
+Una sesión overnight no puede cerrarse anticipadamente usando `min(ends_at, now)` solo porque el check-in ocurrió en la fecha civil anterior.
+
+---
+
+#### 20. Pausas que cruzan medianoche
+
+Una pausa abierta antes de medianoche puede terminar después de medianoche sin crear otra pausa.
+
+El cambio de fecha no ejecuta:
+
+- `END_BREAK`;
+- checkout;
+- nuevo check-in;
+- nueva sesión;
+- nuevo turno.
+
+La pausa conserva relación con la misma sesión y el mismo turno.
+
+Su duración se calcula por instantes absolutos.
+
+La semántica general de descansos permanece bajo `ANIMA-AUTH-010`.
+
+---
+
+#### 21. Contexto operativo y autorización
+
+Un permiso con carril `T` o `T+C` puede seguir utilizando el turno overnight después de medianoche mientras la ocurrencia siga temporalmente vigente y el resto de prerrequisitos se mantenga.
+
+La autorización no debe caer a `DENY` solo porque cambió el día civil.
+
+Tampoco debe permanecer `ALLOW` después de `ends_at`.
+
+Para `T+C`, la sesión de check-in debe seguir siendo compatible con la misma ocurrencia.
+
+Las capacidades base que no dependen de turno conservan su modalidad ordinaria.
+
+---
+
+#### 22. Fin exacto del turno
+
+La frontera final es estricta.
+
+```text
+resolved_at < ends_at
+-> TURNO PUEDE SEGUIR VIGENTE
+
+resolved_at = ends_at
+-> TURNO YA NO ES VIGENTE
+```
+
+A partir de esa frontera:
+
+- el contexto dependiente del turno deja de ser reutilizable;
+- una acción protegida debe resolver de nuevo;
+- no existe gracia implícita;
+- el turno siguiente puede evaluarse bajo sus propias reglas;
+- una sesión todavía abierta entra en el flujo de checkout o recuperación que corresponda, pero no extiende la autorización del turno terminado.
+
+---
+
+#### 23. Turnos consecutivos en la frontera
+
+Dos ocurrencias pueden ser consecutivas:
+
+```text
+S1 = [22:00, 06:00)
+S2 = [06:00, 14:00)
+```
+
+En `06:00`:
+
+- `S1` ya no es vigente;
+- `S2` puede comenzar a ser vigente;
+- no existe solapamiento temporal por la semántica semiabierta;
+- la sesión de `S1` no se presta a `S2`;
+- si `S2` exige check-in, necesita una sesión compatible propia;
+- el contexto de `S1` no se recicla como contexto de `S2`.
+
+---
+
+#### 24. Solapamientos incompatibles
+
+Si dos publicaciones distintas son simultáneamente candidatas para el mismo trabajador e instante y no existe precedencia canónica inequívoca:
+
+```text
+AMBIGUEDAD
+->
+FAIL CLOSED
+```
+
+La existencia de un overnight no autoriza escoger el turno de la nueva fecha por encima del iniciado el día anterior.
+
+La resolución de conflictos de programación permanece en los contratos propietarios de VISO y `VISO-SCH-006`.
+
+---
+
+#### 25. Relación con reemplazos
+
+`ANIMA-AUTH-012` conserva la propiedad de reemplazos.
+
+Si un overnight es reemplazado antes o durante su ventana:
+
+- el cambio de identidad se resuelve como reemplazo;
+- la ocurrencia original conserva historia;
+- la sesión no se transfiere al sucesor;
+- el cambio de medianoche no modifica el linaje;
+- la autorización posterior se resuelve contra la ocurrencia vigente del actor.
+
+Esta tarea no redefine la atomicidad ni aprobación empresarial del reemplazo.
+
+---
+
+#### 26. Relación con cambio temporal de área y rol
+
+`ANIMA-AUTH-011` conserva la propiedad del cambio temporal de área.
+
+Un overnight puede cruzar medianoche sin cambiar área ni rol.
+
+Si durante su vida ocurre un cambio autoritativo de área, rol, sede o revisión:
+
+- se procesa el hecho real correspondiente;
+- se invalida cuando el contrato así lo exige;
+- no se atribuye la invalidación a medianoche;
+- no se combinan campos de estados distintos.
+
+---
+
+#### 27. Cola offline y eventos pendientes
+
+La cola general permanece bajo `ANIMA-AUTH-014` y su revalidación bajo `ANIMA-AUTH-015`.
+
+Esta tarea fija únicamente la frontera temporal que esas tareas deben conservar:
+
+- el evento pendiente mantiene timestamp absoluto;
+- mantiene la identidad conocida de turno cuando exista;
+- conserva la zona o referencia temporal necesaria para reproducir la intención;
+- no cambia su `shift_id` porque el calendario haya avanzado;
+- no se reescribe como evento del turno del nuevo día;
+- al sincronizar se resuelve el estado autoritativo vigente y la historia del evento original.
+
+---
+
+#### 28. Realtime, polling y señales
+
+Una señal recibida a medianoche no constituye por sí misma cambio de turno.
+
+La regla permanece:
+
+```text
+SIGNAL
+->
+INVALIDATE CUANDO CORRESPONDA
+->
+FETCH AUTHORITATIVE STATE
+->
+RESOLVE
+```
+
+El payload de una señal no puede imponer el turno actual.
+
+La ausencia de una señal exacta a las `00:00` tampoco cambia la verdad persistida.
+
+---
+
+#### 29. Proyección `hoy`
+
+La categoría visual `hoy` no es una autoridad de turno.
+
+Después de medianoche, un turno iniciado el día anterior y todavía vigente puede seguir siendo la ocurrencia activa aunque su fecha ancla ya no coincida con la fecha actual.
+
+Una pantalla puede agrupar programación por fecha, pero debe distinguir:
+
+- pertenencia visual a una fecha;
+- turno activo real;
+- próximo turno;
+- sesión abierta.
+
+No se permite que una tarjeta `hoy` desactive autorización o esconda la ocurrencia activa por un filtro civil.
+
+---
+
+#### 30. Proyección de próximo turno
+
+Mientras un overnight permanezca activo, no puede desaparecer de la resolución simplemente porque su `shift_date` sea anterior a hoy.
+
+La selección de próximo turno debe ordenar por `starts_at` real y considerar primero si existe una ocurrencia vigente.
+
+Queda prohibido:
+
+- filtrar exclusivamente `shift_date >= hoy` para encontrar la ocurrencia activa;
+- considerar terminado un turno porque `end_time` sea menor que `start_time` dentro de la misma fecha;
+- promocionar el turno de la mañana como siguiente mientras el overnight todavía esté activo, salvo que la UI distinga explícitamente “activo” de “siguiente” sin sustituir autoridad.
+
+---
+
+#### 31. Consultas y filtros temporales
+
+Toda consulta que necesite resolver estado temporal debe incluir suficiente horizonte para capturar ocurrencias iniciadas en una fecha anterior pero todavía vigentes.
+
+No se fija aquí una ventana física de consulta.
+
+Sí se fija que:
+
+```text
+FILTRO POR FECHA CIVIL
+!=
+RESOLUCION DE VIGENCIA
+```
+
+Los filtros de semana, mes o día pueden usarse para presentación siempre que no alteren la identidad ni la resolución autoritativa.
+
+---
+
+#### 32. Duración del turno
+
+La duración se calcula como:
+
+```text
+ends_at - starts_at - descansos_aplicables
+```
+
+Nunca como:
+
+```text
+end_time - start_time
+```
+
+cuando ambas horas han sido construidas sobre la misma fecha civil para un overnight.
+
+Queda prohibido corregir una duración negativa mediante `max(0, duracion)` y tratar el resultado cero como válido.
+
+Un intervalo normalizado debe ser positivo antes de descontar pausas.
+
+---
+
+#### 33. `show_end_as_close` no altera temporalidad
+
+Una etiqueta visual de cierre no puede sustituir un fin autoritativo.
+
+`show_end_as_close` puede afectar presentación, pero no puede:
+
+- eliminar `ends_at`;
+- extender el turno indefinidamente;
+- decidir que medianoche es el cierre;
+- cambiar la identidad del turno;
+- evitar la validación temporal.
+
+La autorización siempre necesita una frontera temporal real y resoluble.
+
+---
+
+#### 34. Cambio de mes, año y otras fronteras civiles
+
+La misma regla aplica cuando un turno cruza:
+
+- fin de mes;
+- fin de año;
+- febrero a marzo;
+- cualquier cambio de fecha civil.
+
+Ejemplo:
+
+```text
+31 diciembre 22:00
+-> 1 enero 06:00
+-> MISMA OCURRENCIA
+```
+
+La navegación por periodo no puede partir el turno ni duplicar su asistencia.
+
+---
+
+#### 35. Métricas diarias, nómina y atribución de tiempo
+
+Esta tarea define vigencia y continuidad de autorización, no la regla contable o laboral para distribuir horas entre fechas.
+
+Por tanto:
+
+- una sesión overnight puede producir tiempo en dos fechas civiles;
+- esa distribución no modifica la identidad del turno;
+- una métrica diaria puede requerir segmentación de lectura;
+- segmentar una métrica no crea dos sesiones ni dos turnos;
+- la regla de nómina, recargos nocturnos, fecha laboral o corte contable permanece fuera de alcance.
+
+No se usará una necesidad de reporting para alterar la semántica de autorización.
+
+---
+
+#### 36. Outcomes internos mínimos
+
+La materialización futura debe poder distinguir, como mínimo:
+
+- turno vigente overnight resuelto;
+- turno todavía no iniciado;
+- turno terminado;
+- intervalo inválido;
+- intervalo no reproducible por falta de información temporal;
+- ambigüedad entre candidatos;
+- sesión activa válida de la misma ocurrencia;
+- sesión no compatible;
+- sesión ya cerrada;
+- evento offline con referencia histórica;
+- fallo técnico de resolución.
+
+Estos outcomes internos no crean nuevos reason codes públicos.
+
+---
+
+#### 37. Matriz de decisión
+
+| Caso | Estado | Instante | Decisión |
+| --- | --- | --- | --- |
+| A | turno `22:00 -> 06:00` normalizado y publicado | 23:00 | mismo turno vigente |
+| B | mismo turno | 00:00 del día siguiente | mismo turno vigente; no cerrar por medianoche |
+| C | mismo turno | 05:59:59 | mismo turno vigente |
+| D | mismo turno | 06:00 exacto | turno terminado por frontera semiabierta |
+| E | check-in a las 22:00 | 00:30 | misma sesión abierta si no existe checkout ni invalidación |
+| F | pausa abierta antes de medianoche | después de medianoche | misma pausa; no auto-finalizar por fecha |
+| G | checkout a las 05:50 | sesión vinculada al turno overnight | cerrar la misma sesión |
+| H | turno del día anterior todavía vigente + turno futuro del día actual | 01:00 | conservar overnight como vigente; futuro no lo sustituye |
+| I | dos turnos incompatibles vigentes | cualquiera | ambigüedad; fail closed |
+| J | `shift_date = ayer` pero intervalo contiene `resolved_at` | después de medianoche | candidato válido |
+| K | `end_time < start_time` sin contrato que explique fin al día siguiente | cualquiera | intervalo no reproducible; fail closed |
+| L | sesión previa marcada stale solo por cambio de fecha | antes de `ends_at` | no cerrar |
+| M | evento offline anterior a medianoche sincronizado después | posterior | conservar evento original y revalidar; no retargetear |
+| N | turno consecutivo inicia exactamente cuando termina overnight | frontera | termina S1; evaluar S2 con identidad y sesión propias |
+| O | cambio de mes o año durante turno | dentro del intervalo | misma ocurrencia |
+
+---
+
+#### 38. Seguridad y privacidad
+
+La respuesta visible al trabajador no debe revelar automáticamente:
+
+- candidatos alternativos de turno;
+- horarios de terceros;
+- reglas internas de matching;
+- ventanas de tolerancia internas no destinadas al usuario;
+- IDs técnicos innecesarios;
+- detalles SQL;
+- políticas RLS;
+- estado de otros turnos;
+- motivo administrativo sensible.
+
+Un error de zona, intervalo o ambigüedad no se convierte en `ALLOW` para evitar fricción.
+
+El diagnóstico visible final permanece bajo `ANIMA-AUTH-016` y `ANIMA-AUTH-017`.
+
+---
+
+#### 39. Auditoría mínima
+
+Debe poder reconstruirse:
+
+```text
+TRABAJADOR
++
+SHIFT_ID
++
+REVISION / SNAPSHOT APLICABLE
++
+STARTS_AT
++
+ENDS_AT
++
+ZONA HORARIA
++
+RESOLVED_AT
++
+CHECKIN_SESSION_ID CUANDO EXISTA
++
+EVENTOS DE ENTRADA / SALIDA
++
+PAUSAS CUANDO EXISTAN
++
+SEDE
++
+AREA
++
+ROL
++
+OUTCOME
+```
+
+La auditoría debe permitir demostrar que el cambio de día civil no creó una segunda ocurrencia ni cerró una sesión prematuramente.
+
+La auditoría detallada de creación y cierre de contexto permanece bajo `ANIMA-AUTH-018`.
+
+---
+
+#### 40. Estado físico observado en ANIMA
+
+La inspección read-only del código actual muestra comportamiento previo al contrato objetivo:
+
+| Superficie | Estado observado |
+| --- | --- |
+| `src/components/shifts/utils.ts` | construye inicio y fin con la misma `shift_date`; una duración con `end <= start` devuelve `0` |
+| `isUpcomingShift` | construye el fin con la misma fecha civil y puede clasificar un overnight como terminado |
+| `src/components/home/use-next-scheduled-shift.ts` | filtra `shift_date >= hoy`, por lo que después de medianoche puede excluir una ocurrencia iniciada el día anterior |
+| `src/components/shifts/use-shifts-data.ts` | agrupa semana y días por `shift_date`; válido para presentación, insuficiente para resolver vigencia |
+| `src/components/shifts/shift-form.ts` | rechaza `end <= start`; ANIMA no admite hoy creación/edición overnight mediante esa superficie |
+| `src/hooks/use-attendance.ts` | la resolución fallback de turno usa `shift_date = hoy`; el checkout intenta conservar `shift_id` del último evento cuando existe |
+| `src/hooks/use-attendance.ts` | el estado abierto observado compara la fecha civil del último check-in con el día actual; esa condición no representa una sesión overnight |
+
+Estas observaciones no autorizan cambios de código en esta tarea.
+
+---
+
+#### 41. Estado físico observado en VISO y Supabase
+
+La inspección read-only del entorno `vento-os-dev` y del código VISO muestra:
+
+| Superficie | Estado observado |
+| --- | --- |
+| `public.employee_shifts` | 3436 filas totales; 2899 laborales en el snapshot |
+| turnos laborales con `end_time < start_time` | 0 |
+| turnos laborales con `end_time = start_time` | 0 |
+| esquema `employee_shifts` | no se observó fecha final explícita ni flag específico de overnight |
+| `unique_employee_shift_per_day` | unicidad actual por `employee_id, site_id, shift_date, start_time` |
+| VISO `getShiftMinutes` | resta horas del mismo día y trunca a cero una duración negativa |
+| VISO formulario ANIMA/VISO observado | las superficies actuales no representan todavía overnight de forma canónica |
+| delta mensual VISO | declara expresamente que la modalidad rápida actual no admite overnight |
+| `_shift_end_at_bogota` | construye el fin usando la misma `shift_date` del inicio |
+| `resolve_attendance_shift_id` | usa `_shift_end_at_bogota` para matching de checkout, por lo que no representa el fin del día siguiente |
+| `close_stale_open_attendance_shifts` | reconoce `end_time <= start_time` al calcular fin, pero selecciona check-ins de fecha anterior como stale y normaliza con `least(target_check_out_at, now)`, condición incompatible con un overnight aún vigente |
+| pares observados de entrada/salida que cruzan fecha civil | 47 pares en el snapshot consultado |
+| check-ins observados sin `shift_id` | 1257, evidencia de compatibilidad legacy que impide depender siempre de una referencia exacta ya materializada |
+
+Los conteos describen un snapshot y no son invariantes empresariales.
+
+---
+
+#### 42. Brechas físicas y propietarios existentes
+
+Ninguna brecha observada crea una tarea nueva.
+
+| Brecha | Propietario existente | Condición de salida |
+| --- | --- | --- |
+| edición, duración y codificación autoritativa de overnight en programación | `VISO-SCH-003` | VISO produce un intervalo overnight inequívoco y positivo sin depender de resta same-day |
+| publicación versionada del intervalo y zona | `INT-WORK-001` / `VISO-SCH-005` | toda revisión publicada expone inicio, fin y zona reproducibles |
+| resolución temporal de turno activo | `AUTH-DB-033` | la consulta de contexto encuentra turnos iniciados el día anterior cuando su intervalo sigue vigente |
+| evaluación de autorización con intervalo absoluto | `AUTH-DB-034` | `T` y `T+C` usan `[starts_at, ends_at)` sin filtro civil incorrecto |
+| invalidación en frontera real | `AUTH-DB-035` | el contexto se invalida por hechos canónicos y fin real, no solo por medianoche |
+| matching de asistencia y checkout overnight | `INT-WORK-003` y unidad física futura de `ANIMA-AUTH-013` | entrada y salida convergen sobre la misma ocurrencia y sesión a través de medianoche |
+| procesador de sesiones stale | unidad física futura de `ANIMA-AUTH-013` y propietarios de asistencia aplicables | una sesión overnight vigente no se auto-cierra por pertenecer a la fecha civil anterior |
+| proyecciones `hoy`, próximo turno y duración en ANIMA | unidad física futura de `ANIMA-AUTH-013` | ANIMA distingue agrupación visual de resolución temporal |
+| cola offline | `ANIMA-AUTH-014` | evento durable conserva instante e identidad suficientes |
+| revalidación de cola | `ANIMA-AUTH-015` | sincronización resuelve intervalo y autoridad actuales sin retargeting |
+| diagnóstico visible | `ANIMA-AUTH-016` y `ANIMA-AUTH-017` | trabajador recibe causa segura y recuperación coherente |
+| auditoría detallada | `ANIMA-AUTH-018` | la continuidad temporal puede reconstruirse de extremo a extremo |
+
+---
+
+#### 43. Rollback y recuperación
+
+Una corrección de temporalidad no elimina eventos históricos para reconstruir una narrativa distinta.
+
+Si una implementación futura calculó erróneamente un fin same-day pero todavía no produjo efectos:
+
+- se corrige la resolución antes de autorizar;
+- no se adopta un intervalo imposible.
+
+Si produjo un cierre incorrecto:
+
+- la historia original se conserva;
+- la recuperación se procesa mediante la corrección o compensación autoritativa aplicable;
+- no se borra el checkout para fingir que nunca ocurrió;
+- no se extiende retroactivamente autorización sin evidencia.
+
+Un retry usa la identidad lógica de la operación y recupera el resultado existente cuando corresponda.
+
+---
+
+#### 44. Topología y materialización física
+
+La definición documental se aprueba una sola vez.
+
+```text
+MODE = PER_IMPLEMENTATION_UNIT
+EXECUTION_GATE = POST_E5_PACKAGE
+INSTANCE_PATTERN = ANIMA-AUTH-013::implementation_unit_id
+```
+
+La materialización futura:
+
+- requiere una unidad de implementación real;
+- requiere un `package_id` propietario aplicable;
+- requiere `E5-GATE-008` del paquete en `PASS`;
+- requiere autorización física explícita;
+- puede abarcar ANIMA y componentes de asistencia únicamente cuando formen parte de la misma unidad física aprobada;
+- debe preservar propiedad de VISO sobre programación;
+- debe ejecutar cualquier modificación de Supabase desde `vento-group-sas/vento-shell`;
+- debe incluir pruebas de fronteras antes de producción.
+
+Esta tarea documental no autoriza DDL, DML, migraciones, RLS, RPC, Edge Functions, cron, código de aplicación, datos ni despliegues.
+
+---
+
+#### 45. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya protege intervalo semiabierto, timestamps absolutos, zona horaria, turnos nocturnos iniciados el día anterior, ambigüedad temporal, invalidación, sesión exacta, idempotencia, offline y vínculo entre programación y asistencia. Esta tarea especializa esas obligaciones para ANIMA sin ampliar el registro.
+
+---
+
+#### 46. Cobertura de prueba vigente reutilizada
+
+Sin modificarla, se reutiliza la cobertura existente de:
+
+- `TREQ-AUTH-008`: capacidades operativas conservan prerrequisitos de turno, check-in, rol y territorio;
+- `TREQ-AUTH-014`: cambio de turno, área, trabajador, dispositivo, rol o asignación invalida contexto, caché y tokens derivados;
+- `TREQ-AUTH-015`: decisiones y acciones conservan evidencia correlacionable de turno, check-in, territorio, contexto y timestamp;
+- `TREQ-AUTH-219`: un turno fuera del intervalo semiabierto produce denegación y cero efectos;
+- `TREQ-AUTH-220`: vigencia por `resolved_at`, timestamps absolutos, `America/Bogota` y `[starts_at, ends_at)`;
+- `TREQ-AUTH-221`: inicio futuro y turno terminado conservan diagnóstico interno separado sin filtrar horario;
+- `TREQ-AUTH-222`: ausencia, ventana, check-in, rol, dispositivo, configuración, permiso y fallo técnico conservan razones distintas;
+- `TREQ-AUTH-223`: temporalidad se aplica por permiso y carril, no indiscriminadamente a toda la aplicación;
+- `TREQ-AUTH-224`: turnos nocturnos, publicaciones iniciadas el día anterior, candidatos simultáneos, zonas y duraciones se resuelven con intervalos absolutos;
+- `TREQ-ANIMA-003`: una intención offline conserva identidad estable, timestamp, turno y contexto y se revalida al sincronizar;
+- `TREQ-INTEGRATION-003`: operación reintentable conserva identidad estable y un solo efecto;
+- `TREQ-INTEGRATION-007`: programación y asistencia comparten contrato único; turnos cruzados de medianoche deben converger sin duplicar jornadas, contextos ni tiempo trabajado.
+
+Esta enumeración es trazabilidad heredada y no representa modificación del registro.
+
+---
+
+#### 47. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería real del repositorio se ejecuta después de incorporar y normalizar la tarea en su archivo propietario. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata, continuidad, secciones obligatorias, UTF-8, EOL, ausencia de placeholders y cero requisitos afectados dentro de la sección derivada. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, topología, políticas, tareas ANIMA previas, contratos INT-WORK, cobertura 04A, VISO, ANIMA y el snapshot read-only de `vento-os-dev`. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutó un turno real overnight ni una marcación física a través de medianoche. |
+| FÍSICA | NOT_EXECUTED | No se ejecutaron migraciones, DDL, DML, RLS, RPC, cambios de código, datos, cron ni despliegues. |
+
+---
+
+#### 48. Criterios de aceptación
+
+La tarea queda aceptable cuando:
+
+1. un overnight conserva una sola ocurrencia;
+2. medianoche no crea otro `shift_id`;
+3. la vigencia usa timestamps absolutos;
+4. el intervalo queda normalizado con `starts_at < ends_at`;
+5. la zona contractual participa en la normalización;
+6. el dispositivo no impone su zona como autoridad;
+7. `shift_date` no se usa como filtro suficiente de turno vigente;
+8. un turno iniciado ayer puede seguir vigente hoy;
+9. el inicio exacto pertenece a la ventana;
+10. el fin exacto queda fuera de la ventana;
+11. no existe minuto de gracia implícito;
+12. el check-in previo a medianoche conserva la misma sesión después de medianoche;
+13. el cambio de fecha no crea otro check-in;
+14. una sesión activa no se decide por `check_in_date = today`;
+15. un checkout después de medianoche cierra la misma sesión;
+16. un `shift_id` histórico válido se conserva como referencia preferente;
+17. si falta referencia exacta, el matching usa intervalos absolutos y falla cerrado ante ambigüedad;
+18. el fin programado de un overnight ocurre en la fecha civil posterior;
+19. un procesador stale no cierra una sesión solo porque el check-in fue ayer;
+20. `min(ends_at, now)` no se usa para cerrar prematuramente una sesión todavía vigente;
+21. una pausa puede atravesar medianoche sin duplicarse;
+22. medianoche no ejecuta `END_BREAK`;
+23. el contexto no se invalida únicamente por cambio de fecha;
+24. el contexto sí deja de ser reutilizable en la frontera final u otra invalidación real;
+25. `T` y `T+C` siguen resolviendo turno vigente durante la noche;
+26. `T+C` conserva exigencia de sesión compatible;
+27. turnos consecutivos respetan la frontera semiabierta;
+28. la sesión del turno anterior no se presta al siguiente;
+29. un solapamiento incompatible falla cerrado;
+30. el turno del nuevo día no gana por preferencia de fecha;
+31. los reemplazos permanecen bajo `ANIMA-AUTH-012`;
+32. los cambios temporales de área permanecen bajo `ANIMA-AUTH-011`;
+33. la cola general permanece bajo `ANIMA-AUTH-014`;
+34. la revalidación de cola permanece bajo `ANIMA-AUTH-015`;
+35. una intención offline no se retargetea por medianoche;
+36. Realtime es señal y no autoridad;
+37. la proyección `hoy` no gobierna autorización;
+38. próximo turno y turno activo se distinguen;
+39. una consulta civil no sustituye resolución temporal;
+40. duración se calcula desde instantes absolutos;
+41. una duración negativa no se corrige silenciosamente a cero;
+42. `show_end_as_close` no elimina la frontera temporal;
+43. cambio de mes o año no divide la ocurrencia;
+44. métricas diarias no cambian identidad de turno ni sesión;
+45. intervalos legacy ambiguos fallan cerrados;
+46. las brechas físicas observadas conservan propietarios existentes;
+47. rollback no borra historia;
+48. no se crean ni modifican requisitos de prueba;
+49. la topología queda `PER_IMPLEMENTATION_UNIT`;
+50. el gate físico queda `POST_E5_PACKAGE`;
+51. no se ejecutan cambios físicos.
+
+---
+
+#### 49. Límites
+
+Esta tarea no define:
+
+- el modelo físico definitivo para almacenar fecha final o timestamps absolutos;
+- el editor final de overnight en VISO;
+- límites legales de jornada;
+- recargos nocturnos;
+- horas extra;
+- nómina;
+- fecha contable de la jornada;
+- cortes de reportes diarios;
+- duración máxima legal o empresarial;
+- tolerancias nuevas de entrada o salida;
+- turnos partidos;
+- aprobación de programación, propiedad de VISO;
+- edición, bloques y modalidad rápida, propiedad de `VISO-SCH-003`;
+- corrección y publicación versionada general, propiedad de `VISO-SCH-005`;
+- conflictos generales de programación, propiedad de `VISO-SCH-006`;
+- reemplazos, propiedad de `ANIMA-AUTH-012`;
+- cambio temporal de área, propiedad de `ANIMA-AUTH-011`;
+- almacenamiento completo de cola offline, propiedad de `ANIMA-AUTH-014`;
+- revalidación completa de cola, propiedad de `ANIMA-AUTH-015`;
+- diagnóstico visible final, propiedad de `ANIMA-AUTH-016` y `ANIMA-AUTH-017`;
+- auditoría detallada final, propiedad de `ANIMA-AUTH-018`;
+- concesión directa de permisos, prohibida por `ANIMA-AUTH-019`;
+- una fuente paralela distinta de Supabase, frontera de `ANIMA-AUTH-020`;
+- un código nuevo de permiso;
+- un reason code público nuevo;
+- un nuevo shape público de `AccessContext`;
+- implementación física;
+- cambios productivos.
+
+---
+
+#### 50. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-012 — Manejar reemplazos de turno`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-013 — Manejar turnos cruzados de medianoche`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-014 — Manejar cola offline de check-in`
+
 ### [ ] ANIMA-AUTH-014 — Manejar cola offline de check-in
 ### [ ] ANIMA-AUTH-015 — Revalidar permisos al sincronizar una cola offline
 ### [ ] ANIMA-AUTH-016 — Mostrar diagnóstico de contexto al trabajador
