@@ -3747,7 +3747,7 @@ No convierte al owner SQL en autoridad empresarial.
 
 Condiciones obligatorias:
 
-1. owner técnico no interactivo;
+1. owner técnico no interactivo `vento_access_context_owner`;
 2. owner no utilizado por frontend;
 3. owner distinto de `anon` y `authenticated`;
 4. privilegios mínimos;
@@ -3760,9 +3760,41 @@ Condiciones obligatorias:
 11. helpers inaccesibles al cliente;
 12. prueba de escalamiento y poisoning.
 
-El nombre exacto del rol técnico propietario se obtiene del inventario físico verificado de la instancia.
+La identidad técnica queda fijada por este contrato:
 
-Si no existe un rol que cumpla estas condiciones, la instancia falla cerrada y no crea un owner improvisado por inferencia.
+```text
+DDL OWNER
+vento_ddl_owner
+
+!=
+
+RUNTIME CONTEXT OWNER
+vento_access_context_owner
+```
+
+`vento_access_context_owner` será materializado por `AUTH-DB-033::GLOBAL` mediante `supabase/roles.sql` y una migración forward que verifique sus atributos y privilegios efectivos. El rol será:
+
+```text
+NOLOGIN
+NOINHERIT
+NOSUPERUSER
+NOBYPASSRLS
+NOCREATEDB
+NOCREATEROLE
+NOREPLICATION
+```
+
+Además:
+
+- no tendrá membership en `anon`, `authenticated`, `service_role` ni roles humanos o de aplicación;
+- no tendrá `CREATE` sobre schemas empresariales, `api` ni `app_private` durante runtime;
+- no será owner de tablas, secuencias, schemas ni objetos empresariales por conveniencia;
+- podrá ser owner únicamente del grafo de funciones materializado por `AUTH-DB-033`;
+- recibirá `USAGE`, `SELECT` y `EXECUTE` únicamente sobre dependencias exactas del manifiesto;
+- no heredará privilegios de `vento_ddl_owner` ni podrá ejecutar `SET ROLE vento_ddl_owner`;
+- no será utilizado como credencial de conexión o identidad empresarial.
+
+La instancia crea o reconcilia exclusivamente esta identidad ya aprobada. Cualquier rol homónimo con atributos, memberships, ownership o grants incompatibles produce drift bloqueante; no se normaliza por inferencia ni se reutiliza `vento_ddl_owner` como fallback.
 
 ---
 
@@ -4194,6 +4226,8 @@ NO_ACTIVE_CHECKIN
 No se convierte por sí sola en `StructuralIssue`.
 
 El resolver no reconstruye una sesión activa buscando el último evento de entrada sin un modelo canónico de sesión.
+
+La sesión es un hecho autoritativo del dominio de asistencia. La futura instancia `ANIMA-AUTH-007::<implementation_unit_id>` debe persistir o recuperar `checkin_session_id` dentro de la frontera que confirma la entrada y antes de resolver contexto. `AUTH-DB-033` opera después de ese commit y se limita a leer la sesión exacta y su estado; no inserta, selecciona por recencia, corrige, expira, invalida ni cierra sesiones. `ANIMA-AUTH-009::<implementation_unit_id>` cierra por el `checkin_session_id` exacto y nunca por “último check-in”.
 
 ---
 
@@ -4879,6 +4913,19 @@ Los objetos propietarios conservan su autoridad de dominio.
 
 Cuando una fuente exija una policy o función propietaria todavía inexistente, la instancia se bloquea en vez de inventarla dentro de `AUTH-DB-033`.
 
+Para `vento_access_context_owner`, cada fuente consumida deberá declarar en el manifiesto:
+
+```text
+schema_usage
+table_or_column_privileges
+rls_enabled
+force_rls_when_applicable
+technical_policy_or_owner_function
+policy_owner_task
+```
+
+El patrón preferido es `NOBYPASSRLS` más grants exactos y policy técnica propietaria cuando RLS la requiera. `AUTH-DB-033` no crea policies de fuentes ajenas: una policy faltante conserva la instancia bloqueada hasta que la materialice su owner canónico.
+
 ---
 
 #### 47. Errores y fail closed
@@ -5122,20 +5169,23 @@ Orden contractual:
 ```text
 1. regenerar baseline remoto
 2. verificar schemas y dependencias
-3. verificar owner técnico
-4. congelar manifiesto
-5. crear helpers privados
-6. crear resolver canónico
-7. crear canonicalizador y fingerprints
-8. crear proyector privado
-9. crear wrapper seguro en api
-10. revocar grants implícitos
-11. conceder grants exactos
-12. recargar schema de API cuando corresponda
-13. ejecutar pruebas físicas
-14. capturar planes y rendimiento
-15. validar drift
-16. ensayar rollback
+3. crear o reconciliar `vento_access_context_owner` desde `supabase/roles.sql`
+4. verificar atributos, memberships, ownership y ausencia de privilegios excedentes del owner técnico
+5. congelar manifiesto
+6. verificar grants y policies propietarias de cada fuente
+7. crear helpers privados
+8. crear resolver canónico
+9. crear canonicalizador y fingerprints
+10. crear proyector privado
+11. crear wrapper seguro en api
+12. transferir exclusivamente el grafo AUTH-DB-033 al owner runtime
+13. revocar grants implícitos
+14. conceder grants exactos
+15. recargar schema de API cuando corresponda
+16. ejecutar pruebas físicas
+17. capturar planes y rendimiento
+18. validar drift
+19. ensayar rollback
 ```
 
 No se modifica un objeto legacy como atajo para convertirlo en el nuevo resolver.
@@ -5416,7 +5466,7 @@ No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
 9. No se normaliza silenciosamente el app code.
 10. El caller no suministra actor, empleado, rol, sede, área, turno, check-in o dispositivo.
 11. El resolver completo es `STABLE`.
-12. El resolver completo es `SECURITY DEFINER` endurecido.
+12. El resolver completo es `SECURITY DEFINER` endurecido y su owner exacto es `vento_access_context_owner`.
 13. `PUBLIC`, `anon` y `authenticated` no ejecutan directamente el resolver completo.
 14. Los helpers viven en `app_private`.
 15. Los helpers son `SECURITY INVOKER` por defecto.
@@ -5437,7 +5487,7 @@ No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
 30. El turno no se elige con `LIMIT 1` ante ambigüedad.
 31. El rol operativo procede del turno.
 32. La sede operativa procede del turno.
-33. El check-in no se reconstruye heurísticamente.
+33. El check-in no se reconstruye heurísticamente; `AUTH-DB-033` consume una sesión confirmada por asistencia y no la produce.
 34. El dispositivo no concede rol.
 35. Un shared device sin actor no reutiliza el actor anterior.
 36. SYSTEM exige principal técnico registrado.
@@ -5475,6 +5525,10 @@ No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
 68. Rollback no usa `DROP CASCADE` ni `GRANT ALL`.
 69. No se crean ni modifican requisitos TREQ.
 70. La aprobación documental no autoriza cambios físicos.
+71. `vento_ddl_owner` y `vento_access_context_owner` son identidades separadas sin herencia ni fallback entre ellas.
+72. `vento_access_context_owner` es `NOLOGIN`, `NOINHERIT`, `NOSUPERUSER`, `NOBYPASSRLS`, `NOCREATEDB`, `NOCREATEROLE` y `NOREPLICATION`.
+73. El owner runtime no posee tablas ni schemas y recibe únicamente privilegios exactos sobre las fuentes manifestadas.
+74. Las policies técnicas faltantes permanecen bajo su owner de fuente y bloquean la instancia; `AUTH-DB-033` no las inventa.
 
 ---
 

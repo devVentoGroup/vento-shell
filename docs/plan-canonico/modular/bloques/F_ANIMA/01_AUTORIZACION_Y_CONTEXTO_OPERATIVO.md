@@ -3772,13 +3772,30 @@ BEGIN AUTHORITY BOUNDARY
   verificar ausencia de sesion activa incompatible
   persistir o reconocer el evento idempotente
   confirmar el hecho
-  derivar una unica sesion activa
+  crear o recuperar una unica sesion activa con identidad estable
 COMMIT
   resolver un AccessContext nuevo
 END
 ```
 
 No se exige una tecnología transaccional específica en esta tarea documental.
+
+La frontera se divide obligatoriamente en dos fases. La primera pertenece a asistencia y debe concluir sin depender de `AUTH-DB-033`:
+
+```text
+FASE DE ASISTENCIA AUTORITATIVA
+validar entrada
+-> persistir o recuperar attendance_log_id
+-> crear o recuperar checkin_session_id
+-> COMMIT
+
+FASE DE CONTEXTO DERIVADO
+checkin_session_id confirmado
+-> AUTH-DB-033 lee la sesion
+-> resolver AccessContext
+```
+
+`AUTH-DB-033` no crea, corrige, expira, invalida ni cierra la sesión de check-in. Consume el estado confirmado que publica el dominio de asistencia. Un fallo al resolver `AccessContext` después del commit no deshace ni sustituye el hecho de asistencia o la sesión ya confirmados; produce un fallo recuperable de la fase derivada.
 
 Sí se exige que ningún consumidor pueda observar como autoridad una combinación imposible, por ejemplo:
 
@@ -4469,10 +4486,11 @@ Las brechas quedan asignadas a propietarios ya existentes:
 
 | Brecha                                                      | Propietario o frontera existente     | Condición de salida                                                  |
 | ----------------------------------------------------------- | ------------------------------------ | -------------------------------------------------------------------- |
-| hechos autoritativos de actor, turno, check-in y territorio | `AUTH-DB-033`                        | producir hechos reproducibles y compatibles con el contrato canónico |
+| sesión autoritativa derivada de asistencia confirmada       | instancia futura de `ANIMA-AUTH-007` | persistir o recuperar `attendance_log_id` y `checkin_session_id`, y confirmar la sesión antes de resolver contexto |
+| resolución derivada de actor, turno, sesión y territorio    | `AUTH-DB-033`                        | leer la sesión confirmada sin producirla ni reconstruirla desde el último evento |
 | precedencia, gates y razones                                | `AUTH-DB-034`                        | evaluador único conserva la primera causa concluyente                |
 | frescura e invalidación                                     | `AUTH-DB-035`                        | snapshots stale dejan de ser reutilizables                           |
-| activación específica de ANIMA                              | instancia futura de `ANIMA-AUTH-007` | entrada confirmada produce sesión y contexto conforme a esta tarea   |
+| activación específica de ANIMA                              | instancia futura de `ANIMA-AUTH-007` | después del commit de asistencia, solicitar un contexto nuevo y correlacionarlo con la sesión confirmada |
 | cambios de turno posteriores                                | `ANIMA-AUTH-008`                     | contexto se vuelve a resolver sin crear otra entrada                 |
 | cierre por salida                                           | `ANIMA-AUTH-009`                     | checkout cierra la sesión exacta y revoca contexto dependiente       |
 | descansos                                                   | `ANIMA-AUTH-010`                     | pausa no se confunde con checkout                                    |
@@ -6576,7 +6594,8 @@ Ninguna brecha detectada crea una tarea nueva.
 
 | Brecha | Propietario existente | Condición de salida |
 | --- | --- | --- |
-| identidad y resolución canónica de sesión | `AUTH-DB-033` | el resolutor deja de depender del último evento y produce una sesión exacta |
+| identidad, creación y resolución canónica de sesión | instancia futura de `ANIMA-AUTH-007` | la asistencia confirmada crea o recupera una sesión exacta antes del commit, sin depender del último evento |
+| consumo contextual de la sesión confirmada | `AUTH-DB-033` | el resolver lee `checkin_session_id` y su estado autoritativo; no crea, elige por recencia ni cierra la sesión |
 | decisión posterior al cierre | `AUTH-DB-034` | toda acción usa contexto y modalidad actuales |
 | invalidación por checkout | `AUTH-DB-035` | el cambio de sesión invalida contexto, caché y decisiones stale |
 | materialización específica del cierre en ANIMA | instancia futura de `ANIMA-AUTH-009` | checkout confirmado cierra una sesión exacta e invalida contexto dependiente |
@@ -7830,7 +7849,7 @@ Ninguna brecha observada crea una tarea nueva.
 
 | Brecha | Propietario existente | Condición de salida |
 | --- | --- | --- |
-| sesión exacta como padre del descanso | `AUTH-DB-033` | la sesión canónica deja de inferirse desde el último evento y es referenciable de forma estable |
+| sesión exacta como padre del descanso | `ANIMA-AUTH-007` y `ANIMA-AUTH-010` | 007 entrega una sesión estable ya confirmada y 010 vincula el descanso a ese `checkin_session_id` sin inferir el último evento |
 | aplicación uniforme de modalidad y contexto | `AUTH-DB-034` | el evaluador usa el contexto canónico sin reglas locales de descanso |
 | frescura ante cambios terminales de sesión | `AUTH-DB-035` | checkout, expiración e invalidación impiden reutilizar autoridad stale |
 | materialización específica de descansos ANIMA | instancia futura de `ANIMA-AUTH-010` | inicio y fin operan sobre sesión exacta, con idempotencia y concurrencia |
