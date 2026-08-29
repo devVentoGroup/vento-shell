@@ -581,7 +581,659 @@ El estado físico permanece sin materialización propia.
 `ANIMA-UX-002 — Inventariar pantallas administrativas`
 
 
-### [ ] ANIMA-UX-002 — Inventariar pantallas administrativas
+### ✅ ANIMA-UX-002 — Inventariar pantallas administrativas
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-001 — Inventariar pantallas personales
+**Tarea siguiente:** ANIMA-UX-003 — Separar experiencia del trabajador y del administrador
+**Tipo de tarea:** documental; inventario UX AS-IS de las pantallas y subsuperficies administrativas de ANIMA, con clasificación de superficies administrativas puras, mixtas, técnicas y excluidas, sin rediseño de navegación ni implementación física
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Inventariar de forma cerrada y verificable la experiencia administrativa que ANIMA ofrece actualmente, reutilizando el universo estable de catorce pantallas móviles y contrastándolo contra el código vigente de la aplicación.
+
+El resultado distingue:
+
+- pantallas cuyo propósito principal es administrativo o de supervisión;
+- pantallas personales que incorporan capacidades administrativas condicionadas;
+- una superficie técnica de diagnóstico con acceso restringido observado;
+- pantallas que no contienen una capacidad administrativa material;
+- subsuperficies embebidas que materializan acciones administrativas sin convertirse en pantallas independientes.
+
+Esta tarea describe el estado observado. No diseña todavía la separación objetivo entre trabajador y administrador.
+
+---
+
+#### 2. Regla de identidad del inventario
+
+El inventario administrativo no crea un segundo catálogo de pantallas.
+
+La identidad continúa siendo la definida por el universo móvil canónico `ANIMA-SCREEN-001` a `ANIMA-SCREEN-014`.
+
+```text
+UNIVERSO MOVIL ANIMA
+→ 14 módulos de pantalla existentes
+→ identidad ANIMA-SCREEN estable
+→ clasificación administrativa derivada sobre esas mismas identidades
+
+INVENTARIO ADMINISTRATIVO
+≠ catálogo paralelo
+≠ nueva numeración
+≠ nueva navegación
+≠ permiso
+≠ diseño TO-BE
+```
+
+---
+
+#### 3. Definición operativa de pantalla administrativa
+
+Para esta tarea, una pantalla participa en la experiencia administrativa cuando contiene una capacidad observada para administrar, supervisar o diagnosticar información o acciones que exceden la gestión exclusiva de la propia cuenta o jornada del trabajador.
+
+Son señales de administración:
+
+1. consultar o gestionar información de otros trabajadores;
+2. crear, editar, confirmar, cancelar o publicar programación de terceros;
+3. ampliar el alcance desde el actor propio hacia sede, equipo o ámbito global;
+4. cargar, filtrar o eliminar documentación de terceros;
+5. crear o administrar comunicaciones organizacionales o su audiencia;
+6. contactar trabajadores desde una función de gestión;
+7. consultar reportes agregados o filtrables de equipo;
+8. modificar roles, sedes, invitaciones o estado de integrantes;
+9. ejecutar diagnóstico técnico sobre empleados, turnos, sedes, asistencia o notificaciones.
+
+La mera existencia de una pestaña, un botón visible o una condición local de rol no constituye autoridad canónica.
+
+---
+
+#### 4. Estados de clasificación
+
+Se establecen cuatro estados documentales:
+
+| Estado | Significado |
+| --- | --- |
+| `ADMIN_PURA` | El propósito principal observado de la pantalla es administrar o supervisar información de equipo u organización. |
+| `ADMIN_MIXTA` | La pantalla conserva una experiencia personal válida y además incorpora capacidades administrativas observadas. |
+| `ADMIN_TECNICA` | La pantalla está destinada a diagnóstico o soporte técnico con alcance sobre datos operativos de terceros. |
+| `NO_ADMIN` | La pantalla no contiene una capacidad administrativa material en su experiencia observada. |
+
+Los estados describen el AS-IS. No conceden permisos, no validan seguridad de servidor y no deciden la arquitectura futura.
+
+---
+
+#### 5. Fuentes de evidencia
+
+El inventario se apoya en:
+
+- la continuidad canónica vigente del BLOQUE F;
+- `ANIMA-UX-001` aprobado como inventario personal precedente;
+- el universo móvil estable `ANIMA-SCREEN-001` a `ANIMA-SCREEN-014`;
+- el registro vigente de requisitos que protege inventario, navegación, pantallas mixtas y superficies administrativas;
+- el árbol actual de `vento-group-sas/vento-anima`;
+- el commit inspeccionado `8bcfaaa3b6ab79d5839c03719edec7b50fd97d2d`;
+- el layout autenticado y sus nueve pestañas;
+- las condiciones de rol, capability, permiso y allowlist observadas en código;
+- los componentes y flujos embebidos materialmente asociados con administración.
+
+---
+
+#### 6. Universo cuantitativo reconciliado
+
+| Métrica | Resultado |
+| --- | ---: |
+| Módulos de pantalla móviles del universo canónico | **14** |
+| Pantallas con experiencia administrativa o técnica | **8** |
+| Pantallas `ADMIN_PURA` | **2** |
+| Pantallas `ADMIN_MIXTA` | **5** |
+| Pantallas `ADMIN_TECNICA` | **1** |
+| Pantallas `NO_ADMIN` | **6** |
+| Pestañas declaradas en navegación autenticada | **9** |
+| Pestañas con alguna capacidad administrativa observada | **7** |
+| Pestañas condicionadas específicamente como administrativas | **2** |
+| Patrones móviles dinámicos | **0** |
+
+La suma `2 + 5 + 1 + 6 = 14` cierra el universo sin faltantes ni duplicados.
+
+---
+
+#### 7. Inventario administrativo canónico
+
+| ID | Patrón visible | Archivo fuente | Capacidad administrativa observada | Estado |
+| --- | --- | --- | --- | --- |
+| `ANIMA-SCREEN-004` | `/home` | `app/(app)/home.tsx` | Horas y reportes operativos condicionados para propietario, gerente general o gerente. | `ADMIN_MIXTA` |
+| `ANIMA-SCREEN-005` | `/shifts` | `app/(app)/shifts.tsx` | Creación, edición, confirmación, cancelación y gestión de turnos; vista gerencial por día y semana de sede. | `ADMIN_MIXTA` |
+| `ANIMA-SCREEN-007` | `/documents` | `app/(app)/documents.tsx` | Vista ampliada, carga, filtrado por trabajador, alcance de sede/global y eliminación de documentos. | `ADMIN_MIXTA` |
+| `ANIMA-SCREEN-009` | `/announcements` | `app/(app)/announcements.tsx` | Creación, edición, eliminación y definición de audiencia de novedades. | `ADMIN_MIXTA` |
+| `ANIMA-SCREEN-010` | `/operativo` | `app/(app)/operativo.tsx` | Resumen y reportes de asistencia de equipo con alcance gerencial. | `ADMIN_PURA` |
+| `ANIMA-SCREEN-011` | `/team` | `app/(app)/team.tsx` | Consulta y gestión de equipo, invitaciones, roles, sedes y flujo de eliminación restringido. | `ADMIN_PURA` |
+| `ANIMA-SCREEN-012` | `/support` | `app/(app)/support.tsx` | Contacto dirigido a trabajadores mediante aviso o conversación para roles gerenciales. | `ADMIN_MIXTA` |
+| `ANIMA-SCREEN-014` | `/anima-diagnostics` | `app/anima-diagnostics.tsx` | Diagnóstico sobre empleados, turnos, sedes, asistencia, geocerca y cobertura de push. | `ADMIN_TECNICA` |
+
+---
+
+#### 8. Pantallas administrativas puras
+
+Dos identidades tienen propósito administrativo principal:
+
+| ID | Núcleo administrativo |
+| --- | --- |
+| `ANIMA-SCREEN-010` | Resumen operativo y reportes de asistencia de equipo. |
+| `ANIMA-SCREEN-011` | Administración de trabajadores, sedes, roles e invitaciones. |
+
+Estas pantallas no forman parte de la experiencia personal base definida en ANIMA-UX-001.
+
+---
+
+#### 9. Pantallas administrativas mixtas
+
+Cinco identidades comparten experiencia personal y capacidad administrativa:
+
+| ID | Núcleo personal coexistente | Capacidad administrativa coexistente | Propietario de separación UX |
+| --- | --- | --- | --- |
+| `ANIMA-SCREEN-004` | Jornada, marcación y estado propio. | Horas y reporte operativo de equipo para roles gerenciales. | `ANIMA-UX-003` |
+| `ANIMA-SCREEN-005` | Semana y turnos propios. | Crear, editar, confirmar y cancelar turnos; gestionar vista de equipo. | `ANIMA-UX-003` |
+| `ANIMA-SCREEN-007` | Documentos visibles para el trabajador. | Alcances ampliados, carga, filtrado y eliminación documental. | `ANIMA-UX-003` |
+| `ANIMA-SCREEN-009` | Lectura de novedades. | Crear, editar, eliminar y definir audiencia. | `ANIMA-UX-003` |
+| `ANIMA-SCREEN-012` | Tickets, conversación y ayuda propias. | Contactar trabajadores mediante aviso o conversación. | `ANIMA-UX-003` |
+
+El inventario registra la mezcla sin decidir si la separación futura será por pantalla, navegación, componente, acción o aplicación.
+
+---
+
+#### 10. Pantalla administrativa técnica
+
+`ANIMA-SCREEN-014` se clasifica `ADMIN_TECNICA`.
+
+La pantalla permite seleccionar un empleado y revisar información de:
+
+- turnos publicados;
+- sedes y coordenadas;
+- último registro de asistencia;
+- contexto de asistencia;
+- tokens push;
+- cobertura de tokens;
+- condiciones específicas de sede y rol operativo;
+- estado de geolocalización del dispositivo utilizado para el diagnóstico.
+
+Su propósito es auditoría y soporte técnico, no gestión laboral cotidiana.
+
+---
+
+#### 11. Superficies excluidas del inventario administrativo
+
+| ID | Patrón visible | Motivo de exclusión | Estado |
+| --- | --- | --- | --- |
+| `ANIMA-SCREEN-001` | `/` | Puente técnico de entrada. | `NO_ADMIN` |
+| `ANIMA-SCREEN-002` | `/splash` | Bootstrap y redirección de sesión. | `NO_ADMIN` |
+| `ANIMA-SCREEN-003` | `/login` | Autenticación y recuperación de acceso. | `NO_ADMIN` |
+| `ANIMA-SCREEN-006` | `/history` | Historial e incidencias del propio actor. | `NO_ADMIN` |
+| `ANIMA-SCREEN-008` | `/carnet` | Identificación laboral y elegibilidad del propio trabajador. | `NO_ADMIN` |
+| `ANIMA-SCREEN-013` | `/account-settings` | Permisos, privacidad y cuenta del propio actor; conserva solo un acceso auxiliar condicionado hacia diagnóstico. | `NO_ADMIN` |
+
+La entrada auxiliar a diagnóstico desde `account-settings` no transforma esa pantalla personal en una pantalla administrativa.
+
+---
+
+#### 12. Relación con la navegación autenticada
+
+El layout autenticado declara nueve pestañas.
+
+Siete de ellas contienen alguna capacidad administrativa observada:
+
+- `home`;
+- `shifts`;
+- `documents`;
+- `announcements`;
+- `operativo`;
+- `team`;
+- `support`.
+
+Dentro de ese conjunto:
+
+- `operativo` y `team` son las dos pestañas condicionadas por rol en el layout;
+- las otras cinco son pestañas generales que cambian o amplían comportamiento según rol, capability o permiso.
+
+`history` y `carnet` no contienen capacidad administrativa material observada.
+
+---
+
+#### 13. `ANIMA-SCREEN-004` — Home administrativa
+
+Home conserva su núcleo personal, pero incorpora dos ampliaciones administrativas observadas:
+
+1. la visualización de horas en el resumen diario se condiciona a propietario, gerente general o gerente;
+2. `OperativoReportScreen` se renderiza para esos mismos roles.
+
+Por tanto, Home no es una pantalla administrativa independiente, sino una pantalla mixta que contiene un bloque gerencial.
+
+La condición observada es una lista local de roles. Esta tarea la registra como evidencia de interfaz, no como decisión canónica de autorización.
+
+---
+
+#### 14. `ANIMA-SCREEN-005` — Turnos administrativos
+
+La pantalla de turnos observa `shift.create` mediante el resolver de capabilities y utiliza como fallback local los roles propietario, gerente general y gerente.
+
+Cuando la gestión está habilitada, la pantalla expone:
+
+- creación de turnos;
+- edición de turnos;
+- confirmación;
+- cancelación;
+- agrupación gerencial por día;
+- vista de semana de sede con contexto de equipo.
+
+`CreateShiftModal`, `EditShiftModal` y `ManagerShiftDaySection` son subsuperficies administrativas de la misma pantalla y no crean nuevas identidades `ANIMA-SCREEN`.
+
+---
+
+#### 15. `ANIMA-SCREEN-007` — Documentos administrativos
+
+La pantalla observa tres códigos de permiso para:
+
+- lectura ampliada;
+- carga;
+- eliminación.
+
+El comportamiento actual combina esos permisos con fallbacks locales de rol para propietario, gerente general y gerente.
+
+La experiencia administrativa incluye:
+
+- consulta de documentos fuera del sujeto propio cuando el alcance lo permite;
+- filtro por trabajador;
+- alcance por sede;
+- alcance global para los roles observados;
+- carga de documentos;
+- selección de tipo, trabajador y sede;
+- eliminación de documento;
+- interacción con Storage asociada a la eliminación observada.
+
+El inventario registra estas acciones; no declara correcto su mecanismo físico ni sustituye el ciclo documental canónico.
+
+---
+
+#### 16. `ANIMA-SCREEN-009` — Novedades administrativas
+
+La pantalla habilita administración cuando el rol local es propietario, gerente general o gerente.
+
+Las capacidades observadas son:
+
+- crear una novedad;
+- editar una novedad;
+- eliminar una novedad;
+- seleccionar sede;
+- seleccionar rol;
+- configurar audiencia durante la creación.
+
+El formulario se implementa como modal dentro de la ruta `/announcements`; no constituye una pantalla adicional.
+
+La coherencia entre audiencia persistida, notificada y visible permanece gobernada por sus contratos existentes y por ANIMA-UX-017.
+
+---
+
+#### 17. `ANIMA-SCREEN-010` — Resumen operativo
+
+`/operativo` se clasifica `ADMIN_PURA`.
+
+La pantalla aplica una condición local que admite:
+
+- propietario;
+- gerente general;
+- gerente.
+
+Si el actor no satisface esa condición, la ruta devuelve un estado de acceso restringido.
+
+Cuando se admite acceso, la ruta materializa `OperativoReportScreen`, que permite presentar indicadores de asistencia y, según alcance, filtrar o exportar información por sede o trabajador.
+
+---
+
+#### 18. `ANIMA-SCREEN-011` — Equipo
+
+`/team` se clasifica `ADMIN_PURA`.
+
+La pantalla resuelve:
+
+- `team.view` para lectura;
+- `team.invite` para administración;
+- fallback local a propietario, gerente general o gerente mientras las capabilities no están disponibles.
+
+La experiencia administrativa observada incluye:
+
+- búsqueda de trabajadores;
+- filtros por sede y estado;
+- consulta de activos e inactivos;
+- invitación;
+- asignación de rol;
+- asignación y cambio de sedes;
+- reenvío y cancelación de invitaciones;
+- edición de integrantes;
+- flujo restringido de eliminación.
+
+La posibilidad de eliminar observa además un identificador de usuario configurado por ambiente y comprobaciones locales adicionales.
+
+---
+
+#### 19. `ANIMA-SCREEN-012` — Soporte administrativo
+
+La pantalla de soporte mantiene tickets y ayuda personal, pero habilita una función adicional para propietario, gerente general o gerente.
+
+Esa función permite:
+
+- seleccionar un trabajador;
+- enviar un aviso;
+- iniciar una conversación;
+- limitar para gerente el universo de trabajadores según sede resuelta.
+
+`ContactWorkerModal` es la principal subsuperficie administrativa observada y permanece dentro de la misma identidad de pantalla.
+
+---
+
+#### 20. `ANIMA-SCREEN-014` — Diagnóstico técnico
+
+La pantalla de diagnóstico utiliza una allowlist local de correos para decidir si puede cargar información.
+
+La allowlist observada en la pantalla contiene dos cuentas.
+
+Una vez habilitada, la pantalla puede consultar un universo de empleados y seleccionar un empleado concreto para revisar turnos, sedes, asistencia, ubicación y notificaciones.
+
+La allowlist local se registra únicamente como comportamiento actual. No se considera capacidad empresarial autoritativa ni protección suficiente de servidor.
+
+---
+
+#### 21. Entrada técnica desde `account-settings`
+
+`ANIMA-SCREEN-013` mantiene clasificación `NO_ADMIN`, pero contiene un acceso auxiliar a `/anima-diagnostics`.
+
+El botón se muestra mediante una allowlist local propia.
+
+Se observa una divergencia concreta:
+
+- la allowlist de `account-settings` contiene una cuenta;
+- la allowlist dentro de `/anima-diagnostics` contiene dos cuentas.
+
+Por tanto, existe una cuenta admitida por la pantalla de destino que no recibe el acceso equivalente desde la navegación de configuración.
+
+Este hallazgo ya tiene cobertura contractual y no se corrige físicamente en esta tarea.
+
+---
+
+#### 22. Reutilización de `OperativoReportScreen`
+
+El mismo componente de reporte operativo se utiliza en dos ubicaciones:
+
+1. embebido dentro de `/home` para roles gerenciales;
+2. como contenido principal de `/operativo`.
+
+Esto produce dos entradas UX distintas hacia una misma capacidad de reporte administrativo.
+
+La tarea registra la duplicidad de entrada sin declararla error, legado ni candidata a retiro. La decisión de separación o simplificación pertenece a ANIMA-UX-003.
+
+---
+
+#### 23. Matriz de acciones administrativas observadas
+
+| Pantalla | Ver equipo/terceros | Crear | Editar | Confirmar/cancelar | Eliminar | Definir alcance/audiencia | Reportar/exportar | Diagnóstico |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `/home` | Sí, mediante reporte | No | No | No | No | Filtros del reporte | Sí | No |
+| `/shifts` | Sí | Sí | Sí | Sí | No | Sede/empleado según gestión | No | No |
+| `/documents` | Sí | Sí, carga documental | No observado como edición independiente | No | Sí | Personal/sede/global observado | No | No |
+| `/announcements` | Sí, por audiencia | Sí | Sí | No | Sí | Sede/rol | No | No |
+| `/operativo` | Sí | No | No | No | No | Sede/trabajador según alcance | Sí | No |
+| `/team` | Sí | Sí, invitación | Sí | No | Sí, flujo restringido | Rol/sede | No | No |
+| `/support` | Sí, contacto dirigido | Sí, aviso/conversación | No | No | No | Trabajador/sede | No | No |
+| `/anima-diagnostics` | Sí | No | No | No | No | Empleado/turno | No | Sí |
+
+La matriz representa controles y capacidades observados en interfaz; no reemplaza la autorización de servidor.
+
+---
+
+#### 24. Matriz de evidencia de acceso actual
+
+| Pantalla | Evidencia observada en cliente | Observación contractual |
+| --- | --- | --- |
+| `/home` | Lista local de roles gerenciales. | Visibilidad no equivale a autoridad. |
+| `/shifts` | Capability `shift.create`; fallback de roles gerenciales. | La acción debe conservar autorización efectiva y validación de servidor. |
+| `/documents` | Permisos de documentos combinados con fallbacks de rol. | Los alcances y acciones deben respetar privacidad, retención y autorización. |
+| `/announcements` | Lista local de roles gerenciales. | La administración no puede depender solo de la condición local. |
+| `/operativo` | Lista local de roles tanto en pestaña como en pantalla. | El acceso directo debe converger con la decisión efectiva. |
+| `/team` | Pestaña por roles; pantalla por capabilities con fallback de roles. | Existe superficie de divergencia entre navegación y autorización. |
+| `/support` | Lista local de roles para contacto dirigido. | Actor y territorio requieren autorización efectiva. |
+| `/anima-diagnostics` | Allowlist local de correo. | El correo hardcodeado no es autoridad empresarial ni protección de servidor. |
+
+---
+
+#### 25. Alcance administrativo y sujeto
+
+La administración observada no tiene un único alcance.
+
+| Área | Alcance observado |
+| --- | --- |
+| Reportes | Personal, sede, trabajador o global según rol y ubicación de uso. |
+| Turnos | Propios para lectura; equipo/sede para gestión habilitada. |
+| Documentos | Personal, sede o global según permisos y rol observado. |
+| Novedades | Lectura personal; administración con audiencia por sede o rol. |
+| Equipo | Sede para gerente; alcance mayor para propietario o gerente general. |
+| Soporte | Tickets propios; contacto dirigido con alcance territorial para gerente. |
+| Diagnóstico | Selección explícita de empleados y turnos dentro del universo retornado. |
+
+La clasificación administrativa no amplía por sí misma ninguno de estos alcances.
+
+---
+
+#### 26. Subsuperficies administrativas embebidas
+
+Se identifican como subsuperficies materialmente administrativas, sin contarlas como pantallas nuevas:
+
+- `OperativoReportScreen`;
+- `DateRangeModal`;
+- `ReportFilterModal`;
+- `CreateShiftModal`;
+- `EditShiftModal`;
+- `ManagerShiftDaySection`;
+- `DocumentsEmployeeFilterCard`;
+- `UploadDocumentModal`;
+- `DocumentPickerModal` cuando forma parte del flujo administrativo de documentos;
+- formulario modal de novedades;
+- `TeamEditModal`;
+- `TeamInviteModal`;
+- `TeamDeleteModal`;
+- `ContactWorkerModal`.
+
+Esta lista describe las subsuperficies relevantes para entender la mezcla administrativa; no redefine el catálogo completo de componentes internos de ANIMA.
+
+---
+
+#### 27. Modales, filtros y estados no crean pantallas
+
+La selección de:
+
+- trabajador;
+- sede;
+- rol;
+- fecha;
+- rango;
+- estado;
+- documento;
+- turno;
+- audiencia;
+
+no crea una nueva pantalla canónica.
+
+Del mismo modo, abrir un modal de edición, carga, invitación, eliminación, reporte o contacto conserva la identidad de la ruta propietaria.
+
+La cardinalidad móvil continúa siendo catorce pantallas.
+
+---
+
+#### 28. Visibilidad de pestaña y acceso directo
+
+El layout autenticado oculta `operativo` y `team` según una lista local de roles.
+
+La pantalla `operativo` repite una lista local equivalente.
+
+La pantalla `team`, en cambio, resuelve capabilities `team.view` y `team.invite` cuando están cargadas, y solo usa roles como fallback.
+
+Por tanto, la navegación de `team` y la lógica interna de la pantalla no consumen exactamente el mismo mecanismo observado.
+
+La tarea registra esta divergencia como hallazgo AS-IS. No modifica el control de acceso ni decide su implementación final.
+
+---
+
+#### 29. Relación con autorización y fuente de verdad
+
+ANIMA-UX-002 consume los contratos aprobados del minibloque de autorización inmediatamente anterior.
+
+En consecuencia:
+
+- una condición local de rol no concede autoridad;
+- una capability proyectada en cliente no sustituye la decisión autoritativa;
+- una pestaña oculta no constituye frontera de seguridad;
+- una allowlist de correo no reemplaza una capacidad técnica canónica;
+- una acción administrativa protegida debe converger con autorización efectiva en servidor;
+- Supabase conserva el estado runtime autoritativo según la propiedad de cada dominio;
+- `vento-shell` conserva contratos, migraciones, configuración y pruebas versionadas.
+
+Esta tarea solo inventaría dónde existe administración en la experiencia actual.
+
+---
+
+#### 30. Hallazgos y carryover
+
+| Hallazgo | Bloquea ANIMA-UX-002 | Propietario | Condición de salida |
+| --- | --- | --- | --- |
+| Cinco pantallas mezclan experiencia personal y administrativa. | No | `ANIMA-UX-003` | Definir separación objetivo sin perder capacidades personales ni administrativas. |
+| `OperativoReportScreen` aparece en Home y en Resumen. | No | `ANIMA-UX-003` | Decidir la ubicación y navegación objetivo del reporte. |
+| Navegación de `team` usa roles mientras la pantalla puede resolver capabilities. | No | Contratos vigentes de autorización y protección de vistas/servidor | Hacer converger navegación, acceso directo y decisión efectiva. |
+| Las allowlists de entrada y pantalla de diagnóstico no coinciden. | No | Contratos vigentes de protección de vistas y diagnóstico técnico | Sustituir o reconciliar la protección local conforme a capacidad técnica canónica y servidor. |
+| Documentos combina permisos canónicos con fallbacks locales de rol. | No | Contratos vigentes de autorización y documentos | Asegurar que alcance y acciones no dependan exclusivamente del fallback local. |
+| Novedades administra audiencia desde una pantalla también consumida por trabajadores. | No | `ANIMA-UX-003` y `ANIMA-UX-017` | Separar experiencia y cerrar ciclo completo de audiencia y publicación. |
+| Administración de equipo requiere una simplificación específica posterior. | No | `ANIMA-UX-014` | Diseñar la administración de equipo autorizada objetivo. |
+
+Ningún hallazgo requiere inventar una nueva tarea.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La razón es que el registro vigente ya protege el universo móvil, la navegación autenticada, las pantallas mixtas, las acciones administrativas relevantes, los accesos directos, los documentos, las novedades, soporte y diagnóstico técnico. Esta tarea aporta clasificación y trazabilidad UX, no una obligación de prueba nueva.
+
+---
+
+#### 32. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza, sin modificarlos:
+
+- `TREQ-ANIMA-005`;
+- `TREQ-ANIMA-006`;
+- `TREQ-ANIMA-007`;
+- `TREQ-ANIMA-008`;
+- `TREQ-ANIMA-009`;
+- `TREQ-ANIMA-013`;
+- `TREQ-ANIMA-016`;
+- `TREQ-ANIMA-018`;
+- `TREQ-ANIMA-020`;
+- `TREQ-ANIMA-021`;
+- `TREQ-ANIMA-022`;
+- `TREQ-ANIMA-024`.
+
+Esta enumeración es trazabilidad hacia cobertura existente y no una actualización del registro.
+
+---
+
+#### 33. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build del repositorio ni de la aplicación durante el desarrollo documental. |
+| LOCAL | PASS | El artefacto fue comprobado estructuralmente: metadata, secciones obligatorias, clasificación de catorce identidades, continuidad, ausencia de placeholders y cero requisitos derivados. |
+| REMOTA | PASS | Se verificaron en GitHub la continuidad vigente, el archivo propietario, el commit actual de `vento-anima`, el layout autenticado, las ocho pantallas administrativas o técnicas y el registro de requisitos aplicable. |
+| OPERATIVA | PASS | La matriz clasifica las catorce identidades exactamente una vez: dos administrativas puras, cinco mixtas, una técnica y seis no administrativas. |
+| FÍSICA | NOT_EXECUTED | La topología es `DEFINE_ONCE` con `NO_PHYSICAL_INSTANCE`; no se modificó código, Supabase, navegación, datos ni despliegues. |
+
+---
+
+#### 34. Criterios de aceptación
+
+1. El universo base conserva exactamente `14` identidades de pantalla.
+2. El inventario administrativo contiene exactamente `8` identidades únicas.
+3. Las `8` identidades pertenecen al universo móvil canónico existente.
+4. `2` identidades quedan clasificadas `ADMIN_PURA`.
+5. `5` identidades quedan clasificadas `ADMIN_MIXTA`.
+6. `1` identidad queda clasificada `ADMIN_TECNICA`.
+7. `6` identidades quedan clasificadas `NO_ADMIN`.
+8. La suma de las cuatro categorías reconcilia `14` sin faltantes ni duplicados.
+9. Se preserva la clasificación personal aprobada de ANIMA-UX-001.
+10. Los modales, filtros y componentes internos no inflan el conteo de pantallas.
+11. Se registra la duplicidad de entrada hacia `OperativoReportScreen`.
+12. Se registra la divergencia de mecanismo entre navegación y pantalla de `team`.
+13. Se registra la diferencia entre las allowlists de entrada y pantalla de diagnóstico.
+14. Ninguna condición local se trata como concesión canónica de autoridad.
+15. La tarea no crea ni modifica requisitos de prueba.
+16. La topología permanece `DEFINE_ONCE` sin instancia física.
+17. La continuidad queda reservada exclusivamente hacia ANIMA-UX-003.
+
+---
+
+#### 35. Límites y estado de salida
+
+ANIMA-UX-002 no:
+
+- modifica código de `vento-anima`;
+- modifica Supabase;
+- cambia Expo Router;
+- agrega, mueve o retira pestañas;
+- modifica roles, capabilities, permisos, RLS o RPC;
+- corrige las allowlists observadas;
+- elimina la duplicidad de `OperativoReportScreen`;
+- separa trabajador y administrador;
+- rediseña Home, Turnos, Documentos, Novedades, Equipo o Soporte;
+- redefine el ciclo completo de novedades;
+- simplifica todavía la administración de equipo;
+- ejecuta pruebas con usuarios;
+- crea una instancia física;
+- modifica el registro de requisitos de prueba.
+
+La salida documental queda compuesta por:
+
+- universo reconciliado de `14` pantallas;
+- subconjunto administrativo o técnico de `8`;
+- distribución `2 ADMIN_PURA + 5 ADMIN_MIXTA + 1 ADMIN_TECNICA`;
+- exclusión explícita de `6` pantallas;
+- matriz de acciones;
+- matriz de evidencia de acceso;
+- hallazgos con propietario y condición de salida;
+- handoff cerrado hacia la separación trabajador/administrador.
+
+---
+
+#### 36. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-001 — Inventariar pantallas personales`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-002 — Inventariar pantallas administrativas`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-003 — Separar experiencia del trabajador y del administrador`
+
+
 ### [ ] ANIMA-UX-003 — Separar experiencia del trabajador y del administrador
 ### [ ] ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno
 ### [ ] ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno
