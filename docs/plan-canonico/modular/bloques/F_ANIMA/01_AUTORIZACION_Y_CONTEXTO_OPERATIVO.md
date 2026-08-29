@@ -17112,7 +17112,716 @@ Quedan fuera de `ANIMA-AUTH-018`:
 `ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente`
 
 
-### [ ] ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
+### ✅ ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-018 — Auditar creación y cierre del contexto
+**Tarea siguiente:** ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad
+**Tipo de tarea:** documental; definición contractual de la frontera de autoridad que impide a ANIMA crear, elevar, inferir, restaurar o persistir permisos empresariales por cuenta propia y limita al cliente a resolver contexto, solicitar o consumir decisiones autoritativas y proyectarlas de forma segura
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Establecer de forma canónica que ANIMA es un consumidor de identidad, contexto operativo y decisiones de autorización, pero no una autoridad capaz de conceder por sí misma privilegios empresariales.
+
+La aplicación puede identificar al trabajador autenticado, capturar o consultar hechos de asistencia, resolver el contexto vigente, solicitar una decisión de autorización y proyectar el resultado al trabajador. Ninguna de esas capacidades convierte al cliente en emisor de grants.
+
+La regla central queda fijada así:
+
+`IDENTIDAD + ASISTENCIA + CONTEXTO + SOLICITUD/CONSUMO DE DECISIÓN ≠ CREACIÓN DE AUTORIDAD`
+
+---
+
+#### 2. Alcance y límites
+
+Esta tarea define:
+
+- qué señales de ANIMA son contexto y nunca autoridad;
+- qué operaciones están permitidas al cliente sin convertirlo en administrador de permisos;
+- qué mutaciones de autoridad quedan prohibidas en ANIMA;
+- cómo debe consumirse una decisión autoritativa;
+- cómo se comportan caché, offline, reintentos, revocaciones y cambios de contexto;
+- cómo se separa audiencia de contenido de autorización empresarial;
+- cómo se evita que una superficie visual aparente conceder facultades que el backend no concedió;
+- qué invariantes deben conservar futuras implementaciones.
+
+No define la fuente física final de verdad ni la arquitectura concreta que la materializa. Esa responsabilidad corresponde a ANIMA-AUTH-020.
+
+No redefine la distinción semántica entre falta de turno y falta de permiso, fijada por ANIMA-AUTH-017, ni reabre las reglas de creación y cierre de contexto fijadas por ANIMA-AUTH-018.
+
+---
+
+#### 3. Resultado canónico
+
+ANIMA queda clasificada como cliente de autorización, no como autoridad de autorización.
+
+Una acción empresarial protegida solo puede ejecutarse cuando exista una decisión autoritativa vigente aplicable al sujeto, acción, recurso y contexto exactos de esa operación.
+
+La ausencia, expiración, revocación, invalidez o imposibilidad de obtener esa decisión nunca se convierte localmente en `ALLOW`.
+
+---
+
+#### 4. Principio de autoridad
+
+La autoridad empresarial no nace de una propiedad visible en el cliente ni de la combinación de varias señales operativas.
+
+ANIMA no puede construir autoridad mediante reglas como:
+
+- “está autenticado, entonces puede”;
+- “hizo check-in, entonces puede”;
+- “tiene turno, entonces puede”;
+- “está en la sede correcta, entonces puede”;
+- “está dentro de la geocerca, entonces puede”;
+- “su rol visible dice administrador, entonces puede”;
+- “ayer pudo, entonces hoy puede”;
+- “la pantalla le muestra el control, entonces puede”;
+- “el dato está en caché, entonces sigue pudiendo”.
+
+La autoridad debe provenir de una evaluación autoritativa externa al cliente para la operación protegida.
+
+---
+
+#### 5. Separación entre autenticación y autorización
+
+Una sesión autenticada demuestra identidad de sesión dentro de los límites del mecanismo de autenticación; no concede por sí sola facultades empresariales.
+
+ANIMA puede usar la sesión para identificar al sujeto que solicita una operación. No puede transformar la existencia de sesión en un permiso implícito.
+
+El cierre, cambio o sustitución de sesión invalida cualquier proyección de autorización que no pueda demostrarse aplicable al nuevo sujeto.
+
+---
+
+#### 6. Separación entre asistencia y autorización
+
+Check-in, check-out, pausas, tiempo trabajado, estado de presencia y eventos de asistencia son hechos operativos.
+
+Un check-in exitoso puede habilitar la resolución de contexto cuando las reglas correspondientes lo permitan, pero no crea permisos, roles, membresías ni alcance.
+
+Del mismo modo:
+
+- check-out no “desasigna” autoridad por lógica local de ANIMA;
+- una pausa no concede ni retira privilegios por sí sola;
+- un evento pendiente de sincronización no es una concesión provisional;
+- una corrección de asistencia no puede reinterpretarse como administración de permisos.
+
+---
+
+#### 7. Separación entre turno y autorización
+
+Un turno publicado puede contribuir a determinar contexto operativo, pero no es un grant.
+
+La existencia de turno, su rol operativo, sede, área, horario, punto de entrada o punto de salida son restricciones y hechos contextuales.
+
+La ausencia de turno y la falta de autorización conservan significados diferentes. ANIMA no puede usar uno como sustituto del otro.
+
+---
+
+#### 8. Separación entre contexto y autorización
+
+El contexto efectivo describe dónde, cuándo, para quién y bajo qué encuadre operativo se intenta trabajar.
+
+El contexto puede restringir una decisión, pero no puede elevarla.
+
+Por tanto:
+
+- contexto válido + autorización denegada = acción denegada;
+- contexto válido + autorización no disponible = acción no autorizada;
+- contexto inválido + permiso histórico = acción no autorizada;
+- cambio de contexto = obligación de revalidar cualquier decisión dependiente de ese contexto.
+
+---
+
+#### 9. Sede efectiva
+
+La sede efectiva es un dato contextual.
+
+Seleccionar una sede, pertenecer a una sede, encontrarse físicamente en ella o haberla usado anteriormente no concede permisos asociados a esa sede.
+
+ANIMA no puede elevar alcance empresarial mediante:
+
+- selección manual de sede;
+- última sede utilizada;
+- primera sede disponible;
+- sede guardada en perfil;
+- sede inferida por ubicación;
+- sede proveniente de un estado obsoleto.
+
+Una decisión aplicable a una sede no se reutiliza para otra.
+
+---
+
+#### 10. Área efectiva
+
+El área efectiva también es contexto, no autoridad.
+
+Cambiar, seleccionar, resolver o recibir un área no crea privilegios de esa área.
+
+ANIMA no puede usar un fallback de área para ampliar capacidades. Si una operación requiere área y no existe un área efectiva demostrable, el cliente debe impedir que una inferencia local sustituya la evaluación autoritativa.
+
+---
+
+#### 11. Geocerca y presencia física
+
+La geocerca prueba o estima una condición espacial dentro del flujo que corresponda. No concede autoridad empresarial.
+
+Estar dentro de un radio permitido puede ser requisito para una marcación o para validar contexto, pero nunca equivale a permiso para administrar personas, datos, inventario, producción, solicitudes, reportes u otras operaciones protegidas.
+
+Un resultado de geolocalización no puede modificar rol, alcance o membresía.
+
+---
+
+#### 12. Rol operativo, rol visible y etiquetas de interfaz
+
+Un rol operativo proveniente de un turno y una etiqueta de rol visible en el cliente pueden orientar la experiencia, pero no son por sí solos grants.
+
+Una lista local de roles puede utilizarse para orden, navegación o reducción de ruido visual únicamente cuando no se trate como decisión final de seguridad.
+
+Si una regla local y una decisión autoritativa difieren, prevalece la decisión autoritativa para la operación protegida.
+
+Un rol visible nunca puede elevar el alcance efectivo del sujeto.
+
+---
+
+#### 13. Datos aportados por el cliente
+
+Ningún valor enviado, seleccionado, persistido o reconstruido por el cliente puede elevar:
+
+- identidad;
+- rol;
+- sede;
+- área;
+- membresía;
+- alcance;
+- permiso;
+- capacidad administrativa.
+
+Esto incluye valores procedentes de formularios, almacenamiento local, deep links, parámetros de navegación, payloads offline, estado de React, metadata de perfil, datos de dispositivo y cualquier otra entrada controlable desde el cliente.
+
+El backend debe poder rechazar una operación aun cuando el cliente presente todos esos valores como válidos.
+
+---
+
+#### 14. Permisos del dispositivo frente a permisos empresariales
+
+Los permisos del sistema operativo para ubicación, cámara, notificaciones u otros recursos del dispositivo pertenecen a un dominio distinto.
+
+ANIMA puede solicitar esos permisos técnicos cuando una función los necesite.
+
+Conceder un permiso del dispositivo no concede autoridad empresarial. Denegarlo tampoco debe mutar roles o grants empresariales.
+
+Los diagnósticos deben evitar mezclar ambos conceptos bajo una misma explicación ambigua.
+
+---
+
+#### 15. Audiencia de contenido frente a autorización empresarial
+
+La audiencia de una novedad, aviso o contenido determina quién debe poder verlo según la política de distribución correspondiente.
+
+Pertenecer a una audiencia no equivale a obtener una facultad empresarial.
+
+ANIMA puede filtrar o presentar contenido conforme a una audiencia legítimamente resuelta sin convertir esa selección en:
+
+- rol;
+- permiso;
+- membresía administrativa;
+- autorización para ejecutar la acción descrita por el contenido.
+
+La visibilidad de un contenido y la capacidad de actuar sobre un recurso son decisiones distintas.
+
+---
+
+#### 16. Controles administrativos visibles
+
+Mostrar un botón, menú, tarjeta, enlace o sección administrativa no prueba autorización.
+
+Ocultar controles puede reducir exposición accidental, pero no constituye una barrera de seguridad suficiente.
+
+Cuando el cliente no dispone de una decisión autoritativa vigente, una superficie fallback o de solo lectura no debe presentar controles como si fueran operables.
+
+Toda operación protegida debe seguir dependiendo de autorización autoritativa aunque el control haya sido renderizado.
+
+---
+
+#### 17. Solicitud de autorización
+
+ANIMA puede solicitar una evaluación de autorización indicando los datos mínimos necesarios para resolver la operación.
+
+La solicitud debe tratar los valores del cliente como entradas a evaluar, no como hechos que el cliente pueda declarar autoritativos.
+
+Solicitar autorización no modifica permisos.
+
+Reintentar una solicitud tampoco modifica permisos.
+
+---
+
+#### 18. Consumo de una decisión autoritativa
+
+ANIMA puede consumir el resultado de una evaluación remota y usarlo para proyectar una acción como disponible o bloqueada.
+
+Un patrón compatible con esta tarea es consultar una decisión remota por código o capacidad y representar `true` únicamente cuando la evaluación remota lo confirma.
+
+Ante error de evaluación, ANIMA no debe transformar el error en `true`.
+
+La proyección cliente sigue siendo una proyección; la operación protegida conserva su control autoritativo en el límite correspondiente.
+
+---
+
+#### 19. Dimensiones mínimas de aplicabilidad
+
+Una decisión de autorización no debe considerarse reutilizable sin demostrar que sigue aplicando, como mínimo, a:
+
+- el mismo sujeto;
+- la misma acción;
+- el mismo recurso o clase de recurso;
+- el mismo contexto relevante;
+- la misma organización o alcance empresarial;
+- una vigencia todavía válida;
+- una versión de autoridad no revocada.
+
+Cuando cualquiera de esas dimensiones cambia, ANIMA debe tratar la decisión anterior como insuficiente hasta nueva evaluación cuando la operación lo requiera.
+
+---
+
+#### 20. Prohibición de `ALLOW` histórico
+
+Un `ALLOW` anterior no es una credencial reutilizable indefinidamente.
+
+ANIMA no puede concluir que una acción actual está autorizada solo porque:
+
+- la misma acción fue permitida antes;
+- una acción parecida fue permitida;
+- el trabajador tenía ese permiso en la sesión anterior;
+- la pantalla permaneció abierta;
+- el dato no se refrescó;
+- el dispositivo quedó offline después de un `ALLOW`.
+
+Cada uso debe respetar la vigencia y aplicabilidad de la decisión correspondiente.
+
+---
+
+#### 21. Caché de autorización
+
+La caché puede mejorar experiencia o reducir solicitudes redundantes únicamente si conserva semántica de seguridad.
+
+Una entrada de caché:
+
+- no crea autoridad;
+- no amplía alcance;
+- no sobrevive a una revocación conocida;
+- no puede cambiar de sujeto;
+- no puede cambiar de sede o área dependiente;
+- no puede convertirse en fallback permisivo cuando su frescura es desconocida.
+
+Si no puede probarse que la entrada sigue siendo válida para la operación actual, no puede utilizarse para elevar capacidad.
+
+---
+
+#### 22. Revocación
+
+Cuando la autoridad de un trabajador es retirada, ANIMA debe dejar de proyectar como disponibles las capacidades afectadas tan pronto como la revocación sea conocida o la evaluación vigente deje de sostenerlas.
+
+La revocación no puede revertirse mediante:
+
+- caché local;
+- último estado conocido;
+- rehidratación de almacenamiento;
+- reconexión;
+- refresh visual;
+- reintento de una cola;
+- cambio temporal de pantalla.
+
+Restaurar autoridad exige una nueva decisión válida del sistema autoritativo.
+
+---
+
+#### 23. Modo offline y estado stale
+
+El modo offline no convierte a ANIMA en autoridad sustituta.
+
+El cliente puede conservar información contextual o eventos operativos que el plan permita manejar offline, pero un grant empresarial no puede fabricarse por ausencia de conectividad.
+
+Un estado stale puede orientar al trabajador, nunca elevar privilegios.
+
+Para una operación que requiere autorización actual y no puede obtenerla, el comportamiento debe ser fail-closed.
+
+---
+
+#### 24. Indisponibilidad de autorización
+
+Timeout, error de red, RPC fallida, respuesta incompleta, sesión inválida o incapacidad de resolver la evaluación no equivalen a `ALLOW`.
+
+ANIMA debe distinguir entre:
+
+- autorización denegada;
+- autorización no disponible;
+- error técnico;
+- contexto insuficiente.
+
+Ninguno de esos estados puede reinterpretarse localmente como concesión.
+
+---
+
+#### 25. Cambios de contexto
+
+Toda transición material de contexto debe invalidar o forzar reevaluación de decisiones que dependan del contexto anterior.
+
+Incluye, cuando corresponda:
+
+- cambio de trabajador;
+- cambio de sesión;
+- inicio o cierre de contexto;
+- cambio de turno;
+- cambio de sede;
+- cambio de área;
+- cambio de rol operativo;
+- revocación;
+- recuperación desde background cuando la vigencia ya no sea demostrable.
+
+La interfaz no debe mantener capacidades por continuidad visual cuando la base de decisión cambió.
+
+---
+
+#### 26. Trabajador sustituto o reemplazo operativo
+
+Un trabajador que sustituye a otro no hereda autoridad del trabajador sustituido.
+
+El nuevo sujeto puede recibir su propio contexto operativo según las reglas de planificación y asistencia, pero sus permisos deben resolverse para su identidad.
+
+No se permite copiar, prestar o reutilizar una decisión del sujeto original.
+
+---
+
+#### 27. Colas offline y sincronización
+
+Una cola puede transportar eventos permitidos por su contrato, pero no transportar un grant local como si fuese autoridad futura.
+
+Al sincronizar:
+
+- la presencia del evento en cola no demuestra autorización;
+- la creación del evento offline no eleva permisos;
+- una decisión antigua no debe blindar el evento frente a la revalidación requerida;
+- un conflicto o deny del servidor no puede convertirse en éxito por política local;
+- un retry técnico no puede cambiar el significado de la autorización.
+
+---
+
+#### 28. Recuperación y acciones correctivas
+
+Una acción de recuperación puede:
+
+- refrescar contexto;
+- volver a consultar autorización;
+- solicitar al trabajador corregir una selección;
+- reautenticar cuando corresponda;
+- llevar al flujo seguro que permita resolver el bloqueo.
+
+Una acción de recuperación no puede:
+
+- otorgar un permiso;
+- cambiar un rol para superar el bloqueo;
+- reasignar sede o área como mecanismo de elevación;
+- restaurar un grant revocado;
+- marcar localmente una operación como autorizada sin decisión válida.
+
+---
+
+#### 29. Diagnóstico
+
+El diagnóstico puede explicar por qué una operación está disponible, bloqueada o pendiente de evaluación sin presentar una señal de contexto como fuente de autoridad.
+
+Debe poder indicar que el contexto está correcto y, al mismo tiempo, la acción no está autorizada.
+
+Debe evitar mensajes que impliquen que “estar en turno”, “estar en sede” o “haber marcado entrada” concede automáticamente acceso.
+
+---
+
+#### 30. Privacidad y telemetría
+
+La evidencia diagnóstica y telemétrica no debe exponer secretos de autorización ni convertirse en mecanismo para reconstruir privilegios.
+
+Cuando se registren decisiones o errores, deben preservarse los mínimos necesarios para trazabilidad sin persistir tokens, credenciales o datos que permitan suplantar autoridad.
+
+Un identificador de diagnóstico no es una credencial.
+
+---
+
+#### 31. Proyección de experiencia
+
+ANIMA puede adaptar navegación, orden, visibilidad y affordances a una decisión actual para reducir fricción.
+
+Esa adaptación es una proyección de experiencia y no sustituye el control autoritativo de la operación.
+
+La interfaz debe evitar:
+
+- prometer acceso antes de tener decisión;
+- mantener controles activos después de perder vigencia;
+- usar un rol visible como permiso final;
+- ocultar la diferencia entre deny y falta de evaluación.
+
+---
+
+#### 32. Accesibilidad
+
+Los estados de autorización no deben comunicarse solo mediante color.
+
+Cuando una capacidad cambia por una nueva evaluación, la experiencia debe mantener texto, semántica y foco suficientes para que el trabajador comprenda el nuevo estado.
+
+La accesibilidad no altera el resultado de autorización: mejora su comunicación.
+
+---
+
+#### 33. Concurrencia y condiciones de carrera
+
+Una respuesta tardía de autorización no debe sobrescribir una evaluación más reciente aplicable a otro contexto.
+
+ANIMA debe poder descartar resultados obsoletos cuando, mientras se evaluaban:
+
+- cambió el sujeto;
+- cambió el contexto;
+- cambió la acción;
+- cambió el recurso;
+- se produjo una revocación;
+- se inició una nueva evaluación con mayor actualidad.
+
+“Última respuesta recibida” no equivale necesariamente a “decisión vigente”.
+
+---
+
+#### 34. Reintentos e idempotencia
+
+Los reintentos de evaluación deben ser semánticamente idempotentes respecto de la autoridad: preguntar dos veces no concede dos veces ni crea autoridad por repetición.
+
+Un retry automático no puede cambiar un deny a allow salvo que una nueva evaluación autoritativa, sobre un estado realmente actualizado, produzca ese resultado.
+
+Los reintentos de mutaciones operativas deben conservar separado el resultado de autorización del resultado técnico de transporte.
+
+---
+
+#### 35. Baseline físico y evidencia pendiente de revalidación
+
+Durante el cierre documental de esta tarea no se ejecuta una auditoría física concluyente del repositorio ANIMA ni de la materialización remota de permisos. Por tanto, este documento no afirma como hecho validado que un helper específico consulte `has_permission` ni que las superficies actuales estén libres de mutaciones directas de autoridad.
+
+La materialización futura deberá verificar que las superficies de permisos, asistencia y contexto respeten esta frontera: sesión, turno, sede, área, geocerca y eventos de asistencia permanecen como hechos operativos o contexto, mientras la autoridad empresarial se resuelve fuera del cliente y una falla de evaluación nunca conserva ni fabrica un `ALLOW`.
+
+Esta tarea no declara que las superficies existentes sean la fuente final de verdad; solo fija qué comportamiento cliente es compatible o incompatible y deja la comprobación física para la fase de implementación autorizada.
+
+---
+
+#### 36. Mutaciones de autoridad prohibidas en ANIMA
+
+ANIMA no debe implementar una mutación cliente cuyo propósito sea conceder, elevar, retirar o restaurar autoridad empresarial mediante escritura directa de:
+
+- asignaciones de permisos;
+- bindings de roles;
+- membresías con efecto autorizativo;
+- scopes empresariales;
+- flags administrativos equivalentes;
+- excepciones locales que eludan una decisión autoritativa.
+
+Si una operación empresarial legítima requiere administrar autoridad, esa operación pertenece al límite administrativo y autoritativo que corresponda, con controles propios; no se convierte en facultad implícita del cliente trabajador.
+
+---
+
+#### 37. Escrituras operativas permitidas
+
+La prohibición de grants directos no impide que ANIMA escriba datos operativos que sí pertenezcan a su dominio y estén autorizados por su contrato.
+
+Por ejemplo, una escritura de asistencia puede ser válida si cumple sus reglas de seguridad y autorización. El hecho de escribir asistencia no convierte esa escritura en administración de permisos.
+
+La clasificación depende del efecto de la operación: escribir un hecho operativo autorizado es distinto de modificar quién puede hacer qué.
+
+---
+
+#### 38. Superficies de solo lectura y fallback
+
+Una pantalla de solo lectura puede seguir mostrando información cuando su contrato lo permita.
+
+Sin embargo, el fallback no puede simular autoridad inexistente:
+
+- no debe habilitar controles administrativos basándose solo en datos cacheados;
+- no debe presentar una capacidad protegida como operable sin decisión actual;
+- no debe convertir audiencia de contenido en privilegio;
+- no debe esconder un fallo de autorización detrás de un estado visual optimista.
+
+---
+
+#### 39. Casos de abuso que deben quedar bloqueados
+
+Deben quedar bloqueados, como mínimo, los intentos de:
+
+1. modificar en el cliente un rol visible para acceder a una operación protegida;
+2. inyectar otra sede o área en un payload para ampliar alcance;
+3. reutilizar un `ALLOW` obtenido antes de una revocación;
+4. usar un check-in exitoso como prueba de privilegio;
+5. forzar una geocerca válida para obtener acceso administrativo;
+6. manipular almacenamiento local para restaurar permisos;
+7. copiar el contexto de otro trabajador;
+8. convertir una audiencia de novedades en capacidad de administración;
+9. aprovechar un error de red para caer en allow;
+10. mantener abierto un control que perdió autorización y ejecutar la acción con el estado anterior.
+
+---
+
+#### 40. Invariantes obligatorios
+
+Se fijan los siguientes invariantes:
+
+- **I-01:** autenticación no implica autorización empresarial.
+- **I-02:** asistencia no implica autorización empresarial.
+- **I-03:** turno no implica autorización empresarial.
+- **I-04:** sede, área y geocerca son contexto, no grants.
+- **I-05:** rol visible u operativo no es autoridad final.
+- **I-06:** datos controlables por el cliente no elevan identidad ni alcance.
+- **I-07:** audiencia de contenido no equivale a RBAC ni a capacidad empresarial.
+- **I-08:** una decisión histórica no autoriza indefinidamente.
+- **I-09:** caché y offline no restauran autoridad revocada.
+- **I-10:** error o indisponibilidad nunca degradan a allow.
+- **I-11:** ANIMA puede consumir una decisión autoritativa sin convertirse en su emisor.
+- **I-12:** cambiar contexto invalida cualquier reutilización que ya no pueda demostrarse aplicable.
+
+---
+
+#### 41. Matriz de escenarios canónicos
+
+| Escenario | Resultado canónico |
+| --- | --- |
+| Sesión válida, contexto válido, autorización denegada | Acción bloqueada |
+| Check-in exitoso, autorización denegada | Acción bloqueada |
+| Turno publicado, autorización denegada | Acción bloqueada |
+| Rol local aparenta privilegio, evaluación autoritativa deniega | Acción bloqueada |
+| Geocerca válida, evaluación autoritativa deniega | Acción bloqueada |
+| `ALLOW` previo, autoridad posteriormente revocada | Acción bloqueada hasta nueva decisión válida |
+| Offline con `ALLOW` cacheado cuya vigencia no puede demostrarse | No se eleva capacidad |
+| Audiencia de contenido aplicable, permiso empresarial ausente | Puede existir visibilidad de contenido sin habilitar la operación protegida |
+| Control administrativo renderizado, decisión actual ausente | El control no debe operar como autorización |
+| Decisión autoritativa vigente para sujeto, acción, recurso y contexto exactos | ANIMA puede proyectar el resultado y continuar el flujo autorizado |
+| Cliente altera sede, área o rol en una entrada | No se eleva autoridad |
+| Cambia el trabajador o el contexto | La decisión anterior no se reutiliza sin demostrar aplicabilidad |
+
+---
+
+#### 42. Criterios de aceptación
+
+La tarea se considera documentalmente satisfecha cuando quedan inequívocamente fijadas todas estas condiciones:
+
+1. ANIMA no es autoridad de permisos empresariales.
+2. Ninguna señal de identidad, asistencia, turno, sede, área, geocerca, rol o dispositivo se trata por sí sola como grant.
+3. Los datos aportados por cliente no elevan identidad, rol ni alcance.
+4. ANIMA puede solicitar y consumir decisiones autoritativas.
+5. Error, timeout, stale, offline o falta de evaluación no se convierten en allow.
+6. Un `ALLOW` histórico no se reutiliza fuera de su vigencia y aplicabilidad.
+7. La revocación no puede deshacerse desde caché.
+8. Una audiencia de contenido se mantiene separada de autorización empresarial.
+9. Las superficies administrativas visuales no sustituyen el control de seguridad.
+10. Las escrituras operativas legítimas se diferencian de las mutaciones de autoridad.
+11. El contrato preserva los límites de ANIMA-AUTH-017 y ANIMA-AUTH-018.
+12. La definición de fuente física autoritativa permanece reservada para ANIMA-AUTH-020.
+
+---
+
+#### 43. Requisitos de prueba derivados
+
+**No se crean, modifican, difieren ni marcan como obsoletos requisitos de prueba en esta tarea.**
+
+La tarea especializa obligaciones ya registradas para el bloque de autorización y para ANIMA sin alterar sus identificadores, relaciones, secuencias ni estado histórico.
+
+| Operación sobre requisitos | Resultado |
+| --- | --- |
+| Crear | 0 |
+| Modificar | 0 |
+| Diferir | 0 |
+| Marcar obsoleto | 0 |
+
+---
+
+#### 44. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_APPLICABLE | La tarea es exclusivamente documental y declara cero cambios físicos; no introduce código, migraciones, RPC, DDL ni configuración ejecutable. |
+| LOCAL | PASS | El bloque define de forma cerrada autoridad, contexto, caché, revocación, offline, fallos, audiencia, controles visuales y criterios de aceptación sin crear requisitos de prueba. |
+| REMOTA | NOT_EXECUTED | La secuencia canónica vigente de Vento Shell sí fue verificada para ubicar ANIMA-AUTH-019 entre ANIMA-AUTH-018 y ANIMA-AUTH-020; no se ejecutó en esta tarea una validación remota concluyente de la implementación actual de permisos de ANIMA. |
+| OPERATIVA | PASS | La matriz de escenarios demuestra que check-in, turno, sede, área, geocerca, rol, audiencia, caché y `ALLOW` histórico no elevan autoridad y que una decisión autoritativa vigente sí puede consumirse. |
+| FÍSICA | NOT_EXECUTED | La tarea declara cero cambios físicos y no ejecuta una auditoría concluyente de código, migraciones, RPC, RLS o superficies físicas de autorización; esa comprobación queda para la materialización autorizada y su gate correspondiente. |
+
+---
+
+#### 45. Límite con ANIMA-AUTH-017
+
+ANIMA-AUTH-017 conserva la definición semántica que diferencia falta de turno y falta de permiso.
+
+ANIMA-AUTH-019 consume esa separación y añade una regla distinta: aunque el contexto de turno sea válido, ANIMA no obtiene facultad para conceder permisos.
+
+Esta tarea no cambia precedencias de mensajes ni redefine los reason codes de la tarea anterior.
+
+---
+
+#### 46. Límite con ANIMA-AUTH-018
+
+ANIMA-AUTH-018 conserva el contrato de auditabilidad y trazabilidad sobre la creación, sustitución, invalidación y cierre del contexto operativo.
+
+ANIMA-AUTH-019 toma ese contexto como entrada no autoritativa para una decisión de permisos.
+
+Crear correctamente un contexto no crea autoridad; cerrar correctamente un contexto tampoco habilita a ANIMA para editar permisos.
+
+---
+
+#### 47. Handoff a ANIMA-AUTH-020
+
+ANIMA-AUTH-020 deberá fijar la fuente de verdad y la frontera física autoritativa que resuelve los permisos.
+
+ANIMA-AUTH-019 deja preparado ese handoff imponiendo una condición previa: cualquiera que sea la materialización autoritativa, ANIMA debe permanecer como consumidor y proyector de la decisión, no como emisor local de grants.
+
+Esta tarea no decide tablas, RPC definitivas, políticas RLS, esquemas ni contratos físicos que corresponden a ANIMA-AUTH-020.
+
+---
+
+#### 48. Estado físico resultante
+
+El resultado de esta tarea es contractual y documental.
+
+No se autorizan modificaciones físicas en `vento-anima`, `vento-shell`, base de datos, funciones remotas, políticas de acceso ni configuración de despliegue como parte de ANIMA-AUTH-019.
+
+La materialización posterior deberá demostrar conformidad con los invariantes aquí definidos.
+
+---
+
+#### 49. Decisiones fijadas
+
+Quedan fijadas de forma canónica las siguientes decisiones:
+
+1. ANIMA no concede permisos empresariales directamente.
+2. El cliente no puede elevar identidad, rol, sede, área o scope a partir de valores controlables localmente.
+3. Sesión, asistencia, turno, sede, área, geocerca y rol son señales separadas de la autoridad.
+4. ANIMA puede consultar y consumir una decisión autoritativa.
+5. La indisponibilidad de la evaluación no es un grant.
+6. Los grants no se restauran desde caché ni desde estado offline.
+7. La audiencia de contenido no se convierte en autorización empresarial.
+8. La interfaz no puede convertir visibilidad en seguridad.
+9. Las escrituras de hechos operativos no se confunden con administración de autoridad.
+10. La fuente física de verdad permanece reservada para ANIMA-AUTH-020.
+
+---
+
+#### 50. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-018 — Auditar creación y cierre del contexto`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad`
+
+
 ### [ ] ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad
 
 ANIMA ya fue ajustado parcialmente para bloquear check-in cuando no hay turno publicado o cuando falta un rol operativo válido.

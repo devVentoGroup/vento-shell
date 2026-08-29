@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1070** |
+| Aprobadas | **1071** |
 | En propuesta | **0** |
-| No iniciadas | **524** |
+| No iniciadas | **523** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **67.13% (1070/1594)** |
+| Porcentaje de completamiento | **67.19% (1071/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-AUTH-018` — Auditar creación y cierre del contexto | ✅ APROBADA |
-| Tarea actual | `ANIMA-AUTH-019` — Evitar que ANIMA otorgue permisos directamente | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-AUTH-020` — Mantener Supabase como fuente de verdad | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-AUTH-019` — Evitar que ANIMA otorgue permisos directamente | ✅ APROBADA |
+| Tarea actual | `ANIMA-AUTH-020` — Mantener Supabase como fuente de verdad | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-UX-001` — Inventariar pantallas personales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -614,7 +614,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-016` | Mostrar diagnóstico de contexto al trabajador | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-017` | Diferenciar falta de turno y falta de permiso | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-018` | Auditar creación y cierre del contexto | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
-| ⬜ NO INICIADA | `ANIMA-AUTH-019` | Evitar que ANIMA otorgue permisos directamente | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
+| ✅ APROBADA | `ANIMA-AUTH-019` | Evitar que ANIMA otorgue permisos directamente | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-AUTH-020` | Mantener Supabase como fuente de verdad | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-001` | Inventariar pantallas personales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-002` | Inventariar pantallas administrativas | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
