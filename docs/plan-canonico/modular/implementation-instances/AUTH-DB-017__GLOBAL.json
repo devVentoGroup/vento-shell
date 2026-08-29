@@ -1,10 +1,135 @@
 {
   "instance_id": "AUTH-DB-017::GLOBAL",
   "task_id": "AUTH-DB-017",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "IMPLEMENTED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-017__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record AUTH-DB-017::GLOBAL authorization, lifecycle state, consumer-aware Data API hardening evidence, materialization evidence, and consolidated validation evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/config.toml",
+      "change": "MODIFY",
+      "scope": "Add api to the local exposed Data API schema list while preserving public as temporary compatibility and graphql_public as platform surface; preserve extra_search_path without exposing owner schemas, app_private, audit, or VITAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260829152739_auth_db_017_data_api_privileges.sql",
+      "change": "CREATE",
+      "scope": "Materialize AUTH-DB-017 Data API privileges and fail-closed defaults after supabase/roles.sql provisions the approved technical creator role. Grant vento_ddl_owner CREATE only on api for this task. Govern future Vento defaults under vento_ddl_owner, including removal of built-in PUBLIC function EXECUTE. Preserve VITAL and managed platform schemas outside the mutation boundary."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/025_auth_db_016_canonical_schema_foundation.test.sql",
+      "change": "MODIFY",
+      "scope": "Make the AUTH-DB-016 authenticated-USAGE historical invariant forward-compatible by excluding the downstream api contract layer while preserving payments compatibility and all other namespace invariants."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/026_auth_db_018_contract_separation.test.sql",
+      "change": "MODIFY",
+      "scope": "Replace the two point-in-time api USAGE assertions with migration-provenance assertions proving AUTH-DB-018 itself granted neither anon nor authenticated api USAGE; preserve all AUTH-DB-018 materialization invariants and plan cardinality."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/027_auth_db_017_data_api_privileges.test.sql",
+      "change": "CREATE",
+      "scope": "Validate AUTH-DB-017 Data API grants, runtime denial posture, VITAL exclusion, vento_ddl_owner posture, and fail-closed future table, sequence and function privileges using transactional api probes created under SET LOCAL ROLE vento_ddl_owner."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest after adding the AUTH-DB-017 forward migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying the generator."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed clean local Supabase database harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict local drift validation without modifying the script or any hosted environment."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute quality:repair exactly once after complete materialization and before recording IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative physical lifecycle without modifying the implementation."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/roles.sql",
+      "change": "CREATE",
+      "scope": "Create the canonical Supabase custom-role seed for AUTH-DB-017. Define only vento_ddl_owner as the explicitly approved technical NOLOGIN/NOINHERIT creator role, with no SUPERUSER, CREATEDB, CREATEROLE, REPLICATION or BYPASSRLS capability, and grant postgres membership with SET capability and no inherited runtime privileges. Supabase CLI loads this file before migrations during local replay; remote promotion must include roles before AUTH-DB-017 migration."
+    }
+  ],
+  "validation_commands": [
+    "node -e \"const fs=require('node:fs'); const s=fs.readFileSync('supabase/config.toml','utf8'); if (!s.includes('schemas = [\\\"public\\\", \\\"api\\\", \\\"graphql_public\\\"]')) throw new Error('AUTH_DB_017_DATA_API_SCHEMAS_INVALID'); if (!s.includes('extra_search_path = [\\\"public\\\", \\\"extensions\\\"]')) throw new Error('AUTH_DB_017_EXTRA_SEARCH_PATH_INVALID'); console.log('PASS AUTH-DB-017 Data API config')\"",
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-29T10:28:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "SIGAMOS CON LA IMPLEMENTACIÓN",
+    "source_contract_sha256": "c7e018183238c3949da427d851f8e972984196fc9ad4c68b269835d2d7cb9c1a"
+  },
+  "evidence": [
+    "PRE_AUTHORIZATION AUTH-DB-018::GLOBAL VERIFIED",
+    "PRE_AUTHORIZATION migration identity reserved by Supabase CLI 2.109.0 as supabase/migrations/20260829152739_auth_db_017_data_api_privileges.sql",
+    "PRE_AUTHORIZATION worktree clean after migration identity reservation",
+    "PRE_AUTHORIZATION consumer audit found legacy RPC consumers and no proven api consumer cutover; public compatibility must remain",
+    "PRE_AUTHORIZATION api audience is authenticated only because AUTH-DB-018 classified authenticated contracts and no equivalent anonymous-contract classification exists",
+    "PRE_AUTHORIZATION VITAL excluded from Vento OS governed surface",
+    "REMOTE_BASELINE_READ_ONLY vento-os-dev project clzdpinthhtknkmefsxx; no hosted mutations authorized",
+    "MATERIALIZATION supabase/config.toml exposes public,api,graphql_public",
+    "MATERIALIZATION migration=supabase/migrations/20260829152739_auth_db_017_data_api_privileges.sql",
+    "MATERIALIZATION test=supabase/tests/database/027_auth_db_017_data_api_privileges.test.sql",
+    "MATERIALIZATION AUTH-DB-016 downstream api compatibility reconciled",
+    "MATERIALIZATION AUTH-DB-018 api USAGE checks converted to migration provenance",
+    "MATERIALIZATION migration manifest regenerated",
+    "MATERIALIZATION legacy public compatibility preserved",
+    "MATERIALIZATION VITAL untouched",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "SUPPLEMENTAL_AUTHORIZATION VENTO_OWNER approval_statement=APROBADO vento_ddl_owner",
+    "VALIDATION_REPAIR approved dedicated creator=vento_ddl_owner; VITAL remains excluded",
+    "SUPPLEMENTAL_AUTHORIZATION VENTO_OWNER APROBADO vento_ddl_owner",
+    "SUPABASE_ROLE_LIFECYCLE vento_ddl_owner provisioned through supabase/roles.sql before migrations",
+    "SUPABASE_ROLE_MEMBERSHIP postgres receives SET TRUE, INHERIT FALSE and ADMIN FALSE for vento_ddl_owner",
+    "REMOTE_PROMOTION_CONDITION Supabase CLI 2.109.0 requires supabase db push --include-roles so roles.sql is promoted before AUTH-DB-017; command not executed"
+  ]
 }
