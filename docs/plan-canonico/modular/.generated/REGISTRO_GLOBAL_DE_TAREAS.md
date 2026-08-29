@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1073** |
+| Aprobadas | **1074** |
 | En propuesta | **0** |
-| No iniciadas | **521** |
+| No iniciadas | **520** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **67.31% (1073/1594)** |
+| Porcentaje de completamiento | **67.38% (1074/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-UX-001` — Inventariar pantallas personales | ✅ APROBADA |
-| Tarea actual | `ANIMA-UX-002` — Inventariar pantallas administrativas | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-UX-003` — Separar experiencia del trabajador y del administrador | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-UX-002` — Inventariar pantallas administrativas | ✅ APROBADA |
+| Tarea actual | `ANIMA-UX-003` — Separar experiencia del trabajador y del administrador | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-UX-004` — Diseñar inicio con turno actual y siguiente turno | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -617,7 +617,7 @@
 | ✅ APROBADA | `ANIMA-AUTH-019` | Evitar que ANIMA otorgue permisos directamente | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-AUTH-020` | Mantener Supabase como fuente de verdad | `bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md` |
 | ✅ APROBADA | `ANIMA-UX-001` | Inventariar pantallas personales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
-| ⬜ NO INICIADA | `ANIMA-UX-002` | Inventariar pantallas administrativas | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
+| ✅ APROBADA | `ANIMA-UX-002` | Inventariar pantallas administrativas | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-003` | Separar experiencia del trabajador y del administrador | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-004` | Diseñar inicio con turno actual y siguiente turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-005` | Mostrar sede, área, horario y rol operativo del turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
