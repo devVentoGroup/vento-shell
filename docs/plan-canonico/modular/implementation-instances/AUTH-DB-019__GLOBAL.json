@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-019::GLOBAL",
   "task_id": "AUTH-DB-019",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -98,6 +98,19 @@
     "MATERIALIZATION Auth objects untouched",
     "MATERIALIZATION VITAL untouched",
     "MATERIALIZATION Data API RLS policies and consumers untouched",
-    "PRE_VALIDATION_GATE quality:repair PASS exactly once"
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "MATERIALIZED_CANDIDATE commit=d527d53d1c4587e85f01e36f5fb7dfb1aeefb706 git_tree=CLEAN",
+    "VALIDATION migration manifest check PASS",
+    "VALIDATION clean database replay and pgTAP PASS",
+    "VALIDATION local recovery PASS",
+    "VALIDATION local strict drift LOCAL_CERTIFIED DRIFT_TOTAL=0",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git diff check PASS",
+    "VALIDATION_SUMMARY 6/6 PASS",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "AUTH_OBJECT_MUTATIONS NO",
+    "VITAL_OBJECT_MUTATIONS NO",
+    "LEGACY_FK_MUTATIONS NO"
   ]
 }

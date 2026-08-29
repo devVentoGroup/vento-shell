@@ -34,11 +34,11 @@
 | Siguiente tarea | **ANIMA-UX-003 — Separar experiencia del trabajador y del administrador** |
 | Bloque actual | **BLOQUE F — ANIMA** |
 | Progreso del bloque | **BLOQUE F: 21 de 37 aprobadas; ANIMA-UX-002 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_ACTIVE** |
-| Acción principal obligatoria | **EJECUTAR_IMPLEMENTACION — AUTH-DB-019::GLOBAL** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-033::GLOBAL** |
 | Carril documental | **ACTIVO — ANIMA-UX-002** |
-| Carril físico | **IN_PROGRESS — AUTH-DB-019::GLOBAL** |
-| Alcance físico autorizado | **AUTH-DB-019::GLOBAL** |
+| Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-033::GLOBAL** |
+| Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
 
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE F: 21 DE 37 APROBADAS — ACTUAL ANIMA-UX-002** |
-| Implementación física | **AUTH-DB-019::GLOBAL — IN_PROGRESS** |
+| Implementación física | **AUTH-DB-033::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 
