@@ -2699,7 +2699,704 @@ El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
 `ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno`
 
 
-### [ ] ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno
+### ✅ ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno
+**Tarea siguiente:** ANIMA-UX-006 — Simplificar el flujo de check-in
+**Tipo de tarea:** documental; diseño UX TO-BE del contexto visible del turno personal en ANIMA, con jerarquía y tratamiento de sede, área, horario y rol operativo sin redefinir programación, asistencia, autorización ni marcación
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA presenta al trabajador el contexto humano del turno que `ANIMA-UX-004` ya resolvió como **turno actual** o **siguiente turno**.
+
+La tarjeta debe permitir responder de inmediato y sin interpretar códigos técnicos:
+
+1. **¿Cuándo trabajo?**
+2. **¿En qué sede?**
+3. **¿En qué área?**
+4. **¿Bajo qué rol operativo?**
+
+La tarea fija la semántica visible, la jerarquía entre esos cuatro datos, su origen y el comportamiento cuando alguno no aplica o no puede resolverse de forma segura.
+
+No vuelve a decidir qué asignación ocupa la posición de turno actual o siguiente, no define todavía el CTA de check-in, no determina si una marcación está permitida y no crea una nueva fuente de programación.
+
+---
+
+#### 2. Handoff recibido de ANIMA-UX-004
+
+`ANIMA-UX-004` dejó cerradas estas decisiones que esta tarea consume sin reabrirlas:
+
+- Home muestra como máximo un turno actual y un siguiente turno;
+- el turno actual tiene prioridad visual sobre el siguiente;
+- cuando no hay turno actual, el siguiente puede ocupar el foco como asignación futura;
+- carga, ausencia, error y programación no resoluble son estados diferentes;
+- la programación personal completa permanece en `/shifts`;
+- programación, asistencia y autorización son hechos distintos;
+- la semántica temporal compleja pertenece al dominio propietario de scheduling;
+- la asignación mostrada siempre pertenece al trabajador efectivo del carril personal;
+- un actor gerencial no recibe programación de terceros dentro de su Home personal.
+
+Por tanto, `ANIMA-UX-005` recibe una **asignación ya seleccionada** y define únicamente cómo proyectar su contexto laboral al trabajador.
+
+---
+
+#### 3. Principio rector
+
+El contexto visible del turno se obtiene de la **asignación publicada seleccionada**, no de preferencias, defaults de perfil ni filtros de interfaz.
+
+```text
+CONTEXTO VISIBLE DEL TURNO
+=
+contexto de la asignación publicada seleccionada
+
+NO ES
+=
+sede seleccionada para geocerca
+sede primaria del empleado
+sede filtrada en administración
+área usada en un filtro
+rol base del empleado
+último rol utilizado
+último turno mostrado
+```
+
+Si la asignación no contiene o no permite resolver un dato requerido, ANIMA lo trata como contexto incompleto o no aplicable según corresponda. Nunca lo fabrica con un fallback de otra finalidad.
+
+---
+
+#### 4. Unidad documental de presentación
+
+La unidad de esta tarea es una **proyección de contexto del turno** asociada a la identidad estable de la asignación seleccionada por `ANIMA-UX-004`.
+
+La proyección no es:
+
+- una nueva tabla;
+- un nuevo estado persistente de programación;
+- una copia editable del turno;
+- un AccessContext alternativo;
+- una decisión de autorización;
+- una evidencia de asistencia;
+- una selección de sede para marcar;
+- una inferencia a partir del rol base.
+
+Su función es transformar identificadores y valores autoritativos del turno en información humana coherente entre Home y la programación personal.
+
+---
+
+#### 5. Fuente de verdad del contexto
+
+Para una asignación laboral publicada, ANIMA deberá conservar como base de presentación los identificadores y valores pertenecientes al propio turno:
+
+- identidad estable de la asignación;
+- fecha o referencia temporal definida por scheduling;
+- hora de inicio;
+- hora de fin o semántica de cierre cuando aplique;
+- sede asignada;
+- área asignada cuando aplique;
+- rol operativo asignado cuando aplique;
+- clase de asignación necesaria para distinguir trabajo de descanso.
+
+La implementación AS-IS usa actualmente campos como `site_id`, `area_id`, `operational_role`, `start_time`, `end_time`, `shift_kind` y `show_end_as_close` en `employee_shifts`. Esta observación demuestra disponibilidad actual de contexto, pero no convierte la tabla ni sus detalles de implementación en un contrato inmutable.
+
+La presentación deberá seguir la fuente propietaria vigente si el modelo físico evoluciona.
+
+---
+
+#### 6. Correspondencia semántica de los datos
+
+| Dimensión visible | Hecho propietario | Presentación ordinaria | Fallback prohibido |
+| --- | --- | --- | --- |
+| Horario | intervalo de la asignación publicada y semántica temporal propietaria | rango humano de inicio a fin o inicio a cierre cuando proceda | horario del último turno, horario habitual o jornada base del empleado |
+| Sede | sede de trabajo asignada al turno | nombre humano de la sede | sede primaria, sede seleccionada, sede de geocerca o filtro administrativo |
+| Área | área asignada al turno cuando la matriz la requiere | nombre humano del área | área del perfil, área anterior o área inferida desde el rol |
+| Rol operativo | rol operativo asignado al turno | etiqueta humana exacta del rol operativo | rol base, familia genérica, substring del código o último rol usado |
+
+La interfaz ordinaria no muestra UUID, códigos internos ni claves técnicas como sustituto del nombre humano.
+
+---
+
+#### 7. Jerarquía de información
+
+La tarjeta conserva primero la posición temporal definida por `ANIMA-UX-004` y después organiza el contexto en tres grupos:
+
+1. **Tiempo:** fecha contextual y horario.
+2. **Lugar:** sede y, cuando aplique, área.
+3. **Función:** rol operativo.
+
+La jerarquía conceptual es:
+
+```text
+TURNO ACTUAL / PRÓXIMO TURNO
+
+CUÁNDO
+fecha contextual + horario
+
+DÓNDE
+sede
+área, si aplica
+
+COMO QUÉ
+rol operativo
+```
+
+La composición visual puede compactar líneas en pantallas pequeñas, pero no debe volver ambiguas las dimensiones ni ocultar una de ellas solo porque el trabajador la use habitualmente.
+
+---
+
+#### 8. Contrato compacto para un turno laboral
+
+Una asignación laboral con contexto completo deberá permitir una lectura equivalente a:
+
+```text
+TURNO ACTUAL
+Hoy · 08:00–16:00
+Centro de Producción · Repostería
+Rol: Producción de repostería
+```
+
+El ejemplo define jerarquía semántica, no copy final obligatorio ni nombres de catálogo.
+
+Reglas:
+
+- la posición `TURNO ACTUAL` o `PRÓXIMO TURNO` proviene de `ANIMA-UX-004`;
+- la fecha ayuda a ubicar el turno sin sustituir el intervalo propietario;
+- sede y área se presentan como ubicaciones distintas aunque puedan compartir vocabulario;
+- el rol operativo conserva su identidad específica;
+- la interfaz no reduce el rol a una familia genérica para ahorrar espacio;
+- el contexto no compite con la acción de marcación que definirá la tarea siguiente.
+
+---
+
+#### 9. Composición del turno actual
+
+Cuando existe un turno actual laboral y su contexto es resoluble, Home presenta los cuatro datos sin obligar al trabajador a abrir `/shifts`.
+
+Orden recomendado de lectura:
+
+1. etiqueta de vigencia;
+2. horario vigente;
+3. sede de la asignación;
+4. área de la asignación cuando aplique;
+5. rol operativo de la asignación.
+
+El horario recibe mayor jerarquía porque sitúa el intervalo vigente; sede y área responden dónde; rol operativo responde bajo qué función se espera la jornada.
+
+El estado de asistencia, la geocerca y la futura acción de marcación pueden aparecer en la misma región general de Home, pero no sustituyen ninguno de estos datos.
+
+---
+
+#### 10. Composición del siguiente turno
+
+Cuando la asignación es el siguiente turno futuro, la tarjeta conserva la misma semántica de contexto con menor peso visual que un turno actual.
+
+Debe mostrar como mínimo, para una asignación laboral resoluble:
+
+- fecha contextual suficiente para saber cuándo ocurre;
+- horario;
+- sede;
+- área cuando aplique;
+- rol operativo.
+
+No se permite mostrar únicamente la fecha y el horario si el sistema ya conoce un cambio material de sede, área o rol que el trabajador necesita anticipar.
+
+La tarjeta futura puede ser más compacta, pero los valores deben coincidir con los que `/shifts` muestra para la misma identidad de turno.
+
+---
+
+#### 11. Horario
+
+El horario visible pertenece a la asignación y se presenta en formato humano consistente con el locale de la experiencia.
+
+Reglas:
+
+1. inicio y fin no se recalculan desde duración estimada;
+2. un rango no se sustituye por “mañana”, “tarde” o “noche” como única información;
+3. los campos de programación local no se transforman como si fueran timestamps UTC salvo que el contrato propietario declare esa semántica;
+4. si el dominio propietario declara que el fin debe expresarse como `Cierre`, ANIMA muestra esa semántica humana y no inventa una hora de finalización;
+5. `ANIMA-UX-005` no define qué significa temporalmente `Cierre`, overnight, DST u otras reglas complejas;
+6. si el intervalo no puede interpretarse con seguridad, la tarjeta conserva la condición no resoluble heredada de scheduling en lugar de inventar un rango.
+
+El objetivo es mostrar fielmente el horario publicado, no reinterpretarlo.
+
+---
+
+#### 12. Sede del turno
+
+La **sede del turno** es la sede laboral asignada a la programación seleccionada.
+
+Debe presentarse mediante el nombre humano correspondiente al identificador de sede de esa asignación.
+
+No puede sustituirse silenciosamente por:
+
+- `employee.siteId` o sede primaria del perfil;
+- `selectedSiteId` de preferencias;
+- sede elegida para un filtro de administración;
+- sede detectada por geolocalización;
+- sede candidata para check-in;
+- última sede usada en una marcación.
+
+Esto mantiene la frontera aprobada por `ANIMA-UX-003`: seleccionar o detectar una sede con otra finalidad no transforma el contexto publicado del turno.
+
+---
+
+#### 13. Área del turno
+
+El área representa la unidad operativa asignada al turno cuando la matriz propietaria de sede y rol la utiliza.
+
+La presentación ordinaria usa el nombre humano del área correspondiente al identificador asignado.
+
+Se distinguen dos casos que no deben colapsarse:
+
+- **área no aplicable:** el contrato válido de la asignación no requiere área; la interfaz puede omitir el campo o expresar que no aplica si el contexto lo exige;
+- **área no resoluble:** existe una referencia de área que debería poder identificarse, pero su nombre o validez no puede resolverse; la interfaz debe expresar contexto incompleto y no inventar otra área.
+
+Un `null` físicamente observado no se interpreta automáticamente como error ni automáticamente como “sin área”. La decisión depende de la semántica de la asignación y de la matriz propietaria.
+
+---
+
+#### 14. Rol operativo del turno
+
+El rol mostrado es el **rol operativo específico de la asignación**, no el rol base de la cuenta ni una etiqueta aproximada por familia.
+
+Ejemplos conceptuales de diferencias que deben preservarse:
+
+```text
+ROL BASE DEL EMPLEADO
+≠
+ROL OPERATIVO DEL TURNO
+
+FAMILIA DE ROL
+≠
+ETIQUETA DEL ROL OPERATIVO ASIGNADO
+```
+
+Una persona puede tener un rol base administrativo y, en una asignación laboral concreta, un rol operativo distinto. Home personal deberá mostrar el rol de la asignación.
+
+La misma regla aplica a trabajadores que rotan entre barra, servicio, cocina, producción, bodega, logística u otras funciones válidas.
+
+---
+
+#### 15. Resolución de la etiqueta del rol operativo
+
+ANIMA debe preferir la etiqueta humana canónica asociada al rol operativo exacto y a su contexto de sede/área.
+
+La lógica AS-IS que clasifica códigos por substrings o reduce varias funciones a etiquetas genéricas no se convierte en contrato TO-BE.
+
+Por tanto:
+
+- un código de repostería no se presenta como “Cocina” solo por compartir una familia de producción;
+- un código técnico no se recorta por guiones para fabricar un nombre;
+- un rol inexistente en la referencia vigente no se remapea al rol base;
+- una etiqueta legible no concede ni cambia autoridad;
+- si el rol exacto no puede resolverse, se comunica que el contexto del rol está incompleto sin mostrar el código técnico como respuesta ordinaria.
+
+La materialización futura deberá consumir una proyección o referencia propietaria de etiquetas en lugar de mantener un diccionario mutable paralelo dentro de ANIMA.
+
+---
+
+#### 16. Consistencia de sede, área y rol
+
+Para una asignación laboral, sede, área y rol deben pertenecer al mismo contexto publicado.
+
+La interfaz no debe producir combinaciones como:
+
+- sede del turno + área del perfil actual;
+- sede primaria + rol del turno;
+- área del turno + rol inferido desde el empleado;
+- sede seleccionada en geocerca + rol de programación;
+- nombre vigente de una referencia distinta a la identidad asignada porque la original quedó inactiva.
+
+Si la combinación exacta ya no puede resolverse contra la fuente propietaria, la presentación conserva la asignación y señala que su contexto requiere revisión. No migra silenciosamente la asignación a otro contexto válido.
+
+---
+
+#### 17. Sede laboral y puntos de marcación son dimensiones distintas
+
+La sede visible en esta tarea corresponde al lugar laboral asignado al turno.
+
+Los posibles puntos de entrada o salida pertenecen al flujo de marcación y pueden ser distintos.
+
+```text
+SEDE DEL TURNO
+≠
+PUNTO DE CHECK-IN
+≠
+PUNTO DE CHECK-OUT
+```
+
+`checkin_site_id` y `checkout_site_id`, cuando existan en el modelo físico, no se etiquetan como “Sede” del turno ni reemplazan `site_id` en la tarjeta laboral.
+
+La forma de presentar, seleccionar o validar esos puntos se reserva a `ANIMA-UX-006`, `ANIMA-UX-007` y `ANIMA-UX-010` según corresponda.
+
+---
+
+#### 18. Datos faltantes y contexto incompleto
+
+Una tarjeta puede seguir siendo informativa aunque una dimensión no sea resoluble, pero ANIMA no debe esconder la diferencia entre **desconocido**, **no aplicable** y **fallo de carga**.
+
+Para una asignación laboral:
+
+| Situación | Tratamiento de presentación |
+| --- | --- |
+| Horario válido, sede válida, área válida, rol válido | Mostrar contexto completo. |
+| Sede referenciada pero sin nombre resoluble | Mantener horario y demás datos seguros; indicar que la sede requiere actualización o revisión. |
+| Área requerida pero no resoluble | Mantener datos seguros; indicar que el área está pendiente de resolver. |
+| Área legítimamente no aplicable | Omitir el campo o expresar “No aplica” cuando sea necesario; no mostrar error. |
+| Rol operativo requerido pero no resoluble | Mantener datos seguros; indicar que el rol operativo está pendiente de resolver. |
+| Fuente de referencia todavía cargando | No transformar la espera en “Sin sede”, “Sin área” o “Sin rol”. |
+| Error al resolver etiquetas | No sustituir por defaults de empleado ni por códigos técnicos. |
+
+El copy final de bloqueo o recuperación se coordina con las tareas posteriores de mensajes; esta tarea fija la semántica que esos mensajes deberán respetar.
+
+---
+
+#### 19. Un contexto incompleto no decide por sí solo la marcación
+
+`ANIMA-UX-005` hace visible un problema de contexto, pero no decide qué acción de asistencia se habilita.
+
+```text
+CONTEXTO INCOMPLETO VISIBLE
+≠
+DENEGACIÓN DE MARCACIÓN DEFINIDA POR ESTA TAREA
+```
+
+La materialización posterior deberá consultar los contratos de check-in, check-out, turno, geocerca y autorización para decidir la acción correcta.
+
+Esta frontera evita que un fallback visual se convierta en una regla de seguridad y evita que la tarjeta oculte un dato defectuoso para “dejar funcionar” el botón.
+
+---
+
+#### 20. Asignaciones de descanso
+
+Una asignación de descanso no debe presentarse como un turno laboral artificial.
+
+Cuando el dominio propietario identifica la asignación como descanso:
+
+- la fecha o periodo de descanso continúa siendo visible;
+- la experiencia comunica `Descanso` o una expresión humana equivalente;
+- no se presenta un rango técnico de persistencia como si fuera horario laboral;
+- área y rol operativo se consideran no aplicables salvo que un contrato futuro declare una necesidad distinta;
+- una sede almacenada como alcance de planificación no se presenta automáticamente como destino de trabajo;
+- no se inventa check-in ni check-out para completar visualmente la tarjeta.
+
+Los valores físicos usados para representar un día completo en almacenamiento no constituyen copy de interfaz.
+
+---
+
+#### 21. Relación entre Home y `/shifts`
+
+Home y `/shifts` pueden tener densidades distintas, pero no semánticas distintas para la misma asignación.
+
+| Dimensión | Home | `/shifts` personal |
+| --- | --- | --- |
+| Identidad del turno | actual o siguiente seleccionado | misma identidad dentro de la agenda |
+| Horario | compacto y prominente | visible con mayor contexto temporal |
+| Sede | visible | visible |
+| Área | visible cuando aplica | visible cuando aplica |
+| Rol operativo | visible | visible |
+| Códigos técnicos | no | no en experiencia ordinaria |
+| Agenda adicional | no, salvo siguiente | sí, según horizonte personal |
+
+Si dos superficies resuelven nombres diferentes para el mismo `site_id`, `area_id` o rol operativo, la implementación se considera divergente y debe reconciliar la fuente, no escoger una versión por pantalla.
+
+---
+
+#### 22. Igualdad del carril personal para actores gerenciales
+
+La composición de contexto no cambia porque el trabajador tenga autoridad administrativa adicional.
+
+En el carril personal, un gerente, gerente general o propietario:
+
+- ve la sede de su propia asignación;
+- ve el área de su propia asignación cuando aplique;
+- ve el horario de su propia asignación;
+- ve el rol operativo de su propia asignación;
+- no reemplaza ese rol por su rol base gerencial;
+- no recibe la sede filtrada del backoffice como sede laboral;
+- no ve datos de terceros dentro de la tarjeta.
+
+La entrada administrativa sigue siendo explícita y separada según `ANIMA-UX-003`.
+
+---
+
+#### 23. Notas, estado de asistencia y acciones no forman parte del cuarteto esencial
+
+El contexto definido por esta tarea no absorbe otros elementos que el AS-IS pueda mostrar junto al turno.
+
+Quedan separados:
+
+- estado de programación como `scheduled`, `confirmed` u otros estados propietarios;
+- notas del turno;
+- horas acumuladas;
+- conteos de turnos;
+- estado de asistencia;
+- geocerca;
+- cola offline;
+- CTA de check-in;
+- CTA de check-out;
+- mensajes de bloqueo;
+- sincronización pendiente.
+
+Esos datos pueden coexistir cuando sus contratos lo autoricen, pero no desplazan sede, área, horario y rol operativo ni cambian su fuente.
+
+---
+
+#### 24. Accesibilidad y lectura rápida
+
+La tarjeta deberá preservar la comprensión de las cuatro dimensiones sin depender únicamente de posición, color, iconos o abreviaturas.
+
+Criterios:
+
+- el lector de pantalla debe poder distinguir horario, sede, área y rol;
+- una etiqueta o nombre truncado visualmente debe conservar su valor accesible completo;
+- los iconos pueden reforzar significado, no sustituirlo;
+- la reducción responsive puede agrupar sede y área, pero ambas dimensiones permanecen identificables;
+- un rol operativo no se comunica solo mediante color de pill;
+- `Cierre`, `Descanso`, dato no aplicable y dato no resoluble deben mantener semántica textual;
+- la jerarquía debe conservarse con tamaños de texto ampliados.
+
+ANIMA continúa siendo una experiencia móvil enfocada, por lo que la tarjeta evita tablas y densidad administrativa.
+
+---
+
+#### 25. Minimización de datos
+
+La tarjeta personal muestra únicamente el contexto necesario para comprender la propia asignación.
+
+No necesita incluir:
+
+- identificadores internos;
+- códigos de rol;
+- `area_id` o `site_id` en texto técnico;
+- nombres de compañeros;
+- cobertura de equipo;
+- territorio administrativo;
+- matrices de permisos;
+- reglas de autorización;
+- puntos de marcación que no sean necesarios todavía;
+- datos de nómina, costos o analítica.
+
+La resolución de etiquetas puede requerir referencias adicionales en la capa propietaria, pero el payload entregado al cliente debe mantenerse limitado a lo necesario para la experiencia autorizada.
+
+---
+
+#### 26. AS-IS observado
+
+El código móvil vigente muestra un contexto fragmentado:
+
+- la consulta personal de turnos ya recupera sede, área, rol operativo y horario;
+- el hero de `/shifts` muestra fecha, horario y sede del siguiente turno;
+- la lista personal muestra fecha, sede, horario, estado y notas;
+- la semana personal puede mostrar un rol derivado por heurística;
+- el área no se proyecta al trabajador en las tarjetas observadas;
+- el rol puede reducirse localmente a etiquetas genéricas mediante coincidencias de texto;
+- Home todavía usa sede de perfil, selección o asistencia para otros fines y no consume una tarjeta canónica de contexto de turno.
+
+Este AS-IS es evidencia para diseñar la convergencia, no el contrato objetivo.
+
+---
+
+#### 27. Delta AS-IS → TO-BE
+
+| Aspecto | AS-IS observado | TO-BE definido por ANIMA-UX-005 |
+| --- | --- | --- |
+| Sede | Se muestra en Turnos; Home usa además sedes de otros contextos. | La tarjeta laboral usa exclusivamente la sede de la asignación seleccionada. |
+| Área | El turno la consulta como identificador, pero las tarjetas personales no la muestran de forma consistente. | Se muestra con nombre humano cuando la asignación la requiere. |
+| Horario | Ya existe presentación de rango y `Cierre`. | Se conserva como dato prioritario sin reinterpretar la semántica propietaria. |
+| Rol operativo | La semana puede derivar una etiqueta mediante heurística local. | Se resuelve la etiqueta humana exacta desde la referencia propietaria del rol asignado. |
+| Rol base | Disponible en auth y usado en varias decisiones AS-IS. | No sustituye el rol operativo del turno. |
+| Sede seleccionada | Disponible para preferencias/geocerca. | No sustituye la sede publicada del turno. |
+| Descanso | Puede persistirse con valores técnicos de día completo y sede de alcance. | Se presenta como descanso, sin convertir valores técnicos en horario/destino laboral. |
+| Consistencia | Distintas superficies componen datos con utilidades diferentes. | Home y `/shifts` muestran los mismos valores semánticos para la misma asignación. |
+
+---
+
+#### 28. Matriz de escenarios de aceptación UX
+
+| Escenario | Resultado esperado |
+| --- | --- |
+| Turno laboral actual con sede, área, horario y rol válidos | Mostrar los cuatro datos con horario prioritario y contexto humano. |
+| Próximo turno cambia de sede frente al actual | Mostrar la sede específica del próximo turno; no heredar la actual. |
+| Próximo turno cambia de área dentro de la misma sede | Mostrar el área específica del próximo turno. |
+| Próximo turno usa otro rol operativo | Mostrar el rol exacto del próximo turno aunque el rol base del trabajador no cambie. |
+| Gerente con turno operativo propio | Mostrar el rol operativo de la asignación, no “Gerente” por defecto. |
+| Empleado con varias sedes y una seleccionada para geocerca | Mostrar la sede del turno, no la selección local. |
+| Turno con punto externo de check-in | Mostrar la sede laboral como sede; el punto de entrada queda fuera de esta tarjeta. |
+| Área válida no aplicable | Omitir o expresar no aplicabilidad sin generar error. |
+| Área referenciada pero no resoluble | Mostrar contexto incompleto; no inferir otra área. |
+| Rol referenciado pero sin etiqueta resoluble | Mostrar contexto incompleto; no enseñar el código como etiqueta ordinaria. |
+| Referencias todavía cargando | Mantener estado de carga; no afirmar ausencia. |
+| Asignación de descanso | Mostrar descanso; no mostrar 00:00–23:59 como jornada ni área/rol ficticios. |
+| Misma asignación en Home y `/shifts` | Mostrar valores semánticos coincidentes. |
+| Matriz propietaria cambia y la asignación deja de resolver | Señalar revisión requerida; no remapear silenciosamente la asignación. |
+
+---
+
+#### 29. Hallazgos y carryover
+
+| Hallazgo / dependencia | Bloquea ANIMA-UX-005 | Propietario | Condición de salida |
+| --- | --- | --- | --- |
+| ANIMA ya consulta `area_id` y `operational_role`, pero no dispone en la tarjeta personal de una proyección consistente de `area_name` y etiqueta exacta del rol. | No para el contrato documental. | Materialización física posterior del paquete ANIMA y fuente propietaria de contexto operativo | Resolver las etiquetas desde una referencia propietaria sin diccionario paralelo ni fallback por rol base. |
+| La heurística AS-IS de rol público agrupa funciones diferentes y no garantiza paridad con la matriz de roles operativos. | No; esta tarea define su retiro conceptual. | Materialización física posterior de ANIMA | Consumir la etiqueta humana exacta del rol asignado y eliminar la heurística como fuente autoritativa. |
+| Los puntos de check-in y check-out pueden diferir de la sede laboral. | No | `ANIMA-UX-006`, `ANIMA-UX-007` y `ANIMA-UX-010` | Definir acción y explicación de marcación sin renombrar esos puntos como sede del turno. |
+| La semántica definitiva de scheduling mensual, overnight y cierre continúa congelada en su dominio propietario. | No para presentación; sí para inventar una interpretación temporal nueva. | Carril de programación laboral VISO | Proveer semántica temporal suficiente para el intervalo que ANIMA deba mostrar. |
+| El tratamiento final de mensajes de contexto inválido no corresponde a esta tarea. | No | `ANIMA-UX-009` y `ANIMA-UX-010` | Diseñar mensajes y diferenciación de causas usando la semántica fijada aquí. |
+
+Ningún hallazgo requiere crear una tarea documental adicional.
+
+---
+
+#### 30. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La cobertura vigente ya exige resolver contexto operativo desde hechos autoritativos, minimizar la información al propósito del actor, conservar una experiencia personal separada de administración y mantener coherencia entre programación, Home, navegación y autorización. Esta tarea concreta esa cobertura para la presentación de sede, área, horario y rol de una asignación de ANIMA sin introducir una obligación de prueba materialmente nueva.
+
+---
+
+#### 31. Cobertura de prueba vigente reutilizada
+
+Se reutilizan sin modificación:
+
+- `TREQ-UX-001` — identificación inmediata de tarea, acción y estado;
+- `TREQ-UX-003` — información y densidad adecuadas al actor y su finalidad;
+- `TREQ-UX-005` — fuente de verdad, estado y frescura visibles;
+- `TREQ-UX-008` — clasificación de intención y separación de superficies;
+- `TREQ-UX-009` — resolución de sede, área, turno, rol y demás contexto desde hechos autoritativos;
+- `TREQ-UX-017` — minimización de datos por finalidad;
+- `TREQ-UX-021` — diferenciación visual accesible y no dependiente de color;
+- `TREQ-UX-037` — distinción de estados sin turno, bloqueos y datos no sincronizados;
+- `TREQ-UX-059` — relevancia contextual sin convertir preferencias o filtros en autoridad;
+- `TREQ-UX-060` — proyección de relevancia desde hechos autoritativos;
+- `TREQ-UX-063` — contenido mínimo permitido en superficies operativas;
+- `TREQ-UX-195` — capa inicial operativa enfocada en contexto y acción relevante;
+- `TREQ-ANIMA-015` — separación en Home de asistencia, geocerca, sede, conectividad y sincronización;
+- `TREQ-ANIMA-016` — separación entre lectura personal, semana de sede y gestión en `/shifts`.
+
+Esta enumeración es trazabilidad hacia cobertura existente y no modifica el registro canónico de requisitos.
+
+---
+
+#### 32. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build del repositorio ni de la aplicación durante el desarrollo documental. |
+| LOCAL | PASS | El artefacto se verificó estructuralmente como una sola tarea, con metadata completa, secciones obligatorias, cero requisitos derivados, continuidad cerrada y sin whitespace final. |
+| REMOTA | PASS | Se verificaron en GitHub la continuidad vigente, la topología `DEFINE_ONCE`, ANIMA-UX-003 y ANIMA-UX-004 aprobadas, el código actual de Home y Turnos, la persistencia de contexto de programación en VISO, el registro 04A aplicable, `package.json` y los validadores documentales. |
+| OPERATIVA | PASS | Las matrices cubren turno laboral completo, cambio de sede/área/rol, actor gerencial en carril personal, punto externo de marcación, datos no aplicables, datos no resolubles, carga, descanso y consistencia Home ↔ `/shifts`. |
+| FÍSICA | NOT_APPLICABLE | ANIMA-UX-005 está gobernada por `DEFINE_ONCE`; no crea una instancia física propia ni autoriza cambios de código, Supabase, navegación, datos o despliegue. |
+
+---
+
+#### 33. Criterios de aceptación
+
+1. La tarea consume el turno actual o siguiente ya seleccionado por ANIMA-UX-004 sin recalcular su posición.
+2. Todo turno laboral resoluble muestra horario, sede, área cuando aplique y rol operativo.
+3. El horario conserva la semántica de la programación publicada y no se reconstruye desde duración estimada.
+4. La sede visible pertenece al turno y no a preferencias, geocerca, perfil o filtros administrativos.
+5. El área visible pertenece al turno y no se infiere desde rol, perfil o turno anterior.
+6. El rol visible es el rol operativo específico de la asignación y no el rol base del empleado.
+7. La etiqueta del rol se obtiene de una referencia humana propietaria y no de substrings o familias genéricas.
+8. La interfaz ordinaria no usa UUID ni códigos internos como etiquetas de contexto.
+9. Área no aplicable y área no resoluble permanecen diferenciadas.
+10. Rol no resoluble no se reemplaza por rol base.
+11. Sede no resoluble no se reemplaza por sede primaria o seleccionada.
+12. Una referencia inválida no provoca remapeo silencioso de la asignación a otro contexto válido.
+13. La sede laboral se mantiene separada de puntos de check-in y check-out.
+14. Un contexto incompleto puede mostrarse como tal sin que esta tarea decida la autorización de marcación.
+15. Una asignación de descanso no muestra valores técnicos de día completo como jornada laboral.
+16. Un descanso no recibe área o rol ficticios para completar la tarjeta.
+17. Home y `/shifts` muestran valores semánticos coincidentes para la misma asignación.
+18. El siguiente turno puede ser más compacto, pero no oculta cambios materiales de sede, área o rol.
+19. Una persona gerencial en carril personal ve el contexto de su propia asignación y no el contexto de terceros.
+20. La tarjeta es comprensible con lector de pantalla, texto ampliado y sin depender solo de color o iconos.
+21. El cliente recibe únicamente la información necesaria para el contexto personal autorizado.
+22. No se redefine overnight, DST, `end-at-close` ni otra semántica temporal propietaria.
+23. No se define todavía check-in, check-out, geocerca, elegibilidad o mensajes finales de bloqueo.
+24. No se crean ni modifican requisitos de prueba.
+25. No existe materialización física propia.
+26. La continuidad queda reservada exclusivamente hacia ANIMA-UX-006.
+
+---
+
+#### 34. Límites
+
+ANIMA-UX-005 no:
+
+- modifica `vento-anima`;
+- modifica `vento-viso`;
+- modifica Supabase;
+- crea migraciones, tablas, vistas, RPC, triggers o RLS;
+- cambia `employee_shifts` ni lo declara contrato físico definitivo;
+- cambia el catálogo de sedes, áreas o roles operativos;
+- crea un diccionario paralelo de etiquetas;
+- reescribe la matriz de sede/área/rol;
+- redefine el rol base del empleado;
+- define permisos o capacidades;
+- cambia Expo Router ni el inventario de pantallas;
+- redefine qué turno es actual o siguiente;
+- redefine scheduling mensual;
+- define overnight, DST, cierres mensuales o reglas de publicación;
+- define el significado matemático de `Cierre`;
+- diseña el CTA de check-in;
+- diseña el CTA de check-out;
+- decide la geocerca válida para marcar;
+- decide qué contexto incompleto bloquea una marcación;
+- define los mensajes finales de error o recuperación;
+- diseña cola offline ni sincronización;
+- modifica el registro de requisitos de prueba;
+- crea una instancia física.
+
+---
+
+#### 35. Estado de salida documental
+
+La tarea deja especificado un contrato de presentación del contexto laboral con:
+
+- la asignación seleccionada por ANIMA-UX-004 como única unidad de referencia;
+- horario como dimensión temporal prioritaria;
+- sede y área como dimensiones de ubicación diferenciadas;
+- rol operativo específico como dimensión funcional;
+- separación estricta entre rol operativo y rol base;
+- separación estricta entre sede laboral y puntos de marcación;
+- resolución humana de nombres desde fuentes propietarias;
+- prohibición de fallbacks desde perfil, filtros, geocerca o turno anterior;
+- tratamiento distinto de no aplicable, no resoluble, carga y error;
+- tratamiento específico de descansos sin exponer valores técnicos de persistencia;
+- paridad semántica entre Home y `/shifts`;
+- handoff limpio hacia la simplificación de check-in.
+
+El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
+
+---
+
+#### 36. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-006 — Simplificar el flujo de check-in`
+
 ### [ ] ANIMA-UX-006 — Simplificar el flujo de check-in
 ### [ ] ANIMA-UX-007 — Simplificar el flujo de check-out
 ### [ ] ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente
