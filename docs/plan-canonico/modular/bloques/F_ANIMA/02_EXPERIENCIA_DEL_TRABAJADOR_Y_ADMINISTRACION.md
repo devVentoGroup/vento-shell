@@ -2010,7 +2010,695 @@ La salida documental deja:
 `ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno`
 
 
-### [ ] ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno
+### ✅ ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-003 — Separar experiencia del trabajador y del administrador
+**Tarea siguiente:** ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno
+**Tipo de tarea:** documental; diseño UX TO-BE del inicio personal de ANIMA para resolver y priorizar turno actual y siguiente turno, sin redefinir el modelo de programación, la autorización, la marcación ni la sincronización offline
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia objetivo del inicio personal de ANIMA para que el trabajador comprenda, al abrir la aplicación, cuál es su situación laboral inmediata sin tener que interpretar reportes, recorrer una agenda completa ni mezclar programación con administración.
+
+El inicio deberá responder en orden a dos preguntas:
+
+1. **¿Tengo un turno vigente ahora?**
+2. **¿Cuál es el siguiente turno publicado que debo tener presente?**
+
+El resultado convierte el turno actual en el contexto temporal principal de Home cuando exista y utiliza el siguiente turno como anticipación secundaria. Cuando no exista turno actual, el siguiente turno podrá ocupar el foco informativo principal sin presentarse falsamente como vigente.
+
+Esta tarea diseña selección, jerarquía y estados de presentación. No redefine todavía los detalles visuales de sede, área, horario y rol operativo, ni los flujos de check-in, check-out, confirmación, bloqueo u offline reservados a las tareas posteriores del mini-bloque.
+
+---
+
+#### 2. Handoff recibido de ANIMA-UX-003
+
+ANIMA-UX-003 dejó el inicio personal libre de administración competitiva y fijó estas fronteras:
+
+- `/home` pertenece al carril `TRABAJADOR`;
+- el reporte operativo de terceros no compite con el núcleo personal de Home;
+- `/shifts` conserva la programación personal del trabajador;
+- la planificación densa de equipo pertenece al backoffice propietario y no al inicio personal;
+- una persona con funciones gerenciales sigue viendo su propia experiencia laboral cuando utiliza el carril trabajador;
+- seleccionar sede o trabajador con fines administrativos no crea contexto operativo;
+- la existencia de una pantalla o tarjeta no concede autoridad.
+
+ANIMA-UX-004 consume estas decisiones y no las reabre.
+
+---
+
+#### 3. Principio rector del inicio
+
+El inicio personal se organiza por **inmediatez laboral**, no por cantidad de datos disponibles.
+
+```text
+AHORA
+turno vigente del trabajador, si existe
+
+DESPUÉS
+siguiente turno publicado, si existe
+
+RESTO DE PROGRAMACIÓN
+consulta personal completa en /shifts
+```
+
+Reglas:
+
+1. Home muestra como máximo un turno actual y un siguiente turno en la capa inicial.
+2. La agenda completa permanece en `/shifts`.
+3. Un turno futuro no se etiqueta como actual por cercanía horaria.
+4. La ausencia de turno actual no se interpreta como error.
+5. La ausencia de programación futura no se interpreta como fallo técnico.
+6. Un fallo de carga no se representa como “sin turno”.
+7. La programación no concede por sí misma permiso para marcar ni demuestra asistencia.
+8. Home no sustituye la fuente propietaria de programación ni conserva una copia mutable paralela.
+
+---
+
+#### 4. Unidad documental de resolución
+
+`turno actual` y `siguiente turno` son **proyecciones de presentación** sobre la programación laboral autoritativa del trabajador.
+
+No son:
+
+- nuevas entidades de base de datos;
+- estados persistentes adicionales del turno;
+- permisos;
+- decisiones de autorización;
+- estados de asistencia;
+- equivalentes a check-in o check-out;
+- filtros administrativos;
+- inferencias calculadas desde el último turno visto en el dispositivo.
+
+La identidad de cada asignación continúa perteneciendo al modelo de programación propietario.
+
+---
+
+#### 5. Fuente de verdad consumida por Home
+
+Home deberá consumir únicamente la programación que el contrato laboral vigente permita proyectar al trabajador autenticado.
+
+La selección de turno actual y siguiente turno se calculará sobre datos que cumplan simultáneamente:
+
+1. pertenecen al trabajador efectivo de la sesión personal;
+2. forman parte de la programación publicada o equivalente autoritativamente visible para ese trabajador;
+3. no están cancelados, retirados, supersedidos ni en un estado que el contrato propietario excluya de la programación vigente;
+4. contienen la información temporal suficiente para ser ordenados mediante la semántica canónica de scheduling;
+5. conservan una identidad estable que permita distinguir una asignación de otra.
+
+La implementación AS-IS puede consultar estructuras concretas como `employee_shifts`, pero esta tarea no convierte esa tabla, sus estados actuales ni la heurística cliente vigente en el contrato definitivo de scheduling.
+
+---
+
+#### 6. Regla de actor
+
+La resolución se realiza exclusivamente para el trabajador autenticado que está usando el carril personal.
+
+```text
+ACTOR DEL INICIO
+= trabajador efectivo de la sesión personal
+
+NO ES
+= trabajador seleccionado en administración
+= último trabajador consultado
+= miembro de equipo filtrado
+= sujeto de un reporte
+= usuario técnico del dispositivo
+```
+
+Un propietario, gerente general o gerente que abre su Home personal recibe exactamente la misma regla: sus tarjetas de turno corresponden a su propia programación laboral, no a la programación de su equipo.
+
+---
+
+#### 7. Definición de turno actual
+
+Para ANIMA-UX-004, **turno actual** es la asignación publicada del trabajador que la semántica temporal autoritativa de programación clasifica inequívocamente como vigente en el instante de evaluación.
+
+La interfaz no decidirá por sí sola reglas temporales que pertenecen al dominio de scheduling.
+
+Por tanto:
+
+- no se inventa una ventana de anticipación para convertir un turno futuro en actual;
+- no se usa únicamente la fecha calendario si el modelo admite jornadas que crucen medianoche;
+- no se asume que `end_time` siempre pertenece al mismo día que `start_time`;
+- no se convierte el estado de asistencia en sustituto del intervalo programado;
+- no se elige arbitrariamente una asignación cuando dos candidatas compiten y el modelo propietario no declara precedencia.
+
+---
+
+#### 8. Definición de siguiente turno
+
+**Siguiente turno** es la primera asignación futura publicada y elegible del trabajador después del instante actual, distinta del turno vigente que pudiera estar ocupando el foco.
+
+La selección debe ser determinista según la semántica temporal e identidad definidas por el dominio propietario.
+
+Si existe un turno actual:
+
+- el turno actual ocupa el foco;
+- el siguiente turno se presenta como anticipo secundario;
+- una asignación que solapa de forma no resoluble con el turno actual no se selecciona silenciosamente como “siguiente”.
+
+Si no existe turno actual:
+
+- el primer turno futuro elegible se convierte en el foco informativo de Home;
+- su etiqueta deja claro que es **próximo**, no vigente.
+
+---
+
+#### 9. Estados de presentación de programación
+
+Se definen resultados conceptuales de presentación. No constituyen un enum físico obligatorio.
+
+| Resultado | Significado | Foco de Home |
+| --- | --- | --- |
+| `ACTUAL_Y_SIGUIENTE` | Existe un turno vigente y además uno futuro elegible. | Turno actual principal; siguiente turno secundario. |
+| `SOLO_ACTUAL` | Existe un turno vigente y no existe otro futuro publicado. | Turno actual principal; sin tarjeta futura artificial. |
+| `SOLO_SIGUIENTE` | No existe turno vigente y sí existe un turno futuro elegible. | Próximo turno como foco informativo. |
+| `SIN_PROGRAMACION_VISIBLE` | No existe turno actual ni futuro publicado visible. | Estado vacío explícito; acceso a programación personal cuando corresponda. |
+| `PROGRAMACION_NO_RESOLUBLE` | Los datos disponibles no permiten seleccionar de forma segura un único actual o siguiente. | Estado de revisión/actualización; nunca una elección arbitraria. |
+| `CARGANDO_PROGRAMACION` | La fuente todavía no respondió. | Skeleton o estado de carga, no “sin turno”. |
+| `ERROR_DE_PROGRAMACION` | La consulta o resolución falló. | Estado de error recuperable, no “sin turno”. |
+
+Los textos finales de error y recuperación se alinearán con ANIMA-UX-009, ANIMA-UX-010 y los contratos transversales de mensajes.
+
+---
+
+#### 10. Matriz determinista de resolución
+
+| Turno actual resoluble | Turno futuro resoluble | Resultado | Presentación primaria |
+| --- | --- | --- | --- |
+| Sí | Sí | `ACTUAL_Y_SIGUIENTE` | Actual + anticipo del siguiente. |
+| Sí | No | `SOLO_ACTUAL` | Actual. |
+| No | Sí | `SOLO_SIGUIENTE` | Próximo turno. |
+| No | No | `SIN_PROGRAMACION_VISIBLE` | Sin turno programado visible. |
+| Ambiguo | Cualquiera | `PROGRAMACION_NO_RESOLUBLE` | No elegir por orden accidental. |
+| Cualquiera | Ambiguo | `PROGRAMACION_NO_RESOLUBLE` | No elegir por orden accidental. |
+| Fuente cargando | — | `CARGANDO_PROGRAMACION` | Carga explícita. |
+| Fuente fallida | — | `ERROR_DE_PROGRAMACION` | Error explícito y recuperable. |
+
+La ausencia y el fallo permanecen separados.
+
+---
+
+#### 11. Prioridad visual de Home
+
+La jerarquía objetivo de la capa superior del inicio es:
+
+1. identidad contextual mínima del trabajador;
+2. turno vigente, cuando exista;
+3. siguiente obligación laboral asociada al turno, cuando las tareas posteriores la definan;
+4. siguiente turno publicado;
+5. acceso a la programación personal completa;
+6. información secundaria no administrativa.
+
+ANIMA-UX-004 solo materializa documentalmente los puntos relacionados con turno actual y siguiente turno. No anticipa la acción primaria de marcación ni los detalles completos del contexto operativo.
+
+---
+
+#### 12. Composición cuando existe turno actual
+
+Cuando el trabajador tiene un turno actual inequívoco, Home presenta:
+
+```text
+TURNO ACTUAL
+[identidad resumida del turno]
+[contexto que ANIMA-UX-005 defina]
+[estado/acción que ANIMA-UX-006..012 definan]
+
+DESPUÉS
+[Siguiente turno, si existe]
+```
+
+El turno vigente recibe mayor peso visual que:
+
+- agenda histórica;
+- reportes;
+- accesos administrativos;
+- promociones internas;
+- estadísticas personales no críticas;
+- próximos turnos posteriores al primero.
+
+---
+
+#### 13. Composición cuando no existe turno actual
+
+Si no existe un turno vigente pero sí un turno futuro publicado:
+
+```text
+PRÓXIMO TURNO
+[primera asignación futura elegible]
+
+VER MI PROGRAMACIÓN
+[entrada secundaria a /shifts]
+```
+
+No se mostrará una tarjeta vacía titulada “Turno actual” ocupando el foco ni se simulará que el trabajador ya está dentro de jornada.
+
+La distancia temporal al próximo turno podrá expresarse de forma humana si la implementación dispone de una semántica horaria segura, pero no altera su condición de futuro.
+
+---
+
+#### 14. Composición cuando no existe programación visible
+
+Si no existe turno vigente ni programación futura visible, Home deberá expresar un estado vacío real.
+
+La experiencia deberá comunicar al menos que:
+
+- no hay un turno publicado visible para el trabajador en ese momento;
+- el estado no equivale a error técnico;
+- no se inventará una sede, área, rol o jornada por datos históricos;
+- la programación personal completa continúa siendo el destino apropiado cuando corresponda revisarla.
+
+No se utilizarán controles administrativos, reportes o configuraciones como relleno del vacío.
+
+---
+
+#### 15. Carga y error no son estados vacíos
+
+`CARGANDO_PROGRAMACION`, `SIN_PROGRAMACION_VISIBLE` y `ERROR_DE_PROGRAMACION` deberán ser distinguibles.
+
+```text
+CARGANDO
+≠ SIN TURNO
+≠ ERROR
+```
+
+Mientras la consulta está pendiente, Home no afirma que no existe turno.
+
+Si la consulta falla, Home no reutiliza silenciosamente como actual el último turno almacenado sin un contrato de frescura compatible.
+
+La política exacta de cache, offline y sincronización pertenece a ANIMA-UX-011 y ANIMA-UX-012.
+
+---
+
+#### 16. Ambigüedad y programación no resoluble
+
+Home no resolverá por posición en un arreglo, orden incidental de consulta o preferencia local situaciones como:
+
+- dos asignaciones que el dominio considera simultáneamente candidatas a turno actual;
+- dos candidatos a primer turno futuro sin una precedencia temporal o contractual suficiente;
+- intervalos incompletos;
+- horario nocturno cuya semántica no pueda reconstruirse de forma segura;
+- datos publicados contradictorios;
+- una versión local que no pueda demostrarse vigente frente a la fuente propietaria.
+
+En esos casos se usa `PROGRAMACION_NO_RESOLUBLE` y el conflicto queda en manos del dominio de programación correspondiente.
+
+Esta regla evita convertir una limitación del modelo de scheduling en una decisión UX inventada.
+
+---
+
+#### 17. Frontera con el modelo mensual de programación
+
+ANIMA consume programación; no define las reglas maestras de scheduling.
+
+ANIMA-UX-004 no decide:
+
+- horizonte mensual definitivo;
+- reglas de publicación;
+- overnight shifts;
+- `end-at-close`;
+- DST;
+- cierres mensuales;
+- conflictos de plantillas;
+- bulk scheduling;
+- excepciones del planner;
+- semántica interna de la versión de programación.
+
+Cuando una de esas reglas sea necesaria para determinar correctamente el turno actual o siguiente, Home consume el resultado del contrato propietario una vez éste exista; no lo reproduce localmente.
+
+---
+
+#### 18. Programación y asistencia son hechos distintos
+
+La presencia de un turno actual responde a programación laboral.
+
+El estado de asistencia responde a marcación y sus transiciones.
+
+```text
+TURNO ACTUAL
+≠ CHECK-IN CONFIRMADO
+
+TURNO ACTUAL
+≠ PERMISO PARA MARCAR
+
+CHECK-IN ABIERTO
+≠ PRUEBA SUFICIENTE DE TURNO ACTUAL
+```
+
+Home podrá presentar ambos dominios de manera coordinada, pero no utilizar uno para fabricar el otro.
+
+La relación exacta con check-in y check-out pertenece a ANIMA-UX-006 y ANIMA-UX-007.
+
+---
+
+#### 19. Frontera con autorización
+
+Mostrar una asignación en Home no concede autoridad para ejecutar una acción.
+
+Antes de cualquier mutación posterior deberán seguir resolviéndose los contratos efectivos de:
+
+- identidad;
+- actor;
+- turno;
+- sede y área cuando apliquen;
+- rol operativo;
+- dispositivo;
+- permiso;
+- estado compatible;
+- protección de servidor.
+
+ANIMA-UX-004 define orientación de interfaz, no autorización.
+
+---
+
+#### 20. El siguiente turno no es una cola administrativa
+
+La tarjeta de siguiente turno tiene un propósito exclusivamente personal: anticipar la próxima asignación publicada del trabajador.
+
+No incluye:
+
+- planificación de compañeros;
+- cobertura de vacantes;
+- creación o edición de turnos;
+- aprobación o publicación;
+- filtros por trabajador;
+- filtros de sede de administración;
+- reasignaciones;
+- vista semanal de equipo.
+
+Esas funciones permanecen fuera del carril personal según ANIMA-UX-003 y el backoffice propietario.
+
+---
+
+#### 21. Relación entre Home y `/shifts`
+
+Home y `/shifts` no son duplicados.
+
+| Superficie | Responsabilidad objetivo |
+| --- | --- |
+| `/home` | Orientar el presente inmediato: turno actual y primer turno futuro. |
+| `/shifts` | Consultar la programación personal con mayor horizonte y detalle. |
+
+Home no debe replicar la agenda completa.
+
+`/shifts` no obliga al trabajador a entrar para descubrir si tiene turno ahora.
+
+Una entrada `Ver mi programación` o equivalente podrá navegar desde Home hacia `/shifts` sin transferir autoridad administrativa.
+
+---
+
+#### 22. Actualización ante cambios de programación
+
+La proyección de Home deberá recalcularse cuando la programación visible pueda haber cambiado materialmente.
+
+Son disparadores conceptuales válidos:
+
+- apertura del inicio;
+- retorno de la aplicación a primer plano;
+- retorno desde la programación personal;
+- recepción de una señal válida de actualización de turnos;
+- actualización manual de datos cuando exista ese patrón de interfaz;
+- invalidación o refresco producido por la capa de datos propietaria.
+
+Esta tarea no impone polling, intervalo fijo ni tecnología de sincronización.
+
+Tras recalcular, Home no conservará como actual un turno que la fuente ya haya cancelado, retirado o supersedido.
+
+---
+
+#### 23. Notificaciones no son fuente de verdad
+
+Una notificación sobre un turno puede provocar revalidación o navegación, pero su payload no convierte por sí solo una asignación en turno actual o siguiente.
+
+Al abrir ANIMA desde una notificación:
+
+1. se revalida sesión;
+2. se consulta la programación vigente permitida;
+3. se recalcula la proyección de Home o `/shifts`;
+4. se presenta el estado actual, aunque difiera del contenido histórico de la notificación.
+
+No se congela la programación desde el mensaje recibido.
+
+---
+
+#### 24. Igualdad de experiencia para trabajador y gerente en carril personal
+
+La jerarquía de Home no cambia por tener un rol base con mayor autoridad.
+
+Cuando una persona gerencial usa su carril trabajador:
+
+- ve su turno actual;
+- ve su siguiente turno;
+- consulta su programación personal;
+- no recibe reportes de terceros en el mismo foco;
+- no transforma su siguiente turno en planner de equipo;
+- no hereda un filtro administrativo de sede o trabajador.
+
+La entrada al carril administrativo permanece explícita y separada.
+
+---
+
+#### 25. Información reservada a ANIMA-UX-005
+
+ANIMA-UX-004 determina **qué turno** ocupa cada posición, pero no cierra todavía la composición detallada del contenido de la tarjeta.
+
+ANIMA-UX-005 es propietaria de decidir cómo mostrar de forma comprensible:
+
+- sede;
+- área;
+- horario;
+- rol operativo;
+- jerarquía entre esos campos;
+- ausencia o no aplicabilidad de alguno de ellos;
+- relación visual de ese contexto con el turno seleccionado.
+
+Por tanto, esta tarea no fija un layout final de esos cuatro datos.
+
+---
+
+#### 26. Acciones reservadas a ANIMA-UX-006 y ANIMA-UX-007
+
+ANIMA-UX-004 no define el CTA de marcación.
+
+Se reserva:
+
+- simplificación de check-in a `ANIMA-UX-006`;
+- simplificación de check-out a `ANIMA-UX-007`.
+
+La tarjeta de turno podrá alojar posteriormente la acción correcta, pero esta tarea no decide:
+
+- texto del botón;
+- habilitación;
+- geocerca;
+- validación previa;
+- confirmación;
+- doble toque;
+- transición de asistencia.
+
+---
+
+#### 27. Estados y recuperación reservados a ANIMA-UX-008 a ANIMA-UX-012
+
+La siguiente continuidad mantiene propietarios específicos:
+
+| Tema | Propietario |
+| --- | --- |
+| Marcación confirmada o pendiente | `ANIMA-UX-008` |
+| Explicación de por qué no se puede marcar | `ANIMA-UX-009` |
+| Diferenciación ubicación / turno / autorización | `ANIMA-UX-010` |
+| Manejo comprensible de cola offline | `ANIMA-UX-011` |
+| Sincronización de cola pendiente | `ANIMA-UX-012` |
+
+ANIMA-UX-004 no absorbe esos diseños.
+
+---
+
+#### 28. Delta AS-IS → TO-BE
+
+| Aspecto | AS-IS observado | TO-BE definido por ANIMA-UX-004 |
+| --- | --- | --- |
+| Home | Prioriza asistencia, geocerca, conectividad y resumen; no proyecta turno actual + siguiente como estructura principal. | Incorpora una proyección explícita y priorizada de turno actual y siguiente turno. |
+| Próximo turno | Existe principalmente en `/shifts` mediante una heurística cliente de primer turno futuro. | Se convierte en proyección canónica de presentación consumida también por Home, sin congelar la heurística AS-IS. |
+| Turno actual | No existe como contrato UX explícito de Home. | Se define por la semántica temporal autoritativa de scheduling, sin inferencias locales. |
+| Ausencia | Puede depender de cómo termine la consulta de cada pantalla. | Se separan sin programación, carga, error y ambigüedad. |
+| Agenda completa | `/shifts` contiene programación personal y todavía mezcla funciones administrativas AS-IS. | Home solo anticipa actual + siguiente; `/shifts` conserva consulta personal completa y la administración se separa según ANIMA-UX-003. |
+| Gerencia | El código actual puede ampliar Home y Turnos mediante rol/capability. | El carril personal conserva únicamente la programación propia, independientemente de autoridad administrativa adicional. |
+
+---
+
+#### 29. Matriz de escenarios de aceptación UX
+
+| Escenario | Turno actual | Siguiente | Resultado esperado |
+| --- | --- | --- | --- |
+| Trabajador dentro de un turno y con otro publicado | Sí | Sí | Actual en foco; próximo secundario. |
+| Trabajador dentro de su último turno publicado | Sí | No | Actual en foco; no se inventa siguiente. |
+| Trabajador entre jornadas con turno futuro | No | Sí | Próximo turno en foco con lenguaje futuro. |
+| Trabajador sin programación publicada visible | No | No | Estado vacío real. |
+| Consulta todavía en curso | Desconocido | Desconocido | Carga, nunca “sin turno”. |
+| Consulta fallida | Desconocido | Desconocido | Error recuperable, nunca “sin turno”. |
+| Dos candidatos actuales sin precedencia canónica | Ambiguo | — | Programación no resoluble. |
+| Turno futuro cancelado antes de refrescar | No aplicable tras revalidación | Recalcular | No mantenerlo como próximo. |
+| Gerente en su Home personal | Según su programación | Según su programación | No mostrar programación de terceros. |
+| App abierta desde notificación antigua | Recalcular | Recalcular | Mostrar fuente vigente, no payload histórico. |
+
+---
+
+#### 30. Hallazgos y carryover
+
+| Hallazgo / dependencia | Bloquea ANIMA-UX-004 | Propietario | Condición de salida |
+| --- | --- | --- | --- |
+| La semántica definitiva de turnos nocturnos y otros casos complejos de scheduling no debe inferirse desde la heurística cliente actual. | No para el diseño de presentación; sí para materializar una resolución temporal incompatible. | Carril de programación laboral VISO y contratos propietarios de scheduling | La fuente de programación expone una semántica temporal suficiente para resolver actual/futuro sin inferencia local. |
+| El detalle de sede, área, horario y rol todavía no está diseñado dentro de la tarjeta. | No | `ANIMA-UX-005` | Definir jerarquía y tratamiento de esos datos. |
+| El turno seleccionado todavía no define CTA de marcación. | No | `ANIMA-UX-006` y `ANIMA-UX-007` | Diseñar check-in y check-out sobre contexto válido. |
+| Los estados de marcación, bloqueo y offline no están cerrados en esta tarea. | No | `ANIMA-UX-008` a `ANIMA-UX-012` | Completar la secuencia documental reservada. |
+| `/shifts` AS-IS conserva administración mezclada. | No | Separación aprobada en `ANIMA-UX-003` y materialización física posterior | Implementar el carril personal y el backoffice propietario sin perder programación personal. |
+
+Ningún hallazgo requiere crear una tarea nueva.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La cobertura vigente ya exige que la experiencia priorice la tarea actual y la siguiente obligación, distinga estados sin turno y datos no sincronizados, resuelva el contexto operativo sin fabricarlo desde filtros y mantenga Home, Turnos y autorización separados. ANIMA-UX-004 concreta ese contrato transversal para la proyección de programación en el inicio de ANIMA sin introducir una obligación de prueba materialmente nueva.
+
+---
+
+#### 32. Cobertura de prueba vigente reutilizada
+
+Se reutilizan sin modificación:
+
+- `TREQ-UX-001` — identificación inmediata de tarea actual, siguiente acción y estado;
+- `TREQ-UX-003` — densidad e información adecuadas al actor y su tarea;
+- `TREQ-UX-005` — fuente de verdad, estado y frescura visibles;
+- `TREQ-UX-008` — clasificación de superficie y separación de intenciones;
+- `TREQ-UX-009` — resolución de turno y contexto desde hechos autoritativos;
+- `TREQ-UX-013` — navegación operativa organizada por tarea y proceso en curso;
+- `TREQ-UX-028` — conservación del foco de una tarea válida ya iniciada;
+- `TREQ-UX-029` — foco principal y cola secundaria diferenciada;
+- `TREQ-UX-037` — distinción entre sin turno, tareas futuras, bloqueos y datos no sincronizados;
+- `TREQ-ANIMA-010` — arranque seguro hacia Home con sesión;
+- `TREQ-ANIMA-013` — navegación autenticada sin sustituir autorización;
+- `TREQ-ANIMA-015` — separación en Home de asistencia, geocerca, conectividad y sincronización;
+- `TREQ-ANIMA-016` — separación de lectura personal y gestión en `/shifts`.
+
+Esta enumeración es trazabilidad hacia cobertura existente y no una actualización del registro de requisitos.
+
+---
+
+#### 33. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build del repositorio ni de la aplicación durante el desarrollo documental. |
+| LOCAL | PASS | El artefacto se verificó estructuralmente como una sola tarea, con metadata completa, secciones obligatorias, cero requisitos derivados, continuidad cerrada y sin whitespace final. |
+| REMOTA | PASS | Se verificaron en GitHub la continuidad vigente, la topología `DEFINE_ONCE`, ANIMA-UX-003 aprobado, el código actual de Home y Turnos, la fuente de programación AS-IS, el contrato transversal UX y los fragmentos 04A aplicables. |
+| OPERATIVA | PASS | La matriz de resolución cubre actual + siguiente, solo actual, solo siguiente, vacío, carga, error y ambigüedad sin confundir programación, asistencia o autorización. |
+| FÍSICA | NOT_APPLICABLE | ANIMA-UX-004 es `DEFINE_ONCE` con `NO_PHYSICAL_INSTANCE`; no autoriza cambios de código, Supabase, navegación, datos ni despliegue. |
+
+---
+
+#### 34. Criterios de aceptación
+
+1. Home distingue inequívocamente turno actual y siguiente turno.
+2. El turno actual se selecciona únicamente mediante semántica autoritativa de programación.
+3. Ninguna ventana cliente convierte por anticipación un turno futuro en actual.
+4. El siguiente turno es la primera asignación futura elegible y distinta del actual.
+5. Cuando existe actual + siguiente, el actual tiene mayor jerarquía.
+6. Cuando solo existe siguiente, éste se presenta explícitamente como futuro.
+7. Cuando no existe programación visible, Home usa un estado vacío real.
+8. Carga, error y ausencia permanecen separados.
+9. Una ambigüedad de scheduling no se resuelve por orden incidental del cliente.
+10. Home muestra como máximo actual + un siguiente en la capa inicial.
+11. La programación personal completa permanece en `/shifts`.
+12. Home no reintroduce planner de equipo ni reportes administrativos.
+13. Un usuario gerencial en carril personal solo ve su propia programación.
+14. La programación visible no concede autorización de marcación.
+15. Turno programado y asistencia permanecen como hechos diferentes.
+16. Una notificación no se usa como fuente de verdad de programación.
+17. La proyección se recalcula ante cambios materiales sin imponer tecnología de polling.
+18. Las reglas complejas del scheduling quedan en su dominio propietario.
+19. La información de sede, área, horario y rol queda reservada a ANIMA-UX-005.
+20. Check-in y check-out quedan reservados a ANIMA-UX-006 y ANIMA-UX-007.
+21. Confirmación, bloqueo y offline quedan reservados a ANIMA-UX-008 a ANIMA-UX-012.
+22. No se crean ni modifican requisitos de prueba.
+23. No existe materialización física propia.
+24. La continuidad queda reservada exclusivamente hacia ANIMA-UX-005.
+
+---
+
+#### 35. Límites
+
+ANIMA-UX-004 no:
+
+- modifica `vento-anima`;
+- modifica Supabase;
+- crea migraciones, tablas, vistas, RPC, triggers o RLS;
+- cambia Expo Router;
+- cambia las nueve pestañas autenticadas;
+- implementa la separación física definida por ANIMA-UX-003;
+- redefine el modelo mensual de scheduling;
+- define overnight, DST o `end-at-close`;
+- congela `employee_shifts` como contrato definitivo;
+- convierte `isUpcomingShift` AS-IS en semántica canónica;
+- diseña todavía el detalle visual de sede, área, horario y rol;
+- diseña check-in o check-out;
+- define mensajes finales de marcación bloqueada;
+- define tratamiento completo de cola offline;
+- cambia permisos, roles, capabilities o protección de servidor;
+- modifica el registro de requisitos de prueba;
+- crea una instancia física.
+
+---
+
+#### 36. Estado de salida documental
+
+La tarea deja especificado un contrato de inicio personal con:
+
+- una fuente lógica de programación autoritativa;
+- reglas separadas para turno actual y siguiente turno;
+- siete resultados conceptuales de presentación;
+- una matriz determinista de resolución;
+- jerarquía actual → siguiente → programación completa;
+- separación explícita entre programación, asistencia y autorización;
+- tratamiento fail-closed de ambigüedades temporales;
+- actualización sin depender de payloads históricos de notificación;
+- igualdad de experiencia personal para trabajadores con o sin autoridad administrativa adicional;
+- handoff exacto hacia los detalles de contexto del turno.
+
+El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
+
+---
+
+#### 37. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-003 — Separar experiencia del trabajador y del administrador`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno`
+
+
 ### [ ] ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno
 ### [ ] ANIMA-UX-006 — Simplificar el flujo de check-in
 ### [ ] ANIMA-UX-007 — Simplificar el flujo de check-out

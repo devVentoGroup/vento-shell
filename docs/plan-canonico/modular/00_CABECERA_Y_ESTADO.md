@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1075** |
+| Tareas aprobadas | **1076** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **519** |
+| Tareas no iniciadas | **518** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **67.44% (1075/1594)** |
+| Porcentaje de completamiento | **67.50% (1076/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-UX-003 — Separar experiencia del trabajador y del administrador** |
-| Tarea actual | **ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno** |
+| Última tarea aprobada | **ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno** |
+| Tarea actual | **ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno** |
+| Siguiente tarea | **ANIMA-UX-006 — Simplificar el flujo de check-in** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 23 de 37 aprobadas; ANIMA-UX-004 pendiente** |
+| Progreso del bloque | **BLOQUE F: 24 de 37 aprobadas; ANIMA-UX-005 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-033::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-UX-004** |
+| Carril documental | **ACTIVO — ANIMA-UX-005** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-033::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-UX-003` — Separar experiencia del trabajador y del administrador |
-| Tarea actual | `ANIMA-UX-004` — Diseñar inicio con turno actual y siguiente turno — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-UX-005` — Mostrar sede, área, horario y rol operativo del turno |
+| Última aprobada | `ANIMA-UX-004` — Diseñar inicio con turno actual y siguiente turno |
+| Tarea actual | `ANIMA-UX-005` — Mostrar sede, área, horario y rol operativo del turno — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-UX-006` — Simplificar el flujo de check-in |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 23 DE 37 APROBADAS — ACTUAL ANIMA-UX-004** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 24 DE 37 APROBADAS — ACTUAL ANIMA-UX-005** |
 | Implementación física | **AUTH-DB-033::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-UX-003 — Separar experiencia del trabajador y del administrador
-        ↓
-TAREA ACTUAL
 ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-UX-006 — Simplificar el flujo de check-in
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 23 de 37 tareas aprobadas
+BLOQUE F — 24 de 37 tareas aprobadas
 ```

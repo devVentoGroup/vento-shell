@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1075** |
+| Aprobadas | **1076** |
 | En propuesta | **0** |
-| No iniciadas | **519** |
+| No iniciadas | **518** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **67.44% (1075/1594)** |
+| Porcentaje de completamiento | **67.50% (1076/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-UX-003` — Separar experiencia del trabajador y del administrador | ✅ APROBADA |
-| Tarea actual | `ANIMA-UX-004` — Diseñar inicio con turno actual y siguiente turno | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-UX-005` — Mostrar sede, área, horario y rol operativo del turno | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-UX-004` — Diseñar inicio con turno actual y siguiente turno | ✅ APROBADA |
+| Tarea actual | `ANIMA-UX-005` — Mostrar sede, área, horario y rol operativo del turno | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-UX-006` — Simplificar el flujo de check-in | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -619,7 +619,7 @@
 | ✅ APROBADA | `ANIMA-UX-001` | Inventariar pantallas personales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-002` | Inventariar pantallas administrativas | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-003` | Separar experiencia del trabajador y del administrador | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
-| ⬜ NO INICIADA | `ANIMA-UX-004` | Diseñar inicio con turno actual y siguiente turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
+| ✅ APROBADA | `ANIMA-UX-004` | Diseñar inicio con turno actual y siguiente turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-005` | Mostrar sede, área, horario y rol operativo del turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-006` | Simplificar el flujo de check-in | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-007` | Simplificar el flujo de check-out | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
