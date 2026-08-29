@@ -34,11 +34,11 @@
 | Siguiente tarea | **ANIMA-UX-001 — Inventariar pantallas personales** |
 | Bloque actual | **BLOQUE F — ANIMA** |
 | Progreso del bloque | **BLOQUE F: 19 de 37 aprobadas; ANIMA-AUTH-020 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_ACTIVE** |
-| Acción principal obligatoria | **EJECUTAR_IMPLEMENTACION — AUTH-DB-017::GLOBAL** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-019::GLOBAL** |
 | Carril documental | **ACTIVO — ANIMA-AUTH-020** |
-| Carril físico | **IN_PROGRESS — AUTH-DB-017::GLOBAL** |
-| Alcance físico autorizado | **AUTH-DB-017::GLOBAL** |
+| Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-019::GLOBAL** |
+| Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
 
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE F: 19 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-020** |
-| Implementación física | **AUTH-DB-017::GLOBAL — IN_PROGRESS** |
+| Implementación física | **AUTH-DB-019::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 

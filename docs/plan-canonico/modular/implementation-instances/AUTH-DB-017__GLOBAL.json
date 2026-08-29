@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-017::GLOBAL",
   "task_id": "AUTH-DB-017",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -130,6 +130,17 @@
     "SUPPLEMENTAL_AUTHORIZATION VENTO_OWNER APROBADO vento_ddl_owner",
     "SUPABASE_ROLE_LIFECYCLE vento_ddl_owner provisioned through supabase/roles.sql before migrations",
     "SUPABASE_ROLE_MEMBERSHIP postgres receives SET TRUE, INHERIT FALSE and ADMIN FALSE for vento_ddl_owner",
-    "REMOTE_PROMOTION_CONDITION Supabase CLI 2.109.0 requires supabase db push --include-roles so roles.sql is promoted before AUTH-DB-017; command not executed"
+    "REMOTE_PROMOTION_CONDITION Supabase CLI 2.109.0 requires supabase db push --include-roles so roles.sql is promoted before AUTH-DB-017; command not executed",
+    "VALIDATION 1/7 Data API config PASS",
+    "VALIDATION 2/7 migration manifest check PASS files=9",
+    "VALIDATION 3/7 clean replay PASS PostgreSQL=17 migrations=9 pgTAP_files=12 assertions=204",
+    "VALIDATION 4/7 local recovery PASS RPO_actual=0 RTO_actual_ms=24905 remote_targets_used=NO",
+    "VALIDATION 5/7 local strict drift PASS candidate=7e24966e1a834529fb40339a159b6c25af88a78f certification=LOCAL_CERTIFIED drift_total=0",
+    "VALIDATION 6/7 quality lint ratchet PASS historical_errors=10 historical_warnings=11 touched_clean_files=0",
+    "VALIDATION 7/7 git diff check PASS",
+    "VALIDATION_SUMMARY 7/7 PASS",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "VITAL_OBJECT_MUTATIONS NO"
   ]
 }
