@@ -3397,7 +3397,813 @@ El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
 **SIGUIENTE TAREA RESERVADA**
 `ANIMA-UX-006 — Simplificar el flujo de check-in`
 
-### [ ] ANIMA-UX-006 — Simplificar el flujo de check-in
+### ✅ ANIMA-UX-006 — Simplificar el flujo de check-in
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno
+**Tarea siguiente:** ANIMA-UX-007 — Simplificar el flujo de check-out
+**Tipo de tarea:** documental; diseño UX TO-BE del flujo personal de check-in en ANIMA para reducir la marcación ordinaria a una acción principal sobre contexto laboral ya resuelto, conservando intactas las validaciones canónicas de turno, territorio, rol, autorización, geocerca, idempotencia y evidencia
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar el flujo TO-BE de check-in de ANIMA para que un trabajador con un turno actual comprensible pueda registrar su entrada mediante una acción principal directa, sin tener que preparar manualmente la marcación mediante pasos técnicos de ubicación, selección de sede, recaptura de contexto o navegación adicional.
+
+La simplificación se aplica a la experiencia, no a la seguridad ni a la autoridad del proceso.
+
+El flujo debe responder con claridad:
+
+1. qué acción debe realizar el trabajador;
+2. sobre qué turno se intenta registrar la entrada;
+3. qué validaciones ejecuta ANIMA automáticamente;
+4. cuándo hace falta una intervención excepcional del trabajador;
+5. cómo evita múltiples intenciones por doble toque, retry o reanudación;
+6. a qué tareas posteriores se delegan confirmación, bloqueo, diagnóstico, cola offline y recuperación.
+
+La tarea no implementa el flujo, no modifica Supabase, no redefine el contrato de autorización y no diseña todavía check-out.
+
+---
+
+#### 2. Handoff recibido de ANIMA-UX-004 y ANIMA-UX-005
+
+Esta tarea consume sin reabrir las decisiones de las dos tareas anteriores:
+
+- `ANIMA-UX-004` determina si Home tiene un turno actual y cuál es su identidad;
+- `ANIMA-UX-005` proyecta para ese turno horario, sede laboral, área y rol operativo;
+- el turno actual tiene prioridad visual sobre el siguiente turno;
+- programación y asistencia son hechos distintos;
+- la programación visible no concede por sí sola autorización de marcación;
+- la sede laboral pertenece al turno publicado;
+- el punto físico de check-in puede ser diferente de la sede laboral;
+- sede, área y rol no se reconstruyen desde perfil, preferencias, filtros administrativos ni una selección local;
+- un contexto incompleto no se rellena con fallbacks de otra finalidad.
+
+Por tanto, la entrada normal de `ANIMA-UX-006` es un **turno actual personal ya seleccionado y presentado**, no una pantalla vacía que obligue al trabajador a reconstruir su contexto.
+
+---
+
+#### 3. Principio rector
+
+La regla UX queda:
+
+```text
+CONTEXTO LABORAL YA RESUELTO
++
+UNA ACCIÓN PRINCIPAL: REGISTRAR ENTRADA
++
+VALIDACIONES AUTOMÁTICAS Y AUTORITATIVAS
++
+RESULTADO INEQUÍVOCO
+=
+CHECK-IN SIMPLE
+```
+
+No se considera simplificación válida:
+
+```text
+SELECCIONAR SEDE
+→ ACTUALIZAR UBICACIÓN
+→ VALIDAR UBICACIÓN
+→ CONFIRMAR TURNO
+→ CONFIRMAR CONTEXTO
+→ ABRIR OTRO MODAL
+→ REGISTRAR ENTRADA
+```
+
+cuando esos datos y validaciones pueden resolverse automáticamente desde las fuentes propietarias.
+
+La reducción de pasos nunca autoriza:
+
+- omitir una precondición de servidor;
+- aceptar un turno fabricado por el cliente;
+- sustituir la sede del turno por una preferencia local;
+- omitir geocerca cuando la política vigente la exige;
+- convertir una intención pendiente en asistencia confirmada;
+- perder identidad idempotente o evidencia;
+- habilitar una entrada porque el botón esté visible.
+
+---
+
+#### 4. Resultado UX objetivo
+
+Para el caso ordinario y resoluble, Home debe permitir esta secuencia conceptual:
+
+```text
+TURNO ACTUAL
+[horario]
+[sede · área]
+[rol operativo]
+
+[ Registrar entrada ]
+
+TOQUE ÚNICO
+→ validación automática
+→ resultado
+```
+
+El trabajador no necesita visitar `/shifts`, abrir una pantalla técnica de geocerca, elegir su sede laboral ni volver a digitar datos ya contenidos en la asignación.
+
+La interfaz puede mostrar información de contexto y estado alrededor del CTA, pero ninguna acción secundaria ordinaria compite con `Registrar entrada`.
+
+---
+
+#### 5. Unidad de interacción
+
+La unidad de esta tarea es una **intención personal de check-in** iniciada por el trabajador efectivo sobre el turno actual que Home presenta.
+
+La intención no es:
+
+- un permiso;
+- una aprobación;
+- una sesión operativa ya activa;
+- un registro de asistencia confirmado;
+- un turno;
+- una sede elegida por el cliente;
+- una prueba de geocerca;
+- un resultado de sincronización.
+
+Es la señal explícita de que el trabajador solicita iniciar su jornada sobre el contexto mostrado.
+
+El servidor y los contratos propietarios deciden si esa intención puede producir el efecto de asistencia.
+
+---
+
+#### 6. Fuente de autoridad
+
+El CTA se apoya visualmente en el turno actual mostrado, pero la operación de check-in debe revalidar las fuentes autoritativas antes del efecto.
+
+La cadena conceptual vigente se conserva:
+
+```text
+ACTOR EFECTIVO
+→ TURNO PUBLICADO APLICABLE
+→ SEDE DEL TURNO
+→ ÁREA DEL TURNO
+→ ROL OPERATIVO DEL TURNO
+→ COMPATIBILIDAD ROL-SEDE
+→ COMPATIBILIDAD ROL-ÁREA
+→ PUNTO FÍSICO Y GEOFENCE CUANDO APLIQUEN
+→ AUTORIZACIÓN Y ESTADO COMPATIBLES
+→ EFECTO DE ASISTENCIA
+```
+
+Un valor mostrado previamente puede orientar la experiencia, pero no reemplaza la revalidación necesaria en el momento de la mutación.
+
+No son autoridad para admitir la entrada:
+
+- `shift_id` propuesto unilateralmente por el cliente;
+- último turno visto;
+- última sede usada;
+- `selectedSiteId` local;
+- sede primaria del empleado;
+- rol base;
+- caché sin prueba de vigencia;
+- geocerca por sí sola;
+- texto del botón;
+- estado visual de Home.
+
+---
+
+#### 7. Frontera entre UX y autorización
+
+`ANIMA-UX-006` decide **cómo inicia el trabajador la intención y cuántos pasos visibles necesita**.
+
+No decide:
+
+- qué turno es autorizable;
+- qué ventana temporal es válida;
+- qué permisos conceden el check-in;
+- qué sede, área o rol son compatibles;
+- qué radio de geocerca se utiliza;
+- qué evidencia exacta debe persistirse;
+- qué transición física implementa el servidor.
+
+Estas decisiones ya pertenecen a los contratos canónicos de autorización y contexto del minibloque ANIMA-AUTH.
+
+La interfaz no puede convertir una simplificación de pasos en una segunda política de autorización.
+
+---
+
+#### 8. Estado AS-IS observado
+
+La revisión del código vigente de `vento-anima` muestra un flujo funcional pero más complejo de lo deseado para la experiencia objetivo:
+
+- Home usa una acción genérica que decide `checkIn()` o `checkOut()` según el estado de asistencia;
+- el CTA solo queda habilitado cuando la geocerca ya aparece como lista;
+- existen estados del CTA cuyo texto pide validar o revisar ubicación aunque el propio CTA permanece deshabilitado;
+- Home puede mostrar una tarjeta separada para actualizar ubicación;
+- cuando hay varias sedes del empleado, la interfaz puede abrir selección de sede;
+- el nombre activo puede derivarse de geocerca, selección local, asistencia previa o sede del empleado;
+- `checkIn()` vuelve a ejecutar geocerca y otras comprobaciones después del toque;
+- el código actual solicita permiso de ubicación en segundo plano durante el flujo cuando todavía no está disponible;
+- existe protección contra acciones simultáneas mediante un lock en cliente;
+- existe infraestructura de cola e idempotencia para contingencias;
+- el código actual dispone de `site_id`, `area_id`, `operational_role`, `checkin_site_id` y `checkout_site_id` en el contexto del turno.
+
+Esta auditoría AS-IS sirve para identificar pasos y ambigüedades que el contrato TO-BE debe eliminar. No convierte los detalles actuales de implementación en contrato permanente.
+
+---
+
+#### 9. Drift AS-IS frente al contrato canónico
+
+Se identifica una divergencia material que la implementación futura no debe conservar:
+
+- el contrato aprobado de `ANIMA-AUTH-001` exige exactamente un turno publicado aplicable antes de admitir un check-in;
+- el código AS-IS puede construir una entrada online sin `shiftContext` y registrar una excepción `check_in_without_published_shift`;
+- esa excepción física observada no es una alternativa autorizada por el contrato canónico actual.
+
+Decisión de esta tarea:
+
+```text
+CHECK-IN TO-BE
+NO ADMITE
+ENTRADA SIN TURNO PUBLICADO APLICABLE
+```
+
+La corrección física de esa divergencia pertenece a la materialización posterior de ANIMA y de sus contratos de autorización. Esta tarea únicamente impide que el comportamiento AS-IS sea promovido a diseño objetivo.
+
+---
+
+#### 10. Camino ordinario de un solo toque
+
+Cuando Home dispone de un turno actual laboral presentado y no existe una entrada activa o una intención previa todavía sin resolver, la experiencia ordinaria debe reducirse a:
+
+1. el trabajador revisa el contexto visible de su turno;
+2. toca `Registrar entrada` una sola vez;
+3. el CTA entra inmediatamente en estado de procesamiento;
+4. ANIMA resuelve automáticamente las precondiciones técnicas y contractuales;
+5. el flujo termina en un resultado inequívoco o en un handoff de recuperación.
+
+No se añade una confirmación modal ordinaria del tipo “¿Seguro que deseas registrar entrada?”. El toque sobre un CTA específico, contextual y claramente rotulado constituye la intención explícita.
+
+Una confirmación adicional solo podría existir si una tarea posterior o una política de riesgo concreta la justificara; no forma parte del camino normal definido aquí.
+
+---
+
+#### 11. Estados documentales de interacción
+
+Para describir el flujo se utilizan cinco estados conceptuales locales a esta tarea:
+
+| Estado documental | Significado UX | Acción principal |
+| --- | --- | --- |
+| `CHECK_IN_AVAILABLE` | existe contexto visual de turno actual suficiente para ofrecer la intención | `Registrar entrada` |
+| `CHECK_IN_SUBMITTING` | el toque ya ocurrió y se ejecutan precondiciones o mutación | esperar; no aceptar otro toque |
+| `CHECK_IN_PREREQUISITE` | hace falta una intervención excepcional que solo el trabajador puede completar | resolver la condición indicada |
+| `CHECK_IN_BLOCKED` | la validación autoritativa impide producir el efecto | handoff a explicación y recuperación |
+| `CHECK_IN_RESULT` | existe resultado de la intención | handoff a confirmado, pendiente o estado aplicable |
+
+Estos nombres son herramientas documentales de diseño. No crean enums físicos, reason codes, estados de base de datos ni contratos públicos nuevos.
+
+---
+
+#### 12. Regla de visibilidad del CTA
+
+`Registrar entrada` es la acción principal únicamente cuando la experiencia personal está en una situación donde iniciar una entrada es pertinente.
+
+Reglas:
+
+- con turno actual laboral y sin check-in activo, el CTA puede presentarse como acción ordinaria;
+- con un check-in ya activo, el CTA de entrada no se presenta; la continuidad corresponde a `ANIMA-UX-007`;
+- con una intención de entrada todavía pendiente de resolver, no se ofrece una segunda intención equivalente;
+- con solo un siguiente turno futuro y ningún turno actual, Home no presenta el futuro como si pudiera iniciarse ahora;
+- con descanso, Home no presenta un CTA de check-in laboral por completar una tarjeta;
+- con estado de carga o programación no resoluble, no se finge disponibilidad;
+- que el CTA sea visible no significa autorización concedida.
+
+La revalidación server-side continúa siendo obligatoria antes del efecto.
+
+---
+
+#### 13. Preflight automático después del toque
+
+Las comprobaciones que el sistema puede ejecutar sin una decisión humana se realizan automáticamente después de la intención.
+
+El trabajador no debe tener que encadenar manualmente acciones equivalentes a:
+
+- refrescar turno;
+- refrescar sede;
+- revalidar área;
+- escoger rol;
+- ejecutar una pantalla técnica de autorización;
+- pulsar primero “validar ubicación” si la propia acción puede solicitar y validar ubicación de manera segura;
+- repetir datos ya presentes en el contexto laboral.
+
+El preflight automático puede resolver en paralelo o secuencia interna las dependencias que el contrato técnico permita, pero la UX las presenta como una sola operación coherente.
+
+Si una precondición exige intervención humana real, el flujo pasa a `CHECK_IN_PREREQUISITE` en lugar de simular que la acción terminó.
+
+---
+
+#### 14. Revalidación del turno y su contexto
+
+La información mostrada por Home se utiliza como contexto para comprender la acción, no como snapshot autoritativo suficiente para escribir asistencia.
+
+Al iniciar la intención, el sistema debe preservar la regla de que:
+
+- el actor efectivo se resuelve de nuevo cuando corresponda;
+- el turno publicado debe seguir siendo aplicable;
+- la publicación no debe haber sido retirada, sustituida o invalidada;
+- sede, área y rol deben seguir correspondiendo al mismo turno;
+- las compatibilidades de rol y territorio deben seguir siendo válidas;
+- una ambigüedad no se resuelve eligiendo silenciosamente la primera fila;
+- una indisponibilidad técnica no se traduce en “sin turno”.
+
+Si el contexto cambió materialmente desde lo mostrado, la intención no continúa con el snapshot obsoleto.
+
+---
+
+#### 15. Ubicación y geocerca en el flujo simplificado
+
+Cuando la política aplicable exige ubicación o geocerca para el check-in, la validación forma parte del preflight automático de `Registrar entrada`.
+
+La experiencia objetivo evita exigir dos acciones ordinarias separadas:
+
+```text
+ACTUALIZAR UBICACIÓN
+→
+REGISTRAR ENTRADA
+```
+
+El toque en `Registrar entrada` puede iniciar o refrescar la ubicación necesaria y continuar automáticamente si el resultado es válido.
+
+Esto no elimina:
+
+- requisitos de permiso del sistema operativo;
+- precisión mínima propietaria;
+- radio o punto físico aplicable;
+- validación server-side cuando esté definida;
+- evidencia de ubicación;
+- tratamiento de ubicación manipulada o no concluyente.
+
+La simplificación solo elimina una preparación manual redundante cuando el sistema puede ejecutar la comprobación por sí mismo.
+
+---
+
+#### 16. Sede laboral y punto de marcación
+
+La UX conserva explícitamente la separación aprobada:
+
+```text
+SEDE LABORAL DEL TURNO
+≠
+PUNTO FÍSICO DE CHECK-IN
+```
+
+La tarjeta del turno muestra la sede laboral definida por `ANIMA-UX-005`.
+
+El check-in utiliza el punto físico autorizado por el contrato propietario cuando sea diferente.
+
+Consecuencias:
+
+- validar geocerca en un punto permitido no cambia la sede laboral mostrada;
+- seleccionar un punto de marcación no reasigna el turno;
+- la ubicación física no amplía sede, área, rol ni permisos;
+- un nombre técnico de punto no sustituye el contexto laboral;
+- el evento de asistencia conserva la relación entre sede operativa y punto físico cuando ambos difieren.
+
+---
+
+#### 17. Permisos del dispositivo
+
+Un permiso del sistema operativo requerido para ubicación, notificaciones u otra capacidad técnica no debe convertirse en un paso manual recurrente si ya fue concedido y sigue vigente.
+
+Para ubicación:
+
+- si el permiso requerido ya existe, el check-in continúa sin pedir una acción adicional;
+- si falta un permiso que el trabajador puede conceder, la intención entra en `CHECK_IN_PREREQUISITE` y ofrece la acción concreta para resolverlo;
+- después de concederlo, el flujo debe poder continuar o reanudarse sin obligar a reconstruir el turno;
+- una denegación persistente no se disfraza como error de turno;
+- esta tarea no redefine qué nivel de permiso exige la política física vigente.
+
+La experiencia no debe entrenar al trabajador a abrir ajustes o refrescar permisos antes de cada jornada “por si acaso”.
+
+---
+
+#### 18. Selección excepcional de punto físico
+
+La selección manual no forma parte del flujo ordinario de check-in.
+
+Solo puede aparecer si, después de resolver autoritativamente el turno y su territorio, el contrato propietario declara más de un **punto físico de marcación igualmente válido** y requiere que el trabajador indique cuál está usando.
+
+En ese caso:
+
+- la interfaz habla de **punto de marcación**, no de “cambiar sede”;
+- las opciones ya deben estar limitadas por el contexto autoritativo;
+- la selección no modifica `site_id`, `area_id`, `operational_role` ni la publicación;
+- no se ofrecen sedes ajenas al turno como bypass;
+- si el contrato no permite una elección segura, se falla cerrado en lugar de pedir al trabajador que invente contexto.
+
+La existencia AS-IS de un selector de sedes del empleado no autoriza mantenerlo como mecanismo TO-BE para escoger la sede laboral del check-in.
+
+---
+
+#### 19. Prohibición de recaptura
+
+El trabajador no vuelve a proporcionar manualmente información que el turno y el contexto ya contienen de forma autoritativa.
+
+El flujo ordinario no solicita:
+
+- nombre del trabajador;
+- sede laboral;
+- área;
+- rol operativo;
+- hora programada;
+- identidad del turno;
+- motivo de entrada normal;
+- una confirmación textual del contexto ya visible.
+
+La captura manual solo puede existir para un hecho nuevo y necesario que no pueda derivarse correctamente de la fuente propietaria.
+
+La simplificación conserva la diferencia entre reutilizar un hecho existente y fabricar un hecho faltante.
+
+---
+
+#### 20. Doble toque, concurrencia e idempotencia
+
+Desde el primer toque aceptado, el CTA queda bloqueado para nuevas intenciones equivalentes mientras la operación se resuelve.
+
+Reglas UX:
+
+1. el primer toque inicia una única intención;
+2. los toques adicionales mientras `CHECK_IN_SUBMITTING` no crean eventos nuevos;
+3. el progreso se muestra sobre la misma acción o región contextual, sin abrir múltiples flujos;
+4. una respuesta lenta no habilita un segundo intento destructivo;
+5. un retry técnico reutiliza la identidad idempotente y las reglas ya definidas por el contrato de asistencia;
+6. perder la respuesta no autoriza a asumir que la operación no ocurrió;
+7. una intención offline o reanudada no se transforma en una segunda entrada.
+
+La UX depende del contrato idempotente existente; no sustituye la deduplicación server-side con un simple `disabled` de frontend.
+
+---
+
+#### 21. Handoff a ANIMA-UX-008 para el resultado
+
+`ANIMA-UX-006` termina cuando la intención ya produjo un resultado clasificable.
+
+La presentación definitiva de:
+
+- entrada confirmada;
+- entrada pendiente;
+- sincronización en curso;
+- resultado todavía no confirmado;
+
+pertenece a `ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente`.
+
+Esta tarea fija únicamente que el flujo de check-in debe llegar a un estado explícito y no dejar el CTA aparentando disponibilidad después de que ya existe una intención.
+
+No se define aquí el copy final, iconografía, color ni persistencia visual de esos resultados.
+
+---
+
+#### 22. Handoff a ANIMA-UX-009 y ANIMA-UX-010 para bloqueos
+
+Si una precondición impide el check-in, la experiencia no termina en un botón deshabilitado sin explicación ni en un texto técnico del backend.
+
+La intención pasa a una salida de bloqueo cuya explicación final será propietaria de:
+
+- `ANIMA-UX-009 — Explicar por qué no se puede marcar`;
+- `ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización`.
+
+Esta tarea conserva las categorías materiales que deben permanecer diferenciables:
+
+- ausencia o invalidez de turno;
+- ventana temporal incompatible;
+- sede/área/rol incompatibles;
+- ubicación o geocerca no válidas;
+- falta de permiso del dispositivo;
+- denegación de autorización;
+- fuente técnica no disponible;
+- conflicto o contexto cambiado.
+
+No asigna textos finales ni reason codes nuevos.
+
+---
+
+#### 23. Handoff a ANIMA-UX-011 para contingencia offline
+
+La reducción de pasos no convierte una pérdida de red en éxito automático.
+
+Cuando el contrato de asistencia permita preservar una intención offline:
+
+- la intención debe quedar durablemente almacenada antes de mostrarse como encolada;
+- conserva su identidad estable y el contexto requerido;
+- no se presenta como aplicada si solo está pendiente;
+- no se ofrece una segunda entrada mientras la primera siga sin resolución segura;
+- el trabajador no debe repetir manualmente el contexto para “volver a intentar”.
+
+La experiencia detallada de cola, sincronización, conflictos y recuperación pertenece a `ANIMA-UX-011 — Diseñar manejo comprensible de cola offline`.
+
+---
+
+#### 24. Handoff a ANIMA-UX-012 para interrupciones
+
+Si el flujo se interrumpe por cambio de aplicación, bloqueo de pantalla, pérdida de señal, permiso del dispositivo o cierre inesperado, la intención no se reinicia ciegamente desde cero.
+
+Esta tarea exige conservar una identidad de interacción suficiente para que la capa propietaria pueda decidir si corresponde:
+
+- continuar;
+- consultar el resultado;
+- revalidar;
+- reanudar un prerequisito;
+- mostrar pendiente;
+- detener por conflicto.
+
+`ANIMA-UX-012 — Permitir reanudar una marcación interrumpida` diseñará la experiencia completa de esa recuperación.
+
+---
+
+#### 25. Frontera con ANIMA-UX-007
+
+Esta tarea no simplifica el check-out.
+
+La separación es:
+
+```text
+SIN ENTRADA ACTIVA
+→ ANIMA-UX-006
+→ REGISTRAR ENTRADA
+
+CON ENTRADA ACTIVA
+→ ANIMA-UX-007
+→ CERRAR / REGISTRAR SALIDA
+```
+
+No se diseña un CTA genérico cuyo significado cambie de forma ambigua.
+
+La implementación física puede reutilizar componentes, pero la semántica visible debe expresar inequívocamente si la acción inicia o cierra una jornada.
+
+Las reglas de salida, punto físico de salida y comportamiento después del check-in permanecen reservadas a `ANIMA-UX-007` y a los contratos de autorización correspondientes.
+
+---
+
+#### 26. Jerarquía visual y densidad
+
+El check-in es una tarea frecuente y de baja densidad informativa para el trabajador.
+
+Home debe priorizar:
+
+1. turno actual;
+2. contexto mínimo de horario, sede, área y rol;
+3. acción `Registrar entrada`;
+4. estado inmediato del intento.
+
+No deben competir en el camino ordinario:
+
+- diagnósticos técnicos;
+- métricas administrativas;
+- reportes de terceros;
+- filtros;
+- acciones de configuración;
+- selección libre de sede;
+- detalles avanzados de geolocalización;
+- historial completo;
+- datos de sincronización de bajo nivel.
+
+Los detalles necesarios para resolver una excepción se presentan progresivamente cuando la excepción existe.
+
+---
+
+#### 27. Accesibilidad y comprensión
+
+El CTA ordinario debe:
+
+- tener una etiqueta textual inequívoca equivalente a `Registrar entrada`;
+- mantener un objetivo táctil adecuado para móvil;
+- comunicar estado de procesamiento sin depender únicamente de color;
+- impedir activación repetida mientras procesa;
+- conservar lectura correcta con texto ampliado;
+- ofrecer semántica accesible para lector de pantalla;
+- distinguir la acción principal de enlaces de ayuda o recuperación;
+- evitar que un spinner sin texto sea la única explicación de lo que ocurre.
+
+La interfaz no debe exigir que el trabajador conozca términos como geofence, RPC, RLS, cache, resolver o `shift_id` para completar el flujo.
+
+---
+
+#### 28. Minimización y privacidad
+
+El check-in muestra y transmite únicamente la información necesaria para que el trabajador comprenda su acción y para que el sistema la valide y audite.
+
+No se exponen en la pantalla ordinaria:
+
+- UUID internos;
+- nombres de tablas;
+- permisos atómicos;
+- identificadores de otras personas;
+- candidatos de turnos alternativos;
+- detalles de políticas antifraude;
+- coordenadas crudas cuando no sean necesarias para comprender la acción;
+- payloads de diagnóstico;
+- datos administrativos de terceros.
+
+La evidencia técnica requerida puede persistirse en las capas propietarias sin convertirla en contenido visible de Home.
+
+---
+
+#### 29. Matriz de escenarios de aceptación UX
+
+| Escenario | Resultado esperado |
+| --- | --- |
+| Turno actual válido, contexto completo y geocerca ya reutilizable | Un toque en `Registrar entrada`; procesar y entregar resultado. |
+| Turno actual válido y geocerca requiere lectura nueva | El mismo toque inicia la validación; no exigir primero “Actualizar ubicación”. |
+| Falta permiso de ubicación requerido | Handoff a prerequisito concreto; conservar contexto y permitir continuidad segura después de resolverlo. |
+| Turno actual con punto de check-in distinto de sede laboral | Mostrar la sede laboral en el turno y validar el punto físico sin reasignar la sede. |
+| Existe exactamente un punto físico válido | Resolverlo automáticamente; no pedir selección. |
+| Existen varios puntos solo si el contrato autoritativo permite elección | Pedir excepcionalmente elegir el punto de marcación entre opciones ya válidas; no “cambiar sede”. |
+| Solo existe siguiente turno futuro | No presentar ese turno como disponible para check-in actual. |
+| Día de descanso | No presentar `Registrar entrada` como acción laboral ordinaria. |
+| No existe turno publicado aplicable | Cero efectos de asistencia; handoff a bloqueo. |
+| Turno se retira entre render y toque | Revalidar; no registrar usando el snapshot mostrado. |
+| Turno cambia sede/área/rol antes del efecto | Invalidar contexto previo y volver a resolver; no combinar valores viejos y nuevos. |
+| Geocerca válida pero turno inválido | No registrar; ubicación no fabrica autorización. |
+| Turno válido pero geocerca requerida falla | No registrar; handoff a causa de ubicación. |
+| Doble toque rápido | Una única intención; el resto no genera eventos. |
+| Respuesta del servidor se pierde después del commit | Consultar/reconciliar por identidad; no crear una segunda entrada. |
+| Red cae y el contrato permite cola | Solo mostrar pendiente después de persistencia durable; no mostrar confirmado. |
+| Red cae y no puede preservarse una intención válida | No fingir éxito; handoff a recuperación. |
+| Ya existe check-in activo | No ofrecer entrada nueva; continuidad hacia flujo de check-out. |
+| Gerente usa su Home personal | Mismo flujo de un toque sobre su propio turno, sin privilegio UX especial para omitir controles. |
+
+---
+
+#### 30. Hallazgos y carryover
+
+| Hallazgo / dependencia | Bloquea ANIMA-UX-006 | Propietario | Condición de salida |
+| --- | --- | --- | --- |
+| El código AS-IS permite en la ruta online una entrada sin `shiftContext` mediante `check_in_without_published_shift`, incompatible con `ANIMA-AUTH-001`. | No para el contrato documental; sí para materializar el flujo canónico. | Materialización física de ANIMA y contratos `ANIMA-AUTH-001` a `ANIMA-AUTH-007` | El check-in físico falla cerrado cuando no existe exactamente un turno publicado aplicable y elimina el fallback como camino autorizado. |
+| El CTA AS-IS depende de geocerca previamente `ready`, lo que puede convertir la ubicación en un paso manual separado. | No | Materialización física de ANIMA | Integrar la validación automática de ubicación en la intención de check-in conservando la política propietaria. |
+| El selector AS-IS habla de cambiar sede y puede consumir sedes del empleado. | No | Materialización física de ANIMA y contrato de punto físico | La sede laboral procede del turno; cualquier elección excepcional se limita a puntos físicos autorizados y se etiqueta como tal. |
+| La presentación final de confirmado frente a pendiente no pertenece a esta tarea. | No | `ANIMA-UX-008` | Diseñar el resultado visible sin confundir persistencia local con confirmación remota. |
+| Los textos y recuperación de bloqueos no pertenecen a esta tarea. | No | `ANIMA-UX-009` y `ANIMA-UX-010` | Diseñar explicación humana y separar causas de ubicación, turno y autorización. |
+| La cola offline y la reanudación detallada no pertenecen a esta tarea. | No | `ANIMA-UX-011` y `ANIMA-UX-012` | Diseñar estados de cola y recuperación de una intención interrumpida. |
+| La validación con trabajadores reales todavía no corresponde a este cierre documental. | No | `ANIMA-UX-015` | Ejecutar piloto de check-in/check-out con trabajadores y registrar evidencia. |
+
+Ningún hallazgo requiere crear una tarea documental adicional.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La cobertura vigente ya protege foco en la acción principal, reutilización de contexto autoritativo, separación de estados, explicación de bloqueos, idempotencia, contingencia offline, geocerca, autorización y no duplicación de efectos. Esta tarea especializa esas reglas para reducir pasos visibles en el check-in de ANIMA sin introducir una obligación materialmente nueva.
+
+---
+
+#### 32. Cobertura de prueba vigente reutilizada
+
+Se reutilizan sin modificación:
+
+- `TREQ-UX-001` — tarea actual, siguiente acción principal y estado del proceso comprensibles;
+- `TREQ-UX-002` — bloqueo o fallo explicado con recuperación segura y sin duplicar efectos;
+- `TREQ-UX-003` — información, acciones y densidad adecuadas al actor;
+- `TREQ-UX-005` — fuente de verdad y distinción de estado confirmado o pendiente;
+- `TREQ-UX-006` — comportamiento explícito ante interrupción, conectividad y reanudación;
+- `TREQ-UX-008` — clasificación de la intención y separación de carriles;
+- `TREQ-UX-009` — contexto operativo resuelto desde hechos autoritativos y no desde preferencias o filtros;
+- `TREQ-UX-017` — minimización de datos por finalidad;
+- `TREQ-UX-021` — estados diferenciables de forma accesible y no solo por color;
+- `TREQ-UX-037` — separación entre ausencia de contexto, bloqueo y estados de sincronización;
+- `TREQ-UX-059` — relevancia contextual sin transformar preferencias en autoridad;
+- `TREQ-UX-060` — proyección de contexto desde fuentes autoritativas;
+- `TREQ-UX-063` — contenido mínimo pertinente en la superficie operativa;
+- `TREQ-UX-195` — capa inicial operativa enfocada en contexto y acción relevante;
+- `TREQ-ANIMA-003` — persistencia durable e idempotencia de una intención offline antes de presentarla como encolada;
+- `TREQ-ANIMA-015` — separación en Home entre asistencia, geocerca, sede, conectividad, cola y sincronización.
+
+La enumeración anterior es trazabilidad hacia requisitos existentes. No modifica el registro canónico.
+
+---
+
+#### 33. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build de `vento-shell` ni de `vento-anima` durante el desarrollo documental. |
+| LOCAL | PASS | El artefacto fue verificado estructuralmente como una sola tarea, con metadata obligatoria, secciones consecutivas, cero requisitos derivados, continuidad cerrada y representación UTF-8/LF sin whitespace final. |
+| REMOTA | PASS | Se verificaron en GitHub la continuidad actual, el owner, la topología `DEFINE_ONCE`, las tareas ANIMA-UX-004/005 aprobadas, los contratos ANIMA-AUTH aplicables, el código AS-IS de Home y asistencia, los fragmentos 04A necesarios, `package.json` y los validadores documentales. |
+| OPERATIVA | NOT_EXECUTED | La prueba con trabajadores reales queda reservada a ANIMA-UX-015; la matriz de esta tarea es diseño y no sustituye evidencia de uso real. |
+| FÍSICA | NOT_APPLICABLE | ANIMA-UX-006 está gobernada por `DEFINE_ONCE`; no crea instancia física ni autoriza cambios de aplicación, datos, Supabase o despliegue. |
+
+---
+
+#### 34. Criterios de aceptación
+
+1. La tarea consume el turno actual y su contexto ya definidos por ANIMA-UX-004 y ANIMA-UX-005 sin recalcularlos en la interfaz.
+2. El camino ordinario de check-in requiere una sola acción explícita del trabajador: `Registrar entrada`.
+3. No existe un paso ordinario separado de “actualizar ubicación” previo al CTA cuando la ubicación puede resolverse automáticamente.
+4. El trabajador no selecciona su sede laboral para poder marcar.
+5. La sede laboral del turno permanece separada del punto físico de check-in.
+6. Un punto físico único y válido se resuelve automáticamente.
+7. Una selección excepcional solo puede elegir entre puntos físicos ya autorizados por el contexto propietario y nunca modifica la sede laboral.
+8. La interfaz no vuelve a solicitar sede, área, rol, turno, horario ni identidad ya disponibles de forma autoritativa.
+9. El toque sobre el CTA inicia una intención, no una autorización ya concedida.
+10. Antes del efecto se revalidan actor, turno publicado, vigencia, sede, área, rol, compatibilidades y controles aplicables.
+11. La geocerca no crea turno, territorio, sede, área, rol ni permiso.
+12. El flujo TO-BE no admite check-in sin un turno publicado aplicable.
+13. La excepción AS-IS `check_in_without_published_shift` no forma parte del contrato objetivo.
+14. Un cambio material de turno entre render y mutación invalida el contexto previo y obliga a resolver de nuevo.
+15. El CTA no acepta una segunda intención mientras el check-in está procesándose.
+16. Doble toque, retry o respuesta perdida no deben producir dos entradas.
+17. Un check-in activo elimina la pertinencia del CTA de entrada y entrega continuidad a ANIMA-UX-007.
+18. Un siguiente turno futuro no se presenta como check-in disponible ahora.
+19. Una asignación de descanso no presenta un CTA laboral de entrada.
+20. Los permisos del dispositivo se solicitan solo cuando faltan y el flujo conserva contexto para continuar de forma segura.
+21. La presentación final de confirmado o pendiente queda reservada a ANIMA-UX-008.
+22. Los mensajes de imposibilidad quedan reservados a ANIMA-UX-009.
+23. La diferenciación de ubicación, turno y autorización queda reservada a ANIMA-UX-010.
+24. La cola offline queda reservada a ANIMA-UX-011 y nunca se confunde con confirmación.
+25. La reanudación de una intención interrumpida queda reservada a ANIMA-UX-012.
+26. El CTA es accesible, inequívoco y no depende solo de color para expresar disponibilidad o procesamiento.
+27. La experiencia ordinaria no expone detalles técnicos de autorización, geocerca, base de datos o sincronización.
+28. La tarea no redefine políticas de geocerca, thresholds, reason codes, permisos, tablas, RPC ni modelo físico de asistencia.
+29. No se crean ni modifican requisitos de prueba.
+30. No existe materialización física propia.
+31. La continuidad queda reservada exclusivamente hacia ANIMA-UX-007.
+
+---
+
+#### 35. Límites
+
+ANIMA-UX-006 no:
+
+- modifica `vento-anima`;
+- modifica `vento-shell` fuera de su documentación canónica;
+- modifica Supabase;
+- crea migraciones, tablas, columnas, vistas, RPC, triggers, Edge Functions, RLS o grants;
+- cambia `employee_shifts`;
+- cambia `attendance_logs`;
+- define el esquema físico de sesiones de asistencia;
+- redefine la semántica de turno actual o siguiente;
+- redefine horario, sede, área o rol operativo;
+- redefine la ventana temporal de un turno;
+- redefine radios, precisión, latches o thresholds de geocerca;
+- crea una política nueva de permisos del sistema operativo;
+- convierte `selectedSiteId` en autoridad;
+- autoriza check-in sin turno publicado;
+- crea reason codes;
+- define copy final de bloqueos;
+- define copy final de confirmado o pendiente;
+- diseña la cola offline completa;
+- diseña la reanudación completa;
+- simplifica check-out;
+- modifica el catálogo de pantallas;
+- cambia navegación física;
+- crea componentes;
+- modifica el registro de requisitos de prueba;
+- ejecuta pruebas con trabajadores reales;
+- crea una instancia física.
+
+---
+
+#### 36. Estado de salida documental
+
+La tarea deja especificado un contrato UX de check-in con:
+
+- un turno actual y contexto ya heredados de ANIMA-UX-004/005;
+- un único CTA ordinario `Registrar entrada`;
+- preflight automático después del toque;
+- conservación completa de validaciones autoritativas;
+- separación estricta entre sede laboral y punto físico de marcación;
+- eliminación conceptual de selección manual de sede como preparación ordinaria;
+- eliminación conceptual de actualización manual de ubicación como paso obligatorio previo cuando puede automatizarse;
+- tratamiento explícito de permisos del dispositivo como prerequisito excepcional;
+- protección contra doble toque y efectos duplicados;
+- rechazo del fallback AS-IS de entrada sin turno publicado;
+- handoffs cerrados hacia resultado, bloqueos, offline y reanudación;
+- frontera explícita con check-out;
+- cero nuevos requisitos de prueba;
+- cero materialización física durante este cierre.
+
+El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
+
+---
+
+#### 37. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-006 — Simplificar el flujo de check-in`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-007 — Simplificar el flujo de check-out`
+
+
 ### [ ] ANIMA-UX-007 — Simplificar el flujo de check-out
 ### [ ] ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente
 ### [ ] ANIMA-UX-009 — Explicar por qué no se puede marcar
