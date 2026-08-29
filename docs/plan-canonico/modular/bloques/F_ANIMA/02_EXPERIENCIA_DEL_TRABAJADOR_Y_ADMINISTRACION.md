@@ -1234,7 +1234,782 @@ La salida documental queda compuesta por:
 `ANIMA-UX-003 — Separar experiencia del trabajador y del administrador`
 
 
-### [ ] ANIMA-UX-003 — Separar experiencia del trabajador y del administrador
+### ✅ ANIMA-UX-003 — Separar experiencia del trabajador y del administrador
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-002 — Inventariar pantallas administrativas
+**Tarea siguiente:** ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno
+**Tipo de tarea:** documental; diseño UX TO-BE de la separación entre experiencia personal y operativa del trabajador, supervisión y administración autorizadas, y diagnóstico técnico de ANIMA, sin materialización física
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir la separación objetivo entre la experiencia cotidiana del trabajador y las capacidades administrativas observadas en ANIMA, consumiendo los inventarios AS-IS cerrados por `ANIMA-UX-001` y `ANIMA-UX-002` y el contrato transversal de separación de carriles aprobado en E2.
+
+La separación debe conseguir simultáneamente que:
+
+- el trabajador use ANIMA para su turno, asistencia, información, documentos, comunicaciones, soporte y cuenta sin que la administración compita con su tarea ordinaria;
+- una persona con responsabilidades gerenciales conserve capacidades autorizadas sin convertir la experiencia personal en backoffice;
+- la supervisión móvil ligera permanezca posible donde sea útil para la operación inmediata;
+- la administración densa, masiva o de configuración se entregue a la aplicación o backoffice propietario cuando corresponda;
+- una misma identidad humana pueda pasar explícitamente entre carriles sin heredar filtros, territorio o autoridad incorrectos;
+- diagnóstico técnico permanezca separado tanto de la experiencia personal como de la administración laboral;
+- ninguna separación visual sustituya autorización efectiva ni protección de servidor.
+
+Esta tarea define el contrato UX objetivo. No modifica rutas, código, permisos, datos, Supabase ni el catálogo físico de pantallas.
+
+---
+
+#### 2. Entradas canónicas consumidas
+
+La tarea consume y preserva:
+
+- `ANIMA-UX-001`, que cerró un subconjunto personal de ocho pantallas: tres personales puras y cinco mixtas;
+- `ANIMA-UX-002`, que cerró un subconjunto administrativo o técnico de ocho pantallas: dos administrativas puras, cinco mixtas y una técnica;
+- el universo estable `ANIMA-SCREEN-001` a `ANIMA-SCREEN-014`;
+- el principio transversal `UX-BASE-001`, según el cual la clasificación pertenece a la acción y a la superficie, no al nombre de la aplicación ni del rol;
+- el modelo transversal de experiencia administrativa `UX-ADMIN-*`;
+- los contratos de autorización, contexto y protección de servidor ya aprobados;
+- la propiedad funcional por aplicación, especialmente las fronteras entre ANIMA, VISO, TALENTO, SHELL y el servicio documental;
+- el estado actual de `vento-anima` usado por los dos inventarios precedentes.
+
+La tarea no reabre la exactitud del inventario AS-IS. Lo transforma en una decisión de responsabilidad UX TO-BE.
+
+---
+
+#### 3. Regla rectora de separación
+
+ANIMA no se divide por tipo de persona sino por intención de la acción.
+
+```text
+MIS DATOS + MI TURNO + MI ASISTENCIA + MI CASO
+→ EXPERIENCIA DEL TRABAJADOR
+
+OBSERVAR OPERACIÓN VIGENTE Y COORDINAR DENTRO DEL ALCANCE AUTORIZADO
+→ SUPERVISIÓN LIGERA
+
+PLANIFICAR + GESTIONAR TERCEROS + PUBLICAR + CORREGIR + CONFIGURAR
+→ EXPERIENCIA ADMINISTRATIVA
+
+DIAGNOSTICAR SISTEMA, DATOS O INTEGRACIONES
+→ EXPERIENCIA TÉCNICA
+
+ARRANQUE + SESIÓN + AUTENTICACIÓN
+→ ACCESO TRANSVERSAL
+```
+
+Una persona gerente puede usar la experiencia del trabajador sin que su jerarquía transforme Home, Turnos, Documentos, Novedades o Soporte en pantallas administrativas.
+
+La administración se activa por intención y autorización explícitas, no por la mera existencia de un rol gerencial en la sesión.
+
+---
+
+#### 4. La separación no crea cuentas ni identidades paralelas
+
+La misma identidad empresarial y la misma sesión autenticada pueden participar en varios carriles.
+
+La separación no autoriza:
+
+- crear un usuario personal y otro administrativo para la misma persona;
+- mantener perfiles duplicados del trabajador;
+- copiar datos entre una versión personal y una versión administrativa de ANIMA;
+- convertir el rol base en un modo permanente de interfaz;
+- usar un correo, allowlist local o nombre de rol como selector de carril autoritativo.
+
+Cada cambio de carril vuelve a resolver contexto y permisos aplicables.
+
+---
+
+#### 5. Etiquetas documentales de esta tarea
+
+Para expresar la decisión sin crear nuevos enums de producto se utilizan estas etiquetas locales:
+
+| Etiqueta | Significado documental |
+| --- | --- |
+| `TRABAJADOR` | experiencia personal u operativa ligera centrada en el propio actor |
+| `SUPERVISION_ANIMA` | observación o coordinación móvil acotada de operación vigente |
+| `ADMIN_ANIMA` | administración propia de ANIMA que debe vivir fuera de la navegación personal |
+| `HANDOFF_ADMIN` | administración que debe resolverse en la aplicación o backoffice propietario |
+| `TECNICA` | diagnóstico, auditoría técnica o soporte especializado |
+| `ACCESO` | bootstrap, login y continuidad de sesión |
+
+Estas etiquetas sirven únicamente a `ANIMA-UX-003`. No sustituyen la taxonomía transversal ni crean valores de base de datos.
+
+---
+
+#### 6. Cierre cuantitativo de las catorce pantallas
+
+Cada identidad móvil recibe exactamente un carril primario objetivo:
+
+| Carril primario | Cantidad |
+| --- | ---: |
+| `TRABAJADOR` | **8** |
+| `SUPERVISION_ANIMA` / `ADMIN_ANIMA` | **2** |
+| `TECNICA` | **1** |
+| `ACCESO` | **3** |
+| **TOTAL** | **14** |
+
+La suma `8 + 2 + 1 + 3 = 14` conserva el universo sin duplicar identidades.
+
+Las cinco pantallas actualmente mixtas dejan de ser mixtas como intención primaria: conservan su núcleo personal y expulsan la capacidad administrativa hacia una superficie administrativa, de supervisión o un handoff propietario.
+
+---
+
+#### 7. Matriz objetivo de las catorce identidades
+
+| ID | Patrón AS-IS | Carril primario objetivo | Decisión TO-BE |
+| --- | --- | --- | --- |
+| `ANIMA-SCREEN-001` | `/` | `ACCESO` | Mantener como puente técnico de entrada; no incorporar funciones laborales ni administrativas. |
+| `ANIMA-SCREEN-002` | `/splash` | `ACCESO` | Mantener bootstrap y decisión de sesión; no decidir carril por nombre de rol. |
+| `ANIMA-SCREEN-003` | `/login` | `ACCESO` | Mantener autenticación; no ofrecer elección de privilegio ni perfil administrativo paralelo. |
+| `ANIMA-SCREEN-004` | `/home` | `TRABAJADOR` | Convertir Home en inicio personal/operativo del trabajador; retirar de su flujo ordinario reportes o controles sobre terceros. |
+| `ANIMA-SCREEN-005` | `/shifts` | `TRABAJADOR` | Conservar turno actual, siguiente turno, semana y lectura personal; separar planner y mutaciones administrativas de equipo. |
+| `ANIMA-SCREEN-006` | `/history` | `TRABAJADOR` | Mantener historial e incidencias del propio actor. |
+| `ANIMA-SCREEN-007` | `/documents` | `TRABAJADOR` | Mantener “mis documentos” y alertas personales; sacar carga, filtrado de terceros y administración documental del flujo personal. |
+| `ANIMA-SCREEN-008` | `/carnet` | `TRABAJADOR` | Mantener identificación laboral y elegibilidad del propio trabajador. |
+| `ANIMA-SCREEN-009` | `/announcements` | `TRABAJADOR` | Mantener lectura personal de novedades; separar creación, edición, eliminación y audiencia. |
+| `ANIMA-SCREEN-010` | `/operativo` | `SUPERVISION_ANIMA` | Reservar para supervisión móvil acotada; separar analítica densa, histórico amplio y backoffice cuando excedan esa finalidad. |
+| `ANIMA-SCREEN-011` | `/team` | `ADMIN_ANIMA` | Mantener fuera de la navegación personal; limitarse a administración de equipo autorizada dentro de las fronteras de ANIMA. |
+| `ANIMA-SCREEN-012` | `/support` | `TRABAJADOR` | Mantener tickets, mensajes y ayuda propios; separar contacto administrativo dirigido a trabajadores. |
+| `ANIMA-SCREEN-013` | `/account-settings` | `TRABAJADOR` | Mantener permisos del dispositivo, privacidad, cuenta y cierre de sesión del propio actor; diagnóstico será un handoff técnico. |
+| `ANIMA-SCREEN-014` | `/anima-diagnostics` | `TECNICA` | Mantener aislada de navegación personal y administrativa ordinaria y protegida por capacidad técnica efectiva y servidor. |
+
+Esta matriz asigna intención primaria. No renombra rutas ni autoriza una migración física durante esta tarea.
+
+---
+
+#### 8. Experiencia objetivo del trabajador
+
+El carril del trabajador es el estado ordinario de ANIMA.
+
+Debe presentar únicamente acciones sobre:
+
+- turno y jornada propios;
+- check-in, check-out y estados relacionados;
+- sede, área, horario y rol operativo aplicables al propio turno;
+- historial e incidencias propias;
+- documentos propios;
+- carné propio;
+- novedades visibles para el actor;
+- tickets, mensajes y ayuda propios;
+- permisos del dispositivo, privacidad y cuenta propia.
+
+Una persona con capacidades administrativas ve el mismo núcleo personal cuando está en este carril. La administración no aparece mezclada dentro de cada pantalla por el solo hecho de que el actor sea gerente o propietario.
+
+---
+
+#### 9. Inicio objetivo de ANIMA
+
+Después de una sesión válida, ANIMA no debe elegir automáticamente una experiencia administrativa porque el rol base sea gerencial.
+
+El inicio normal conduce al carril del trabajador y su contexto actual.
+
+La entrada administrativa, cuando exista autoridad aplicable, debe ser una acción explícita fuera de la acción principal de Home.
+
+Esto deja a `ANIMA-UX-004` una Home limpia para diseñar turno actual y siguiente turno, sin que reportes, filtros de equipo o configuración compitan con ese objetivo.
+
+---
+
+#### 10. Experiencia administrativa y de supervisión
+
+ANIMA puede conservar administración o supervisión móvil cuando la capacidad:
+
+- pertenece funcionalmente a ANIMA o requiere contexto inmediato de su dominio;
+- es razonable para uso móvil;
+- no necesita una tabla, planner o edición masiva de alta densidad;
+- no replica un backoffice ya asignado a otra aplicación;
+- puede expresarse con alcance, actor y autoridad inequívocos.
+
+Cuando estas condiciones no se cumplen, ANIMA debe realizar un `HANDOFF_ADMIN` y no construir una segunda fuente de verdad.
+
+---
+
+#### 11. ANIMA no será un planner administrativo denso
+
+El contrato transversal permite a ANIMA experiencia personal, operación móvil ligera y supervisión puntual para managers, pero no un planner administrativo denso.
+
+Por tanto:
+
+- la planificación semanal o masiva de turnos no debe permanecer incrustada en la pantalla personal de turnos;
+- reportes históricos densos, segmentación amplia y exportaciones no deben convertir Home en backoffice;
+- configuraciones de acceso, roles y permisos no deben resolverse como edición casual dentro de la navegación personal;
+- administración de documentos de terceros no debe competir visualmente con “mis documentos”.
+
+La densidad administrativa que exceda el alcance móvil de ANIMA se entrega al backoffice propietario.
+
+---
+
+#### 12. Navegación personal y administrativa son distintas
+
+La separación no se considera cumplida si se mantiene una única barra de navegación y se ocultan botones según rol.
+
+El resultado físico futuro deberá ofrecer uno de los mecanismos admitidos por el contrato transversal:
+
+- un shell o contenedor de navegación administrativo claramente separado;
+- una superficie administrativa inequívoca fuera del flujo personal;
+- un workflow independiente;
+- un handoff hacia la aplicación propietaria.
+
+La selección concreta de rutas físicas pertenece a la materialización posterior. Ningún cambio de cardinalidad o catálogo de pantallas podrá hacerse silenciosamente.
+
+---
+
+#### 13. Entrada al carril administrativo
+
+La entrada administrativa requiere simultáneamente:
+
+1. intención explícita del usuario;
+2. sesión válida;
+3. contexto de acceso actualizado;
+4. al menos una capacidad administrativa o de supervisión aplicable;
+5. territorio resoluble para la acción solicitada;
+6. protección de servidor para toda mutación o lectura sensible.
+
+Si no existe capacidad administrativa efectiva, la entrada no debe presentarse como opción útil y el acceso directo debe fallar cerrado.
+
+La existencia de `propietario`, `gerente_general` o `gerente` como string local no es suficiente para cumplir esta regla.
+
+---
+
+#### 14. Cambio explícito de carril
+
+El cambio entre trabajador y administración debe hacer visible que cambió el propósito de la interfaz.
+
+Al entrar a administración se debe:
+
+- resolver de nuevo la autorización;
+- determinar el territorio de gestión;
+- iniciar filtros administrativos sin convertirlos en contexto operativo;
+- conservar de forma segura el estado personal que pueda reanudarse;
+- impedir que una mutación personal en curso sea abandonada de forma ambigua.
+
+Al volver al trabajador se debe:
+
+- descartar o aislar selecciones administrativas no aplicables;
+- resolver de nuevo turno, sede, área y rol operativo activos;
+- restaurar la experiencia personal sin heredar población, empleado o sede seleccionados en administración;
+- conservar correctamente estados offline o pendientes del propio actor.
+
+---
+
+#### 15. Aislamiento de contexto
+
+La separación exige distinguir conceptualmente:
+
+```text
+SEDE DEL TURNO / CHECK-IN
+≠
+SEDE ELEGIDA PARA FILTRAR O ADMINISTRAR
+```
+
+Del mismo modo:
+
+```text
+ROL OPERATIVO ACTIVO
+≠
+ROL BASE USADO PARA AUTORIZACIÓN ADMINISTRATIVA
+
+TRABAJADOR SELECCIONADO EN UN FILTRO
+≠
+ACTOR EFECTIVO
+```
+
+Un mecanismo cliente que hoy reutilice una selección de sede para ambos fines no podrá tratar esa coincidencia como contrato objetivo.
+
+La materialización deberá separar o tipar los estados de contexto para impedir contaminación entre carriles.
+
+---
+
+#### 16. Regla de autorización
+
+La separación UX nunca concede autoridad.
+
+Para cualquier capacidad administrativa:
+
+```text
+VISIBILIDAD DEL CARRIL
++
+CAPACIDAD PROYECTADA EN CLIENTE
+≠
+AUTORIZACIÓN SUFICIENTE
+```
+
+Toda lectura sensible o mutación debe converger con la decisión efectiva de autorización y la protección de servidor correspondiente.
+
+Ocultar una pestaña, cambiar de shell o retirar un botón de la experiencia personal no reemplaza RLS, RPC, Edge Function, validación de servidor ni otros controles propietarios.
+
+---
+
+#### 17. Separación de Home
+
+`ANIMA-SCREEN-004` queda orientada al trabajador.
+
+Debe conservar:
+
+- situación de asistencia propia;
+- acción de marcación propia;
+- estado de geocerca;
+- estado de conectividad y sincronización;
+- turno y contexto propios;
+- resumen personal pertinente.
+
+Debe salir del flujo ordinario de Home:
+
+- reporte sobre población de trabajadores;
+- filtro de trabajadores o sedes para análisis administrativo;
+- exportación administrativa;
+- cualquier control cuya finalidad principal sea observar terceros.
+
+Si una métrica se refiere únicamente al propio trabajador puede seguir siendo personal aunque el AS-IS la muestre hoy solo a ciertos roles. La clasificación depende del sujeto y efecto, no del rol que actualmente la visualiza.
+
+---
+
+#### 18. Destino de `OperativoReportScreen`
+
+La capacidad actual de `OperativoReportScreen` debe descomponerse conceptualmente en dos finalidades:
+
+1. **supervisión móvil ligera:** resumen inmediato y acotado de operación vigente, elegible para `SUPERVISION_ANIMA`;
+2. **analítica o backoffice denso:** rangos amplios, filtros extensos, comparación histórica, exportación o explotación administrativa, que debe usar `HANDOFF_ADMIN` hacia el backoffice propietario.
+
+La reutilización actual del mismo componente dentro de Home y `/operativo` no forma parte del objetivo final.
+
+El carril del trabajador no renderiza la variante de supervisión.
+
+---
+
+#### 19. Separación de Turnos
+
+`ANIMA-SCREEN-005` conserva como experiencia del trabajador:
+
+- turno actual o siguiente;
+- semana propia;
+- próximos turnos;
+- turnos recientes;
+- información necesaria para comprender dónde, cuándo y bajo qué rol operativo trabaja el actor.
+
+Salen de la navegación personal:
+
+- crear turnos;
+- editar turnos;
+- confirmar o cancelar programación de terceros;
+- planner de sede;
+- agrupación gerencial usada para administrar programación.
+
+El contrato administrativo transversal asigna a VISO la gestión de plantillas, creación, revisión, publicación, asignación, reemplazos, rotaciones, ausencias y cobertura de programación. ANIMA puede enlazar a ese trabajo, pero no mantener un planner paralelo.
+
+La corrección de asistencia puede involucrar ANIMA y VISO conforme a su contrato propio, sin reintroducirla como acción ordinaria del trabajador sobre terceros.
+
+---
+
+#### 20. Separación de Documentos
+
+`ANIMA-SCREEN-007` queda centrada en el propio trabajador.
+
+Debe conservar:
+
+- documentos visibles para el actor;
+- apertura de sus documentos autorizados;
+- alertas o vigencias pertinentes a su relación;
+- solicitudes personales que el dominio permita.
+
+Deben separarse del flujo personal:
+
+- filtro por otros trabajadores;
+- selección administrativa de población;
+- carga para terceros;
+- alcance de sede o global;
+- eliminación o disposición administrativa;
+- mantenimiento de tipos, plantillas, retención o clasificación.
+
+La administración documental seguirá el servicio y la aplicación propietaria definidos por los contratos de información. ANIMA no crea una copia administrativa del expediente.
+
+---
+
+#### 21. Separación de Novedades
+
+`ANIMA-SCREEN-009` conserva como experiencia del trabajador:
+
+- lectura de novedades aplicables;
+- estado visible de publicación cuando corresponda;
+- interacción personal permitida por el ciclo de comunicación.
+
+La creación, edición, eliminación, selección de audiencia, publicación, archivo y notificación pertenecen a una experiencia administrativa separada.
+
+La separación física exacta y el ciclo completo se cierran en `ANIMA-UX-017`.
+
+Hasta entonces, `ANIMA-UX-003` fija una frontera: los controles editoriales no deben competir con la lectura ordinaria del trabajador.
+
+---
+
+#### 22. Destino de `/operativo`
+
+`ANIMA-SCREEN-010` se conserva como identidad de supervisión, no como extensión del Home personal.
+
+Su finalidad objetivo es responder preguntas operativas inmediatas y acotadas, por ejemplo:
+
+- qué está ocurriendo ahora;
+- qué cobertura o incidencia requiere atención;
+- qué equipo o sede autorizada necesita seguimiento inmediato.
+
+No debe evolucionar en ANIMA hacia un backoffice universal de históricos, configuración, conciliación o analítica corporativa.
+
+Una necesidad de mayor densidad debe abrir el handoff al backoffice correspondiente.
+
+---
+
+#### 23. Destino de `/team`
+
+`ANIMA-SCREEN-011` permanece administrativa y fuera de la navegación personal.
+
+Puede concentrar administración de equipo que sea propia de ANIMA y esté autorizada, pero no adquiere propiedad universal sobre:
+
+- catálogo de roles;
+- permisos;
+- denegaciones;
+- matrices de autorización;
+- configuración de dispositivos;
+- políticas de acceso.
+
+Esas responsabilidades conservan sus propietarios VISO/SHELL según los contratos transversales.
+
+`ANIMA-UX-014` recibirá esta frontera para simplificar la administración de equipo autorizada sin volver a mezclarla con la experiencia del trabajador.
+
+---
+
+#### 24. Separación de Soporte
+
+`ANIMA-SCREEN-012` conserva en el carril del trabajador:
+
+- crear y seguir tickets propios;
+- leer y responder conversaciones propias;
+- consultar ayuda y FAQ aplicables;
+- ver estados y no leídos propios.
+
+La capacidad de seleccionar a otro trabajador y enviarle un aviso o iniciar una conversación se separa hacia administración o supervisión autorizada.
+
+El alcance territorial del gerente no se obtiene de la navegación; debe resolverse mediante autorización efectiva.
+
+---
+
+#### 25. `account-settings` y diagnóstico
+
+`ANIMA-SCREEN-013` continúa siendo personal.
+
+El acceso a `ANIMA-SCREEN-014` es un handoff técnico y no convierte Configuración en backoffice.
+
+La experiencia técnica:
+
+- no forma parte de la navegación ordinaria del trabajador;
+- no forma parte del menú administrativo laboral por defecto;
+- requiere capacidad técnica canónica;
+- requiere protección de servidor;
+- no se autoriza por correo hardcodeado;
+- no hereda automáticamente el territorio administrativo previamente seleccionado.
+
+La diferencia AS-IS entre allowlists locales deja de ser una decisión UX válida en el objetivo.
+
+---
+
+#### 26. Matriz de extracción de las cinco pantallas mixtas
+
+| Pantalla | Núcleo que permanece en `TRABAJADOR` | Capacidad extraída | Destino objetivo |
+| --- | --- | --- | --- |
+| `/home` | jornada, marcación, turno, contexto y estado propio | reportes o métricas sobre terceros | `/operativo` para supervisión ligera; `HANDOFF_ADMIN` para analítica densa |
+| `/shifts` | programación propia | crear, editar, publicar, confirmar/cancelar y gestionar programación de equipo | `HANDOFF_ADMIN` hacia VISO; supervisión puntual separada cuando aplique |
+| `/documents` | documentos y alertas propios | carga, filtro de terceros, alcance sede/global, eliminación administrativa | experiencia documental administrativa propietaria, fuera del flujo personal |
+| `/announcements` | lectura personal | creación, edición, eliminación, audiencia y publicación | `ADMIN_ANIMA`, cierre detallado en `ANIMA-UX-017` |
+| `/support` | tickets, mensajes y ayuda propios | contacto dirigido a trabajadores | administración/supervisión separada de ANIMA |
+
+La extracción elimina la competencia de intenciones sin crear duplicados de datos.
+
+---
+
+#### 27. Matriz de propiedad administrativa
+
+| Capacidad | Propiedad UX objetivo |
+| --- | --- |
+| Programar y publicar turnos de equipo | VISO como backoffice de programación; ANIMA consume la programación publicada. |
+| Corregir asistencia de terceros | flujo administrativo autorizado con frontera ANIMA/VISO según contrato; nunca acción personal ordinaria. |
+| Administrar equipo dentro de ANIMA | superficie administrativa separada; alcance definitivo simplificado por `ANIMA-UX-014`. |
+| Gestionar roles, permisos, denegaciones y políticas de acceso | VISO/SHELL según contratos de autorización; no propiedad de la pantalla Team. |
+| Leer documentos propios | ANIMA trabajador. |
+| Administrar expedientes, retención, clasificación o documentos de terceros | servicio/aplicación documental propietaria conforme a contratos INFO; no backoffice duplicado en la vista personal. |
+| Leer novedades | ANIMA trabajador. |
+| Gestionar ciclo editorial de novedades | ANIMA administración, detallado por `ANIMA-UX-017`. |
+| Tickets y ayuda propios | ANIMA trabajador. |
+| Contacto dirigido a trabajadores | ANIMA administración/supervisión con territorio autorizado. |
+| Supervisión inmediata de asistencia | ANIMA supervisión ligera. |
+| Analítica histórica densa y exportaciones amplias | backoffice analítico propietario mediante handoff. |
+| Diagnóstico técnico | carril técnico protegido, separado de trabajador y administración laboral. |
+
+La matriz no cambia la fuente de verdad de ningún dominio.
+
+---
+
+#### 28. Regla de handoff hacia otra aplicación
+
+Cuando ANIMA entregue una tarea a VISO, TALENTO, SHELL o un servicio propietario, el handoff debe conservar:
+
+- identidad de la persona;
+- objeto o referencia de negocio relevante;
+- intención solicitada;
+- origen ANIMA;
+- destino explícito;
+- contexto mínimo seguro;
+- autorización revalidada en destino;
+- correlación suficiente para retorno o trazabilidad.
+
+No debe transferir como autoridad:
+
+- sede elegida en un filtro;
+- check-in vigente como permiso administrativo;
+- rol operativo como rol de administración;
+- población seleccionada previamente;
+- datos sensibles innecesarios;
+- permisos calculados únicamente en cliente.
+
+El destino lee o muta su fuente de verdad; ANIMA no mantiene una copia competidora.
+
+---
+
+#### 29. Estado al cambiar de carril
+
+| Estado | Trabajador → administración | Administración → trabajador |
+| --- | --- | --- |
+| Sesión | conservar si sigue válida; revalidar autorización | conservar si sigue válida; revalidar contexto personal |
+| Marcación en curso | no abandonar silenciosamente | reanudar o reflejar resultado real |
+| Cola offline propia | conservar y aislar de administración | restaurar estado y sincronización correspondientes |
+| Sede operativa | no convertirla en filtro administrativo obligatorio | resolver desde turno/contexto, no desde filtro previo |
+| Filtro de sede | iniciar como alcance administrativo independiente | limpiar o ignorar para operación |
+| Trabajador seleccionado | usar solo como sujeto administrativo autorizado | nunca convertirlo en actor efectivo |
+| Formularios/borradores | guardar, cancelar o bloquear salida según contrato | no contaminar pantallas personales |
+| Acción sensible pendiente | exigir decisión explícita antes de cambiar | no ejecutarla desde el carril personal |
+
+---
+
+#### 30. Deep links y notificaciones
+
+Un deep link no puede elegir un carril únicamente por la ruta que abre.
+
+Antes de mostrar el destino se debe resolver:
+
+- sesión;
+- intención del destino;
+- actor;
+- contexto;
+- autorización;
+- territorio cuando aplique.
+
+Los destinos personales como Turnos o Soporte abren su experiencia personal cuando la notificación corresponde al propio actor.
+
+Una futura notificación administrativa deberá entrar al carril administrativo de forma explícita y reautorizada.
+
+Una ruta técnica nunca se habilita porque el actor tenga administración laboral.
+
+---
+
+#### 31. Privacidad y minimización
+
+La separación debe reducir datos de terceros en la experiencia ordinaria.
+
+En el carril del trabajador:
+
+- no se precargan listados de empleados por tener rol gerencial;
+- no se muestran filtros globales de población;
+- no se cargan documentos ajenos;
+- no se exponen conversaciones de terceros;
+- no se cargan datos de diagnóstico.
+
+En administración o supervisión solo se carga el universo necesario para la capacidad y territorio autorizados.
+
+La separación visual complementa, pero no reemplaza, controles de servidor y políticas de datos.
+
+---
+
+#### 32. Conservación de identidad de pantalla durante la transición
+
+Esta tarea no altera `ANIMA-SCREEN-001` a `ANIMA-SCREEN-014` ni la cardinalidad física actual.
+
+La separación se especifica primero a nivel de intención, superficie y handoff.
+
+Si la materialización posterior necesita:
+
+- crear una ruta;
+- retirar una ruta;
+- mover una pestaña;
+- crear un shell administrativo;
+- cambiar un patrón visible;
+
+el propietario físico deberá producir el delta correspondiente contra el catálogo de pantallas y sus requisitos antes de ejecutar el cambio.
+
+No se permite cambiar el catálogo de forma implícita usando esta tarea como sustituto del lifecycle de pantallas.
+
+---
+
+#### 33. Handoff hacia las tareas siguientes del minibloque
+
+La separación entrega fronteras específicas:
+
+| Tarea posterior | Entrada recibida desde ANIMA-UX-003 |
+| --- | --- |
+| `ANIMA-UX-004` | Home queda exclusivamente orientada al trabajador, libre de reportes de terceros como acción ordinaria. |
+| `ANIMA-UX-005` | el contexto visible de sede, área, horario y rol corresponde al turno del trabajador, no a filtros administrativos. |
+| `ANIMA-UX-006` y `ANIMA-UX-007` | check-in y check-out se diseñan dentro del carril personal/operativo. |
+| `ANIMA-UX-008` a `ANIMA-UX-012` | estados, errores, offline y reanudación permanecen asociados al actor personal y no se contaminan con administración. |
+| `ANIMA-UX-013` | documentos y datos personales parten de una vista propia sin administración de terceros mezclada. |
+| `ANIMA-UX-014` | Team se recibe como superficie administrativa separada con ownership de acceso limitado por VISO/SHELL. |
+| `ANIMA-UX-015` | las pruebas con trabajadores evalúan el carril personal sin controles administrativos mezclados. |
+| `ANIMA-UX-016` | recordatorios operativos se dirigen al actor y turno propios. |
+| `ANIMA-UX-017` | lectura de novedades y ciclo editorial llegan ya separados como experiencias distintas. |
+
+---
+
+#### 34. Hallazgos y carryover
+
+| Hallazgo | Bloquea ANIMA-UX-003 | Propietario | Condición de salida |
+| --- | --- | --- | --- |
+| Home reutiliza hoy el mismo reporte operativo que `/operativo`. | No | materialización física de ANIMA | retirar el reporte administrativo del flujo personal y conservar o rediseñar la supervisión separada. |
+| Turnos contiene planner y mutaciones de equipo dentro de la pantalla personal. | No | VISO y materialización física de ANIMA | Home/Turnos personales consumen programación publicada y el planner administrativo se resuelve en su backoffice propietario. |
+| Documentos mezcla “mis documentos” con administración de terceros. | No | contratos INFO y materialización propietaria | separar la vista personal de la administración documental sin duplicar fuente de verdad. |
+| Novedades mezcla lector y editor. | No | `ANIMA-UX-017` | diseñar el ciclo editorial separado y preservar lectura personal. |
+| Team contiene acciones que cruzan administración de equipo y configuración de acceso. | No | `ANIMA-UX-014` y propietarios VISO/SHELL | simplificar Team y derivar a los propietarios de acceso las mutaciones que no pertenecen a ANIMA. |
+| Soporte mezcla tickets propios con contacto gerencial. | No | materialización física de ANIMA | separar contacto dirigido del flujo de soporte personal. |
+| Diagnóstico se alcanza mediante protección local divergente. | No | contratos técnicos y de autorización vigentes | usar capacidad técnica canónica y protección de servidor, sin allowlist como autoridad. |
+
+Ningún hallazgo requiere crear una tarea nueva.
+
+---
+
+#### 35. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La separación ya está protegida transversalmente por requisitos de experiencia que prohíben contaminar operación con administración, exigen clasificar la intención primaria y obligan a separar o crear handoff cuando compiten intenciones materiales. Los requisitos ANIMA vigentes ya protegen navegación, Turnos, Documentos, Novedades, Operativo, Team, Soporte, Configuración y Diagnóstico. Esta tarea aplica esas reglas al inventario ANIMA y no introduce una obligación de prueba distinta.
+
+---
+
+#### 36. Cobertura de prueba vigente reutilizada
+
+Se reutilizan sin modificación, entre otros:
+
+- `TREQ-UX-003`;
+- `TREQ-UX-008`;
+- `TREQ-UX-009`;
+- `TREQ-UX-010`;
+- `TREQ-UX-011`;
+- `TREQ-ANIMA-005`;
+- `TREQ-ANIMA-006`;
+- `TREQ-ANIMA-007`;
+- `TREQ-ANIMA-009`;
+- `TREQ-ANIMA-013`;
+- `TREQ-ANIMA-015`;
+- `TREQ-ANIMA-016`;
+- `TREQ-ANIMA-018`;
+- `TREQ-ANIMA-020`;
+- `TREQ-ANIMA-021`;
+- `TREQ-ANIMA-022`;
+- `TREQ-ANIMA-023`;
+- `TREQ-ANIMA-024`.
+
+La lista es trazabilidad hacia cobertura existente y no una actualización del registro 04A.
+
+---
+
+#### 37. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_APPLICABLE | La tarea no modifica código ni artefactos ejecutables y no requiere build de aplicación para definir el contrato UX. |
+| LOCAL | PASS | El artefacto fue verificado estructuralmente: metadata, secciones obligatorias, catorce identidades asignadas una vez, matrices de separación, continuidad y ausencia de requisitos derivados. |
+| REMOTA | PASS | Se verificaron la continuidad vigente, los inventarios ANIMA-UX-001/002, el contrato transversal UX-BASE-001, el inventario administrativo UX-ADMIN, los fragmentos 04A aplicables y el commit vigente de `vento-anima`. |
+| OPERATIVA | NOT_EXECUTED | La separación aún no fue materializada ni probada con trabajadores o administradores reales; esa validación pertenece a la fase de implementación y a `ANIMA-UX-015`. |
+| FÍSICA | NOT_APPLICABLE | La topología de ANIMA-UX es `DEFINE_ONCE` con `NO_PHYSICAL_INSTANCE`; no se ejecutan cambios físicos en esta tarea. |
+
+---
+
+#### 38. Criterios de aceptación
+
+1. Las catorce identidades móviles quedan asignadas exactamente una vez a un carril primario objetivo.
+2. Ocho identidades quedan centradas en experiencia del trabajador.
+3. Tres identidades de acceso permanecen transversales.
+4. `/operativo` y `/team` quedan fuera de la navegación personal ordinaria.
+5. `/anima-diagnostics` queda técnica y separada de trabajador y administración laboral.
+6. Las cinco pantallas AS-IS mixtas dejan de mezclar intenciones materiales en el objetivo.
+7. Home queda preparada para `ANIMA-UX-004` sin reportes de terceros compitiendo con turno y marcación.
+8. Turnos conserva lectura personal y entrega el planner de equipo al backoffice propietario.
+9. Documentos conserva la vista del propio trabajador y separa administración de terceros.
+10. Novedades separa lectura y ciclo editorial sin adelantar el diseño detallado de `ANIMA-UX-017`.
+11. Soporte separa tickets propios de contacto administrativo dirigido.
+12. Team queda administrativo y recibe una frontera explícita frente a roles, permisos y políticas de acceso.
+13. El cambio de carril no hereda sede administrativa como sede operativa ni trabajador seleccionado como actor efectivo.
+14. Una persona gerente conserva su experiencia personal sin que el rol convierta automáticamente cada pantalla en administración.
+15. La entrada administrativa exige intención explícita y autorización efectiva.
+16. La separación no crea usuarios, fuentes de verdad ni copias de datos paralelas.
+17. La tarea no modifica el catálogo físico de pantallas ni el registro de requisitos de prueba.
+18. Ninguna decisión autoriza implementación física.
+19. La continuidad queda reservada exclusivamente hacia `ANIMA-UX-004`.
+
+---
+
+#### 39. Límites y estado de salida
+
+ANIMA-UX-003 no:
+
+- modifica código de `vento-anima`;
+- modifica Supabase;
+- crea o elimina rutas;
+- cambia la barra de pestañas actual;
+- crea un shell físico administrativo;
+- modifica el catálogo `ANIMA-SCREEN-*`;
+- cambia roles, permisos, capabilities, RLS, RPC o Edge Functions;
+- decide el copy final del selector de carril;
+- diseña el planner de VISO;
+- diseña el detalle final de administración de equipo reservado a `ANIMA-UX-014`;
+- diseña el ciclo editorial completo reservado a `ANIMA-UX-017`;
+- ejecuta migración de datos;
+- ejecuta pruebas con usuarios reales;
+- crea una instancia física;
+- modifica el registro de requisitos de prueba.
+
+La salida documental deja:
+
+- catorce identidades con carril primario objetivo;
+- ocho pantallas centradas en trabajador;
+- dos pantallas administrativas o de supervisión separadas;
+- una pantalla técnica aislada;
+- tres pantallas de acceso transversales;
+- cinco mezclas AS-IS convertidas en decisiones de extracción y handoff;
+- aislamiento explícito entre contexto operativo y filtros administrativos;
+- frontera de propiedad con VISO, SHELL, TALENTO y servicios propietarios;
+- handoff directo hacia el diseño de Home del trabajador.
+
+---
+
+#### 40. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-002 — Inventariar pantallas administrativas`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-003 — Separar experiencia del trabajador y del administrador`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno`
+
+
 ### [ ] ANIMA-UX-004 — Diseñar inicio con turno actual y siguiente turno
 ### [ ] ANIMA-UX-005 — Mostrar sede, área, horario y rol operativo del turno
 ### [ ] ANIMA-UX-006 — Simplificar el flujo de check-in
