@@ -17822,6 +17822,1020 @@ Quedan fijadas de forma canónica las siguientes decisiones:
 `ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad`
 
 
-### [ ] ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad
+### ✅ ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
+**Tarea siguiente:** ANIMA-UX-001 — Inventariar pantallas personales
+**Tipo de tarea:** documental; definición contractual de la fuente de verdad, la autoridad runtime y las fronteras de sincronización que obligan a ANIMA a consumir estado empresarial y decisiones de autorización confirmados en Supabase sin convertir al cliente, su sesión, su caché ni sus proyecciones en autoridad
+**Bloque:** F_ANIMA — AUTORIZACIÓN Y CONTEXTO OPERATIVO
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/01_AUTORIZACION_Y_CONTEXTO_OPERATIVO.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única qué significa para ANIMA mantener Supabase como fuente de verdad sin confundir cuatro responsabilidades distintas:
+
+1. `vento-shell` conserva la definición versionada de migraciones, configuración, contratos y pruebas;
+2. los dominios empresariales conservan la propiedad semántica de sus hechos;
+3. Supabase conserva el estado runtime confirmado y ejecuta la frontera autoritativa de lectura, decisión y mutación que corresponda;
+4. ANIMA consume, solicita, proyecta y sincroniza ese estado, pero no lo sustituye con decisiones locales.
+
+La regla raíz queda:
+
+```text
+CONTRATO VERSIONADO EN VENTO-SHELL
++
+HECHOS EMPRESARIALES PERSISTIDOS EN SUPABASE
++
+IDENTIDAD TECNICA RESUELTA
++
+RELACIONES EMPRESARIALES VIGENTES
++
+CONTEXTO OPERATIVO VIGENTE
++
+EVALUACION SERVER-SIDE
+->
+ESTADO / DECISION AUTORITATIVA PARA ANIMA
+```
+
+Y nunca:
+
+```text
+SESION VALIDA
++
+ESTADO LOCAL
++
+ROL VISIBLE
++
+ULTIMA RESPUESTA CONOCIDA
+->
+AUTORIDAD EMPRESARIAL
+```
+
+Esta tarea cierra el minibloque `ANIMA-AUTH-001` a `ANIMA-AUTH-020` definiendo dónde termina la proyección del cliente y dónde comienza la autoridad runtime.
+
+---
+
+#### 2. Resultado material
+
+ANIMA adopta un contrato de fuente de verdad con cinco planos explícitos:
+
+| Plano | Fuente autoritativa | Función | Lo que no puede sustituirlo |
+| --- | --- | --- | --- |
+| definición y evolución | `vento-shell` | versionar migraciones, configuración, contratos, políticas y pruebas | cambios manuales no versionados, memoria del cliente, configuración ad hoc |
+| identidad técnica | Supabase Auth | autenticar la sesión técnica y aportar el principal | rol visible, metadata autoadministrable, selección local |
+| hechos empresariales | datos persistidos bajo el dominio propietario en Supabase | representar vínculo, turno, asistencia, asignaciones, territorio, roles y demás hechos confirmados | AsyncStorage, estado React, payload push, deep link, parámetros de navegación |
+| contexto y autorización | evaluación server-side sobre estado vigente | resolver actor, contexto, permiso, alcance, deny, recurso y decisión | helpers locales, listas de roles, flags de UI, caché de `ALLOW` |
+| experiencia | ANIMA | presentar, capturar intención, solicitar operaciones, invalidar, refrescar y reconciliar | creación de autoridad o confirmación local de efectos protegidos |
+
+`Supabase como fuente de verdad` no significa que cada dato pertenezca conceptualmente a Supabase. Significa que ANIMA no posee una copia local competidora capaz de prevalecer sobre el estado empresarial confirmado y la evaluación autoritativa ejecutada sobre ese estado.
+
+---
+
+#### 3. Distinción entre fuente contractual y fuente runtime
+
+La tarea separa obligatoriamente:
+
+```text
+VENTO-SHELL
+=
+FUENTE VERSIONADA DEL CONTRATO TECNICO
+```
+
+Y:
+
+```text
+SUPABASE
+=
+PLATAFORMA AUTORITATIVA DE ESTADO Y EJECUCION RUNTIME
+```
+
+Por tanto:
+
+- una modificación manual en un ambiente remoto no se convierte por sí sola en contrato canónico;
+- una migración declarada en `vento-shell` no prueba por sí sola que el ambiente runtime ya esté alineado;
+- la implementación debe poder demostrar tanto versión declarada como estado desplegado;
+- cualquier drift entre ambos planos debe tratarse como inconsistencia técnica, no como una segunda fuente válida.
+
+ANIMA consume el estado runtime, mientras la evolución de ese estado permanece gobernada por `vento-shell`.
+
+---
+
+#### 4. Propiedad semántica por dominio
+
+Supabase no absorbe la propiedad empresarial de todos los datos.
+
+La propiedad semántica permanece donde ya fue definida:
+
+- VISO conserva la propiedad de la programación y de la revisión publicada de los turnos;
+- el dominio de asistencia conserva los hechos confirmados de entrada, salida y descanso;
+- el modelo de autorización conserva roles, grants, denies, scopes, compatibilidades y reglas de decisión;
+- los dominios de sedes, áreas, vínculos y dispositivos conservan sus propias relaciones empresariales;
+- ANIMA consume las proyecciones necesarias para la experiencia del trabajador.
+
+La persistencia en una misma plataforma no habilita a un consumidor a apropiarse del dominio.
+
+---
+
+#### 5. Supabase Auth identifica; no autoriza
+
+Una sesión válida de Supabase Auth prueba únicamente que existe un principal técnico autenticado según el contrato aplicable.
+
+No prueba por sí sola:
+
+- vínculo laboral vigente;
+- empleo activo;
+- sede autorizada;
+- área autorizada;
+- turno publicado;
+- check-in confirmado;
+- rol operativo vigente;
+- rol administrativo efectivo;
+- permiso;
+- alcance;
+- ausencia de deny;
+- disponibilidad de una capacidad.
+
+La identidad empresarial debe resolverse desde relaciones empresariales autoritativas.
+
+`auth.users` no se convierte en catálogo laboral ni en matriz de permisos.
+
+---
+
+#### 6. Metadata de autenticación
+
+Los metadatos de usuario, claims y atributos disponibles en una sesión pueden participar únicamente cuando el contrato canónico los haya clasificado expresamente como dato protegido y confiable para ese propósito.
+
+Queda prohibido conceder autoridad por:
+
+- `user_metadata` autoadministrable;
+- un campo de rol enviado por el cliente;
+- un claim obsoleto que contradiga el estado empresarial actual;
+- una copia local del perfil;
+- el último rol presentado en interfaz.
+
+Si existe divergencia entre un atributo de sesión y el estado empresarial vigente, la autorización debe basarse en la fuente autorizada por el contrato de autorización y fallar cerrado cuando la resolución no sea concluyente.
+
+---
+
+#### 7. Actor empresarial efectivo
+
+ANIMA debe operar sobre un actor empresarial efectivo resoluble desde el principal técnico y el contexto autorizado.
+
+La relación:
+
+```text
+AUTH UID
+->
+ACTOR EMPRESARIAL EFECTIVO
+```
+
+no puede ser reemplazada por:
+
+```text
+AUTH UID
+->
+SUPONER EMPLOYEE ID
+```
+
+ni por una identidad enviada libremente por el cliente.
+
+Cuando el contrato admita dispositivos compartidos, simulación u otra forma de separación entre principal y actor, debe preservarse esa distinción y la decisión debe utilizar el actor efectivo resuelto por la frontera server-side.
+
+---
+
+#### 8. Vínculo laboral
+
+La existencia y vigencia del vínculo laboral deben proceder del estado empresarial persistido y vigente.
+
+Una sesión autenticada no prolonga un vínculo terminado.
+
+Un perfil local tampoco puede mantener acceso después de:
+
+- retiro;
+- cancelación aplicable;
+- suspensión con bloqueo;
+- terminación;
+- invalidez de la asignación;
+- revocación de una relación necesaria.
+
+Toda decisión nueva debe observar el estado vigente y respetar la invalidación correspondiente.
+
+---
+
+#### 9. Turno publicado
+
+ANIMA conserva la regla de `ANIMA-AUTH-001`: el turno utilizable se deriva de la publicación laboral autoritativa, no de una selección del cliente.
+
+La tarea aclara la relación de fuentes:
+
+```text
+VISO
+->
+PROPIEDAD EMPRESARIAL DE PROGRAMACION
+
+SUPABASE
+->
+ESTADO RUNTIME PERSISTIDO Y CONSULTABLE
+
+ANIMA
+->
+PROYECCION Y CONSUMO
+```
+
+Un `shift_id` recibido del cliente es correlación, nunca autoridad suficiente para escoger el turno aplicable.
+
+---
+
+#### 10. Revisión y frescura del turno
+
+La revisión de turno observada por ANIMA no puede convertirse en verdad indefinida.
+
+Cuando una publicación sea:
+
+- corregida;
+- retirada;
+- cancelada;
+- sustituida;
+- invalidada;
+- actualizada con un cambio material;
+
+la proyección anterior debe considerarse potencialmente obsoleta y el siguiente efecto protegido debe utilizar estado vigente.
+
+La versión antigua puede conservarse para auditoría, pero no seguir gobernando acciones nuevas.
+
+---
+
+#### 11. Asistencia confirmada
+
+Una entrada, salida o descanso es autoritativo para efectos empresariales únicamente cuando el servidor ha confirmado el efecto según el contrato correspondiente.
+
+Estados locales como:
+
+- `pending`;
+- `queued`;
+- `sending`;
+- `optimistic`;
+- `retrying`;
+
+pueden describir la experiencia de sincronización, pero no equivalen a un hecho de asistencia confirmado.
+
+ANIMA debe distinguir intención local de estado confirmado.
+
+---
+
+#### 12. Intención offline
+
+Una intención offline puede persistir datos suficientes para reintento y reconciliación, pero conserva la semántica:
+
+```text
+INTENCION DURABLE LOCAL
+!=
+HECHO EMPRESARIAL CONFIRMADO
+```
+
+Al sincronizar debe revalidarse, según aplique:
+
+- actor;
+- vínculo;
+- turno;
+- revisión;
+- ventana temporal;
+- sede;
+- área;
+- rol;
+- autorización;
+- estado actual del recurso;
+- idempotencia.
+
+La ausencia de conectividad nunca autoriza un fallback que convierta la intención en efecto protegido local definitivo.
+
+---
+
+#### 13. Contexto operativo
+
+El contexto mostrado por ANIMA es una proyección derivada de fuentes autoritativas.
+
+No es un documento editable por el cliente.
+
+Los campos de contexto que participen en autorización deben resolverse o validarse server-side, incluyendo cuando aplique:
+
+- principal;
+- actor efectivo;
+- vínculo;
+- rol base;
+- rol operativo;
+- turno;
+- check-in;
+- sede;
+- área;
+- dispositivo;
+- simulación;
+- aplicación;
+- permiso;
+- recurso;
+- alcance;
+- razones de bloqueo;
+- frescura.
+
+Una pantalla puede mostrar esos datos, pero mostrarlos no los hace autoritativos.
+
+---
+
+#### 14. Roles administrativos y operativos
+
+La decisión debe conservar la separación entre rol administrativo y rol operativo definida por el modelo canónico.
+
+Queda prohibido que ANIMA:
+
+- derive el rol operativo desde el rol base por conveniencia;
+- mantenga un rol operativo anterior después de un cambio de turno o asignación;
+- trate un rol administrativo como permiso universal;
+- permita que una selección visual de rol altere la autoridad real;
+- reutilice un rol efectivo de otra sede, área, trabajador o dispositivo.
+
+Los roles efectivos se resuelven contra estado vigente.
+
+---
+
+#### 15. Grants, denies y scopes
+
+Los grants, denies, scopes y compatibilidades territoriales forman parte del modelo autoritativo de autorización.
+
+ANIMA no mantiene una matriz local capaz de conceder acceso.
+
+Una caché de catálogo puede utilizarse para presentación o rendimiento solo si:
+
+1. no aumenta autoridad;
+2. puede invalidarse;
+3. conserva versión suficiente;
+4. una operación protegida vuelve a validar la decisión en la frontera autorizada;
+5. un deny o revocación vigente prevalece sobre cualquier copia anterior.
+
+---
+
+#### 16. Decisión de autorización
+
+La decisión final para una capacidad protegida debe proceder de la evaluación autoritativa server-side sobre el contexto vigente.
+
+Conceptualmente:
+
+```text
+PRINCIPAL
++
+ACTOR
++
+PERMISO
++
+RECURSO
++
+CONTEXTO
++
+GRANTS
++
+DENIES
++
+SCOPE
++
+FRESCURA
+->
+ALLOW / DENY / ERROR SEGURO
+```
+
+ANIMA puede solicitar esa evaluación y proyectar el resultado.
+
+No puede completar campos desconocidos con valores favorables ni convertir un error técnico en `ALLOW`.
+
+---
+
+#### 17. Frontera server-side
+
+Toda operación protegida debe alcanzar una frontera server-side que pueda:
+
+- identificar al principal real;
+- resolver al actor efectivo;
+- reconstruir o validar el contexto aplicable;
+- comprobar el permiso exacto;
+- comprobar el territorio;
+- comprobar el recurso y su estado;
+- comprobar prerrequisitos laborales cuando correspondan;
+- aplicar grants, denies y scopes;
+- producir una decisión segura;
+- ejecutar el efecto únicamente después de la decisión aplicable.
+
+La ocultación de un botón no sustituye esta frontera.
+
+---
+
+#### 18. RPC, funciones, API y RLS
+
+RPC, funciones, API, vistas y RLS son mecanismos físicos posibles de la frontera, pero la tarea no declara que uno solo de ellos sea suficiente para todos los casos.
+
+La propiedad obligatoria es:
+
+```text
+NINGUN CAMINO PUBLICADO
+PUEDE PRODUCIR MAS AUTORIDAD
+QUE EL CONTRATO CANONICO
+```
+
+Cuando una misma capacidad sea accesible por más de una superficie, todas deben converger en la misma política o en resultados equivalentes demostrables.
+
+La existencia de una RPC no autoriza a confiar en parámetros sensibles enviados por el cliente.
+
+---
+
+#### 19. Helpers autoritativos observados
+
+El estado remoto verificado contiene helpers server-side de contexto efectivo y permiso efectivo, entre ellos `get_effective_context_v1` y `has_effective_permission_v1`.
+
+Esta tarea utiliza esa existencia únicamente como evidencia de que ya existe una frontera física parcial alineable con el contrato.
+
+No declara sus implementaciones actuales como diseño final inmutable.
+
+La futura materialización debe comparar su comportamiento real contra el contrato canónico antes de conservarlos, adaptarlos, sustituirlos o retirar compatibilidad.
+
+---
+
+#### 20. Semántica de procedencia
+
+Un campo o etiqueta de procedencia puede indicar que determinados hechos operativos provienen del carril de ANIMA, por ejemplo asistencia o contexto laboral observado.
+
+Eso no cambia la regla de autoridad:
+
+```text
+PROCEDENCIA = ANIMA
+!=
+ANIMA OTORGA EL PERMISO
+```
+
+Una etiqueta técnica de `source`, nombre de helper o nombre de aplicación no puede interpretarse como transferencia de la autoridad empresarial definida en `ANIMA-AUTH-019`.
+
+---
+
+#### 21. Supabase Data API
+
+Cualquier dato empresarial publicado mediante Data API debe respetar la exposición, los grants y RLS aprobados para su contrato.
+
+ANIMA no puede depender de que una tabla sea consultable para concluir que todos sus campos son visibles o mutables.
+
+La publicación de una superficie implica definir, como mínimo:
+
+- quién puede invocarla;
+- qué filas puede alcanzar;
+- qué columnas puede observar o modificar;
+- bajo qué contexto;
+- con qué semántica de error;
+- qué auditoría se conserva;
+- cómo se invalida autoridad obsoleta.
+
+---
+
+#### 22. RLS no sustituye autorización de dominio completa
+
+RLS es una barrera obligatoria cuando la superficie lo requiere, pero no debe usarse como excusa para omitir validaciones de dominio que dependan de transición, recurso, estado o reglas adicionales.
+
+Del mismo modo, una validación en función o servidor no justifica exponer tablas con una política más amplia de lo necesario.
+
+La defensa debe mantenerse coherente entre capas.
+
+---
+
+#### 23. Service role y secretos
+
+Credenciales privilegiadas, service role o secretos equivalentes no pertenecen al cliente ANIMA.
+
+El cliente no debe recibir una capacidad que permita:
+
+- omitir RLS;
+- consultar universos empresariales completos;
+- mutar roles o permisos directamente;
+- impersonar autoridad de backend;
+- ejecutar operaciones administrativas no asignadas al actor.
+
+Las operaciones técnicas privilegiadas permanecen en fronteras server-side controladas.
+
+---
+
+#### 24. Estado local
+
+El estado local de ANIMA puede conservar únicamente una proyección con semántica explícita.
+
+Debe distinguir semánticamente, cuando corresponda, información confirmada, potencialmente obsoleta, pendiente, desconocida, indisponible, en conflicto o denegada. Estas categorías no crean un nuevo catálogo público de estados.
+
+No debe colapsar esas situaciones en un booleano que permita inferir autoridad.
+
+Un valor local `true` nunca es prueba suficiente de autorización vigente.
+
+---
+
+#### 25. Caché
+
+La caché es una optimización de lectura, no una fuente competidora.
+
+Una entrada cacheada debe llevar suficiente identidad y frescura para decidir si todavía es reutilizable.
+
+Cualquier cambio material en las dimensiones de decisión invalida la reutilización de un `ALLOW` anterior, incluyendo:
+
+- principal;
+- actor;
+- vínculo;
+- turno o revisión;
+- check-in;
+- sede;
+- área;
+- rol;
+- dispositivo;
+- simulación;
+- permiso;
+- recurso;
+- grants;
+- denies;
+- scope;
+- versión contractual.
+
+---
+
+#### 26. Realtime
+
+Realtime puede acelerar la detección de cambios, pero su semántica es de señalización.
+
+```text
+EVENTO REALTIME
+->
+INVALIDAR
+->
+RELEER ESTADO AUTORITATIVO
+->
+RESOLVER
+```
+
+No:
+
+```text
+EVENTO REALTIME
+->
+COPIAR PAYLOAD A AUTORIDAD LOCAL
+->
+AUTORIZAR
+```
+
+La pérdida, duplicación o reordenamiento de un evento no modifica cuál es el estado verdadero.
+
+---
+
+#### 27. Push y notificaciones
+
+Push, notificaciones y mensajes internos tampoco son fuentes de verdad.
+
+Pueden informar al trabajador que algo cambió, pero ANIMA debe obtener el estado confirmado antes de utilizar el cambio para una operación protegida.
+
+Un payload de notificación no puede:
+
+- conceder un rol;
+- activar un turno;
+- confirmar un check-in;
+- revocar o restaurar un permiso por sí mismo;
+- escoger una sede o área;
+- sustituir la consulta autoritativa.
+
+---
+
+#### 28. Navegación y parámetros
+
+Deep links, parámetros de navegación, estado de pantalla y selecciones visuales son datos no autoritativos.
+
+Pueden identificar la intención de abrir un recurso, pero antes de presentar datos protegidos o ejecutar efectos se debe comprobar:
+
+- que el recurso exista;
+- que corresponda al contexto vigente;
+- que el actor pueda accederlo;
+- que el permiso sea aplicable;
+- que el scope incluya la operación.
+
+Cambiar una URL o payload no puede ampliar autoridad.
+
+---
+
+#### 29. Escrituras protegidas
+
+Una escritura empresarial protegida debe aplicar autorización en el instante del efecto.
+
+No basta con que el usuario hubiera obtenido `ALLOW` cuando abrió la pantalla.
+
+Si entre lectura y escritura cambia una condición material, el servidor debe usar el estado nuevo.
+
+Regla:
+
+```text
+ALLOW_ANTERIOR
++
+ESTADO_CAMBIADO
+->
+REAUTORIZAR
+```
+
+Nunca:
+
+```text
+ALLOW_ANTERIOR
++
+ESTADO_CAMBIADO
+->
+CONSERVAR AUTORIDAD POR CONVENIENCIA
+```
+
+---
+
+#### 30. Revocación
+
+La revocación vigente prevalece sobre toda proyección anterior.
+
+Una sesión técnica todavía válida no puede sostener autoridad que ya fue retirada en el modelo empresarial.
+
+La invalidación debe alcanzar, según corresponda:
+
+- contexto derivado;
+- decisiones cacheadas;
+- tokens derivados;
+- colas pendientes al sincronizar;
+- pantallas que presenten capacidades ya no disponibles;
+- procesos abiertos que requieran una nueva autorización antes del efecto.
+
+La UI puede tardar en refrescar visualmente, pero el servidor no puede seguir concediendo por esa demora.
+
+---
+
+#### 31. Concurrencia
+
+Dos lecturas válidas en instantes distintos pueden producir resultados distintos sin que exista contradicción.
+
+La regla de resolución es temporal:
+
+```text
+DECISION
+ES VALIDA PARA
+HECHOS + VERSION + INSTANTE EVALUADOS
+```
+
+Una respuesta tardía no puede sobrescribir un estado más nuevo de manera que restaure autoridad vencida.
+
+El cliente debe protegerse contra carreras entre solicitudes, reautenticaciones, cambios de turno, revocaciones y eventos Realtime.
+
+---
+
+#### 32. Timeout y resultado desconocido
+
+Un timeout no significa éxito ni denegación ordinaria.
+
+Cuando ANIMA no pueda conocer el resultado de una operación protegida debe conservar un estado de resultado desconocido y recuperar la verdad desde la fuente autoritativa antes de repetir o confirmar el efecto.
+
+La recuperación debe respetar idempotencia cuando la operación pueda haber alcanzado commit.
+
+No se permite presentar éxito solo porque el cliente envió la solicitud.
+
+---
+
+#### 33. Indisponibilidad de Supabase
+
+Si la fuente autoritativa necesaria no está disponible y el contrato exige confirmación online para el efecto, ANIMA debe fallar cerrado para la operación protegida.
+
+Puede conservar:
+
+- sesión local para experiencia no protegida;
+- información previamente obtenida marcada como no fresca;
+- intención offline cuando el proceso la admita;
+- capacidad de reintento;
+- mensajes de recuperación.
+
+No puede fabricar una fuente alternativa de autoridad.
+
+---
+
+#### 34. Drift entre remoto y contrato versionado
+
+Si el estado físico de Supabase diverge de lo declarado por `vento-shell`, ninguna de las dos representaciones se corrige silenciosamente desde ANIMA.
+
+La situación se clasifica como drift y debe reconciliarse mediante el carril técnico propietario.
+
+ANIMA no adapta su política de seguridad a un cambio remoto manual solo porque ese cambio exista.
+
+Tampoco debe asumir que una migración versionada ya está desplegada sin evidencia del ambiente cuando esa diferencia sea material para la operación.
+
+---
+
+#### 35. Cambios manuales en Dashboard
+
+El Dashboard puede utilizarse como superficie de observación o administración autorizada, pero un cambio estructural, de seguridad o de contrato que afecte VENTO debe quedar representado en `vento-shell`.
+
+Un ajuste remoto no versionado no crea una nueva norma para ANIMA.
+
+La materialización futura debe detectar o impedir drift relevante de:
+
+- esquema;
+- función;
+- grant;
+- RLS;
+- trigger;
+- configuración;
+- contrato publicado.
+
+---
+
+#### 36. Matriz de autoridad para ANIMA
+
+| Hecho o decisión | Autoridad runtime | ANIMA puede proponer | ANIMA puede cachear | ANIMA puede decidir solo |
+| --- | --- | --- | --- | --- |
+| principal autenticado | Supabase Auth | no | proyección de sesión | no |
+| actor empresarial | resolución server-side sobre relaciones empresariales | no | proyección temporal | no |
+| vínculo laboral vigente | estado empresarial persistido | no | proyección temporal | no |
+| turno publicado | revisión publicada del dominio de programación persistida en Supabase | no | sí, con frescura | no |
+| sede y área efectivas | resolución autoritativa del contexto | no | sí, con frescura | no |
+| rol operativo efectivo | resolución autoritativa del contexto | no | sí, con frescura | no |
+| check-in confirmado | estado de asistencia confirmado por servidor | intención | sí, distinguiendo pendiente/confirmado | no |
+| descanso confirmado | estado de asistencia confirmado por servidor | intención | sí, distinguiendo pendiente/confirmado | no |
+| permiso | evaluador autoritativo | código solicitado | resultado temporal | no |
+| deny | evaluador autoritativo | no | resultado temporal | no |
+| scope | modelo autoritativo | recurso solicitado | proyección temporal | no |
+| decisión final | frontera server-side | solicitud | solo mientras siga válida | no |
+
+---
+
+#### 37. Matriz de escenarios adversariales
+
+| Caso | Condición | Resultado obligatorio |
+| --- | --- | --- |
+| A | sesión válida, vínculo retirado | conservar identidad técnica y denegar autoridad empresarial |
+| B | metadata local dice `manager`, estado empresarial no lo respalda | ignorar metadata como concesión |
+| C | ANIMA conserva `ALLOW`, pero el rol cambió | invalidar y reautorizar |
+| D | turno visible fue sustituido | releer la revisión vigente antes del efecto |
+| E | check-in está en cola offline | mostrar pendiente; no tratarlo como confirmado |
+| F | evento Realtime anuncia nuevo rol | invalidar y consultar; no aplicar autoridad desde el payload |
+| G | push anuncia cambio de turno | informar y refrescar; no activar turno desde el push |
+| H | deep link apunta a recurso fuera de scope | denegar en servidor |
+| I | cliente altera `site_id` o `area_id` | resolver/validar territorio server-side |
+| J | cliente invoca RPC directamente | aplicar la misma autorización que desde UI |
+| K | Supabase no responde | fail closed para el efecto protegido |
+| L | respuesta vieja `ALLOW` llega después de una revocación | descartar la respuesta obsoleta |
+| M | timeout después de posible commit | recuperar resultado antes de repetir |
+| N | cambio manual remoto no representado en `vento-shell` | clasificar drift y no normalizarlo desde ANIMA |
+| O | token sigue vigente después de cambio laboral | identidad puede seguir autenticada; autoridad se recalcula |
+| P | una tabla es visible por Data API | no asumir permiso de escritura ni acceso a todas las filas/columnas |
+| Q | etiqueta técnica indica procedencia `anima` | tratarla como procedencia, no como autoridad de permiso |
+| R | dos dispositivos tienen snapshots distintos | el siguiente efecto usa estado autoritativo vigente |
+
+---
+
+#### 38. Precedencia de fuentes
+
+Cuando existan representaciones simultáneas, ANIMA debe aplicar esta precedencia conceptual:
+
+```text
+ESTADO EMPRESARIAL AUTORITATIVO VIGENTE
++
+EVALUACION SERVER-SIDE VIGENTE
+>
+PROYECCION REMOTA ANTERIOR
+>
+CACHE LOCAL
+>
+ESTADO VISUAL
+>
+INPUT DEL CLIENTE
+```
+
+La precedencia no significa que una fila aislada sea suficiente para autorizar. La decisión consume el conjunto de fuentes definido por el modelo canónico.
+
+---
+
+#### 39. Consistencia entre consumidores
+
+Para los mismos hechos, principal, actor, recurso, permiso, contexto y versión, ANIMA no puede obtener una autoridad mayor que otro consumidor del mismo contrato.
+
+La interfaz móvil, SDK, funciones, RPC, Server Actions y RLS deben converger en la política aplicable.
+
+Una excepción exclusiva de ANIMA debe existir únicamente si el catálogo o contrato canónico la define expresamente; nunca por comodidad del cliente.
+
+---
+
+#### 40. Observabilidad y auditoría
+
+La observabilidad puede registrar qué estado y decisión fueron utilizados, pero no participa como autoridad.
+
+La evidencia debe permitir reconstruir, según aplique:
+
+- principal;
+- actor efectivo;
+- contexto;
+- permiso;
+- recurso;
+- decisión;
+- razones;
+- versión o generación relevante;
+- timestamp;
+- resultado del efecto;
+- estado de sincronización.
+
+Un log no puede usarse como fuente de permiso ni como mecanismo de restauración de una decisión anterior.
+
+---
+
+#### 41. Compatibilidad y transición física
+
+La materialización futura puede requerir compatibilidad temporal con helpers, vistas, RPC o consumidores legacy.
+
+La compatibilidad solo es válida si:
+
+1. no amplía autoridad;
+2. conserva la semántica canónica;
+3. tiene propietario y condición de retiro;
+4. puede compararse contra la nueva frontera;
+5. no convierte una superficie legacy en bypass permanente.
+
+Retirar una superficie legacy requiere evidencia de adopción de sus consumidores y rollback controlado.
+
+---
+
+#### 42. Rollback de materialización futura
+
+Un rollback técnico no puede restaurar deliberadamente una política menos segura como estado estable.
+
+Si una materialización falla, el rollback debe priorizar:
+
+- integridad de datos;
+- compatibilidad necesaria;
+- no elevación de privilegios;
+- recuperación del servicio bajo la última frontera segura demostrada;
+- trazabilidad del cambio.
+
+La estrategia física concreta pertenece a cada unidad de implementación.
+
+---
+
+#### 43. Topología de materialización
+
+El contrato documental se define una sola vez en este marcador.
+
+La topología vigente del bloque clasifica `ANIMA-AUTH-001` a `ANIMA-AUTH-020` como trabajo físico por `implementation_unit_id` y con gate `POST_E5_PACKAGE`.
+
+Por tanto:
+
+```text
+ANIMA-AUTH-020
+->
+CONTRATO CANONICO APROBADO
+->
+NO CREA IMPLEMENTACION GLOBAL INMEDIATA
+->
+FUTURAS UNIDADES FISICAS SOLO CUANDO EL E5-GATE-008 DEL PACKAGE PROPIETARIO SEA PASS
+```
+
+Esta tarea no inventa `implementation_unit_id`, `package_id` ni instancia física.
+
+---
+
+#### 44. Handoff a materialización futura
+
+Cada unidad física que consuma este contrato deberá demostrar, como mínimo:
+
+1. qué superficies de ANIMA leen o mutan estado autoritativo;
+2. qué helpers o contratos server-side utiliza;
+3. cómo resuelve principal y actor;
+4. cómo preserva separación entre identidad y autorización;
+5. cómo obtiene turno, asistencia y contexto vigentes;
+6. cómo aplica RLS, grants y validaciones de dominio;
+7. cómo invalida caché y decisiones obsoletas;
+8. cómo reautoriza operaciones offline;
+9. cómo maneja timeout y resultado desconocido;
+10. cómo detecta drift relevante;
+11. cómo evita secretos privilegiados en cliente;
+12. qué pruebas prueban paridad entre caminos de acceso;
+13. qué compatibilidad legacy conserva y por cuánto tiempo;
+14. cómo ejecuta rollback sin elevar autoridad.
+
+---
+
+#### 45. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA**
+
+Requisitos creados: 0
+
+Requisitos modificados: 0
+
+Requisitos diferidos: 0
+
+Requisitos descartados: 0
+
+Requisitos vueltos obsoletos: 0
+
+La tarea consolida y especializa para ANIMA obligaciones ya protegidas por requisitos transversales de autorización, reautorización, fuente propietaria, sincronización e integración. No introduce una regla netamente nueva que requiera otra identidad de prueba.
+
+---
+
+#### 46. Cobertura de prueba vigente reutilizada
+
+La cobertura existente relevante, sin modificación de registro, incluye:
+
+- `TREQ-AUTH-001`: capacidad protegida resuelta mediante permisos, contexto y alcance canónicos;
+- `TREQ-AUTH-008`: paridad de decisión entre interfaz, SDK, servidor, RPC y RLS;
+- `TREQ-AUTH-009`: resolución determinista de sede y área y denegación server-side de cruces territoriales;
+- `TREQ-AUTH-013`: imposibilidad de eludir autorización mediante URL, API, RPC o formulario manipulado;
+- `TREQ-AUTH-014`: invalidación de contexto, caché y autoridad derivada ante cambios materiales y reautorización de colas offline;
+- `TREQ-AUTH-016`: revocación coordinada y prohibición de ejecutar con autoridad anterior;
+- `TREQ-ANIMA-003`: marcación offline durable, idempotente y reconciliable sin falsa confirmación;
+- `TREQ-ANIMA-004`: transiciones de descanso atómicas e idempotentes;
+- `TREQ-INTEGRATION-006`: una fuente propietaria por dato empresarial y resolución explícita de fuentes competidoras;
+- `TREQ-INTEGRATION-007`: contrato único de programación y asistencia entre VISO, ANIMA, SHELL y Supabase.
+
+Estas referencias expresan trazabilidad de cobertura vigente. No cambian ownership, texto, estado, paquete, evidencia ni relación de esos requisitos.
+
+---
+
+#### 47. Evidencia de validación
+
+| Clase | Estado | Evidencia documental |
+| --- | --- | --- |
+| BUILD | NOT_APPLICABLE | la tarea no autoriza build ni cambio físico |
+| LOCAL | NOT_EXECUTED | no se ejecutó una batería sobre un checkout local como parte de esta definición |
+| REMOTA | PASS | se verificaron fuentes canónicas vigentes de `vento-shell`, principios E3, topología, registro de requisitos y la existencia remota de helpers server-side de contexto y permiso efectivo |
+| OPERATIVA | NOT_EXECUTED | no se ejecutó flujo E2E de trabajador ni administración |
+| FÍSICA | NOT_EXECUTED | no se modificaron Supabase, ANIMA, RLS, RPC, funciones, datos ni configuración |
+
+La evidencia remota prueba el estado observado utilizado para desarrollar el contrato; no equivale a certificación física de la futura unidad de implementación.
+
+---
+
+#### 48. Criterios de aceptación
+
+La tarea queda documentalmente satisfecha cuando se cumplen simultáneamente estas condiciones:
+
+1. Supabase queda definido como plataforma autoritativa de estado y ejecución runtime para ANIMA sin desplazar a `vento-shell` como fuente versionada del contrato técnico.
+2. La propiedad semántica de turnos, asistencia, autorización y demás dominios permanece explícita.
+3. Supabase Auth queda limitado a identidad técnica y no se convierte en catálogo laboral ni permiso.
+4. ANIMA no puede conceder autoridad desde metadata, estado local, caché, navegación, Realtime, push ni offline.
+5. Turno, check-in, territorio, roles, grants, denies y scopes se consumen desde estado autoritativo y evaluación server-side.
+6. Una operación protegida se reautoriza en el instante del efecto cuando cambian hechos materiales.
+7. Revocaciones prevalecen sobre respuestas o snapshots anteriores.
+8. Timeout e indisponibilidad no se convierten en éxito ni `ALLOW` optimista.
+9. Cola offline conserva intención y reautoriza al sincronizar.
+10. RPC, API, funciones y RLS no ofrecen un camino alterno con mayor autoridad.
+11. Credenciales privilegiadas no forman parte del cliente.
+12. Realtime y push conservan semántica de señalización e invalidación.
+13. El drift entre runtime y `vento-shell` se identifica como inconsistencia y no se normaliza desde ANIMA.
+14. La procedencia de un hecho desde ANIMA no convierte a ANIMA en emisor de permisos.
+15. La materialización queda diferida a unidades físicas reales y al gate aplicable.
+16. No se crean ni modifican requisitos de prueba porque la protección ya existe en el registro canónico.
+17. El minibloque `ANIMA-AUTH` entrega a `ANIMA-UX` un contrato de autoridad cerrado y no ambiguo.
+
+---
+
+#### 49. Límites
+
+Esta tarea no:
+
+- diseña las pantallas de ANIMA;
+- inventaría todavía las pantallas personales;
+- cambia navegación;
+- modifica código móvil;
+- modifica helpers actuales;
+- crea RPC;
+- crea tablas;
+- crea vistas;
+- crea políticas RLS;
+- cambia grants;
+- cambia Supabase Auth;
+- crea migraciones;
+- ejecuta DDL o DML;
+- modifica datos productivos;
+- define un `implementation_unit_id`;
+- declara un package como listo para implementación;
+- autoriza una instancia física;
+- modifica el registro 04A;
+- cambia la propiedad de programación de VISO;
+- sustituye el modelo transversal de autorización;
+- convierte una observación remota en certificación E2E;
+- absorbe trabajo reservado a `ANIMA-UX-001` ni a tareas físicas posteriores.
+
+Toda diferencia física entre este contrato y el estado actual se resuelve en la unidad de implementación propietaria, con sus gates, evidencia y rollback.
 
 ANIMA ya fue ajustado parcialmente para bloquear check-in cuando no hay turno publicado o cuando falta un rol operativo válido.
+
+---
+
+#### 50. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-001 — Inventariar pantallas personales`

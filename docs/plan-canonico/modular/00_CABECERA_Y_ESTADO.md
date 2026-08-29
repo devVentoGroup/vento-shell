@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1071** |
+| Tareas aprobadas | **1072** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **523** |
+| Tareas no iniciadas | **522** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **67.19% (1071/1594)** |
+| Porcentaje de completamiento | **67.25% (1072/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente** |
-| Tarea actual | **ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad** |
+| Última tarea aprobada | **ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad** |
+| Tarea actual | **ANIMA-UX-001 — Inventariar pantallas personales** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-UX-001 — Inventariar pantallas personales** |
+| Siguiente tarea | **ANIMA-UX-002 — Inventariar pantallas administrativas** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 19 de 37 aprobadas; ANIMA-AUTH-020 pendiente** |
+| Progreso del bloque | **BLOQUE F: 20 de 37 aprobadas; ANIMA-UX-001 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-019::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-AUTH-020** |
+| Carril documental | **ACTIVO — ANIMA-UX-001** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-019::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-AUTH-019` — Evitar que ANIMA otorgue permisos directamente |
-| Tarea actual | `ANIMA-AUTH-020` — Mantener Supabase como fuente de verdad — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-UX-001` — Inventariar pantallas personales |
+| Última aprobada | `ANIMA-AUTH-020` — Mantener Supabase como fuente de verdad |
+| Tarea actual | `ANIMA-UX-001` — Inventariar pantallas personales — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-UX-002` — Inventariar pantallas administrativas |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 19 DE 37 APROBADAS — ACTUAL ANIMA-AUTH-020** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 20 DE 37 APROBADAS — ACTUAL ANIMA-UX-001** |
 | Implementación física | **AUTH-DB-019::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-AUTH-019 — Evitar que ANIMA otorgue permisos directamente
-        ↓
-TAREA ACTUAL
 ANIMA-AUTH-020 — Mantener Supabase como fuente de verdad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-UX-001 — Inventariar pantallas personales
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-UX-002 — Inventariar pantallas administrativas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 19 de 37 tareas aprobadas
+BLOQUE F — 20 de 37 tareas aprobadas
 ```
