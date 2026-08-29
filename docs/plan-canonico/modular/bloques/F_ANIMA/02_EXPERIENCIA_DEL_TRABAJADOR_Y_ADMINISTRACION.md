@@ -4204,7 +4204,851 @@ El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
 `ANIMA-UX-007 — Simplificar el flujo de check-out`
 
 
-### [ ] ANIMA-UX-007 — Simplificar el flujo de check-out
+### ✅ ANIMA-UX-007 — Simplificar el flujo de check-out
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-006 — Simplificar el flujo de check-in
+**Tarea siguiente:** ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente
+**Tipo de tarea:** documental; diseño UX TO-BE del flujo personal de check-out en ANIMA para reducir la salida ordinaria a una acción principal sobre una sesión de asistencia activa, conservando intactas la resolución autoritativa de sesión, geocerca, autorización, idempotencia, evidencia y cierre de contexto
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar el flujo TO-BE de check-out de ANIMA para que un trabajador que conserva una sesión personal de asistencia activa pueda registrar su salida mediante una acción principal directa, sin reconstruir manualmente el turno, elegir la sede laboral, preparar una geocerca en una pantalla separada ni repetir información que el sistema ya conoce.
+
+La simplificación se aplica a la interacción humana, no a la autoridad ni a la integridad del cierre.
+
+El flujo debe dejar inequívoco:
+
+1. qué hecho habilita la acción de salida;
+2. qué acción ordinaria realiza el trabajador;
+3. qué contexto debe reutilizarse de la sesión de asistencia activa;
+4. qué validaciones ejecuta ANIMA automáticamente;
+5. cuándo hace falta una intervención excepcional;
+6. cómo se evita una segunda salida por doble toque, retry o respuesta perdida;
+7. qué significa iniciar la salida frente a tenerla confirmada;
+8. qué tareas posteriores son propietarias de estados, bloqueos, offline y reanudación.
+
+La tarea no implementa el flujo, no modifica Supabase, no redefine autorización y no decide todavía la presentación final de una marcación confirmada o pendiente.
+
+---
+
+#### 2. Handoff recibido de ANIMA-UX-006
+
+`ANIMA-UX-006` dejó cerradas las reglas de entrada que esta tarea consume sin reabrir:
+
+- la marcación ordinaria debe tener una única acción principal;
+- simplificar significa automatizar comprobaciones repetibles, no eliminarlas;
+- sede laboral y punto físico de marcación son conceptos distintos;
+- el trabajador no reconstruye manualmente turno, sede, área, rol ni identidad;
+- un único punto físico elegible se resuelve automáticamente;
+- una ambigüedad real entre puntos de marcación puede exigir una selección excepcional sin convertirla en selección de sede laboral;
+- la acción se bloquea desde el primer toque para evitar intenciones duplicadas;
+- la interfaz no usa un modal genérico de confirmación como paso ordinario;
+- permisos del dispositivo se solicitan solo cuando la operación realmente los necesita;
+- estado mostrado, autorización y mutación confirmada permanecen separados.
+
+El handoff específico hacia `ANIMA-UX-007` es una **sesión de asistencia activa ya existente**. Desde ese momento la región de acción personal deja de ser propiedad del check-in y pasa a la salida.
+
+---
+
+#### 3. Principio rector
+
+La regla UX aplica a la salida personal las decisiones transversales ya aprobadas en `UX-BASE-007` para reutilizar información existente sin recaptura y en `UX-BASE-008` para reducir pasos de tareas frecuentes sin eliminar controles materiales.
+
+La regla UX queda:
+
+```text
+SESIÓN DE ASISTENCIA ACTIVA
++
+UNA ACCIÓN PRINCIPAL: REGISTRAR SALIDA
++
+VALIDACIONES AUTOMÁTICAS Y AUTORITATIVAS
++
+MUTACIÓN IDEMPOTENTE
++
+RESULTADO INEQUÍVOCO
+=
+CHECK-OUT SIMPLE
+```
+
+No se considera simplificación válida:
+
+```text
+REVISAR TURNO
+→ ELEGIR SEDE
+→ REVISAR UBICACIÓN
+→ ACTUALIZAR UBICACIÓN
+→ CONFIRMAR CONTEXTO
+→ ABRIR MODAL
+→ REGISTRAR SALIDA
+```
+
+cuando la sesión activa y las fuentes propietarias permiten resolver automáticamente esos hechos.
+
+La simplificación nunca autoriza:
+
+- cerrar una sesión inexistente;
+- vincular la salida a un turno futuro por conveniencia del cliente;
+- sustituir la sede laboral por el punto físico de salida;
+- omitir una geocerca cuando la política aplicable la exige;
+- tratar el toque como confirmación del servidor;
+- perder identidad idempotente;
+- cerrar autoridad operativa únicamente porque la interfaz cambió de estado local.
+
+---
+
+#### 4. Hecho autoritativo que habilita la salida
+
+La disponibilidad de check-out se deriva de la **sesión personal de asistencia activa resuelta de forma autoritativa**, no de la mera existencia visual de un turno actual.
+
+```text
+SESIÓN DE ASISTENCIA ACTIVA Y RESOLUBLE
+→ SALIDA PERTINENTE
+
+TURNO VISIBLE SIN SESIÓN ACTIVA
+→ NO CREA SALIDA
+```
+
+La sesión activa aporta la continuidad necesaria para identificar:
+
+- al trabajador efectivo;
+- el check-in que se intenta cerrar;
+- la sede operativa asociada a la sesión;
+- la referencia del turno utilizada por la entrada cuando exista;
+- la evidencia histórica que debe conservarse;
+- el contexto cuyo cierre depende de una salida confirmada.
+
+La interfaz puede proyectar ese estado, pero no lo fabrica.
+
+---
+
+#### 5. Independencia frente al fin programado del turno
+
+El fin del horario publicado y el cierre de la sesión de asistencia son hechos distintos.
+
+Un trabajador puede seguir teniendo una entrada activa después de la hora programada de finalización. En ese caso, la experiencia no debe esconder ni bloquear `Registrar salida` únicamente porque el turno ya terminó según programación.
+
+Regla:
+
+```text
+FIN PROGRAMADO ALCANZADO
++
+SESIÓN DE ASISTENCIA TODAVÍA ACTIVA
+→
+LA SALIDA SIGUE SIENDO PERTINENTE
+```
+
+La programación puede informar que la jornada debía haber terminado, pero no reemplaza el hecho autoritativo de asistencia ni crea por sí sola un check-out.
+
+Esta tarea no define tolerancias, horas extra, redondeos, novedades laborales ni reglas de nómina. Solo evita que el diseño haga imposible cerrar una sesión activa por confundir horario y asistencia.
+
+---
+
+#### 6. Resultado UX objetivo
+
+Para el caso ordinario y resoluble, Home debe permitir una secuencia equivalente a:
+
+```text
+JORNADA EN CURSO
+[contexto personal relevante]
+
+[ Registrar salida ]
+
+TOQUE ÚNICO
+→ validación automática
+→ envío de la intención de salida
+→ resultado
+```
+
+No hace falta volver a abrir `/shifts`, buscar el turno usado al entrar, escoger la sede laboral ni entrar primero a una pantalla técnica de ubicación.
+
+La acción principal puede coexistir con información de contexto y estado, pero ninguna acción secundaria ordinaria debe competir con `Registrar salida`.
+
+---
+
+#### 7. Unidad de interacción
+
+La unidad de esta tarea es una **intención personal de check-out** iniciada por el trabajador efectivo sobre la sesión de asistencia activa que ANIMA resuelve.
+
+La intención debe poder correlacionarse de manera estable con:
+
+- el actor;
+- la sesión activa;
+- el evento de entrada que originó la sesión;
+- la sede operativa de esa sesión;
+- el punto físico de salida cuando aplique;
+- la evidencia de ubicación cuando la política la exija;
+- el instante de la intención;
+- una identidad idempotente estable.
+
+La intención no constituye todavía un cierre confirmado.
+
+---
+
+#### 8. Disponibilidad de la acción principal
+
+`Registrar salida` se presenta como acción primaria cuando la proyección vigente indica una sesión personal activa que puede ser objeto de cierre.
+
+La visibilidad no concede autoridad. Al tocar la acción deben revalidarse los hechos necesarios antes del efecto.
+
+La interfaz no utiliza como único criterio:
+
+- que el último botón mostrado fuese `Registrar entrada`;
+- que haya un turno en la tarjeta actual;
+- que la hora esté dentro del horario programado;
+- que exista una sede seleccionada localmente;
+- que la geocerca haya estado lista varios minutos antes;
+- que el trabajador tenga un rol determinado;
+- que una notificación afirme que el turno terminó.
+
+El estado autoritativo de asistencia gobierna la pertinencia de la salida.
+
+---
+
+#### 9. Ausencia de sesión activa
+
+Cuando no existe una sesión de asistencia activa resoluble, ANIMA no presenta `Registrar salida` como una mutación ordinaria ejecutable.
+
+La interfaz no crea una salida sintética a partir de:
+
+- un turno actual sin check-in;
+- un turno anterior ya cerrado;
+- un próximo turno;
+- una notificación de fin de jornada;
+- un registro local obsoleto;
+- una sede elegida por el trabajador;
+- la existencia de contexto de perfil.
+
+La explicación humana de por qué no puede marcar corresponde a `ANIMA-UX-009`; la diferenciación causal entre turno, ubicación y autorización corresponde a `ANIMA-UX-010`.
+
+---
+
+#### 10. Acción primaria: Registrar salida
+
+La acción ordinaria se expresa semánticamente como **Registrar salida**.
+
+Ese verbo representa el hecho empresarial que el trabajador intenta producir. No debe diluirse en una acción genérica como `Marcar`, `Continuar`, `Terminar` o `Actualizar estado` que obligue a inferir si se registrará entrada o salida.
+
+`Terminar turno` puede aparecer como texto explicativo únicamente si no crea una segunda acción ni confunde el cierre de asistencia con la edición del turno programado.
+
+La interfaz debe conservar una sola intención material:
+
+```text
+REGISTRAR SALIDA
+→ cerrar la sesión de asistencia activa mediante el contrato propietario
+```
+
+No significa modificar el horario publicado.
+
+---
+
+#### 11. Preflight automático desde el toque
+
+El toque sobre `Registrar salida` inicia las comprobaciones que puedan resolverse sin pedir pasos previos al trabajador.
+
+Conceptualmente, ANIMA debe poder:
+
+1. refrescar o reconciliar la sesión de asistencia activa cuando sea necesario;
+2. recuperar la relación exacta con el check-in que se cerrará;
+3. conservar la sede operativa de esa sesión;
+4. resolver el punto físico de check-out aplicable;
+5. obtener o refrescar ubicación cuando la política lo requiera;
+6. validar geocerca y precisión aplicables;
+7. revalidar en servidor que la transición siga siendo admisible;
+8. crear o reutilizar la identidad idempotente de la intención;
+9. enviar la mutación de salida;
+10. entregar el resultado a la capa de estado propietaria.
+
+Estas comprobaciones pueden ejecutarse en una operación compuesta o en varias capas físicas futuras. La tarea define la experiencia, no impone una arquitectura de llamadas.
+
+---
+
+#### 12. Orden semántico del cierre
+
+La simplificación no permite invertir autoridad y presentación.
+
+El orden conceptual es:
+
+```text
+RESOLVER SESIÓN ACTIVA
+→ RESOLVER CONTEXTO DE CIERRE
+→ RESOLVER PUNTO FÍSICO SI APLICA
+→ OBTENER EVIDENCIA REQUERIDA
+→ REVALIDAR
+→ ENVIAR INTENCIÓN IDEMPOTENTE
+→ RECIBIR O RECONCILIAR RESULTADO
+→ PROYECTAR ESTADO
+```
+
+No es válido:
+
+```text
+CAMBIAR UI A JORNADA CERRADA
+→ INTENTAR GUARDAR DESPUÉS
+```
+
+como contrato de verdad.
+
+La interfaz puede ofrecer feedback inmediato de que la acción está en curso, pero el significado de confirmada o pendiente queda reservado a la tarea siguiente.
+
+---
+
+#### 13. Reutilización del contexto de la sesión
+
+El trabajador no debe volver a seleccionar ni digitar la información que ya pertenece a la sesión activa.
+
+La salida reutiliza de forma trazable, según el contrato propietario:
+
+- actor;
+- identidad de la sesión;
+- check-in de origen;
+- turno de origen cuando exista;
+- sede operativa;
+- contexto territorial asociado;
+- rol o contexto operativo histórico necesario para trazabilidad.
+
+Reutilizar esos datos no significa mantenerlos como autoridad futura después del cierre. Una salida confirmada invalida el contexto dependiente según el contrato de autorización.
+
+---
+
+#### 14. Sede laboral y punto físico de salida
+
+La **sede laboral u operativa** y el **punto físico de check-out** permanecen separados.
+
+```text
+SEDE OPERATIVA
+→ pertenece a la sesión y al contexto laboral
+
+PUNTO FÍSICO DE SALIDA
+→ indica dónde puede capturarse la evidencia de check-out
+```
+
+Aunque ambos identificadores coincidan en algunos casos, la UX no debe convertir uno en alias del otro.
+
+Por tanto:
+
+- el trabajador no elige una nueva sede laboral para salir;
+- detectar una ubicación no cambia la sede de la sesión;
+- un punto de salida externo no reescribe el turno;
+- una geocerca válida no amplía territorio ni permisos;
+- una sede operativa válida no elimina la geocerca si la política de salida la exige.
+
+---
+
+#### 15. Un único punto físico aplicable
+
+Cuando la fuente autoritativa determina exactamente un punto físico de check-out aplicable, ANIMA lo resuelve automáticamente.
+
+El trabajador no debe tocar primero `Cambiar sede`, `Elegir sede`, `Seleccionar ubicación` o una acción equivalente para confirmar algo que ya es determinista.
+
+La experiencia puede mostrar el nombre humano del punto cuando sea útil para orientar al trabajador, pero esa presentación no lo convierte en sede laboral.
+
+La acción sigue siendo:
+
+```text
+REGISTRAR SALIDA
+```
+
+y no:
+
+```text
+SELECCIONAR PUNTO
+→ REGISTRAR SALIDA
+```
+
+cuando solo existe una alternativa válida.
+
+---
+
+#### 16. Varios puntos físicos válidos
+
+Si la política autoritativa admite varios puntos físicos equivalentes y no puede elegir uno de forma segura, la selección es una excepción justificada dentro del flujo de salida.
+
+La interfaz debe nombrar correctamente el concepto, por ejemplo:
+
+- `Punto de marcación`;
+- `Punto de salida`;
+- otra etiqueta humana definida por el catálogo propietario.
+
+No debe presentarlo como `Cambiar sede` cuando la sede operativa no está cambiando.
+
+La selección excepcional:
+
+- no modifica el turno;
+- no modifica área;
+- no modifica rol;
+- no cambia la sede laboral;
+- no concede autorización;
+- no elige qué sesión cerrar;
+- se limita a resolver la evidencia física requerida para la misma intención de check-out.
+
+---
+
+#### 17. Geocerca y ubicación
+
+La ubicación es una validación de la marcación cuando la política aplicable la exige, no una tarea previa que el trabajador deba completar manualmente en el camino ordinario.
+
+Regla UX:
+
+```text
+TOCAR REGISTRAR SALIDA
+→ ANIMA VERIFICA UBICACIÓN CUANDO APLICA
+```
+
+No se exige por defecto:
+
+```text
+TOCAR REVISAR UBICACIÓN
+→ ESPERAR ESTADO LISTO
+→ TOCAR REGISTRAR SALIDA
+```
+
+si el mismo preflight puede obtener evidencia suficientemente fresca.
+
+Una ubicación ya validada y todavía reutilizable según política puede evitar trabajo redundante. Una evidencia vencida o incompatible debe refrescarse, no aceptarse por comodidad.
+
+Esta tarea no define radios, precisión, TTL, número de muestras ni thresholds de geocerca.
+
+---
+
+#### 18. Permisos del dispositivo
+
+Los permisos de ubicación se solicitan únicamente cuando una validación aplicable los necesita y el dispositivo todavía no los concede en el nivel requerido.
+
+No deben convertirse en un paso ritual antes de cada salida.
+
+La UX distingue:
+
+- permiso ya suficiente: continuar sin diálogo;
+- permiso faltante y necesario: solicitar en contexto;
+- permiso denegado o restringido: entregar el bloqueo a las tareas propietarias de explicación;
+- ubicación no requerida por política: no solicitar permiso por rutina.
+
+La tarea no redefine la política móvil de permisos ni el nivel exacto de permiso requerido.
+
+---
+
+#### 19. Sin recaptura de datos ya conocidos
+
+El flujo ordinario no solicita al trabajador volver a introducir:
+
+- nombre o identidad;
+- turno;
+- fecha de turno;
+- hora de entrada;
+- sede laboral;
+- área;
+- rol operativo;
+- identificador del check-in;
+- motivo genérico de salida;
+- datos que la sesión activa ya conserva.
+
+Si una política futura exige una evidencia adicional realmente nueva, deberá pertenecer al contrato propietario y presentarse como tal; no se justifica recapturar el contexto completo.
+
+---
+
+#### 20. Sin confirmación genérica adicional
+
+`Registrar salida` es una acción explícita y suficientemente descriptiva para el caso ordinario. No requiere, por defecto, un modal adicional de tipo:
+
+```text
+¿Seguro que deseas registrar tu salida?
+```
+
+Ese modal añade fricción sin aportar información nueva cuando el trabajador ya eligió una acción inequívoca.
+
+Una confirmación adicional solo sería justificable si existiera una consecuencia material excepcional que el trabajador no pudiera comprender desde el CTA y el contexto visibles. Esta tarea no crea tal excepción.
+
+---
+
+#### 21. Bloqueo de interacción después del primer toque
+
+Desde que se acepta una intención de salida, la interfaz impide que toques sucesivos equivalentes generen nuevas intenciones concurrentes.
+
+Mientras la misma intención está en curso:
+
+- el CTA no dispara una segunda mutación;
+- el feedback indica procesamiento sin afirmar confirmación anticipada;
+- volver a tocar no crea otra identidad de evento;
+- una re-renderización no libera accidentalmente el bloqueo;
+- cambiar de pantalla no debe transformar la misma salida en otra operación.
+
+El bloqueo de interacción es una protección UX. La idempotencia de servidor sigue siendo obligatoria y no puede sustituirse por deshabilitar un botón.
+
+---
+
+#### 22. Identidad idempotente y retries
+
+Cada intención material de salida debe conservar una identidad estable antes del primer envío.
+
+Para la misma intención y el mismo contenido:
+
+```text
+RETRY
+→ RECUPERAR O REPRODUCIR EL MISMO RESULTADO
+→ CERO SEGUNDAS SALIDAS
+```
+
+Para la misma identidad con contenido materialmente distinto:
+
+```text
+CONFLICTO
+→ NO SOBRESCRIBIR
+→ NO CREAR OTRA SALIDA
+```
+
+Una respuesta perdida después de un commit no autoriza generar una intención nueva. La experiencia debe poder reconciliar el resultado de la intención original.
+
+La estrategia física exacta pertenece a los contratos de asistencia e idempotencia existentes.
+
+---
+
+#### 23. Toque no equivale a salida confirmada
+
+El acto de pulsar `Registrar salida` significa **intención enviada o en proceso**, no prueba de que la sesión ya quedó cerrada autoritativamente.
+
+La frontera es:
+
+```text
+TOQUE
+≠
+CHECK-OUT CONFIRMADO
+```
+
+Solo un resultado autoritativo permite afirmar que el cierre se aplicó.
+
+Por tanto, la UX TO-BE no debe adoptar como contrato que actualizar optimistamente el estado local a `checked_out` sea suficiente para declarar jornada cerrada.
+
+La representación exacta de `confirmada` frente a `pendiente` pertenece a `ANIMA-UX-008`.
+
+---
+
+#### 24. Efecto sobre el contexto operativo
+
+Una salida **confirmada** cierra la sesión de asistencia correspondiente y retira el contexto o autoridad operativa que dependa de ella según `ANIMA-AUTH-009`.
+
+La intención local por sí sola no produce esa consecuencia autoritativa.
+
+Regla:
+
+```text
+CHECK-OUT CONFIRMADO
+→ SESIÓN CERRADA
+→ CONTEXTO DEPENDIENTE INVALIDADO
+
+CHECK-OUT SOLO PENDIENTE
+→ NO AFIRMAR CIERRE AUTORITATIVO
+```
+
+La interfaz no utiliza el próximo turno para reemplazar inmediatamente el contexto de la sesión que todavía está siendo cerrada.
+
+---
+
+#### 25. Frontera con ANIMA-UX-008
+
+`ANIMA-UX-007` diseña **cómo se inicia** una salida simple y segura.
+
+`ANIMA-UX-008` es propietaria de definir cómo se muestra de forma inequívoca si la marcación quedó:
+
+- confirmada;
+- pendiente;
+- en transición hacia otro estado permitido por sus contratos.
+
+Por tanto, esta tarea no fija todavía:
+
+- copy final de confirmación;
+- badges finales;
+- animaciones de éxito;
+- persistencia visual de una cola pendiente;
+- transición completa de tarjeta después del resultado;
+- tratamiento final de estados discordantes.
+
+Sí fija que ninguna de esas presentaciones puede declarar `confirmada` solo porque el usuario tocó el CTA.
+
+---
+
+#### 26. Frontera con ANIMA-UX-009 a ANIMA-UX-012
+
+La secuencia posterior conserva ownership estricto:
+
+| Tarea | Responsabilidad recibida desde ANIMA-UX-007 |
+| --- | --- |
+| `ANIMA-UX-009` | explicar en lenguaje humano por qué una salida no puede ejecutarse o continuar |
+| `ANIMA-UX-010` | diferenciar específicamente causas de ubicación, turno/contexto y autorización |
+| `ANIMA-UX-011` | diseñar el manejo comprensible de una marcación en cola offline |
+| `ANIMA-UX-012` | permitir reanudar una marcación interrumpida sin perder ni duplicar la intención |
+
+`ANIMA-UX-007` entrega a esas tareas una intención de salida con identidad, sesión objetivo y preflight definido, pero no absorbe sus estados ni mensajes finales.
+
+---
+
+#### 27. Recordatorios y reentrada al flujo
+
+Un recordatorio válido de fin de turno o salida puede conducir al trabajador hacia la experiencia de check-out, pero no crea una vía alternativa de mutación.
+
+Al abrir una notificación, ANIMA debe revalidar el estado actual antes de presentar o ejecutar la salida.
+
+```text
+NOTIFICACIÓN
+→ NAVEGACIÓN / REENTRADA
+→ REVALIDACIÓN
+→ MISMO FLUJO DE REGISTRAR SALIDA
+```
+
+No es válido que una notificación:
+
+- cierre la sesión por sí sola;
+- transporte autoridad;
+- garantice que todavía exista check-in activo;
+- genere un segundo `client_event_id` para la misma intención en curso;
+- obligue a cerrar un turno que ya fue cerrado desde otro dispositivo.
+
+La auditoría de recordatorios, su momento, contenido, cobertura y completitud pertenece a `ANIMA-UX-016`.
+
+---
+
+#### 28. Relación con Home y `/shifts`
+
+Home es la superficie ordinaria para ejecutar la salida personal.
+
+`/shifts` conserva la programación personal y puede servir como destino informativo o de navegación, pero consultar un turno no debe convertirse en requisito previo para cerrar una sesión activa.
+
+Si un acceso desde `/shifts`, una notificación u otra superficie conduce al check-out, debe converger en la misma intención autoritativa y no mantener lógica paralela de salida.
+
+La misma sesión activa no puede tener una definición de cierre en Home y otra diferente en `/shifts`.
+
+---
+
+#### 29. Actor gerencial dentro del carril personal
+
+Una persona con atribuciones administrativas que usa su carril personal de ANIMA cierra **su propia sesión de asistencia** con las mismas reglas de interacción.
+
+La acción de salida no se convierte en:
+
+- cierre de la jornada de terceros;
+- corrección administrativa;
+- cierre masivo;
+- aprobación de asistencia;
+- sustitución del actor efectivo.
+
+Las capacidades administrativas permanecen separadas por `ANIMA-UX-003` y por los contratos de autorización correspondientes.
+
+---
+
+#### 30. Auditoría del AS-IS y drift identificado
+
+El código vigente demuestra que ANIMA ya posee piezas importantes del flujo, pero no todas coinciden con el contrato TO-BE:
+
+1. el handler de Home usa una acción genérica que decide entre `checkIn()` y `checkOut()` según el estado local `isCheckedIn`;
+2. el CTA actual muestra `Registrar salida` cuando la asistencia local aparece activa;
+3. la habilitación actual del CTA depende de una geocerca previamente `ready`, lo que puede convertir `Revisar ubicación` en paso previo visible;
+4. el check-out actual recupera el último check-in efectivo y conserva su `site_id` y `shift_id` como contexto de cierre;
+5. el flujo actual puede resolver geocerca de salida antes de construir el payload;
+6. el código actual aplica una actualización optimista de asistencia antes de conocer el resultado final del insert remoto;
+7. el envío remoto del checkout se ejecuta después de esa actualización optimista;
+8. el recordatorio de salida existente navega actualmente a `/shifts`.
+
+El contrato TO-BE conserva la reutilización de la sesión activa, el bloqueo de acción, la geocerca aplicable y la identidad idempotente, pero rechaza como semántica canónica:
+
+- que la salida sea solo la otra mitad de un toggle genérico;
+- que el trabajador deba preparar manualmente la geocerca cuando puede resolverse desde el CTA;
+- que cambiar el estado local equivalga a confirmación;
+- que una notificación cree un camino de mutación separado.
+
+La materialización física de estas diferencias permanece diferida.
+
+---
+
+#### 31. Matriz de escenarios de aceptación UX
+
+| Escenario | Resultado esperado |
+| --- | --- |
+| Sesión activa, contexto resoluble y punto de salida único | Mostrar `Registrar salida`; un toque inicia preflight automático y la intención de cierre. |
+| Hora programada de fin ya pasó, pero el check-in sigue activo | Mantener la salida disponible; no bloquear solo por horario vencido. |
+| Existe turno visible pero nunca hubo check-in | No fabricar un checkout ni una sesión a cerrar. |
+| Próximo turno ya está publicado mientras la sesión anterior sigue activa | Cerrar la sesión activa original; no vincular la salida al próximo turno. |
+| Punto físico de salida coincide con la sede operativa | Resolverlo sin selección manual redundante. |
+| Punto físico de salida es distinto de la sede operativa | Usar el punto autorizado sin renombrarlo como sede laboral ni reescribir el turno. |
+| Existen varios puntos físicos equivalentes y no hay resolución determinista | Pedir selección excepcional de punto de marcación, sin cambiar sede, área, rol ni sesión. |
+| Geocerca exigida y evidencia fresca reutilizable | Continuar sin exigir otro paso manual innecesario. |
+| Geocerca exigida y evidencia vencida | Refrescar desde el flujo; no aceptar evidencia obsoleta por conveniencia. |
+| Geocerca no exigida por política | No solicitar ubicación como ritual. |
+| Permiso de ubicación faltante y necesario | Solicitarlo en contexto de la acción. |
+| Doble toque inmediato | Crear una sola intención material y mantener bloqueada la segunda interacción. |
+| Respuesta se pierde después del commit | Reconciliar la intención original; no crear una segunda salida. |
+| Mismo identificador llega con contenido diferente | Tratar como conflicto; no sobrescribir ni duplicar. |
+| Salida todavía pendiente de confirmación | No afirmar que la jornada está cerrada autoritativamente. |
+| Salida confirmada | Permitir a la capa siguiente proyectar cierre confirmado e invalidación del contexto dependiente. |
+| Recordatorio de fin de turno abre la app | Revalidar y converger en el mismo flujo de salida. |
+| La sesión fue cerrada en otro dispositivo antes de tocar el recordatorio | No ofrecer una segunda salida ejecutable después de reconciliar. |
+| Actor gerencial en carril personal | Cerrar únicamente su propia sesión, sin controles administrativos mezclados. |
+
+---
+
+#### 32. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La cobertura vigente ya protege acción principal inequívoca, contexto autoritativo, separación entre turno y check-in, estado confirmado frente a pendiente, idempotencia, pérdida de conectividad, revalidación, accesibilidad y flujo operativo mínimo. Esta tarea concreta esas obligaciones para la salida personal de ANIMA sin introducir una obligación material de prueba nueva.
+
+---
+
+#### 33. Cobertura de prueba vigente reutilizada
+
+Se reutilizan sin modificación:
+
+- `TREQ-UX-001` — acción principal y estado identificables sin capacitación extensa;
+- `TREQ-UX-002` — recuperación humana y segura sin duplicar efectos;
+- `TREQ-UX-003` — información y acciones adecuadas al actor y su autorización;
+- `TREQ-UX-005` — fuente de verdad y diferencia entre confirmado y pendiente;
+- `TREQ-UX-006` — comportamiento ante interrupciones y distinción de estados de resiliencia;
+- `TREQ-UX-009` — contexto operativo resuelto desde hechos autoritativos;
+- `TREQ-UX-037` — distinción entre sin turno, sin check-in, sin contexto y otros estados;
+- `TREQ-UX-059` — separación entre relevancia, visibilidad, habilitación y autoridad;
+- `TREQ-UX-060` — relevancia derivada de hechos autoritativos, no del frontend;
+- `TREQ-UX-063` — capa operativa centrada en tarea, estado, bloqueo y acción;
+- `TREQ-UX-073` — invalidación y revalidación ante cambios de check-in o contexto;
+- `TREQ-UX-081` — turno programado, turno vigente, check-in activo y contexto activo como hechos distintos;
+- `TREQ-UX-083` — transiciones autoritativas sin presentar estado activo antes del receipt;
+- `TREQ-UX-195` — capa inicial operativa enfocada en contexto y acción relevante;
+- `TREQ-ANIMA-003` — persistencia durable e idempotencia para marcaciones offline;
+- `TREQ-ANIMA-015` — separación en Home entre asistencia, geocerca, sede, conectividad, cola y sincronización, sin presentar como aplicada una marcación pendiente o fallida.
+
+Esta enumeración es trazabilidad hacia cobertura ya registrada y no modifica el registro canónico de requisitos.
+
+---
+
+#### 34. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build del repositorio ni de la aplicación durante el desarrollo documental. |
+| LOCAL | PASS | El artefacto se verificó estructuralmente como una sola tarea, con metadata obligatoria, secciones consecutivas, cero requisitos derivados, evidencia completa, continuidad cerrada y formato textual estable. |
+| REMOTA | PASS | Se verificaron en GitHub la continuidad vigente, la topología DEFINE_ONCE, ANIMA-UX-006 aprobada, ANIMA-AUTH-009, el código actual de Home y checkout, el recordatorio de salida, los fragmentos 04A aplicables, package.json y el preflight documental. |
+| OPERATIVA | PASS | La matriz cubre salida ordinaria, fin programado ya alcanzado, ausencia de check-in, próximo turno, punto físico distinto, ambigüedad de puntos, geocerca, permisos, doble toque, respuesta perdida, pending, recordatorio y actor gerencial en carril personal. |
+| FÍSICA | NOT_APPLICABLE | ANIMA-UX-007 está gobernada por DEFINE_ONCE y no crea una instancia física propia ni autoriza cambios de código, Supabase, navegación, datos o despliegue. |
+
+---
+
+#### 35. Criterios de aceptación
+
+1. La acción ordinaria de salida se denomina `Registrar salida` y representa una única mutación material.
+2. La pertinencia de salida se deriva de una sesión personal de asistencia activa, no únicamente de un turno visible.
+3. Un turno visible sin check-in activo no genera una salida sintética.
+4. Un próximo turno no sustituye la sesión que se intenta cerrar.
+5. El fin programado del turno no oculta la salida mientras continúe una sesión activa que deba cerrarse.
+6. Home permite iniciar la salida sin obligar a consultar previamente `/shifts`.
+7. El trabajador no vuelve a seleccionar sede laboral, área, rol, turno ni identidad para salir.
+8. La sede operativa se conserva desde la sesión y permanece separada del punto físico de check-out.
+9. Un punto físico único se resuelve automáticamente.
+10. Varios puntos físicos realmente equivalentes pueden requerir una selección excepcional correctamente etiquetada.
+11. Elegir un punto físico no cambia sede, área, rol, turno ni sesión.
+12. La geocerca se valida automáticamente desde la acción cuando la política la exige.
+13. No se exige un paso manual separado de `Revisar ubicación` cuando el preflight puede resolverlo.
+14. Una evidencia de ubicación vencida no se reutiliza silenciosamente.
+15. Si la política no requiere ubicación, la UX no la solicita por rutina.
+16. Los permisos del dispositivo se solicitan solo cuando son necesarios para continuar.
+17. El flujo ordinario no incorpora un modal genérico adicional de confirmación.
+18. El primer toque bloquea intenciones equivalentes posteriores mientras la acción está en curso.
+19. El bloqueo visual no sustituye la idempotencia de servidor.
+20. Un retry de la misma intención reutiliza su identidad estable.
+21. Una respuesta perdida después del commit se reconcilia sin crear una segunda salida.
+22. Una misma identidad con contenido distinto produce conflicto y no sobrescritura.
+23. Tocar `Registrar salida` no se presenta como check-out confirmado.
+24. Solo una salida confirmada permite afirmar el cierre autoritativo de la sesión y del contexto dependiente.
+25. Una salida pendiente no se usa para declarar autoridad ya cerrada.
+26. La presentación de confirmada o pendiente queda en ANIMA-UX-008.
+27. Los mensajes de bloqueo quedan en ANIMA-UX-009.
+28. La diferenciación de causas queda en ANIMA-UX-010.
+29. La cola offline queda en ANIMA-UX-011.
+30. La reanudación de una marcación interrumpida queda en ANIMA-UX-012.
+31. Un recordatorio converge en el mismo flujo y revalida estado antes de ofrecer o ejecutar la salida.
+32. El diseño de recordatorios permanece reservado a ANIMA-UX-016.
+33. Una persona gerencial en carril personal solo cierra su propia sesión.
+34. El AS-IS optimista no se canoniza como confirmación autoritativa.
+35. No se crean ni modifican requisitos de prueba.
+36. No existe materialización física propia.
+37. La continuidad queda reservada exclusivamente hacia ANIMA-UX-008.
+
+---
+
+#### 36. Límites y estado de salida documental
+
+ANIMA-UX-007 no:
+
+- modifica `vento-anima`;
+- modifica `vento-shell` fuera de la documentación de esta tarea;
+- modifica Supabase;
+- crea migraciones, tablas, vistas, funciones, RPC, triggers, Edge Functions o RLS;
+- cambia el esquema físico de asistencia;
+- redefine la semántica de `employee_shifts`;
+- redefine ventanas de programación;
+- define horas extra, tolerancias, redondeos o nómina;
+- redefine radios, precisión, TTL o thresholds de geocerca;
+- cambia la política de permisos del dispositivo;
+- decide el copy final de confirmación o pending;
+- diseña mensajes finales de bloqueo;
+- clasifica todavía el error visible por ubicación, turno o autorización;
+- diseña la cola offline;
+- diseña la reanudación completa de una marcación interrumpida;
+- modifica recordatorios de inicio o fin de turno;
+- define cierres administrativos de asistencia;
+- habilita checkout para terceros;
+- convierte el próximo turno en contexto de cierre;
+- convierte un punto físico en sede laboral;
+- declara confirmada una salida únicamente por estado optimista local;
+- modifica el registro de requisitos de prueba;
+- crea una instancia física.
+
+La tarea deja especificado un contrato de check-out personal con:
+
+- sesión activa como hecho de pertinencia;
+- disponibilidad de salida incluso después del fin programado mientras la sesión siga activa;
+- CTA único `Registrar salida`;
+- preflight automático;
+- reutilización del contexto de la sesión;
+- separación entre sede operativa y punto físico de salida;
+- resolución automática de un único punto;
+- selección excepcional solo ante ambigüedad real;
+- geocerca integrada al flujo cuando aplica;
+- cero recaptura de contexto conocido;
+- bloqueo de doble toque;
+- identidad idempotente y retry seguro;
+- separación entre intención, pending y confirmación;
+- cierre de contexto únicamente después de confirmación autoritativa;
+- convergencia de recordatorios y accesos alternos hacia una sola mutación propietaria;
+- handoff exacto hacia la presentación de marcación confirmada o pendiente.
+
+El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
+
+---
+
+#### 37. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-006 — Simplificar el flujo de check-in`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-007 — Simplificar el flujo de check-out`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente`
+
+
 ### [ ] ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente
 ### [ ] ANIMA-UX-009 — Explicar por qué no se puede marcar
 ### [ ] ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
