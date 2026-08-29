@@ -1,10 +1,116 @@
 {
   "instance_id": "AUTH-DB-019::GLOBAL",
   "task_id": "AUTH-DB-019",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-019__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record AUTH-DB-019::GLOBAL authorization, lifecycle state, materialization evidence, and consolidated validation evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260829200745_auth_db_019_identity_links.sql",
+      "change": "CREATE",
+      "scope": "Materialize the non-destructive identity_access principal, resolution-case, and Auth-to-enterprise-link foundation, including exhaustive classification of the 73 current direct legacy references to auth.users; no backfill, Auth mutation, VITAL mutation, or legacy FK retirement."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/028_auth_db_019_identity_links.test.sql",
+      "change": "CREATE",
+      "scope": "Validate AUTH-DB-019 ownership, vocabularies, compatibility, active cardinalities, lifecycle, conflict resolution, supersession, zero backfill, legacy FK preservation, Auth/VITAL boundaries, and fail-closed privileges with transactional pgTAP."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest after adding the AUTH-DB-019 migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying the generator."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed clean local Supabase database replay and pgTAP harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict local drift validation without mutating any hosted environment."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute quality:repair exactly once after complete materialization and before recording IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative physical lifecycle without modifying it."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-29T15:07:46-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO, SIGAMOS",
+    "source_contract_sha256": "3cb6dbcaa753906f97cae2f9447c7cd1bf5bfd31f7a6d6a7efe0ec1382c66e16"
+  },
+  "evidence": [
+    "PRE_AUTHORIZATION AUTH-DB-017::GLOBAL VERIFIED",
+    "REMOTE_BASELINE_READ_ONLY auth.users=80 auth.identities=80 hosted_mutations=NO",
+    "SOURCE_REFERENCE_MANIFEST direct_auth_fks=73 club=8 pass=4 payments=1 public=60",
+    "MATERIALIZATION migration=supabase/migrations/20260829200745_auth_db_019_identity_links.sql",
+    "MATERIALIZATION test=supabase/tests/database/028_auth_db_019_identity_links.test.sql",
+    "MATERIALIZATION identity_access.principals",
+    "MATERIALIZATION identity_access.identity_resolution_cases",
+    "MATERIALIZATION identity_access.enterprise_identity_links",
+    "MATERIALIZATION persistent_backfill=0",
+    "MATERIALIZATION legacy_auth_fk_retirement=NO",
+    "MATERIALIZATION public.employees.id legacy cascade preserved",
+    "MATERIALIZATION Auth objects untouched",
+    "MATERIALIZATION VITAL untouched",
+    "MATERIALIZATION Data API RLS policies and consumers untouched",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "MATERIALIZED_CANDIDATE commit=d527d53d1c4587e85f01e36f5fb7dfb1aeefb706 git_tree=CLEAN",
+    "VALIDATION migration manifest check PASS",
+    "VALIDATION clean database replay and pgTAP PASS",
+    "VALIDATION local recovery PASS",
+    "VALIDATION local strict drift LOCAL_CERTIFIED DRIFT_TOTAL=0",
+    "VALIDATION quality lint ratchet PASS",
+    "VALIDATION git diff check PASS",
+    "VALIDATION_SUMMARY 6/6 PASS",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "AUTH_OBJECT_MUTATIONS NO",
+    "VITAL_OBJECT_MUTATIONS NO",
+    "LEGACY_FK_MUTATIONS NO"
+  ]
 }
