@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1077** |
+| Aprobadas | **1078** |
 | En propuesta | **0** |
-| No iniciadas | **517** |
+| No iniciadas | **516** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **67.57% (1077/1594)** |
+| Porcentaje de completamiento | **67.63% (1078/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-UX-005` — Mostrar sede, área, horario y rol operativo del turno | ✅ APROBADA |
-| Tarea actual | `ANIMA-UX-006` — Simplificar el flujo de check-in | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-UX-007` — Simplificar el flujo de check-out | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-UX-006` — Simplificar el flujo de check-in | ✅ APROBADA |
+| Tarea actual | `ANIMA-UX-007` — Simplificar el flujo de check-out | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-UX-008` — Mostrar claramente marcación confirmada o pendiente | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -621,7 +621,7 @@
 | ✅ APROBADA | `ANIMA-UX-003` | Separar experiencia del trabajador y del administrador | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-004` | Diseñar inicio con turno actual y siguiente turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-005` | Mostrar sede, área, horario y rol operativo del turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
-| ⬜ NO INICIADA | `ANIMA-UX-006` | Simplificar el flujo de check-in | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
+| ✅ APROBADA | `ANIMA-UX-006` | Simplificar el flujo de check-in | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-007` | Simplificar el flujo de check-out | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-008` | Mostrar claramente marcación confirmada o pendiente | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-009` | Explicar por qué no se puede marcar | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
