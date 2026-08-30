@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1083** |
+| Tareas aprobadas | **1084** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **511** |
+| Tareas no iniciadas | **510** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **67.94% (1083/1594)** |
+| Porcentaje de completamiento | **68.01% (1084/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-UX-011 — Diseñar manejo comprensible de cola offline** |
-| Tarea actual | **ANIMA-UX-012 — Permitir reanudar una marcación interrumpida** |
+| Última tarea aprobada | **ANIMA-UX-012 — Permitir reanudar una marcación interrumpida** |
+| Tarea actual | **ANIMA-UX-013 — Simplificar documentos y datos personales** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-UX-013 — Simplificar documentos y datos personales** |
+| Siguiente tarea | **ANIMA-UX-014 — Simplificar administración de equipo autorizada** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 31 de 37 aprobadas; ANIMA-UX-012 pendiente** |
+| Progreso del bloque | **BLOQUE F: 32 de 37 aprobadas; ANIMA-UX-013 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-035::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-UX-012** |
+| Carril documental | **ACTIVO — ANIMA-UX-013** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-035::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-UX-011` — Diseñar manejo comprensible de cola offline |
-| Tarea actual | `ANIMA-UX-012` — Permitir reanudar una marcación interrumpida — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-UX-013` — Simplificar documentos y datos personales |
+| Última aprobada | `ANIMA-UX-012` — Permitir reanudar una marcación interrumpida |
+| Tarea actual | `ANIMA-UX-013` — Simplificar documentos y datos personales — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-UX-014` — Simplificar administración de equipo autorizada |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 31 DE 37 APROBADAS — ACTUAL ANIMA-UX-012** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 32 DE 37 APROBADAS — ACTUAL ANIMA-UX-013** |
 | Implementación física | **AUTH-DB-035::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-UX-011 — Diseñar manejo comprensible de cola offline
-        ↓
-TAREA ACTUAL
 ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-UX-013 — Simplificar documentos y datos personales
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-UX-014 — Simplificar administración de equipo autorizada
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 31 de 37 tareas aprobadas
+BLOQUE F — 32 de 37 tareas aprobadas
 ```
