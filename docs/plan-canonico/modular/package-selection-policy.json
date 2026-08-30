@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "policy_id": "PACKAGE-SELECTION-001",
+  "automatic_selection": false,
+  "selection_owner": "OWN-OPS",
+  "required_validators": [
+    "OWN-TEC"
+  ],
+  "security_veto_owner": "OWN-SEG",
+  "activation_conditions": [
+    "IMPLEMENTATION_READY_QUEUE_NON_EMPTY",
+    "NO_ACTIVE_PACKAGE_IMPLEMENTATION"
+  ],
+  "selection_criteria_order": [
+    "ACTIVE_PRIORITY_LANE",
+    "BUSINESS_CRITICALITY",
+    "RISK_REDUCTION",
+    "DEPENDENCY_ENABLEMENT",
+    "OPERATIONAL_READINESS",
+    "READY_FOR_GATE_AT",
+    "PACKAGE_ID_TIE_BREAK_ONLY"
+  ],
+  "selected_package_id": null,
+  "decision": null
+}

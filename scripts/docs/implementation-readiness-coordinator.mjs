@@ -4,7 +4,10 @@ import path from 'node:path';
 import { scanPackageReadiness } from './package-readiness-scanner.mjs';
 
 function queueCandidate(registry) {
-  const first = registry?.implementation_ready_queue?.[0] ?? null;
+  const selectedPackageId = registry?.package_selection?.selected_package_id ?? null;
+  const first = selectedPackageId
+    ? registry?.implementation_ready_queue?.find(({ package_id: packageId }) => packageId === selectedPackageId) ?? null
+    : null;
   if (!first) return null;
   return {
     packageId: first.package_id,
@@ -23,6 +26,7 @@ export function coordinateImplementationStatus({ baseControl, registry }) {
     throw new Error('baseControl es obligatorio.');
   }
   const candidate = queueCandidate(registry);
+  const selection = registry?.package_selection ?? null;
   const baseActive = baseControl.physical?.active ?? null;
 
   if (baseActive) {
@@ -35,6 +39,21 @@ export function coordinateImplementationStatus({ baseControl, registry }) {
   }
 
   if (!candidate) {
+    if (selection?.state === 'AWAITING_DECISION') {
+      return {
+        ...baseControl,
+        readinessCandidate: null,
+        coordinatedPrimaryAction: {
+          type: 'DECIDIR_PACKAGE',
+          target: 'NONE',
+          title: 'Seleccionar explícitamente un package elegible',
+          instruction: `El responsable ${selection.owner} debe aplicar los criterios de PACKAGE-SELECTION-001 y registrar APROBADO con evidencia; la cola no selecciona automáticamente.`,
+          why: `${selection.eligible_package_ids.length} package(s) están elegibles y ninguno está seleccionado.`,
+          source: 'PACKAGE_SELECTION_POLICY',
+        },
+        coordinationSource: 'PACKAGE_SELECTION_AWAITING_DECISION',
+      };
+    }
     return {
       ...baseControl,
       readinessCandidate: null,

@@ -3325,6 +3325,7 @@ Estos identificadores son trazabilidad de requisitos vigentes; no se modifica ni
 **Estado físico resultante:** Contrato de materialización del resolver canónico `get_access_context`, sus resolvers privados, fingerprints, serialización y proyección segura cerrado; futura instancia global `AUTH-DB-033::GLOBAL` pendiente de autorización explícita
 **Cambios físicos autorizados:** ninguno
 **Requisitos de prueba creados o modificados:** 0
+**Dependencias para ejecutar una instancia:** `AUTH-DB-016`; `AUTH-DB-018`; `AUTH-DB-017`; `AUTH-DB-019`; `AUTH-DB-027`; `AUTH-DB-028`; `AUTH-DB-029`; `SHELL-CON-001` a `SHELL-CON-008`.
 
 ---
 
@@ -5100,14 +5101,16 @@ SHELL-PKG-001..008 cerradas según su gate
 +
 SHELL-CON-001..008 materializadas según el orden físico
 +
-SHELL-AUTH-001 verificada
-+
-SHELL-CTX-001 verificada
+contratos documentales de `SHELL-AUTH-001` y `SHELL-CTX-001` aprobados
 =
 AUTH-DB-033 físicamente elegible
 ```
 
 `AUTH-DB-027`, `AUTH-DB-028` y `AUTH-DB-029` acompañan la materialización según sus contratos.
+
+Las instancias físicas de `SHELL-AUTH-001` y `SHELL-CTX-001` son
+`POST_E5_PACKAGE`: consumen esta fundación dentro de un package aprobado y
+no son prerrequisitos físicos de `AUTH-DB-033::GLOBAL`.
 
 Una dependencia todavía no verificada bloquea únicamente la instancia física.
 
