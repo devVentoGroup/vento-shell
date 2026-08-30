@@ -1,10 +1,144 @@
 {
   "instance_id": "AUTH-DB-033::GLOBAL",
   "task_id": "AUTH-DB-033",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-033__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Record AUTH-DB-033::GLOBAL authorization, lifecycle state, materialization evidence, and consolidated validation evidence."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/roles.sql",
+      "change": "MODIFY",
+      "scope": "Create the isolated NOLOGIN owner role vento_access_context_owner with no client or service membership and only the PostgreSQL membership required for controlled migrations."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260830215737_auth_db_033_access_context.sql",
+      "change": "CREATE",
+      "scope": "Materialize the deterministic private AccessContext resolver graph, isolated owner, fixed search paths, fail-closed privileges, exact source metadata, fingerprinting, and authenticated-only safe projection without hosted mutations."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/029_auth_db_033_access_context.test.sql",
+      "change": "CREATE",
+      "scope": "Validate resolver structure, invocation behavior, deterministic snapshots, fingerprinting, safe projection, ownership, grants, negative security boundaries, idempotent reads, and rollback containment with transactional pgTAP."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql",
+      "change": "MODIFY",
+      "scope": "Advance the governed function and SECURITY DEFINER inventory ratchets by the exact AUTH-DB-033 private resolver graph without weakening existing containment assertions."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/026_auth_db_018_contract_separation.test.sql",
+      "change": "MODIFY",
+      "scope": "Advance the direct routine inventory and admit exactly the AUTH-DB-033 authenticated safe-wrapper exception while retaining canonical api separation checks."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/027_auth_db_017_data_api_privileges.test.sql",
+      "change": "MODIFY",
+      "scope": "Replace the obsolete zero-definer api invariant with an exact assertion for the single canonical AUTH-DB-033 safe wrapper."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerate the canonical migration manifest after adding the AUTH-DB-033 migration."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Build and validate the canonical migration manifest without modifying the generator."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed clean local Supabase database replay and pgTAP harness without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run the governed local recovery drill without modifying it."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Run strict local drift validation without mutating any hosted environment."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Execute quality:repair exactly once after complete materialization and before recording IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Use docs:implementation:start and docs:implementation:finish as the authoritative physical lifecycle without modifying it."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-30T16:54:45-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza e implementa AUTH-DB-033::GLOBAL siguiendo el iniciador físico hasta VERIFIED y merge.",
+    "source_contract_sha256": "65ee7af60a650f0e4873f97600aa37339b117a87db02b791a7cb6c88477ffa7b"
+  },
+  "evidence": [
+    "PRE_AUTHORIZATION AUTH-DB-016::GLOBAL VERIFIED",
+    "PRE_AUTHORIZATION AUTH-DB-017::GLOBAL VERIFIED",
+    "PRE_AUTHORIZATION AUTH-DB-018::GLOBAL VERIFIED",
+    "PRE_AUTHORIZATION AUTH-DB-019::GLOBAL VERIFIED",
+    "PRE_AUTHORIZATION AUTH-DB-027::GLOBAL VERIFIED",
+    "PRE_AUTHORIZATION AUTH-DB-028::GLOBAL VERIFIED",
+    "PRE_AUTHORIZATION AUTH-DB-029::GLOBAL VERIFIED",
+    "PRE_AUTHORIZATION SHELL-CON-001..008 VERIFIED",
+    "MATERIALIZATION role=vento_access_context_owner posture=NOLOGIN,NOINHERIT,NOSUPERUSER,NOCREATEDB,NOCREATEROLE,NOREPLICATION,NOBYPASSRLS",
+    "MATERIALIZATION migration=supabase/migrations/20260830215737_auth_db_033_access_context.sql",
+    "MATERIALIZATION test=supabase/tests/database/029_auth_db_033_access_context.test.sql assertions=87",
+    "MATERIALIZATION full_resolver=app_private.get_access_context(text)",
+    "MATERIALIZATION safe_wrapper=api.get_safe_access_context(text) authenticated_only=YES",
+    "MATERIALIZATION private_graph_functions=11 api_safe_exceptions=1",
+    "MATERIALIZATION legacy_function_mutations=NO",
+    "MATERIALIZATION workforce_fallback_inference=NO",
+    "MATERIALIZATION cache_status=NOT_IMPLEMENTED",
+    "PRE_VALIDATION clean database replay and pgTAP PASS migrations=11 files=14 assertions=358",
+    "PRE_VALIDATION REMOTE_TARGETS_USED=NO",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once normalized=0 generators=0 eslint=0",
+    "MATERIALIZED_CANDIDATE commit=55c0bdd58c057a9f1061064f8c5b7c3fa35494ec git_tree=CLEAN",
+    "VALIDATION migration manifest check PASS files=11",
+    "VALIDATION clean database replay and pgTAP PASS migrations=11 files=14 assertions=358",
+    "VALIDATION local recovery PASS outcome=PASS_ROLLBACK_VERIFIED rpo_actual=0 rto_actual_ms=26537",
+    "VALIDATION local strict drift LOCAL_CERTIFIED DRIFT_TOTAL=0 UNAUTHORIZED_DRIFT=0",
+    "VALIDATION quality lint ratchet PASS new_errors=0 new_warnings=0",
+    "VALIDATION git diff check PASS",
+    "VALIDATION_SUMMARY 6/6 PASS",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "AUTH_OBJECT_MUTATIONS NO",
+    "VITAL_OBJECT_MUTATIONS NO"
+  ]
 }

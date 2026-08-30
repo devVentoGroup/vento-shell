@@ -42,3 +42,47 @@ $auth_db_017_roles_posture$;
 
 grant vento_ddl_owner to postgres
   with admin false, inherit false, set true;
+
+-- AUTH-DB-033
+-- Isolated owner for the AccessContext resolver graph. This role cannot log in,
+-- inherit ambient privileges, create database objects, or bypass RLS.
+do $auth_db_033_roles$
+begin
+  if not exists (
+    select 1
+    from pg_catalog.pg_roles
+    where rolname = 'vento_access_context_owner'
+  ) then
+    create role vento_access_context_owner
+      nologin
+      noinherit
+      nosuperuser
+      nocreatedb
+      nocreaterole
+      noreplication
+      nobypassrls;
+  end if;
+end
+$auth_db_033_roles$;
+
+do $auth_db_033_roles_posture$
+begin
+  if not exists (
+    select 1
+    from pg_catalog.pg_roles r
+    where r.rolname = 'vento_access_context_owner'
+      and not r.rolcanlogin
+      and not r.rolinherit
+      and not r.rolsuper
+      and not r.rolcreatedb
+      and not r.rolcreaterole
+      and not r.rolreplication
+      and not r.rolbypassrls
+  ) then
+    raise exception 'AUTH_DB_033_ACCESS_CONTEXT_OWNER_POSTURE_INVALID';
+  end if;
+end
+$auth_db_033_roles_posture$;
+
+grant vento_access_context_owner to postgres
+  with admin false, inherit false, set true;
