@@ -534,7 +534,6 @@ FUNDACIÓN COMPARTIDA
 SHELL-AUD-002..005
 → SHELL-PKG-001..008
 → SHELL-CON-001..008
-→ SHELL-AUTH-001 + SHELL-CTX-001
 
 PREPARACIÓN Y NÚCLEO FÍSICO
 AUTH-DB-015 + AUTH-DB-027..029 + AUTH-DB-001..005
@@ -544,8 +543,9 @@ AUTH-DB-015 + AUTH-DB-027..029 + AUTH-DB-001..005
 → AUTH-DB-034
 → AUTH-DB-032
 
-CONVERGENCIA Y ADOPCIÓN
-SHELL-CTX-002..006
+CONVERGENCIA Y ADOPCIÓN POST-E5 POR PACKAGE
+SHELL-AUTH-001 + SHELL-CTX-001
+→ SHELL-CTX-002..006
 → SHELL-AUTH-002
 → SHELL-AUTH-003
 → SHELL-AUTH-004
@@ -762,6 +762,20 @@ No existe un primer paquete vertical preseleccionado para esta fase. El alias
 histórico `NEXO-REMISSIONS-001` no reserva ejecución. Cada paquete se definirá
 cuando corresponda mediante `DELIV-PKG-001..025::<package_id>` después de
 completar el flujo canónico integral aplicable.
+
+La selección del primer package y de cada package posterior pertenece a
+`OWN-OPS`; `OWN-TEC` valida factibilidad y `OWN-SEG` conserva veto por riesgo de
+seguridad. Una cola `IMPLEMENTATION_READY`, un expediente existente o un orden
+alfabético no constituyen selección. Mientras no exista al menos un package
+elegible, el estado obligatorio es `PACKAGE_SELECTION: NOT_DUE` y
+`PACKAGE_SELECTED: NONE`. Cuando exista una cola elegible, la decisión se
+registra con:
+
+```text
+npm run docs:package:select -- --package-id <id> --owner OWN-OPS --validated-by OWN-TEC --approval APROBADO --evidence <referencia>
+```
+
+Sin ese registro no se crea un candidato físico `SHELL-CI-020::<package_id>`.
 
 33. Consumir la matriz E1 y auditar implementación real de NEXO
 34. Aprobar alcance de catálogo, inventario, LOC, LPN, activos, reutilizables, repuestos, flota y logística
