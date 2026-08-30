@@ -195,8 +195,8 @@ select is(
       'vital'
     )
   ),
-  348::bigint,
-  'authoritative baseline governed function universe remains 348'
+  359::bigint,
+  'governed function universe advances by the 11-function AUTH-DB-033 private graph'
 );
 
 select is(
@@ -215,8 +215,8 @@ select is(
     )
       and p.prosecdef
   ),
-  203::bigint,
-  'authoritative baseline SECURITY DEFINER total decreases by exactly eight to 203'
+  206::bigint,
+  'SECURITY DEFINER total includes the three isolated AUTH-DB-033 private readers'
 );
 
 select is(
@@ -234,8 +234,8 @@ select is(
     )
       and p.prosecdef
   ),
-  198::bigint,
-  'authoritative Vento SECURITY DEFINER total decreases to 198'
+  201::bigint,
+  'Vento SECURITY DEFINER total includes the three isolated AUTH-DB-033 private readers'
 );
 
 select is(
@@ -268,8 +268,8 @@ select is(
       and p.prosecdef
       and p.prorettype <> 'trigger'::regtype
   ),
-  171::bigint,
-  'authoritative direct SECURITY DEFINER total decreases by exactly eight to 171'
+  174::bigint,
+  'direct SECURITY DEFINER total includes the three isolated AUTH-DB-033 private readers'
 );
 
 select is(
