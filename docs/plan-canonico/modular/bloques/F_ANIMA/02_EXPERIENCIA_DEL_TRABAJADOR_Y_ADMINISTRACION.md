@@ -5049,7 +5049,875 @@ El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
 `ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente`
 
 
-### [ ] ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente
+### ✅ ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-007 — Simplificar el flujo de check-out
+**Tarea siguiente:** ANIMA-UX-009 — Explicar por qué no se puede marcar
+**Tipo de tarea:** documental; diseño UX TO-BE del estado visible de las marcaciones personales de entrada y salida en ANIMA para distinguir procesamiento, pendiente de confirmación, confirmación autoritativa y resultado todavía no confirmado sin convertir proyecciones optimistas, cola offline o pérdida de respuesta en autoridad de asistencia
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA debe mostrar el resultado de una marcación personal para que el trabajador pueda responder sin ambigüedad una pregunta elemental:
+
+```text
+¿MI ENTRADA O MI SALIDA YA QUEDÓ CONFIRMADA?
+```
+
+La experiencia debe impedir que una actualización local, un spinner terminado, una vibración de éxito, una intención guardada en el dispositivo, una cola offline o una respuesta perdida se interpreten como confirmación autoritativa cuando el sistema todavía no puede demostrarla.
+
+El contrato cubre tanto check-in como check-out y recibe los flujos simplificados definidos por las dos tareas anteriores. No rediseña cómo se inicia la marcación; define cómo se representa su estado después de iniciar la intención y mientras se alcanza o no una confirmación segura.
+
+La tarea debe dejar inequívoco:
+
+1. qué significa que una marcación esté en procesamiento;
+2. qué significa que esté pendiente de confirmación;
+3. qué evidencia permite llamarla confirmada;
+4. cómo se representa un resultado cuyo efecto todavía no puede determinarse;
+5. cómo cambia la presentación del estado general de asistencia según la certeza disponible;
+6. cómo impedir una segunda marcación mientras la primera siga sin resolución segura;
+7. qué información visible acompaña el estado sin exponer detalles técnicos innecesarios;
+8. qué responsabilidades se entregan a las tareas posteriores de bloqueo, clasificación causal, cola offline y recuperación.
+
+---
+
+#### 2. Handoff recibido de ANIMA-UX-006 y ANIMA-UX-007
+
+`ANIMA-UX-006` y `ANIMA-UX-007` dejan a esta tarea una intención de marcación ya iniciada bajo estas reglas:
+
+- check-in y check-out ordinarios tienen una acción principal explícita;
+- la acción se bloquea desde el primer toque para evitar intenciones duplicadas;
+- cada intención material debe conservar identidad idempotente estable;
+- las comprobaciones resolubles se ejecutan automáticamente;
+- sede laboral y punto físico de marcación permanecen separados;
+- tocar el CTA no equivale a una mutación confirmada;
+- una respuesta perdida después de un posible commit debe reconciliarse antes de repetir;
+- una salida solo cierra autoritativamente la sesión y el contexto dependiente después de confirmación;
+- una entrada solo puede utilizarse como hecho autoritativo de asistencia después de confirmación.
+
+Por tanto, la unidad recibida por `ANIMA-UX-008` no es un botón, sino una **intención de entrada o salida cuya certeza de resultado debe hacerse visible**.
+
+---
+
+#### 3. Principio rector
+
+La regla principal queda:
+
+```text
+ESTADO VISUAL
+DEBE EXPRESAR
+EL NIVEL REAL DE CERTEZA DEL RESULTADO
+```
+
+Y, por contraste:
+
+```text
+FEEDBACK OPTIMISTA
+≠ CONFIRMACIÓN
+
+INTENCIÓN LOCAL
+≠ CONFIRMACIÓN
+
+COLA OFFLINE
+≠ CONFIRMACIÓN
+
+RESPUESTA PERDIDA
+≠ OPERACIÓN FALLIDA
+
+TOQUE DEL CTA
+≠ MARCACIÓN APLICADA
+```
+
+ANIMA puede ofrecer feedback inmediato para que la interacción se sienta responsiva, pero ese feedback no puede cambiar el significado empresarial de la asistencia.
+
+---
+
+#### 4. Fuente de verdad de la confirmación
+
+Una marcación solo puede presentarse como **confirmada** cuando existe evidencia autoritativa suficiente de que la misma intención fue aplicada.
+
+La evidencia puede provenir, según el contrato físico que se materialice posteriormente, de:
+
+- una respuesta autoritativa de la mutación;
+- un receipt estable;
+- la lectura reconciliada del registro de asistencia;
+- la recuperación idempotente del resultado de la misma intención;
+- otra proyección autoritativa expresamente definida por los contratos propietarios.
+
+La interfaz no usa como prueba de confirmación:
+
+- el valor local de `attendanceState.status` por sí solo;
+- la finalización de una animación;
+- una vibración o feedback háptico;
+- que la petición haya sido enviada;
+- que exista `client_event_id`;
+- que el evento haya sido guardado localmente;
+- que exista conectividad aparente;
+- que el CTA se haya deshabilitado;
+- que haya desaparecido un spinner;
+- que una tarjeta haya cambiado optimistamente de texto.
+
+La fuente de verdad de la confirmación no se fabrica en la capa de presentación.
+
+---
+
+#### 5. Modelo conceptual de estados visibles
+
+Esta tarea define un modelo **documental de presentación**, no un enum físico, reason code, contrato de API ni esquema de base de datos.
+
+La experiencia debe poder distinguir, como mínimo:
+
+| Estado conceptual | Significado humano | Puede mostrarse como aplicada |
+| --- | --- | --- |
+| `PROCESSING` | La intención acaba de iniciarse y ANIMA está ejecutando o esperando su operación inmediata. | No. |
+| `PENDING_CONFIRMATION` | La intención está preservada o aceptada para continuar, pero ANIMA todavía no puede demostrar que el efecto autoritativo fue aplicado. | No. |
+| `CONFIRMED` | La misma intención tiene evidencia autoritativa o reconciliada de aplicación. | Sí. |
+| `UNKNOWN_OUTCOME` | La operación pudo haber sido aplicada, pero el cliente todavía no puede demostrar ni descartar su efecto. | No. |
+| `NOT_CONFIRMED` | Existe evidencia suficiente de que la intención no quedó aplicada o requiere otra resolución. | No. |
+
+`NOT_CONFIRMED` es una clase perceptible de resultado, no una explicación causal. El motivo concreto se entrega a las tareas posteriores.
+
+---
+
+#### 6. Transición perceptible normal
+
+El camino ordinario esperado es:
+
+```text
+ACCIÓN DE MARCACIÓN
+→ PROCESSING
+→ CONFIRMED
+```
+
+Cuando la operación no puede confirmarse inmediatamente, puede pasar a:
+
+```text
+PROCESSING
+→ PENDING_CONFIRMATION
+```
+
+Cuando hubo pérdida de respuesta o incertidumbre que impide saber si existió efecto:
+
+```text
+PROCESSING
+→ UNKNOWN_OUTCOME
+→ RECONCILIACIÓN
+→ CONFIRMED O NOT_CONFIRMED
+```
+
+Una transición hacia `PENDING_CONFIRMATION` no requiere que el trabajador vuelva a ejecutar la misma marcación. El estado indica precisamente que existe una intención todavía por resolver.
+
+---
+
+#### 7. Estado PROCESSING
+
+`PROCESSING` es el feedback inmediato después de aceptar el primer toque y antes de clasificar el resultado.
+
+La presentación puede usar lenguaje como:
+
+- `Registrando entrada...`;
+- `Registrando salida...`.
+
+Durante este estado:
+
+- no se afirma éxito;
+- no se afirma que la jornada ya inició o terminó;
+- no se ofrece una segunda marcación equivalente;
+- no se cambia la autoridad operativa por un efecto visual;
+- la identidad de la intención permanece estable;
+- un cambio de pantalla no autoriza crear otra intención.
+
+`PROCESSING` debe ser transitorio. Si la operación deja de tener una respuesta inmediata, la UX debe clasificarla en el estado de certeza que corresponda en lugar de mantener un spinner indefinido.
+
+---
+
+#### 8. Estado PENDING_CONFIRMATION
+
+`PENDING_CONFIRMATION` significa:
+
+```text
+EXISTE UNA INTENCIÓN IDENTIFICABLE Y PRESERVADA
++
+TODAVÍA NO EXISTE PRUEBA SUFICIENTE DE APLICACIÓN AUTORITATIVA
+```
+
+En una contingencia offline, la interfaz solo puede afirmar que la marcación quedó pendiente después de que la intención haya sido preservada durablemente conforme al contrato de cola aplicable.
+
+En otros modelos físicos futuros, un backend podría reconocer una operación como aceptada pero todavía no finalizada. También en ese caso el significado visual sigue siendo pendiente, no confirmada.
+
+La palabra `pendiente` debe referirse al resultado de **esa entrada o esa salida**, no únicamente a un contador genérico de sincronización.
+
+---
+
+#### 9. Estado CONFIRMED
+
+`CONFIRMED` significa que ANIMA puede demostrar que la intención material correspondiente fue aplicada por la fuente autoritativa o recuperada como aplicada mediante reconciliación segura.
+
+La presentación debe identificar el hecho humano:
+
+- `Entrada confirmada`;
+- `Salida confirmada`.
+
+Una vez confirmado, el estado general puede reflejar la consecuencia empresarial que corresponda:
+
+```text
+ENTRADA CONFIRMADA
+→ JORNADA / SESIÓN DE ASISTENCIA ACTIVA SEGÚN CONTRATO
+
+SALIDA CONFIRMADA
+→ JORNADA / SESIÓN DE ASISTENCIA CERRADA SEGÚN CONTRATO
+```
+
+La confirmación no depende de que el evento haya sido reciente ni de que la pantalla siga abierta. Si la aplicación se reabre, la proyección autoritativa debe poder reconstruir el resultado sin depender de un toast efímero.
+
+---
+
+#### 10. Estado UNKNOWN_OUTCOME
+
+`UNKNOWN_OUTCOME` se usa cuando ANIMA no puede afirmar ni que la intención quedó aplicada ni que no quedó aplicada.
+
+Caso típico:
+
+```text
+SE ENVÍA LA MUTACIÓN
+→ EL SERVIDOR PUEDE HABER HECHO COMMIT
+→ SE PIERDE LA RESPUESTA
+→ EL CLIENTE NO CONOCE EL RESULTADO
+```
+
+En ese caso no es correcto mostrar:
+
+- `Falló, vuelve a marcar`;
+- `No se registró`;
+- `Entrada confirmada`;
+- `Salida confirmada`.
+
+La interfaz debe comunicar que **todavía no pudo confirmar el resultado** y evitar otra mutación equivalente hasta reconciliar o concluir de forma segura el intento original.
+
+La experiencia completa de recuperación pertenece a `ANIMA-UX-012`.
+
+---
+
+#### 11. Estado NOT_CONFIRMED
+
+`NOT_CONFIRMED` representa la salida perceptible cuando existe evidencia suficiente para no presentar la intención como aplicada y el caso ya no debe permanecer indefinidamente como pendiente o desconocido.
+
+Puede corresponder, según contratos propietarios, a:
+
+- rechazo autoritativo;
+- conflicto;
+- precondición que cambió;
+- agotamiento seguro de un intento que nunca fue aplicado;
+- otra resolución inequívoca no exitosa.
+
+Esta tarea no define el reason code, el texto causal ni la recuperación específica. Entrega esos aspectos a `ANIMA-UX-009`, `ANIMA-UX-010`, `ANIMA-UX-011` o `ANIMA-UX-012` según el caso.
+
+La regla que sí fija es:
+
+```text
+NO CONFIRMADA
+≠ PENDIENTE PARA SIEMPRE
+≠ CONFIRMADA
+```
+
+---
+
+#### 12. Regla crítica: intención no es autoridad
+
+La interfaz debe conservar tres planos distintos:
+
+```text
+INTENCIÓN
+→ lo que el trabajador solicitó
+
+ESTADO DE ENTREGA / PROCESAMIENTO
+→ qué sabe ANIMA sobre esa intención
+
+ESTADO AUTORITATIVO DE ASISTENCIA
+→ qué efecto empresarial está confirmado
+```
+
+No se permite colapsarlos en una sola variable visual.
+
+Una intención de check-in pendiente no crea por sí misma un check-in autoritativo.
+
+Una intención de check-out pendiente no cierra por sí misma la sesión autoritativa.
+
+---
+
+#### 13. Entrada pendiente de confirmación
+
+Cuando una entrada está pendiente:
+
+- la superficie principal debe mostrar explícitamente `Entrada pendiente de confirmación` o una formulación humana semánticamente equivalente;
+- no debe mostrar `En turno` o `Registro activo` como si el check-in estuviera confirmado;
+- no debe ofrecer una segunda entrada equivalente;
+- no debe conceder visualmente contexto operativo que dependa de un check-in confirmado;
+- puede mostrar la hora de la intención si se etiqueta como hora de intento o marcación pendiente;
+- puede mostrar que ANIMA continuará intentando o reconciliando únicamente cuando esa política sea verdadera.
+
+La interfaz puede conservar el turno programado visible, pero debe distinguir programación de asistencia confirmada.
+
+---
+
+#### 14. Salida pendiente de confirmación
+
+Cuando una salida está pendiente:
+
+- la superficie principal debe mostrar explícitamente `Salida pendiente de confirmación` o una formulación humana equivalente;
+- no debe mostrar `Jornada cerrada` o `Listo por hoy` como hecho confirmado;
+- no debe ofrecer una segunda salida equivalente;
+- no debe afirmar que el servidor ya cerró la sesión;
+- no debe afirmar que el contexto operativo dependiente ya fue invalidado por la salida;
+- puede mostrar la hora de la intención si queda claramente diferenciada de una hora confirmada.
+
+La experiencia debe soportar que, durante ese intervalo, la fuente autoritativa todavía conserve la sesión activa aunque el trabajador ya haya solicitado cerrarla.
+
+---
+
+#### 15. Entrada confirmada
+
+Cuando existe confirmación autoritativa o reconciliada de entrada, ANIMA puede proyectar de forma coherente:
+
+- `Entrada confirmada`;
+- hora efectiva de la entrada cuando la fuente autoritativa la provea;
+- estado de jornada activa cuando corresponda;
+- contexto personal derivado de la sesión confirmada;
+- siguiente acción relevante, que normalmente pasa a ser la salida cuando los demás contratos la permitan.
+
+La confirmación puede ser resultado del primer intento online o de una reconciliación posterior. Para el trabajador, ambas rutas convergen en el mismo hecho empresarial confirmado.
+
+---
+
+#### 16. Salida confirmada
+
+Cuando existe confirmación autoritativa o reconciliada de salida, ANIMA puede proyectar:
+
+- `Salida confirmada`;
+- hora efectiva de la salida cuando la fuente autoritativa la provea;
+- jornada cerrada cuando corresponda;
+- ausencia de una sesión activa derivada de ese check-in;
+- invalidación del contexto dependiente según los contratos de autorización.
+
+La confirmación puede llegar después de que el trabajador haya abandonado la pantalla o recuperado conectividad. La UX debe poder converger posteriormente al mismo estado confirmado sin exigir una nueva salida.
+
+---
+
+#### 17. El estado principal no puede contradecir la marcación
+
+La jerarquía visual debe evitar mensajes simultáneos incompatibles.
+
+Ejemplos prohibidos:
+
+```text
+JORNADA CERRADA
++
+SALIDA PENDIENTE DE SINCRONIZACIÓN
+```
+
+cuando `JORNADA CERRADA` se presenta como hecho confirmado.
+
+También es inválido:
+
+```text
+EN TURNO
++
+ENTRADA PENDIENTE DE CONFIRMACIÓN
+```
+
+cuando `EN TURNO` implica un check-in autoritativo.
+
+Si existe una intención material pendiente, el estado principal de asistencia debe expresar la incertidumbre o pendiente con suficiente prominencia para no ser eclipsado por una proyección optimista.
+
+---
+
+#### 18. El contador genérico de cola es secundario
+
+Un contador como `1 pendiente`, `PEND 1` o `Registros pendientes: 1` puede ser útil como indicador transversal, pero no responde por sí solo qué marcación está sin confirmar.
+
+La experiencia debe permitir distinguir al menos:
+
+- entrada pendiente;
+- salida pendiente;
+- cantidad adicional de operaciones en cola cuando corresponda.
+
+El indicador global de cola es complementario. El resultado específico de la marcación debe aparecer asociado al contexto de asistencia que afecta.
+
+Esta tarea no diseña la administración completa de la cola; esa responsabilidad permanece en `ANIMA-UX-011`.
+
+---
+
+#### 19. Copy humano mínimo
+
+La capa visible debe privilegiar frases que expresen el hecho y su certeza.
+
+Familia objetivo para entrada:
+
+```text
+Registrando entrada...
+Entrada pendiente de confirmación
+Entrada confirmada
+No pudimos confirmar todavía el resultado de tu entrada
+Entrada no confirmada
+```
+
+Familia objetivo para salida:
+
+```text
+Registrando salida...
+Salida pendiente de confirmación
+Salida confirmada
+No pudimos confirmar todavía el resultado de tu salida
+Salida no confirmada
+```
+
+Los textos definitivos de causa y recuperación pertenecen a las tareas posteriores. Esta tarea fija la semántica de certeza que esos mensajes deben conservar.
+
+No se usan como único resultado frases ambiguas como:
+
+- `Listo`;
+- `Guardado`;
+- `Hecho`;
+- `Procesado`;
+- `Registro completado`;
+- `Se enviará`.
+
+Cada una puede ocultar si el dato solo existe localmente o ya fue confirmado.
+
+---
+
+#### 20. Qué significa “guardado”
+
+Si la interfaz usa la palabra `guardado`, debe indicar dónde y con qué efecto.
+
+Ejemplos semánticamente válidos según el caso:
+
+```text
+INTENCIÓN GUARDADA EN ESTE DISPOSITIVO
+→ PENDIENTE DE CONFIRMACIÓN
+```
+
+```text
+MARCACIÓN CONFIRMADA POR EL SISTEMA
+→ CONFIRMED
+```
+
+No es válido usar `Registro guardado` como sinónimo indistinto de ambos estados.
+
+La persistencia durable local es una garantía importante de recuperación, pero no es la fuente de verdad del efecto empresarial.
+
+---
+
+#### 21. Timestamps y certeza temporal
+
+La UX debe diferenciar el instante de la intención del instante o valor efectivo confirmado cuando no sean la misma cosa.
+
+Una intención pendiente puede mostrar, por ejemplo:
+
+```text
+Salida solicitada a las 18:07
+Pendiente de confirmación
+```
+
+sin convertir esa hora local en `Salida: 18:07` confirmada.
+
+Después de reconciliar, la superficie usa el tiempo efectivo autorizado por la fuente de asistencia y evita preservar una etiqueta de pendiente que ya quedó superada.
+
+Esta tarea no redefine reglas de redondeo, zona horaria, nómina ni el valor físico de `occurred_at`; solo exige que la presentación no atribuya certeza inexistente al timestamp.
+
+---
+
+#### 22. Persistencia perceptible del resultado
+
+El resultado no puede depender exclusivamente de un toast, vibración, animación o texto que desaparece a los pocos segundos.
+
+Después de que termine el estado de procesamiento, el trabajador debe poder seguir identificando si su última intención relevante está:
+
+- pendiente;
+- confirmada;
+- todavía sin resultado determinable;
+- no confirmada y necesitada de la salida correspondiente.
+
+La proyección puede compactarse al navegar o pasar el tiempo, pero no debe perder la semántica antes de que el estado haya quedado reconciliado.
+
+---
+
+#### 23. Acciones durante una marcación pendiente
+
+Mientras una entrada o salida equivalente siga pendiente o con resultado desconocido:
+
+- no se ofrece el mismo CTA como si nada hubiera ocurrido;
+- no se crea un nuevo `client_event_id` por impaciencia del usuario;
+- un botón de consulta o sincronización no se etiqueta como nueva marcación;
+- las acciones seguras de recuperación se delegan a sus contratos propietarios;
+- la UX conserva suficiente contexto para indicar qué operación está esperando resolución.
+
+Una acción de `Sincronizar ahora`, cuando exista por política de cola, actúa sobre la intención existente y no crea otra entrada o salida.
+
+---
+
+#### 24. Pérdida de conectividad
+
+La ausencia de red no convierte automáticamente una marcación en pendiente.
+
+Para mostrar `Pendiente de confirmación` en un caso offline, primero debe existir evidencia de que la intención se preservó de acuerdo con la política aplicable.
+
+Si el cliente pierde conectividad antes de poder demostrar que la intención quedó durablemente preservada o que el servidor la recibió, la experiencia no inventa una garantía.
+
+La política exacta de cola, backoff, sincronización y reintento pertenece a `ANIMA-UX-011` y a los contratos técnicos correspondientes.
+
+---
+
+#### 25. Respuesta perdida y reconciliación
+
+Una respuesta perdida exige tratar por separado el estado del canal y el estado del efecto.
+
+```text
+NO HAY RESPUESTA
+≠ NO HUBO COMMIT
+```
+
+Mientras el resultado sea incierto:
+
+- no se repite ciegamente la mutación con una nueva identidad;
+- no se dice `No se registró` sin evidencia;
+- no se dice `Confirmada` sin evidencia;
+- se conserva la identidad original para consultar o reconciliar;
+- al recuperar el resultado, la presentación converge a confirmado o no confirmado.
+
+La experiencia detallada de reanudación y recuperación pertenece a `ANIMA-UX-012`.
+
+---
+
+#### 26. Reconciliación después de reinicio o cambio de pantalla
+
+Si la aplicación se suspende, se cierra o cambia de superficie durante una intención no resuelta, volver a Home no debe reiniciar la historia visual desde un estado falso de disponibilidad.
+
+La proyección debe poder reconocer, según la evidencia disponible:
+
+- intención todavía pendiente;
+- resultado ya confirmado mientras la pantalla no estaba activa;
+- resultado todavía desconocido;
+- resultado no confirmado.
+
+El trabajador no necesita recordar manualmente qué botón había tocado para que ANIMA pueda recuperar la misma intención.
+
+---
+
+#### 27. Coherencia entre Home, resumen e historial
+
+Las superficies que presenten la misma marcación no pueden asignarle niveles de certeza incompatibles.
+
+Si Home muestra `Salida pendiente de confirmación`, un resumen local no debe decir `Jornada cerrada` como hecho autoritativo por esa misma salida.
+
+Si el historial propietario contiene únicamente eventos confirmados, la intención pendiente no se inserta allí como si ya fuera un registro autoritativo. Home puede mostrar la intención local separadamente hasta que exista reconciliación.
+
+Si una futura superficie decide representar también pendientes, debe etiquetarlos con la misma semántica y no mezclarlos con eventos confirmados.
+
+---
+
+#### 28. Accesibilidad de los estados
+
+La diferencia entre pendiente y confirmado no puede depender solo de:
+
+- color;
+- icono;
+- animación;
+- opacidad;
+- posición visual;
+- vibración.
+
+Cada estado material debe tener una etiqueta textual o semántica accesible suficiente para que una persona pueda conocer la certeza de su marcación sin distinguir colores ni interpretar símbolos.
+
+La lectura por tecnologías asistivas debe conservar al menos:
+
+- tipo de marcación: entrada o salida;
+- estado: procesando, pendiente, confirmada, no confirmada o resultado aún desconocido;
+- acción segura disponible cuando corresponda.
+
+---
+
+#### 29. Uso de color e iconografía
+
+Color e iconografía pueden reforzar la comprensión, pero son señales secundarias.
+
+La UX evita usar el mismo tratamiento visual de éxito para:
+
+- una intención apenas aceptada;
+- una marcación pendiente;
+- una confirmación autoritativa.
+
+Una marca de éxito, check gráfico o tratamiento equivalente queda reservado a un estado que semánticamente pueda interpretarse como confirmado.
+
+Un spinner representa procesamiento, no confirmación.
+
+Un indicador de nube, conectividad o sincronización representa transporte o contingencia, no sustituye el texto de estado de la marcación.
+
+---
+
+#### 30. Actor gerencial dentro del carril personal
+
+Una persona con atribuciones administrativas que usa su experiencia personal debe recibir las mismas garantías de certeza para sus propias marcaciones.
+
+Su rol no permite:
+
+- transformar una entrada pendiente en confirmada localmente;
+- cerrar visualmente su jornada antes de la confirmación;
+- tratar controles administrativos como mecanismo de reconciliación de su propia marcación;
+- ocultar el estado pendiente por disponer de más permisos.
+
+La separación entre experiencia personal y administrativa definida previamente permanece intacta.
+
+---
+
+#### 31. Auditoría del AS-IS y drift identificado
+
+El código vigente de ANIMA ya expone piezas relacionadas con pending, sincronización y estado general, pero mantiene contradicciones que esta tarea no canoniza:
+
+1. `applyOptimisticAttendanceUpdate` proyecta inmediatamente un check-in como `checked_in` antes de una confirmación autoritativa cuando la operación queda en cola;
+2. la misma función proyecta inmediatamente un check-out como `checked_out`, cierra visualmente el tramo y actualiza la salida antes de conocer el resultado remoto;
+3. el flujo actual de check-out aplica la actualización optimista y feedback háptico de éxito antes de ejecutar `insertAttendanceLogWithRetry`;
+4. el insert remoto de check-out se ejecuta en segundo plano y la función puede devolver `success: true` antes de conocer si el servidor confirmó, encoló o rechazó finalmente el intento;
+5. si el envío de check-out falla y luego entra en cola, ese cambio puede ocurrir después de que el caller ya recibió éxito;
+6. `useHomeAttendanceView` deriva `En turno / Registro activo` y `Jornada cerrada / Listo por hoy` directamente del estado local de asistencia;
+7. por ello una entrada solo pendiente puede aparentar `En turno` y una salida todavía no confirmada puede aparentar `Jornada cerrada`;
+8. Home sí tiene indicadores de cola y sincronización, pero pueden coexistir con el estado principal optimista;
+9. `PendingSyncCard` muestra un conteo genérico de registros pendientes, no identifica por sí solo si la operación material es entrada o salida;
+10. el handler de Home solo activa feedback reciente de cola cuando el resultado inmediato devuelve `queued`, condición que no describe necesariamente la cola creada posteriormente por el checkout en segundo plano.
+
+El contrato TO-BE conserva:
+
+- identidad idempotente;
+- persistencia durable cuando aplique;
+- cola y reconciliación;
+- feedback inmediato;
+- estados de sincronización.
+
+Pero rechaza como semántica canónica:
+
+```text
+ESTADO OPTIMISTA LOCAL
+→ PRESENTAR COMO ASISTENCIA CONFIRMADA
+```
+
+La materialización de estas diferencias permanece fuera de esta tarea documental.
+
+---
+
+#### 32. Matriz de escenarios de aceptación UX
+
+| Escenario | Resultado esperado |
+| --- | --- |
+| Entrada online recibe confirmación autoritativa inmediata | Mostrar `Entrada confirmada` y permitir que el estado general refleje sesión activa. |
+| Salida online recibe confirmación autoritativa inmediata | Mostrar `Salida confirmada` y permitir que el estado general refleje jornada cerrada. |
+| Entrada acaba de enviarse y todavía está en vuelo | Mostrar procesamiento, no `En turno` confirmado. |
+| Salida acaba de enviarse y todavía está en vuelo | Mostrar procesamiento, no `Jornada cerrada` confirmada. |
+| Entrada se preserva durablemente para sincronización posterior | Mostrar entrada pendiente de confirmación; no ofrecer otra entrada. |
+| Salida se preserva durablemente para sincronización posterior | Mostrar salida pendiente de confirmación; no afirmar cierre autoritativo ni ofrecer otra salida. |
+| Se pierde la respuesta y puede haber existido commit | Mostrar resultado todavía no confirmado y reconciliar la misma intención. |
+| Reconciliación descubre que el evento sí fue aplicado | Converger a confirmado sin crear una segunda marcación. |
+| Reconciliación demuestra que la intención no fue aplicada | Dejar de mostrar pendiente y entregar el caso a la experiencia de explicación o recuperación. |
+| La cola contiene una entrada pendiente y otros registros | El estado específico identifica la entrada; el contador general puede coexistir como información secundaria. |
+| La cola contiene una salida pendiente | El estado específico identifica la salida y evita `Listo por hoy` como hecho confirmado. |
+| Home se vuelve a abrir mientras existe una intención pendiente | Recuperar su estado; no volver a presentar el CTA equivalente como disponible. |
+| La marcación se confirma mientras Home está fuera de foco | Al reconciliar, Home converge a confirmado sin depender del feedback transitorio original. |
+| Hora local de intención existe pero falta confirmación | Puede mostrarse como hora solicitada o pendiente, no como hora confirmada sin etiqueta. |
+| Home tiene estado pendiente y el historial solo contiene confirmados | Mantener la intención separada; no insertarla visualmente como registro confirmado. |
+| Usuario no distingue colores | El texto y la semántica accesible permiten saber si está pendiente o confirmada. |
+| Usuario usa lector de pantalla | La lectura anuncia tipo de marcación y nivel de certeza. |
+| Actor gerencial marca su propia asistencia | Recibe las mismas reglas de pending y confirmación que cualquier trabajador en carril personal. |
+| Check-out optimista local cambia a `checked_out` antes del servidor | La UI TO-BE no usa ese hecho local como prueba suficiente de cierre. |
+| Check-in optimista local cambia a `checked_in` por cola offline | La UI TO-BE no usa ese hecho local como prueba suficiente de entrada confirmada. |
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La cobertura canónica vigente ya protege la visibilidad del estado, la separación entre pendiente y confirmado, la fuente de verdad, la recuperación sin duplicación, la persistencia offline y la prohibición de presentar como aplicada una marcación pendiente o fallida. Esta tarea concreta esas obligaciones para la presentación personal de entrada y salida en ANIMA sin introducir una obligación de prueba material nueva.
+
+---
+
+#### 34. Cobertura de prueba vigente reutilizada
+
+Se reutilizan sin modificación:
+
+- `TREQ-UX-001` — la superficie operativa debe hacer identificables la tarea actual, la acción principal y el estado del proceso;
+- `TREQ-UX-002` — un fallo o bloqueo debe explicar el estado preservado y permitir recuperación sin duplicar efectos;
+- `TREQ-UX-005` — la interfaz debe hacer visible la fuente de verdad y distinguir estado confirmado de pendiente;
+- `TREQ-UX-006` — las tareas críticas deben distinguir pendiente, confirmado, fallido, conflicto y necesidad de intervención ante contingencias;
+- `TREQ-UX-009` — el contexto operativo no puede fabricarse desde estado local o preferencias de presentación;
+- `TREQ-ANIMA-003` — una marcación offline solo puede presentarse como encolada después de persistencia durable y debe conservar identidad idempotente estable;
+- `TREQ-ANIMA-015` — Home debe separar asistencia, geocerca, selección de sede, conectividad, cola, sincronización y diagnóstico, y no presentar como aplicada una marcación pendiente o fallida.
+
+La enumeración anterior documenta cobertura ya registrada y no representa modificación del registro canónico de requisitos.
+
+---
+
+#### 35. Handoff a ANIMA-UX-009 y ANIMA-UX-010
+
+Cuando el resultado sea `NOT_CONFIRMED`, bloqueado, rechazado o requiera intervención, esta tarea entrega el estado de certeza sin absorber la explicación causal.
+
+`ANIMA-UX-009 — Explicar por qué no se puede marcar` es propietaria de convertir el impedimento en una explicación humana que indique qué ocurrió y qué puede hacerse.
+
+`ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización` es propietaria de conservar causas materialmente distintas y evitar mensajes genéricos que mezclen contexto, geocerca y autorización.
+
+El handoff conserva:
+
+- tipo de marcación;
+- identidad de la intención cuando exista;
+- nivel de certeza del resultado;
+- estado preservado conocido;
+- referencia segura necesaria para recuperación.
+
+No entrega autoridad para reclasificar una operación pendiente como confirmada.
+
+---
+
+#### 36. Handoff a ANIMA-UX-011 y ANIMA-UX-012
+
+`ANIMA-UX-011 — Diseñar manejo comprensible de cola offline` recibe los casos en los que una intención se conserva para sincronización posterior y deberá definir la experiencia detallada de cola, reintentos, progreso, conflicto y sincronización.
+
+`ANIMA-UX-012 — Permitir reanudar una marcación interrumpida` recibe los casos de pérdida de respuesta, suspensión, cierre de app, navegación o interrupción donde debe recuperarse la misma intención sin duplicarla.
+
+Esta tarea les impone una frontera común:
+
+```text
+RECUPERAR O SINCRONIZAR
+NO PUEDE CAMBIAR EL SIGNIFICADO DE CONFIRMACIÓN
+```
+
+Hasta que exista evidencia autoritativa, la marcación continúa siendo pendiente o no confirmada según el caso.
+
+---
+
+#### 37. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build de `vento-shell` ni de `vento-anima`; la tarea es especificación documental y no autoriza cambios compilables. |
+| LOCAL | PASS | El artefacto fue comprobado estructuralmente como una sola tarea, con cabecera completa, secciones numeradas consecutivamente, cero requisitos derivados, cinco clases de evidencia, continuidad cerrada, UTF-8 sin BOM, LF y ausencia de contenido operativo reservado al chat. |
+| REMOTA | PASS | Se contrastaron en GitHub protocolo, contrato de entrega, manifest, continuidad, ruta, topología, políticas, owner, tareas 006 y 007, contratos ANIMA de asistencia, fragmentos 04A, `package.json`, validadores documentales y el código vigente de asistencia, Home y cola de `vento-anima`. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutó ANIMA en dispositivo ni se observó a trabajadores reales; la validación de comprensión y comportamiento en operación permanece para las tareas y gates de prueba correspondientes. |
+| FÍSICA | NOT_APPLICABLE | `ANIMA-UX-008` está gobernada por `DEFINE_ONCE`; no crea instancia física propia ni autoriza cambios de código, Supabase, navegación, datos o despliegue. |
+
+---
+
+#### 38. Criterios de aceptación
+
+1. La UX distingue explícitamente procesamiento, pendiente de confirmación, confirmado, resultado desconocido y no confirmado sin tratarlos como sinónimos.
+2. Los nombres conceptuales definidos en esta tarea se reconocen como modelo documental de presentación y no como enum físico obligatorio.
+3. Tocar `Registrar entrada` o `Registrar salida` no se presenta como confirmación.
+4. Un estado optimista local no constituye prueba suficiente de aplicación autoritativa.
+5. Una vibración, animación o spinner completado no constituye prueba suficiente de aplicación.
+6. Una intención offline solo se presenta como pendiente cuando su preservación requerida está demostrada.
+7. Una intención pendiente no se presenta como aplicada.
+8. Una entrada pendiente no hace que Home declare `En turno` como hecho confirmado.
+9. Una salida pendiente no hace que Home declare `Jornada cerrada` o `Listo por hoy` como hecho confirmado.
+10. Mientras una intención equivalente esté pendiente o tenga resultado desconocido, no se ofrece una segunda marcación como camino ordinario.
+11. `Sincronizar ahora`, cuando exista, actúa sobre la intención existente y no crea una marcación nueva.
+12. Una respuesta perdida no se interpreta automáticamente como fallo ni como éxito.
+13. Una respuesta perdida conserva la identidad original para reconciliación.
+14. Una reconciliación que descubre la misma intención aplicada converge a confirmado sin duplicar el evento.
+15. Una reconciliación que demuestra no aplicación deja de presentar el caso como pendiente indefinido.
+16. `Entrada confirmada` requiere evidencia autoritativa o reconciliada de aplicación.
+17. `Salida confirmada` requiere evidencia autoritativa o reconciliada de aplicación.
+18. Solo una salida confirmada permite presentar la sesión como autoritativamente cerrada por esa marcación.
+19. Solo una entrada confirmada puede usarse como hecho autoritativo de presencia cuando los contratos dependientes así lo requieran.
+20. El estado específico de entrada o salida tiene prioridad semántica sobre un contador genérico de cola.
+21. El contador de pendientes puede coexistir como información secundaria sin reemplazar la explicación de qué marcación está pendiente.
+22. El copy visible identifica el tipo de marcación y su certeza.
+23. `Guardado` no se usa sin aclarar si corresponde a persistencia local o confirmación autoritativa.
+24. El timestamp de una intención pendiente no se presenta como hora confirmada sin etiqueta que preserve la incertidumbre.
+25. El resultado material persiste perceptiblemente más allá de un toast o feedback háptico transitorio.
+26. Home, resumen e historial no atribuyen niveles incompatibles de certeza a la misma marcación.
+27. Una intención pendiente no se inserta visualmente como registro confirmado en una superficie que represente solo hechos autoritativos.
+28. La diferencia entre pending y confirmed no depende solo de color, icono, animación u opacidad.
+29. La semántica accesible identifica entrada/salida y nivel de certeza.
+30. Un actor gerencial en su carril personal conserva las mismas reglas de certeza para su propia asistencia.
+31. El AS-IS que cambia `attendanceState` optimistamente no se canoniza como fuente de confirmación.
+32. El AS-IS de check-out que devuelve éxito antes de conocer el resultado remoto no se canoniza como prueba de salida confirmada.
+33. La cola genérica actual puede conservarse como componente auxiliar futuro, pero no sustituye el estado específico de la marcación.
+34. Las causas y explicaciones de un resultado no confirmado se entregan a ANIMA-UX-009 y ANIMA-UX-010.
+35. La experiencia detallada de cola offline se entrega a ANIMA-UX-011.
+36. La reanudación de resultado incierto o interacción interrumpida se entrega a ANIMA-UX-012.
+37. No se crean ni modifican requisitos de prueba.
+38. No existe materialización física propia.
+39. La continuidad queda reservada exclusivamente hacia ANIMA-UX-009.
+
+---
+
+#### 39. Límites y estado de salida documental
+
+ANIMA-UX-008 no:
+
+- modifica `vento-anima`;
+- modifica `vento-shell` fuera de la documentación de esta tarea;
+- modifica Supabase;
+- crea migraciones, tablas, vistas, funciones, RPC, triggers, RLS, Realtime, Storage, Edge Functions o cron;
+- define el schema físico de una cola;
+- crea enums físicos de estado;
+- crea reason codes;
+- cambia el contrato de `client_event_id`;
+- redefine idempotencia;
+- redefine qué servidor o función persiste asistencia;
+- redefine geocercas ni permisos del dispositivo;
+- redefine ventanas de turno;
+- concede autoridad operativa desde estado local;
+- diseña la explicación final de bloqueos;
+- clasifica definitivamente causas de ubicación, turno o autorización;
+- diseña la cola offline completa;
+- diseña el algoritmo de backoff o retry;
+- diseña la reanudación completa de una interacción interrumpida;
+- modifica historial, Home, tarjetas o navegación físicamente;
+- define pruebas con trabajadores reales;
+- modifica el registro de requisitos de prueba;
+- crea una instancia física.
+
+La tarea deja especificado un contrato de presentación donde:
+
+- el nivel visible de certeza sigue a la evidencia real;
+- pending y confirmed son materialmente distintos;
+- processing no se confunde con éxito;
+- pérdida de respuesta no se confunde con no ejecución;
+- una entrada pendiente no concede visualmente presencia confirmada;
+- una salida pendiente no declara jornada cerrada;
+- la confirmación exige autoridad o reconciliación de la misma intención;
+- el indicador específico de entrada o salida tiene prioridad sobre un contador genérico;
+- timestamps, accesibilidad y superficies relacionadas conservan la semántica de certeza;
+- los casos causales, offline y de recuperación continúan con propietarios posteriores definidos.
+
+El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
+
+---
+
+#### 40. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-007 — Simplificar el flujo de check-out`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-009 — Explicar por qué no se puede marcar`
+
+
 ### [ ] ANIMA-UX-009 — Explicar por qué no se puede marcar
 ### [ ] ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
 ### [ ] ANIMA-UX-011 — Diseñar manejo comprensible de cola offline

@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1079** |
+| Tareas aprobadas | **1080** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **515** |
+| Tareas no iniciadas | **514** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **67.69% (1079/1594)** |
+| Porcentaje de completamiento | **67.75% (1080/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-UX-007 — Simplificar el flujo de check-out** |
-| Tarea actual | **ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente** |
+| Última tarea aprobada | **ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente** |
+| Tarea actual | **ANIMA-UX-009 — Explicar por qué no se puede marcar** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-UX-009 — Explicar por qué no se puede marcar** |
+| Siguiente tarea | **ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 27 de 37 aprobadas; ANIMA-UX-008 pendiente** |
+| Progreso del bloque | **BLOQUE F: 28 de 37 aprobadas; ANIMA-UX-009 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-033::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-UX-008** |
+| Carril documental | **ACTIVO — ANIMA-UX-009** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-033::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-UX-007` — Simplificar el flujo de check-out |
-| Tarea actual | `ANIMA-UX-008` — Mostrar claramente marcación confirmada o pendiente — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-UX-009` — Explicar por qué no se puede marcar |
+| Última aprobada | `ANIMA-UX-008` — Mostrar claramente marcación confirmada o pendiente |
+| Tarea actual | `ANIMA-UX-009` — Explicar por qué no se puede marcar — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-UX-010` — Diferenciar error de ubicación, turno y autorización |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 27 DE 37 APROBADAS — ACTUAL ANIMA-UX-008** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 28 DE 37 APROBADAS — ACTUAL ANIMA-UX-009** |
 | Implementación física | **AUTH-DB-033::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-UX-007 — Simplificar el flujo de check-out
-        ↓
-TAREA ACTUAL
 ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-UX-009 — Explicar por qué no se puede marcar
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 27 de 37 tareas aprobadas
+BLOQUE F — 28 de 37 tareas aprobadas
 ```
