@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-033::GLOBAL",
   "task_id": "AUTH-DB-033",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -128,6 +128,15 @@
     "PRE_VALIDATION clean database replay and pgTAP PASS migrations=11 files=14 assertions=358",
     "PRE_VALIDATION REMOTE_TARGETS_USED=NO",
     "PRE_VALIDATION_GATE quality:repair PASS exactly once normalized=0 generators=0 eslint=0",
+    "MATERIALIZED_CANDIDATE commit=55c0bdd58c057a9f1061064f8c5b7c3fa35494ec git_tree=CLEAN",
+    "VALIDATION migration manifest check PASS files=11",
+    "VALIDATION clean database replay and pgTAP PASS migrations=11 files=14 assertions=358",
+    "VALIDATION local recovery PASS outcome=PASS_ROLLBACK_VERIFIED rpo_actual=0 rto_actual_ms=26537",
+    "VALIDATION local strict drift LOCAL_CERTIFIED DRIFT_TOTAL=0 UNAUTHORIZED_DRIFT=0",
+    "VALIDATION quality lint ratchet PASS new_errors=0 new_warnings=0",
+    "VALIDATION git diff check PASS",
+    "VALIDATION_SUMMARY 6/6 PASS",
+    "QUALITY_REPAIR_RERUN NO",
     "REMOTE_DIRECT_MUTATIONS NO",
     "AUTH_OBJECT_MUTATIONS NO",
     "VITAL_OBJECT_MUTATIONS NO"

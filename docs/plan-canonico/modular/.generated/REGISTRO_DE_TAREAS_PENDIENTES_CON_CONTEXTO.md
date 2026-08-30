@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `ANIMA-UX-012` — Permitir reanudar una marcación interrumpida | `ANIMA-UX-013` — Simplificar documentos y datos personales | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `IN_PROGRESS` | `AUTH-DB-033::GLOBAL` — Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `AUTH-DB-035::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `AUTH-DB-035::GLOBAL` — Implementar token transaccional de frescura e invalidación del contexto | `AUTH-DB-034::GLOBAL` | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1082/1594 aprobadas** | **511** no aprobadas (1 propuesta, 0 rechazadas) | `ANIMA-UX-012` |
-| 🟧 **Implementación física conocida** | **88/95 VERIFIED** | **7** no terminales | `AUTH-DB-033::GLOBAL` |
+| 🟧 **Implementación física conocida** | **89/95 VERIFIED** | **6** no terminales | `AUTH-DB-035::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-F-ANIMA` — ANIMA
 - **Siguiente etapa documental:** `PHASE-04-G-VISO-CORE`
-- **Acción física prioritaria:** `EJECUTAR_IMPLEMENTACION` — `AUTH-DB-033::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **6**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `AUTH-DB-035::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **5**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,13 +35,12 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `AUTH-DB-033::GLOBAL` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `IN_PROGRESS` | ACTUAL — EJECUTAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `AUTH-DB-035::GLOBAL` | Implementar token transaccional de frescura e invalidación del contexto | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-033::GLOBAL. |
-| 3 | PENDIENTE | `AUTH-DB-034::GLOBAL` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-033::GLOBAL. |
-| 4 | PENDIENTE | `AUTH-DB-032::GLOBAL` | Implementar persistencia canónica y vinculación de decisiones de autorización | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-033::GLOBAL. |
-| 5 | PENDIENTE | `AUTH-DB-012::GLOBAL` | Implementar auditoría de cambios de permisos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-033::GLOBAL. |
-| 6 | PENDIENTE | `AUTH-DB-013::GLOBAL` | Implementar auditoría de simulación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-033::GLOBAL. |
-| 7 | PENDIENTE | `AUTH-DB-014::GLOBAL` | Implementar auditoría de dispositivos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-033::GLOBAL. |
+| 1 | **ACTUAL** | `AUTH-DB-035::GLOBAL` | Implementar token transaccional de frescura e invalidación del contexto | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 2 | PENDIENTE | `AUTH-DB-034::GLOBAL` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-035::GLOBAL. |
+| 3 | PENDIENTE | `AUTH-DB-032::GLOBAL` | Implementar persistencia canónica y vinculación de decisiones de autorización | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-035::GLOBAL. |
+| 4 | PENDIENTE | `AUTH-DB-012::GLOBAL` | Implementar auditoría de cambios de permisos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-035::GLOBAL. |
+| 5 | PENDIENTE | `AUTH-DB-013::GLOBAL` | Implementar auditoría de simulación | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-035::GLOBAL. |
+| 6 | PENDIENTE | `AUTH-DB-014::GLOBAL` | Implementar auditoría de dispositivos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-035::GLOBAL. |
 
 ## Modos de trabajo y materialización
 
