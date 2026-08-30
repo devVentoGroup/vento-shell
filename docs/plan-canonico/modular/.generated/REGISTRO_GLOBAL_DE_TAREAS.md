@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1083** |
+| Aprobadas | **1084** |
 | En propuesta | **0** |
-| No iniciadas | **511** |
+| No iniciadas | **510** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **67.94% (1083/1594)** |
+| Porcentaje de completamiento | **68.01% (1084/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-UX-011` — Diseñar manejo comprensible de cola offline | ✅ APROBADA |
-| Tarea actual | `ANIMA-UX-012` — Permitir reanudar una marcación interrumpida | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-UX-013` — Simplificar documentos y datos personales | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-UX-012` — Permitir reanudar una marcación interrumpida | ✅ APROBADA |
+| Tarea actual | `ANIMA-UX-013` — Simplificar documentos y datos personales | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-UX-014` — Simplificar administración de equipo autorizada | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -627,7 +627,7 @@
 | ✅ APROBADA | `ANIMA-UX-009` | Explicar por qué no se puede marcar | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-010` | Diferenciar error de ubicación, turno y autorización | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-011` | Diseñar manejo comprensible de cola offline | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
-| ⬜ NO INICIADA | `ANIMA-UX-012` | Permitir reanudar una marcación interrumpida | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
+| ✅ APROBADA | `ANIMA-UX-012` | Permitir reanudar una marcación interrumpida | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-013` | Simplificar documentos y datos personales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-014` | Simplificar administración de equipo autorizada | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-015` | Probar check-in y check-out con trabajadores reales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |

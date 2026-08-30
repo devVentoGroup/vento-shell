@@ -8716,7 +8716,637 @@ La tarea siguiente deberá diseñar qué ocurre cuando la interacción se interr
 `ANIMA-UX-012 — Permitir reanudar una marcación interrumpida`
 
 
-### [ ] ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
+### ✅ ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-011 — Diseñar manejo comprensible de cola offline
+**Tarea siguiente:** ANIMA-UX-013 — Simplificar documentos y datos personales
+**Tipo de tarea:** documental; diseño UX TO-BE de reanudación segura de una intención personal de check-in o check-out interrumpida, con recuperación del mismo intento, rehidratación del estado visible, revalidación de contexto y prevención de duplicados, sin materialización física
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo ANIMA debe recuperar una marcación personal de entrada o salida cuando el flujo se interrumpe antes de que el trabajador obtenga un resultado terminal confiable.
+
+La reanudación debe conservar la continuidad de la misma intención cuando exista evidencia suficiente para hacerlo, recuperar el último punto seguro conocido, revalidar el contexto que pudo cambiar durante la interrupción y evitar que volver a la aplicación genere una segunda marcación o haga pasar como confirmada una operación cuyo resultado continúa pendiente o incierto.
+
+El objetivo no es hacer que toda interrupción continúe automáticamente. El objetivo es que cada regreso al flujo produzca una decisión segura entre continuar, revalidar, esperar, conciliar, pedir intervención o iniciar una nueva intención únicamente cuando se haya demostrado que la anterior ya no puede producir efectos.
+
+#### 2. Resultado canónico
+
+La experiencia de reanudación queda regida por esta secuencia conceptual:
+
+```text
+INTENCION DE MARCACION
+→ INTERRUPCION
+→ RECUPERAR EVIDENCIA DISPONIBLE
+→ DETERMINAR ULTIMO PUNTO SEGURO
+→ REVALIDAR ESTADO ACTUAL
+→ RESOLVER LA MISMA INTENCION
+   ├─ continuar paso seguro
+   ├─ volver a un prerrequisito
+   ├─ mostrar pendiente durable
+   ├─ conciliar resultado incierto
+   ├─ detener por conflicto
+   ├─ pedir intervencion
+   └─ cerrar como resultado terminal conocido
+```
+
+Una interrupción nunca autoriza por sí misma a:
+
+- crear otra intención;
+- cambiar el identificador estable de una intención ya materializada;
+- repetir un efecto remoto o físico potencialmente ejecutado;
+- reutilizar contexto vencido como si continuara vigente;
+- presentar una operación como en cola sin persistencia durable demostrada;
+- presentar una operación como confirmada sin resultado autoritativo compatible.
+
+#### 3. Definición de marcación interrumpida
+
+Existe una marcación interrumpida cuando el trabajador inició o intentó iniciar un check-in o check-out y, antes de llegar a una salida terminal inequívoca, el flujo perdió continuidad de ejecución o presentación.
+
+La interrupción puede ocurrir por:
+
+- envío de ANIMA a segundo plano;
+- bloqueo y posterior desbloqueo del dispositivo;
+- apertura de Ajustes del sistema para resolver un permiso;
+- prompt del sistema operativo;
+- navegación accidental o deep link que saque temporalmente del flujo;
+- pérdida temporal de conectividad;
+- timeout o pérdida de respuesta después de una solicitud;
+- suspensión del proceso;
+- cierre inesperado de la aplicación;
+- terminación del proceso por el sistema operativo;
+- reapertura de ANIMA después de una terminación;
+- reinicio del dispositivo cuando exista estado recuperable;
+- renovación o reentrada de sesión;
+- cambio de superficie dentro de ANIMA mientras la misma intención sigue sin resolver.
+
+No toda interrupción implica que exista trabajo durable. La experiencia debe determinar primero qué evidencia sobrevivió.
+
+#### 4. Unidad de reanudación
+
+La unidad que se reanuda es la **misma intención de marcación**, no la pantalla, el botón ni la navegación que estaba visible antes de la interrupción.
+
+Cuando la intención ya tenga identidad estable, esa identidad se conserva durante toda recuperación compatible.
+
+Cuando todavía no exista una identidad durable o una operación materializada, la aplicación puede reconstruir la presentación y volver a evaluar prerrequisitos, pero no puede afirmar que existe una operación pendiente ni inventar retroactivamente una identidad para simular que el intento anterior quedó almacenado.
+
+#### 5. Frontera con ANIMA-UX-011
+
+`ANIMA-UX-011` conserva la propiedad sobre la experiencia de una intención que ya alcanzó persistencia durable dentro de la cola offline.
+
+Esta tarea recibe un problema distinto y más amplio: qué ocurre cuando la continuidad se pierde antes, durante o después de cruzar una frontera de persistencia o de ejecución cuyo resultado todavía debe determinarse.
+
+La frontera queda así:
+
+| Situación | Propietario UX primario |
+| --- | --- |
+| Elemento confirmado como persistido durablemente y pendiente de sincronización | ANIMA-UX-011 |
+| Reentrada a una intención durable después de cerrar o reabrir la app | ANIMA-UX-012, consumiendo el estado de ANIMA-UX-011 |
+| Interrupción antes de demostrar persistencia durable | ANIMA-UX-012 |
+| Interrupción mientras se resuelve un prerrequisito | ANIMA-UX-012 |
+| Interrupción con posible efecto remoto pero sin resultado autoritativo | ANIMA-UX-012, con conciliación propietaria |
+| Reanudación que descubre conflicto de cola | ANIMA-UX-012 para la entrada a recuperación; ANIMA-UX-011 conserva la semántica de cola y conflicto |
+
+La reanudación no crea una segunda semántica de cola.
+
+#### 6. Frontera con ANIMA-UX-008 a ANIMA-UX-010
+
+La reanudación consume las decisiones previas sin redefinirlas:
+
+- `ANIMA-UX-008` mantiene la diferencia entre resultado confirmado y pendiente;
+- `ANIMA-UX-009` mantiene la explicación humana de por qué una acción no puede continuar;
+- `ANIMA-UX-010` mantiene la separación causal entre ubicación, turno/contexto y autorización;
+- `ANIMA-UX-012` determina cómo recuperar el flujo después de una interrupción y desde qué estado seguro debe volver a presentarse.
+
+Una reanudación puede desembocar en una causa definida por esas tareas, pero no modifica su significado.
+
+#### 7. Regla de evidencia antes de reanudar
+
+Al volver al flujo, ANIMA debe reconstruir la situación desde evidencia vigente y no desde la apariencia previa de la interfaz.
+
+La decisión de reanudación considera, cuando aplique:
+
+1. identidad de la intención o evento ya existente;
+2. presencia o ausencia de persistencia local durable;
+3. estado remoto autoritativo disponible;
+4. estado de asistencia actual del trabajador;
+5. turno o contexto laboral vigente;
+6. sesión y actor actuales;
+7. autorización vigente;
+8. estado real de permisos del dispositivo;
+9. frescura de la evidencia de ubicación requerida;
+10. conectividad disponible;
+11. estado de sincronización o conciliación;
+12. conflicto detectado;
+13. vencimiento o invalidez de un checkpoint recuperado.
+
+La última pantalla observada antes de la interrupción es evidencia de presentación, no fuente de verdad empresarial.
+
+#### 8. Checkpoint conceptual de reanudación
+
+Se define un **checkpoint de reanudación** como el conjunto mínimo de referencias necesarias para reconstruir de forma segura dónde quedó una intención interrumpida.
+
+Es un concepto documental. Esta tarea no ordena crear una tabla, tipo, enum, RPC, almacenamiento específico ni formato físico.
+
+Cuando exista y sea aplicable, un checkpoint puede referenciar conceptualmente:
+
+- intención o identidad estable conocida;
+- objetivo `check-in` o `check-out`;
+- trabajador o actor al que pertenece;
+- contexto laboral o turno de referencia;
+- versión o frescura del contexto cuando el dominio la exponga;
+- último punto seguro alcanzado;
+- clase de persistencia demostrada;
+- certeza del resultado;
+- instante relevante para evaluar frescura o expiración;
+- referencia segura de correlación para conciliación o soporte.
+
+No debe tratar como autoridad persistente:
+
+- un permiso previamente concedido si el sistema operativo ya puede haberlo cambiado;
+- una autorización calculada antes de la interrupción;
+- una ubicación antigua como prueba vigente;
+- un token o secreto;
+- una selección visual de pantalla;
+- un estado objetivo enviado por el cliente;
+- una copia local que contradiga una fuente autoritativa más reciente.
+
+#### 9. Puntos seguros de recuperación
+
+La experiencia distingue como mínimo estos puntos conceptuales:
+
+| Punto | Evidencia disponible | Reanudación permitida |
+| --- | --- | --- |
+| Antes de materializar la intención | Solo interacción o preparación de UI | Reconstruir la pantalla y reevaluar; no afirmar pendiente |
+| Intención identificada, prerrequisitos incompletos | Identidad y contexto parcial compatibles | Volver al prerrequisito faltante después de revalidar |
+| Persistencia local en curso sin confirmación | Resultado de persistencia todavía desconocido | Verificar almacenamiento antes de declarar cola o crear otra intención |
+| Persistencia local durable confirmada | Misma identidad durable | Mostrar y continuar según ANIMA-UX-011 |
+| Envío remoto en curso o respuesta perdida | El efecto pudo cruzar la frontera | Conciliar; no repetir ciegamente |
+| Resultado autoritativo confirmado | Resultado terminal conocido | Mostrar resultado; no reanudar la acción |
+| Conflicto | Estado incompatible demostrado | Abrir recuperación de conflicto; no retry ordinario |
+| Intervención requerida | Automatismo seguro agotado | Mantener evidencia y conducir al resolver correspondiente |
+
+#### 10. Interrupción antes de una intención durable
+
+Si el proceso termina antes de que exista evidencia durable de una intención de marcación:
+
+- ANIMA no muestra “pendiente de sincronización”;
+- ANIMA no muestra “guardado”;
+- ANIMA no reconstruye una cola ficticia;
+- ANIMA no conserva una hora de UI como si fuera un evento laboral ya registrado;
+- al regresar, reconstruye el contexto actual y permite una nueva acción solo después de descartar razonablemente que exista una intención anterior durable o un efecto remoto incierto.
+
+Si no es posible demostrar que no existió efecto, la situación deja de ser un simple reinicio de UI y pasa a resultado incierto o conciliación.
+
+#### 11. Interrupción durante prerrequisitos
+
+Cuando la interrupción ocurre durante validación de turno, ubicación, permiso del dispositivo, sesión u otro prerrequisito:
+
+1. se conserva únicamente el contexto seguro que pueda recuperarse;
+2. al volver, se consulta el estado real del prerrequisito;
+3. no se reutiliza una decisión anterior como autoridad si puede haber cambiado;
+4. si el prerrequisito ya quedó resuelto, el flujo puede continuar desde el siguiente punto seguro;
+5. si continúa faltando, se vuelve a la explicación y recuperación propietarias;
+6. si aparece una causa distinta, se presenta la causa vigente y no la causa histórica.
+
+#### 12. Regreso desde permisos del sistema operativo
+
+Salir de ANIMA para conceder o revisar un permiso no cancela automáticamente la intención.
+
+Al regresar:
+
+- se inspecciona el estado real actual del permiso;
+- abrir Ajustes no equivale a permiso concedido;
+- cerrar el prompt no equivale universalmente a deny permanente;
+- un permiso concedido no evita revalidar los demás prerrequisitos;
+- un permiso revocado durante la interrupción detiene la continuación dependiente de ese permiso;
+- la intención no se duplica solo porque la pantalla de Home vuelva a montarse.
+
+#### 13. Reanudación y ubicación
+
+La ubicación utilizada para decidir una marcación debe cumplir la política vigente en el momento relevante.
+
+Un checkpoint puede recordar que el flujo esperaba evidencia de ubicación, pero no convierte coordenadas antiguas en evidencia vigente.
+
+Si la política propietaria exige ubicación fresca, la reanudación debe solicitar u obtener evidencia nueva antes de continuar.
+
+La sede laboral, el punto físico de marcación y la evidencia de geocerca siguen siendo conceptos distintos; esta tarea no los fusiona para simplificar la recuperación.
+
+#### 14. Reanudación y turno o contexto laboral
+
+Una reanudación no hereda ciegamente el turno que estaba visible antes de la interrupción.
+
+Antes de producir un nuevo efecto se revalida, cuando corresponda:
+
+- que el trabajador sigue siendo el actor aplicable;
+- que el turno o contexto referenciado continúa siendo vigente y compatible;
+- que no apareció una transición de asistencia que cambie la acción correcta;
+- que no existe una versión o publicación posterior que invalide la proyección anterior.
+
+Si el contexto cambió, la recuperación explica el cambio y resuelve desde el estado actual en vez de completar una acción contra el contexto viejo.
+
+#### 15. Reanudación y autorización
+
+La autorización nunca queda congelada por un checkpoint UX.
+
+Al reanudar una intención que todavía puede producir un efecto:
+
+- se resuelve la autoridad vigente en la capa propietaria;
+- no se reutiliza un allow anterior como credencial;
+- un deny actual detiene la acción aunque antes hubiera estado habilitada;
+- un cambio de sesión obliga a asociar correctamente la recuperación con el actor actual;
+- un checkpoint perteneciente a otro trabajador no puede continuar bajo la sesión actual.
+
+La interfaz puede conservar referencias necesarias para explicar la recuperación, pero no concede autoridad por haber sobrevivido a la interrupción.
+
+#### 16. Reanudación después de cierre o terminación del proceso
+
+Cuando ANIMA se abre después de un cierre inesperado o de una terminación del proceso:
+
+1. carga primero la evidencia durable disponible;
+2. consulta el estado remoto necesario para detectar resultados ya aplicados o incompatibilidades;
+3. identifica si existe una intención durable pendiente;
+4. identifica si existe resultado incierto que requiera conciliación;
+5. reconstruye la experiencia desde esos hechos;
+6. solo entonces habilita una nueva intención incompatible.
+
+La memoria de proceso perdida no puede utilizarse como argumento para asumir que el intento anterior nunca existió.
+
+#### 17. Reanudación de cola durable
+
+Si al regresar existe una entrada durable compatible de la cola:
+
+- se conserva su identidad estable;
+- se proyecta como pendiente o en el estado definido por ANIMA-UX-011;
+- un retry manual o automático opera sobre la misma intención cuando el contrato lo permita;
+- no se crea un nuevo evento para “recuperar” el anterior;
+- una reapertura de Home no reinicia `queued_at`, número de intentos ni identidad empresarial por razones de presentación;
+- la confirmación remota posterior sustituye el estado pendiente sin duplicar la marcación.
+
+#### 18. Resultado remoto incierto
+
+Cuando una interrupción ocurre después de que la operación pudo haber alcanzado el servidor pero antes de obtener una respuesta autoritativa, ANIMA conserva un estado de resultado incierto.
+
+La recuperación debe:
+
+1. buscar evidencia remota o de conciliación usando las referencias disponibles;
+2. impedir un segundo envío ciego de la misma acción;
+3. impedir una nueva identidad utilizada únicamente para escapar de la incertidumbre;
+4. mostrar al trabajador que el resultado está siendo verificado;
+5. terminar como confirmado, fallido, conflicto o intervención únicamente cuando exista evidencia suficiente.
+
+“Perdimos la respuesta” no equivale a “la marcación falló”.
+
+#### 19. Prevención de duplicados al reingresar
+
+La reanudación protege contra duplicados producidos por:
+
+- doble toque antes de que cambie la pantalla;
+- Home desmontado y vuelto a montar;
+- navegación a otra pestaña y regreso;
+- deep link a Home;
+- reapertura desde una notificación;
+- regreso desde Ajustes;
+- retorno de background a foreground;
+- dos callbacks tardíos de una misma intención;
+- retry automático y retry manual concurrentes;
+- reapertura después de cierre inesperado;
+- recuperación desde otro punto de entrada de ANIMA.
+
+Mientras la misma intención siga sin resolución segura, la UI no ofrece otra acción incompatible como si nada estuviera en curso.
+
+#### 20. Convergencia de superficies
+
+Home, turnos, historial, notificaciones, deep links y cualquier otra entrada legítima a la marcación deben converger hacia el mismo estado vigente de recuperación.
+
+No se permiten copias competidoras como:
+
+- Home diciendo “pendiente” mientras Historial afirma “confirmado” con una copia vieja;
+- una notificación habilitando una segunda salida mientras Home concilia la primera;
+- un deep link restaurando un turno que ya dejó de ser aplicable;
+- una pantalla local ocultando un conflicto conocido por la cola.
+
+Cada superficie puede adaptar la presentación, pero no el hecho empresarial ni la identidad de la intención.
+
+#### 21. Acción principal durante recuperación
+
+La recuperación muestra como máximo una acción primaria ordinaria cuando exista una continuación segura y ejecutable.
+
+Ejemplos conceptuales:
+
+- continuar validación;
+- volver a comprobar permiso;
+- intentar sincronizar la misma intención cuando el contrato lo permita;
+- revisar un conflicto;
+- volver a Home después de confirmar el resultado.
+
+No se presenta “Marcar otra vez”, “Crear nuevo registro” o equivalente mientras la intención previa pueda seguir produciendo o ya haber producido el mismo efecto.
+
+#### 22. Reanudación sin pedir nuevamente datos válidos
+
+La recuperación no obliga al trabajador a repetir información que:
+
+- ya existe en una fuente canónica vigente;
+- permanece válida para la misma intención;
+- no requiere reconfirmación por seguridad o frescura.
+
+Sin embargo, evitar repetición no autoriza a conservar silenciosamente datos obsoletos. Cuando un dato puede haber vencido o cambiado, la reanudación lo revalida y solo vuelve a pedir interacción humana si la decisión no puede resolverse automáticamente.
+
+#### 23. Estado visible de recuperación
+
+La presentación debe permitir entender cuál de estas situaciones ocurre sin exponer términos técnicos innecesarios:
+
+- la acción todavía estaba preparando sus condiciones;
+- existe una marcación guardada y pendiente;
+- la marcación se está sincronizando;
+- el sistema está verificando qué ocurrió;
+- existe un conflicto que debe revisarse;
+- hace falta una acción del trabajador;
+- hace falta intervención de un responsable;
+- la marcación quedó confirmada;
+- no existe una intención recuperable y puede iniciarse una nueva acción.
+
+La interfaz identifica entrada o salida cuando esa distinción ya sea conocida.
+
+#### 24. Recuperación de conflicto
+
+Si la revalidación encuentra un estado incompatible, la intención no vuelve automáticamente al camino ordinario.
+
+Ejemplos conceptuales:
+
+- una salida pendiente y el servidor ya no muestra una entrada compatible;
+- una entrada pendiente y ya existe una entrada activa incompatible;
+- la intención corresponde a un contexto que dejó de ser válido;
+- otra superficie o dispositivo produjo un resultado que cambia la secuencia esperada.
+
+La recuperación conserva la evidencia necesaria, explica la situación en lenguaje humano y dirige al flujo de conciliación o intervención. Un conflicto no se resuelve creando una segunda marcación.
+
+#### 25. Uso desde más de un dispositivo
+
+Un checkpoint local pertenece al dispositivo que lo conserva, pero no es fuente de verdad exclusiva de la asistencia.
+
+Al reanudar después de una interrupción se considera que otro dispositivo o flujo autorizado pudo haber cambiado el estado remoto.
+
+Por tanto:
+
+- el estado remoto vigente se revalida antes de ejecutar un efecto incompatible;
+- un checkpoint local confirmado como obsoleto no se impone sobre el servidor;
+- una acción ya confirmada desde otro dispositivo se muestra como resultado existente;
+- una divergencia material se trata como conflicto o conciliación, no como last-write-wins de la interfaz local.
+
+#### 26. Sesión vencida o cambiada
+
+Si ANIMA requiere reautenticación durante la recuperación:
+
+1. la intención recuperable puede conservarse como referencia segura mientras corresponda;
+2. la reautenticación no ejecuta la marcación por sí sola;
+3. después de autenticar se verifica que el actor coincide con el propietario de la intención;
+4. se revalida autoridad y contexto;
+5. una intención de otro actor no se muestra ni se ejecuta bajo la nueva sesión;
+6. si la seguridad exige descartar presentación sensible, se conserva únicamente la evidencia técnica mínima que el contrato propietario permita.
+
+#### 27. Limpieza del estado de recuperación
+
+Un checkpoint o estado de presentación de recuperación se limpia únicamente cuando exista una razón segura, por ejemplo:
+
+- resultado autoritativo terminal ya proyectado;
+- evidencia de que nunca se materializó una intención ni puede existir efecto pendiente;
+- abandono permitido antes de una frontera durable o de efecto;
+- resolución de conflicto con resultado final conocido;
+- invalidación segura definida por el propietario.
+
+No se limpia para ocultar:
+
+- una cola pendiente;
+- un resultado incierto;
+- un conflicto sin resolver;
+- una posible operación ya enviada;
+- evidencia necesaria para soporte o conciliación.
+
+#### 28. Abandono y nueva intención
+
+El trabajador puede abandonar una preparación puramente local que no haya cruzado una frontera material y cuya ausencia de efecto esté demostrada.
+
+Una vez exista persistencia durable, envío potencialmente efectivo o resultado incierto, “cancelar la pantalla” no equivale a eliminar la intención empresarial.
+
+Una nueva intención incompatible solo se habilita cuando la anterior:
+
+- quedó terminada de forma autoritativa;
+- fue invalidada de forma segura antes de producir efecto;
+- fue resuelta mediante el mecanismo propietario correspondiente.
+
+#### 29. Referencia de soporte y conciliación
+
+Cuando una recuperación no pueda cerrarse automáticamente, ANIMA conserva una referencia segura que permita correlacionar el caso sin exponer secretos, SQL, políticas internas, tokens, trazas completas ni datos innecesarios.
+
+La referencia ayuda a responder:
+
+- qué intención se estaba recuperando;
+- qué resultado era conocido;
+- qué estado estaba pendiente;
+- qué conflicto o incertidumbre impidió continuar.
+
+No sustituye la evidencia autoritativa ni concede capacidad de modificación.
+
+#### 30. Accesibilidad y comprensión
+
+La recuperación no depende únicamente de color, animación, vibración, icono o posición visual.
+
+Cada estado material dispone de texto o semántica accesible suficiente para que el trabajador identifique:
+
+- si la acción sigue abierta;
+- si está guardada o no;
+- si está pendiente de resultado;
+- si necesita hacer algo;
+- si puede intentar continuar de forma segura;
+- si ya terminó.
+
+El foco accesible debe dirigir primero al estado y a la acción segura, no a diagnósticos secundarios.
+
+#### 31. Seguridad y minimización
+
+La reanudación conserva únicamente datos necesarios para continuidad, trazabilidad y resolución segura.
+
+Queda prohibido utilizar el estado de recuperación para persistir o exponer innecesariamente:
+
+- tokens de sesión;
+- secretos;
+- permisos internos detallados;
+- reglas RLS;
+- SQL o nombres de funciones como mensaje al trabajador;
+- coordenadas históricas más allá de lo permitido por la política propietaria;
+- datos de otros trabajadores;
+- información administrativa que no sea necesaria para la marcación personal.
+
+La persistencia de un checkpoint no amplía la autorización de quien lo recupera.
+
+#### 32. Auditoría AS-IS relevante
+
+La implementación actual observada ya contiene capacidades parciales útiles para esta tarea:
+
+| Hallazgo AS-IS | Lectura contractual |
+| --- | --- |
+| La cola de asistencia se persiste mediante almacenamiento seguro por trabajador. | Existe una base para recuperar intenciones ya durables. |
+| La cola durable se carga nuevamente cuando existe usuario autenticado. | ANIMA puede rehidratar trabajo pendiente después de perder memoria de proceso. |
+| Al volver la aplicación a estado activo se intenta sincronizar trabajo pendiente cuando corresponde. | Existe reentrada automática para la cola, pero no sustituye revalidación semántica. |
+| El estado de interacción previo a alcanzar la cola se mantiene principalmente en memoria de la ejecución actual. | No existe evidencia de un checkpoint general durable para todo el flujo previo; no puede presumirse recuperación completa. |
+| La persistencia actual registra errores de almacenamiento sin convertir por sí misma el helper en una confirmación contractual de persistencia. | La experiencia TO-BE debe exigir evidencia positiva antes de afirmar que una marcación quedó guardada. |
+| La cola conserva identidades y estados que permiten distinguir pendiente, sincronización, fallo y conflicto. | La reanudación debe consumir esas identidades, no crear otras al reabrir la app. |
+
+Estos hallazgos describen el código observado y no autorizan cambios físicos durante esta tarea.
+
+#### 33. Matriz canónica de escenarios de interrupción
+
+| Escenario | Estado recuperado | Revalidación mínima | Acción TO-BE |
+| --- | --- | --- | --- |
+| Usuario cambia de app antes de tocar marcar | Ninguna intención materializada | Contexto visible actual | Volver a la pantalla vigente sin inventar pendiente |
+| App pasa a background mientras valida ubicación | Prerrequisito en curso | Permiso, ubicación fresca, contexto | Retomar desde validación segura |
+| Usuario abre Ajustes por permiso | Intención y prerrequisito conocidos | Estado real del permiso y demás contexto | Continuar o explicar bloqueo vigente |
+| App termina antes de persistir localmente | Persistencia no demostrada | Cola local, remoto si hubo posible envío | No afirmar guardado; decidir si puede iniciar de nuevo |
+| App termina después de persistencia durable | Intención en cola | Identidad, estado de cola, contexto vigente | Recuperar la misma intención bajo ANIMA-UX-011 |
+| Conexión cae durante sincronización | Intención durable | Estado remoto y cola | Mantener pendiente o retry seguro sobre misma identidad |
+| Respuesta remota se pierde después del envío | Resultado incierto | Conciliación remota | Verificar antes de repetir |
+| App vuelve y el servidor ya confirma la acción | Resultado terminal | Correspondencia de intención | Mostrar confirmado; no reejecutar |
+| App vuelve y existe conflicto de secuencia | Conflicto | Estado remoto y evidencia local | Revisar conflicto; no retry ordinario |
+| Sesión expiró mientras había intención pendiente | Referencia recuperable | Actor, sesión, autoridad, contexto | Reautenticar y revalidar antes de continuar |
+| Otro dispositivo cambió asistencia | Checkpoint local potencialmente obsoleto | Estado remoto vigente | Adoptar resultado actual o abrir conflicto |
+| Deep link abre Home durante una intención abierta | Misma intención vigente | Estado central de recuperación | Converger a la misma experiencia sin duplicar |
+| Retry manual coincide con retry automático | Misma intención | Exclusión/idempotencia propietaria | Ejecutar como máximo un intento elegible |
+| Turno cambió durante interrupción | Contexto previo obsoleto | Turno/contexto actual | Detener continuación incompatible y explicar cambio |
+| Ubicación previa dejó de ser fresca | Prerrequisito vencido | Nueva evidencia de ubicación | Revalidar; no reproducir coordenada antigua |
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+La tarea desarrolla en detalle obligaciones ya cubiertas por los contratos vigentes de resiliencia, offline, idempotencia, estado pendiente, recuperación y asistencia. No introduce una regla material nueva que requiera ampliar el registro canónico.
+
+#### 35. Cobertura de prueba vigente reutilizada
+
+La trazabilidad existente que soporta esta tarea incluye, sin modificación de sus filas:
+
+- `TREQ-ANIMA-003`: persistencia durable antes de considerar encolada una marcación offline, identidad estable, supervivencia a reinicio, replay idempotente y conflicto ante contenido incompatible;
+- `TREQ-ANIMA-015`: separación visible entre asistencia, geocerca, selección contextual, conectividad, cola offline, sincronización y diagnóstico, sin mostrar como aplicada una marcación todavía pendiente o fallida;
+- `TREQ-UX-002`: explicación humana de errores y bloqueos, conservación de datos y recuperación sin duplicar efectos;
+- `TREQ-UX-005`: visibilidad de fuente de verdad, estado pendiente o confirmado y prevención de copias competidoras;
+- `TREQ-UX-006`: comportamiento explícito ante pérdida de red, sesión o dispositivo y distinción entre pendiente, confirmado, fallido, conflicto e intervención;
+- `TREQ-UX-018`: conservación de estado, propietario, idempotencia y referencia segura para operaciones pendientes, con revalidación de autoridad, versión, tarea y contexto al reanudar;
+- `TREQ-UX-028`: conservación del punto seguro y condición de reanudación de una tarea válida interrumpida;
+- `TREQ-UX-031`: diferenciación entre espera y bloqueo, con condición explícita de reactivación;
+- `TREQ-UX-036`: revalidación de versión, actor, contexto, claim y permiso al reanudar, con resolución de conflictos sin actualización destructiva por último escritor.
+
+Esta enumeración es únicamente cobertura reutilizada y no representa cambios al registro.
+
+#### 36. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | PASS | El artefacto documental fue estructurado como una sola tarea con metadata canónica, secciones obligatorias, cinco clases de evidencia y continuidad cerrada. |
+| LOCAL | PASS | El código vigente de ANIMA fue auditado en los hooks de asistencia, persistencia de cola y acciones de Home para identificar rehidratación durable, foreground sync y ausencia observada de un checkpoint general previo a cola. |
+| REMOTA | PASS | Las fuentes canónicas vigentes de vento-shell y el código actual de vento-anima fueron contrastados desde sus repositorios propietarios antes de desarrollar el contrato. |
+| OPERATIVA | NOT_EXECUTED | La comprensión real de trabajadores ante interrupciones, reapertura y recuperación corresponde al piloto posterior con usuarios y no se ejecuta en esta tarea documental. |
+| FÍSICA | NOT_APPLICABLE | La topología vigente clasifica ANIMA-UX-001 a ANIMA-UX-017 como DEFINE_ONCE con NO_PHYSICAL_INSTANCE; esta tarea no materializa pantallas, almacenamiento ni servicios. |
+
+#### 37. Criterios de aceptación
+
+1. La reanudación opera sobre la misma intención y no sobre la mera pantalla anterior.
+2. La tarea distingue interrupción de fallo definitivo.
+3. La tarea distingue memoria de UI de evidencia durable.
+4. No se presenta una intención como encolada sin persistencia durable demostrada.
+5. No se presenta una intención como confirmada sin resultado autoritativo compatible.
+6. Una intención durable conserva su identidad al reabrir ANIMA.
+7. Un retry elegible reutiliza la misma intención en vez de crear otra.
+8. Un resultado remoto incierto se concilia antes de cualquier repetición ciega.
+9. Una pérdida de respuesta no se transforma automáticamente en fallo.
+10. Un cierre o reinicio de la app no demuestra ausencia de efecto.
+11. La reanudación consulta evidencia durable antes de habilitar una acción incompatible.
+12. El flujo revalida el estado actual de asistencia antes de producir un efecto incompatible.
+13. El turno o contexto laboral se revalida cuando pueda haber cambiado.
+14. La autorización se resuelve nuevamente antes de un efecto que aún no ocurrió.
+15. La sesión actual debe corresponder al propietario de la intención recuperada.
+16. El estado real del permiso del dispositivo se consulta después de volver de Ajustes o de un prompt.
+17. Abrir Ajustes no se interpreta como permiso concedido.
+18. La ubicación antigua no se reutiliza como evidencia vigente cuando la política exige frescura.
+19. Home, notificaciones, turnos, historial y deep links convergen al mismo estado material.
+20. Una segunda superficie no puede fabricar una intención competidora mientras la primera siga abierta.
+21. La reanudación protege frente a doble toque y callbacks tardíos.
+22. Retry automático y manual no producen dos efectos para la misma intención.
+23. Un conflicto no se convierte en retry ordinario.
+24. Un cambio remoto desde otro dispositivo obliga a reconciliar el checkpoint local.
+25. El checkpoint conceptual no almacena autoridad como dato reutilizable.
+26. El checkpoint conceptual no convierte selección visual en contexto autoritativo.
+27. Una intención sin evidencia durable no se muestra como pendiente por conveniencia de UX.
+28. Una intención durable recuperada consume la semántica de cola definida por ANIMA-UX-011.
+29. La UI identifica entrada o salida cuando el objetivo ya se conoce.
+30. La recuperación presenta como máximo una acción primaria ordinaria y segura.
+31. No se pide nuevamente información todavía válida y disponible sin necesidad.
+32. Los datos potencialmente obsoletos se revalidan antes de continuar.
+33. El estado de recuperación no se limpia mientras exista cola, incertidumbre o conflicto sin resolver.
+34. Abandonar una pantalla no cancela una operación que pudo cruzar una frontera material.
+35. Una nueva intención incompatible solo aparece después de resolver de forma segura la anterior.
+36. Los mensajes de recuperación son comprensibles y no dependen solo de color, icono, animación o vibración.
+37. La recuperación minimiza datos sensibles y no expone secretos ni detalles internos innecesarios.
+38. La tarea no crea tablas, RPC, schemas, tipos físicos, políticas de RLS, thresholds de geocerca ni cambios de Supabase.
+39. La tarea no redefine la semántica de cola de ANIMA-UX-011.
+40. La tarea no absorbe la simplificación de documentos y datos personales reservada a ANIMA-UX-013.
+41. La cobertura de prueba existente se reutiliza sin crear ni modificar requisitos.
+42. No existe materialización física propia para esta tarea.
+
+#### 38. Hallazgos y dependencias diferidas
+
+| Hallazgo | Bloquea ANIMA-UX-012 | Propietario | Condición de salida |
+| --- | --- | --- | --- |
+| El código observado recupera cola durable, pero no demuestra un checkpoint general persistente para todos los pasos anteriores a la cola. | No para cerrar el contrato documental; sí para materializar recuperación completa. | Materialización física propietaria de ANIMA dentro de paquetes E5 aplicables | Implementar el mecanismo compatible con este contrato y demostrar persistencia/frescura sin crear autoridad local. |
+| La escritura actual de cola registra fallos de almacenamiento sin ofrecer por sí sola una confirmación contractual fuerte al nivel superior. | No para el diseño; sí para afirmar “guardado” de forma segura en la implementación. | Materialización física de asistencia/cola ANIMA | El llamador obtiene una señal inequívoca de persistencia durable antes de proyectar estado encolado. |
+| Los pilotos de comprensión ante cierre, permisos, reapertura y resultado incierto no se han ejecutado. | No | ANIMA-UX-015 | Ejecutar prueba controlada con trabajadores reales y registrar evidencia sobre comprensión, errores, reintentos y ayuda requerida. |
+
+Ningún hallazgo requiere crear una tarea documental nueva.
+
+#### 39. Límites
+
+Esta tarea no:
+
+- implementa almacenamiento de checkpoints;
+- modifica SecureStore ni selecciona una tecnología alternativa;
+- crea tablas, vistas, triggers, funciones, RPC, Edge Functions o migraciones;
+- modifica Supabase;
+- redefine políticas de geocerca o thresholds;
+- define una nueva política de scheduling;
+- modifica el modelo de autorización;
+- crea reason codes de negocio;
+- redefine la cola offline ni su política de retry;
+- redefine el contrato de confirmado frente a pendiente;
+- decide la experiencia de documentos o datos personales;
+- ejecuta pruebas con trabajadores reales;
+- autoriza una implementación física.
+
+La tarea especifica únicamente el comportamiento UX y las invariantes que una materialización posterior deberá respetar.
+
+#### 40. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-011 — Diseñar manejo comprensible de cola offline`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-012 — Permitir reanudar una marcación interrumpida`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-013 — Simplificar documentos y datos personales`
+
+
 ### [ ] ANIMA-UX-013 — Simplificar documentos y datos personales
 ### [ ] ANIMA-UX-014 — Simplificar administración de equipo autorizada
 ### [ ] ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
