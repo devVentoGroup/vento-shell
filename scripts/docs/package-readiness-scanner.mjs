@@ -1003,7 +1003,7 @@ function canonicalPackageDossier(entry, contract, inventory, packageGate = null)
   };
 }
 
-function canonicalGateProgress(pkg, contract) {
+function canonicalGateProgress(pkg) {
   const canonical = pkg.canonical_prerequisites ?? null;
   const checks = [];
   if (canonical) {
@@ -1035,9 +1035,9 @@ function canonicalGateProgress(pkg, contract) {
   };
 }
 
-function packageReadinessProgress(pkg, contract) {
+function packageReadinessProgress(pkg) {
   const tasks = pkg.task_prerequisites ?? { total: 0, approved: 0, remaining: 0, progress_percent: 100, complete: true, tasks: [], missing_task_ids: [] };
-  const gates = canonicalGateProgress(pkg, contract);
+  const gates = canonicalGateProgress(pkg);
   return {
     task_prerequisites: tasks,
     gates,
@@ -1500,7 +1500,7 @@ function nearestToReady(packages, contract) {
     .filter((pkg) => !['IMPLEMENTATION_READY', 'IMPLEMENTING', 'DEPLOYED', 'CLOSED'].includes(pkg.status))
     .filter((pkg) => pkg.canonical_prerequisites?.physical_state !== 'FUERA_DE_LINEA_ACTUAL')
     .map((pkg) => {
-      const progress = pkg.readiness_progress ?? packageReadinessProgress(pkg, contract);
+      const progress = pkg.readiness_progress ?? packageReadinessProgress(pkg);
       return {
         package_id: pkg.package_id,
         source_kind: pkg.source_kind,
@@ -1568,7 +1568,7 @@ export function applyPhysicalOverlay({ registry, contract, instances, capability
         ? `${contract.implementation_entry_task}::${persisted.package_id}`
         : physical?.nextExecution ?? packageGateNext,
     };
-    projected.readiness_progress = packageReadinessProgress(projected, contract);
+    projected.readiness_progress = packageReadinessProgress(projected);
     return projected;
   });
 
