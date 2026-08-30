@@ -20,7 +20,7 @@
     },
     {
       "repo": "vento-group-sas/vento-shell",
-      "path": "supabase/migrations/*_auth_db_033_access_context.sql",
+      "path": "supabase/migrations/20260830215737_auth_db_033_access_context.sql",
       "change": "CREATE",
       "scope": "Materialize the deterministic private AccessContext resolver graph, isolated owner, fixed search paths, fail-closed privileges, exact source metadata, fingerprinting, and authenticated-only safe projection without hosted mutations."
     },
