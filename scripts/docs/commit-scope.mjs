@@ -16,6 +16,7 @@ const TRANSVERSAL_PLAN_FILES = new Set([
   'docs/plan-canonico/modular/implementation-handoff-template.md',
   'docs/plan-canonico/modular/implementation-readiness-policy.json',
   'docs/plan-canonico/modular/implementation-control.json',
+  'docs/plan-canonico/modular/package-gate-policy.json',
   'docs/plan-canonico/modular/chatgpt-work-starter-template.txt',
   'docs/plan-canonico/modular/continuity-route.json',
   'docs/plan-canonico/modular/task-delivery-template.md',
@@ -94,6 +95,9 @@ export function classifyCommitPath(filePath) {
   const normalized = normalizePath(filePath);
   if (TRANSVERSAL_PLAN_FILES.has(normalized)) return 'TRANSVERSAL';
   if (normalized.startsWith('docs/plan-canonico/modular/implementation-instances/')) {
+    return 'TRANSVERSAL';
+  }
+  if (normalized.startsWith('docs/plan-canonico/modular/package-gate-instances/')) {
     return 'TRANSVERSAL';
   }
   if (DERIVED_PLAN_PROJECTIONS.has(normalized)) return 'PROJECTION';

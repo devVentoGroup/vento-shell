@@ -3,5 +3,2126 @@
   "registry_id": "VENTO-IMPLEMENTATION-PACKAGE-REGISTRY-001",
   "status_scope": "DOCUMENTARY_READINESS",
   "physical_status_projection": ".delivery/package-readiness-scan.json",
-  "packages": []
+  "packages": [
+    {
+      "package_id": "GAP-PKG-001",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.339Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.339Z",
+      "updated_at": "2026-08-30T05:43:12.339Z"
+    },
+    {
+      "package_id": "GAP-PKG-002",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.340Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.340Z",
+      "updated_at": "2026-08-30T05:43:12.340Z"
+    },
+    {
+      "package_id": "GAP-PKG-003",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.340Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.340Z",
+      "updated_at": "2026-08-30T05:43:12.340Z"
+    },
+    {
+      "package_id": "GAP-PKG-004",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.340Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.340Z",
+      "updated_at": "2026-08-30T05:43:12.340Z"
+    },
+    {
+      "package_id": "GAP-PKG-005",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.340Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.340Z",
+      "updated_at": "2026-08-30T05:43:12.340Z"
+    },
+    {
+      "package_id": "GAP-PKG-006",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.340Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.340Z",
+      "updated_at": "2026-08-30T05:43:12.340Z"
+    },
+    {
+      "package_id": "GAP-PKG-007",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.340Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.340Z",
+      "updated_at": "2026-08-30T05:43:12.340Z"
+    },
+    {
+      "package_id": "GAP-PKG-008",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.340Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.340Z",
+      "updated_at": "2026-08-30T05:43:12.340Z"
+    },
+    {
+      "package_id": "GAP-PKG-009",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-010",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-011",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-012",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-013",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-014",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-015",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-016",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-017",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-018",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-019",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-020",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-021",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-022",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-023",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-024",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-025",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-026",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-027",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-028",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-029",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-030",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-031",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-032",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-033",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-034",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.341Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.341Z",
+      "updated_at": "2026-08-30T05:43:12.341Z"
+    },
+    {
+      "package_id": "GAP-PKG-035",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-036",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-037",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-038",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-039",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-040",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-041",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-042",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-043",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-044",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-045",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-046",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-047",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-048",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-049",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-050",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-051",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-052",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-053",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-054",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-055",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-056",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-057",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-058",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-059",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-060",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-061",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-062",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-063",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-064",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-065",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-066",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.342Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.342Z",
+      "updated_at": "2026-08-30T05:43:12.342Z"
+    },
+    {
+      "package_id": "GAP-PKG-067",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-068",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-069",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-070",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-071",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-072",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-073",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-074",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-075",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-076",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-077",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-078",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-079",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-080",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-081",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-082",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-083",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-084",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-085",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-086",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-087",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-088",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-089",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-090",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-091",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-092",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-093",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-094",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-095",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-096",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-097",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-098",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-099",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-100",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-101",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-102",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-103",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.343Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.343Z",
+      "updated_at": "2026-08-30T05:43:12.343Z"
+    },
+    {
+      "package_id": "GAP-PKG-104",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-105",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-106",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-107",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-108",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-109",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-110",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-111",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-112",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-113",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-114",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-115",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-116",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-117",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-118",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-119",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-120",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-121",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-122",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-123",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-124",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-125",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-126",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-127",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-128",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-129",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-130",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-131",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-132",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-133",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-134",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-135",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.344Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.344Z",
+      "updated_at": "2026-08-30T05:43:12.344Z"
+    },
+    {
+      "package_id": "GAP-PKG-136",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-137",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-138",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-139",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-140",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-141",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-142",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-143",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-144",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-145",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-146",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-147",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-148",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-149",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-150",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-151",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-152",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-153",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-154",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-155",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-156",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-157",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-158",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-159",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-160",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-161",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-162",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-163",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-164",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-165",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-166",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-167",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-168",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-169",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-170",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-171",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.345Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.345Z",
+      "updated_at": "2026-08-30T05:43:12.345Z"
+    },
+    {
+      "package_id": "GAP-PKG-172",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-173",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-174",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-175",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-176",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-177",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-178",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-179",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-180",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-181",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-182",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-183",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-184",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-185",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-186",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-187",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-188",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-189",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-190",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-191",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-192",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-193",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-194",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-195",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-196",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-197",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-198",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-199",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-200",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-201",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-202",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-203",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-204",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.346Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.346Z",
+      "updated_at": "2026-08-30T05:43:12.346Z"
+    },
+    {
+      "package_id": "GAP-PKG-205",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.347Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.347Z",
+      "updated_at": "2026-08-30T05:43:12.347Z"
+    },
+    {
+      "package_id": "GAP-PKG-206",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.347Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.347Z",
+      "updated_at": "2026-08-30T05:43:12.347Z"
+    },
+    {
+      "package_id": "GAP-PKG-207",
+      "source_kind": "CANONICAL_GAP_PACKAGE",
+      "status": "COMPILED",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.347Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.347Z",
+      "updated_at": "2026-08-30T05:43:12.347Z"
+    },
+    {
+      "package_id": "NEXO-REMISSIONS-001",
+      "source_kind": "SPECIAL_CAPABILITY",
+      "status": "MATURING",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.339Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.339Z",
+      "updated_at": "2026-08-30T05:43:12.339Z",
+      "capability_id": "NEXO_REMISSIONS",
+      "status_history": [
+        {
+          "status": "DISCOVERED",
+          "at": "2026-08-30T05:43:12.339Z",
+          "reason": "AUTO_RECONCILE"
+        },
+        {
+          "status": "MATURING",
+          "at": "2026-08-30T05:43:12.339Z",
+          "reason": "AUTO_RECONCILE"
+        }
+      ],
+      "package_evidence": {},
+      "compiled_at": "2026-08-30T05:43:12.339Z"
+    },
+    {
+      "package_id": "VISO-SCHEDULE-MONTHLY-001",
+      "source_kind": "SPECIAL_CAPABILITY",
+      "status": "MATURING",
+      "status_scope": "DOCUMENTARY_READINESS",
+      "detected_at": "2026-08-30T05:43:12.337Z",
+      "ready_for_gate_at": null,
+      "last_status_change_at": "2026-08-30T05:43:12.337Z",
+      "updated_at": "2026-08-30T05:43:12.337Z",
+      "capability_id": "VISO_SCHEDULE_MONTHLY",
+      "status_history": [
+        {
+          "status": "DISCOVERED",
+          "at": "2026-08-30T05:43:12.337Z",
+          "reason": "AUTO_RECONCILE"
+        },
+        {
+          "status": "MATURING",
+          "at": "2026-08-30T05:43:12.337Z",
+          "reason": "AUTO_RECONCILE"
+        }
+      ],
+      "package_evidence": {},
+      "compiled_at": "2026-08-30T05:43:12.337Z"
+    }
+  ]
 }

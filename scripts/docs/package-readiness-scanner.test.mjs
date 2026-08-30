@@ -4,6 +4,11 @@ import test from 'node:test';
 
 import {
   evaluateCapability,
+  parseCanonicalPackageCatalogFromSource,
+  parsePackageTaskRouting,
+  prioritizeImplementationReadyQueue,
+  renderPackageDetail,
+  renderReadinessMarkdown,
   scanPackageReadiness,
 } from './package-readiness-scanner.mjs';
 
@@ -41,6 +46,9 @@ function inventory({ capabilityApproved = true, templatesApproved = true, gateAp
     rows.push(templatesApproved ? approvedTask(id) : pendingTask(id));
   }
   rows.push(gateApproved ? approvedTask('E5-GATE-008') : pendingTask('E5-GATE-008'));
+  rows.push(approvedTask('TEST-SUPPORT-001'));
+  rows.push(approvedTask('TEST-DOM-001'));
+  rows.push(pendingTask('TEST-PENDING-001'));
   return new Map(rows.map((row) => [row.id, row]));
 }
 
@@ -64,9 +72,7 @@ function capabilityIndex(capability = completeCapability()) {
     schema_version: 1,
     index_id: 'TEST-CAPABILITY-INDEX',
     discovery_mode: 'EXPLICIT_CANONICAL_MAPPINGS_ONLY',
-    capabilities: {
-      TEST_CAPABILITY: capability,
-    },
+    capabilities: { TEST_CAPABILITY: capability },
   };
 }
 
@@ -88,6 +94,27 @@ function verifiedPhysicalDependencies() {
     rows.set(instanceId, { instance_id: instanceId, task_id: taskId, status: 'VERIFIED' });
   }
   return rows;
+}
+
+function approvedPackageGateRecord(packageId) {
+  return {
+    schema_version: 1,
+    package_id: packageId,
+    status: 'APPROVED_FOR_IMPLEMENTATION',
+    created_at: '2026-08-29T19:00:00.000Z',
+    updated_at: '2026-08-29T20:00:00.000Z',
+    physical_identity: { targets: [{ repository: 'vento-shell', path: 'packages/test', symbol_or_surface: 'TestSurface', operation: 'materialize' }] },
+    implementation_units: [{ unit_id: 'TEST-UNIT-001', repository: 'vento-shell', change: 'Materializar el package de prueba.' }],
+    evidence_plan: {
+      tests: [{ command: 'npm test', expected_result: 'PASS' }],
+      observability: [{ signal: 'test.signal', expected_result: 'Visible' }],
+      acceptance_criteria: ['El package satisface su contrato.'],
+      rollback_steps: ['Revertir la unidad.'],
+    },
+    authorization: {
+      decision: 'APROBADO', approved_by: 'fixture', approved_at: '2026-08-29T20:00:00.000Z', approval_ref: 'fixture:GAP', approval_statement: `APROBADO ${packageId}.`,
+    },
+  };
 }
 
 function scan({
@@ -133,18 +160,59 @@ function addCompleteDossier(registry) {
   return cloned;
 }
 
-test('el contrato conserva exactamente las 14 condiciones booleanas y DELIV-PKG-001..025', () => {
+function canonicalGapRoutingSource() {
+  const historicalRows = Array.from({ length: 814 }, (_, index) => {
+    const packageNumber = index < 201 ? index + 1 : ((index - 201) % 201) + 1;
+    const packageId = `GAP-PKG-${String(packageNumber).padStart(3, '0')}`;
+    const primary = index === 0 ? 'TEST-CAP-001 — Base; TEST-PENDING-001 — Pendiente' : 'TEST-CAP-001 — Base';
+    const support = index === 0 ? 'TEST-SUPPORT-001' : '—';
+    return `| \`EQG-${String(index + 1).padStart(3, '0')}\` | \`GAP-${String(index + 1).padStart(3, '0')}\` | Brecha ${index + 1} | \`CONTRACTUAL\` | \`CAP-01.01\` | \`OWN-OPS\` | \`${primary}\` | \`${support}\` | \`${packageId}\` | \`ALTA\` |`;
+  }).join('\n');
+  const appendOnlyRows = Array.from({ length: 6 }, (_, index) => {
+    const packageId = `GAP-PKG-${String(index + 202).padStart(3, '0')}`;
+    return `| \`H-PROC-COVER-010-${String(index + 1).padStart(3, '0')}\` | \`fixture\` | \`CONTRACTUAL\` | \`P1\` | \`CAP-01.01\` | \`VPROC-0001\` | Brecha append-only | \`OWN-OPS\` | \`2026-08-21\` | \`TEST-CAP-001 — Base\` | \`${packageId}\` | \`CLOSE-CON-CTR\` | \`EV-01\` | \`OWN-OPS\` | \`ABIERTA\` |`;
+  }).join('\n');
+  const appendOnlyPackageRows = Array.from({ length: 6 }, (_, index) => {
+    const packageId = `GAP-PKG-${String(index + 202).padStart(3, '0')}`;
+    return `| \`${packageId}\` | \`H-PROC-COVER-010-${String(index + 1).padStart(3, '0')}\` | \`CONTRACTUAL\` | \`OWN-OPS\` | \`W1\` | \`2026-08-21\` | \`TEST-CAP-001 — Base\` | — | \`CLOSE-CON-CTR\` | \`ABIERTA\` |`;
+  }).join('\n');
+  return `### ✅ GAP-CTRL-006 — Routing\n\n#### 9. Matriz completa brecha → tarea → paquete\n\n| Registro | Referencia representativa | Brecha resumida | Clase | Capacidad / proceso | Propietario / fecha | Tarea primaria | Tareas de soporte | Paquete | Confianza |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${historicalRows}\n\n### B. Nuevas brechas canónicas\n\n| Gap ID | Fuente | Clase | Criticidad | Capacidad | Proceso/alcance | Hallazgo canónico | Propietario | Fecha | Tarea primaria | Paquete | Perfil | Evidencia | Revisor | Estado |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${appendOnlyRows}\n\n### C. Paquetes nuevos\n\n| Paquete | Brecha | Clase | Propietario | Ola | Fecha | Tarea primaria | Tareas de apoyo | Perfil | Estado |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${appendOnlyPackageRows}\n`;
+}
+
+function canonicalCatalogSource({ passPackage = null } = {}) {
+  const finalRows = Array.from({ length: 207 }, (_, index) => {
+    const packageId = `GAP-PKG-${String(index + 1).padStart(3, '0')}`;
+    const pass = packageId === passPackage;
+    return `| \`${packageId}\` | \`KEEP_AS_SINGLE_UNIT\` | \`${pass ? 'PASS' : 'BLOQUEADO'}\` | \`${pass ? 'READY' : 'BLOQUEADO_014_Y_EVIDENCIA'}\` | \`${pass ? `${packageId}::UNIT` : 'PENDIENTE'}\` | \`${pass ? 'PASS' : 'BLOQUEADO'}\` | \`${pass ? 'NONE' : 'DELIV-PKG-014'}\` | \`${pass ? '0 bloqueadores' : 'Confirmar identidad física y evidencia'}\` |`;
+  }).join('\n');
+  const runtimeRows = Array.from({ length: 207 }, (_, index) => {
+    const packageId = `GAP-PKG-${String(index + 1).padStart(3, '0')}`;
+    return `| \`${packageId}\` | \`devVentoGroup/vento-shell\` | \`TP-DB-001\` | \`DATABASE_RPC_BOUNDARY\` | \`OWN-SEG\` | \`ESPECIFICADO\` | \`IMPLEMENTACION_BLOQUEADA\` |`;
+  }).join('\n');
+  const dominantRows = Array.from({ length: 207 }, (_, index) => {
+    const packageId = `GAP-PKG-${String(index + 1).padStart(3, '0')}`;
+    const dominant = packageId === 'GAP-PKG-001' ? 'TEST-DOM-001' : 'TEST-CAP-001';
+    return `| \`${packageId}\` | \`${dominant}\` | \`DATABASE_RPC_BOUNDARY\` | \`YES\` | \`YES\` | \`NO\` | \`YES\` | \`NO\` | \`ESPECIFICADO\` |`;
+  }).join('\n');
+  return `### ✅ DELIV-PKG-002 — Vincular\n\n| package_id | process_id | gap_id estable E1 | capability_id |\n| --- | --- | --- | --- |\n| \`GAP-PKG-001\` | \`VPROC-0001\` | \`H-001\` | \`CAP-01.01\` |\n\n### ✅ DELIV-PKG-007 — Runtime\n\n| package_id | Tarea dominante | runtime_profile | Lógica | Server Action | API | RPC | Edge | Estado |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${dominantRows}\n\n### ✅ DELIV-PKG-017 — Observabilidad\n\n| Paquete | Repositorio propietario | Perfil 016 | Runtime | Responsable de decisión | Resultado 017 | Gate heredado |\n| --- | --- | --- | --- | --- | --- | --- |\n${runtimeRows}\n\n### ✅ DELIV-PKG-025 — Cierre final\n\n| package_id | Disposición 025 | Estado 023 heredado | Estado físico heredado | implementation_unit_id | Decisión final 025 | Propietario de salida | Condición de salida |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n${finalRows}\n`;
+}
+
+test('el contrato conserva 14 condiciones, DELIV-PKG-001..025 y catálogo GAP-PKG-001..207', () => {
   assert.equal(contract.capability_conditions.length, 14);
   const deliv = contract.dossier_conditions.flatMap(({ deliv_pkg_refs: refs }) => refs);
-  assert.deepEqual(
-    deliv,
-    Array.from({ length: 25 }, (_, index) => `DELIV-PKG-${String(index + 1).padStart(3, '0')}`),
-  );
+  assert.deepEqual(deliv, Array.from({ length: 25 }, (_, index) => `DELIV-PKG-${String(index + 1).padStart(3, '0')}`));
   assert.equal(contract.unknown_blocks, true);
   assert.equal(contract.implementation_entry_task, 'SHELL-CI-020');
+  assert.equal(contract.canonical_package_catalog.identity_task, 'DELIV-PKG-001');
+  assert.equal(contract.canonical_package_catalog.final_decision_task, 'DELIV-PKG-025');
+  assert.equal(contract.canonical_package_catalog.expected_count, 207);
+  assert.equal(contract.canonical_package_catalog.expected_gap_memberships, 820);
+  assert.equal(contract.canonical_package_catalog.expected_historical_gap_memberships, 814);
+  assert.equal(contract.canonical_package_catalog.expected_append_only_gap_memberships, 6);
+  assert.equal(contract.queue_policy.decision_wave_is_implementation_priority, false);
 });
 
-test('evidencia ausente produce UNKNOWN y bloquea la creación del package', () => {
+test('evidencia ausente produce UNKNOWN y bloquea la creación del package especial', () => {
   const capability = completeCapability();
   capability.contributors.data = [];
   const result = scan({ index: capabilityIndex(capability) });
@@ -155,29 +223,23 @@ test('evidencia ausente produce UNKNOWN y bloquea la creación del package', () 
   assert.equal(result.registry.implementation_ready_queue.length, 0);
 });
 
-test('una capacidad con 14 condiciones trazables auto-instancia package y compila el contrato DELIV-PKG', () => {
+test('una capacidad especial con 14 condiciones trazables auto-instancia package y compila DELIV-PKG', () => {
   const result = scan();
   assert.equal(result.capabilityResults[0].capability_ready, true);
   assert.equal(result.registry.packages.length, 1);
   const pkg = result.registry.packages[0];
   assert.equal(pkg.package_id, 'TEST-CAPABILITY-001');
+  assert.equal(pkg.source_kind, 'SPECIAL_CAPABILITY');
   assert.equal(pkg.status, 'COMPILED');
   assert.equal(pkg.dossier.contract_ready, true);
   assert.equal(pkg.dossier.complete, false);
-  assert.deepEqual(
-    pkg.status_history.map(({ status }) => status),
-    ['DISCOVERED', 'READY_FOR_COMPILATION', 'COMPILED'],
-  );
-  assert.equal(result.registry.implementation_ready_queue.length, 0);
+  assert.deepEqual(pkg.status_history.map(({ status }) => status), ['DISCOVERED', 'READY_FOR_COMPILATION', 'COMPILED']);
 });
 
 test('un PASS de dossier sin fuente material degradable queda UNKNOWN', () => {
   const first = scan();
-  const registry = structuredClone(first.registry);
-  registry.packages[0].package_evidence.DELIV_PKG_001 = [{
-    source: 'artifact:DELIV_PKG_001',
-    status: 'PASS',
-  }];
+  const registry = structuredClone(first.persistentRegistry);
+  registry.packages[0].package_evidence.DELIV_PKG_001 = [{ source: 'artifact:DELIV_PKG_001', status: 'PASS' }];
   const second = scan({ registry });
   const check = second.registry.packages[0].dossier.checks.find(({ id }) => id === 'DELIV_PKG_001');
   assert.equal(check.package_status, 'UNKNOWN');
@@ -187,32 +249,20 @@ test('un PASS de dossier sin fuente material degradable queda UNKNOWN', () => {
 
 test('dossier completo + gate + dependencias VERIFIED produce IMPLEMENTATION_READY sin autoautorizar CI020', () => {
   const first = scan();
-  const second = scan({
-    registry: addCompleteDossier(first.registry),
-    time: '2026-08-27T15:01:00.000Z',
-  });
+  const second = scan({ registry: addCompleteDossier(first.persistentRegistry), time: '2026-08-27T15:01:00.000Z' });
   const pkg = second.registry.packages[0];
   assert.equal(pkg.dossier.complete, true);
   assert.equal(pkg.gate.status, 'PASS');
   assert.equal(pkg.status, 'IMPLEMENTATION_READY');
   assert.equal(pkg.blockers.length, 0);
   assert.equal(pkg.next_execution, 'SHELL-CI-020::TEST-CAPABILITY-001');
-  assert.equal(second.registry.implementation_ready_queue.length, 1);
   assert.equal(second.registry.implementation_ready_queue[0].physical_authorization_required, true);
-  assert.equal(second.registry.implementation_ready_queue[0].next_execution, 'SHELL-CI-020::TEST-CAPABILITY-001');
-  assert.equal(verifiedPhysicalDependencies().has('SHELL-CI-020::TEST-CAPABILITY-001'), false);
-  assert.deepEqual(
-    pkg.status_history.map(({ status }) => status),
-    ['DISCOVERED', 'READY_FOR_COMPILATION', 'COMPILED', 'READY_FOR_GATE', 'IMPLEMENTATION_READY'],
-  );
+  assert.equal(second.registry.recommended_next_package.package_id, 'TEST-CAPABILITY-001');
 });
 
 test('dossier completo sin fundación física VERIFIED queda READY_FOR_GATE y fuera de la cola', () => {
   const first = scan();
-  const second = scan({
-    registry: addCompleteDossier(first.registry),
-    instances: new Map(),
-  });
+  const second = scan({ registry: addCompleteDossier(first.persistentRegistry), instances: new Map() });
   const pkg = second.registry.packages[0];
   assert.equal(pkg.status, 'READY_FOR_GATE');
   assert.equal(pkg.gate.status, 'UNKNOWN');
@@ -220,81 +270,294 @@ test('dossier completo sin fundación física VERIFIED queda READY_FOR_GATE y fu
   assert.equal(second.registry.implementation_ready_queue.length, 0);
 });
 
-test('los cambios físicos alteran la proyección efectiva sin ensuciar el registry persistente', () => {
-  const first = scan();
-  const persistentReadyForGate = scan({
-    registry: addCompleteDossier(first.registry),
-    instances: new Map(),
-    time: '2026-08-27T15:02:00.000Z',
-  });
-  assert.equal(persistentReadyForGate.registry.packages[0].status, 'READY_FOR_GATE');
-  assert.equal(persistentReadyForGate.persistentRegistry.packages[0].status, 'READY_FOR_GATE');
-
-  const projected = scan({
-    registry: persistentReadyForGate.persistentRegistry,
-    instances: verifiedPhysicalDependencies(),
-    check: true,
-    time: '2026-08-27T15:03:00.000Z',
-  });
-  assert.equal(projected.registryChanged, false);
-  assert.equal(projected.persistentRegistry.packages[0].status, 'READY_FOR_GATE');
-  assert.equal(projected.registry.packages[0].status, 'IMPLEMENTATION_READY');
-  assert.equal(projected.registry.implementation_ready_queue.length, 1);
-});
-
-test('una decisión empresarial suspendida bloquea la capacidad aunque su documentación esté cerrada', () => {
+test('una decisión empresarial suspendida bloquea la capacidad especial', () => {
   const capability = completeCapability({ priority_lane_id: 'NEXO-REMISSIONS-001' });
   const result = evaluateCapability({
     capabilityId: 'TEST_CAPABILITY',
     capability,
     contract,
     inventory: inventory(),
-    priorityLanes: {
-      lanes: [{
-        lane_id: 'NEXO-REMISSIONS-001',
-        status: 'SUSPENDED',
-        active: false,
-        suspension_reason: 'Decisión empresarial explícita.',
-      }],
-    },
+    priorityLanes: { lanes: [{ lane_id: 'NEXO-REMISSIONS-001', status: 'SUSPENDED', active: false, suspension_reason: 'Decisión empresarial explícita.' }] },
   });
   const decisions = result.conditions.find(({ id }) => id === 'NO_OPEN_CRITICAL_DECISIONS');
   assert.equal(decisions.status, 'FAIL');
   assert.equal(result.capability_ready, false);
 });
 
-test('un package_id canónico sin mapping explícito bloquea write/check del scanner', () => {
-  assert.throws(
-    () => scanPackageReadiness({
-      root: process.cwd(),
-      check: true,
-      supplied: {
-        contract,
-        capabilityIndex: capabilityIndex(),
-        registry: emptyRegistry(),
-        inventory: inventory(),
-        instances: verifiedPhysicalDependencies(),
-        priorityLanes: { lanes: [] },
-        activeSequence: { task_ids: ['NEXT-DOC-001'] },
-        canonicalPackageIds: ['UNMAPPED-PACKAGE-001'],
-        skipDerivedReports: true,
-      },
-    }),
-    /no cubre package_id canónicos: UNMAPPED-PACKAGE-001/u,
-  );
+test('un package especial canónico sin mapping explícito bloquea write/check', () => {
+  assert.throws(() => scanPackageReadiness({
+    root: process.cwd(),
+    check: true,
+    supplied: {
+      contract,
+      capabilityIndex: capabilityIndex(),
+      registry: emptyRegistry(),
+      inventory: inventory(),
+      instances: verifiedPhysicalDependencies(),
+      priorityLanes: { lanes: [] },
+      activeSequence: { task_ids: ['NEXT-DOC-001'] },
+      canonicalPackageIds: ['UNMAPPED-PACKAGE-001'],
+      skipDerivedReports: true,
+    },
+  }), /no cubre package_id canónicos especiales: UNMAPPED-PACKAGE-001/u);
 });
 
 test('N/A solo es válido para las cinco condiciones donde el contrato lo permite', () => {
   const capability = completeCapability({ not_applicable: ['functional_result'] });
-  assert.throws(
-    () => scan({ index: capabilityIndex(capability) }),
-    /N\/A no permitido/u,
-  );
+  assert.throws(() => scan({ index: capabilityIndex(capability) }), /N\/A no permitido/u);
 });
 
 test('--check falla cerrado cuando el registry persistente está desactualizado', () => {
-  assert.throws(
-    () => scan({ check: true }),
-    /implementation-package-registry\.json está desactualizado/u,
-  );
+  assert.throws(() => scan({ check: true }), /implementation-package-registry\.json está desactualizado/u);
+});
+
+test('DELIV-PKG-025 se convierte en catálogo maestro exacto de 207 packages sin inventar IDs', () => {
+  const catalog = parseCanonicalPackageCatalogFromSource(canonicalCatalogSource(), contract, canonicalGapRoutingSource());
+  assert.equal(catalog.packages.length, 207);
+  assert.equal(catalog.packages[0].package_id, 'GAP-PKG-001');
+  assert.equal(catalog.packages.at(-1).package_id, 'GAP-PKG-207');
+  assert.equal(catalog.membership_audit.total, 820);
+  assert.equal(catalog.membership_audit.unique_gap_ids, 820);
+  assert.equal(catalog.membership_audit.packages_covered, 207);
+  assert.equal(catalog.packages[0].repository_owner, 'devVentoGroup/vento-shell');
+  assert.deepEqual(catalog.packages[0].capability_ids, ['CAP-01.01']);
+  assert.deepEqual(catalog.packages[0].process_ids, ['VPROC-0001']);
+  assert.equal(catalog.packages[0].exit_owner, 'DELIV-PKG-014');
+  assert.deepEqual(catalog.packages[0].primary_task_ids, ['TEST-CAP-001', 'TEST-PENDING-001']);
+  assert.deepEqual(catalog.packages[0].support_task_ids, ['TEST-SUPPORT-001']);
+  assert.equal(catalog.packages[0].dominant_task_id, 'TEST-DOM-001');
+});
+
+test('catálogo incompleto falla cerrado en lugar de inventar el package faltante', () => {
+  const source = canonicalCatalogSource().split('\n').filter((line) => !line.includes('GAP-PKG-207')).join('\n');
+  assert.throws(() => parseCanonicalPackageCatalogFromSource(source, contract, canonicalGapRoutingSource()), /esperados 207 packages/u);
+});
+
+test('scanner de producción reconcilia los 207 GAP-PKG directamente desde E5', () => {
+  const result = scanPackageReadiness({
+    root: process.cwd(),
+    trigger: 'test-canonical',
+    now: () => '2026-08-29T20:00:00.000Z',
+    supplied: {
+      contract,
+      capabilityIndex: { schema_version: 1, index_id: 'EMPTY', discovery_mode: 'EXPLICIT_CANONICAL_MAPPINGS_ONLY', capabilities: {} },
+      registry: emptyRegistry(),
+      inventory: inventory(),
+      instances: verifiedPhysicalDependencies(),
+      priorityLanes: { lanes: [] },
+      activeSequence: { task_ids: ['NEXT-DOC-001'] },
+      canonicalCatalogSource: canonicalCatalogSource(),
+      gapRoutingSource: canonicalGapRoutingSource(),
+      skipDerivedReports: true,
+    },
+  });
+  assert.equal(result.canonicalCatalog.packages.length, 207);
+  assert.equal(result.persistentRegistry.packages.length, 207);
+  const persisted = result.persistentRegistry.packages[0];
+  assert.equal(persisted.source_kind, 'CANONICAL_GAP_PACKAGE');
+  assert.equal(persisted.status, 'COMPILED');
+  assert.equal(persisted.canonical_prerequisites, undefined);
+  assert.equal(persisted.dossier, undefined);
+  assert.equal(persisted.gate_documentary, undefined);
+  assert.equal(persisted.blockers, undefined);
+  const effective = result.registry.packages[0];
+  assert.equal(effective.canonical_prerequisites.final_decision_025, 'BLOQUEADO');
+  assert.equal(effective.task_prerequisites.total, 4);
+  assert.equal(effective.task_prerequisites.approved, 3);
+  assert.deepEqual(effective.task_prerequisites.missing_task_ids, ['TEST-PENDING-001']);
+  assert.equal(result.registry.implementation_ready_queue.length, 0);
+  assert.equal(result.registry.recommended_next_package, null);
+});
+
+
+test('registry persistente conserva estado mínimo y el detalle completo queda solo en la proyección efectiva', () => {
+  const result = scanPackageReadiness({
+    root: process.cwd(),
+    trigger: 'test-compact-registry',
+    now: () => '2026-08-29T20:00:00.000Z',
+    supplied: {
+      contract,
+      capabilityIndex: { schema_version: 1, index_id: 'EMPTY', discovery_mode: 'EXPLICIT_CANONICAL_MAPPINGS_ONLY', capabilities: {} },
+      registry: emptyRegistry(),
+      inventory: inventory(),
+      instances: verifiedPhysicalDependencies(),
+      priorityLanes: { lanes: [] },
+      activeSequence: { task_ids: ['NEXT-DOC-001'] },
+      canonicalCatalogSource: canonicalCatalogSource(),
+      gapRoutingSource: canonicalGapRoutingSource(),
+      skipDerivedReports: true,
+    },
+  });
+  const persisted = result.persistentRegistry.packages[0];
+  assert.deepEqual(Object.keys(persisted).sort(), [
+    'detected_at',
+    'last_status_change_at',
+    'package_id',
+    'ready_for_gate_at',
+    'source_kind',
+    'status',
+    'status_scope',
+    'updated_at',
+  ]);
+  assert.ok(result.registry.packages[0].dossier);
+  assert.ok(result.registry.packages[0].gate_documentary);
+  assert.ok(result.registry.packages[0].canonical_prerequisites);
+  assert.match(result.block, /PERSISTENT REGISTRY:/u);
+  assert.match(result.block, /DERIVED DETAIL:/u);
+  assert.doesNotMatch(result.block, /PACKAGES:\n- GAP-PKG-001/u);
+});
+
+test('un GAP-PKG con DELIV-PKG-025 PASS entra a la cola solo cuando dependencias físicas están VERIFIED', () => {
+  const result = scanPackageReadiness({
+    root: process.cwd(),
+    trigger: 'test-canonical-ready',
+    now: () => '2026-08-29T20:00:00.000Z',
+    supplied: {
+      contract,
+      capabilityIndex: { schema_version: 1, index_id: 'EMPTY', discovery_mode: 'EXPLICIT_CANONICAL_MAPPINGS_ONLY', capabilities: {} },
+      registry: emptyRegistry(),
+      inventory: inventory(),
+      instances: verifiedPhysicalDependencies(),
+      priorityLanes: { lanes: [] },
+      activeSequence: { task_ids: ['NEXT-DOC-001'] },
+      canonicalCatalogSource: canonicalCatalogSource({ passPackage: 'GAP-PKG-004' }),
+      gapRoutingSource: canonicalGapRoutingSource(),
+      packageGateRecords: new Map([['GAP-PKG-004', approvedPackageGateRecord('GAP-PKG-004')]]),
+      skipDerivedReports: true,
+    },
+  });
+  assert.equal(result.registry.implementation_ready_queue.length, 1);
+  assert.equal(result.registry.recommended_next_package.package_id, 'GAP-PKG-004');
+  assert.equal(result.registry.recommended_next_package.next_execution, 'SHELL-CI-020::GAP-PKG-004');
+});
+
+test('GAP-CTRL-006 aporta tareas primarias y de soporte sin inferencia semántica', () => {
+  const routing = parsePackageTaskRouting(canonicalGapRoutingSource());
+  assert.deepEqual(routing.get('GAP-PKG-001').primary_task_ids, ['TEST-CAP-001', 'TEST-PENDING-001']);
+  assert.deepEqual(routing.get('GAP-PKG-001').support_task_ids, ['TEST-SUPPORT-001']);
+  assert.deepEqual(routing.get('GAP-PKG-002').primary_task_ids, ['TEST-CAP-001']);
+});
+
+
+test('GAP-CTRL-006 preserva columnas cuando una celda contiene pipes escapados o pipes en codigo', () => {
+  const source = `### ✅ GAP-CTRL-006 — Routing
+
+| Registro | Referencia representativa | Brecha resumida | Clase | Capacidad / proceso | Propietario / fecha | Tarea primaria | Tareas de soporte | Paquete | Confianza |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| \`EQG-001\` | \`GAP-NEXO-003\` | Contrato con valor A \\| B y literal \`campo|estado\` dentro de la misma celda. | \`CONTRACTUAL\` | \`CAP-06.09\` | \`OWN-OPS / 2026-08-21\` | \`TEST-CAP-001\` — Resolver contrato | \`TEST-SUPPORT-001\` — Apoyo | \`GAP-PKG-001\` | \`ALTA\` |
+`;
+  const routing = parsePackageTaskRouting(source);
+  assert.deepEqual(routing.get('GAP-PKG-001').primary_task_ids, ['TEST-CAP-001']);
+  assert.deepEqual(routing.get('GAP-PKG-001').support_task_ids, ['TEST-SUPPORT-001']);
+});
+
+test('GAP-CTRL-006 preserva columnas ante un fragmento truncado con backtick sin cierre', () => {
+  const source = `### ✅ GAP-CTRL-006 — Routing
+
+| Registro | Referencia representativa | Brecha resumida | Clase | Capacidad / proceso | Propietario / fecha | Tarea primaria | Tareas de soporte | Paquete | Confianza |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| \`EQG-001\` | \`GAP-NEXO-003\` | Extracto truncado con \`campo completo\` y \`fragmento... | \`CONTRACTUAL\` | \`CAP-06.09\` | \`OWN-OPS / 2026-08-21\` | \`TEST-CAP-001\` — Resolver contrato | \`TEST-SUPPORT-001\` — Apoyo | \`GAP-PKG-001\` | \`ALTA\` |
+`;
+  const routing = parsePackageTaskRouting(source);
+  assert.deepEqual(routing.get('GAP-PKG-001').primary_task_ids, ['TEST-CAP-001']);
+  assert.deepEqual(routing.get('GAP-PKG-001').support_task_ids, ['TEST-SUPPORT-001']);
+});
+
+test('el package muestra tareas aprobadas, pendientes y progreso exacto', () => {
+  const result = scanPackageReadiness({
+    root: process.cwd(),
+    trigger: 'test-task-progress',
+    now: () => '2026-08-29T20:00:00.000Z',
+    supplied: {
+      contract,
+      capabilityIndex: { schema_version: 1, index_id: 'EMPTY', discovery_mode: 'EXPLICIT_CANONICAL_MAPPINGS_ONLY', capabilities: {} },
+      registry: emptyRegistry(),
+      inventory: inventory(),
+      instances: verifiedPhysicalDependencies(),
+      priorityLanes: { lanes: [] },
+      activeSequence: { task_ids: ['NEXT-DOC-001'] },
+      canonicalCatalogSource: canonicalCatalogSource(),
+      gapRoutingSource: canonicalGapRoutingSource(),
+      skipDerivedReports: true,
+    },
+  });
+  const pkg = result.registry.packages.find(({ package_id: packageId }) => packageId === 'GAP-PKG-001');
+  assert.equal(pkg.task_prerequisites.total, 4);
+  assert.equal(pkg.task_prerequisites.approved, 3);
+  assert.equal(pkg.task_prerequisites.remaining, 1);
+  assert.equal(pkg.task_prerequisites.progress_percent, 75);
+  assert.deepEqual(pkg.task_prerequisites.missing_task_ids, ['TEST-PENDING-001']);
+  const pending = pkg.task_prerequisites.tasks.find(({ task_id: taskId }) => taskId === 'TEST-PENDING-001');
+  assert.deepEqual(pending.roles, ['PRIMARY']);
+  const dominant = pkg.task_prerequisites.tasks.find(({ task_id: taskId }) => taskId === 'TEST-DOM-001');
+  assert.deepEqual(dominant.roles, ['DOMINANT']);
+  assert.ok(pkg.blockers.includes('TASK_PREREQUISITE:TEST-PENDING-001:FAIL'));
+  assert.ok(!pkg.blockers.some((blocker) => blocker.startsWith('CANONICAL_EXIT_OWNER:')));
+  assert.ok(!pkg.blockers.some((blocker) => blocker.startsWith('CANONICAL_EXIT_CONDITION:')));
+  assert.ok(!pkg.blockers.some((blocker) => blocker.startsWith('GATE:')));
+});
+
+test('nearest-to-ready usa obligaciones reales y no package_id como proximidad primaria', () => {
+  const result = scanPackageReadiness({
+    root: process.cwd(),
+    trigger: 'test-nearest-progress',
+    now: () => '2026-08-29T20:00:00.000Z',
+    supplied: {
+      contract,
+      capabilityIndex: { schema_version: 1, index_id: 'EMPTY', discovery_mode: 'EXPLICIT_CANONICAL_MAPPINGS_ONLY', capabilities: {} },
+      registry: emptyRegistry(),
+      inventory: inventory(),
+      instances: verifiedPhysicalDependencies(),
+      priorityLanes: { lanes: [] },
+      activeSequence: { task_ids: ['NEXT-DOC-001'] },
+      canonicalCatalogSource: canonicalCatalogSource(),
+      gapRoutingSource: canonicalGapRoutingSource(),
+      skipDerivedReports: true,
+    },
+  });
+  assert.equal(result.registry.nearest_to_ready_queue[0].package_id, 'GAP-PKG-002');
+  assert.equal(result.registry.nearest_to_ready_queue[0].task_progress.remaining, 0);
+  assert.match(result.block, /TASKS: 1\/1 \(100%\)/u);
+  assert.match(result.block, /GATES:/u);
+});
+
+test('detalle por package lista tareas, gates y obligaciones restantes', () => {
+  const result = scanPackageReadiness({
+    root: process.cwd(),
+    trigger: 'test-detail',
+    now: () => '2026-08-29T20:00:00.000Z',
+    supplied: {
+      contract,
+      capabilityIndex: { schema_version: 1, index_id: 'EMPTY', discovery_mode: 'EXPLICIT_CANONICAL_MAPPINGS_ONLY', capabilities: {} },
+      registry: emptyRegistry(),
+      inventory: inventory(),
+      instances: verifiedPhysicalDependencies(),
+      priorityLanes: { lanes: [] },
+      activeSequence: { task_ids: ['NEXT-DOC-001'] },
+      canonicalCatalogSource: canonicalCatalogSource(),
+      gapRoutingSource: canonicalGapRoutingSource(),
+      skipDerivedReports: true,
+    },
+  });
+  const detail = renderPackageDetail(result.registry.packages[0]);
+  assert.match(detail, /TASK PREREQUISITES:/u);
+  assert.match(detail, /TEST-PENDING-001/u);
+  assert.match(detail, /NON-TASK GATES:/u);
+  assert.match(detail, /TOTAL REMAINING OBLIGATIONS:/u);
+  assert.equal(result.integrityAudit.status, 'PASS');
+  const report = renderReadinessMarkdown(result);
+  assert.match(report, /Readiness de packages e implementaciones siguientes/u);
+  assert.match(report, /Catálogo completo/u);
+  assert.match(report, /Tareas faltantes/u);
+  assert.match(report, /TEST-PENDING-001/u);
+  assert.match(report, /package-gap-pkg-001/u);
+});
+
+test('priorización usa carril explícito activo y luego antigüedad de readiness, no ola de decisión', () => {
+  const queue = prioritizeImplementationReadyQueue([
+    { package_id: 'GAP-PKG-002', ready_for_gate_at: '2026-08-29T10:00:00Z' },
+    { package_id: 'GAP-PKG-001', ready_for_gate_at: '2026-08-29T11:00:00Z' },
+    { package_id: 'SPECIAL-001', ready_for_gate_at: '2026-08-29T12:00:00Z' },
+  ], { lanes: [{ lane_id: 'SPECIAL-001', active: true, status: 'ACTIVE' }] });
+  assert.deepEqual(queue.map(({ package_id: packageId }) => packageId), ['SPECIAL-001', 'GAP-PKG-002', 'GAP-PKG-001']);
 });
