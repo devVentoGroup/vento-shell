@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **1080** |
+| Aprobadas | **1081** |
 | En propuesta | **0** |
-| No iniciadas | **514** |
+| No iniciadas | **513** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **67.75% (1080/1594)** |
+| Porcentaje de completamiento | **67.82% (1081/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-UX-008` — Mostrar claramente marcación confirmada o pendiente | ✅ APROBADA |
-| Tarea actual | `ANIMA-UX-009` — Explicar por qué no se puede marcar | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-UX-010` — Diferenciar error de ubicación, turno y autorización | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-UX-009` — Explicar por qué no se puede marcar | ✅ APROBADA |
+| Tarea actual | `ANIMA-UX-010` — Diferenciar error de ubicación, turno y autorización | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-UX-011` — Diseñar manejo comprensible de cola offline | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -624,7 +624,7 @@
 | ✅ APROBADA | `ANIMA-UX-006` | Simplificar el flujo de check-in | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-007` | Simplificar el flujo de check-out | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-008` | Mostrar claramente marcación confirmada o pendiente | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
-| ⬜ NO INICIADA | `ANIMA-UX-009` | Explicar por qué no se puede marcar | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
+| ✅ APROBADA | `ANIMA-UX-009` | Explicar por qué no se puede marcar | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-010` | Diferenciar error de ubicación, turno y autorización | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-011` | Diseñar manejo comprensible de cola offline | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-012` | Permitir reanudar una marcación interrumpida | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |

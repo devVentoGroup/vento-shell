@@ -5918,7 +5918,930 @@ El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
 `ANIMA-UX-009 — Explicar por qué no se puede marcar`
 
 
-### [ ] ANIMA-UX-009 — Explicar por qué no se puede marcar
+### ✅ ANIMA-UX-009 — Explicar por qué no se puede marcar
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente
+**Tarea siguiente:** ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
+**Tipo de tarea:** documental; diseño UX TO-BE del contrato de explicación humana cuando una marcación personal de entrada o salida no puede ejecutarse, continuar o confirmarse, preservando estado de certeza, causa estructurada, recuperación segura, idempotencia, accesibilidad y fronteras con clasificación causal, offline y reanudación
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo debe explicar ANIMA, en lenguaje humano y accionable, por qué una persona no puede registrar o completar una entrada o una salida cuando el sistema ya conoce un impedimento material.
+
+La explicación debe permitir que el trabajador comprenda, sin interpretar códigos técnicos:
+
+1. qué marcación intentaba realizar;
+2. qué ocurrió o qué condición impide continuar;
+3. qué estado de asistencia sigue siendo cierto;
+4. qué información o intención quedó preservada;
+5. qué puede hacer ahora sin arriesgar una marcación duplicada;
+6. qué condición debe cambiar para volver a intentar cuando corresponda;
+7. quién o qué proceso puede resolver el impedimento cuando la persona no puede hacerlo;
+8. qué referencia puede conservarse para soporte o auditoría cuando sea necesaria.
+
+La tarea no redefine las reglas que permiten o impiden una marcación. Define su traducción perceptible y segura para el trabajador.
+
+---
+
+#### 2. Handoff recibido de ANIMA-UX-008
+
+`ANIMA-UX-008` separó el nivel de certeza de la marcación de su causa.
+
+Esta tarea consume sin reabrir los estados conceptuales ya definidos:
+
+- procesamiento;
+- pendiente de confirmación;
+- confirmada;
+- resultado desconocido;
+- no confirmada.
+
+Una marcación `NOT_CONFIRMED`, bloqueada, rechazada o que requiere intervención necesita una explicación humana, pero el estado de certeza no constituye por sí mismo la causa.
+
+Regla de continuidad:
+
+```text
+ESTADO DE CERTEZA
++
+CAUSA ESTRUCTURADA
++
+ESTADO PRESERVADO
++
+RECUPERACION SEGURA
+=
+EXPLICACION HUMANA
+```
+
+No es válido:
+
+```text
+NOT_CONFIRMED
+=
+"OCURRIO UN ERROR"
+```
+
+porque una misma falta de confirmación puede provenir de causas materialmente diferentes y exigir acciones distintas.
+
+---
+
+#### 3. Principio rector
+
+La explicación visible no es una fuente de lógica.
+
+ANIMA debe mantener separados:
+
+```text
+HECHO EMPRESARIAL
+DECISION DE AUTORIZACION
+ESTADO DE ASISTENCIA
+CAUSA ESTRUCTURADA
+ESTADO DE CERTEZA
+POLITICA DE RECUPERACION
+MENSAJE HUMANO
+```
+
+El mensaje humano se deriva de los anteriores y nunca los sustituye.
+
+La regla UX queda:
+
+```text
+CAUSA VERIFICADA
++
+CONTEXTO SEGURO
++
+EFECTO SOBRE LA MARCACION
++
+ESTADO PRESERVADO
++
+SIGUIENTE ACCION SEGURA
+=
+EXPLICACION COMPRENSIBLE
+```
+
+---
+
+#### 4. Ámbito de aplicación
+
+El contrato aplica cuando una persona, dentro del carril personal de ANIMA:
+
+- intenta `Registrar entrada`;
+- intenta `Registrar salida`;
+- llega a Home con un impedimento conocido que hace no ejecutable la marcación pertinente;
+- recibe un resultado que demuestra que la marcación no quedó confirmada;
+- vuelve a la aplicación y el impedimento continúa vigente;
+- necesita saber por qué la acción permanece bloqueada después de una revalidación.
+
+También aplica cuando una superficie secundaria conduce de vuelta a la misma marcación personal.
+
+No convierte historial, programación de turnos, diagnóstico técnico o administración en superficies paralelas para explicar la misma mutación.
+
+---
+
+#### 5. Unidad de explicación
+
+La unidad es un **impedimento material de una intención de asistencia concreta**.
+
+La explicación debe quedar correlacionada, cuando las fuentes lo permitan, con:
+
+- actor efectivo;
+- tipo de marcación esperado: entrada o salida;
+- intención o evento lógico cuando ya existe;
+- sesión de asistencia cuando la salida apunta a una sesión;
+- contexto laboral relevante;
+- estado de certeza;
+- causa estructurada;
+- estado preservado;
+- acción de recuperación permitida;
+- instante o versión relevantes;
+- referencia segura de soporte cuando corresponda.
+
+La explicación no necesita mostrar todos esos datos al trabajador. La correlación existe para que el texto visible sea correcto y auditable.
+
+---
+
+#### 6. Cuándo debe aparecer una explicación
+
+La explicación aparece cuando existe información suficiente para afirmar que la persona **no puede continuar normalmente** con la marcación o que una marcación intentada **no puede presentarse como confirmada**.
+
+Ejemplos conceptuales:
+
+- falta una condición necesaria antes de enviar;
+- una validación requerida no puede completarse;
+- el servidor rechaza la transición;
+- la realidad cambió y la intención ya no puede aplicarse como estaba;
+- una dependencia técnica impide determinar un resultado seguro;
+- la acción no está permitida bajo el contexto efectivo;
+- una intervención externa o de otro responsable es necesaria.
+
+La interfaz no espera a que el trabajador repita la misma acción varias veces para explicar un bloqueo que ya conoce.
+
+---
+
+#### 7. Cuándo no debe presentarse como bloqueo
+
+No todo estado distinto de confirmación es un bloqueo.
+
+No se presenta como `no se puede marcar` cuando:
+
+- la acción está normalmente en procesamiento;
+- una intención quedó durablemente en cola y sigue dentro de su flujo esperado;
+- la misma intención está siendo sincronizada;
+- el resultado ya está confirmado;
+- el sistema todavía está realizando una comprobación automática dentro de una latencia razonable;
+- existe un resultado desconocido que primero debe reconciliarse y todavía no permite afirmar fallo.
+
+Regla:
+
+```text
+PENDIENTE
+!=
+FALLIDA
+
+PROCESANDO
+!=
+BLOQUEADA
+
+RESULTADO DESCONOCIDO
+!=
+NO EJECUTADA
+```
+
+---
+
+#### 8. Identificación de la marcación afectada
+
+Cuando el sistema conoce la intención, la explicación debe nombrar el efecto humano exacto:
+
+- `entrada`;
+- `salida`.
+
+Debe preferirse:
+
+```text
+No pudimos registrar tu entrada
+No pudimos completar tu salida
+```
+
+sobre:
+
+```text
+No se pudo registrar
+No se pudo completar la acción
+Marcación inválida
+```
+
+Si el estado está realmente en conflicto y no puede determinarse con seguridad si corresponde entrada o salida, ANIMA no inventa una de las dos. Primero debe revalidar o declarar que no puede determinar la marcación aplicable.
+
+---
+
+#### 9. Preguntas mínimas que debe resolver
+
+Una explicación completa responde proporcionalmente a estas preguntas:
+
+| Pregunta | Obligación UX |
+| --- | --- |
+| ¿Qué intentaba hacer? | Nombrar entrada o salida cuando se conoce. |
+| ¿Qué impide continuar? | Expresar la condición humana sin código técnico. |
+| ¿Qué quedó igual? | Indicar el estado de asistencia que no cambió cuando sea material. |
+| ¿Se guardó algo? | Distinguir nada guardado, intención local preservada, estado incierto o servidor confirmado. |
+| ¿Qué puedo hacer ahora? | Dar una acción concreta y segura cuando exista. |
+| ¿Puedo reintentar? | Ofrecerlo solo si repetir es seguro. |
+| ¿Qué debe cambiar? | Indicar la condición observable de desbloqueo cuando exista. |
+| ¿Quién lo resuelve? | Nombrar el responsable funcional cuando el trabajador no puede resolverlo. |
+| ¿Cómo lo reporto? | Conservar una referencia segura cuando soporte o auditoría la necesiten. |
+
+La presentación puede compactar información de baja relevancia, pero no puede omitir un dato necesario para evitar una acción incorrecta.
+
+---
+
+#### 10. Contrato conceptual de presentación
+
+La futura materialización debe poder representar, de forma equivalente, información como:
+
+```ts
+type AttendanceBlockingExplanation = {
+  marking_target: "CHECK_IN" | "CHECK_OUT" | "UNRESOLVED";
+  presentation_category:
+    | "BLOCKED"
+    | "DENIED"
+    | "WAITING"
+    | "CONFLICT"
+    | "TECHNICAL_FAILURE"
+    | "VALIDATION_REQUIRED";
+  certainty_state: string;
+  human_title: string;
+  human_summary: string;
+  preserved_state: string;
+  primary_recovery_action: string | null;
+  secondary_recovery_actions: string[];
+  resolver_type: string | null;
+  review_condition: string | null;
+  correlation_reference: string | null;
+};
+```
+
+Esta forma es documental y no crea un tipo físico, enum público, tabla, columna, RPC, reason code ni payload obligatorio.
+
+Los valores visibles se derivarán de contratos propietarios existentes.
+
+---
+
+#### 11. Título humano
+
+El título debe describir el efecto sobre la persona y su tarea.
+
+Patrones válidos:
+
+- `No puedes registrar tu entrada todavía`;
+- `No pudimos completar tu salida`;
+- `Tu entrada necesita una validación antes de continuar`;
+- `Tu salida cambió mientras la estábamos procesando`;
+- `Todavía no podemos confirmar tu marcación`.
+
+No se consideran títulos suficientes:
+
+- `Error`;
+- `Error de asistencia`;
+- `No se pudo registrar`;
+- `P0001`;
+- `RLS denied`;
+- `RPC failed`;
+- `Constraint violation`;
+- `Network request failed`.
+
+---
+
+#### 12. Causa segura
+
+La explicación debe traducir una causa estructurada a lenguaje humano sin exponer detalles internos innecesarios.
+
+La causa visible debe:
+
+- describir la condición que afecta al trabajador;
+- conservar la distinción entre condición corregible, espera, denegación, conflicto y fallo técnico;
+- evitar nombres de tablas, funciones, políticas o excepciones;
+- evitar afirmar una causa más específica que la evidencia disponible;
+- mantenerse compatible con el estado de certeza de la marcación.
+
+Si la fuente solo demuestra un fallo técnico no clasificado, ANIMA no inventa una causa empresarial.
+
+---
+
+#### 13. Estado preservado
+
+La explicación debe indicar qué ocurrió con la información o el efecto material cuando esa distinción cambia la decisión del trabajador.
+
+Estados humanos admisibles, según evidencia:
+
+- no se registró ningún cambio de asistencia;
+- la intención quedó guardada en este dispositivo y sigue pendiente;
+- el servidor confirmó la marcación;
+- el sistema todavía no puede confirmar si la marcación fue aplicada;
+- la intención entró en conflicto y no produjo un segundo efecto;
+- la marcación ya había sido aplicada y se recuperó el mismo resultado.
+
+Nunca se afirma `no se guardó` solo porque no llegó una respuesta.
+
+Nunca se afirma `se registró` solo porque cambió el estado local.
+
+---
+
+#### 14. Acción siguiente
+
+Toda explicación debe ofrecer una acción siguiente solo cuando sea segura y ejecutable por el actor actual.
+
+Una acción de recuperación puede consistir en:
+
+- completar una condición faltante que pertenece al trabajador;
+- volver a validar un hecho;
+- refrescar el estado;
+- esperar una condición explícita;
+- abrir la superficie propietaria que realmente resuelve el impedimento;
+- solicitar revisión al responsable funcional;
+- consultar el estado de una intención existente;
+- recuperar el resultado de la misma identidad.
+
+La acción no puede ofrecer un bypass, cambio de rol, sustitución de actor ni selección de contexto falsa.
+
+---
+
+#### 15. Regla de reintento
+
+`Reintentar` no es la respuesta universal.
+
+Solo se ofrece cuando:
+
+1. la causa puede ser transitoria;
+2. repetir la operación es seguro;
+3. la intención inexistente puede crearse una sola vez o la intención existente puede reutilizar su identidad;
+4. el sistema conoce qué estado quedó preservado;
+5. no existe un resultado desconocido que deba reconciliarse primero;
+6. no existe un conflicto que requiera refrescar o resolver contexto;
+7. la política de backoff o nueva comprobación permite el intento.
+
+No es válido:
+
+```text
+CONFLICTO
+→ REINTENTAR AUTOMATICAMENTE HASTA QUE PASE
+```
+
+ni:
+
+```text
+RESULTADO DESCONOCIDO
+→ CREAR OTRA MARCACION
+```
+
+---
+
+#### 16. Responsable de resolución
+
+Cuando el trabajador no puede resolver directamente el impedimento, la explicación debe identificar una clase funcional de responsable solo si el contrato permite determinarla.
+
+Puede ser, según el caso:
+
+- la persona o proceso que administra la condición laboral aplicable;
+- el responsable operativo correspondiente;
+- soporte técnico;
+- un proceso automático de sincronización o reconciliación.
+
+No se usa `Contacta al administrador` como respuesta universal.
+
+Si el responsable exacto todavía no puede demostrarse, la UX no inventa un cargo; ofrece una vía segura de soporte o revisión que conserve el contexto.
+
+---
+
+#### 17. Condición de revisión o espera
+
+Cuando el bloqueo sea temporal o dependa de otra acción, la explicación debe indicar qué condición permite revisar de nuevo.
+
+Ejemplos conceptuales:
+
+```text
+CUANDO TERMINE LA VALIDACION
+CUANDO LA CONEXION SEA ESTABLE
+DESPUES DE ACTUALIZAR EL ESTADO
+CUANDO EL RESPONSABLE CORRIJA LA CONDICION
+```
+
+No se promete un tiempo que el sistema no controla.
+
+La interfaz puede refrescar automáticamente el estado y retirar la explicación cuando la condición deje de existir.
+
+---
+
+#### 18. Referencia para soporte y auditoría
+
+Una explicación que requiera soporte puede mostrar una referencia segura y corta correlacionada con la evidencia técnica o empresarial.
+
+La referencia:
+
+- no reemplaza el mensaje humano;
+- no concede acceso;
+- no expone secretos;
+- no contiene datos sensibles innecesarios;
+- no obliga al trabajador a copiar trazas técnicas;
+- permite a soporte localizar la misma situación.
+
+La aplicación no muestra stack traces, SQL, políticas RLS, payloads completos, tokens ni coordenadas crudas como referencia humana.
+
+---
+
+#### 19. Bloqueo, denegación, espera y validación
+
+Esta tarea aplica la taxonomía transversal existente sin crear una taxonomía paralela.
+
+A nivel perceptible:
+
+| Clase | Lectura humana |
+| --- | --- |
+| `BLOCKED` | La marcación puede ser pertinente, pero falta una condición obligatoria. |
+| `DENIED` | La operación no está permitida bajo el contexto efectivo. |
+| `WAITING` | La marcación depende normalmente de una condición, evento o actor todavía pendiente. |
+| `VALIDATION_REQUIRED` | Falta una comprobación o dato que puede completarse sin fabricar autoridad. |
+| `CONFLICT` | La realidad cambió y la intención ya no puede aplicarse silenciosamente como estaba. |
+| `TECHNICAL_FAILURE` | Una dependencia técnica impide completar o demostrar el resultado con seguridad. |
+
+La clase interna no tiene que mostrarse literalmente al trabajador.
+
+---
+
+#### 20. Resultado desconocido
+
+Un resultado desconocido requiere un tratamiento especial.
+
+La explicación debe indicar:
+
+- que el sistema todavía no puede confirmar el resultado;
+- que la marcación no debe repetirse a ciegas;
+- que se está consultando o debe consultarse la misma intención;
+- qué estado de asistencia puede afirmarse mientras se reconcilia.
+
+No debe decir:
+
+```text
+No se registró. Intenta nuevamente.
+```
+
+si existe posibilidad material de que el commit ya haya ocurrido.
+
+---
+
+#### 21. Conflicto
+
+Un conflicto no es un simple fallo de red ni un permiso para repetir.
+
+Cuando la intención encuentra una realidad incompatible:
+
+- ANIMA conserva la intención y la evidencia aplicables;
+- refresca o reconcilia el estado;
+- explica que la situación cambió;
+- evita sobrescribir silenciosamente;
+- evita una segunda marcación;
+- dirige a la resolución propietaria cuando haga falta intervención.
+
+El copy final puede especializarse más adelante, pero la semántica de conflicto debe permanecer distinta de `reintento automático`.
+
+---
+
+#### 22. Fallo técnico
+
+Ante un fallo técnico concluyente, la explicación debe separar:
+
+- qué dependencia no pudo completar la operación a nivel humano;
+- si la intención llegó o no a preservarse;
+- si existe posibilidad de efecto remoto;
+- si es seguro volver a intentar;
+- qué continúa disponible.
+
+No se debe convertir `500`, `timeout`, `fetch failed`, `Supabase`, `Postgres` o un nombre de RPC en el mensaje principal.
+
+Un fallo técnico no se traduce automáticamente a un bloqueo empresarial.
+
+---
+
+#### 23. Cola durable y marcación pendiente
+
+Una marcación durablemente encolada no se presenta como `No se pudo registrar`.
+
+Si la intención ya fue preservada conforme al contrato offline:
+
+```text
+INTENCION DURABLE
++
+SIN CONFIRMACION REMOTA
+=
+MARCACION PENDIENTE
+```
+
+La presentación principal pertenece al estado de certeza definido por `ANIMA-UX-008` y el diseño detallado de cola pertenece a `ANIMA-UX-011`.
+
+UX-009 interviene solo si la cola entra en un estado que requiere explicación o intervención humana.
+
+---
+
+#### 24. Frontera con ubicación, turno/contexto y autorización
+
+`ANIMA-UX-009` define la estructura común de explicación.
+
+No define todavía el catálogo final que determina si un impedimento concreto pertenece a:
+
+- ubicación o evidencia física;
+- turno o contexto laboral;
+- autorización.
+
+Esa diferenciación corresponde exclusivamente a `ANIMA-UX-010`.
+
+Por tanto, esta tarea no crea frases canónicas finales del tipo:
+
+```text
+ERROR_DE_UBICACION
+ERROR_DE_TURNO
+ERROR_DE_AUTORIZACION
+```
+
+ni reason codes nuevos para esas familias.
+
+Sí exige que la arquitectura de mensaje pueda recibir la causa estructurada sin colapsarlas en un único texto genérico.
+
+---
+
+#### 25. Sede laboral, punto físico y geocerca
+
+Las explicaciones no pueden reintroducir la confusión corregida por las tareas anteriores.
+
+Debe mantenerse separado:
+
+```text
+SEDE LABORAL / OPERATIVA
+PUNTO FISICO DE MARCACION
+EVIDENCIA DE UBICACION
+GEOFENCE / POLITICA FISICA
+```
+
+Un mensaje no debe pedir `Cambiar sede` si el problema real es un punto físico de marcación y la sede laboral no está cambiando.
+
+Tampoco debe sugerir que una ubicación válida concede rol, turno o autorización.
+
+La clasificación final de una causa de ubicación permanece en `ANIMA-UX-010`.
+
+---
+
+#### 26. Botón no ejecutable con explicación visible
+
+Una acción relevante que está bloqueada no puede aparecer únicamente como un botón deshabilitado sin explicación.
+
+La superficie debe hacer comprensible:
+
+1. cuál acción sería pertinente;
+2. por qué no puede ejecutarse ahora;
+3. qué puede hacer la persona para continuar cuando exista una recuperación.
+
+No se exige mantener siempre un CTA deshabilitado. Puede sustituirse por una presentación de estado cuando esa composición sea más clara, siempre que no desaparezca la tarea que la persona intenta completar.
+
+---
+
+#### 27. Relación entre estado principal y mensaje de bloqueo
+
+El mensaje de bloqueo no debe competir con el estado principal de asistencia ni contradecirlo.
+
+Ejemplos:
+
+```text
+ENTRADA NO CONFIRMADA
++
+EXPLICACION DE BLOQUEO
+```
+
+es coherente.
+
+```text
+JORNADA CERRADA
++
+NO PUDIMOS REGISTRAR TU SALIDA
+```
+
+es contradictorio cuando la salida no está confirmada.
+
+La jerarquía visual debe permitir leer primero el estado real de asistencia y luego la explicación causal aplicable.
+
+---
+
+#### 28. Persistencia de la explicación
+
+Una explicación material no debe depender exclusivamente de un toast efímero.
+
+Debe permanecer disponible mientras:
+
+- la causa siga vigente;
+- la acción relevante siga bloqueada;
+- el trabajador necesite una recuperación;
+- no exista un nuevo estado autoritativo que la vuelva obsoleta.
+
+Cuando la causa cambie, la explicación debe refrescarse o retirarse. No se conserva un error viejo encima de una situación ya resuelta.
+
+---
+
+#### 29. Accesibilidad
+
+La explicación debe ser comprensible sin depender exclusivamente de:
+
+- color;
+- icono;
+- vibración;
+- animación;
+- posición visual;
+- abreviaturas técnicas.
+
+Debe existir texto accesible que indique:
+
+- acción afectada;
+- estado;
+- causa humana;
+- siguiente acción cuando corresponda.
+
+Los controles de recuperación deben tener etiquetas claras y foco navegable conforme a las capacidades de la plataforma móvil.
+
+---
+
+#### 30. Minimización y seguridad
+
+La explicación no expone:
+
+- nombres de permisos internos;
+- reglas de RLS;
+- SQL;
+- tablas;
+- RPC;
+- stack traces;
+- secretos;
+- tokens;
+- políticas antifraude;
+- información de otros trabajadores;
+- roles o privilegios de terceros;
+- detalles de seguridad que faciliten bypass;
+- coordenadas exactas salvo que otra política propietaria autorice expresamente mostrarlas.
+
+La persona recibe información suficiente para actuar, no un volcado del diagnóstico interno.
+
+---
+
+#### 31. Idempotencia y recuperación
+
+La recuperación visible debe conservar la identidad de la operación cuando la intención ya existe.
+
+Reglas:
+
+```text
+MISMA INTENCION NO RESUELTA
+→ NO CREAR OTRA INTENCION SOLO POR TOCAR "REINTENTAR"
+
+MISMO EVENTO YA APLICADO
+→ RECUPERAR RESULTADO EXISTENTE
+
+MISMA IDENTIDAD + CONTENIDO INCOMPATIBLE
+→ CONFLICTO, NO SOBRESCRITURA
+```
+
+Una explicación humana no puede inducir al usuario a romper el contrato idempotente.
+
+---
+
+#### 32. Revalidación y desaparición automática del bloqueo
+
+Un bloqueo puede dejar de existir por:
+
+- cambio autoritativo de contexto;
+- actualización de una fuente;
+- restauración de una dependencia;
+- finalización de una sincronización;
+- corrección por el responsable propietario.
+
+ANIMA puede revalidar automáticamente y restaurar la acción ordinaria sin exigir que el trabajador descarte manualmente una tarjeta de error.
+
+La desaparición del mensaje debe basarse en nueva evidencia, no en un temporizador cosmético.
+
+---
+
+#### 33. Reentrada desde otra superficie
+
+Si una notificación, `/shifts`, historial u otra superficie conduce al trabajador hacia la marcación:
+
+- se revalida el estado actual;
+- se reutiliza el mismo contrato de explicación;
+- no se transporta un error viejo como autoridad;
+- no se crea un segundo camino de reintento;
+- no se inventa una nueva causa por la superficie de origen.
+
+Home continúa siendo la superficie ordinaria de la marcación personal.
+
+---
+
+#### 34. Actor administrativo dentro del carril personal
+
+Una persona con capacidades administrativas que usa su carril personal recibe la misma explicación respecto de **su propia marcación**.
+
+Su rol administrativo no convierte la recuperación inmediata en:
+
+- corrección de asistencia de terceros;
+- bypass de geocerca;
+- modificación del turno;
+- elevación de permisos;
+- cierre administrativo de sesión.
+
+Las capacidades administrativas permanecen en sus flujos propietarios.
+
+---
+
+#### 35. Auditoría del AS-IS y drift identificado
+
+La inspección del código vigente de ANIMA demuestra una experiencia funcional pero todavía insuficiente frente al contrato TO-BE:
+
+1. `use-home-attendance-actions` reduce el error de una acción a `string | null`;
+2. el fallback visible puede ser `No se pudo completar la acción`, sin indicar entrada o salida;
+3. `AttendanceActionErrorCard` utiliza siempre el título genérico `No se pudo registrar` y solo agrega el string recibido;
+4. el resultado físico `CheckInOutResult` conserva únicamente `success`, `error`, `timestamp` y `queued`, sin un contrato visible estructurado de causa, estado preservado o recuperación;
+5. el check-in produce mensajes locales distintos para identidad ausente, cuenta inactiva, salida pendiente, check-in ya activo, geocerca, sede no determinada, permiso de ubicación y rol operativo;
+6. parte de la traducción de errores inspecciona texto o códigos técnicos para devolver mensajes humanos;
+7. el traductor actual clasifica conflictos como estado de sincronización pero comunica `Reintentaremos automáticamente`, aunque un conflicto exige reconciliación y no repetición ciega;
+8. `AttendanceUxState = failed` también deriva actualmente a `Reintentaremos automáticamente` y ofrece `Reintentar ahora`;
+9. Home y la tarjeta de geocerca reparten explicación y recuperación entre varios textos sin una unidad estructurada común;
+10. la tarjeta de geocerca puede presentar `Cambiar sede` dentro del mismo espacio de recuperación, aunque sede operativa y punto físico de marcación son conceptos que el contrato TO-BE mantiene separados;
+11. la experiencia actual ya evita mostrar directamente varios códigos técnicos al trabajador, lo cual se conserva;
+12. la experiencia actual ya posee feedback de cola, geocerca y estado, que deberá reconciliarse con el contrato de certeza y no eliminarse por esta tarea.
+
+El contrato TO-BE no prescribe todavía componentes físicos. Define el significado que una futura materialización deberá conservar.
+
+---
+
+#### 36. Matriz de escenarios de aceptación UX
+
+| Escenario | Explicación esperada |
+| --- | --- |
+| Falta una condición conocida antes de enviar una entrada | Nombrar que la entrada no puede continuar, explicar humanamente la condición y ofrecer la recuperación permitida. |
+| Falta una condición conocida antes de enviar una salida | Nombrar la salida y conservar la sesión real; no inventar una salida confirmada. |
+| La acción está realizando una validación normal | Mostrar procesamiento, no un error prematuro. |
+| La validación concluye en bloqueo corregible | Explicar qué condición falta y qué puede hacer el trabajador. |
+| El contexto efectivo produce una denegación | Explicar la frontera funcional sin revelar códigos de permiso ni ofrecer bypass. |
+| Una dependencia técnica falla antes de existir intención material | Indicar fallo técnico humano y ofrecer retry solo si es seguro. |
+| Se pierde la respuesta después de un posible commit | Indicar que el resultado aún no puede confirmarse y reconciliar la misma intención; no ofrecer otra marcación ciega. |
+| El servidor demuestra que no hubo efecto | Indicar que la marcación no se registró y ofrecer una recuperación compatible con la causa. |
+| La misma intención ya había sido aplicada | Recuperar la confirmación existente; no mantener el bloqueo. |
+| La intención entra en conflicto con un estado más nuevo | Explicar que la situación cambió y exigir refresco/reconciliación; no `reintento automático` ciego. |
+| La entrada quedó durablemente en cola | Presentarla como pendiente, no como error. |
+| La salida quedó durablemente en cola | Presentarla como pendiente, no como jornada cerrada ni como fallo. |
+| La cola pendiente pasa a fallo que requiere intervención | Mantener estado no confirmado y añadir explicación accionable sin perder identidad. |
+| El trabajador vuelve a Home y la causa sigue vigente | Mantener una explicación persistente y actualizada, no depender de un toast anterior. |
+| La causa desaparece tras revalidación | Retirar la explicación y restaurar la acción pertinente sin exigir cierre manual del error. |
+| Hay una causa relacionada con ubicación | Conservar estructura y handoff; la clasificación y copy específico quedan en ANIMA-UX-010. |
+| Hay una causa relacionada con turno/contexto | Conservar estructura y handoff; la clasificación y copy específico quedan en ANIMA-UX-010. |
+| Hay una causa relacionada con autorización | Conservar estructura y handoff; la clasificación y copy específico quedan en ANIMA-UX-010. |
+| Se requiere soporte | Mostrar contexto humano y referencia segura; no stack trace ni código interno como mensaje principal. |
+| Usuario con lector de pantalla | La causa, estado y acción siguiente son comprensibles sin depender del color o icono. |
+| Doble toque mientras existe una intención sin resolver | Mantener una sola intención y una sola recuperación. |
+| Actor gerencial usa su carril personal | Explicar su propia marcación sin introducir controles administrativos. |
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La cobertura vigente ya exige lenguaje humano ante bloqueos, identificación de estado y acción principal, distinción entre confirmado y pendiente, recuperación sin duplicar efectos, comportamiento ante conflictos y fallos, contexto autoritativo y separación entre estado de asistencia, geocerca, conectividad y cola. Esta tarea especializa esas obligaciones para explicar impedimentos de marcación en ANIMA sin introducir una obligación material nueva.
+
+---
+
+#### 38. Cobertura de prueba vigente reutilizada
+
+Se reutilizan sin modificación:
+
+- `TREQ-UX-001` — tarea, acción principal y estado comprensibles;
+- `TREQ-UX-002` — errores, bloqueos y fallos explicados humanamente con estado preservado y recuperación segura;
+- `TREQ-UX-005` — fuente de verdad y distinción entre confirmado y pendiente;
+- `TREQ-UX-006` — distinción entre pendiente, confirmado, fallido, conflicto y requiere intervención;
+- `TREQ-UX-009` — contexto operativo derivado de hechos autoritativos y no fabricado por frontend;
+- `TREQ-ANIMA-003` — persistencia durable e idempotencia de marcaciones offline;
+- `TREQ-ANIMA-015` — separación en Home entre asistencia, geocerca, sede, conectividad, cola, sincronización y diagnóstico sin mostrar una marcación pendiente o fallida como aplicada.
+
+Esta enumeración es trazabilidad hacia cobertura ya registrada y no modifica el registro canónico de requisitos.
+
+---
+
+#### 39. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build del repositorio ni de la aplicación durante el desarrollo documental de esta tarea. |
+| LOCAL | PASS | El artefacto aislado fue comprobado por estructura, metadata obligatoria, secciones consecutivas, cero requisitos derivados, cinco clases de evidencia, continuidad exacta, UTF-8, EOL estable y ausencia de contenido reservado al chat. |
+| REMOTA | PASS | Se contrastaron en GitHub protocolo, contrato de entrega, manifest, continuidad, ruta activa, topología, políticas de formato y desarrollo, owner ANIMA, ANIMA-UX-008, UX-BASE-006, contrato de cierre de asistencia, fragmentos 04A aplicables, package.json, validadores documentales y código vigente de Home, mensajes y asistencia en vento-anima. |
+| OPERATIVA | PASS | La matriz verifica bloqueos previos, validación, denegación, fallo técnico, resultado desconocido, conflicto, cola durable, reentrada, soporte, accesibilidad, doble toque y actor gerencial sin absorber la clasificación causal reservada a la tarea siguiente. |
+| FÍSICA | NOT_APPLICABLE | ANIMA-UX-009 está gobernada por DEFINE_ONCE y no crea instancia física propia ni autoriza cambios de código, Supabase, navegación, datos, configuración o despliegue. |
+
+---
+
+#### 40. Criterios de aceptación
+
+1. Toda explicación identifica entrada o salida cuando el sistema conoce la marcación afectada.
+2. El título no se limita a `Error`, `No se pudo registrar` o una frase técnica genérica.
+3. La explicación distingue estado de certeza de causa.
+4. Un estado pendiente normal no se presenta como fallo.
+5. Un resultado desconocido no se presenta como operación no ejecutada.
+6. Un resultado confirmado no conserva una explicación de bloqueo obsoleta.
+7. La causa visible se deriva de una causa estructurada y no se usa como fuente de lógica.
+8. El mensaje indica qué estado o información quedó preservado cuando sea material.
+9. Una ausencia de respuesta no se traduce automáticamente a `no se guardó`.
+10. Un cambio local no se traduce automáticamente a `se registró`.
+11. La recuperación propuesta es ejecutable por el actor actual.
+12. `Reintentar` se ofrece únicamente cuando la repetición es segura.
+13. Un resultado desconocido se reconcilia antes de permitir una nueva intención equivalente.
+14. Un conflicto no se reduce a `reintento automático`.
+15. Un replay del mismo evento recupera el resultado existente sin un segundo efecto.
+16. La explicación no induce a crear un nuevo identificador para una intención no resuelta.
+17. Una marcación durablemente encolada se presenta como pendiente y no como error.
+18. La tarea no redefine el manejo completo de cola offline.
+19. La tarea no redefine la recuperación completa de una marcación interrumpida.
+20. La explicación identifica una condición de desbloqueo cuando esta existe.
+21. La explicación identifica un responsable funcional solo cuando puede determinarse sin inventarlo.
+22. `Contacta al administrador` no se usa como fallback universal.
+23. El soporte puede recibir una referencia segura sin exponer diagnóstico sensible al trabajador.
+24. No se muestran SQL, RPC, RLS, stack traces, tokens ni códigos internos como explicación principal.
+25. Una acción bloqueada no queda representada únicamente por un botón deshabilitado sin contexto.
+26. Estado principal y explicación de bloqueo no se contradicen.
+27. Una explicación material no depende exclusivamente de un toast efímero.
+28. La explicación se actualiza o desaparece cuando cambia la causa.
+29. El significado no depende exclusivamente de color, icono, vibración o animación.
+30. La reentrada desde otra superficie converge en el mismo estado y explicación actualizados.
+31. Una persona administrativa en carril personal recibe el mismo contrato para su propia marcación.
+32. Sede laboral, punto físico, geocerca y autorización no se convierten en sinónimos dentro del mensaje.
+33. La estructura permite conservar causas distintas sin clasificarlas todavía en las tres familias de la tarea siguiente.
+34. La clasificación final de ubicación, turno/contexto y autorización permanece reservada a ANIMA-UX-010.
+35. El AS-IS basado en strings genéricos no se canoniza como contrato TO-BE.
+36. No se crean ni modifican requisitos de prueba.
+37. No existe materialización física propia.
+38. La continuidad queda reservada exclusivamente hacia ANIMA-UX-010.
+
+---
+
+#### 41. Límites
+
+ANIMA-UX-009 no:
+
+- modifica `vento-anima`;
+- modifica lógica de Home;
+- crea componentes;
+- cambia copy físico en la aplicación;
+- modifica Supabase;
+- crea migraciones, tablas, vistas, funciones, RPC, triggers, Edge Functions o RLS;
+- crea reason codes;
+- crea enums físicos;
+- redefine estados de dominio de asistencia;
+- redefine la semántica de check-in o check-out;
+- redefine geocercas, precisión, radios o TTL;
+- redefine turnos;
+- redefine autorización;
+- clasifica todavía cada error como ubicación, turno/contexto o autorización;
+- diseña el funcionamiento completo de cola offline;
+- diseña la reanudación completa de una marcación interrumpida;
+- corrige administrativamente asistencia;
+- crea una vía paralela de marcación desde `/shifts`, historial o notificaciones;
+- permite bypass por rol administrativo;
+- sustituye idempotencia por bloqueo visual;
+- modifica el registro de requisitos de prueba;
+- crea una instancia física.
+
+La tarea deja definido un contrato común de explicación humana con acción afectada, causa segura, estado preservado, recuperación segura, responsable cuando sea demostrable, condición de revisión, referencia opcional, persistencia visual, accesibilidad, minimización y respeto por el estado de certeza.
+
+El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
+
+---
+
+#### 42. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-008 — Mostrar claramente marcación confirmada o pendiente`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-009 — Explicar por qué no se puede marcar`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización`
+
+
 ### [ ] ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
 ### [ ] ANIMA-UX-011 — Diseñar manejo comprensible de cola offline
 ### [ ] ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
