@@ -123,6 +123,23 @@ export function developmentDependencyOrderErrors(ordered, dependencies) {
   return errors;
 }
 
+export function executionDependencyGateErrors(topology, dependencies) {
+  const errors = [];
+  for (const [taskId, parsed] of dependencies) {
+    const taskGate = topology.get(taskId)?.executionGate;
+    if (taskGate !== 'PRE_E5_FOUNDATION') continue;
+    for (const dependency of parsed.execution ?? []) {
+      const dependencyGate = topology.get(dependency)?.executionGate;
+      if (dependencyGate === 'POST_E5_PACKAGE') {
+        errors.push(
+          `${taskId} es PRE_E5_FOUNDATION y no puede depender físicamente de ${dependency}, que es POST_E5_PACKAGE.`,
+        );
+      }
+    }
+  }
+  return errors;
+}
+
 export function resolveTaskWorkTopology({ root = process.cwd() } = {}) {
   const baseDir = path.join(root, 'docs', 'plan-canonico', 'modular');
   const policy = JSON.parse(fs.readFileSync(path.join(baseDir, 'task-work-topology.json'), 'utf8'));
@@ -313,6 +330,7 @@ export function resolveTaskWorkTopology({ root = process.cwd() } = {}) {
     dependencies.set(task.id, parsed);
   }
   errors.push(...developmentDependencyOrderErrors(ordered, dependencies));
+  errors.push(...executionDependencyGateErrors(topology, dependencies));
 
   const active = JSON.parse(fs.readFileSync(path.join(baseDir, 'active-sequence.json'), 'utf8'));
   const segment = active.segments?.[0];

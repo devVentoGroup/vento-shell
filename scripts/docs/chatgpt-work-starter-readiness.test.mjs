@@ -80,6 +80,25 @@ test('cola vacía no inventa candidato implementable', () => {
   assert.doesNotMatch(block, /PACKAGE IMPLEMENTABLE DETECTED/u);
 });
 
+test('un expediente existente no se convierte en package enfocado sin selección explícita', () => {
+  const snapshot = readiness(false);
+  snapshot.registry.package_selection = {
+    state: 'NOT_DUE',
+    owner: 'OWN-OPS',
+    selected_package_id: null,
+    eligible_package_ids: [],
+  };
+  snapshot.registry.packages = [{
+    package_id: 'GAP-PKG-061',
+    package_gate: { status: 'WAITING_DOCUMENTATION', relative_path: 'package-gate-instances/GAP-PKG-061.json' },
+  }];
+  const block = renderReadinessStarterBlock({ readiness: snapshot, lane: 'SELECTOR', coordinated: null });
+  assert.match(block, /Estado de selección: NOT_DUE/u);
+  assert.match(block, /Responsable de selección: OWN-OPS/u);
+  assert.match(block, /Package enfocado: NONE/u);
+  assert.doesNotMatch(block, /Package enfocado: GAP-PKG-061/u);
+});
+
 test('la proyección del starter es determinista entre triggers operacionales', () => {
   const chatgpt = '=== PACKAGE READINESS SCAN ===\n\nTRIGGER: chatgpt-starter\nCAPABILITIES DETECTED: 2\n\n=== END PACKAGE READINESS ===';
   const localSync = '=== PACKAGE READINESS SCAN ===\n\nTRIGGER: local-derived-sync\nCAPABILITIES DETECTED: 2\n\n=== END PACKAGE READINESS ===';

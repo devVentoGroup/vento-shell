@@ -28,17 +28,24 @@ function queueLines(registry) {
 
 function packageGateLifecycleBlock(readiness) {
   const packages = readiness?.registry?.packages ?? [];
-  const selected = packages.find(({ package_gate: packageGate }) => packageGate)
-    ?? (readiness?.registry?.nearest_to_ready_queue?.[0]
-      ? packages.find(({ package_id: packageId }) => packageId === readiness.registry.nearest_to_ready_queue[0].package_id)
-      : null);
+  const selection = readiness?.registry?.package_selection ?? {
+    state: 'NOT_DUE',
+    owner: 'OWN-OPS',
+    selected_package_id: null,
+    eligible_package_ids: [],
+  };
+  const selected = selection.selected_package_id
+    ? packages.find(({ package_id: packageId }) => packageId === selection.selected_package_id)
+    : null;
   const packageId = selected?.package_id ?? 'NONE';
   const gate = selected?.package_gate ?? null;
   const file = gate?.relative_path ?? (packageId === 'NONE'
     ? 'NONE'
     : `docs/plan-canonico/modular/package-gate-instances/${packageId}.json`);
   const next = packageId === 'NONE'
-    ? 'NONE'
+    ? selection.state === 'AWAITING_DECISION'
+      ? 'npm run docs:package:selection:status'
+      : 'NONE'
     : gate
       ? `npm run docs:package:gate:status -- --package-id ${packageId}`
       : `npm run docs:package:prepare -- --package-id ${packageId}`;
@@ -47,7 +54,12 @@ function packageGateLifecycleBlock(readiness) {
 Cada package canónico usa un expediente autogenerado y versionado. No cree el JSON manualmente.
 Los gates EVIDENCE_023, PHYSICAL_IDENTITY, IMPLEMENTATION_UNIT y FINAL_DECISION_025 solo pasan cuando el expediente está completo y contiene APROBADO humano explícito.
 La aprobación del expediente habilita únicamente la candidatura SHELL-CI-020; no crea ni autoriza una instancia física.
+La existencia de un expediente o su posición en una cola nunca selecciona un package.
 
+- Estado de selección: ${selection.state}
+- Responsable de selección: ${selection.owner}
+- Selección automática: FALSE
+- Packages elegibles: ${selection.eligible_package_ids.length > 0 ? selection.eligible_package_ids.join(', ') : 'NONE'}
 - Package enfocado: ${packageId}
 - Expediente exacto: ${file}
 - Estado del expediente: ${gate?.status ?? 'NOT_PREPARED'}
@@ -55,11 +67,12 @@ La aprobación del expediente habilita únicamente la candidatura SHELL-CI-020; 
 
 Comprobaciones obligatorias:
 - npm run docs:package:gate:check
+- npm run docs:package:selection:check
 - npm run docs:plan:build
 - npm run docs:plan:check
 - npm run docs:plan:test
 
-Nunca ejecute docs:package:gate:approve por inferencia. Requiere APROBADO explícito referido al package y al alcance exactos.`;
+Nunca ejecute docs:package:gate:approve ni docs:package:select por inferencia. Ambos requieren APROBADO explícito, dueño competente y evidencia trazable.`;
 }
 
 export function stableReadinessStarterProjection(block) {

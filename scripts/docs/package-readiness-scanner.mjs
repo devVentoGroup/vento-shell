@@ -10,6 +10,10 @@ import {
   packageGateRecordRelativePath,
   readPackageGatePolicy,
 } from './package-gate-control.mjs';
+import {
+  assessPackageSelection,
+  readPackageSelectionPolicy,
+} from './package-selection-control.mjs';
 
 export const READINESS_PATHS = Object.freeze({
   contract: 'scripts/docs/package-readiness/package-readiness-contract.json',
@@ -22,6 +26,7 @@ export const READINESS_PATHS = Object.freeze({
   implementationInstances: 'docs/plan-canonico/modular/implementation-instances',
   packageGatePolicy: 'docs/plan-canonico/modular/package-gate-policy.json',
   packageGateInstances: 'docs/plan-canonico/modular/package-gate-instances',
+  packageSelectionPolicy: 'docs/plan-canonico/modular/package-selection-policy.json',
   canonicalPackageSource: 'docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md',
   gapRoutingSource: 'docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md',
   reportJson: '.delivery/package-readiness-scan.json',
@@ -1792,7 +1797,7 @@ export function renderReadinessMarkdown(result) {
     ? result.integrityAudit.warnings.map((warning) => `- 🟡 ${warning}`).join('\n')
     : '- ✅ Sin advertencias estructurales.';
   const readyMessage = result.registry.implementation_ready_queue.length > 0
-    ? `Hay **${result.registry.implementation_ready_queue.length}** package(s) en cola IMPLEMENTATION_READY. La autorización física sigue siendo obligatoria.`
+    ? `Hay **${result.registry.implementation_ready_queue.length}** package(s) elegible(s) en IMPLEMENTATION_READY. La cola no selecciona automáticamente; la autorización física sigue siendo obligatoria.`
     : 'Actualmente **ningún package está IMPLEMENTATION_READY**. La tabla siguiente es proximidad diagnóstica y no autoriza ejecución ni altera la prioridad empresarial.';
   const specialTable = special.length > 0
     ? `| Package especial | Objetivo | Estado | Tareas | Gates | Faltan |\n| --- | --- | --- | ---: | ---: | ---: |\n${special.map((pkg) => `| ${packageLink(pkg.package_id)} | ${markdownCell(pkg.objective)} | ${statusIcon(pkg.status)} ${pkg.status} | ${pkg.readiness_progress.task_prerequisites.approved}/${pkg.readiness_progress.task_prerequisites.total} | ${pkg.readiness_progress.gates.passed}/${pkg.readiness_progress.gates.total} | **${pkg.readiness_progress.remaining_obligations}** |`).join('\n')}`
@@ -1822,6 +1827,9 @@ export function renderReadinessMarkdown(result) {
 | Vínculos de tarea aprobados | **${metrics.task_links_approved}/${metrics.task_links_total}** |
 | Vínculos de tarea pendientes | **${metrics.task_links_remaining}** |
 | Packages IMPLEMENTATION_READY | **${result.registry.implementation_ready_queue.length}** |
+| Estado de selección | **${result.registry.package_selection?.state ?? 'NOT_EVALUATED'}** |
+| Responsable de selección | **${result.registry.package_selection?.owner ?? 'OWN-OPS'}** |
+| Package seleccionado | **${result.registry.package_selection?.selected_package_id ?? 'NONE'}** |
 
 ### Estados actuales
 
@@ -1917,6 +1925,8 @@ function writeDerivedReports(root, result) {
     index_coverage: result.indexCoverage,
     packages: result.registry.packages,
     implementation_ready_queue: result.registry.implementation_ready_queue,
+    package_selection: result.registry.package_selection,
+    selected_package: result.registry.selected_package,
     recommended_next_package: result.registry.recommended_next_package,
     nearest_to_ready_queue: result.registry.nearest_to_ready_queue,
     documentation_current: documentationCurrent(result.activeSequence),
@@ -2016,13 +2026,32 @@ export function scanPackageReadiness({
     now,
   });
   const nextPersistentRegistry = compactRegistryForPersistence(documentaryRegistry);
-  const effectiveRegistry = applyPhysicalOverlay({
+  const physicalRegistry = applyPhysicalOverlay({
     registry: documentaryRegistry,
     contract,
     instances,
     capabilityIndex,
     priorityLanes,
   });
+  const packageSelection = supplied.skipPackageSelection
+    ? null
+    : assessPackageSelection(
+      supplied.packageSelectionPolicy ?? readPackageSelectionPolicy(root),
+      physicalRegistry,
+    );
+  const selectedPackage = packageSelection?.selected_package_id
+    ? physicalRegistry.implementation_ready_queue.find(
+      ({ package_id: packageId }) => packageId === packageSelection.selected_package_id,
+    ) ?? null
+    : null;
+  const effectiveRegistry = packageSelection
+    ? {
+      ...physicalRegistry,
+      package_selection: packageSelection,
+      first_eligible_package: physicalRegistry.recommended_next_package,
+      selected_package: selectedPackage,
+    }
+    : physicalRegistry;
   const integrityAudit = auditPackageRegistry({ registry: effectiveRegistry, canonicalCatalog });
   if (integrityAudit.status !== 'PASS') {
     fail(`Auditoría lógica de packages falló:\n- ${integrityAudit.errors.join('\n- ')}`);
@@ -2115,6 +2144,8 @@ function printCliResult(result, { json = false, packageId = null } = {}) {
       capability_results: result.capabilityResults,
       packages: result.registry.packages,
       implementation_ready_queue: result.registry.implementation_ready_queue,
+      package_selection: result.registry.package_selection,
+      selected_package: result.registry.selected_package,
       recommended_next_package: result.registry.recommended_next_package,
       nearest_to_ready_queue: result.registry.nearest_to_ready_queue,
       registry_changed: result.registryChanged,

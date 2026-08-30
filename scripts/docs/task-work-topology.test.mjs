@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
   developmentDependencyOrderErrors,
+  executionDependencyGateErrors,
   resolveTaskWorkTopology,
   taskDependencies,
 } from './task-work-topology.mjs';
@@ -87,6 +88,30 @@ test('rechaza una dependencia de desarrollo hacia una tarea futura', () => {
     developmentDependencyOrderErrors(ordered, dependencies),
     ['TEST-A-001 tiene una dependencia de desarrollo futura: TEST-A-002.'],
   );
+});
+
+test('rechaza ciclos físicos PRE_E5 que dependan de trabajo POST_E5', () => {
+  const topology = new Map([
+    ['AUTH-DB-033', { executionGate: 'PRE_E5_FOUNDATION' }],
+    ['SHELL-AUTH-001', { executionGate: 'POST_E5_PACKAGE' }],
+  ]);
+  const dependencies = new Map([
+    ['AUTH-DB-033', { execution: ['SHELL-AUTH-001'] }],
+    ['SHELL-AUTH-001', { execution: [] }],
+  ]);
+  assert.deepEqual(executionDependencyGateErrors(topology, dependencies), [
+    'AUTH-DB-033 es PRE_E5_FOUNDATION y no puede depender físicamente de SHELL-AUTH-001, que es POST_E5_PACKAGE.',
+  ]);
+});
+
+test('AUTH-DB-033 depende solo de fundación PRE_E5 y contratos documentales', () => {
+  const result = resolveTaskWorkTopology();
+  const execution = result.dependencies.get('AUTH-DB-033').execution;
+  assert.ok(execution.includes('AUTH-DB-019'));
+  assert.ok(execution.includes('SHELL-CON-001'));
+  assert.ok(execution.includes('SHELL-CON-008'));
+  assert.ok(!execution.includes('SHELL-AUTH-001'));
+  assert.ok(!execution.includes('SHELL-CTX-001'));
 });
 
 test('ubica el inventario PULSO antes de la definición física que lo consume', () => {
