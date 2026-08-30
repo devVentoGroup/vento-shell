@@ -1116,3 +1116,35 @@ Los commits de desarrollo canónico y los de infraestructura transversal deberá
 permanecer separados. El ratchet de lint impedirá nueva deuda y exigirá que cada
 archivo tocado quede sin hallazgos, aunque la deuda histórica continúe registrada
 en `quality/lint-debt-baseline.json`.
+
+## Lifecycle obligatorio de gates por package
+
+Las tareas `DELIV-PKG-001..025` y `E5-GATE-008` definen contratos reutilizables;
+no constituyen evidencia ejecutada ni se repiten como tareas globales por cada
+package. Cada `GAP-PKG-NNN` madura esos contratos en un expediente exclusivo bajo
+`package-gate-instances/GAP-PKG-NNN.json`, gobernado por
+`package-gate-policy.json`.
+
+Secuencia obligatoria:
+
+1. `npm run docs:package:prepare -- --package-id GAP-PKG-NNN` crea o actualiza el
+   expediente; nunca se crea manualmente ni se selecciona otro package por
+   inferencia.
+2. Se completan identidad física exacta, unidades de implementación, plan de
+   pruebas, observabilidad, aceptación y rollback. Estas son especificaciones de
+   evidencia futura; no se presentan como ejecución física ya realizada.
+3. `npm run docs:package:gate:status -- --package-id GAP-PKG-NNN` muestra el
+   estado derivado y `npm run docs:package:gate:check` valida todos los
+   expedientes existentes en modo fail-closed.
+4. Solo un `APROBADO` humano referido al package y al alcance exactos permite
+   registrar la decisión mediante `docs:package:gate:approve`. Ningún watcher,
+   build, scanner o iniciador puede inferir esta aprobación.
+5. Solo cuando las tareas prerrequisito están aprobadas, las cuatro secciones
+   están completas, la autorización es explícita y las dependencias globales
+   están `VERIFIED`, el scanner puede proyectar `IMPLEMENTATION_READY` y proponer
+   `SHELL-CI-020::<package-id>`.
+
+`IMPLEMENTATION_READY` sigue sin equivaler a `AUTHORIZED`: la implementación
+física conserva su autorización separada en `implementation-instances/`.
+`docs:plan:build`, `docs:plan:check`, `docs:plan:test` y los iniciadores ChatGPT
+incluyen este lifecycle como comprobación obligatoria.

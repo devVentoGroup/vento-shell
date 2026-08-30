@@ -322,5 +322,44 @@
     "IMPLEMENTING",
     "DEPLOYED",
     "CLOSED"
-  ]
+  ],
+  "canonical_package_catalog": {
+    "catalog_id": "VENTO-CANONICAL-GAP-PACKAGE-CATALOG-001",
+    "source_file": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+    "identity_task": "DELIV-PKG-001",
+    "relation_task": "DELIV-PKG-002",
+    "owner_task": "DELIV-PKG-003",
+    "runtime_projection_task": "DELIV-PKG-017",
+    "final_decision_task": "DELIV-PKG-025",
+    "package_prefix": "GAP-PKG",
+    "from": 1,
+    "to": 207,
+    "expected_count": 207,
+    "expected_gap_memberships": 820,
+    "expected_historical_gap_memberships": 814,
+    "expected_append_only_gap_memberships": 6,
+    "final_pass_values": [
+      "PASS",
+      "APROBADO",
+      "APROBADA",
+      "IMPLEMENTATION_READY"
+    ],
+    "special_package_ids": [
+      "VISO-SCHEDULE-MONTHLY-001",
+      "NEXO-REMISSIONS-001"
+    ]
+  },
+  "queue_policy": {
+    "active_priority_lane_first": true,
+    "fallback_order": [
+      "ready_for_gate_at",
+      "package_id"
+    ],
+    "nearest_to_ready_order": [
+      "blocker_count",
+      "package_id"
+    ],
+    "nearest_to_ready_limit": 10,
+    "decision_wave_is_implementation_priority": false
+  }
 }

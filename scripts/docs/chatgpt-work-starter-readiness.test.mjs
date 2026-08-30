@@ -53,6 +53,8 @@ test('el mismo snapshot de readiness se inyecta en selector y ambos iniciadores'
     assert.match(source, /NEXO-PACKAGE-001/u);
     assert.match(source, /E5-GATE-008::NEXO-PACKAGE-001/u);
     assert.match(source, /UNKNOWN/u);
+    assert.match(source, /PACKAGE GATE LIFECYCLE — VALIDACIÓN OBLIGATORIA/u);
+    assert.match(source, /docs:package:gate:check/u);
   }
 });
 

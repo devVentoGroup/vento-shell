@@ -43,6 +43,12 @@ test('package.json enruta starter, status, commit-scope y lifecycle por la capa 
   assert.equal(packageJson.scripts['docs:task:finish'], 'node scripts/docs/task-branch-lifecycle-readiness.mjs finish');
   assert.match(packageJson.scripts['docs:plan:check'], /chatgpt-work-starter-readiness\.mjs --check/u);
   assert.doesNotMatch(packageJson.scripts['docs:plan:check'], /chatgpt-work-starter\.mjs --check/u);
+  assert.equal(packageJson.scripts['docs:package:prepare'], 'node scripts/docs/package-gate-lifecycle.mjs prepare');
+  assert.equal(packageJson.scripts['docs:package:gate:status'], 'node scripts/docs/package-gate-lifecycle.mjs status');
+  assert.equal(packageJson.scripts['docs:package:gate:check'], 'node scripts/docs/package-gate-lifecycle.mjs check');
+  assert.equal(packageJson.scripts['docs:package:gate:approve'], 'node scripts/docs/package-gate-lifecycle.mjs approve');
+  assert.match(packageJson.scripts['docs:plan:check'], /package-gate-lifecycle\.mjs check/u);
+  assert.match(packageJson.scripts['docs:plan:test'], /package-gate-control\.test\.mjs/u);
 });
 
 test('el lifecycle documental escanea antes y después del cierre y no publica PASS antes del postcheck', () => {
@@ -70,6 +76,9 @@ test('los iniciadores usan una única proyección readiness y prohíben cambio s
   assert.match(starterSource, /No equivale a AUTHORIZED/u);
   assert.match(starterSource, /DOCUMENTATION_QUEUE = EMPTY/u);
   assert.match(starterSource, /READY_FOR_AUTHORIZATION/u);
+  assert.match(starterSource, /PACKAGE GATE LIFECYCLE — VALIDACIÓN OBLIGATORIA/u);
+  assert.match(starterSource, /docs:package:gate:check/u);
+  assert.match(starterSource, /Nunca ejecute docs:package:gate:approve por inferencia/u);
 });
 
 test('el índice inicial no inventa un catálogo masivo y solo siembra identidades canónicas explícitas', () => {

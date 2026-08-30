@@ -183,6 +183,12 @@ test('cambio transversal usa infra/<change-id> y bloquea archivos canonicos de t
   assert.equal(classifyInfraPath('src/app/page.tsx'), 'OTHER');
 });
 
+test('package-gate policy, protocol e instances son infraestructura transversal publicable', () => {
+  assert.equal(classifyInfraPath('docs/plan-canonico/modular/01_PROTOCOLO.md'), 'ALLOWED');
+  assert.equal(classifyInfraPath('docs/plan-canonico/modular/package-gate-policy.json'), 'ALLOWED');
+  assert.equal(classifyInfraPath('docs/plan-canonico/modular/package-gate-instances/GAP-PKG-061.json'), 'ALLOWED');
+});
+
 test('PR transversal declara TREQ NONE y enumera solo infraestructura permitida', () => {
   const body = buildInfraPrBody('task-lifecycle-finish-verification', [
     'scripts/docs/task-branch-lifecycle.mjs',

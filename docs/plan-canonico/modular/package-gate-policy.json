@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "policy_id": "PACKAGE-GATE-LIFECYCLE-001",
+  "instance_directory": "docs/plan-canonico/modular/package-gate-instances",
+  "storage_mode": "ONE_FILE_PER_PACKAGE",
+  "automatic_authorization": false,
+  "approval_word": "APROBADO",
+  "statuses": [
+    "WAITING_DOCUMENTATION",
+    "MATURATION_DRAFT",
+    "READY_FOR_APPROVAL",
+    "APPROVED_FOR_IMPLEMENTATION"
+  ],
+  "required_gate_ids": [
+    "EVIDENCE_023",
+    "PHYSICAL_IDENTITY",
+    "IMPLEMENTATION_UNIT",
+    "FINAL_DECISION_025"
+  ],
+  "implementation_entry_task": "SHELL-CI-020"
+}

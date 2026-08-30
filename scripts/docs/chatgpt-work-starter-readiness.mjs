@@ -26,6 +26,42 @@ function queueLines(registry) {
     : '- NONE';
 }
 
+function packageGateLifecycleBlock(readiness) {
+  const packages = readiness?.registry?.packages ?? [];
+  const selected = packages.find(({ package_gate: packageGate }) => packageGate)
+    ?? (readiness?.registry?.nearest_to_ready_queue?.[0]
+      ? packages.find(({ package_id: packageId }) => packageId === readiness.registry.nearest_to_ready_queue[0].package_id)
+      : null);
+  const packageId = selected?.package_id ?? 'NONE';
+  const gate = selected?.package_gate ?? null;
+  const file = gate?.relative_path ?? (packageId === 'NONE'
+    ? 'NONE'
+    : `docs/plan-canonico/modular/package-gate-instances/${packageId}.json`);
+  const next = packageId === 'NONE'
+    ? 'NONE'
+    : gate
+      ? `npm run docs:package:gate:status -- --package-id ${packageId}`
+      : `npm run docs:package:prepare -- --package-id ${packageId}`;
+  return `PACKAGE GATE LIFECYCLE — VALIDACIÓN OBLIGATORIA
+
+Cada package canónico usa un expediente autogenerado y versionado. No cree el JSON manualmente.
+Los gates EVIDENCE_023, PHYSICAL_IDENTITY, IMPLEMENTATION_UNIT y FINAL_DECISION_025 solo pasan cuando el expediente está completo y contiene APROBADO humano explícito.
+La aprobación del expediente habilita únicamente la candidatura SHELL-CI-020; no crea ni autoriza una instancia física.
+
+- Package enfocado: ${packageId}
+- Expediente exacto: ${file}
+- Estado del expediente: ${gate?.status ?? 'NOT_PREPARED'}
+- Siguiente comando: ${next}
+
+Comprobaciones obligatorias:
+- npm run docs:package:gate:check
+- npm run docs:plan:build
+- npm run docs:plan:check
+- npm run docs:plan:test
+
+Nunca ejecute docs:package:gate:approve por inferencia. Requiere APROBADO explícito referido al package y al alcance exactos.`;
+}
+
 export function stableReadinessStarterProjection(block) {
   return String(block ?? '')
     .replace(/^TRIGGER: .*$/mu, 'TRIGGER: STARTER_PROJECTION');
@@ -45,7 +81,7 @@ export function renderReadinessStarterBlock({ readiness, lane, coordinated = nul
     ? `\nCOORDINATED PHYSICAL CANDIDATE\n- Status: READY_FOR_AUTHORIZATION\n- Instance: ${coordinated.readinessCandidate.instanceId}\n- Source: IMPLEMENTATION_READY_QUEUE\n- Authorization required: TRUE\n- No implementation instance is authorized by this projection.`
     : '';
   const readinessProjection = stableReadinessStarterProjection(readiness.block);
-  return `PACKAGE READINESS SCANNER — OBLIGATORIO\n\nAntes de seleccionar la siguiente tarea y después del cierre de cada tarea, el estado debe haber pasado por PACKAGE READINESS SCAN.\nToda condición PASS exige evidencia trazable. Si la evidencia no puede demostrarse, el estado es UNKNOWN y readiness queda bloqueado.\nDELIV-PKG-001..025 y E5-GATE-008 son contratos globales reutilizables; no se reejecutan cronológicamente como tareas globales por cada package.\nIMPLEMENTATION_READY requiere: package_id, dossier DELIV-PKG completo, E5-GATE-008::<package_id> PASS, cero bloqueadores y dependencias físicas disponibles.\n${laneRule}\n\nIMPLEMENTATION_READY_QUEUE:\n${queueLines(readiness.registry)}${candidateBlock}${coordinatedBlock}\n\n${readinessProjection}`;
+  return `PACKAGE READINESS SCANNER — OBLIGATORIO\n\nAntes de seleccionar la siguiente tarea y después del cierre de cada tarea, el estado debe haber pasado por PACKAGE READINESS SCAN.\nToda condición PASS exige evidencia trazable. Si la evidencia no puede demostrarse, el estado es UNKNOWN y readiness queda bloqueado.\nDELIV-PKG-001..025 y E5-GATE-008 son contratos globales reutilizables; no se reejecutan cronológicamente como tareas globales por cada package.\nIMPLEMENTATION_READY requiere: package_id, dossier DELIV-PKG completo, E5-GATE-008::<package_id> PASS, cero bloqueadores y dependencias físicas disponibles.\n${laneRule}\n\n${packageGateLifecycleBlock(readiness)}\n\nIMPLEMENTATION_READY_QUEUE:\n${queueLines(readiness.registry)}${candidateBlock}${coordinatedBlock}\n\n${readinessProjection}`;
 }
 
 export function injectReadinessIntoSources({ baseResult, readiness, coordinated }) {

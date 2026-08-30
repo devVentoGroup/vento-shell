@@ -611,6 +611,8 @@ export function classifyInfraPath(filePath) {
     || normalized === 'packages/contracts/README.md'
     || normalized === 'packages/contracts/authorization/README.md'
     || normalized === 'docs/plan-canonico/modular/chatgpt-work-starter-template.txt'
+    || normalized === 'docs/plan-canonico/modular/01_PROTOCOLO.md'
+    || normalized === 'docs/plan-canonico/modular/package-gate-policy.json'
     || normalized === 'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md'
     || normalized === 'docs/plan-canonico/modular/active-sequence.json'
     || normalized === 'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md'
@@ -621,6 +623,7 @@ export function classifyInfraPath(filePath) {
     || normalized.startsWith('.github/')
     || normalized.startsWith('.vscode/')
     || normalized.startsWith('templates/')
+    || normalized.startsWith('docs/plan-canonico/modular/package-gate-instances/')
   ) return 'ALLOWED';
   return 'OTHER';
 }

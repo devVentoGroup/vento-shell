@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "package_id": "GAP-PKG-061",
+  "status": "WAITING_DOCUMENTATION",
+  "created_at": "2026-08-30T17:10:35.154Z",
+  "updated_at": "2026-08-30T17:10:35.154Z",
+  "canonical_snapshot": {
+    "repository_owner": "devVentoGroup/vento-shell",
+    "runtime_profile": "AUTHORIZATION_RUNTIME",
+    "dominant_task_id": "INFO-AUTH-002",
+    "task_ids": [
+      "AUTH-DB-002",
+      "EVID-ARC-001",
+      "EVID-ARC-010",
+      "INFO-AUTH-001",
+      "INFO-AUTH-002",
+      "INFO-AUTH-003",
+      "INFO-AUTH-004",
+      "INFO-DOM-006",
+      "INFO-DOM-013",
+      "INFO-INT-002",
+      "INFO-UX-005",
+      "PASS-UX-008"
+    ],
+    "missing_task_ids": [
+      "PASS-UX-008"
+    ]
+  },
+  "physical_identity": {
+    "targets": []
+  },
+  "implementation_units": [],
+  "evidence_plan": {
+    "tests": [],
+    "observability": [],
+    "acceptance_criteria": [],
+    "rollback_steps": []
+  },
+  "authorization": {
+    "decision": "PENDING",
+    "approved_by": null,
+    "approved_at": null,
+    "approval_ref": null,
+    "approval_statement": null
+  }
+}
