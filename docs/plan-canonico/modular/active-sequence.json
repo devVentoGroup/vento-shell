@@ -5,25 +5,25 @@
   "sequence_id": "PHASE-04-F-ANIMA",
   "block_code": "BLOQUE F",
   "block_title": "ANIMA",
-  "previous_task_id": "ANIMA-UX-010",
+  "previous_task_id": "ANIMA-UX-011",
   "latest_treq_task_id": "NEXO-UX-025",
   "handoff_task_id": "VISO-AUTH-001",
   "handoff_sequence_id": "PHASE-04-G-VISO-CORE",
   "segments": [
     {
       "prefix": "ANIMA-UX",
-      "from": 11,
+      "from": 12,
       "to": 17
     }
   ],
   "block_progress": {
     "total_tasks": 37,
-    "approved_tasks": 30,
-    "pending_tasks": 7
+    "approved_tasks": 31,
+    "pending_tasks": 6
   },
   "route_progress": {
     "covered_tasks": 1594,
-    "pending_tasks": 512,
+    "pending_tasks": 511,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 15

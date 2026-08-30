@@ -7883,7 +7883,839 @@ ENTREGAR A CONTRATO OFFLINE
 `ANIMA-UX-011 — Diseñar manejo comprensible de cola offline`
 
 
-### [ ] ANIMA-UX-011 — Diseñar manejo comprensible de cola offline
+### ✅ ANIMA-UX-011 — Diseñar manejo comprensible de cola offline
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
+**Tarea siguiente:** ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
+**Tipo de tarea:** documental; diseño UX TO-BE del manejo comprensible de la cola offline de marcaciones personales en ANIMA, separando intención laboral, persistencia durable local, transporte/sincronización y resultado autoritativo, con recuperación idempotente, tratamiento explícito de incertidumbre y conflicto, sin redefinir la infraestructura transversal de colas ni la reanudación completa de flujos interrumpidos
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar la experiencia objetivo mediante la cual un trabajador entiende qué ocurrió con una marcación de entrada o salida cuando no puede enviarse o confirmarse de inmediato y debe conservarse localmente para procesamiento posterior.
+
+La experiencia debe impedir cinco confusiones críticas:
+
+1. **sin conexión** no significa automáticamente **marcación guardada**;
+2. **marcación guardada localmente** no significa **marcación aplicada**;
+3. **en cola** no significa **confirmada por la fuente de verdad**;
+4. **reintento** no significa **crear una nueva marcación**;
+5. **resultado incierto** no significa **fallo** ni autoriza repetir ciegamente la intención.
+
+El resultado de esta tarea es un contrato UX completo para representar persistencia local, espera, sincronización, retry, resultado desconocido, conflicto, intervención y confirmación final sin convertir la cola del dispositivo en fuente de verdad de asistencia.
+
+---
+
+#### 2. Alcance funcional
+
+Esta tarea cubre únicamente la experiencia personal de cola asociada a marcaciones de asistencia del trabajador dentro de ANIMA.
+
+Incluye:
+
+- entrada y salida cuya intención ya fue iniciada;
+- persistencia local durable de la intención;
+- espera por conectividad o disponibilidad de dependencia;
+- sincronización automática o manual de la misma intención;
+- retry seguro de la misma identidad idempotente;
+- resultado remoto confirmado;
+- resultado remoto incierto;
+- conflicto de secuencia o contenido;
+- necesidad de intervención;
+- representación de varias marcaciones pendientes;
+- reinicio o reapertura cuando la intención ya quedó durablemente en cola;
+- separación entre información útil al trabajador y diagnóstico técnico.
+
+No incluye la implementación física de SecureStore, workers, RPC, tablas, RLS, Edge Functions, contratos de red, política transversal de retry o infraestructura general de colas.
+
+---
+
+#### 3. Handoff recibido de ANIMA-UX-008, ANIMA-UX-009 y ANIMA-UX-010
+
+La tarea consume tres contratos ya aprobados:
+
+- `ANIMA-UX-008` define que una marcación pendiente no puede representarse como confirmada;
+- `ANIMA-UX-009` define cómo explicar humanamente que una marcación no pudo completarse o confirmarse;
+- `ANIMA-UX-010` separa las causas de ubicación, turno y autorización de fallos técnicos, conectividad, sincronización e incertidumbre.
+
+Por tanto, esta tarea no vuelve a decidir si el bloqueo original fue de ubicación, turno o autorización. Cuando una intención alcanza la cola, la interfaz conserva la causa estructurada disponible y añade exclusivamente el estado de continuidad/transporte correspondiente.
+
+La cola no convierte una denegación de ubicación, turno o autorización en un problema de conectividad y tampoco convierte una indisponibilidad técnica en una denegación empresarial.
+
+---
+
+#### 4. Principio rector: cola no es fuente de verdad de asistencia
+
+La cola offline es un mecanismo de continuidad y transporte.
+
+```text
+INTENCIÓN DE MARCAR
++
+PERSISTENCIA LOCAL DURABLE
+=
+INTENCIÓN CONSERVADA PARA PROCESAMIENTO POSTERIOR
+```
+
+No equivale a:
+
+```text
+MARCACIÓN APLICADA
+```
+
+La fuente de verdad de asistencia continúa siendo el resultado autoritativo definido por los contratos propietarios de ANIMA, autorización, servidor y datos.
+
+La UI solo puede utilizar lenguaje de confirmación cuando existe evidencia autoritativa o reconciliada de que la misma intención fue aplicada.
+
+---
+
+#### 5. Cuatro planos que la experiencia debe mantener separados
+
+Toda presentación de cola distingue conceptualmente cuatro planos:
+
+| Plano | Pregunta que responde | Ejemplo |
+| --- | --- | --- |
+| Intención laboral | ¿Qué quiso hacer el trabajador? | Registrar entrada o registrar salida. |
+| Persistencia local | ¿La intención quedó guardada de forma durable en este dispositivo? | Guardada de forma segura o no guardada. |
+| Transporte / sincronización | ¿Puede enviarse, está esperando, sincronizando o requiere retry? | Esperando conexión, sincronizando, retry programado. |
+| Resultado autoritativo | ¿La fuente de verdad confirmó qué ocurrió? | Confirmada, conflicto, resultado todavía desconocido. |
+
+Ninguno de estos planos sustituye a otro.
+
+Un indicador de conectividad no es evidencia de persistencia; una fila local no es evidencia de aplicación remota; una respuesta de transporte no reemplaza el resultado empresarial.
+
+---
+
+#### 6. Modelo conceptual de estados visibles
+
+Para el diseño UX se establecen los siguientes conceptos de presentación:
+
+| Concepto | Significado para el trabajador | Puede afirmar confirmación |
+| --- | --- | --- |
+| `SAVING_LOCALLY` | La aplicación intenta conservar de forma durable la intención. | No |
+| `QUEUED_DURABLE` | La intención quedó guardada localmente y conserva identidad estable. | No |
+| `WAITING_TO_SYNC` | La intención durable espera una condición que permita enviarla. | No |
+| `SYNCING` | La misma intención está siendo procesada contra su destino propietario. | No |
+| `RETRY_SCHEDULED` | Un fallo transitorio permite otro intento seguro de la misma intención. | No |
+| `RESULT_UNKNOWN` | La frontera de efecto pudo haberse cruzado, pero aún no existe prueba suficiente del resultado. | No |
+| `CONFLICT` | La fuente o la secuencia vigente impide aceptar silenciosamente el evento como equivalente. | No |
+| `REQUIRES_INTERVENTION` | La intención no puede avanzar automáticamente y necesita una resolución controlada. | No |
+| `CONFIRMED` | La fuente de verdad confirmó o reconcilió que esa misma intención fue aplicada. | Sí |
+| `LOCAL_SAVE_FAILED` | No se pudo demostrar persistencia durable local. | No |
+
+Estos nombres son conceptos documentales de presentación. No crean enums físicos, reason codes, tablas ni contratos de API.
+
+---
+
+#### 7. `SAVING_LOCALLY` — guardado todavía no demostrado
+
+Mientras la persistencia local está en curso:
+
+- la interfaz puede indicar `Guardando la entrada en este dispositivo...` o `Guardando la salida en este dispositivo...`;
+- no muestra `Guardado`;
+- no muestra `En cola`;
+- no muestra `Se sincronizará`;
+- no cambia el estado autoritativo de asistencia;
+- bloquea una segunda intención equivalente mientras se resuelve si la primera quedó durablemente conservada.
+
+Si la operación de persistencia termina sin confirmación positiva, el estado debe pasar a `LOCAL_SAVE_FAILED` o a una condición técnica explícitamente no concluyente; nunca a `QUEUED_DURABLE` por optimismo.
+
+---
+
+#### 8. `QUEUED_DURABLE` — intención localmente protegida
+
+La etiqueta de encolado solo es válida cuando la capa propietaria puede demostrar que la intención completa fue persistida de forma durable.
+
+La experiencia puede comunicar:
+
+- `Entrada guardada en este dispositivo. Pendiente de sincronización.`
+- `Salida guardada en este dispositivo. Pendiente de sincronización.`
+
+El término `guardada` describe exclusivamente persistencia local durable.
+
+Debe quedar explícito, por texto o jerarquía semántica equivalente, que todavía falta confirmación del sistema.
+
+---
+
+#### 9. `WAITING_TO_SYNC` — espera no equivalente a fallo
+
+Una intención durable puede estar en espera por ausencia de red, dependencia temporalmente no disponible, ventana de retry o condición técnica equivalente.
+
+La UI debe expresar que:
+
+- la intención está protegida localmente;
+- no hace falta volver a crearla;
+- el sistema intentará continuar según la política propietaria;
+- la marcación todavía no está confirmada.
+
+Ejemplo:
+
+`No hay conexión estable. Tu entrada está guardada en este dispositivo y sigue pendiente de confirmación.`
+
+La ausencia de conectividad no debe presentarse como error de ubicación, turno o autorización.
+
+---
+
+#### 10. `SYNCING` — procesamiento de la misma intención
+
+Durante sincronización:
+
+- se mantiene la identidad original de la marcación;
+- la UI indica `Sincronizando tu entrada guardada...` o `Sincronizando tu salida guardada...`;
+- no reaparece un CTA que genere otra entrada o salida equivalente;
+- un spinner o animación representa procesamiento, no éxito;
+- el estado principal de asistencia permanece sujeto a la última evidencia autoritativa disponible.
+
+La finalización del intento de red no basta por sí sola: la transición a `CONFIRMED` exige resultado empresarial autoritativo o reconciliado.
+
+---
+
+#### 11. `RETRY_SCHEDULED` — continuidad automática segura
+
+Un fallo clasificado como transitorio puede conservar un próximo intento.
+
+La experiencia no necesita exponer algoritmos, backoff, número técnico de lease ni excepciones internas, pero sí debe dejar claro:
+
+- que la intención continúa guardada;
+- que el intento anterior no confirmó la marcación;
+- que se intentará nuevamente la **misma** intención;
+- que el trabajador no debe crear otra marcación equivalente.
+
+Cuando sea útil puede mostrarse `Volveremos a intentar automáticamente` sin prometer una hora exacta que la política de retry no garantice.
+
+---
+
+#### 12. `RESULT_UNKNOWN` — resultado incierto y conciliación
+
+Cuando un envío pudo alcanzar una frontera de efecto pero la aplicación perdió la confirmación autoritativa, la interfaz debe conservar incertidumbre explícita.
+
+Texto base:
+
+- `Todavía no podemos confirmar si tu entrada fue aplicada. Estamos verificando el resultado.`
+- `Todavía no podemos confirmar si tu salida fue aplicada. Estamos verificando el resultado.`
+
+En este estado:
+
+- no se declara éxito;
+- no se declara fallo;
+- no se elimina la intención original;
+- no se crea una clave idempotente nueva para repetir ciegamente;
+- no se ofrece `Registrar de nuevo` como salida ordinaria;
+- la siguiente acción segura es consultar, conciliar o esperar resolución del mismo evento.
+
+---
+
+#### 13. `CONFLICT` — divergencia que no admite retry ciego
+
+Un conflicto significa que el estado vigente, la secuencia, el contenido o la identidad observados no permiten aplicar silenciosamente el evento pendiente.
+
+La experiencia debe:
+
+- identificar si se trata de la entrada o la salida afectada;
+- conservar la evidencia original;
+- evitar presentar el conflicto como simple falta de conexión;
+- evitar repetir automáticamente una operación que podría producir otro efecto;
+- explicar qué necesita revisión o cuál es la siguiente acción segura disponible.
+
+Ejemplo genérico:
+
+`Tu entrada guardada no coincide con el estado actual de tu jornada. No la repetiremos automáticamente hasta resolver la diferencia.`
+
+La clasificación humana concreta consume el resultado estructurado propietario; no se infiere por búsqueda de palabras en mensajes técnicos.
+
+---
+
+#### 14. `REQUIRES_INTERVENTION` — continuidad fuera del camino automático
+
+Una intención pasa a intervención cuando el sistema no puede resolverla de forma segura mediante espera o retry ordinario.
+
+La UI debe mostrar:
+
+- qué marcación está afectada;
+- que el evento original sigue conservado cuando corresponda;
+- que ya no está en un ciclo automático normal;
+- qué acción de soporte, revisión o escalamiento está disponible;
+- que la ausencia de confirmación no equivale a una marcación aplicada.
+
+La intervención no otorga al trabajador una capacidad de ajuste administrativo, override o edición histórica que no posea.
+
+---
+
+#### 15. `CONFIRMED` — cierre autoritativo de la intención
+
+Solo un resultado autoritativo o reconciliado permite retirar la intención de la experiencia pendiente y presentar confirmación.
+
+Para una entrada:
+
+- `Entrada confirmada`;
+- se actualiza la jornada desde la fuente de verdad;
+- puede mostrarse la hora efectiva autoritativa según el contrato propietario.
+
+Para una salida:
+
+- `Salida confirmada`;
+- se actualiza la jornada desde la fuente de verdad;
+- solo entonces puede afirmarse que el contexto de asistencia quedó cerrado cuando así corresponda.
+
+La cola deja de competir visualmente con la marcación una vez reconciliado el mismo evento.
+
+---
+
+#### 16. `LOCAL_SAVE_FAILED` — no existe derecho a decir “en cola”
+
+Si la aplicación no puede demostrar que la intención fue guardada durablemente:
+
+- no muestra `Guardada`;
+- no muestra `En cola`;
+- no muestra `Se enviará automáticamente`;
+- no incrementa un contador visible de pendientes como si el evento estuviera protegido;
+- no cambia optimistamente la asistencia a un estado confirmado.
+
+Texto base:
+
+- `No pudimos guardar tu entrada de forma segura en este dispositivo. No está en cola.`
+- `No pudimos guardar tu salida de forma segura en este dispositivo. No está en cola.`
+
+La siguiente acción depende del estado real de la intención y de las reglas de recuperación; no se asume que repetir es seguro si existe posibilidad de efecto remoto previo.
+
+---
+
+#### 17. Vocabulario humano para entrada
+
+La familia mínima de mensajes para check-in es:
+
+| Situación | Mensaje principal permitido |
+| --- | --- |
+| Guardado local en curso | `Guardando la entrada en este dispositivo...` |
+| Guardado durable | `Entrada guardada en este dispositivo. Pendiente de sincronización.` |
+| Espera por conectividad | `Tu entrada está guardada. Se sincronizará cuando podamos continuar de forma segura.` |
+| Sincronizando | `Sincronizando tu entrada guardada...` |
+| Retry transitorio | `Tu entrada sigue guardada. Volveremos a intentar automáticamente.` |
+| Resultado incierto | `Todavía no podemos confirmar si tu entrada fue aplicada.` |
+| Conflicto | `Tu entrada guardada necesita revisión antes de continuar.` |
+| Intervención | `Tu entrada sigue sin confirmarse y necesita revisión.` |
+| Confirmada | `Entrada confirmada.` |
+| Fallo de persistencia | `No pudimos guardar tu entrada de forma segura en este dispositivo. No está en cola.` |
+
+Los textos específicos pueden añadir causa y siguiente acción sin contradecir el estado estructurado.
+
+---
+
+#### 18. Vocabulario humano para salida
+
+La familia mínima de mensajes para check-out es:
+
+| Situación | Mensaje principal permitido |
+| --- | --- |
+| Guardado local en curso | `Guardando la salida en este dispositivo...` |
+| Guardado durable | `Salida guardada en este dispositivo. Pendiente de sincronización.` |
+| Espera por conectividad | `Tu salida está guardada. Se sincronizará cuando podamos continuar de forma segura.` |
+| Sincronizando | `Sincronizando tu salida guardada...` |
+| Retry transitorio | `Tu salida sigue guardada. Volveremos a intentar automáticamente.` |
+| Resultado incierto | `Todavía no podemos confirmar si tu salida fue aplicada.` |
+| Conflicto | `Tu salida guardada necesita revisión antes de continuar.` |
+| Intervención | `Tu salida sigue sin confirmarse y necesita revisión.` |
+| Confirmada | `Salida confirmada.` |
+| Fallo de persistencia | `No pudimos guardar tu salida de forma segura en este dispositivo. No está en cola.` |
+
+Una salida pendiente nunca utiliza por sí sola `Jornada cerrada`, `Listo por hoy` ni otro lenguaje equivalente a cierre autoritativo.
+
+---
+
+#### 19. Persistencia durable como prerequisito de la afirmación de cola
+
+La UI no deduce durabilidad porque una función local haya sido invocada.
+
+Debe existir una señal positiva de la capa propietaria que permita afirmar que el registro necesario sobrevivirá a cierre o reinicio según el contrato vigente.
+
+Si el mecanismo local captura una excepción y continúa sin propagar un resultado verificable, esa ruta no satisface por sí misma el criterio UX para `QUEUED_DURABLE`.
+
+La materialización futura deberá hacer observable la diferencia entre:
+
+```text
+INTENTO DE GUARDAR
+```
+
+y:
+
+```text
+GUARDADO DURABLE CONFIRMADO
+```
+
+---
+
+#### 20. Identidad idempotente de la intención
+
+Cada marcación que entra a continuidad conserva una identidad estable creada antes del primer envío que pueda producir efecto.
+
+En la experiencia esto implica:
+
+- retry automático reutiliza la misma identidad;
+- retry manual autorizado reutiliza la misma identidad;
+- reapertura de la app recupera la misma identidad;
+- una respuesta tardía se asocia al mismo evento;
+- el trabajador no debe volver a construir manualmente otra intención equivalente para “destrabar” la primera.
+
+La UI no necesita mostrar el identificador técnico en el camino ordinario, pero su estabilidad es condición de seguridad para la experiencia.
+
+---
+
+#### 21. Evidencia mínima preservada con la intención
+
+La cola de asistencia debe poder mantener la información requerida por el contrato propietario para reconstruir y conciliar el evento, incluyendo cuando aplique:
+
+- actor;
+- tipo de acción: entrada o salida;
+- sede y contexto laboral resueltos;
+- turno o referencia laboral aplicable;
+- instante de captura;
+- evidencia de geolocalización requerida;
+- identidad idempotente;
+- versión o contexto necesario para decidir compatibilidad;
+- datos de error o intento necesarios para recuperación.
+
+La UI ordinaria muestra solo el subconjunto útil y no sensible. La conservación técnica completa no implica exposición visual completa.
+
+---
+
+#### 22. Conectividad y cola son estados distintos
+
+El indicador de red responde si el dispositivo puede comunicarse razonablemente con sus dependencias.
+
+El estado de cola responde si una intención concreta está durablemente protegida y cuál es su estado de procesamiento.
+
+Por tanto:
+
+- `OFFLINE` sin intención guardada no crea un pendiente;
+- `ONLINE` puede coexistir con un pendiente que espera retry, conciliación o dependencia;
+- recuperar conectividad no confirma automáticamente ninguna marcación;
+- un contador de cola no sustituye el estado de red.
+
+Home debe conservar ambos conceptos separados.
+
+---
+
+#### 23. El contador global de pendientes es información secundaria
+
+Un indicador como `PEND 2` puede existir como resumen, pero nunca es la única explicación del estado relevante.
+
+Cuando la acción actual del trabajador está afectada, la interfaz debe identificar al menos:
+
+- si es una entrada o salida;
+- si está guardada durablemente;
+- si espera sincronización, está sincronizando, requiere retry, está incierta o necesita revisión.
+
+El contador global no puede convertir varias intenciones heterogéneas en un único estado genérico.
+
+---
+
+#### 24. Relación con el estado principal de asistencia
+
+La cola no modifica por sí misma la verdad presentada de la jornada.
+
+Reglas obligatorias:
+
+1. entrada pendiente no equivale a `En turno`;
+2. salida pendiente no equivale a `Jornada cerrada`;
+3. una proyección optimista puede apoyar animación o continuidad local, pero no adoptar lenguaje autoritativo;
+4. una confirmación remota del mismo evento sí permite actualizar el estado principal;
+5. conflicto o resultado incierto mantienen explícita la diferencia entre intención y verdad autoritativa.
+
+Si Home muestra simultáneamente estado de jornada y cola, ambos deben poder leerse sin contradicción.
+
+---
+
+#### 25. Retry manual
+
+La acción `Reintentar ahora` solo se ofrece cuando la clasificación propietaria permite un nuevo intento seguro de la misma intención.
+
+No se ofrece como acción genérica cuando:
+
+- existe `RESULT_UNKNOWN`;
+- existe conflicto no resuelto;
+- se agotó una política definitiva;
+- la intención fue cancelada, revocada o dejó de ser elegible;
+- un nuevo intento requeriría crear una intención materialmente distinta.
+
+Cuando sí procede, el retry manual no cambia la identidad idempotente ni reinicia silenciosamente el presupuesto propietario.
+
+---
+
+#### 26. Retry automático y backoff
+
+La sincronización automática puede operar sin exigir interacción del trabajador.
+
+La UX no expone el algoritmo interno, pero debe respetar sus decisiones:
+
+- fallo transitorio puede permanecer en espera;
+- throttling puede desplazar el siguiente intento;
+- dependencia no disponible puede conservar espera;
+- error definitivo no se presenta como `reintentaremos automáticamente`;
+- resultado ambiguo no entra en retry ciego;
+- agotamiento y conflicto no se disimulan como simple falta de señal.
+
+La capa visual consume el estado resultante; no inventa una política paralela.
+
+---
+
+#### 27. Respuesta perdida después de un posible efecto
+
+Una pérdida de respuesta después del envío puede significar que el servidor aplicó la operación aunque el cliente no haya recibido confirmación.
+
+La experiencia debe pasar a incertidumbre y conciliación:
+
+```text
+POSIBLE EFECTO
++
+SIN RESULTADO AUTORITATIVO OBSERVABLE
+=
+RESULTADO DESCONOCIDO
+```
+
+No se crea otra entrada o salida como mecanismo de recuperación.
+
+Si posteriormente la fuente de verdad confirma el evento original, la UI transiciona a confirmado y elimina la incertidumbre del mismo evento.
+
+---
+
+#### 28. Conflictos de secuencia
+
+Las secuencias imposibles o divergentes no se resuelven con último-write-gana desde la UI.
+
+Ejemplos conceptuales:
+
+- una salida pendiente cuando la fuente no observa una entrada compatible;
+- una entrada pendiente cuando ya existe una entrada activa incompatible;
+- una salida asociada a una sede que no coincide con la jornada activa;
+- el mismo identificador con contenido materialmente distinto.
+
+La experiencia preserva el evento original, informa que existe una diferencia y dirige a la resolución propietaria correspondiente.
+
+---
+
+#### 29. Fallos definitivos y agotamiento
+
+Cuando una intención durable no puede seguir por una causa definitiva:
+
+- sale del ciclo de retry ordinario;
+- no desaparece silenciosamente;
+- no se convierte en confirmada;
+- conserva evidencia suficiente para trazabilidad y soporte;
+- muestra una acción coherente con la causa: revisar, solicitar ayuda, esperar resolución o reconocer el estado cuando corresponda.
+
+La eliminación visual de un pendiente solo ocurre después de una resolución trazable, no porque resulte incómodo mostrarlo.
+
+---
+
+#### 30. Reinicio o reapertura con una intención ya durable
+
+Si el dispositivo se reinicia o la aplicación se vuelve a abrir y la intención estaba durablemente guardada, la experiencia debe poder reconstruir:
+
+- qué acción estaba pendiente;
+- la identidad del evento;
+- el estado de sincronización conocido;
+- la evidencia mínima necesaria;
+- la siguiente acción segura.
+
+El reinicio no crea una nueva marcación y no reinicia el evento desde cero.
+
+La reanudación completa de flujos interrumpidos antes o alrededor de esta frontera se desarrolla en `ANIMA-UX-012`; esta tarea únicamente fija la continuidad normal de un elemento que ya pertenece legítimamente a la cola.
+
+---
+
+#### 31. Varias marcaciones pendientes
+
+Cuando existen varios eventos pendientes, cada uno conserva identidad y estado propios.
+
+La experiencia puede resumir el total, pero el detalle debe permitir distinguir:
+
+- entrada o salida;
+- instante de captura;
+- estado actual;
+- si puede seguir automáticamente;
+- si requiere atención;
+- si existe conflicto o resultado desconocido.
+
+No se utiliza una sola bandera global para inferir que todos los elementos tienen la misma causa o la misma posibilidad de retry.
+
+---
+
+#### 32. Orden y dependencias entre eventos
+
+La cola no debe presentar como independientes eventos cuya semántica dependa de una secuencia laboral.
+
+Por ejemplo, una salida capturada después de una entrada aún pendiente puede depender de que la fuente de verdad reconcilie primero la entrada correspondiente.
+
+La UI:
+
+- no promete un orden físico específico si el contrato de infraestructura no lo garantiza;
+- sí informa cuando un elemento espera la resolución de otro;
+- no habilita acciones que rompan la secuencia canónica;
+- conserva la identidad de cada intención.
+
+La decisión técnica de scheduling, claim y orden pertenece a la infraestructura y al contrato de asistencia, no a la presentación.
+
+---
+
+#### 33. Relación entre dispositivos
+
+La persistencia local pertenece al dispositivo que realmente conserva el evento.
+
+Por tanto:
+
+- otro dispositivo no puede asumir que conoce una cola local que nunca fue sincronizada;
+- la ausencia de un pendiente en otro dispositivo no demuestra que la intención original no exista;
+- la protección contra duplicados entre dispositivos depende de identidad idempotente y reconciliación de servidor;
+- una segunda sesión no debe fabricar una confirmación a partir de una proyección local ajena.
+
+La experiencia ordinaria evita prometer sincronización cross-device de datos que todavía solo existen localmente.
+
+---
+
+#### 34. Tratamiento del tiempo
+
+La cola puede mostrar el instante en que el trabajador generó la intención, pero debe etiquetarlo como captura o intento cuando todavía no existe hora efectiva autoritativa.
+
+Ejemplos:
+
+- `Entrada capturada a las 07:02 — pendiente de confirmación.`
+- `Salida capturada a las 17:04 — sincronizando.`
+
+La hora local capturada no se presenta como la hora laboral definitivamente aplicada hasta que el contrato propietario determine el resultado y su tiempo efectivo.
+
+---
+
+#### 35. Tratamiento de sede y contexto
+
+La tarjeta de cola puede mostrar una referencia humana al contexto de la intención para que el trabajador reconozca el evento.
+
+Debe utilizar el contexto que pertenecía legítimamente a la marcación y no permitir que un selector posterior reescriba retroactivamente el evento guardado.
+
+Cambiar la sede visible para una acción futura no muta silenciosamente la sede del evento pendiente.
+
+Si la fuente detecta incompatibilidad de contexto, se presenta como conflicto o causa estructurada propietaria, no se corrige localmente por conveniencia.
+
+---
+
+#### 36. Información técnica y diagnóstico
+
+El camino ordinario del trabajador no expone:
+
+- claves idempotentes completas;
+- payloads;
+- códigos internos no traducidos;
+- stack traces;
+- nombres de tablas, RPC o Storage;
+- conteos de lease o fencing;
+- detalles de backoff sin utilidad operativa.
+
+Cuando soporte autorizado requiera diagnóstico, la aplicación puede ofrecer una referencia segura y mínima que permita correlacionar el evento sin revelar secretos.
+
+La experiencia de diagnóstico permanece separada del mensaje principal.
+
+---
+
+#### 37. Accesibilidad y persistencia visual
+
+Los estados de cola deben entenderse sin depender solo de color, icono, animación, toast o vibración.
+
+Cada estado material necesita:
+
+- texto legible;
+- semántica accesible;
+- acción identificable cuando exista;
+- persistencia suficiente para que el trabajador pueda volver a consultar el estado;
+- contraste entre `pendiente`, `sincronizando`, `conflicto`, `requiere revisión` y `confirmado`.
+
+Una notificación transitoria puede complementar el estado, nunca sustituirlo.
+
+---
+
+#### 38. Auditoría AS-IS de ANIMA
+
+El código vigente presenta una base de cola utilizable, pero todavía mezcla señales que esta tarea separa documentalmente.
+
+Hallazgos materiales:
+
+1. la persistencia de la cola de asistencia utiliza almacenamiento seguro local;
+2. el helper actual de persistencia captura errores de escritura y registra diagnóstico sin devolver al llamador una confirmación negativa verificable;
+3. rutas superiores pueden continuar después del intento de encolado y devolver `queued: true`;
+4. el Home actual dispone de estados `queued`, `syncing`, `failed`, conteos de pendientes y retry;
+5. `PendingSyncCard` resume `Registros pendientes: N` y puede indicar que se sincronizarán automáticamente;
+6. Home puede presentar `Pendiente de sincronización` o `Registro guardado. Se sincroniza automáticamente.` como mensajes genéricos;
+7. la lógica de decisiones ya distingue conflictos de secuencia y duplicados en parte del flujo;
+8. la representación visible aún no prueba en todos los caminos que `guardado` signifique persistencia durable confirmada ni diferencia de forma completa entrada, salida, incertidumbre y conflicto.
+
+Estos hallazgos son evidencia AS-IS. No autorizan cambios físicos durante esta tarea.
+
+---
+
+#### 39. Matriz de escenarios UX
+
+| Escenario | Estado visible principal | ¿Puede repetir la marcación? | ¿Puede afirmar confirmación? | Siguiente comportamiento |
+| --- | --- | --- | --- | --- |
+| Sin red y persistencia local todavía en curso | Guardando localmente | No | No | Esperar resultado de persistencia. |
+| Sin red y persistencia durable confirmada | Guardada; pendiente de sincronización | No | No | Esperar conectividad o retry seguro. |
+| Sin red y persistencia local falló | No quedó guardada en cola | Solo si la capa propietaria demuestra que es seguro | No | Recuperación o explicación técnica segura. |
+| Con red, elemento durable listo | Sincronizando | No | No | Procesar misma identidad. |
+| Fallo transitorio | Sigue guardada; retry previsto | Solo mediante retry de la misma identidad cuando esté permitido | No | Retry automático/manual según política. |
+| Timeout después de posible efecto | Resultado todavía no confirmado | No | No | Conciliar la misma intención. |
+| Duplicado reconocido como mismo efecto | Resultado reconciliado | No | Sí cuando la fuente lo confirma | Mostrar estado autoritativo existente. |
+| Conflicto de secuencia | Necesita revisión | No como retry ordinario | No | Resolver diferencia. |
+| Error definitivo | Requiere intervención | No por defecto | No | Escalar o resolver por flujo propietario. |
+| Confirmación remota | Entrada o salida confirmada | No | Sí | Actualizar jornada y retirar pendiente. |
+| Dos eventos pendientes distintos | Resumen + detalle por evento | Depende de cada evento | Solo por evento confirmado | Mantener estados independientes. |
+| Reinicio de app con evento durable | Pendiente recuperada | No | No | Reanudar procesamiento del mismo evento. |
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Requisitos diferidos:** 0
+
+**Requisitos descartados:** 0
+
+**Requisitos obsoletos:** 0
+
+La cobertura vigente ya protege durabilidad previa a la afirmación de encolado, idempotencia, separación de estados, recuperación sin duplicados, fuente de verdad, conflictos e incertidumbre. Esta tarea concreta su proyección UX para la cola de asistencia sin ampliar el registro.
+
+---
+
+#### 41. Cobertura de prueba vigente reutilizada
+
+La trazabilidad reutiliza, sin modificar, la cobertura existente:
+
+- `TREQ-ANIMA-003`: una marcación offline solo puede presentarse como encolada después de confirmar persistencia durable, conserva identidad estable y sincroniza sin duplicar efectos;
+- `TREQ-ANIMA-015`: Home separa asistencia, geocerca, conectividad, cola, sincronización y diagnóstico, y no presenta como aplicada una marcación pendiente o fallida;
+- `TREQ-UX-002`: fallos y bloqueos explican qué ocurrió, qué se conservó y cómo continuar sin duplicar efectos;
+- `TREQ-UX-005`: la interfaz hace visible fuente de verdad y diferencia confirmado de pendiente;
+- `TREQ-UX-006`: las tareas críticas distinguen pendiente, confirmado, fallido, conflicto y requiere intervención;
+- `TREQ-UX-018`: operaciones pendientes conservan estado, propietario e idempotencia y se reanudan sin restaurar contexto obsoleto ni duplicar efectos;
+- `TREQ-UX-031`: espera y bloqueo permanecen semánticamente distintos y todo bloqueo conserva responsable y siguiente acción;
+- `TREQ-UX-036`: completar offline permanece pendiente de sincronización y la reanudación debe revalidar contexto y resolver conflictos sin último-write-gana destructivo.
+
+Esta enumeración es trazabilidad de cobertura existente y no constituye actualización del registro.
+
+---
+
+#### 42. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_APPLICABLE | La tarea es una definición documental `DEFINE_ONCE`; no produce build ni artefacto ejecutable propio. |
+| LOCAL | NOT_EXECUTED | No existe evidencia de ejecución local de la tarea ya insertada en el checkout canónico durante esta definición documental. |
+| REMOTA | PASS | Se contrastaron las fuentes canónicas vigentes de continuidad, topología, contratos UX/ANIMA, infraestructura transversal de colas y el código actual de cola y Home en los repositorios propietarios antes de cerrar el diseño. |
+| OPERATIVA | NOT_EXECUTED | La comprensión del flujo por trabajadores reales se valida posteriormente en la tarea canónica de prueba con usuarios. |
+| FÍSICA | NOT_APPLICABLE | La topología `DEFINE_ONCE` y el gate `NO_PHYSICAL_INSTANCE` excluyen materialización física propia para esta tarea. |
+
+---
+
+#### 43. Criterios de aceptación
+
+La tarea queda documentalmente satisfecha cuando se cumplen simultáneamente estos criterios:
+
+1. offline no se utiliza como sinónimo de encolado;
+2. una intención solo se presenta como `guardada` o `en cola` tras evidencia positiva de persistencia durable;
+3. el fallo de persistencia local tiene un estado propio y no produce falsa promesa de sincronización;
+4. entrada y salida pendientes se identifican explícitamente;
+5. el contador global de pendientes permanece secundario frente al estado del evento relevante;
+6. cola y conectividad se presentan como planos distintos;
+7. cola y estado autoritativo de asistencia se presentan como planos distintos;
+8. entrada pendiente no se representa como jornada activa confirmada;
+9. salida pendiente no se representa como jornada cerrada confirmada;
+10. retry automático conserva la identidad original;
+11. retry manual, cuando procede, conserva la identidad original;
+12. un retry no crea otra intención empresarial equivalente;
+13. la UI no reinicia silenciosamente presupuesto, deadline o autoridad de retry;
+14. resultado incierto se diferencia de fallo;
+15. resultado incierto prohíbe retry ciego;
+16. conflicto se diferencia de fallo transitorio;
+17. conflicto conserva evidencia y exige resolución propietaria;
+18. error definitivo o agotamiento no se presenta como espera ordinaria;
+19. intervención no concede capacidades administrativas por presentación;
+20. el reinicio recupera el mismo elemento durable sin fabricar otro evento;
+21. varias marcaciones pendientes conservan identidad y estado individual;
+22. dependencias de secuencia no se ocultan detrás de un único contador;
+23. otro dispositivo no se trata como poseedor automático de una cola únicamente local;
+24. el instante de captura no se presenta como hora efectiva autoritativa antes de confirmación;
+25. sede y contexto del evento pendiente no se reescriben por cambios posteriores de selección;
+26. el camino ordinario no expone secretos ni diagnósticos técnicos innecesarios;
+27. los estados materiales son accesibles sin depender solo de color, icono, toast o animación;
+28. una notificación de background no declara confirmación antes del resultado autoritativo;
+29. el diseño consume la clasificación causal de `ANIMA-UX-010` sin redefinirla;
+30. la experiencia general de error aprobada en `ANIMA-UX-009` permanece vigente;
+31. la distinción confirmado/pendiente de `ANIMA-UX-008` permanece vigente;
+32. la reanudación completa de una interacción interrumpida permanece reservada a `ANIMA-UX-012`;
+33. la infraestructura general de colas permanece propietaria del bloque transversal correspondiente;
+34. no se crean enums físicos, reason codes, RPC, tablas, migraciones, políticas RLS ni cambios de código;
+35. no se crean ni modifican requisitos de prueba;
+36. no existe materialización física propia.
+
+---
+
+#### 44. Límites
+
+Esta tarea no:
+
+- implementa la cola de ANIMA;
+- modifica SecureStore ni otro mecanismo de persistencia;
+- define un esquema físico nuevo para eventos pendientes;
+- redefine la política transversal de retry, backoff, deadline, claim, lease, fencing, DLQ o cancelación;
+- redefine idempotencia de servidor;
+- cambia tablas, funciones, RPC, triggers, grants, RLS, Storage, Realtime, Edge Functions o tipos generados;
+- cambia la autorización para marcar;
+- redefine ubicación, turno o autorización;
+- convierte una cola local en fuente de verdad laboral;
+- diseña la recuperación completa de un flujo que fue interrumpido antes de quedar legítimamente durable en cola;
+- ejecuta pruebas con trabajadores reales;
+- autoriza implementación física.
+
+Cualquier cambio físico necesario para cumplir este contrato se materializa únicamente mediante sus tareas y paquetes propietarios posteriores.
+
+---
+
+#### 45. Handoff a ANIMA-UX-012
+
+`ANIMA-UX-012 — Permitir reanudar una marcación interrumpida` recibe la frontera exacta que esta tarea deja preparada.
+
+Esta tarea ya decide qué significa que una intención esté legítimamente guardada, esperando, sincronizando, incierta, en conflicto o resuelta.
+
+La tarea siguiente deberá diseñar qué ocurre cuando la interacción se interrumpe por navegación, suspensión, cierre de aplicación, bloqueo de pantalla, pérdida de permiso, pérdida de respuesta u otra interrupción antes o durante esos puntos, recuperando la misma intención cuando exista y evitando duplicados.
+
+`ANIMA-UX-012` no deberá redefinir que:
+
+- solo persistencia durable habilita lenguaje de cola;
+- una intención pendiente no es una marcación confirmada;
+- `RESULT_UNKNOWN` exige conciliación;
+- retry seguro conserva identidad;
+- conflicto no admite repetición ciega.
+
+---
+
+#### 46. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-011 — Diseñar manejo comprensible de cola offline`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-012 — Permitir reanudar una marcación interrumpida`
+
+
 ### [ ] ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
 ### [ ] ANIMA-UX-013 — Simplificar documentos y datos personales
 ### [ ] ANIMA-UX-014 — Simplificar administración de equipo autorizada
