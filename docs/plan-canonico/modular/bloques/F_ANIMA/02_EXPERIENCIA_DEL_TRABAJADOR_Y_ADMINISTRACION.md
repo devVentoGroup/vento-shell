@@ -6842,7 +6842,1047 @@ El estado físico permanece `ESPECIFICADO_NO_MATERIALIZADO`.
 `ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización`
 
 
-### [ ] ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
+### ✅ ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-009 — Explicar por qué no se puede marcar
+**Tarea siguiente:** ANIMA-UX-011 — Diseñar manejo comprensible de cola offline
+**Tipo de tarea:** documental; diseño UX TO-BE de la clasificación causal visible para bloqueos de marcación personal en ANIMA, separando evidencia física de ubicación, contexto laboral de turno y decisión de autorización sin convertir fallos técnicos, conectividad, sincronización o estado incierto en denegaciones falsas
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, comprensible y verificable cómo ANIMA debe diferenciar ante el trabajador por qué una marcación personal de entrada o salida no puede continuar cuando la causa demostrada pertenece a una de tres familias que hoy pueden confundirse:
+
+1. ubicación física o evidencia de geocerca;
+2. turno o contexto laboral aplicable;
+3. autorización o acceso efectivo.
+
+La tarea consume el contrato de explicación humana aprobado en `ANIMA-UX-009` y agrega la clasificación causal que aquella tarea dejó expresamente reservada.
+
+La regla raíz queda:
+
+```text
+MISMO RESULTADO VISIBLE: "NO PUEDO MARCAR"
+!=
+MISMA CAUSA
+```
+
+Por tanto:
+
+```text
+UBICACION
+!=
+TURNO / CONTEXTO LABORAL
+!=
+AUTORIZACION
+```
+
+La clasificación visible debe responder al predicado autoritativo que realmente bloqueó la acción y no a palabras encontradas en un mensaje, a la pantalla desde la que se originó el intento ni a una inferencia local de ANIMA.
+
+---
+
+#### 2. Handoff consumido desde ANIMA-UX-009
+
+`ANIMA-UX-009` ya definió que un bloqueo debe explicar, con proporcionalidad:
+
+- la acción que se intentaba realizar;
+- qué impide continuar;
+- qué estado de asistencia sigue siendo cierto;
+- qué información o intención quedó preservada;
+- qué acción es segura a continuación;
+- quién puede resolver el problema cuando el trabajador no puede;
+- qué referencia de soporte puede conservarse cuando sea necesaria.
+
+La tarea actual no reabre esa gramática.
+
+Su responsabilidad específica es determinar qué significado causal se presenta cuando el impedimento pertenece a ubicación, turno/contexto o autorización.
+
+La separación queda:
+
+```text
+ANIMA-UX-009
+-> COMO EXPLICAR UN BLOQUEO
+
+ANIMA-UX-010
+-> QUE CAUSA MATERIAL SE ESTA EXPLICANDO
+```
+
+---
+
+#### 3. Unidad de clasificación
+
+La unidad de clasificación es el impedimento material de una intención concreta de asistencia.
+
+Debe existir, como mínimo, esta identidad conceptual:
+
+```text
+actor efectivo
++
+accion de asistencia
++
+estado de asistencia vigente
++
+contexto laboral aplicable
++
+evidencia fisica aplicable
++
+decision de acceso aplicable
++
+causa estructurada observada
+```
+
+La clasificación no se decide únicamente por:
+
+- texto del error;
+- nombre de la excepción;
+- prefijo técnico de un código;
+- componente visual;
+- ruta de navegación;
+- estado local del botón;
+- palabra `sede`;
+- palabra `ubicación`;
+- palabra `turno`;
+- palabra `autorizado`;
+- orden accidental en que el cliente ejecutó validaciones.
+
+---
+
+#### 4. Familias UX objetivo
+
+Las tres familias objetivo son conceptos de presentación y diagnóstico UX.
+
+| Familia UX | Pregunta que responde | Fuente material esperada |
+| --- | --- | --- |
+| `LOCATION` | ¿La evidencia física necesaria para marcar no es válida o suficiente? | geolocalización, precisión, geocerca, punto físico y evidencia antifraude cuando aplique |
+| `SHIFT_CONTEXT` | ¿El contexto laboral publicado o vigente no permite construir la marcación esperada? | turno publicado, ventana temporal, asignación operacional derivada del turno y contexto de asistencia aplicable |
+| `AUTHORIZATION` | ¿La política de acceso niega la acción aun cuando el contexto requerido ya pudo resolverse? | decisión efectiva de acceso, capacidad, territorio autorizado, estado de cuenta o restricción de dispositivo cuando sea una regla de acceso |
+
+Estas familias no crean un nuevo catálogo de códigos de servidor.
+
+Los códigos y razones autoritativos existentes conservan su propiedad.
+
+---
+
+#### 5. Las tres familias no forman un universo exhaustivo
+
+Queda prohibido obligar a que todo fallo de marcación caiga en una de las tres familias objetivo.
+
+Deben permanecer fuera cuando correspondan, entre otros:
+
+- conectividad;
+- sincronización;
+- intención encolada;
+- respuesta perdida;
+- resultado todavía incierto;
+- fallo técnico de servicio;
+- configuración incompleta o inválida;
+- fallo de base de datos;
+- conflicto de idempotencia;
+- sesión o identidad no resoluble;
+- estado de asistencia incompatible que no sea un problema de turno;
+- error desconocido sin causa demostrable.
+
+Regla:
+
+```text
+CAUSA NO DEMOSTRADA
+->
+NO FABRICAR LOCATION
+NO FABRICAR SHIFT_CONTEXT
+NO FABRICAR AUTHORIZATION
+```
+
+---
+
+#### 6. Principio de fuente de verdad causal
+
+La familia visible se deriva de evidencia estructurada y del predicado que falló en la frontera propietaria.
+
+Preferencia contractual:
+
+```text
+reason_code / decision / predicate estructurado
+>
+estado autoritativo consultado
+>
+diagnostico tipado
+>
+mensaje humano libre
+```
+
+El mensaje libre puede ser mostrado después de saneamiento o utilizado como fallback de compatibilidad, pero no debe convertirse en la fuente canónica de clasificación.
+
+Queda prohibido que el cliente mantenga una taxonomía autoritativa basada principalmente en búsquedas de substrings.
+
+---
+
+#### 7. No clasificar por prefijo técnico
+
+Un prefijo técnico no determina la familia UX.
+
+En particular:
+
+```text
+codigo que comienza por AUTH_
+!=
+familia UX AUTHORIZATION obligatoria
+```
+
+El catálogo de bloqueos puede vivir dentro del dominio de autorización y aun representar:
+
+- ausencia de turno publicado;
+- ventana temporal de turno;
+- check-in requerido;
+- rol operativo contextual;
+- dispositivo;
+- configuración;
+- fallo técnico.
+
+La familia se asigna por semántica del predicado, no por namespace.
+
+---
+
+#### 8. Familia LOCATION
+
+`LOCATION` aplica cuando la causa decisiva es que la evidencia física requerida para esa marcación no puede considerarse válida o suficiente.
+
+Ejemplos materiales:
+
+- permiso de ubicación necesario no concedido;
+- posición actual no disponible cuando la política exige obtenerla;
+- precisión insuficiente para demostrar presencia;
+- distancia superior al umbral permitido;
+- trabajador fuera del punto o perímetro habilitado para marcar;
+- evidencia de ubicación simulada, manipulada o incompatible cuando exista una política aplicable;
+- evidencia física caducada cuando deba ser fresca.
+
+La familia describe una condición de evidencia física.
+
+No describe por sí sola:
+
+- la sede laboral asignada;
+- el turno publicado;
+- el rol operativo;
+- el permiso empresarial;
+- la conectividad;
+- la configuración interna de coordenadas.
+
+---
+
+#### 9. Sede laboral y punto físico no son sinónimos
+
+Deben permanecer separados:
+
+```text
+SEDE LABORAL
+PUNTO FISICO DE MARCACION
+GEOFENCE UTILIZADA PARA EVIDENCIA
+```
+
+Una persona puede tener una sede laboral correcta y, al mismo tiempo, no encontrarse dentro del punto físico válido para marcar.
+
+En ese caso:
+
+```text
+CAUSE_FAMILY = LOCATION
+```
+
+No corresponde pedir un cambio de sede laboral únicamente para resolver una geocerca.
+
+A la inversa, estar físicamente dentro de un perímetro no demuestra que ese lugar sea el contexto laboral autorizado para la persona.
+
+---
+
+#### 10. Recuperación de LOCATION
+
+La recuperación visible debe actuar sobre la evidencia física que falló.
+
+Según la causa estructurada podrá indicar, por ejemplo:
+
+- conceder o revisar el permiso de ubicación;
+- volver a obtener la posición;
+- mejorar la precisión;
+- acercarse al punto habilitado de marcación;
+- regresar al perímetro permitido;
+- desactivar una fuente de ubicación simulada cuando la política lo exija;
+- volver a validar la ubicación.
+
+No debe sugerir como solución primaria:
+
+- cambiar turno;
+- pedir que publiquen un turno;
+- solicitar permisos empresariales;
+- cambiar la sede laboral registrada;
+
+salvo que exista además una causa independiente y demostrada que lo requiera.
+
+---
+
+#### 11. Configuración de geocerca no equivale a LOCATION del trabajador
+
+Si la aplicación no puede validar la ubicación porque la configuración propietaria está ausente, inconsistente o no puede leerse, el trabajador no debe recibir un mensaje que implique que se encuentra en el lugar equivocado.
+
+Ejemplos:
+
+- coordenadas del punto no configuradas;
+- radio o política física inválida;
+- fuente de sitios no disponible;
+- error al cargar parámetros de geocerca;
+- datos físicos contradictorios del sistema.
+
+Resultado semántico:
+
+```text
+TECHNICAL_OR_CONFIGURATION
+!=
+LOCATION
+```
+
+La interfaz puede informar que la validación de ubicación no está disponible, pero no atribuir al trabajador una posición incorrecta que no pudo demostrarse.
+
+---
+
+#### 12. Familia SHIFT_CONTEXT
+
+`SHIFT_CONTEXT` aplica cuando el predicado decisivo pertenece al contexto laboral necesario para construir o aceptar la marcación y no a la posición física del dispositivo ni a una denegación de capacidad.
+
+Incluye, cuando corresponda al contrato autoritativo:
+
+- ausencia de turno publicado aplicable;
+- turno publicado fuera de su ventana vigente;
+- contexto temporal todavía no iniciado o ya finalizado;
+- asignación operacional requerida por el turno ausente;
+- rol operativo requerido por el contexto publicado ausente;
+- relación turno-sede o turno-área incompatible cuando el fallo pertenece a la construcción del contexto laboral;
+- una condición de asistencia contextual requerida por la acción cuando el propietario la trate como contexto y no como autorización.
+
+La familia responde:
+
+```text
+EL CONTEXTO LABORAL VIGENTE NO SUSTENTA ESTA MARCACION
+```
+
+---
+
+#### 13. Códigos de turno ya existentes
+
+Cuando las fronteras autoritativas entreguen los contratos ya definidos para:
+
+- `AUTH_PUBLISHED_SHIFT_REQUIRED`;
+- `AUTH_SHIFT_OUTSIDE_WINDOW`;
+
+la experiencia de marcación debe preservar su significado de turno/contexto y no traducirlos como problemas de ubicación o como una denegación genérica de permisos.
+
+El prefijo `AUTH_` no cambia esa semántica.
+
+---
+
+#### 14. Rol operativo como dato contextual o decisión de autorización
+
+La expresión “rol operativo” puede participar en dos tipos de fallo y no debe clasificarse por la palabra `rol`.
+
+##### Caso A — contexto no construible
+
+Si el turno publicado debía aportar o resolver un rol operativo y ese dato está ausente, inválido respecto del turno o incoherente con su asignación, la explicación pertenece a `SHIFT_CONTEXT`.
+
+##### Caso B — contexto válido pero capacidad denegada
+
+Si el rol operativo y demás contexto ya fueron resueltos correctamente y la política de acceso concluye que la acción concreta no está permitida, la explicación pertenece a `AUTHORIZATION`.
+
+Regla:
+
+```text
+FALLO DE CONSTRUCCION DEL CONTEXTO
+!=
+DENEGACION SOBRE CONTEXTO YA RESUELTO
+```
+
+---
+
+#### 15. Recuperación de SHIFT_CONTEXT
+
+La recuperación debe actuar sobre el contexto laboral.
+
+Según la causa demostrada podrá indicar:
+
+- revisar el turno publicado;
+- comprobar la fecha y la ventana de inicio o finalización;
+- esperar hasta la ventana aplicable cuando esa sea la regla;
+- solicitar corrección de programación cuando el turno publicado sea incorrecto;
+- solicitar que se complete una asignación operacional faltante;
+- escalar al responsable de horarios o supervisión cuando el trabajador no pueda corregirlo.
+
+No debe indicar como solución primaria:
+
+- caminar hacia otro punto físico;
+- activar GPS;
+- cambiar de sede desde un selector local;
+- pedir un permiso de aplicación;
+
+si el bloqueo demostrado es exclusivamente de turno/contexto.
+
+---
+
+#### 16. Familia AUTHORIZATION
+
+`AUTHORIZATION` aplica cuando existe una decisión efectiva y autoritativa que niega la acción después de resolver los hechos y el contexto necesarios para evaluarla.
+
+Puede comprender, según el contrato propietario:
+
+- cuenta laboral o acceso a aplicación inactivo;
+- capacidad requerida ausente;
+- acción fuera del alcance territorial autorizado;
+- restricción de dispositivo cuando sea una regla explícita de acceso;
+- permiso específico denegado;
+- segregación o política empresarial que impide la acción.
+
+La familia responde:
+
+```text
+EL CONTEXTO PUDO RESOLVERSE
++
+LA POLITICA DE ACCESO NEGO LA ACCION
+```
+
+No debe utilizarse como sinónimo de “algo falló”.
+
+---
+
+#### 17. Asignación de sede y autorización territorial
+
+La frase “no tienes asignada esta sede” no debe clasificarse como `LOCATION` solo porque contiene la palabra `sede`.
+
+Si el predicado real es que la persona no posee alcance o asignación empresarial para operar en esa sede, la causa pertenece a autorización o territorio autorizado.
+
+Si el predicado real es que el turno publicado pertenece a otra sede, la causa pertenece a `SHIFT_CONTEXT`.
+
+Si el predicado real es que la persona está físicamente fuera del perímetro, la causa pertenece a `LOCATION`.
+
+Por tanto:
+
+```text
+MISMA PALABRA "SEDE"
+->
+TRES SIGNIFICADOS POSIBLES
+```
+
+Solo la fuente propietaria puede distinguirlos de forma segura.
+
+---
+
+#### 18. Recuperación de AUTHORIZATION
+
+La recuperación debe actuar sobre acceso o autoridad.
+
+Según la causa demostrada podrá indicar:
+
+- solicitar activación de acceso;
+- pedir revisión del permiso o capacidad faltante;
+- escalar al responsable que administra el alcance correspondiente;
+- usar una superficie permitida cuando exista una alternativa canónica;
+- volver a intentar únicamente después de que el acceso haya cambiado o cuando el contrato indique que el retry es seguro.
+
+No debe recomendar como solución primaria:
+
+- moverse físicamente;
+- revalidar GPS;
+- esperar el inicio de un turno;
+- editar localmente la sede;
+
+si el bloqueo demostrado es exclusivamente de autorización.
+
+---
+
+#### 19. Error técnico de autorización no es AUTHORIZATION
+
+Una evaluación que no puede completarse por fallo técnico no demuestra una denegación.
+
+Ejemplos:
+
+- timeout del servicio de decisión;
+- RPC indisponible;
+- matriz o configuración no legible;
+- respuesta malformada;
+- dependencia caída;
+- error 5xx;
+- fallo de base de datos;
+- contrato incompatible.
+
+Regla:
+
+```text
+NO SE PUDO EVALUAR
+!=
+EVALUACION = DENY
+```
+
+La interfaz debe conservar la distinción de fallo técnico o configuración y no presentar al trabajador como “sin permiso” cuando la política nunca logró resolver la decisión.
+
+---
+
+#### 20. Conectividad no es ninguna de las tres familias
+
+Una pérdida de red no permite inferir:
+
+- que la persona esté fuera de ubicación;
+- que no exista turno;
+- que la persona no esté autorizada.
+
+Si la política permite conservar o encolar la intención, la experiencia pertenece al contrato de pendiente/offline.
+
+Si la acción no puede continuar por conectividad, la explicación debe identificar conectividad o indisponibilidad sin inventar una causa empresarial.
+
+`ANIMA-UX-011` conserva la propiedad del diseño completo de cola offline.
+
+---
+
+#### 21. Resultado incierto no es una causa de bloqueo empresarial
+
+Cuando el cliente envió una intención y perdió la respuesta, puede desconocer si el servidor la aplicó.
+
+Ese estado no se clasifica como:
+
+- `LOCATION`;
+- `SHIFT_CONTEXT`;
+- `AUTHORIZATION`.
+
+Debe permanecer como estado incierto o pendiente hasta reconciliación.
+
+La ausencia de respuesta no autoriza un mensaje como:
+
+```text
+"No tienes permiso"
+```
+
+o:
+
+```text
+"Estas fuera de la sede"
+```
+
+si esos hechos no fueron demostrados.
+
+---
+
+#### 22. Conflicto no es sinónimo de autorización
+
+Un conflicto idempotente, de secuencia o de sincronización debe conservar su propia semántica.
+
+Puede requerir:
+
+- refrescar estado;
+- reconciliar el evento;
+- recuperar el resultado existente;
+- solicitar intervención cuando el conflicto no sea resoluble automáticamente.
+
+No debe degradarse a una denegación de permiso ni a un error de turno por conveniencia visual.
+
+---
+
+#### 23. Estado de asistencia previo permanece visible
+
+La clasificación causal no cambia por sí misma el estado autoritativo de asistencia.
+
+Ejemplos:
+
+##### Entrada bloqueada por ubicación
+
+```text
+estado previo = SIN ENTRADA CONFIRMADA
+causa = LOCATION
+```
+
+La interfaz no presenta al trabajador como dentro del turno.
+
+##### Salida bloqueada por ubicación
+
+```text
+estado previo = SESION DE ASISTENCIA ACTIVA
+causa = LOCATION
+```
+
+La interfaz no presenta la jornada como cerrada.
+
+##### Entrada bloqueada por turno
+
+```text
+estado previo = SIN ENTRADA CONFIRMADA
+causa = SHIFT_CONTEXT
+```
+
+##### Acción denegada por acceso
+
+El estado previo continúa hasta que exista una mutación autoritativa distinta.
+
+---
+
+#### 24. Regla especial del check-out
+
+La semántica de cierre de asistencia aprobada en ANIMA establece que perder permiso operativo no puede convertirse por sí solo en una razón para impedir el checkout ordinario de una sesión de asistencia realmente abierta.
+
+Por tanto:
+
+```text
+PERMISO OPERATIVO YA NO VIGENTE
+!=
+AUTHORIZATION PARA BLOQUEAR SALIDA
+```
+
+Si existe una sesión exacta que debe cerrarse, la aplicación debe preservar el contrato propietario de cierre.
+
+Siguen pudiendo existir otras validaciones legítimas de identidad, sesión, secuencia, evidencia física o integridad según el contrato aplicable.
+
+Esta tarea no modifica esas reglas; evita que la UI fabrique una denegación de salida a partir de autoridad operativa ya retirada.
+
+---
+
+#### 25. Causa primaria y causas simultáneas
+
+Pueden coexistir varias condiciones inválidas.
+
+La UI no debe decidir la causa primaria por el orden accidental de validaciones locales ni ejecutar una carrera entre mensajes.
+
+Regla:
+
+```text
+PRIMARY_CAUSE
+=
+BLOQUEO DECISIVO DEVUELTO O DERIVADO POR LA FRONTERA PROPIETARIA
+```
+
+Si la fuente autoritativa entrega múltiples bloqueos estructurados, se aplica la precedencia definida por el contrato propietario de esa decisión.
+
+La tarea actual no crea una nueva precedencia global entre todos los dominios.
+
+Los bloqueos secundarios pueden conservarse para diagnóstico o mostrarse cuando sean accionables y no confundan, pero no deben contradecir la causa primaria.
+
+---
+
+#### 26. Causa estable entre superficies
+
+La misma causa autoritativa debe conservar el mismo significado al aparecer en:
+
+- Home;
+- tarjeta de marcación;
+- estado posterior a un intento;
+- reingreso a la aplicación;
+- detalle de asistencia cuando corresponda;
+- soporte o diagnóstico autorizado;
+- notificación que devuelva al flujo de asistencia.
+
+No se permite que Home llame `LOCATION` a un bloqueo que soporte llama `AUTHORIZATION` sin nueva evidencia autoritativa.
+
+---
+
+#### 27. Contrato conceptual de presentación
+
+Sin imponer todavía una forma física de API, la proyección UX debe poder representar conceptualmente:
+
+| Campo conceptual | Regla |
+| --- | --- |
+| acción afectada | distingue entrada y salida |
+| familia causal | conserva la causa semántica demostrada |
+| razón estructurada | referencia el motivo autoritativo cuando exista |
+| título humano | nombra el problema sin jerga técnica |
+| explicación | indica el predicado que falló |
+| estado preservado | explica qué sigue siendo cierto sobre asistencia |
+| recuperación | ofrece únicamente una acción segura y pertinente |
+| retry seguro | no invita a repetir cuando el contrato exige reconciliación o corrección previa |
+| referencia de soporte | opcional y no sensible |
+
+Esta forma es un contrato de información UX.
+
+No crea una tabla, columna, endpoint, RPC, enum público ni tipo compartido físico durante esta tarea.
+
+---
+
+#### 28. Etiquetas humanas recomendadas
+
+Cuando la causa sea segura, el encabezado visible puede utilizar lenguaje humano equivalente a:
+
+| Familia | Etiqueta humana esperada |
+| --- | --- |
+| `LOCATION` | `Revisa tu ubicación` |
+| `SHIFT_CONTEXT` | `Revisa tu turno` |
+| `AUTHORIZATION` | `Revisa tu acceso` |
+
+Estas etiquetas no sustituyen la explicación específica.
+
+No deben utilizarse si la evidencia disponible no permite afirmar la familia.
+
+Un fallo técnico de ubicación puede usar una etiqueta como “No pudimos validar la ubicación” sin afirmar que el trabajador está fuera del lugar permitido.
+
+---
+
+#### 29. Copy mínimo de LOCATION
+
+Una explicación de `LOCATION` debe poder responder:
+
+1. qué evidencia física falta o no cumple;
+2. si la entrada o salida sigue sin confirmar;
+3. qué debe hacer el trabajador con su ubicación;
+4. si puede revalidar de forma segura.
+
+Ejemplos semánticos:
+
+```text
+No pudimos validar que estas dentro del punto habilitado para marcar.
+Tu entrada sigue sin registrarse.
+Acercate al punto de marcacion y vuelve a validar la ubicacion.
+```
+
+Cuando el problema sea permiso o precisión, el texto cambia para señalar esa condición concreta.
+
+No se utiliza el ejemplo anterior ante una falla de configuración del sistema.
+
+---
+
+#### 30. Copy mínimo de SHIFT_CONTEXT
+
+Una explicación de `SHIFT_CONTEXT` debe poder responder:
+
+1. qué hecho del turno/contexto falta o no está vigente;
+2. qué estado de asistencia permanece;
+3. si esperar puede resolverlo o si requiere corrección;
+4. quién puede corregir la programación cuando el trabajador no puede.
+
+Ejemplos semánticos:
+
+```text
+No hay un turno publicado aplicable para tu entrada en este momento.
+Tu entrada sigue sin registrarse.
+Revisa tu horario; si el turno deberia estar activo, solicita que corrijan la programacion.
+```
+
+O, cuando exista turno pero esté fuera de ventana:
+
+```text
+Tu turno esta publicado, pero todavia no esta dentro de la ventana permitida para esta marcacion.
+```
+
+---
+
+#### 31. Copy mínimo de AUTHORIZATION
+
+Una explicación de `AUTHORIZATION` debe poder responder:
+
+1. qué acceso o capacidad fue denegado sin exponer detalle sensible;
+2. qué estado de asistencia permanece;
+3. si el trabajador puede resolverlo o debe escalar;
+4. por qué repetir sin un cambio de acceso no ayudará.
+
+Ejemplo semántico:
+
+```text
+Tu acceso actual no permite completar esta accion.
+La marcacion no fue confirmada.
+Solicita revision del acceso antes de volver a intentarlo.
+```
+
+No se usa esta redacción cuando el sistema no pudo ejecutar la evaluación de acceso.
+
+---
+
+#### 32. Privacidad y minimización
+
+La explicación no expone:
+
+- políticas internas completas;
+- matrices globales de permisos;
+- grants;
+- SQL;
+- RLS;
+- nombres de funciones internas;
+- stack traces;
+- tokens;
+- secretos;
+- datos de otro trabajador;
+- detalle de roles o territorios que el actor no deba conocer;
+- infraestructura de seguridad innecesaria.
+
+Debe existir información suficiente para actuar sin revelar la implementación de protección.
+
+---
+
+#### 33. Accesibilidad
+
+La diferenciación causal no puede depender únicamente de:
+
+- color;
+- icono;
+- vibración;
+- animación;
+- posición visual;
+- abreviatura técnica.
+
+La familia y la acción de recuperación deben ser comprensibles mediante texto y semántica accesible.
+
+Un lector de pantalla debe poder distinguir, por significado:
+
+- problema de ubicación;
+- problema de turno/contexto;
+- problema de acceso;
+- estado técnico o pendiente que no pertenece a esas familias.
+
+---
+
+#### 34. Persistencia visual suficiente
+
+Una causa que requiere actuación del trabajador no debe depender únicamente de un toast efímero.
+
+La explicación debe permanecer disponible el tiempo suficiente para:
+
+- ser leída;
+- ejecutar la recuperación;
+- consultar el turno;
+- corregir permisos del dispositivo;
+- contactar al responsable;
+- recuperar una referencia de soporte cuando aplique.
+
+Si la causa deja de ser válida después de nueva evidencia autoritativa, la interfaz debe actualizarla o retirarla.
+
+---
+
+#### 35. Brechas AS-IS observadas
+
+La auditoría del código actual identifica estas brechas frente al contrato TO-BE:
+
+| Brecha AS-IS | Riesgo |
+| --- | --- |
+| el resultado de Home reduce el error principalmente a un `string` | se pierde causa estructurada y fuente propietaria |
+| la tarjeta de error usa el encabezado genérico `No se pudo registrar` | ubicación, turno y autorización resultan visualmente equivalentes |
+| el clasificador de asistencia busca palabras como `gps`, `location`, `sede` y `geofence` | la semántica depende de texto libre y puede clasificar una sede empresarial como ubicación física |
+| el clasificador visible no contempla una familia explícita de turno/contexto | fallos de programación pueden caer en fallback o en otras categorías |
+| el clasificador visible no contempla una familia explícita de autorización de asistencia | una denegación real no puede distinguirse limpiamente de fallo técnico |
+| el estado `blocked` de Home prioriza `Validar ubicación en sede` | un bloqueo no relacionado con geocerca puede recibir recuperación incorrecta |
+| la tarjeta de geocerca puede ofrecer `Cambiar sede` | cambiar sede laboral puede presentarse como solución a un problema puramente físico |
+| distintas ramas de asistencia devuelven mensajes libres desde capas diferentes | mensajes equivalentes pueden tener significados materiales distintos |
+
+Estas brechas documentan el delta de implementación futuro.
+
+No autorizan cambios físicos dentro de esta tarea.
+
+---
+
+#### 36. Reglas de migración desde mensajes libres
+
+La implementación futura deberá migrar sin romper compatibilidad.
+
+Orden esperado:
+
+1. preservar los reason codes y decisiones estructuradas ya disponibles;
+2. crear un mapping explícito y revisable desde causa autoritativa a familia UX;
+3. mantener el mensaje humano como contenido, no como discriminador principal;
+4. usar heurística textual solo como fallback transitorio para fuentes legacy sin causa estructurada;
+5. marcar esos fallbacks como no concluyentes cuando puedan producir una clasificación materialmente falsa;
+6. retirar progresivamente la dependencia de substring matching;
+7. probar que un cambio de copy no cambia la familia causal.
+
+Una traducción de texto no debe convertirse accidentalmente en un cambio de autorización.
+
+---
+
+#### 37. Matriz de escenarios obligatorios
+
+| Escenario | Familia visible esperada | Regla |
+| --- | --- | --- |
+| entrada con turno válido y actor autorizado, pero fuera de geocerca | `LOCATION` | el predicado que falla es físico |
+| entrada con permiso de ubicación denegado cuando se requiere evidencia | `LOCATION` | falta evidencia física necesaria |
+| GPS con precisión insuficiente | `LOCATION` | no se demuestra presencia con calidad suficiente |
+| ubicación simulada detectada bajo política aplicable | `LOCATION` | la evidencia física no es aceptable |
+| coordenadas de la sede no configuradas | fuera de las tres; técnico/configuración | no atribuir al trabajador una ubicación incorrecta |
+| servicio de geocerca indisponible | fuera de las tres; técnico/configuración | no fabricar `LOCATION` |
+| no existe turno publicado aplicable | `SHIFT_CONTEXT` | falta contexto laboral publicado |
+| turno publicado todavía fuera de ventana | `SHIFT_CONTEXT` | el hecho temporal es el bloqueo |
+| turno ya finalizado para una entrada nueva | `SHIFT_CONTEXT` | la ventana laboral no sustenta la marcación |
+| rol operativo que debía derivarse del turno está ausente | `SHIFT_CONTEXT` | falla la construcción del contexto laboral |
+| sede del turno no coincide con el contexto intentado | `SHIFT_CONTEXT` cuando el predicado propietario es la asignación del turno | no confundir con distancia física |
+| sede fuera del alcance empresarial del actor con turno y posición válidos | `AUTHORIZATION` | la política de territorio niega la acción |
+| capacidad explícita ausente con contexto válido | `AUTHORIZATION` | existe deny autoritativo |
+| cuenta inactiva cuando esa condición bloquea el acceso | `AUTHORIZATION` | el acceso laboral está denegado |
+| dispositivo prohibido por política de acceso | `AUTHORIZATION` | restricción explícita de acceso |
+| timeout al resolver autorización | fuera de las tres; técnico | no se obtuvo una decisión deny |
+| matriz de autorización inconsistente | fuera de las tres; técnico/configuración | fallo de evaluación, no denegación |
+| red caída antes de resolver la causa | fuera de las tres; conectividad | no inferir causa empresarial |
+| marcación durablemente encolada | fuera de las tres; pendiente/offline | existe intención pendiente, no bloqueo causal equivalente |
+| respuesta perdida después de enviar | fuera de las tres; incierto | reconciliar antes de afirmar resultado |
+| conflicto idempotente | fuera de las tres; conflicto | no convertir en autorización |
+| salida de sesión activa después de perder permiso operativo | no bloquear por `AUTHORIZATION` solo por esa pérdida | el checkout conserva contrato propietario de cierre |
+| misma palabra `sede` proveniente de geocerca | `LOCATION` si el predicado es distancia física | clasificar por fuente, no por texto |
+| misma palabra `sede` proveniente de turno | `SHIFT_CONTEXT` si el predicado es asignación del turno | clasificar por fuente, no por texto |
+| misma palabra `sede` proveniente de alcance permitido | `AUTHORIZATION` | clasificar por fuente, no por texto |
+| mensaje traducido cambia de redacción pero conserva reason code | misma familia | copy no gobierna semántica |
+| causa remota cambia después de refrescar contexto | nueva familia autoritativa | la UI converge con la nueva evidencia |
+
+---
+
+#### 38. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+La cobertura vigente ya exige explicación humana de bloqueos, separación de fuente de verdad, contexto operativo, estados pendientes y experiencia accesible. La tarea actual especializa esas reglas para la clasificación causal de marcación sin ampliar el universo de requisitos.
+
+---
+
+#### 39. Cobertura de prueba vigente reutilizada
+
+La trazabilidad se apoya, sin modificación, en:
+
+- `TREQ-UX-001` — claridad de tarea, acción y estado;
+- `TREQ-UX-002` — explicación humana de error o bloqueo y recuperación segura;
+- `TREQ-UX-003` — acciones e información adecuadas a autorización;
+- `TREQ-UX-005` — fuente de verdad, confirmado o pendiente y conciliación;
+- `TREQ-UX-006` — continuidad ante fallos y diferenciación de estados;
+- `TREQ-UX-009` — resolución de contexto operativo sin fabricar autoridad;
+- `TREQ-UX-021` — diferenciación accesible no dependiente solo de color;
+- `TREQ-UX-031` — bloqueos con causa, responsable y siguiente acción;
+- `TREQ-ANIMA-003` — marcaciones offline idempotentes y sin confirmación falsa;
+- `TREQ-ANIMA-015` — separación en Home de asistencia, geocerca, conectividad, cola, sincronización y diagnóstico.
+
+Estos identificadores se citan únicamente como cobertura existente.
+
+No representan altas ni modificaciones del registro.
+
+---
+
+#### 40. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_APPLICABLE | Tarea exclusivamente documental bajo topología DEFINE_ONCE; no autoriza compilación ni cambios físicos. |
+| LOCAL | NOT_EXECUTED | La inserción en el archivo propietario y la batería del checkout local corresponden al ciclo documental posterior a esta definición. |
+| REMOTA | PASS | Se contrastaron fuentes canónicas vigentes del plan, catálogo de bloqueos, autorización ANIMA, registro modular de requisitos y código actual de `vento-anima` en el commit remoto auditado para identificar la semántica y las brechas AS-IS. |
+| OPERATIVA | NOT_EXECUTED | La validación con trabajadores y escenarios reales corresponde a la futura materialización y certificación; esta tarea define el contrato verificable. |
+| FÍSICA | NOT_APPLICABLE | No se autorizan modificaciones de dispositivos, geocercas, infraestructura, Supabase ni despliegues. |
+
+---
+
+#### 41. Criterios de aceptación
+
+La tarea queda documentalmente aceptada cuando se cumplen simultáneamente estas condiciones:
+
+1. ubicación, turno/contexto y autorización quedan definidos como causas semánticamente distintas;
+2. la clasificación depende del predicado autoritativo y no del texto libre;
+3. un prefijo técnico no determina por sí mismo la familia UX;
+4. `LOCATION` se limita a evidencia física necesaria para la marcación;
+5. sede laboral y punto físico de marcación permanecen separados;
+6. configuración rota de geocerca no culpa al trabajador de estar fuera de ubicación;
+7. `SHIFT_CONTEXT` cubre ausencia o vigencia de turno y construcción del contexto laboral aplicable;
+8. los códigos de turno existentes conservan significado de turno aunque pertenezcan al catálogo de autorización;
+9. rol operativo faltante se distingue de una capacidad denegada sobre contexto ya resuelto;
+10. `AUTHORIZATION` exige una decisión efectiva de acceso y no un fallo de evaluación;
+11. asignación de sede se clasifica por el predicado real y no por la palabra `sede`;
+12. timeout, 5xx, configuración inválida o dependencia caída no se muestran como deny;
+13. conectividad no se fuerza a ninguna de las tres familias;
+14. intención encolada permanece pendiente/offline y no se vuelve error causal falso;
+15. respuesta perdida permanece incierta hasta reconciliación;
+16. conflicto conserva su propia semántica;
+17. el estado de asistencia previo no cambia por mostrar una causa;
+18. una entrada bloqueada no se presenta como confirmada;
+19. una salida bloqueada no cierra visualmente la sesión;
+20. pérdida de permiso operativo no bloquea por sí sola el checkout de una sesión activa;
+21. múltiples causas no se priorizan por orden accidental del cliente;
+22. la causa primaria proviene de la frontera propietaria o de una precedencia canónica existente;
+23. la misma causa mantiene significado entre superficies;
+24. la proyección UX puede transportar acción, familia, razón, estado preservado y recuperación sin crear un contrato físico nuevo;
+25. cada familia ofrece recuperación pertinente a su dominio;
+26. LOCATION no recomienda corregir turno sin causa independiente;
+27. SHIFT_CONTEXT no recomienda mover físicamente al trabajador sin causa independiente;
+28. AUTHORIZATION no recomienda revalidar GPS sin causa independiente;
+29. mensajes técnicos sensibles permanecen ocultos al trabajador;
+30. la causa se comunica por texto y semántica accesible, no solo color o icono;
+31. el bloqueo permanece visible lo suficiente para actuar;
+32. una nueva evidencia autoritativa puede actualizar o retirar la causa;
+33. el AS-IS de mensajes libres y clasificación por substrings queda identificado como brecha y no como contrato;
+34. la futura migración preserva reason codes estructurados y desacopla copy de semántica;
+35. los escenarios obligatorios distinguen correctamente los tres significados de `sede`;
+36. no se crean códigos públicos nuevos;
+37. no se crean campos físicos nuevos;
+38. no se crea ni modifica ningún requisito de prueba;
+39. no se ejecutan cambios físicos;
+40. el handoff a la siguiente tarea conserva offline como responsabilidad separada.
+
+---
+
+#### 42. Límites
+
+Esta tarea no define:
+
+- la estructura general de una explicación de bloqueo, ya aprobada en `ANIMA-UX-009`;
+- el diseño completo de cola offline, propiedad de `ANIMA-UX-011`;
+- la recuperación de una marcación interrumpida o de resultado incierto, propiedad de `ANIMA-UX-012`;
+- la implementación física de un clasificador de causas;
+- nuevos reason codes públicos;
+- nuevos enums de base de datos o API;
+- nuevas tablas, columnas, vistas, funciones, RPC, triggers, grants o políticas RLS;
+- cambios de geocercas productivas;
+- cambios de coordenadas o radios físicos;
+- cambios de horarios publicados;
+- cambios de roles o permisos efectivos;
+- una precedencia global nueva para todos los errores del ecosistema;
+- una taxonomía completa de soporte técnico;
+- el contrato detallado de conectividad y sincronización;
+- copy definitivo por cada razón del catálogo global de bloqueos cuando ya exista un propietario específico;
+- correcciones administrativas de asistencia;
+- overrides de marcación;
+- implementación móvil;
+- despliegue;
+- materialización Supabase.
+
+---
+
+#### 43. Handoff a ANIMA-UX-011
+
+La tarea entrega a `ANIMA-UX-011` una frontera estable:
+
+```text
+SI LA CAUSA DEMOSTRADA ES LOCATION
+->
+MOSTRAR RECUPERACION FISICA
+
+SI LA CAUSA DEMOSTRADA ES SHIFT_CONTEXT
+->
+MOSTRAR RECUPERACION DE TURNO / CONTEXTO
+
+SI LA CAUSA DEMOSTRADA ES AUTHORIZATION
+->
+MOSTRAR RECUPERACION DE ACCESO
+
+SI LA INTENCION ESTA ENCOLADA O DEPENDE DE CONECTIVIDAD
+->
+NO FORZAR NINGUNA DE LAS TRES
+->
+ENTREGAR A CONTRATO OFFLINE
+```
+
+`ANIMA-UX-011` podrá diseñar la experiencia de cola offline sin tener que redefinir ubicación, turno o autorización y sin presentar la cola como una cuarta forma de denegación empresarial.
+
+---
+
+#### 44. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-009 — Explicar por qué no se puede marcar`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-011 — Diseñar manejo comprensible de cola offline`
+
+
 ### [ ] ANIMA-UX-011 — Diseñar manejo comprensible de cola offline
 ### [ ] ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
 ### [ ] ANIMA-UX-013 — Simplificar documentos y datos personales

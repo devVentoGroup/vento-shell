@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **1081** |
+| Tareas aprobadas | **1082** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **513** |
+| Tareas no iniciadas | **512** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **67.82% (1081/1594)** |
+| Porcentaje de completamiento | **67.88% (1082/1594)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-UX-009 — Explicar por qué no se puede marcar** |
-| Tarea actual | **ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización** |
+| Última tarea aprobada | **ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización** |
+| Tarea actual | **ANIMA-UX-011 — Diseñar manejo comprensible de cola offline** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-UX-011 — Diseñar manejo comprensible de cola offline** |
+| Siguiente tarea | **ANIMA-UX-012 — Permitir reanudar una marcación interrumpida** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 29 de 37 aprobadas; ANIMA-UX-010 pendiente** |
+| Progreso del bloque | **BLOQUE F: 30 de 37 aprobadas; ANIMA-UX-011 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-033::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-UX-010** |
+| Carril documental | **ACTIVO — ANIMA-UX-011** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-033::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-UX-009` — Explicar por qué no se puede marcar |
-| Tarea actual | `ANIMA-UX-010` — Diferenciar error de ubicación, turno y autorización — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-UX-011` — Diseñar manejo comprensible de cola offline |
+| Última aprobada | `ANIMA-UX-010` — Diferenciar error de ubicación, turno y autorización |
+| Tarea actual | `ANIMA-UX-011` — Diseñar manejo comprensible de cola offline — **NO INICIADA** |
+| Siguiente tarea | `ANIMA-UX-012` — Permitir reanudar una marcación interrumpida |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 29 DE 37 APROBADAS — ACTUAL ANIMA-UX-010** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 30 DE 37 APROBADAS — ACTUAL ANIMA-UX-011** |
 | Implementación física | **AUTH-DB-033::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-UX-009 — Explicar por qué no se puede marcar
-        ↓
-TAREA ACTUAL
 ANIMA-UX-010 — Diferenciar error de ubicación, turno y autorización
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-UX-011 — Diseñar manejo comprensible de cola offline
         ↓
+SIGUIENTE TAREA RESERVADA
+ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 29 de 37 tareas aprobadas
+BLOQUE F — 30 de 37 tareas aprobadas
 ```
