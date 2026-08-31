@@ -10,8 +10,8 @@ import {
 
 test('clasifica todas las tareas y separa definición, unidad, paquete y cierre global', () => {
   const result = resolveTaskWorkTopology();
-  assert.equal(result.topology.size, 1594);
-  assert.equal(Object.values(result.counts).reduce((sum, value) => sum + value, 0), 1594);
+  assert.equal(result.topology.size, 1595);
+  assert.equal(Object.values(result.counts).reduce((sum, value) => sum + value, 0), 1595);
   assert.equal(result.topology.get('SHELL-MIG-007').mode, 'TEMPLATE_PER_PACKAGE');
   assert.equal(result.topology.get('SHELL-CI-001').mode, 'GLOBAL_ENABLE_ONCE');
   assert.equal(result.topology.get('SHELL-CI-020').mode, 'TEMPLATE_PER_PACKAGE');
@@ -125,8 +125,8 @@ test('reconciliacion B001-200 separa cardinalidad y gate temporal', () => {
   const result = resolveTaskWorkTopology();
   const block = result.implementationAuditTasks.slice(0, 200);
 
-  assert.equal(result.topology.size, 1594);
-  assert.equal(result.implementationAuditTasks.length, 974);
+  assert.equal(result.topology.size, 1595);
+  assert.equal(result.implementationAuditTasks.length, 975);
   assert.equal(block.length, 200);
   assert.equal(block[0].id, 'DELIV-PKG-001');
   assert.equal(block.at(-1).id, 'SHELL-CI-023');
@@ -215,8 +215,8 @@ test('reconciliacion B201-400 conserva cardinalidad y clasifica R0 R1 R2', () =>
   const block = result.implementationAuditTasks.slice(200, 400);
   assert.equal(block.length, 200);
   assert.equal(block[0].id, 'SHELL-CI-024');
-  assert.equal(block.at(-1).id, 'AUTH-DEV-014');
-  assert.equal(result.implementationAuditTasks[400].id, 'AUTH-DEV-015');
+  assert.equal(block.at(-1).id, 'AUTH-DEV-013');
+  assert.equal(result.implementationAuditTasks[400].id, 'AUTH-DEV-014');
   const modeCounts = {};
   const gateCounts = {};
   for (const task of block) {
@@ -225,8 +225,17 @@ test('reconciliacion B201-400 conserva cardinalidad y clasifica R0 R1 R2', () =>
     gateCounts[lifecycle.executionGate] = (gateCounts[lifecycle.executionGate] ?? 0) + 1;
     assert.notEqual(lifecycle.executionGate, 'UNREVIEWED', task.id);
   }
-  assert.deepEqual(modeCounts, { TEMPLATE_PER_PACKAGE: 32, PER_IMPLEMENTATION_UNIT: 102, GLOBAL_ENABLE_ONCE: 20, DEFINE_ONCE: 46 });
-  assert.deepEqual(gateCounts, { NO_PHYSICAL_INSTANCE: 46, PRE_E5_FOUNDATION: 20, POST_E5_PACKAGE: 134 });
+  assert.deepEqual(modeCounts, {
+    TEMPLATE_PER_PACKAGE: 32,
+    PER_IMPLEMENTATION_UNIT: 101,
+    GLOBAL_ENABLE_ONCE: 21,
+    DEFINE_ONCE: 46
+  });
+  assert.deepEqual(gateCounts, {
+    NO_PHYSICAL_INSTANCE: 46,
+    PRE_E5_FOUNDATION: 21,
+    POST_E5_PACKAGE: 133,
+  });
   const expected = new Map([
     ['ANIMA-AUTH-001', ['PER_IMPLEMENTATION_UNIT', 'POST_E5_PACKAGE']],
     ['ANIMA-UX-001', ['DEFINE_ONCE', 'NO_PHYSICAL_INSTANCE']],
@@ -239,6 +248,7 @@ test('reconciliacion B201-400 conserva cardinalidad y clasifica R0 R1 R2', () =>
     ['VISO-CORE-006', ['DEFINE_ONCE', 'NO_PHYSICAL_INSTANCE']],
     ['AUTH-DEV-001', ['DEFINE_ONCE', 'NO_PHYSICAL_INSTANCE']],
     ['AUTH-DEV-014', ['PER_IMPLEMENTATION_UNIT', 'POST_E5_PACKAGE']],
+    ['AUTH-DB-036', ['GLOBAL_ENABLE_ONCE', 'PRE_E5_FOUNDATION']],
   ]);
   for (const [taskId, values] of expected) {
     const lifecycle = result.topology.get(taskId);
@@ -253,9 +263,9 @@ test('reconciliacion B401-600 separa contratos transversales y materializacion p
   const result = resolveTaskWorkTopology();
   const block = result.implementationAuditTasks.slice(400, 600);
   assert.equal(block.length, 200);
-  assert.equal(block[0].id, 'AUTH-DEV-015');
-  assert.equal(block.at(-1).id, 'NEXO-AUTH-031');
-  assert.equal(result.implementationAuditTasks[600].id, 'NEXO-AUTH-032');
+  assert.equal(block[0].id, 'AUTH-DEV-014');
+  assert.equal(block.at(-1).id, 'NEXO-AUTH-030');
+  assert.equal(result.implementationAuditTasks[600].id, 'NEXO-AUTH-031');
   const modeCounts = {};
   const gateCounts = {};
   for (const task of block) {
@@ -289,9 +299,9 @@ test('reconciliacion B601-800 separa diseño vertical y materializacion de autor
   const result = resolveTaskWorkTopology();
   const block = result.implementationAuditTasks.slice(600, 800);
   assert.equal(block.length, 200);
-  assert.equal(block[0].id, 'NEXO-AUTH-032');
-  assert.equal(block.at(-1).id, 'NUMERA-AUTH-008');
-  assert.equal(result.implementationAuditTasks[800].id, 'NUMERA-AUTH-009');
+  assert.equal(block[0].id, 'NEXO-AUTH-031');
+  assert.equal(block.at(-1).id, 'NUMERA-AUTH-007');
+  assert.equal(result.implementationAuditTasks[800].id, 'NUMERA-AUTH-008');
   const modeCounts = {};
   const gateCounts = {};
   for (const task of block) {
@@ -337,15 +347,14 @@ test('reconciliacion B601-800 separa diseño vertical y materializacion de autor
   assert.equal(result.policy.reconciliation_progress.source_audit_sha256, '27d00bfb84e1bbe323d6ae0addc9895fccf3ad704ba5fcf37f3e28e6e24b219f');
 });
 
-test('reconciliacion B801-974 completa la clasificacion de las 974 tareas', () => {
+test('reconciliacion B801-975 completa la clasificacion de las 975 tareas', () => {
   const result = resolveTaskWorkTopology();
-  const block = result.implementationAuditTasks.slice(800, 974);
+  const block = result.implementationAuditTasks.slice(800, 975);
 
-  assert.equal(result.implementationAuditTasks.length, 974);
-  assert.equal(block.length, 174);
-  assert.equal(block[0].id, 'NUMERA-AUTH-009');
-  assert.equal(block.at(-1).id, 'AUTH-DB-031');
-  assert.equal(result.implementationAuditTasks[974], undefined);
+  assert.equal(result.implementationAuditTasks.length, 975);
+  assert.equal(block.length, 175);
+  assert.equal(block[0].id, 'NUMERA-AUTH-008');
+  assert.equal(result.implementationAuditTasks[975], undefined);
 
   const modeCounts = {};
   const gateCounts = {};
@@ -368,14 +377,14 @@ test('reconciliacion B801-974 completa la clasificacion de las 974 tareas', () =
 
   assert.deepEqual(modeCounts, {
     DEFINE_ONCE: 80,
-    PER_IMPLEMENTATION_UNIT: 32,
+    PER_IMPLEMENTATION_UNIT: 33,
     PER_PACKAGE_AND_GLOBAL_FINAL: 60,
     GLOBAL_FINAL: 2,
   });
 
   assert.deepEqual(gateCounts, {
     NO_PHYSICAL_INSTANCE: 80,
-    POST_E5_PACKAGE: 94,
+    POST_E5_PACKAGE: 95,
   });
 
   const expected = new Map([
@@ -437,9 +446,9 @@ test('reconciliacion B801-974 completa la clasificacion de las 974 tareas', () =
   const progress =
     result.policy.reconciliation_progress;
 
-  assert.equal(progress.reviewed_count, 974);
+  assert.equal(progress.reviewed_count, 975);
   assert.equal(progress.unreviewed_count, 0);
-  assert.equal(progress.next_position, 975);
+  assert.equal(progress.next_position, 976);
   assert.equal(progress.status, 'PARTIAL_REVIEW_IN_PROGRESS');
   assert.equal(progress.source_audit_sha256, '27d00bfb84e1bbe323d6ae0addc9895fccf3ad704ba5fcf37f3e28e6e24b219f');
 });
