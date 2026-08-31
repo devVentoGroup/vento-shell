@@ -5,7 +5,7 @@
   "target_instance_id": "AUTH-DB-033::GLOBAL",
   "correction_type": "PHYSICAL",
   "reason_code": "CONTRACT_NON_CONFORMANCE",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "AUTH-DB-035::GLOBAL"
@@ -116,6 +116,14 @@
     "IMPLEMENTED direct pgTAP suite PASS: 14 files, 389 assertions, including 117 AUTH-DB-033 regressions",
     "IMPLEMENTED clean replay PASS: PostgreSQL 17, 12 migrations, 14 pgTAP files, 389 assertions",
     "IMPLEMENTED npm run quality:repair executed exactly once: PASS, 0 normalized files, 0 remaining ESLint",
+    "VERIFIED npm run supabase:migrations:manifest:check PASS: 12/12 migrations",
+    "VERIFIED npm run supabase:db:test:clean PASS: PostgreSQL 17, 12 migrations, 14 pgTAP files, 389 assertions",
+    "VERIFIED npm run supabase:recovery:local PASS: PASS_ROLLBACK_VERIFIED; PRE_RECOVERY_HARNESS PASS; BACKUP_CREATED PASS; PRE_PONR_ROLLBACK PASS; RESTORE_EXECUTED PASS; RESTORED_DATA PASS; POST_RECOVERY_HARNESS PASS; POST_RECOVERY_DRIFT PASS; RPO 0/0 synthetic_state_loss_units; RTO 19339ms/900000ms; evidence .delivery/supabase-recovery/20260831165101428-b971b1f358cc-8c5c6efc/evidence.json",
+    "VERIFIED node scripts/supabase/environment-drift.mjs local --strict PASS: LOCAL_CERTIFIED; candidate b971b1f358ccc0c3920a6119f6b92c5f941b6e97; drift 0; unauthorized drift 0; insufficient evidence 0",
+    "VERIFIED npm run quality:lint:ratchet PASS: 10 historical errors, 11 historical warnings, 0 clean files touched",
+    "VERIFIED npm run docs:correction:check PASS: correction-control valid; 1 record",
+    "VERIFIED npm run docs:correction:test PASS: 18/18",
+    "VERIFIED git --no-pager diff --check PASS",
     "REMOTE_TARGETS_USED: NO"
   ],
   "opened_at": "2026-08-31T15:09:50.732Z"
