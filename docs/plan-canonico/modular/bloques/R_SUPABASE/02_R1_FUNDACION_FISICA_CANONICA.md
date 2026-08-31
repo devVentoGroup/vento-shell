@@ -3,7 +3,7 @@
 <!-- EXECUTION-GATE-RECONCILIATION:B201-400:R1 -->
 #### Reconciliación topológica de R1
 
-Las once tareas de R1 materializan la fundación física canónica compartida de autorización, contexto, identidad y auditoría.
+Las doce tareas de R1 materializan la fundación física canónica compartida de autorización, contexto, identidad y auditoría.
 
 | Propiedad     | Valor                   |
 | ------------- | ----------------------- |
@@ -3317,7 +3317,7 @@ Estos identificadores son trazabilidad de requisitos vigentes; no se modifica ni
 
 **Estado:** APROBADA
 **Tarea anterior:** AUTH-DB-019 — Implementar vínculos canónicos entre Auth e identidades empresariales
-**Tarea siguiente:** AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+**Tarea siguiente:** AUTH-DB-036 — Materializar autoridad organizacional raíz para organization_id
 **Tipo de tarea:** Documental
 **Bloque:** R — Fundación física, migraciones por dominio y normalización
 **Repositorio propietario:** `devVentoGroup/vento-shell`
@@ -3473,6 +3473,9 @@ AUTH-DB-019
 AUTH-DB-033
 → contexto real
 
+AUTH-DB-036
+→ autoridad organizacional raíz y organization_id
+
 AUTH-DB-035
 → frescura transaccional
 
@@ -3498,7 +3501,7 @@ MODO = GLOBAL_ENABLE_ONCE
 INSTANCIA FUTURA = AUTH-DB-033::GLOBAL
 GATE = PRE_E5_FOUNDATION
 CARRIL ACTUAL = DOCUMENTAL
-SIGUIENTE DOCUMENTAL = AUTH-DB-035
+SIGUIENTE DOCUMENTAL = AUTH-DB-036
 ```
 
 Resultado:
@@ -5626,7 +5629,7 @@ No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
 `AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura`
 
 **SIGUIENTE TAREA RESERVADA**
-`AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto`
+`AUTH-DB-036 — Materializar autoridad organizacional raíz para organization_id`
 
 
 ### ✅ AUTH-DB-036 — Materializar autoridad organizacional raíz para organization_id
@@ -6618,7 +6621,7 @@ La instancia física deberá registrar, como mínimo:
 ### ✅ AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
 
 **Estado:** APROBADA
-**Tarea anterior:** AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+**Tarea anterior:** AUTH-DB-036 — Materializar autoridad organizacional raíz para organization_id
 **Tarea siguiente:** AUTH-DB-034 — Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras
 **Tipo de tarea:** Documental
 **Bloque:** R — Fundación física, migraciones por dominio y normalización
@@ -6739,6 +6742,9 @@ AUTH-DB-019
 AUTH-DB-033
 → AccessContext, source versions, source fingerprints y proyección segura
 
+AUTH-DB-036
+→ autoridad raíz ORGANIZATION_SCOPE y resolver privado de organization_id
+
 AUTH-DB-035
 → generaciones transaccionales y token
 
@@ -6766,6 +6772,7 @@ Esta tarea consume y preserva:
 - `AUTH-CTX-030`, para pruebas de concurrencia, tiempo, caché e invalidación;
 - `AUTH-DB-019`, para principal, vínculo empresarial e identidad efectiva;
 - `AUTH-DB-033`, para el resolver, helpers privados, fingerprints y proyección segura;
+- `AUTH-DB-036`, para la autoridad raíz `ORGANIZATION_SCOPE` y `app_private.resolve_organization_id()`;
 - `AUTH-DB-027`, para el harness físico;
 - `AUTH-DB-028`, para baseline y drift;
 - `AUTH-DB-029`, para backup, restore y rollback;
@@ -7863,6 +7870,9 @@ actor efectivo
 empleado cuando aplique
 dispositivo cuando aplique
 organization_id
+`organization_id` se resuelve exclusivamente mediante `app_private.resolve_organization_id()`, materializado por `AUTH-DB-036::GLOBAL`.
+
+No se deriva de aplicación, sede, rol, email, dominio web, marca ni metadata del caller.
 ```
 
 No reconstruye un segundo modelo de actor.
@@ -9156,12 +9166,13 @@ AUTH-DB-018::GLOBAL materializada cuando la separación privada sea prerrequisit
 AUTH-DB-017::GLOBAL coherente con api/app_private no expuesto
 AUTH-DB-019::GLOBAL disponible para principal y vínculos
 AUTH-DB-033::GLOBAL VERIFIED
+AUTH-DB-036::GLOBAL VERIFIED
 AUTH-DB-027 disponible
 AUTH-DB-028 baseline vigente
 AUTH-DB-029 rollback disponible
 ```
 
-Si `AUTH-DB-033::GLOBAL` no está `VERIFIED`, 035 no se autoriza físicamente.
+Si `AUTH-DB-033::GLOBAL` o `AUTH-DB-036::GLOBAL` no están `VERIFIED`, 035 no se autoriza físicamente.
 
 ---
 
@@ -9172,7 +9183,7 @@ Secuencia esperada:
 ```text
 1. preflight y baseline
 2. snapshot ACL/RLS/objetos
-3. verificar AUTH-DB-033::GLOBAL
+3. verificar AUTH-DB-033::GLOBAL y luego AUTH-DB-036::GLOBAL
 4. crear migration versionada
 5. crear runtime identity structure
 6. crear generation table
@@ -9477,7 +9488,7 @@ No se modifica el Registro Canónico de Requisitos de Prueba.
 56. Environment es explícito.
 57. Se crea runtime identity privada.
 58. Environment no viene del cliente.
-59. Organization es explícita.
+59. Organization se resuelve exclusivamente mediante `app_private.resolve_organization_id()` de `AUTH-DB-036`.
 60. Organization no se deduce de app o sede.
 61. Boundary usa tiempo de servidor.
 62. Se crea helper temporal compartido.
@@ -9587,7 +9598,7 @@ No se modifica el Registro Canónico de Requisitos de Prueba.
 45. se define subject key;
 46. se define runtime identity;
 47. se define bootstrap por entorno;
-48. se define organization source;
+48. se consume como organization source `app_private.resolve_organization_id()` de `AUTH-DB-036`;
 49. se define temporal boundary;
 50. se define helper temporal compartido;
 51. se mantiene safety margin;
@@ -9684,7 +9695,7 @@ No se modifica el Registro Canónico de Requisitos de Prueba.
 #### 118. Continuidad
 
 **ÚLTIMA TAREA APROBADA**
-`AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura`
+`AUTH-DB-036 — Materializar autoridad organizacional raíz para organization_id`
 
 **TAREA ACTUAL APROBADA**
 `AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto`
