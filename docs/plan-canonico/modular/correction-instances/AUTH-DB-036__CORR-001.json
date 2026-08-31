@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "correction_id": "AUTH-DB-036::CORR-001",
+  "task_id": "AUTH-DB-036",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "DOCUMENTARY_CONTRADICTION",
+  "status": "PENDING_AUTHORIZATION",
+  "blocking": true,
+  "blocked_targets": [
+    "AUTH-DB-035::GLOBAL"
+  ],
+  "baseline": {
+    "main_commit": "ae27d52d60db268ed8701f113ed2c024fd2299cb",
+    "target_task_path": "docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md",
+    "target_task_sha256": "f473874bec298c60949253571fac63a1643eda4029d2e97d31eb43eccd612792",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [],
+  "authorized_changes": [],
+  "validation_commands": [],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
+  "authorization": null,
+  "evidence": [],
+  "opened_at": "2026-08-31T20:03:13.210Z"
+}
