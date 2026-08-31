@@ -3,7 +3,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(30);
+select plan(31);
 
 select ok(
   to_regnamespace('api') is not null,
@@ -190,8 +190,17 @@ select is(
       on n.oid = p.pronamespace
     where n.nspname = 'api'
       and p.prokind = 'f'
-  ),
+  ) - 1::bigint,
   'authenticated has EXECUTE on every published api RPC signature'
+);
+
+select ok(
+  not has_function_privilege(
+    'authenticated',
+    'api.get_safe_access_context(text)',
+    'EXECUTE'
+  ),
+  'AUTH-DB-033 safe RPC is explicitly withheld until its owner sources exist'
 );
 
 select is(

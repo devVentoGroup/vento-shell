@@ -5,7 +5,7 @@
   "target_instance_id": "AUTH-DB-033::GLOBAL",
   "correction_type": "PHYSICAL",
   "reason_code": "CONTRACT_NON_CONFORMANCE",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "AUTH-DB-035::GLOBAL"
@@ -17,12 +17,114 @@
     "target_instance_record_path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-033__GLOBAL.json",
     "target_instance_record_sha256": "201324034dec14d8e233d7022533b29837d238f3ff1e054f98c652f87da3adfd"
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260831152828_auth_db_033_corr_001_contract_conformance.sql",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/029_auth_db_033_access_context.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/026_auth_db_018_contract_separation.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/027_auth_db_017_data_api_privileges.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/lint-ratchet.mjs",
+      "change": "EXECUTE_ONLY"
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [
+    "TREQ-SUPABASE-005",
+    "TREQ-SUPABASE-007",
+    "TREQ-SUPABASE-008"
+  ],
+  "zero_treq_reason": null,
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-31T10:29:15-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza AUTH-DB-033::CORR-001 para contener y corregir integralmente la no conformidad, mediante forward migration y regresiones en vento-shell, sin modificar la migración histórica ni usar objetivos Supabase remotos.",
+    "source_contract_sha256": "65ee7af60a650f0e4873f97600aa37339b117a87db02b791a7cb6c88477ffa7b"
+  },
+  "evidence": [
+    "PRE_AUTHORIZATION Supabase CLI 2.67.1 reserved migration identity supabase/migrations/20260831152828_auth_db_033_corr_001_contract_conformance.sql",
+    "PRE_AUTHORIZATION worktree clean after migration identity reservation",
+    "PRE_AUTHORIZATION historical migration and VERIFIED implementation instance remain immutable",
+    "PRE_AUTHORIZATION remote Supabase targets excluded by owner statement",
+    "IMPLEMENTED forward migration 20260831152828_auth_db_033_corr_001_contract_conformance.sql contains the contract correction without modifying historical migrations",
+    "IMPLEMENTED safe client RPC publication remains contained while canonical workforce, scheduling, attendance and device owner sources are absent",
+    "IMPLEMENTED direct pgTAP suite PASS: 14 files, 389 assertions, including 117 AUTH-DB-033 regressions",
+    "IMPLEMENTED clean replay PASS: PostgreSQL 17, 12 migrations, 14 pgTAP files, 389 assertions",
+    "IMPLEMENTED npm run quality:repair executed exactly once: PASS, 0 normalized files, 0 remaining ESLint",
+    "VERIFIED npm run supabase:migrations:manifest:check PASS: 12/12 migrations",
+    "VERIFIED npm run supabase:db:test:clean PASS: PostgreSQL 17, 12 migrations, 14 pgTAP files, 389 assertions",
+    "VERIFIED npm run supabase:recovery:local PASS: PASS_ROLLBACK_VERIFIED; PRE_RECOVERY_HARNESS PASS; BACKUP_CREATED PASS; PRE_PONR_ROLLBACK PASS; RESTORE_EXECUTED PASS; RESTORED_DATA PASS; POST_RECOVERY_HARNESS PASS; POST_RECOVERY_DRIFT PASS; RPO 0/0 synthetic_state_loss_units; RTO 19339ms/900000ms; evidence .delivery/supabase-recovery/20260831165101428-b971b1f358cc-8c5c6efc/evidence.json",
+    "VERIFIED node scripts/supabase/environment-drift.mjs local --strict PASS: LOCAL_CERTIFIED; candidate b971b1f358ccc0c3920a6119f6b92c5f941b6e97; drift 0; unauthorized drift 0; insufficient evidence 0",
+    "VERIFIED npm run quality:lint:ratchet PASS: 10 historical errors, 11 historical warnings, 0 clean files touched",
+    "VERIFIED npm run docs:correction:check PASS: correction-control valid; 1 record",
+    "VERIFIED npm run docs:correction:test PASS: 18/18",
+    "VERIFIED git --no-pager diff --check PASS",
+    "REMOTE_TARGETS_USED: NO"
+  ],
   "opened_at": "2026-08-31T15:09:50.732Z"
 }
