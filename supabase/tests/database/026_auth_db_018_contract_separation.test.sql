@@ -650,7 +650,7 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 235::bigint, 'direct Vento routine inventory includes the 11-function AUTH-DB-033 private graph' );
+                        and d.deptype = 'e' ) ), 239::bigint, 'direct Vento routine inventory includes the corrected 15-function AUTH-DB-033 private graph' );
         select
             is(
             (
@@ -691,7 +691,7 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 169::bigint, 'direct SECURITY DEFINER inventory includes the three isolated AUTH-DB-033 private readers' );
+                        and d.deptype = 'e' ) ), 167::bigint, 'direct SECURITY DEFINER inventory includes only the single AUTH-DB-033 private privileged border' );
         select
             is(
             (
@@ -774,7 +774,7 @@ begin;
                         and d.objid   = p.oid
                         and d.deptype = 'e' ) ), 4::bigint, 'four extension routines are explicitly platform-managed' );
         select
-            is( 62::bigint + 235::bigint, 297::bigint, 'primary classification universe includes the AUTH-DB-033 private graph' );
+            is( 62::bigint + 239::bigint, 301::bigint, 'primary classification universe includes the corrected AUTH-DB-033 private graph' );
         select
             is(
             (
@@ -982,7 +982,7 @@ begin;
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
                         and d.deptype = 'e' )
-                and has_function_privilege('authenticated', p.oid, 'EXECUTE') ) + 1::bigint, 'api contains legacy wrappers plus the single AUTH-DB-033 safe resolver exception' );
+                and has_function_privilege('authenticated', p.oid, 'EXECUTE') ) + 1::bigint, 'api contains published legacy wrappers plus the physically present but withheld AUTH-DB-033 safe wrapper' );
         select
             is(
             (

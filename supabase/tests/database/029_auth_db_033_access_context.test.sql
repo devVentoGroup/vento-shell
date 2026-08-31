@@ -3,7 +3,7 @@ begin;
 
 create extension if not exists pgtap with schema extensions;
 
-select plan(87);
+select plan(117);
 
 -- Ownership and role posture (1-10).
 select ok(exists(select 1 from pg_roles where rolname = 'vento_access_context_owner'), 'isolated owner role exists');
@@ -26,6 +26,10 @@ from (values
   ('app_private.resolve_access_base_lane(text,timestamp with time zone,jsonb,jsonb)', 'base-lane helper exists'),
   ('app_private.resolve_access_operational_lane(text,timestamp with time zone,jsonb,jsonb)', 'operational-lane helper exists'),
   ('app_private.resolve_access_device(text,timestamp with time zone,jsonb,jsonb,jsonb)', 'device helper exists'),
+  ('app_private.access_context_issue_definition(text,text)', 'closed issue-catalog helper exists'),
+  ('app_private.normalize_access_context_issues(jsonb)', 'issue normalization helper exists'),
+  ('app_private.canonicalize_json(jsonb)', 'recursive canonical JSON helper exists'),
+  ('app_private.fingerprint_access_source(jsonb)', 'source fingerprint helper exists'),
   ('app_private.validate_access_context(jsonb)', 'context validator exists'),
   ('app_private.canonicalize_access_context(jsonb)', 'canonicalizer exists'),
   ('app_private.fingerprint_access_context(jsonb)', 'fingerprinter exists'),
@@ -42,6 +46,10 @@ from (values
   ('app_private.resolve_access_base_lane(text,timestamp with time zone,jsonb,jsonb)'::regprocedure, 'base-lane helper owner'),
   ('app_private.resolve_access_operational_lane(text,timestamp with time zone,jsonb,jsonb)'::regprocedure, 'operational-lane helper owner'),
   ('app_private.resolve_access_device(text,timestamp with time zone,jsonb,jsonb,jsonb)'::regprocedure, 'device helper owner'),
+  ('app_private.access_context_issue_definition(text,text)'::regprocedure, 'closed issue-catalog helper owner'),
+  ('app_private.normalize_access_context_issues(jsonb)'::regprocedure, 'issue normalization helper owner'),
+  ('app_private.canonicalize_json(jsonb)'::regprocedure, 'recursive canonical JSON helper owner'),
+  ('app_private.fingerprint_access_source(jsonb)'::regprocedure, 'source fingerprint helper owner'),
   ('app_private.validate_access_context(jsonb)'::regprocedure, 'context validator owner'),
   ('app_private.canonicalize_access_context(jsonb)'::regprocedure, 'canonicalizer owner'),
   ('app_private.fingerprint_access_context(jsonb)'::regprocedure, 'fingerprinter owner'),
@@ -54,7 +62,7 @@ join pg_proc p on p.oid = expected.oid;
 -- Function security and invocation boundary (35-50).
 select ok((select prosecdef from pg_proc where oid = 'app_private.get_access_context(text)'::regprocedure), 'full resolver is security definer');
 select ok((select prosecdef from pg_proc where oid = 'api.get_safe_access_context(text)'::regprocedure), 'safe wrapper is security definer');
-select is((select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'app_private' and p.proname in ('resolve_access_application','resolve_access_principal','resolve_access_actor','resolve_access_base_lane','resolve_access_operational_lane','resolve_access_device','validate_access_context','canonicalize_access_context','fingerprint_access_context','project_safe_access_context') and not p.prosecdef), 8::bigint, 'pure helpers remain security invoker; the two source readers are isolated definers');
+select is((select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace where n.nspname = 'app_private' and p.proname in ('access_context_issue_definition','normalize_access_context_issues','canonicalize_json','fingerprint_access_source','resolve_access_application','resolve_access_principal','resolve_access_actor','resolve_access_base_lane','resolve_access_operational_lane','resolve_access_device','validate_access_context','canonicalize_access_context','fingerprint_access_context','project_safe_access_context') and not p.prosecdef), 14::bigint, 'all fourteen private helpers are SECURITY INVOKER; get_access_context is the only privileged private border');
 select is((select provolatile from pg_proc where oid = 'app_private.get_access_context(text)'::regprocedure), 's', 'full resolver is stable');
 select is((select provolatile from pg_proc where oid = 'api.get_safe_access_context(text)'::regprocedure), 's', 'safe wrapper is stable');
 select ok((select proconfig @> array['search_path=pg_catalog, app_private'] from pg_proc where oid = 'app_private.get_access_context(text)'::regprocedure), 'full resolver search path is fixed');
@@ -65,13 +73,15 @@ select ok(not has_function_privilege('authenticated', 'app_private.get_access_co
 select ok(not has_function_privilege('service_role', 'app_private.get_access_context(text)', 'EXECUTE'), 'service_role cannot execute full resolver');
 select ok(not has_function_privilege('public', 'api.get_safe_access_context(text)', 'EXECUTE'), 'PUBLIC cannot execute safe wrapper');
 select ok(not has_function_privilege('anon', 'api.get_safe_access_context(text)', 'EXECUTE'), 'anon cannot execute safe wrapper');
-select ok(has_function_privilege('authenticated', 'api.get_safe_access_context(text)', 'EXECUTE'), 'authenticated explicitly executes safe wrapper');
+select ok(not has_function_privilege('authenticated', 'api.get_safe_access_context(text)', 'EXECUTE'), 'authenticated safe-wrapper publication is contained until canonical owner sources exist');
 select ok(not has_function_privilege('service_role', 'api.get_safe_access_context(text)', 'EXECUTE'), 'service_role has no implicit safe-wrapper grant');
 select is((select count(*) from pg_proc p join pg_namespace n on n.oid = p.pronamespace cross join (values ('anon'),('authenticated'),('service_role')) r(name) where n.nspname = 'app_private' and p.proname like '%access_%' and has_function_privilege(r.name, p.oid, 'EXECUTE')), 0::bigint, 'runtime roles have zero direct execution across private graph');
 
 -- Contract, validation, and unresolved behavior (51-69).
-select throws_ok($$select app_private.get_access_context(null)$$, '22023', 'AUTH_DB_033_APPLICATION_CODE_REQUIRED', 'null application fails with 22023');
-select throws_ok($$select app_private.get_access_context('   ')$$, '22023', 'AUTH_DB_033_APPLICATION_CODE_REQUIRED', 'blank application fails with 22023');
+select throws_ok($$select app_private.get_access_context(null)$$, '22023', 'AUTH_DB_033_APPLICATION_CODE_INVALID', 'null application fails with 22023');
+select throws_ok($$select app_private.get_access_context('')$$, '22023', 'AUTH_DB_033_APPLICATION_CODE_INVALID', 'empty application fails with 22023');
+select throws_ok($$select app_private.get_access_context('   ')$$, '22023', 'AUTH_DB_033_APPLICATION_CODE_INVALID', 'blank application fails with 22023');
+select throws_ok($$select app_private.get_access_context('nexo ')$$, '22023', 'AUTH_DB_033_APPLICATION_CODE_INVALID', 'peripheral whitespace is rejected instead of trimmed');
 select set_config('request.jwt.claim.sub', '', true);
 create temporary table auth_db_033_unknown on commit drop as select app_private.get_access_context('unknown-app') as context;
 create temporary table auth_db_033_unlinked on commit drop as select app_private.get_access_context('nexo') as context;
@@ -88,12 +98,21 @@ select is(context #>> '{principal,principal_type}', 'ANONYMOUS', 'missing JWT re
 select is(context #>> '{principal,principal_status}', 'ANONYMOUS', 'missing JWT has anonymous status') from auth_db_033_unlinked;
 select ok(context @? '$.structural_issues[*] ? (@.issue_code == "AUTH_UNAUTHENTICATED")', 'missing JWT emits canonical unauthenticated issue') from auth_db_033_unlinked;
 select is(context #>> '{actor_effective,actor_type}', 'UNRESOLVED', 'anonymous actor remains unresolved') from auth_db_033_unlinked;
-select is(context #>> '{lane_readiness,base,status}', 'UNAVAILABLE', 'base lane fails closed') from auth_db_033_unlinked;
-select is(context #>> '{lane_readiness,operational,status}', 'UNAVAILABLE', 'operational lane fails closed') from auth_db_033_unlinked;
+select is(context #>> '{lane_readiness,base,status}', 'INVALID', 'BLOCKING_ALL makes base lane invalid') from auth_db_033_unlinked;
+select is(context #>> '{lane_readiness,operational,status}', 'INVALID', 'BLOCKING_ALL makes operational lane invalid') from auth_db_033_unlinked;
 select is(context #>> '{resolution_metadata,resolver}', 'vento.authorization.get_access_context', 'resolver identity is exact') from auth_db_033_unlinked;
 select is(context #>> '{resolution_metadata,cache_status}', 'NOT_IMPLEMENTED', 'cache truthfully remains not implemented') from auth_db_033_unlinked;
 select is((select array_agg(key order by key) from jsonb_object_keys((select context #> '{resolution_metadata,source_versions}' from auth_db_033_unlinked)) key), array['actor_resolution_model','application_catalog','domain_identity_policy','enterprise_identity_links','principal_registry','structural_issue_catalog'], 'source_versions is closed to used sources');
 select is((select array_agg(key order by key) from jsonb_object_keys((select context #> '{resolution_metadata,source_fingerprints}' from auth_db_033_unlinked)) key), array['actor_resolution_model','application_catalog','domain_identity_policy','enterprise_identity_links','principal_registry','structural_issue_catalog'], 'fingerprint keys exactly match version keys');
+select is((select count(*) from jsonb_each_text((select context #> '{resolution_metadata,source_fingerprints}' from auth_db_033_unlinked)) fp where value ~ '^sha256:[0-9a-f]{64}$'), 6::bigint, 'every source fingerprint is a computed SHA-256 value');
+select is((select count(*) from jsonb_array_elements((select context -> 'structural_issues' from auth_db_033_unknown)) issue where issue = app_private.access_context_issue_definition(issue ->> 'issue_code', issue ->> 'subject_id')), 2::bigint, 'every emitted issue has exact closed-catalog metadata');
+select is((select context -> 'structural_issues' from auth_db_033_unknown), app_private.normalize_access_context_issues((select context -> 'structural_issues' from auth_db_033_unknown)), 'issues are deduplicated and deterministically ordered');
+
+select set_config('request.jwt.claim.sub', '20000000-0000-4000-8000-000000000001', true);
+create temporary table auth_db_033_technical_unlinked on commit drop as select app_private.get_access_context('pass') as context;
+select is(context #>> '{principal,principal_status}', 'VALID', 'a valid technical JWT remains VALID when its enterprise principal is unlinked') from auth_db_033_technical_unlinked;
+select ok(context @? '$.structural_issues[*] ? (@.issue_code == "PRINCIPAL_NOT_LINKED")', 'unlinked technical JWT emits PRINCIPAL_NOT_LINKED without falsifying technical validity') from auth_db_033_technical_unlinked;
+select is(context #>> '{principal,authenticated}', 'true', 'unlinked technical JWT remains authenticated') from auth_db_033_technical_unlinked;
 
 -- Safe projection, identity link behavior, determinism, and rollback (70-87).
 set local role vento_ddl_owner;
@@ -118,24 +137,52 @@ values (
 );
 reset role;
 select set_config('request.jwt.claim.sub', '10000000-0000-4000-8000-000000000002', true);
+select set_config('request.jwt.claim.iat', (extract(epoch from now() - interval '1 minute')::bigint)::text, true);
+select set_config('request.jwt.claim.exp', (extract(epoch from now() + interval '1 hour')::bigint)::text, true);
 create temporary table auth_db_033_linked on commit drop as select app_private.get_access_context('pass') as context;
 create temporary table auth_db_033_safe on commit drop as select api.get_safe_access_context('pass') as context;
 select is(context #>> '{principal,principal_type}', 'HUMAN_USER', 'linked JWT resolves human principal') from auth_db_033_linked;
 select is(context #>> '{principal,principal_status}', 'VALID', 'linked principal is valid') from auth_db_033_linked;
+select matches(context #>> '{principal,authenticated_at}', '^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z$', 'JWT iat is normalized to an ISO UTC timestamp') from auth_db_033_linked;
+select matches(context #>> '{principal,session_expires_at}', '^[0-9]{4}-[0-9]{2}-[0-9]{2}T.*Z$', 'JWT exp is normalized to an ISO UTC timestamp') from auth_db_033_linked;
 select is(context #>> '{actor_effective,actor_type}', 'CUSTOMER', 'customer application selects customer identity') from auth_db_033_linked;
 select is(context #>> '{domain_identity,status}', 'ACTIVE', 'active domain link resolves active identity') from auth_db_033_linked;
+select is(context #>> '{lane_readiness,base,status}', 'NOT_APPLICABLE', 'customer base lane is explicitly not applicable') from auth_db_033_linked;
+select is(context #>> '{lane_readiness,operational,status}', 'NOT_APPLICABLE', 'customer operational lane is explicitly not applicable') from auth_db_033_linked;
 select ok((context ->> 'context_id')::uuid is not null, 'safe projection preserves context id') from auth_db_033_safe;
 select ok((context ->> 'resolved_at')::timestamptz is not null, 'safe projection preserves resolved timestamp') from auth_db_033_safe;
 select ok((context ->> 'expires_at')::timestamptz > (context ->> 'resolved_at')::timestamptz, 'safe projection has later expiry') from auth_db_033_safe;
+select ok((context ->> 'expires_at')::timestamptz <= (context ->> 'resolved_at')::timestamptz + interval '30 seconds', 'human safe projection respects the 30-second visual TTL maximum') from auth_db_033_safe;
 select matches(context ->> 'context_fingerprint', '^sha256:[0-9a-f]{64}$', 'fingerprint has canonical sha256 format') from auth_db_033_safe;
 select ok(context ?& array['context_id','resolved_at','context_fingerprint','expires_at','safe_fields'], 'safe projection has exact envelope fields') from auth_db_033_safe;
 select is((select count(*) from jsonb_object_keys((select context from auth_db_033_safe)) key where key not in ('context_id','resolved_at','context_fingerprint','expires_at','safe_fields')), 0::bigint, 'safe envelope has no extra fields');
 select ok(not ((select context from auth_db_033_safe)::text ~ 'source_versions|source_fingerprints|auth_user_id|session_id|identity_id|employee_id|actor_id'), 'safe projection leaks no internal identity or source fields');
 select ok(not ((select context from auth_db_033_safe)::text ~ 'permissions|grants|denies|checkin_session_id|shift_id'), 'safe projection leaks no authority or session data');
-select lives_ok($$set local role authenticated; select api.get_safe_access_context('pass'); reset role$$, 'authenticated can invoke safe wrapper end to end');
+select ok(not ((select context #> '{safe_fields}' from auth_db_033_safe) ? 'application_code'), 'safe_fields does not leak app_code outside its future L2 envelope');
+select ok((select context #> '{safe_fields,lane_readiness,base}' from auth_db_033_safe) ? 'state', 'safe lane projection uses the contractual state key');
+select ok((select context #> '{safe_fields}' from auth_db_033_safe) ? 'safe_structural_issue_codes', 'safe projection names the filtered structural issue field exactly');
+select throws_ok($$set local role authenticated; select api.get_safe_access_context('pass')$$, '42501', null, 'authenticated safe wrapper remains withheld while owner sources are missing');
 select throws_ok($$set local role anon; select api.get_safe_access_context('pass')$$, '42501', null, 'anon invocation is denied');
-select is(app_private.canonicalize_access_context(context), app_private.canonicalize_access_context(context || jsonb_build_object('context_id', gen_random_uuid(), 'resolved_at', now())), 'canonical form excludes volatile snapshot identity') from auth_db_033_linked;
-select is(app_private.fingerprint_access_context(context), app_private.fingerprint_access_context(context || jsonb_build_object('context_id', gen_random_uuid(), 'resolved_at', now())), 'fingerprint is stable across volatile snapshot identity') from auth_db_033_linked;
+select is(app_private.canonicalize_access_context(context), app_private.canonicalize_access_context(context || jsonb_build_object('context_id', gen_random_uuid(), 'resolved_at', to_char(((context ->> 'resolved_at')::timestamptz + interval '1 second') at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'))), 'canonical form excludes volatile snapshot identity') from auth_db_033_linked;
+select is(app_private.fingerprint_access_context(context), app_private.fingerprint_access_context(context || jsonb_build_object('context_id', gen_random_uuid(), 'resolved_at', to_char(((context ->> 'resolved_at')::timestamptz + interval '1 second') at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US"Z"'))), 'fingerprint is stable across volatile snapshot identity') from auth_db_033_linked;
+select is(app_private.canonicalize_json('{"z":1.00,"a":["Cafe\u0301",true,null]}'::jsonb), '{"a":["Café",true,null],"z":1}', 'canonical JSON normalizes NFC, numbers, keys and preserves array order');
+select throws_ok($$select app_private.validate_access_context(jsonb_build_object('contract_name','AccessContext'))$$, '22023', 'AUTH_DB_033_ACCESS_CONTEXT_INVALID', 'deep validator rejects partial top-level contexts');
+select throws_ok($$select app_private.validate_access_context((select context || jsonb_build_object('unexpected', true) from auth_db_033_linked))$$, '22023', 'AUTH_DB_033_ACCESS_CONTEXT_INVALID', 'deep validator rejects extra top-level fields');
+select throws_ok($$select app_private.validate_access_context((select jsonb_set(context, '{structural_issues,0,safe_message}', '"alterado"') from auth_db_033_unknown))$$, '22023', 'AUTH_DB_033_STRUCTURAL_ISSUE_METADATA_INVALID', 'deep validator rejects issue metadata drift');
+
+create temporary table auth_db_033_fingerprint_before on commit drop as
+select context #>> '{resolution_metadata,enterprise_identity_links}' as impossible,
+       context #>> '{resolution_metadata,source_fingerprints,enterprise_identity_links}' as fingerprint
+from auth_db_033_linked;
+set local role vento_ddl_owner;
+update identity_access.enterprise_identity_links
+set source_version = 'AUTH-DB-033-TEST-CHANGED', updated_at = now()
+where principal_id = '10000000-0000-4000-8000-000000000001';
+reset role;
+create temporary table auth_db_033_fingerprint_after on commit drop as
+select app_private.get_access_context('pass') #>> '{resolution_metadata,source_fingerprints,enterprise_identity_links}' as fingerprint;
+select isnt((select fingerprint from auth_db_033_fingerprint_before), (select fingerprint from auth_db_033_fingerprint_after), 'enterprise link fingerprint changes with the authoritative row snapshot');
+select isnt((select context #>> '{resolution_metadata,source_fingerprints,principal_registry}' from auth_db_033_linked), (select context #>> '{resolution_metadata,source_fingerprints,enterprise_identity_links}' from auth_db_033_linked), 'different source snapshots do not reuse one static fingerprint');
 
 select * from finish();
 rollback;
