@@ -9347,7 +9347,761 @@ La tarea especifica únicamente el comportamiento UX y las invariantes que una m
 `ANIMA-UX-013 — Simplificar documentos y datos personales`
 
 
-### [ ] ANIMA-UX-013 — Simplificar documentos y datos personales
+### ✅ ANIMA-UX-013 — Simplificar documentos y datos personales
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-012 — Permitir reanudar una marcación interrumpida
+**Tarea siguiente:** ANIMA-UX-014 — Simplificar administración de equipo autorizada
+**Tipo de tarea:** documental; diseño UX TO-BE de la experiencia personal de documentos laborales, perfil laboral y gestión comprensible de datos propios en ANIMA, separada de administración de terceros, con minimización, fuente de verdad y rutas de corrección o solicitud sin materialización física
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir una experiencia personal de ANIMA en la que el trabajador pueda entender y consultar sus documentos laborales y sus datos propios sin convivir con filtros, cargas, eliminaciones, alcances de terceros, metadatos técnicos o herramientas administrativas que no pertenecen a su tarea.
+
+El resultado debe permitir responder, con mínima carga cognitiva, cinco preguntas:
+
+1. ¿qué documentos laborales míos están disponibles?;
+2. ¿cuál es su estado y vigencia cuando la fuente pueda determinarlo?;
+3. ¿qué información laboral mía muestra ANIMA y de dónde proviene?;
+4. ¿qué puedo cambiar directamente y qué requiere una solicitud o revisión de la fuente propietaria?;
+5. ¿qué acción debo realizar cuando falta, vence, difiere o no puede abrirse una información o documento?
+
+La simplificación no convierte ANIMA en expediente laboral maestro, biblioteca documental administrativa, editor universal de datos del trabajador ni mecanismo de disposición documental.
+
+---
+
+#### 2. Resultado sustantivo
+
+La tarea establece cinco contratos lógicos coordinados:
+
+1. `ANIMA-WORKER-INFORMATION-IA-001`: arquitectura de información personal para documentos, perfil laboral, preferencias y solicitudes;
+2. `ANIMA-WORKER-DOCUMENTS-UX-001`: contenido y comportamiento de la experiencia de documentos propios;
+3. `ANIMA-WORKER-PROFILE-UX-001`: contenido y comportamiento de la experiencia de datos laborales propios;
+4. `ANIMA-WORKER-DATA-ACTION-MATRIX-001`: decisión por categoría entre consultar, autogestionar, solicitar corrección, solicitar privacidad o derivar a la fuente propietaria;
+5. `ANIMA-WORKER-INFORMATION-BOUNDARY-001`: frontera entre experiencia personal, administración documental, administración de equipo, privacidad formal y configuración de la aplicación.
+
+Estos contratos son conceptuales y no crean rutas, tablas, tipos, RPC, buckets, permisos, estados de negocio ni componentes físicos.
+
+---
+
+#### 3. Entradas canónicas consumidas
+
+La tarea consume sin redefinir:
+
+- `ANIMA-UX-001`, que clasificó `/documents` como experiencia personal mixta y `account-settings` como experiencia personal;
+- `ANIMA-UX-003`, que separó el carril personal del trabajador de supervisión, administración y diagnóstico;
+- `ANIMA-UX-004` a `ANIMA-UX-012`, que consolidaron Home, turno, marcación, estados, errores, offline y reanudación alrededor del actor personal;
+- `INFO-UX-002`, que gobierna biblioteca documental, búsqueda autorizada, expediente, versión y vigencia;
+- `INFO-UX-004`, que define el portal lógico de solicitudes de privacidad para trabajadores y su integración con `VSCREEN-0032 — Mi perfil laboral` y `VSCREEN-0126 — Mis documentos laborales`;
+- `INFO-AUTH-001` a `INFO-AUTH-003`, que gobiernan protección, finalidad, sensibilidad y segregación del ciclo documental;
+- el registro de requisitos vigente para documentos, privacidad, minimización, corrección y fuente de verdad.
+
+ANIMA proyecta la información que le corresponde al trabajador; no adquiere propiedad sobre el dato o documento por mostrarlo.
+
+---
+
+#### 4. Principio rector
+
+La experiencia objetivo se rige por esta separación:
+
+```text
+LO MÍO
+→ simple, personal, mínimo y comprensible
+
+LO ADMINISTRATIVO
+→ fuera del flujo personal
+
+LO AUTORITATIVO
+→ se consulta o corrige en su fuente propietaria
+
+LO FORMAL DE PRIVACIDAD
+→ se tramita como solicitud trazable
+
+LO TÉCNICO
+→ no se expone como lenguaje de negocio al trabajador
+```
+
+Una pantalla personal no aumenta su utilidad por mostrar más campos o más botones. La utilidad se mide por permitir al trabajador entender lo que le afecta y completar la siguiente acción legítima.
+
+---
+
+#### 5. Identidad de las superficies
+
+La tarea no crea una nueva identidad de pantalla ni asigna una ruta física nueva.
+
+Se conservan las identidades canónicas existentes:
+
+- `ANIMA-SCREEN-007` para la pantalla móvil actualmente observada como `/documents`;
+- `ANIMA-SCREEN-008` para el carné laboral actual;
+- `ANIMA-SCREEN-013` para configuración de cuenta actual;
+- `VSCREEN-0032 — Mi perfil laboral` como superficie lógica canónica de perfil laboral;
+- `VSCREEN-0126 — Mis documentos laborales` como superficie lógica canónica de documentos laborales propios.
+
+La materialización posterior decidirá componentes, rutas o composición sin crear identidades paralelas por razones meramente visuales.
+
+---
+
+#### 6. Arquitectura `ANIMA-WORKER-INFORMATION-IA-001`
+
+La información personal del trabajador se organiza en cuatro intenciones distintas:
+
+| Intención | Pregunta humana | Contenido permitido | Acción ordinaria |
+| --- | --- | --- | --- |
+| **Mis documentos laborales** | ¿Qué documentos míos tengo y cuál es su estado? | documentos propios autorizados, vigencia, referencia mínima y acción disponible | ver, abrir o iniciar una solicitud permitida |
+| **Mi perfil laboral** | ¿Qué información laboral mía reconoce Vento? | identidad y relación laboral permitidas, con fuente y estado cuando sean materiales | consultar o pedir corrección cuando corresponda |
+| **Mis preferencias y permisos de la app** | ¿Qué puedo configurar directamente en este dispositivo o cuenta? | permisos del sistema y preferencias autogestionables | activar, desactivar o limpiar lo permitido |
+| **Mis solicitudes de privacidad** | ¿Cómo pido acceso, rectificación, copia u otra actuación formal? | solicitudes propias y su seguimiento | crear o continuar un caso autorizado |
+
+Estas intenciones pueden compartir navegación, pero no deben mezclarse semánticamente como si fueran el mismo objeto o ciclo de vida.
+
+---
+
+#### 7. Regla de actor propio
+
+En el carril personal el sujeto se resuelve desde el trabajador autenticado y su relación vigente.
+
+Por tanto:
+
+1. no existe selector de empleado para consultar documentos personales;
+2. no existe cambio de sujeto mediante parámetro visual, búsqueda, filtro o URL;
+3. no se muestran listas de trabajadores como mecanismo de navegación personal;
+4. no se muestran documentos de terceros aunque el actor tenga además un rol administrativo;
+5. adquirir una capacidad administrativa no transforma automáticamente la superficie personal en backoffice;
+6. si el actor necesita administrar terceros, debe usar la superficie administrativa propietaria y volver a resolver autorización y alcance.
+
+---
+
+#### 8. Experiencia `ANIMA-WORKER-DOCUMENTS-UX-001`
+
+La experiencia de **Mis documentos laborales** prioriza, por documento visible:
+
+1. nombre humano del documento;
+2. estado o vigencia que la fuente pueda sostener;
+3. fecha relevante cuando tenga significado claro;
+4. indicación mínima de qué requiere atención, si aplica;
+5. una acción principal inequívoca: abrir, ver detalle o continuar una solicitud disponible.
+
+Información secundaria solo aparece cuando ayuda a decidir o entender el documento. Identificadores internos, rutas de Storage, UUID, uploader técnico y metadatos de infraestructura permanecen fuera de la presentación ordinaria.
+
+---
+
+#### 9. Orden de la lista personal
+
+La lista debe favorecer decisión y no inventario técnico.
+
+Reglas:
+
+1. elementos que requieren una acción legítima del trabajador pueden priorizarse sobre elementos meramente históricos;
+2. una fecha de vencimiento solo determina urgencia cuando la fuente la considera aplicable;
+3. un documento sin fecha de vencimiento no se presenta como vigente por inferencia;
+4. no se utiliza la cantidad total de documentos como sustituto de estado documental;
+5. filtros avanzados, alcance de sede, empleado, empresa o grupo no forman parte de la experiencia personal ordinaria;
+6. si existe búsqueda personal, opera únicamente dentro del universo ya autorizado del trabajador.
+
+---
+
+#### 10. Estado y vigencia documental
+
+La interfaz no crea estados de negocio nuevos.
+
+Cuando la fuente permita resolverlos, la presentación puede traducir a lenguaje humano condiciones como:
+
+- disponible y vigente;
+- próximo a una fecha relevante;
+- vencido;
+- reemplazado o no vigente;
+- pendiente de una actuación o validación;
+- no disponible temporalmente;
+- estado no verificable.
+
+Reglas:
+
+1. `sin dato` no equivale a `vigente`;
+2. `no verificable` no equivale a `vencido`;
+3. una alerta local no sustituye el estado autoritativo;
+4. una versión reemplazada no debe competir visualmente con la versión vigente como si ambas fueran actuales;
+5. la interfaz debe poder explicar qué condición observó sin exponer reglas internas innecesarias.
+
+---
+
+#### 11. Apertura segura de documentos
+
+Abrir un documento es una capacidad distinta de conocer que existe.
+
+La experiencia debe asumir que:
+
+1. la autorización se revalida al obtener acceso al archivo;
+2. una referencia temporal o URL firmada no se presenta como identificador permanente;
+3. el fallo al generar o abrir el acceso no cambia el estado empresarial del documento;
+4. el error diferencia, cuando la evidencia lo permite, entre falta de autorización, archivo no disponible, conectividad y fallo técnico;
+5. reintentar apertura no crea ni modifica documentos;
+6. el trabajador nunca necesita conocer el bucket o `storage_path` para recuperar el archivo.
+
+---
+
+#### 12. Solicitudes desde documentos
+
+La experiencia personal puede ofrecer una acción de **solicitar documento** cuando exista un tipo o comando autorizado por la fuente propietaria.
+
+Esta tarea no fija un catálogo de constancias, certificados o tipos solicitables.
+
+Reglas:
+
+1. una solicitud se diferencia de un documento ya disponible;
+2. pulsar solicitar no debe mostrar un documento como generado antes de existir confirmación autoritativa;
+3. el estado de la solicitud no se deduce del listado de archivos;
+4. si la solicitud requiere datos adicionales, solo se solicitan los indispensables;
+5. una solicitud formal de privacidad no se disfraza como solicitud documental ordinaria;
+6. el seguimiento usa la identidad y estado del proceso propietario, no una copia local creada por ANIMA.
+
+---
+
+#### 13. Vacío de documentos
+
+El vacío de **Mis documentos laborales** debe distinguir al menos estas causas conceptuales cuando puedan resolverse:
+
+- no existen documentos propios visibles para el alcance actual;
+- la consulta todavía está cargando;
+- la fuente no puede verificarse;
+- la sesión o autorización necesita resolverse;
+- existe un problema de conectividad;
+- existe un error técnico.
+
+No se comunica “No tienes documentos” si la aplicación no pudo demostrar esa ausencia.
+
+El vacío no ofrece cargar documentos de terceros ni amplía el alcance para “resolver” la pantalla.
+
+---
+
+#### 14. Administración documental fuera del carril personal
+
+Quedan fuera de **Mis documentos laborales**:
+
+- escoger otro trabajador;
+- consultar documentos de una población o sede;
+- cargar archivos para terceros;
+- asignar alcance de empleado, sede o grupo;
+- eliminar documentos administrativos;
+- gestionar tipos documentales;
+- decidir retención, reemplazo, disposición o eliminación;
+- inspeccionar metadatos internos de Storage;
+- utilizar fallbacks locales de rol como sustituto de autorización.
+
+Retirar estos controles del carril personal no elimina capacidades empresariales. Su administración permanece bajo los contratos propietarios de gobierno documental, autorización y paquetes de materialización correspondientes.
+
+---
+
+#### 15. Eliminación no es una acción personal ordinaria
+
+La experiencia del trabajador no presenta la eliminación directa de un documento laboral como una acción ordinaria.
+
+Un documento laboral puede estar sujeto a versión, sustitución, retención, legal hold, historia laboral, auditoría o disposición controlada. Por tanto:
+
+1. ocultar o retirar acceso no equivale a borrar evidencia;
+2. eliminar una fila no autoriza eliminar un archivo;
+3. cerrar una cuenta no elimina automáticamente documentos laborales conservables;
+4. una solicitud de supresión se procesa como solicitud evaluable, no como borrado inmediato;
+5. cualquier disposición física posterior pertenece al ciclo documental propietario.
+
+---
+
+#### 16. Experiencia `ANIMA-WORKER-PROFILE-UX-001`
+
+**Mi perfil laboral** muestra únicamente información propia que el trabajador necesita comprender para su relación y uso de ANIMA.
+
+La presentación se organiza por significado humano, no por estructura de base de datos.
+
+Categorías conceptuales permitidas cuando existan y estén autorizadas:
+
+1. identidad visible del trabajador;
+2. vínculo y estado laboral visible;
+3. rol o función mostrable;
+4. sede o relación territorial mostrable;
+5. datos de contacto o perfil que el contrato propietario autorice mostrar;
+6. estado documental resumido cuando sea útil y autoritativo;
+7. referencia de fuente o condición de actualización cuando sea necesaria para explicar por qué un dato no se edita directamente.
+
+La tarea no declara que todos estos datos existan ni que todos sean editables.
+
+---
+
+#### 17. Taxonomía de datos y acciones
+
+Se adopta `ANIMA-WORKER-DATA-ACTION-MATRIX-001`:
+
+| Categoría | Ejemplos conceptuales | Acción personal por defecto | Regla |
+| --- | --- | --- | --- |
+| **Dato autogestionable** | preferencia o valor de perfil cuya fuente admita edición directa | editar | solo si el contrato propietario autoriza la mutación |
+| **Dato laboral autoritativo** | identidad laboral, relación, rol, sede o estado provenientes de una fuente empresarial | consultar | no se vuelve editable por estar visible |
+| **Dato corregible mediante fuente** | dato actual que la fuente admite actualizar o rectificar mediante proceso | solicitar corrección o abrir el flujo propietario | conserva trazabilidad de antes, después y motivo cuando corresponda |
+| **Dato histórico** | hecho preservado por historia, auditoría o evidencia | consultar cuando esté permitido | no se presenta como campo ordinario editable |
+| **Preferencia de aplicación** | favoritos, preferencias opcionales o permisos del dispositivo | autogestionar | no se confunde con expediente laboral |
+| **Dato sensible o interno no necesario** | secreto, identificador técnico, metadato interno o dato de terceros | no mostrar | minimización por finalidad y autorización |
+| **Solicitud formal de privacidad** | acceso, copia, rectificación, revocación, supresión u otra petición gobernada | iniciar o seguir caso | se mantiene separada de edición ordinaria |
+
+---
+
+#### 18. Consultar no implica editar
+
+Toda ficha debe distinguir visual y semánticamente entre:
+
+- valor visible;
+- valor editable;
+- valor no editable con explicación suficiente;
+- dato que requiere solicitud de corrección;
+- dato que pertenece a un caso formal de privacidad.
+
+Reglas:
+
+1. no se renderiza un campo como input deshabilitado solo para comunicar lectura;
+2. no se ofrece un botón `Editar` genérico si algunos datos pertenecen a fuentes distintas;
+3. una capacidad local de UI no crea autoridad para guardar;
+4. ANIMA no escribe una copia local para “corregir” un maestro ajeno;
+5. la corrección del dato actual no reescribe silenciosamente hechos históricos.
+
+---
+
+#### 19. Actualización y rectificación
+
+Cuando la necesidad del trabajador exceda la autogestión ordinaria, la experiencia distingue:
+
+- **Actualizar un dato actual**, cuando la fuente propietaria admite cambiar el valor vigente;
+- **Corregir un dato que considero incorrecto**, cuando se requiere revisión o rectificación trazable;
+- **Solicitar acceso, copia u otra actuación de privacidad**, cuando la intención es formal y excede una edición ordinaria.
+
+La acción debe llevar al proceso propietario o al caso de privacidad correspondiente conservando el contexto necesario, sin convertir ANIMA en un editor universal de fuentes ajenas.
+
+---
+
+#### 20. Portal personal de privacidad
+
+La tarea adopta el `WORKER_PRIVACY_PORTAL` ya definido por gobierno de información como experiencia lógica integrada con el canal personal de ANIMA.
+
+Reglas:
+
+1. no crea una pantalla nueva por sí sola;
+2. **Mi perfil laboral** puede ofrecer entrada al caso cuando la necesidad exceda una edición ordinaria;
+3. **Mis documentos laborales** puede aportar referencias documentales propias cuando sean necesarias;
+4. una solicitud propia conserva su identidad de caso al navegar entre superficies;
+5. no aparecen expedientes, solicitudes ni documentos de otros trabajadores;
+6. la aplicación no promete supresión automática de historia laboral o evidencia por terminar vínculo o cerrar cuenta.
+
+---
+
+#### 21. Preferencias y datos opcionales de la aplicación
+
+Permisos del dispositivo, favoritos, preferencias opcionales, marketing u otros ajustes autogestionables pertenecen a configuración de la aplicación y no a **Mi perfil laboral**.
+
+La experiencia debe nombrarlos por su efecto real.
+
+Por tanto:
+
+- limpiar favoritos y preferencias opcionales se presenta como limpieza de preferencias o datos opcionales;
+- no se presenta esa acción como gestión integral de datos personales;
+- cambiar permiso de ubicación o notificaciones no modifica información laboral;
+- limpiar preferencias no equivale a ejercer un derecho formal de supresión;
+- cerrar cuenta, solicitar supresión y limpiar datos opcionales conservan intenciones diferentes.
+
+---
+
+#### 22. Relación con el carné laboral
+
+El carné laboral es una proyección de identificación y elegibilidad, no el editor de **Mi perfil laboral**.
+
+Puede mostrar información mínima necesaria para su finalidad, como identidad visible, función, sede o estado documental cuando la fuente lo autorice.
+
+Reglas:
+
+1. el carné no se utiliza como formulario de mantenimiento de maestros;
+2. un dato incorrecto puede dirigir a la corrección propietaria sin convertirse en edición inline;
+3. el estado resumido del carné no reemplaza el detalle de documentos;
+4. los datos presentados se minimizan según la finalidad de identificación interna;
+5. una ausencia de elegibilidad no se interpreta automáticamente como documento faltante sin evidencia de la fuente.
+
+---
+
+#### 23. Fuente de verdad visible
+
+Cuando un dato pueda generar confusión por no ser editable o por provenir de otra fuente, ANIMA debe permitir comprender su propiedad sin exponer arquitectura técnica.
+
+Formas humanas válidas incluyen conceptos como:
+
+- “Información laboral registrada por Vento”;
+- “Este dato requiere revisión”;
+- “Solicita una corrección”;
+- “La información todavía no pudo verificarse”.
+
+No se muestran nombres de tablas, RPC, políticas RLS, UUID, nombres de bucket o claves técnicas como explicación al trabajador.
+
+---
+
+#### 24. Frescura y discrepancias
+
+La interfaz no presupone que todo valor visible es actual.
+
+Cuando la fuente exponga frescura, versión o condición de revisión:
+
+1. se diferencia actual, desactualizado pero mostrable, requiere confirmación, reemplazado, inválido o desconocido sin inventar un estado empresarial paralelo;
+2. un dato desactualizado no se reemplaza silenciosamente por vacío;
+3. una discrepancia no se resuelve escogiendo el valor del dispositivo por defecto;
+4. la corrección se dirige a la fuente propietaria;
+5. los históricos conservan el snapshot o referencia que su contrato exija.
+
+---
+
+#### 25. Minimización de datos personales
+
+La superficie personal aplica minimización incluso cuando el sujeto sea el propio trabajador.
+
+No se muestran por defecto:
+
+- identificadores internos sin utilidad humana;
+- secretos o credenciales;
+- tokens;
+- metadatos técnicos de autorización;
+- rutas de archivo;
+- IDs de uploader;
+- datos de terceros;
+- observaciones administrativas no destinadas al trabajador;
+- razones internas de investigación o antifraude;
+- atributos sensibles sin finalidad visible y autorización suficiente.
+
+Cuando un identificador personal sensible deba mostrarse, se aplica el nivel de revelado o enmascaramiento definido por su contrato propietario.
+
+---
+
+#### 26. Copia, compartición y salida del dispositivo
+
+Ver, copiar, compartir, imprimir o guardar fuera de ANIMA no se consideran una sola capacidad.
+
+La experiencia no asume que poder abrir un documento autoriza cualquier forma de exportación o redistribución.
+
+La implementación futura deberá aplicar la política propietaria para cada salida disponible. Esta tarea no concede nuevas capacidades de copia, impresión, descarga, compartición ni almacenamiento externo.
+
+---
+
+#### 27. Estados de carga, error y recuperación
+
+Documentos y perfil laboral deben usar estados que indiquen qué se sabe y qué no se pudo confirmar.
+
+Reglas:
+
+1. un spinner prolongado no sustituye una explicación de fallo;
+2. un error de red no se muestra como ausencia de datos;
+3. un deny real no se muestra como fallo técnico;
+4. una fuente caída no se presenta como dato vacío;
+5. la recuperación no duplica solicitudes ni mutaciones;
+6. el valor confirmado previamente puede conservarse como referencia visible si su contrato permite mostrarlo, acompañado de la condición de frescura adecuada;
+7. los mensajes indican siguiente acción comprensible.
+
+---
+
+#### 28. Accesibilidad y carga cognitiva
+
+La simplificación debe conservar:
+
+- títulos y agrupaciones semánticas;
+- jerarquía de lectura consistente;
+- objetivos táctiles adecuados;
+- estados expresados por texto además de color o icono;
+- etiquetas accesibles para acciones sobre documentos;
+- foco predecible al abrir o cerrar detalle;
+- mensajes que no dependan de terminología administrativa o técnica;
+- una acción primaria dominante por intención.
+
+El usuario no debe aprender conceptos de scopes, buckets, grants, RLS o estructura de datos para usar la experiencia.
+
+---
+
+#### 29. AS-IS — mezcla observada en documentos
+
+El código actual de `app/(app)/documents.tsx` mezcla en una misma pantalla personal:
+
+- `anima.documents.view_all`;
+- `anima.documents.upload`;
+- `anima.documents.delete`;
+- fallbacks locales por rol;
+- filtrado por empleado;
+- carga documental;
+- selección de alcance;
+- eliminación;
+- consulta y apertura de documentos propios.
+
+También genera accesos firmados a Storage y contiene lógica de eliminación directa del registro seguida de intento de eliminación del archivo.
+
+Este AS-IS justifica la simplificación, pero no se valida como modelo TO-BE ni autoriza su continuidad física.
+
+---
+
+#### 30. AS-IS — ambigüedad de “datos personales”
+
+La pantalla actual de configuración contiene una sección visual denominada **Gestión de datos personales** y, dentro de ella, una acción que limpia favoritos y preferencias opcionales.
+
+La acción real observada se limita a datos opcionales y preferencias; no constituye por sí misma edición de identidad laboral, corrección de maestros ni gestión integral de privacidad.
+
+El TO-BE elimina esa ambigüedad semántica separando:
+
+- preferencias y datos opcionales de aplicación;
+- perfil laboral;
+- solicitudes formales de privacidad.
+
+---
+
+#### 31. AS-IS — carné como proyección, no perfil editable
+
+El carné actual proyecta nombre, función, sede principal, estado de actividad y estado documental resumido.
+
+No existe evidencia en esa superficie de un editor general del perfil laboral.
+
+El TO-BE conserva esa diferencia: **identificación** y **mantenimiento de datos** son intenciones distintas.
+
+---
+
+#### 32. Migración conceptual desde el AS-IS
+
+La materialización posterior debe poder avanzar sin cambiar de significado mediante esta secuencia conceptual:
+
+```text
+DOCUMENTS MIXTO
+→ separar sujeto propio de alcance administrativo
+→ conservar consulta personal
+→ retirar filtros y mutaciones de terceros del carril personal
+→ aplicar estados y vigencia desde fuente
+→ conectar solicitudes autorizadas
+
+SETTINGS “DATOS PERSONALES”
+→ renombrar por efecto real las preferencias/datos opcionales
+→ separar perfil laboral
+→ enlazar privacidad formal cuando corresponda
+```
+
+La migración no requiere crear un maestro duplicado ni conservar compatibilidad visual con controles administrativos obsoletos.
+
+---
+
+#### 33. Matriz de escenarios de documentos
+
+| Escenario | Presentación personal | Acción permitida | Prohibición |
+| --- | --- | --- | --- |
+| documento propio disponible | mostrar información mínima y estado | abrir o ver detalle | revelar metadatos técnicos |
+| documento próximo a fecha aplicable | indicar condición y fecha | acción propietaria disponible | inventar urgencia no sustentada |
+| documento vencido | marcar condición visible | seguir salida autorizada | tratarlo como vigente |
+| versión reemplazada | reducir peso o dirigir a vigente | consultar histórico si está autorizado | presentarla como actual |
+| archivo no abre por conectividad | conservar identidad del documento y explicar fallo | reintentar apertura | marcar documento inexistente |
+| acceso denegado | explicar acceso no disponible sin filtrar detalles | volver o escalar según contrato | revelar contenido o URL |
+| estado no verificable | mostrar incertidumbre explícita | reintentar o seguir fuente | asumir vigente, vencido o inexistente |
+| ningún documento propio demostrado | vacío personal comprensible | iniciar solicitud permitida si existe | ofrecer cargar para terceros |
+| solicitud de documento disponible | diferenciar solicitud de archivo existente | iniciar proceso autorizado | mostrar éxito antes de confirmación |
+| documento de otro trabajador | no pertenece al universo personal | ninguna | enumerar existencia o identidad |
+
+---
+
+#### 34. Matriz de escenarios de datos propios
+
+| Escenario | Resultado UX | Acción |
+| --- | --- | --- |
+| dato laboral correcto y autoritativo | lectura clara | ninguna o consultar fuente |
+| dato autogestionable | control de edición explícito | guardar mediante comando propietario |
+| dato actual incorrecto | explicar que requiere corrección | iniciar corrección o revisión |
+| dato histórico | lectura contextual cuando aplique | no editar como campo actual |
+| dato sin frescura verificable | mostrar incertidumbre | refrescar o revisar |
+| preferencia opcional | mantener en configuración | autogestionar o limpiar |
+| solicitud de privacidad | mostrar caso separado | iniciar o seguir caso |
+| dato sensible no necesario | no mostrar | ninguna |
+| identificador técnico | no mostrar | ninguna |
+| discrepancia entre fuentes | no escoger silenciosamente | derivar a fuente o revisión |
+
+---
+
+#### 35. Frontera con administración de equipo
+
+`ANIMA-UX-014` recibe la simplificación de la administración de equipo autorizada, especialmente la superficie `Team` ya separada del carril personal.
+
+UX-013 no diseña:
+
+- invitación de trabajadores;
+- activación o desactivación de integrantes;
+- cambio administrativo de rol;
+- asignación administrativa de sedes o áreas;
+- directorios de equipo;
+- acciones masivas sobre trabajadores;
+- filtros o navegación administrativa por población.
+
+La existencia de un dato laboral propio en **Mi perfil laboral** no habilita su edición administrativa ni absorbe las decisiones reservadas a UX-014.
+
+---
+
+#### 36. Frontera con gobierno documental y privacidad
+
+UX-013 consume, pero no reemplaza:
+
+- biblioteca, expediente, versión y vigencia documental;
+- creación, revisión, aprobación, publicación y firma;
+- retención, legal hold y disposición;
+- decisiones de privacidad y tratamiento de solicitudes;
+- autorización por clasificación, finalidad, sensibilidad y relación;
+- contratos de Storage, escaneo, firma, certificación o preservación.
+
+ANIMA actúa como canal personal y proyección autorizada para el trabajador.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA**
+
+**Requisitos creados:** **0**
+**Requisitos modificados:** **0**
+**Requisitos diferidos:** **0**
+**Requisitos descartados:** **0**
+
+La tarea desarrolla un contrato UX específico de ANIMA sobre reglas de documentos, privacidad, minimización, fuente de verdad y corrección ya protegidas por el registro vigente. No introduce una obligación de prueba nueva ni cambia el alcance de una obligación existente.
+
+---
+
+#### 38. Cobertura de prueba vigente reutilizada
+
+Esta sección documenta trazabilidad de cobertura existente y no modifica el registro.
+
+- `TREQ-ANIMA-005`: documentos y datos laborales por identidad, vínculo, finalidad, sensibilidad, vigencia, propietario y retención; consulta propia y solicitudes sin acceso a expedientes de terceros.
+- `TREQ-UX-003`: información, acciones y densidad adecuadas al actor; minimización de datos sensibles y separación de administración.
+- `TREQ-UX-005`: fuente de verdad visible, estado confirmado o pendiente y corrección sin copias competidoras.
+- `TREQ-UX-008`: separación de superficies cuando compiten intenciones materiales.
+- `TREQ-UX-126`: reutilización documental por identidad, versión, archivo, clasificación, propósito, vigencia y derecho de acceso.
+- `TREQ-UX-128`: corrección diferenciada entre maestro, caso, versión, excepción o revisión de la fuente propietaria.
+- `TREQ-UX-129`: tratamiento explícito de frescura, obsolescencia, reemplazo, invalidez o estado desconocido.
+- `TREQ-UX-130`: finalidad, clasificación, minimización y autorización antes de reutilizar información personal o sensible.
+- `TREQ-UX-330`: minimización de información en tareas con identidad laboral, privacidad y datos sensibles.
+
+---
+
+#### 39. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_APPLICABLE | Tarea exclusivamente documental `DEFINE_ONCE`; no existe build físico propio. |
+| LOCAL | NOT_EXECUTED | La inserción en el archivo propietario y la batería documental local corresponden al lifecycle de la rama de tarea. |
+| REMOTA | PASS | Se verificaron continuidad y owner canónicos, contratos INFO de gobierno documental y privacidad, registro modular ANIMA/UX y código vigente de documentos, configuración y carné en los repositorios remotos propietarios. |
+| OPERATIVA | NOT_EXECUTED | No se realizó prueba con trabajadores ni observación de operación real durante esta tarea documental. |
+| FÍSICA | NOT_APPLICABLE | La topología `DEFINE_ONCE` declara `NO_PHYSICAL_INSTANCE`; no se autorizan cambios físicos. |
+
+---
+
+#### 40. Criterios de aceptación
+
+- [x] La experiencia de documentos parte del trabajador autenticado y no de un selector de empleado.
+- [x] Documentos propios y administración documental quedan como intenciones separadas.
+- [x] La superficie personal no contiene lectura ampliada, carga, eliminación ni filtros de terceros como acciones ordinarias.
+- [x] La retirada de controles administrativos no se interpreta como eliminación de la capacidad empresarial propietaria.
+- [x] La experiencia prioriza nombre, estado, vigencia y siguiente acción comprensible del documento.
+- [x] La vigencia no se inventa cuando la fuente no puede resolverla.
+- [x] Ausencia, no verificable, vencido y fallo técnico permanecen distintos.
+- [x] Abrir un archivo no concede capacidades implícitas de copiar, imprimir, compartir o disponer.
+- [x] La UI no expone `storage_path`, UUID, bucket, uploader técnico ni metadatos internos como contenido ordinario.
+- [x] La eliminación directa de evidencia no forma parte del flujo personal.
+- [x] Cerrar cuenta no se presenta como eliminación automática de historia laboral o documentos sujetos a conservación.
+- [x] Una solicitud documental se distingue de un documento ya disponible.
+- [x] Una solicitud no aparece completada antes de confirmación autoritativa.
+- [x] La tarea no inventa catálogo de constancias, certificados o documentos solicitables.
+- [x] El vacío no afirma inexistencia si la consulta, autorización o fuente no pudo verificarse.
+- [x] **Mi perfil laboral** se organiza por significado humano y no por tablas o campos internos.
+- [x] Ver un dato no implica poder editarlo.
+- [x] Los datos autogestionables solo se editan cuando el propietario lo permite.
+- [x] Los datos laborales autoritativos no se convierten en inputs por conveniencia de UI.
+- [x] Actualización y rectificación conservan intenciones distintas.
+- [x] Los hechos históricos no se presentan como campos corrientes editables.
+- [x] Las discrepancias se resuelven contra la fuente propietaria y no mediante copias locales.
+- [x] El `WORKER_PRIVACY_PORTAL` se consume como experiencia lógica existente y no crea una nueva pantalla.
+- [x] Perfil laboral, documentos laborales y solicitudes de privacidad pueden preservar el mismo caso cuando corresponda.
+- [x] Preferencias y datos opcionales de aplicación no se presentan como gestión integral de datos laborales.
+- [x] Limpiar favoritos o preferencias no equivale a ejercer supresión formal.
+- [x] Cambiar permisos de ubicación o notificaciones no modifica datos laborales.
+- [x] El carné permanece como proyección de identificación y elegibilidad, no como editor de maestros.
+- [x] La fuente de verdad se comunica en lenguaje humano cuando es necesario para entender una limitación.
+- [x] No se exponen nombres de tablas, RPC, RLS, buckets o tokens al trabajador.
+- [x] La superficie aplica minimización aun cuando el sujeto sea el propio trabajador.
+- [x] No se muestran datos de terceros ni conteos que permitan inferirlos.
+- [x] Los estados de error distinguen ausencia de información de imposibilidad de verificarla.
+- [x] La recuperación no duplica solicitudes ni mutaciones.
+- [x] Los estados y acciones son accesibles sin depender exclusivamente de color o iconografía.
+- [x] El AS-IS mixto de `/documents` queda documentado como brecha, no como contrato futuro.
+- [x] La ambigüedad actual entre “datos personales” y limpieza de preferencias queda resuelta conceptualmente.
+- [x] No se crea una ruta física, componente, tabla, bucket, RPC, RLS, permiso ni estado empresarial nuevo.
+- [x] No se modifica Supabase.
+- [x] La tarea reutiliza la cobertura existente sin crear ni modificar requisitos de prueba.
+- [x] `ANIMA-UX-014` conserva ownership exclusivo sobre la simplificación de administración de equipo autorizada.
+- [x] No existe materialización física propia para UX-013.
+
+---
+
+#### 41. Límites
+
+Esta tarea no:
+
+- implementa cambios en `vento-anima`;
+- crea o modifica migraciones, tablas, vistas, funciones, RPC, triggers, RLS, Storage, Edge Functions o datos;
+- crea un nuevo maestro de empleados o documentos;
+- redefine autorización documental;
+- define políticas legales de retención, privacidad o disposición;
+- fija un catálogo de documentos solicitables;
+- define plantillas o contenido de constancias laborales;
+- implementa firma, OCR, escaneo, certificación o archivo externo;
+- implementa administración de equipo;
+- autoriza acceso a datos de terceros;
+- convierte preferencias de aplicación en datos laborales;
+- decide rutas físicas definitivas;
+- ejecuta pruebas con trabajadores reales;
+- habilita una instancia física.
+
+---
+
+#### 42. Hallazgos y dependencias diferidas
+
+| Hallazgo | Bloquea UX-013 | Propietario | Condición de salida |
+| --- | --- | --- | --- |
+| `/documents` actual mezcla consulta personal con lectura ampliada, carga, filtros y eliminación. | No; la separación TO-BE queda especificada. | Materialización E5 de ANIMA y contratos propietarios de gobierno documental/autorización. | La superficie personal deja de exponer capacidades de terceros y la administración queda en su carril autorizado. |
+| La eliminación AS-IS borra primero el registro y luego intenta retirar el archivo de Storage. | No para la especificación; sí es una brecha física que no debe preservarse como regla. | Gobierno documental, autorización y paquete físico propietario. | La disposición sigue el ciclo documental autorizado y conserva evidencia/retención aplicables. |
+| Configuración usa “Gestión de datos personales” para una limpieza de favoritos y preferencias opcionales. | No; la taxonomía TO-BE queda resuelta. | Materialización de ANIMA. | La copy y navegación distinguen preferencias/datos opcionales, perfil laboral y privacidad formal. |
+| El carné proyecta datos laborales, pero no existe en el AS-IS observado un editor general de perfil laboral. | No; UX-013 define la frontera sin inventar edición. | Materialización de ANIMA y fuentes propietarias de identidad laboral. | Los datos permitidos aparecen en `Mi perfil laboral` con acción correcta por categoría y fuente. |
+| La administración de equipo permanece pendiente. | No. | ANIMA-UX-014. | UX-014 define la experiencia administrativa autorizada sin contaminar el carril personal. |
+
+---
+
+#### 43. Handoff a ANIMA-UX-014
+
+`ANIMA-UX-014` recibe una experiencia personal ya depurada de administración de terceros.
+
+Su entrada canónica queda limitada a la administración de equipo autorizada:
+
+- superficies de Team y gestión de integrantes;
+- acciones administrativas sobre terceros;
+- alcance, autorización y segregación correspondientes;
+- navegación entre carril personal y carril administrativo sin mezclarlos.
+
+UX-014 no debe reintroducir en **Mis documentos laborales**, **Mi perfil laboral** o configuración personal filtros, controles o metadatos administrativos solo para reutilizar componentes existentes.
+
+---
+
+#### 44. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-012 — Permitir reanudar una marcación interrumpida`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-013 — Simplificar documentos y datos personales`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-014 — Simplificar administración de equipo autorizada`
+
+
 ### [ ] ANIMA-UX-014 — Simplificar administración de equipo autorizada
 ### [ ] ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
 ### [ ] ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
