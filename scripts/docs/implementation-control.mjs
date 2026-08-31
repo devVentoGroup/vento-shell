@@ -343,7 +343,10 @@ export function deriveImplementationControl({
 
   let unfinishedGlobal = null;
   for (const instance of globalCandidates) {
-    if (unfinishedGlobal && instance.status === 'READY_FOR_AUTHORIZATION') {
+    if (
+      unfinishedGlobal
+      && ['READY_FOR_AUTHORIZATION', 'PENDING_AUTHORIZATION'].includes(instance.status)
+    ) {
       instance.status = 'WAITING_FOR_PREVIOUS_INSTANCE';
       instance.blocker = `Debe verificarse primero ${unfinishedGlobal.instanceId}.`;
     }

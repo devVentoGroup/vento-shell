@@ -624,6 +624,7 @@ export function classifyInfraPath(filePath) {
     || normalized.startsWith('.vscode/')
     || normalized.startsWith('templates/')
     || normalized.startsWith('docs/plan-canonico/modular/package-gate-instances/')
+    || normalized.startsWith('docs/plan-canonico/modular/implementation-instances/')
   ) return 'ALLOWED';
   return 'OTHER';
 }
