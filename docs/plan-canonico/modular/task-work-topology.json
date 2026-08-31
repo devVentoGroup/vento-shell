@@ -295,6 +295,7 @@
             "AUTH-DB-017",
             "AUTH-DB-019",
             "AUTH-DB-033",
+            "AUTH-DB-036",
             "AUTH-DB-035",
             "AUTH-DB-034",
             "AUTH-DB-032",
@@ -729,6 +730,7 @@
             "AUTH-DB-017",
             "AUTH-DB-019",
             "AUTH-DB-033",
+            "AUTH-DB-036",
             "AUTH-DB-035",
             "AUTH-DB-034",
             "AUTH-DB-032",
@@ -925,16 +927,16 @@
   "reconciliation_progress": {
     "reconciliation_id": "IMPLEMENTATION-TOPOLOGY-RECONCILIATION-20260819",
     "source_audit_sha256": "27d00bfb84e1bbe323d6ae0addc9895fccf3ad704ba5fcf37f3e28e6e24b219f",
-    "implementation_task_total": 974,
+    "implementation_task_total": 975,
     "reviewed_ranges": [
       {
         "from_position": 1,
-        "to_position": 974
+        "to_position": 975
       }
     ],
-    "reviewed_count": 974,
+    "reviewed_count": 975,
     "unreviewed_count": 0,
-    "next_position": 975,
+    "next_position": 976,
     "status": "PARTIAL_REVIEW_IN_PROGRESS",
     "rule": "Las tareas fuera de reviewed_ranges permanecen UNREVIEWED y no reciben ninguna relajación temporal hasta ser analizadas en un bloque posterior."
   }
