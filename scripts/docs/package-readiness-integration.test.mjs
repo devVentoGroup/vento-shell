@@ -35,8 +35,16 @@ test('local sync verifica readiness sin modificar estado versionado', () => {
   assert.match(syncSource, /VERSIONED_WORKTREE: UNCHANGED/u);
 });
 
-test('package.json enruta starter, status, commit-scope y lifecycle por la capa readiness', () => {
-  assert.equal(packageJson.scripts['docs:chatgpt:starter'], 'node scripts/docs/chatgpt-work-starter-readiness.mjs');
+test('package.json enruta starter, status, commit-scope y lifecycle por readiness con carril de correcciones separado', () => {
+  const starterCommand = packageJson.scripts['docs:chatgpt:starter'];
+  assert.equal(
+    starterCommand,
+    'node scripts/docs/chatgpt-work-starter-readiness.mjs && node scripts/docs/correction-starter.mjs',
+  );
+  const readinessStarter = starterCommand.indexOf('chatgpt-work-starter-readiness.mjs');
+  const correctionStarter = starterCommand.indexOf('correction-starter.mjs');
+  assert.ok(readinessStarter >= 0);
+  assert.ok(correctionStarter > readinessStarter);
   assert.equal(packageJson.scripts['docs:implementation:status'], 'node scripts/docs/implementation-readiness-coordinator.mjs');
   assert.equal(packageJson.scripts['docs:commit-scope:check'], 'node scripts/docs/commit-scope-readiness.mjs');
   assert.equal(packageJson.scripts['docs:task:start'], 'node scripts/docs/task-branch-lifecycle-readiness.mjs start');
@@ -54,6 +62,7 @@ test('package.json enruta starter, status, commit-scope y lifecycle por la capa 
   assert.match(packageJson.scripts['docs:plan:check'], /package-selection-control\.mjs check/u);
   assert.match(packageJson.scripts['docs:plan:test'], /package-gate-control\.test\.mjs/u);
   assert.match(packageJson.scripts['docs:plan:test'], /package-selection-control\.test\.mjs/u);
+  assert.match(packageJson.scripts['docs:plan:test'], /correction-starter\.test\.mjs/u);
 });
 
 test('el lifecycle documental escanea antes y después del cierre y no publica PASS antes del postcheck', () => {

@@ -322,19 +322,35 @@ test('docs:plan:build materializa la siguiente instancia pendiente antes del cor
   assert.ok(finalControl > coreBuild);
 });
 
-test('package.json expone el lifecycle fisico y docs:plan:test lo autocertifica', () => {
+test('package.json expone el lifecycle fisico protegido y docs:plan:test lo autocertifica', () => {
   const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  const guardSource = fs.readFileSync('scripts/docs/implementation-correction-guard.mjs', 'utf8');
   assert.equal(
     packageJson.scripts['docs:implementation:start'],
-    'node scripts/docs/implementation-branch-lifecycle.mjs start',
+    'node scripts/docs/implementation-correction-guard.mjs start',
   );
   assert.equal(
     packageJson.scripts['docs:implementation:finish'],
     'node scripts/docs/implementation-branch-lifecycle.mjs finish',
   );
+  const guardCheck = guardSource.indexOf('assertImplementationStartNotBlocked({ instanceId: args.instanceId });');
+  const lifecycleDelegation = guardSource.indexOf(
+    'return startImplementation({ instanceId: args.instanceId });',
+    guardCheck,
+  );
+  assert.ok(guardCheck >= 0);
+  assert.ok(lifecycleDelegation > guardCheck);
+  assert.match(
+    guardSource,
+    /import \{ startImplementation \} from '\.\/implementation-branch-lifecycle\.mjs';/u,
+  );
   assert.match(
     packageJson.scripts['docs:plan:test'],
     /scripts\/docs\/implementation-branch-lifecycle\.test\.mjs/u,
+  );
+  assert.match(
+    packageJson.scripts['docs:plan:test'],
+    /scripts\/docs\/implementation-correction-guard\.test\.mjs/u,
   );
 });
 test('sync local de derivados protege watcher y no cambia el worktree versionado', () => {
