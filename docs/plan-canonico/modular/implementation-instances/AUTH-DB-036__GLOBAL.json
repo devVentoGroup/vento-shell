@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-036::GLOBAL",
   "task_id": "AUTH-DB-036",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -126,6 +126,23 @@
     "MATERIALIZATION Data_API_exposure=NO",
     "MATERIALIZATION runtime_client_grants=NONE",
     "MATERIALIZATION REMOTE_TARGETS_USED=NO",
-    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO"
+    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS",
+    "VALIDATION #3 npm run supabase:recovery:local PASS",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0",
+    "VALIDATION #4 candidate_sha=eb0c95a852ff4963d14b6e78c0e40454a4c67b99",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "VALIDATION npm run docs:plan:check PASS",
+    "VALIDATION npm run docs:plan:test PASS",
+    "VALIDATION npm run docs:treq:check PASS",
+    "VALIDATION npm run docs:treq:test PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS",
+    "CHECKPOINT_LOCAL eb0c95a852ff4963d14b6e78c0e40454a4c67b99",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "RESULT AUTH-DB-036::GLOBAL VERIFIED"
   ]
 }
