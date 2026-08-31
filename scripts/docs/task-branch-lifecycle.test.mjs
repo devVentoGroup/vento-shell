@@ -152,6 +152,12 @@ test('cambio transversal usa infra/<change-id> y bloquea archivos canonicos de t
     'infra/task-lifecycle-finish-verification',
   );
   assert.throws(() => infraBranchName('../main'), /CHANGE_ID invalido/u);
+  assert.equal(
+    classifyInfraPath(
+      'docs/plan-canonico/modular/implementation-instances/AUTH-DB-036__GLOBAL.json',
+    ),
+    'ALLOWED',
+  );
 
   assert.equal(classifyInfraPath('scripts/docs/task-branch-lifecycle.mjs'), 'ALLOWED');
   assert.equal(classifyInfraPath('scripts/quality/lint-ratchet.mjs'), 'ALLOWED');

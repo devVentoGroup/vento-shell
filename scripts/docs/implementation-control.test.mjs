@@ -249,6 +249,33 @@ test('la segunda instancia global solo queda elegible después de verificar la p
   );
 });
 
+test('un PENDING_AUTHORIZATION posterior espera cuando aparece una instancia global previa sin verificar', () => {
+  const pendingSecond = pendingInstanceRecord({
+    instanceId: 'SHELL-CI-002::GLOBAL',
+    taskId: 'SHELL-CI-002',
+  });
+
+  const result = deriveImplementationControl({
+    control: {
+      ...baseControl,
+      instances: [pendingSecond],
+    },
+    workTopology: topology(),
+  });
+
+  assert.equal(result.primaryAction.type, 'AUTORIZAR_IMPLEMENTACION');
+  assert.equal(result.primaryAction.target, 'SHELL-CI-001::GLOBAL');
+
+  const second = result.physical.instances.find(
+    ({ instanceId }) => instanceId === 'SHELL-CI-002::GLOBAL',
+  );
+
+  assert.ok(second);
+  assert.equal(second.status, 'WAITING_FOR_PREVIOUS_INSTANCE');
+  assert.equal(second.record.status, 'PENDING_AUTHORIZATION');
+  assert.match(second.blocker, /SHELL-CI-001::GLOBAL/u);
+});
+
 test('el historial físico exige almacenamiento acumulativo por archivo', () => {
   assert.throws(() => deriveImplementationControl({
     control: {
