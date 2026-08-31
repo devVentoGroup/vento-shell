@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "DOCUMENTARY_CONTRADICTION",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "AUTH-DB-035::GLOBAL"
@@ -17,12 +17,47 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "npm run docs:correction:check",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
-  "opened_at": "2026-08-31T20:03:13.210Z"
+  "zero_treq_reason": "AUTH-DB-036::CORR-001 corrige exclusivamente contradicciones documentales de continuidad y precedencia física sin crear ni modificar requisitos TREQ.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-31T15:19:04-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza AUTH-DB-036::CORR-001 para corregir exclusivamente las contradicciones documentales de continuidad y precedencia entre AUTH-DB-033, AUTH-DB-036 y AUTH-DB-035, manteniendo bloqueada AUTH-DB-035::GLOBAL hasta la verificación de la corrección y sin modificar SQL, migraciones, 04A/TREQ ni objetivos Supabase remotos.",
+    "source_contract_sha256": "f473874bec298c60949253571fac63a1643eda4029d2e97d31eb43eccd612792"
+  },
+  "evidence": [
+    "IMPLEMENTED reconciliación documental completa de continuidad y precedencia AUTH-DB-033 -> AUTH-DB-036 -> AUTH-DB-035.",
+    "IMPLEMENTED AUTH-DB-035 consume explícitamente app_private.resolve_organization_id() de AUTH-DB-036.",
+    "QUALITY_REPAIR npm run quality:repair ejecutado exactamente una vez antes de IMPLEMENTED.",
+    "REMOTE_TARGETS_USED: NO",
+    "VERIFIED npm run docs:correction:check PASS.",
+    "VERIFIED npm run docs:plan:build PASS.",
+    "VERIFIED npm run docs:plan:check PASS.",
+    "VERIFIED npm run docs:plan:test PASS: 334/334.",
+    "VERIFIED npm run docs:treq:check PASS.",
+    "VERIFIED npm run docs:treq:test PASS: 56/56.",
+    "VERIFIED git --no-pager diff --check PASS."
+  ],
+  "opened_at": "2026-08-31T20:03:13.21Z"
 }
