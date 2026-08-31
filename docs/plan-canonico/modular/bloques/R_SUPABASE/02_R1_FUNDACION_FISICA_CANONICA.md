@@ -5629,6 +5629,992 @@ No se modifica ninguna fila del Registro Canónico de Requisitos de Prueba.
 `AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto`
 
 
+### ✅ AUTH-DB-036 — Materializar autoridad organizacional raíz para organization_id
+
+**Estado:** APROBADA
+**Tarea anterior:** AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura
+**Tarea siguiente:** AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
+**Tipo de tarea:** Documental
+**Bloque:** R — Fundación física, migraciones por dominio y normalización
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md`
+**Estado físico resultante:** Contrato de fundación mínima de `ORGANIZATION_SCOPE` cerrado; futura instancia global `AUTH-DB-036::GLOBAL` pendiente de autorización física explícita
+**Cambios físicos autorizados:** ninguno
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+`AUTH-DB-036` define la fundación organizacional mínima que debe existir antes de que cualquier componente transversal dependa de `organization_id`.
+
+La tarea materializa conceptualmente una única autoridad raíz perteneciente a:
+
+```text
+VDOM-001
+→ VSCHEMA-001
+→ org_governance
+→ ORGANIZATION_SCOPE
+```
+
+Su objetivo es cerrar una brecha estructural detectada entre `AUTH-DB-033` y `AUTH-DB-035`:
+
+```text
+AUTH-DB-035
+→ necesita organization_id canónico
+
+pero
+
+VDOM-001
+→ todavía no dispone de una fuente materializada de ORGANIZATION_SCOPE
+```
+
+La solución no convierte a `AUTH-DB-035` en propietario de organización ni adelanta la migración completa de `VDOM-001`.
+
+---
+
+#### 2. Resultado canónico
+
+Queda definido:
+
+```text
+AUTH-DB-036
+→ contrato documental único
+
+AUTH-DB-036::GLOBAL
+→ futura instancia física global reutilizable
+
+resultado esperado
+→ existe una fuente autoritativa mínima de ORGANIZATION_SCOPE
+→ existe un UUID estable para VENTO GROUP — ECOSISTEMA
+→ organization_id deja de depender de inferencias
+→ existe una resolución privada inequívoca
+→ 0 organizaciones aplicables falla cerrado
+→ más de 1 organización aplicable sin desambiguación falla cerrado
+→ AUTH-DB-035 consume la autoridad; no la crea
+```
+
+---
+
+#### 3. Topología y gate
+
+La tarea queda clasificada como:
+
+```text
+mode = GLOBAL_ENABLE_ONCE
+execution_gate = PRE_E5_FOUNDATION
+instance = AUTH-DB-036::GLOBAL
+```
+
+Consecuencias:
+
+1. existe como máximo una instancia física global;
+2. no se crea una instancia por `package_id`;
+3. puede materializarse antes de E5 porque es una fundación transversal reutilizable;
+4. no constituye una migración vertical completa de `VDOM-001`;
+5. no autoriza `AUTH-DB-035::GLOBAL`;
+6. no autoriza ningún paquete consumidor;
+7. toda materialización física requiere autorización explícita independiente.
+
+---
+
+#### 4. Fuentes vinculantes y precedencia
+
+La tarea consume y preserva:
+
+- `CAP-SCOPE-001`, para separar `ORGANIZATION_SCOPE`, `LEGAL_SUBJECT`, `BRAND`, `OPERATIONAL_SITE`, `ORGANIZATIONAL_AREA` y demás conceptos;
+- `SUPA-ARC-002`, para `VDOM-001` como dominio empresarial estable;
+- `SUPA-ARC-003`, para `VSCHEMA-001 = org_governance`;
+- `SUPA-ARC-011`, para nombres de schemas, tablas y columnas;
+- `SUPA-ARC-012`, para claves, constraints, estados y timestamps;
+- `SUPA-ARC-013`, para funciones y triggers;
+- `SUPA-ARC-014`, para la política de `SECURITY DEFINER`;
+- `SUPA-ARC-015`, para exposición, grants y RLS;
+- `SUPA-TRANS-004`, para `VDOM-001` como primera responsabilidad de `W0_CONTROL_FOUNDATION`;
+- `AUTH-DB-016`, para la existencia previa de `org_governance`, `app_private` y los demás namespaces R1;
+- `AUTH-DB-018` y `AUTH-DB-017`, para separación entre owner schemas, capa privada y superficie expuesta;
+- `AUTH-DB-033`, para el contexto canónico ya materializado;
+- `AUTH-DB-035`, como consumidor posterior de `organization_id`;
+- `AUTH-DB-020`, como propietario posterior de la migración completa por dominio.
+
+Precedencia:
+
+```text
+CAP-SCOPE-001 / E3
+→ fija semántica y ownership
+
+AUTH-DB-016
+→ crea el namespace
+
+AUTH-DB-033
+→ resuelve AccessContext sin apropiarse de organización
+
+AUTH-DB-036
+→ materializa la raíz mínima de ORGANIZATION_SCOPE
+
+AUTH-DB-035
+→ consume organization_id para frescura
+
+AUTH-DB-020::<package_id>
+→ amplía y migra posteriormente VDOM-001 sin sustituir su UUID raíz
+```
+
+---
+
+#### 5. Frontera exacta de responsabilidad
+
+`AUTH-DB-036` sí gobierna:
+
+- identidad mínima de `ORGANIZATION_SCOPE`;
+- UUID de la organización raíz;
+- código estable de la organización raíz;
+- nombre visible inicial;
+- estado activo/inactivo;
+- invariantes de identidad;
+- resolución privada de `organization_id`;
+- bootstrap inicial y su idempotencia;
+- aislamiento frente a roles cliente;
+- pruebas estructurales y de fallo cerrado.
+
+`AUTH-DB-036` no gobierna:
+
+- titulares jurídicos;
+- razones sociales;
+- marcas;
+- establecimientos comerciales;
+- sedes operativas;
+- áreas;
+- tipos de sede;
+- tipos de área;
+- unidades de negocio;
+- canales;
+- impuestos;
+- facturación;
+- perfiles laborales;
+- clientes;
+- dispositivos;
+- permisos;
+- generaciones de frescura;
+- token de frescura;
+- outbox de invalidación;
+- migración completa de `VDOM-001`.
+
+---
+
+#### 6. Semántica de `organization_id`
+
+`organization_id` representa exclusivamente:
+
+```text
+UUID estable e inmutable
+de la entidad ORGANIZATION_SCOPE
+a la que pertenece el contexto empresarial
+```
+
+Para el estado actual de Vento:
+
+```text
+ORGANIZATION_SCOPE
+= VENTO GROUP — ECOSISTEMA
+```
+
+No equivale a:
+
+```text
+LEGAL_SUBJECT
+BRAND
+COMMERCIAL_ESTABLISHMENT
+OPERATIONAL_SITE
+ORGANIZATIONAL_AREA
+APPLICATION
+ROLE
+WEB_DOMAIN
+EMAIL_DOMAIN
+```
+
+---
+
+#### 7. Fuente física autoritativa mínima
+
+La fuente canónica mínima se fija como:
+
+```text
+org_governance.organization_scopes
+```
+
+Esta relación es autoridad únicamente de `ORGANIZATION_SCOPE`.
+
+No es:
+
+- catálogo de personas jurídicas;
+- catálogo de marcas;
+- catálogo de sedes;
+- tabla de configuración de aplicaciones;
+- tabla de tenancy inferida;
+- tabla de permisos.
+
+---
+
+#### 8. Columnas mínimas
+
+`org_governance.organization_scopes` deberá representar, como mínimo:
+
+```text
+organization_id uuid
+organization_code text
+display_name text
+status text
+created_at timestamptz
+updated_at timestamptz
+```
+
+Reglas:
+
+1. `organization_id` es la clave primaria;
+2. `organization_code` es único;
+3. `organization_id` no acepta `NULL`;
+4. `organization_code` no acepta `NULL`;
+5. `display_name` no acepta `NULL`;
+6. `status` no acepta `NULL`;
+7. `created_at` no acepta `NULL`;
+8. `updated_at` no acepta `NULL`;
+9. `organization_id` se genera en servidor mediante la primitive UUID aprobada;
+10. el caller no define el UUID del bootstrap inicial.
+
+---
+
+#### 9. Código organizacional inicial
+
+El código estable de la raíz inicial será exactamente:
+
+```text
+VENTO_GROUP_ECOSYSTEM
+```
+
+El nombre visible inicial será:
+
+```text
+Vento Group — Ecosistema
+```
+
+Reglas:
+
+1. código y nombre no se confunden con una razón social;
+2. el código no se deriva del nombre visible;
+3. cambiar el nombre visible no cambia el UUID;
+4. cambiar el nombre visible no cambia el código;
+5. no existe normalización silenciosa de códigos.
+
+---
+
+#### 10. Estados
+
+La versión inicial admite exactamente:
+
+```text
+ACTIVE
+INACTIVE
+```
+
+Reglas:
+
+1. el bootstrap inicial queda `ACTIVE`;
+2. `INACTIVE` conserva identidad e historia;
+3. desactivar no elimina la fila;
+4. eliminar físicamente la raíz no es una operación ordinaria;
+5. cualquier lifecycle adicional pertenece a una evolución posterior explícita.
+
+---
+
+#### 11. Inmutabilidad de identidad
+
+Después de creada una organización:
+
+```text
+organization_id
+→ INMUTABLE
+
+organization_code
+→ INMUTABLE
+```
+
+`display_name` y `status` pueden evolucionar mediante operaciones propietarias futuras sin reasignar identidad.
+
+Una operación que intente cambiar `organization_id` o `organization_code` debe fallar.
+
+---
+
+#### 12. Bootstrap inicial
+
+La futura instancia `AUTH-DB-036::GLOBAL` deberá crear exactamente una raíz inicial cuando no exista:
+
+```text
+organization_code = VENTO_GROUP_ECOSYSTEM
+display_name = Vento Group — Ecosistema
+status = ACTIVE
+organization_id = UUID generado una sola vez por la base
+```
+
+El bootstrap es fundación de identidad transversal, no migración completa del dominio.
+
+No se obtendrá desde:
+
+- `public.sites`;
+- `public.areas`;
+- aplicaciones;
+- dominios web;
+- emails;
+- roles;
+- metadata Auth;
+- nombres de schemas;
+- constantes UUID;
+- IDs de una sede;
+- datos de facturación.
+
+---
+
+#### 13. Idempotencia del bootstrap
+
+Repetir la materialización sobre un estado ya conforme:
+
+```text
+→ no crea una segunda raíz
+→ no cambia organization_id
+→ no cambia organization_code
+→ no duplica la fila
+```
+
+Si existe `VENTO_GROUP_ECOSYSTEM` con una identidad incompatible o datos estructurales contradictorios:
+
+```text
+→ BLOCK
+```
+
+No se corrige mediante sustitución silenciosa.
+
+---
+
+#### 14. Cardinalidad operativa inicial
+
+La fundación admite que el modelo futuro contenga varias organizaciones, pero la resolución inicial solo es válida cuando existe exactamente una organización `ACTIVE` aplicable.
+
+Estado inicial esperado:
+
+```text
+ACTIVE ORGANIZATION_SCOPE = 1
+```
+
+La tabla no impone una arquitectura permanentemente single-organization.
+
+---
+
+#### 15. Resolver privado canónico
+
+La resolución se fija mediante:
+
+```text
+app_private.resolve_organization_id()
+→ uuid
+```
+
+Responsabilidad:
+
+```text
+consultar autoridad org_governance
+→ evaluar organizaciones ACTIVE
+→ exigir cardinalidad inequívoca
+→ devolver organization_id
+```
+
+El resolver no acepta `organization_id` desde el caller.
+
+---
+
+#### 16. Semántica del resolver
+
+Resultado:
+
+```text
+0 ACTIVE
+→ ORGANIZATION_SCOPE_MISSING
+→ FAIL CLOSED
+
+1 ACTIVE
+→ devolver organization_id
+
+>1 ACTIVE sin relación canónica de pertenencia
+→ ORGANIZATION_SCOPE_AMBIGUOUS
+→ FAIL CLOSED
+```
+
+No existe fallback.
+
+---
+
+#### 17. Evolución multi-organización
+
+Cuando Vento introduzca múltiples `ORGANIZATION_SCOPE` activos, deberá existir una relación autoritativa explícita que permita determinar la organización aplicable desde el actor, recurso o contexto aprobado.
+
+Hasta entonces:
+
+```text
+más de 1 ACTIVE
+→ no elegir por heurística
+→ no elegir la primera fila
+→ no elegir por app
+→ no elegir por sede
+→ no elegir por marca
+→ no elegir por dominio web
+→ FAIL CLOSED
+```
+
+La evolución futura preserva los UUID existentes.
+
+---
+
+#### 18. Seguridad del resolver
+
+`app_private.resolve_organization_id()` será una primitive interna.
+
+Reglas:
+
+1. no forma parte de `api`;
+2. no se publica como RPC cliente;
+3. `anon` no recibe `EXECUTE`;
+4. `authenticated` no recibe `EXECUTE`;
+5. `PUBLIC` no recibe `EXECUTE`;
+6. no usa `SECURITY DEFINER` por defecto;
+7. cualquier excepción futura a `SECURITY DEFINER` exige contrato y justificación explícitos.
+
+---
+
+#### 19. Exposición de la fuente
+
+`org_governance.organization_scopes` permanece en owner schema privado.
+
+Reglas:
+
+```text
+anon
+→ sin acceso directo
+
+authenticated
+→ sin acceso directo
+
+PUBLIC
+→ sin acceso directo
+```
+
+`org_governance` no se añade como schema empresarial expuesto de Data API.
+
+La futura interfaz administrativa deberá operar mediante contratos controlados, no mediante exposición directa de la tabla.
+
+---
+
+#### 20. RLS y grants
+
+La materialización deberá conservar defensa en profundidad y privilegios mínimos.
+
+Debe demostrar:
+
+- roles cliente sin `USAGE` útil sobre `org_governance`;
+- ausencia de `SELECT`, `INSERT`, `UPDATE` y `DELETE` cliente sobre la fuente;
+- ausencia de `PUBLIC EXECUTE` sobre el resolver;
+- ausencia de acceso accidental por default privileges;
+- separación entre privileges y autorización empresarial.
+
+No se usa un grant amplio como mecanismo de integración.
+
+---
+
+#### 21. Relación con `AUTH-DB-033`
+
+`AUTH-DB-036` no reabre ni redefine:
+
+```text
+app_private.get_access_context(text)
+api.get_safe_access_context(text)
+canonicalización
+context_fingerprint
+source_fingerprints
+readiness
+issue catalog
+```
+
+`AUTH-DB-033` permanece cerrada como contrato de contexto.
+
+La nueva fundación únicamente añade una autoridad organizacional que tareas posteriores pueden consumir.
+
+---
+
+#### 22. Relación con `AUTH-DB-035`
+
+`AUTH-DB-035` deberá consumir:
+
+```text
+app_private.resolve_organization_id()
+```
+
+y queda expresamente impedida de:
+
+- crear `org_governance.organization_scopes`;
+- sembrar la raíz organizacional;
+- generar un UUID de organización propio;
+- derivar organización desde `app_code`;
+- derivar organización desde sede;
+- derivar organización desde rol;
+- derivar organización desde email o dominio;
+- reemplazar el resolver de `AUTH-DB-036`.
+
+Precedencia obligatoria:
+
+```text
+AUTH-DB-033
+→ AUTH-DB-036
+→ AUTH-DB-035
+→ AUTH-DB-034
+→ AUTH-DB-032
+```
+
+---
+
+#### 23. Relación con `AUTH-DB-020`
+
+La migración completa posterior de `VDOM-001` puede incorporar:
+
+- personas jurídicas;
+- marcas;
+- establecimientos;
+- sedes;
+- áreas;
+- unidades organizacionales;
+- relaciones de pertenencia;
+- consumidores;
+- compatibilidad con fuentes legacy.
+
+Pero deberá conservar:
+
+```text
+organization_id existente
+organization_code existente
+semántica ORGANIZATION_SCOPE
+```
+
+`AUTH-DB-020::<package_id>` no reemplaza la identidad raíz creada por `AUTH-DB-036`.
+
+---
+
+#### 24. Frontera con `public.sites`
+
+`public.sites` no es fuente de `organization_id`.
+
+Una sede representa territorio u operación física y permanece semánticamente separada de `ORGANIZATION_SCOPE`.
+
+La existencia de una o varias sedes no determina cuántas organizaciones existen.
+
+---
+
+#### 25. Frontera con personas jurídicas y marcas
+
+No se permite:
+
+```text
+organization_id = legal_subject_id
+organization_id = brand_id
+```
+
+Una organización puede posteriormente relacionarse con varios titulares, marcas y establecimientos sin perder su identidad raíz.
+
+---
+
+#### 26. Integridad referencial futura
+
+Las relaciones que en tareas posteriores incorporen `organization_id` deberán referenciar la autoridad de `org_governance.organization_scopes`.
+
+Esta tarea no añade masivamente la columna a tablas legacy ni ejecuta backfills de dominio.
+
+---
+
+#### 27. Timestamps
+
+Reglas iniciales:
+
+```text
+created_at
+→ instante de creación de la identidad
+
+updated_at
+→ instante de la última modificación permitida de atributos mutables
+```
+
+Los timestamps no forman parte de la identidad y no sustituyen generación, versión ni auditoría.
+
+---
+
+#### 28. Concurrencia
+
+El bootstrap debe ser seguro frente a ejecuciones concurrentes.
+
+La materialización deberá impedir que dos transacciones concurrentes creen dos filas con el mismo `organization_code`.
+
+La unicidad se resuelve en la base, no mediante una comprobación previa exclusiva del cliente.
+
+---
+
+#### 29. Reconstrucción limpia
+
+Una reconstrucción desde cero puede generar un UUID diferente al de otro ambiente independiente.
+
+Eso es válido.
+
+La estabilidad exigida es:
+
+```text
+dentro del mismo estado persistente
+→ organization_id no cambia
+```
+
+No se exige que desarrollo, staging y producción compartan el mismo UUID físico.
+
+---
+
+#### 30. Paridad entre ambientes
+
+Los ambientes deben compartir:
+
+- mismo contrato;
+- mismo nombre de tabla;
+- mismas columnas;
+- mismos constraints;
+- mismo código organizacional;
+- misma semántica;
+- mismo resolver;
+- mismas reglas de acceso.
+
+No se exige UUID idéntico entre ambientes.
+
+---
+
+#### 31. Uso por freshness
+
+Después de `AUTH-DB-036::GLOBAL`:
+
+```text
+AUTH-DB-035
+→ obtiene organization_id
+→ lo incorpora a generations
+→ lo incorpora a subject_key
+→ lo incorpora al token
+→ lo incorpora al outbox
+```
+
+`AUTH-DB-036` no implementa esas estructuras.
+
+---
+
+#### 32. Cambios de organización e invalidación
+
+La creación de la raíz precede al mecanismo de freshness.
+
+Las futuras mutaciones de atributos organizacionales relevantes deberán integrarse con el mecanismo de invalidación cuando `AUTH-DB-035` esté disponible.
+
+La creación inicial no obliga a que `AUTH-DB-036` implemente un segundo sistema de generaciones.
+
+---
+
+#### 33. Auditoría
+
+La materialización inicial debe dejar evidencia suficiente de:
+
+- identidad creada;
+- código;
+- estado;
+- timestamp;
+- origen de la materialización.
+
+No crea una tabla de auditoría paralela.
+
+La auditoría transversal futura pertenece a las tareas propietarias de `audit`.
+
+---
+
+#### 34. Índices mínimos
+
+Se requiere:
+
+```text
+PRIMARY KEY
+→ organization_id
+
+UNIQUE
+→ organization_code
+```
+
+No se crean índices adicionales sin una consulta o patrón de acceso que los justifique.
+
+---
+
+#### 35. Dependencias físicas
+
+La futura instancia requiere como mínimo:
+
+```text
+R0 aplicable
+→ VERIFIED
+
+AUTH-DB-016::GLOBAL
+→ VERIFIED
+
+AUTH-DB-018::GLOBAL
+→ VERIFIED cuando sea necesario para la separación interna
+
+AUTH-DB-017::GLOBAL
+→ no debe exponer accidentalmente org_governance
+
+AUTH-DB-033::GLOBAL
+→ VERIFIED
+```
+
+La autorización física de `AUTH-DB-036::GLOBAL` permanece independiente.
+
+---
+
+#### 36. Orden de futura materialización
+
+La futura instancia deberá:
+
+```text
+1. recapturar baseline
+2. confirmar existencia y ownership de org_governance y app_private
+3. confirmar ausencia de una autoridad ORGANIZATION_SCOPE competidora
+4. materializar org_governance.organization_scopes
+5. materializar constraints e invariantes de identidad
+6. ejecutar bootstrap VENTO_GROUP_ECOSYSTEM
+7. materializar app_private.resolve_organization_id()
+8. cerrar grants y default privileges
+9. probar resolución válida
+10. probar missing y ambiguous
+11. probar idempotencia y concurrencia
+12. probar aislamiento de roles cliente
+13. probar reconstrucción limpia
+14. registrar evidencia y rollback
+```
+
+---
+
+#### 37. Rollback
+
+El rollback de la instancia debe distinguir:
+
+```text
+sin consumidores posteriores
+→ puede retirar los objetos creados por AUTH-DB-036
+
+con consumidores posteriores
+→ no puede eliminar ni regenerar organization_id
+→ requiere corrección forward
+```
+
+Nunca se ejecuta un rollback que:
+
+- cambie el UUID existente;
+- reasigne referencias;
+- invente un reemplazo;
+- borre datos ya referenciados por tareas posteriores.
+
+---
+
+#### 38. Pruebas positivas mínimas
+
+La futura instancia deberá demostrar:
+
+1. existe `org_governance.organization_scopes`;
+2. las columnas mínimas existen con tipos correctos;
+3. `organization_id` es PK;
+4. `organization_code` es único;
+5. `status` usa únicamente el vocabulario aprobado;
+6. existe una fila `VENTO_GROUP_ECOSYSTEM`;
+7. la fila está `ACTIVE`;
+8. el UUID no es nulo;
+9. el resolver devuelve el mismo UUID;
+10. repetir bootstrap no cambia el UUID;
+11. actualizar `display_name` no cambia identidad;
+12. el estado reconstruido satisface el mismo contrato.
+
+---
+
+#### 39. Pruebas negativas mínimas
+
+La futura instancia deberá demostrar:
+
+1. duplicar `organization_code` falla;
+2. modificar `organization_id` falla;
+3. modificar `organization_code` falla;
+4. cero organizaciones `ACTIVE` no produce un UUID utilizable;
+5. más de una organización `ACTIVE` sin vínculo canónico no produce un UUID utilizable;
+6. `anon` no consulta la tabla;
+7. `authenticated` no consulta la tabla;
+8. `anon` no ejecuta el resolver;
+9. `authenticated` no ejecuta el resolver;
+10. `PUBLIC` no ejecuta el resolver;
+11. una sede no se acepta como organización;
+12. una aplicación no se acepta como organización;
+13. una marca no se acepta como organización;
+14. un titular jurídico no se acepta como organización;
+15. no existe fallback hacia un UUID constante.
+
+---
+
+#### 40. Rendimiento
+
+La resolución inicial opera sobre un universo organizacional mínimo.
+
+Objetivo:
+
+```text
+resolver organization_id
+→ lookup local simple y determinista
+→ sin joins con aplicaciones, sedes, roles o identidad laboral
+```
+
+Cualquier índice adicional requiere evidencia de plan y medición.
+
+---
+
+#### 41. Observabilidad y evidencia futura
+
+La instancia física deberá registrar, como mínimo:
+
+- ambiente;
+- versión de migración;
+- estado before/after;
+- cardinalidad before/after;
+- UUID creado o preservado;
+- código creado o preservado;
+- resultado de idempotencia;
+- resultado de concurrencia;
+- resultado de pruebas positivas;
+- resultado de pruebas negativas;
+- grants efectivos;
+- drift final;
+- resultado de rollback ensayado.
+
+---
+
+#### 42. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+**Justificación:** la tarea no introduce una capacidad empresarial nueva; separa y materializa una precondición estructural ya aprobada por `CAP-SCOPE-001`, la arquitectura E3 y el contrato de `AUTH-DB-035`. Las pruebas definidas aquí concretan cobertura de la misma autoridad organizacional y del fallo cerrado ya exigidos por esos contratos.
+
+---
+
+#### 43. Decisiones vinculantes
+
+1. `AUTH-DB-036` es la única fundación R1 propietaria de la raíz mínima `ORGANIZATION_SCOPE`.
+2. Su instancia física es `AUTH-DB-036::GLOBAL`.
+3. Su modo es `GLOBAL_ENABLE_ONCE`.
+4. Su gate es `PRE_E5_FOUNDATION`.
+5. `VDOM-001 / org_governance` conserva ownership empresarial.
+6. La fuente mínima es `org_governance.organization_scopes`.
+7. `organization_id` es UUID estable e inmutable.
+8. `organization_code` es estable e inmutable.
+9. El código inicial es `VENTO_GROUP_ECOSYSTEM`.
+10. El nombre inicial es `Vento Group — Ecosistema`.
+11. El UUID se genera en servidor y no se hardcodea.
+12. La tabla no representa personas jurídicas, marcas, sedes ni áreas.
+13. El bootstrap inicial no deriva identidad desde datos legacy.
+14. El bootstrap es idempotente.
+15. La resolución inicial exige una organización `ACTIVE` inequívoca.
+16. Cero organizaciones activas falla cerrado.
+17. Varias organizaciones activas sin vínculo explícito fallan cerradas.
+18. El resolver es `app_private.resolve_organization_id()`.
+19. El resolver no recibe `organization_id` del caller.
+20. El resolver no se publica a roles cliente.
+21. `AUTH-DB-033` no se reabre.
+22. `AUTH-DB-035` consume la autoridad y no la crea.
+23. `AUTH-DB-020::<package_id>` conserva la identidad al ampliar `VDOM-001`.
+24. `public.sites` no es autoridad de organización.
+25. Ninguna aplicación, rol, email, dominio web o marca determina organización.
+26. La fuente permanece fuera de Data API cliente.
+27. No se crea un sistema de auditoría paralelo.
+28. No se crea un sistema de freshness paralelo.
+29. Esta tarea no ejecuta la migración completa de `VDOM-001`.
+30. Esta tarea no crea ni modifica TREQ.
+
+---
+
+#### 44. Criterios de aceptación
+
+`AUTH-DB-036` queda documentalmente completa cuando:
+
+1. existe una definición inequívoca de `organization_id`;
+2. `VDOM-001 / org_governance` queda como owner;
+3. se fija la fuente mínima `organization_scopes`;
+4. se fija el shape mínimo;
+5. se fija el código `VENTO_GROUP_ECOSYSTEM`;
+6. se fija generación server-side del UUID;
+7. se fija inmutabilidad;
+8. se fija bootstrap idempotente;
+9. se fija resolución privada;
+10. se fijan estados `ACTIVE` / `INACTIVE`;
+11. se fija fail-closed para missing y ambiguous;
+12. se prohíben inferencias por app, sede, rol, marca, legal subject y dominio;
+13. se preserva el límite con `AUTH-DB-033`;
+14. se establece precedencia sobre `AUTH-DB-035`;
+15. se preserva migración completa posterior de `VDOM-001`;
+16. se fijan seguridad, grants y no exposición;
+17. se fijan concurrencia e idempotencia;
+18. se fija rollback;
+19. se fijan pruebas positivas y negativas;
+20. se declaran cero cambios TREQ.
+
+---
+
+#### 45. Límites
+
+`AUTH-DB-036` no:
+
+- ejecuta SQL;
+- crea migraciones;
+- modifica Supabase remoto;
+- crea una persona jurídica;
+- crea una marca;
+- crea una sede;
+- crea un área;
+- migra datos desde `public`;
+- agrega `organization_id` masivamente a tablas existentes;
+- implementa generations;
+- implementa freshness token;
+- implementa outbox;
+- modifica `get_access_context`;
+- modifica `evaluate_authorization`;
+- modifica decisiones persistidas;
+- expone un endpoint cliente;
+- crea UI administrativa;
+- implementa VISO;
+- autoriza `AUTH-DB-035::GLOBAL`;
+- ejecuta `AUTH-DB-020::<package_id>`;
+- crea o modifica requisitos de prueba.
+
+---
+
+#### 46. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DB-033 — Implementar get_access_context canónico, sus resolvers privados y su proyección segura`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DB-036 — Materializar autoridad organizacional raíz para organization_id`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto`
+
+
 ### ✅ AUTH-DB-035 — Implementar token transaccional de frescura e invalidación del contexto
 
 **Estado:** APROBADA

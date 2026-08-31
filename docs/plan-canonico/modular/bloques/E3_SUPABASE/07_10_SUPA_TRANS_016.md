@@ -192,7 +192,7 @@ R1 requiere R0 suficiente para el paquete y respeta:
 
 ```text
 AUTH-DB-016 → AUTH-DB-018 → AUTH-DB-017 → AUTH-DB-019
-AUTH-DB-019 → AUTH-DB-033 → AUTH-DB-035 → AUTH-DB-034 → AUTH-DB-032
+AUTH-DB-019 → AUTH-DB-033 → AUTH-DB-036 → AUTH-DB-035 → AUTH-DB-034 → AUTH-DB-032
 AUTH-DB-012..014 después de la capa transversal de auditoría aprobada
 ```
 

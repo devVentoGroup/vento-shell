@@ -8,13 +8,13 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1594** |
-| Tareas `AUTH` | **317** |
-| Aprobadas | **1084** |
+| Tareas con marcador | **1595** |
+| Tareas `AUTH` | **318** |
+| Aprobadas | **1085** |
 | En propuesta | **0** |
 | No iniciadas | **510** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **68.01% (1084/1594)** |
+| Porcentaje de completamiento | **68.03% (1085/1595)** |
 
 ## Continuidad activa
 
@@ -1225,6 +1225,7 @@
 | ✅ APROBADA | `AUTH-DB-017` | Configurar esquemas expuestos y privilegios de Data API | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-019` | Implementar vínculos canónicos entre Auth e identidades empresariales | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-033` | Implementar get_access_context canónico, sus resolvers privados y su proyección segura | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
+| ✅ APROBADA | `AUTH-DB-036` | Materializar autoridad organizacional raíz para organization_id | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-035` | Implementar token transaccional de frescura e invalidación del contexto | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-034` | Implementar evaluate_authorization canónico, su núcleo de evaluación, resolvers de recurso y proyecciones seguras | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
 | ✅ APROBADA | `AUTH-DB-032` | Implementar persistencia canónica y vinculación de decisiones de autorización | `bloques/R_SUPABASE/02_R1_FUNDACION_FISICA_CANONICA.md` |
