@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1595** |
 | Tareas `AUTH` | **318** |
-| Aprobadas | **1085** |
+| Aprobadas | **1086** |
 | En propuesta | **0** |
-| No iniciadas | **510** |
+| No iniciadas | **509** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **68.03% (1085/1595)** |
+| Porcentaje de completamiento | **68.09% (1086/1595)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-UX-012` — Permitir reanudar una marcación interrumpida | ✅ APROBADA |
-| Tarea actual | `ANIMA-UX-013` — Simplificar documentos y datos personales | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-UX-014` — Simplificar administración de equipo autorizada | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-UX-013` — Simplificar documentos y datos personales | ✅ APROBADA |
+| Tarea actual | `ANIMA-UX-014` — Simplificar administración de equipo autorizada | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-UX-015` — Probar check-in y check-out con trabajadores reales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -628,7 +628,7 @@
 | ✅ APROBADA | `ANIMA-UX-010` | Diferenciar error de ubicación, turno y autorización | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-011` | Diseñar manejo comprensible de cola offline | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-012` | Permitir reanudar una marcación interrumpida | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
-| ⬜ NO INICIADA | `ANIMA-UX-013` | Simplificar documentos y datos personales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
+| ✅ APROBADA | `ANIMA-UX-013` | Simplificar documentos y datos personales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-014` | Simplificar administración de equipo autorizada | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-015` | Probar check-in y check-out con trabajadores reales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-016` | Auditar y completar recordatorios operativos de inicio y cierre de turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
