@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1595** |
 | Tareas `AUTH` | **318** |
-| Aprobadas | **1086** |
+| Aprobadas | **1087** |
 | En propuesta | **0** |
-| No iniciadas | **509** |
+| No iniciadas | **508** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **68.09% (1086/1595)** |
+| Porcentaje de completamiento | **68.15% (1087/1595)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-UX-013` — Simplificar documentos y datos personales | ✅ APROBADA |
-| Tarea actual | `ANIMA-UX-014` — Simplificar administración de equipo autorizada | ⬜ NO INICIADA |
-| Siguiente reservada | `ANIMA-UX-015` — Probar check-in y check-out con trabajadores reales | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-UX-014` — Simplificar administración de equipo autorizada | ✅ APROBADA |
+| Tarea actual | `ANIMA-UX-015` — Probar check-in y check-out con trabajadores reales | ⬜ NO INICIADA |
+| Siguiente reservada | `ANIMA-UX-016` — Auditar y completar recordatorios operativos de inicio y cierre de turno | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -629,7 +629,7 @@
 | ✅ APROBADA | `ANIMA-UX-011` | Diseñar manejo comprensible de cola offline | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-012` | Permitir reanudar una marcación interrumpida | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-013` | Simplificar documentos y datos personales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
-| ⬜ NO INICIADA | `ANIMA-UX-014` | Simplificar administración de equipo autorizada | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
+| ✅ APROBADA | `ANIMA-UX-014` | Simplificar administración de equipo autorizada | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-015` | Probar check-in y check-out con trabajadores reales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-016` | Auditar y completar recordatorios operativos de inicio y cierre de turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `ANIMA-UX-017` | Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
