@@ -1,10 +1,148 @@
 {
   "instance_id": "AUTH-DB-036::GLOBAL",
   "task_id": "AUTH-DB-036",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-036__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Registrar autorizacion, lifecycle y evidencia consolidada de AUTH-DB-036::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260831212234_auth_db_036_organization_scope.sql",
+      "change": "CREATE",
+      "scope": "Crear exactamente una migracion forward generada por Supabase CLI para materializar organization_scopes, bootstrap raiz, invariantes, resolver privado y aislamiento de privilegios sin mutar Supabase remoto."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/041_auth_db_036_organization_scope.test.sql",
+      "change": "CREATE",
+      "scope": "Crear la prueba pgTAP propietaria de AUTH-DB-036 para estructura, UUID, bootstrap, inmutabilidad, resolver, missing, ambiguous, grants, RLS, idempotencia y aislamiento cliente."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql",
+      "change": "MODIFY",
+      "scope": "Avanzar unicamente el universo gobernado por el nuevo resolver SECURITY INVOKER de AUTH-DB-036, preservando sin aumento los conteos SECURITY DEFINER."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/026_auth_db_018_contract_separation.test.sql",
+      "change": "MODIFY",
+      "scope": "Avanzar unicamente los ratchets de rutina directa y universo primario por app_private.resolve_organization_id(), preservando SECURITY DEFINER y trigger_functions."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerar el manifiesto canonico despues de incorporar la migracion AUTH-DB-036."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Regenerar y validar el manifiesto sin modificar el generador."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar replay limpio y pgTAP local."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar recovery drill local gobernado."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Certificar drift local estricto sin mutar objetivos hosted."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar quality:repair exactamente una vez despues de materializar y antes de IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Gobernar start y finish de la instancia fisica."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validar el alcance fisico contra authorized_changes."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-31T16:22:35-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza e implementa AUTH-DB-036::GLOBAL hasta VERIFIED y merge, exclusivamente para materializar la autoridad organizacional raiz ORGANIZATION_SCOPE, su bootstrap y resolver privado, con pruebas y validacion local; no autoriza mutaciones directas de Supabase remoto ni AUTH-DB-035::GLOBAL.",
+    "source_contract_sha256": "f473874bec298c60949253571fac63a1643eda4029d2e97d31eb43eccd612792"
+  },
+  "evidence": [
+    "PRE_AUTHORIZATION main=b6d7830afd9a3f6375df03436c5458f71e8be202",
+    "PRE_AUTHORIZATION primary_action=AUTORIZAR_IMPLEMENTACION AUTH-DB-036::GLOBAL",
+    "PRE_AUTHORIZATION docs:plan:build PASS",
+    "PRE_AUTHORIZATION docs:plan:check PASS",
+    "PRE_AUTHORIZATION docs:plan:test PASS 335/335",
+    "PRE_AUTHORIZATION REMOTE_TARGETS_USED=NO",
+    "MIGRATION_PATH_RESERVED_BY_SUPABASE_CLI supabase/migrations/20260831212234_auth_db_036_organization_scope.sql",
+    "TEST_PATH_DERIVED_FROM_REPOSITORY_SEQUENCE supabase/tests/database/041_auth_db_036_organization_scope.test.sql",
+    "SOURCE_CONTRACT_SHA256 f473874bec298c60949253571fac63a1643eda4029d2e97d31eb43eccd612792",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "MATERIALIZATION migration=supabase/migrations/20260831212234_auth_db_036_organization_scope.sql",
+    "MATERIALIZATION test=supabase/tests/database/041_auth_db_036_organization_scope.test.sql",
+    "MATERIALIZATION source=org_governance.organization_scopes",
+    "MATERIALIZATION root_code=VENTO_GROUP_ECOSYSTEM",
+    "MATERIALIZATION root_uuid=SERVER_GENERATED_NON_HARDCODED",
+    "MATERIALIZATION resolver=app_private.resolve_organization_id() SECURITY_INVOKER",
+    "MATERIALIZATION identity_guard=organization_id,organization_code immutable",
+    "MATERIALIZATION status_vocabulary=ACTIVE,INACTIVE",
+    "MATERIALIZATION bootstrap_idempotent=YES",
+    "MATERIALIZATION fail_closed_missing=ORGANIZATION_SCOPE_MISSING",
+    "MATERIALIZATION fail_closed_ambiguous=ORGANIZATION_SCOPE_AMBIGUOUS",
+    "MATERIALIZATION Data_API_exposure=NO",
+    "MATERIALIZATION runtime_client_grants=NONE",
+    "MATERIALIZATION REMOTE_TARGETS_USED=NO",
+    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS",
+    "VALIDATION #3 npm run supabase:recovery:local PASS",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0",
+    "VALIDATION #4 candidate_sha=eb0c95a852ff4963d14b6e78c0e40454a4c67b99",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "VALIDATION npm run docs:plan:check PASS",
+    "VALIDATION npm run docs:plan:test PASS",
+    "VALIDATION npm run docs:treq:check PASS",
+    "VALIDATION npm run docs:treq:test PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS",
+    "CHECKPOINT_LOCAL eb0c95a852ff4963d14b6e78c0e40454a4c67b99",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "RESULT AUTH-DB-036::GLOBAL VERIFIED"
+  ]
 }

@@ -195,8 +195,8 @@ select is(
       'vital'
     )
   ),
-  363::bigint,
-  'governed function universe includes the corrected 15-function AUTH-DB-033 private graph'
+  364::bigint,
+  'governed function universe includes AUTH-DB-036 organization resolver without adding SECURITY DEFINER'
 );
 
 select is(

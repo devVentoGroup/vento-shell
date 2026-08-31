@@ -35,9 +35,9 @@
 | Bloque actual | **BLOQUE F — ANIMA** |
 | Progreso del bloque | **BLOQUE F: 32 de 37 aprobadas; ANIMA-UX-013 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-036::GLOBAL** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-035::GLOBAL** |
 | Carril documental | **ACTIVO — ANIMA-UX-013** |
-| Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-036::GLOBAL** |
+| Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-035::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUE F: 32 DE 37 APROBADAS — ACTUAL ANIMA-UX-013** |
-| Implementación física | **AUTH-DB-036::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **AUTH-DB-035::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 
