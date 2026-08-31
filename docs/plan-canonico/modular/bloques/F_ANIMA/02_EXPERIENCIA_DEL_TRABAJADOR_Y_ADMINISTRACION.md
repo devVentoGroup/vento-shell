@@ -10102,7 +10102,789 @@ UX-014 no debe reintroducir en **Mis documentos laborales**, **Mi perfil laboral
 `ANIMA-UX-014 — Simplificar administración de equipo autorizada`
 
 
-### [ ] ANIMA-UX-014 — Simplificar administración de equipo autorizada
+### ✅ ANIMA-UX-014 — Simplificar administración de equipo autorizada
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-013 — Simplificar documentos y datos personales
+**Tarea siguiente:** ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
+**Tipo de tarea:** documental; diseño UX TO-BE de la administración de equipo autorizada y simplificada en ANIMA, limitada a consulta de directorio e invitación cuando exista autoridad efectiva, con handoff explícito de cambios laborales sensibles hacia sus propietarios canónicos y sin materialización física
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir una experiencia administrativa de equipo en ANIMA que permita a una persona autorizada resolver las necesidades móviles frecuentes sin convertir la aplicación en un backoffice general de personal, identidad, roles, permisos o estructura organizacional.
+
+El resultado debe responder de forma simple a tres preguntas:
+
+1. ¿qué personas forman parte del equipo que puedo consultar dentro de mi alcance efectivo?;
+2. ¿qué información mínima necesito para identificarlas y entender su relación operativa?;
+3. ¿qué acción puedo realizar aquí y qué cambio debe continuar en la superficie propietaria correspondiente?
+
+La simplificación no se logra escondiendo controles detrás de condiciones locales. Se logra reduciendo el propósito ordinario de Team a capacidades con ownership y autoridad demostrables.
+
+---
+
+#### 2. Handoff vinculante desde ANIMA-UX-013
+
+ANIMA-UX-013 separó el carril personal del trabajador de la administración de terceros y reservó para esta tarea la decisión sobre:
+
+- directorio de trabajadores;
+- invitación de trabajadores;
+- activación o desactivación;
+- cambios de rol administrativo;
+- asignaciones de sede o área;
+- acciones masivas sobre equipo.
+
+La presente tarea consume ese handoff completo. Ninguna de esas responsabilidades vuelve a mezclarse con `Mis documentos laborales`, `Mi perfil laboral`, preferencias personales o solicitudes de privacidad.
+
+---
+
+#### 3. Resultado canónico
+
+La experiencia queda organizada bajo el contrato lógico `ANIMA-AUTHORIZED-TEAM-UX-001`.
+
+```text
+TEAM EN ANIMA
+= DIRECTORIO AUTORIZADO
++ RESUMEN MINIMO DE PERSONA
++ INVITACION AUTORIZADA CUANDO APLIQUE
++ HANDOFF EXPLICITO PARA ADMINISTRACION LABORAL SENSIBLE
+
+TEAM EN ANIMA
+≠ MAESTRO GENERAL DE TRABAJADORES
+≠ EDITOR UNIVERSAL DE EMPLEADOS
+≠ ADMINISTRADOR DE ROLES Y PERMISOS
+≠ ADMINISTRADOR TERRITORIAL GLOBAL
+≠ BORRADO DE HISTORIA LABORAL
+```
+
+La superficie continúa siendo administrativa y separada de la experiencia personal base.
+
+---
+
+#### 4. Posición funcional de Team dentro de ANIMA
+
+`ANIMA-SCREEN-011` conserva su identidad de pantalla administrativa.
+
+Su propósito TO-BE es **consultar y coordinar el equipo autorizado desde móvil**.
+
+No se convierte en pantalla personal, no se incorpora a Home ordinario del trabajador y no hereda autoridad por el hecho de que la persona autenticada tenga un rol verbalmente gerencial.
+
+La visibilidad de Team es una proyección de relevancia. La autoridad para cada lectura o acción se resuelve de forma independiente.
+
+---
+
+#### 5. Principio de menor superficie administrativa
+
+La experiencia ordinaria de Team tendrá únicamente capacidades que cumplan simultáneamente:
+
+1. finalidad administrativa clara y frecuente desde móvil;
+2. ownership compatible con ANIMA;
+3. permiso canónico vigente;
+4. alcance efectivo resoluble;
+5. proyección mínima de datos;
+6. operación segura sin convertir la UI en fuente de autoridad.
+
+Una función que no cumpla estas seis condiciones no se mantiene como edición local solo porque exista actualmente en el código.
+
+---
+
+#### 6. Intenciones materiales de la superficie
+
+Se reconocen cuatro intenciones UX, con decisiones diferentes:
+
+| Intención | Decisión TO-BE | Condición |
+| --- | --- | --- |
+| Consultar equipo autorizado | PERMITIDA | permiso efectivo de lectura y alcance resoluble |
+| Consultar resumen de una persona autorizada | PERMITIDA | la misma relación de lectura permite conocer esa persona y esos campos |
+| Invitar trabajador | PERMITIDA_CONDICIONAL | autoridad efectiva para crear invitación y parámetros elegibles validados por servidor |
+| Administrar vínculo, rol, permiso, territorio o eliminación | HANDOFF | pertenece a una capacidad administrativa sensible que no se infiere de lectura o invitación |
+
+No se crea un quinto modo genérico de “editar empleado”.
+
+---
+
+#### 7. Composición TO-BE de la pantalla
+
+La pantalla se simplifica conceptualmente en cinco zonas:
+
+1. encabezado `Equipo` con explicación breve del alcance visible;
+2. búsqueda y filtros mínimos;
+3. directorio autorizado;
+4. acción `Invitar trabajador` cuando sea realmente accionable;
+5. acceso contextual al propietario de una administración más sensible cuando exista una intención legítima y autorizada.
+
+No se muestran simultáneamente formularios de roles, sedes, áreas, permisos, activación, eliminación y carga administrativa como controles ordinarios de cada tarjeta.
+
+---
+
+#### 8. Entrada y visibilidad de Team
+
+La pestaña o acceso a Team se presenta solo cuando la capacidad resulte relevante para el actor efectivo.
+
+Reglas:
+
+1. ocultar la pestaña no constituye autorización;
+2. acceso directo o deep link vuelve a resolver autoridad;
+3. una capacidad revocada no permanece utilizable por caché, navegación previa o rol local;
+4. si el actor puede leer equipo pero no invitar, ve el directorio sin CTA de invitación;
+5. si puede invitar pero el contrato requiere además una población o alcance que no puede resolverse, la acción queda bloqueada de forma explicada y no se degrada a un selector global;
+6. un rol textual no sustituye la decisión efectiva de acceso.
+
+---
+
+#### 9. Permisos canónicos y aliases legacy
+
+La experiencia consume los permisos canónicos ya existentes:
+
+- `anima.workforce.team_members.view` para lectura autorizada del equipo;
+- `anima.workforce.staff_invitations.create` para creación autorizada de invitaciones.
+
+El catálogo canónico normaliza los permisos legacy `anima.team.view` y `anima.team.invite` hacia esas dos capacidades. Las capabilities locales observadas en el cliente, `team.view` y `team.invite`, son etiquetas de presentación/adaptación y tampoco constituyen autoridad normativa del TO-BE.
+
+La migración debe converger hacia los permisos canónicos sin inventar un permiso de mutación de miembros para justificar funciones legacy.
+
+---
+
+#### 10. Alcance efectivo del directorio
+
+La consulta de equipo se evalúa después de resolver identidad, permiso y territorio aplicable.
+
+El resultado visible puede representar, según el contrato de autorización vigente:
+
+- equipo dentro de sedes autorizadas;
+- equipo dentro de áreas autorizadas;
+- población explícitamente permitida por la relación administrativa;
+- una intersección más restrictiva cuando concurran varias dimensiones.
+
+Un filtro de sede, área, estado o texto solo reduce el conjunto ya autorizado. Nunca amplía la población.
+
+---
+
+#### 11. Directorio autorizado
+
+El directorio es la vista primaria de Team.
+
+Cada fila o tarjeta debe priorizar únicamente información suficiente para identificar a la persona y entender su relación laboral pertinente:
+
+- nombre visible;
+- alias cuando sea útil para operación;
+- estado laboral resumido cuando el actor tenga derecho a conocerlo;
+- rol o función humana relevante;
+- sede o área pertinente dentro del alcance visible;
+- estado de invitación cuando la fila represente una invitación y no una persona activa.
+
+Identificadores internos, UUID, códigos de permiso, datos financieros, documentos, historial de asistencia y otros datos no necesarios permanecen fuera de esta superficie.
+
+---
+
+#### 12. Búsqueda y filtros
+
+La búsqueda ordinaria prioriza nombre y alias.
+
+El correo electrónico o código interno solo participa cuando exista una necesidad administrativa demostrable y el actor esté autorizado a conocerlo.
+
+Filtros permitidos conceptualmente:
+
+- estado laboral visible;
+- sede autorizada;
+- área autorizada;
+- estado de invitación cuando aplique.
+
+Reglas:
+
+1. las opciones de filtro se construyen después de autorización;
+2. un filtro no revela sedes, áreas o estados fuera de alcance;
+3. un resultado vacío filtrado no significa que no existan trabajadores globalmente;
+4. limpiar filtros retorna al conjunto autorizado inicial;
+5. la búsqueda no enumera identidades no autorizadas mediante coincidencias parciales.
+
+---
+
+#### 13. Resumen de miembro
+
+Abrir una persona desde el directorio muestra un resumen de consulta, no un formulario maestro.
+
+El resumen puede incluir:
+
+- identidad laboral visible;
+- función o rol humano relevante;
+- sede y área asignadas que el actor esté autorizado a conocer;
+- estado laboral resumido;
+- información de contacto laboral solo cuando sea necesaria para la finalidad de coordinación.
+
+La superficie debe distinguir claramente dato consultable de dato editable.
+
+---
+
+#### 14. Invitación de trabajador
+
+`Invitar trabajador` es una intención independiente del directorio y requiere `anima.workforce.staff_invitations.create` efectivo.
+
+La invitación debe:
+
+1. solicitar únicamente datos necesarios para crear la invitación;
+2. mostrar qué organización o alcance será afectado cuando esa información sea resoluble;
+3. obtener del servidor únicamente opciones de asignación elegibles;
+4. volver a validar autoridad al confirmar;
+5. producir una identidad o receipt de invitación que permita reconocer el resultado;
+6. evitar una segunda invitación equivalente cuando exista una solicitud ya válida y el contrato permita reutilizarla o reconciliarla.
+
+La invitación no equivale a alta laboral completa ni a concesión de permisos.
+
+---
+
+#### 15. Parámetros de una invitación
+
+Si el flujo de invitación necesita rol, sede, área u otra clasificación laboral, la presencia del campo no concede autoridad para elegir cualquier valor.
+
+Cada opción debe provenir de una lista elegible resuelta por el propietario y validarse nuevamente al confirmar.
+
+Si no existe una autoridad canónica para modificar una dimensión requerida, Team no inventa una opción mediante listas hardcodeadas ni fallbacks de rol; deriva la intención a la superficie propietaria correspondiente.
+
+---
+
+#### 16. Estados de invitación
+
+La experiencia distingue al menos:
+
+- preparación de invitación;
+- envío en curso;
+- invitación creada y pendiente de aceptación;
+- invitación aceptada cuando la fuente pueda confirmarlo;
+- invitación vencida cuando exista vigencia autoritativa;
+- invitación revocada cuando exista ese estado canónico;
+- resultado desconocido si se perdió la respuesta;
+- fallo antes de crear la invitación.
+
+Enviar un correo o mensaje no se presenta como trabajador creado ni como invitación aceptada.
+
+---
+
+#### 17. Persona existente versus invitación
+
+Una invitación y un trabajador existente no se presentan como el mismo objeto.
+
+Reglas:
+
+1. una invitación pendiente no aumenta el conteo de trabajadores activos;
+2. aceptar la invitación no autoriza a la UI a inferir activación si la fuente laboral aún no lo confirma;
+3. una coincidencia de correo no se usa por sí sola para fusionar identidades;
+4. la transición entre invitación y vínculo laboral conserva referencia y trazabilidad cuando el dominio la provea;
+5. la tarjeta visual debe indicar si representa persona o invitación.
+
+---
+
+#### 18. Edición general de trabajadores
+
+El editor genérico observado en el AS-IS no forma parte del flujo ordinario TO-BE de Team.
+
+ANIMA no mantendrá una acción única `Editar` capaz de modificar en bloque identidad, rol, sedes, áreas, estado y otras dimensiones con autoridad derivada de `team.view` o de un rol local.
+
+Cada cambio material se trata por su propia intención y ownership.
+
+---
+
+#### 19. Nombre, alias, correo y perfil laboral
+
+Los cambios de identidad o perfil laboral no se realizan como escritura directa desde la tarjeta de Team salvo que exista un contrato propietario explícito que los autorice.
+
+Hasta entonces:
+
+- Team muestra el valor autoritativo permitido;
+- una necesidad de corrección abre el handoff hacia el propietario laboral correspondiente;
+- la pantalla no mantiene una copia mutable paralela;
+- una corrección no reescribe historia ni auditoría desde el cliente.
+
+---
+
+#### 20. Activación y desactivación
+
+`Activo/Inactivo` no se modela como un interruptor visual ordinario.
+
+Activar o desactivar puede afectar acceso, vínculo, operación y trazabilidad, por lo que requiere una intención administrativa propia y autorización independiente.
+
+En ausencia de un permiso canónico específico de Team para esa transición:
+
+- ANIMA puede mostrar el estado cuando corresponda;
+- no ofrece el cambio directo;
+- deriva la administración del vínculo al propietario canónico;
+- nunca usa eliminación permanente como sustituto de desactivación.
+
+---
+
+#### 21. Cambios de rol
+
+El rol visible en Team es contexto informativo dentro del alcance autorizado.
+
+Cambiar rol base, rol operativo, rol administrativo, delegación o simulación no pertenece al directorio móvil ordinario.
+
+Reglas:
+
+1. `anima.workforce.team_members.view` no concede edición de rol;
+2. `anima.workforce.staff_invitations.create` no concede edición de rol de una persona existente;
+3. una invitación solo puede usar opciones de rol elegibles confirmadas por servidor;
+4. cambios posteriores usan la superficie propietaria de workforce/autorización;
+5. Team no expone matrices completas de permisos como parte del perfil.
+
+---
+
+#### 22. Asignaciones de sede y área
+
+Sede y área visibles en Team sirven para comprender el contexto administrativo autorizado.
+
+Modificar asignaciones territoriales es una intención diferente de filtrar el directorio.
+
+Un selector de sede o área dentro de Team:
+
+- no convierte el valor seleccionado en sede o área operativa activa;
+- no amplía el alcance del actor;
+- no concede derecho a reasignar;
+- no se utiliza como escritura directa si no existe autoridad propietaria explícita.
+
+Las reasignaciones laborales continúan mediante handoff al propietario correspondiente.
+
+---
+
+#### 23. Permisos, delegaciones y simulación
+
+Team no administra matrices de permisos, excepciones individuales, delegaciones, simulación ni dispositivos compartidos.
+
+Puede mostrar una función humana resumida cuando sea necesaria para identificar al miembro, pero no traduce esa etiqueta en autoridad ni ofrece `Dar permiso` como acción local.
+
+La administración de autorización permanece en el dominio y superficie canónicos correspondientes.
+
+---
+
+#### 24. Eliminación y conservación de historia
+
+La eliminación permanente de una persona no es una acción ordinaria de Team.
+
+El patrón AS-IS que elimina registros de empleado y relaciones asociadas no se incorpora al TO-BE como operación de conveniencia.
+
+Reglas:
+
+1. desactivación, terminación de vínculo, disposición de datos y borrado técnico son conceptos distintos;
+2. retirar acceso no borra automáticamente historia laboral ni evidencia sujeta a conservación;
+3. cualquier disposición definitiva requiere el lifecycle propietario aplicable;
+4. Team no promete que una eliminación es irreversible o completa si el dominio no lo determina;
+5. no se elimina Storage, auditoría o relaciones históricas desde una tarjeta de equipo.
+
+---
+
+#### 25. Acciones masivas
+
+Team no ofrece acciones masivas de cambio de rol, sede, área, estado, permisos o eliminación como experiencia móvil ordinaria.
+
+Si una necesidad administrativa futura exige operación masiva:
+
+- pertenece a una superficie administrativa especializada;
+- debe mostrar población seleccionada, alcance, efecto esperado y resultado por elemento;
+- requiere autoridad explícita y segregación compatible;
+- no se introduce como multiselección oculta dentro del directorio de ANIMA.
+
+---
+
+#### 26. Ownership de capacidades
+
+La distribución funcional queda así:
+
+| Capacidad | Superficie TO-BE | Ownership funcional |
+| --- | --- | --- |
+| Consultar equipo autorizado | ANIMA Team | ANIMA como proyección móvil autorizada |
+| Consultar resumen autorizado | ANIMA Team | ANIMA como proyección móvil autorizada |
+| Crear invitación | ANIMA Team | ANIMA para la intención de invitación, condicionada al contrato servidor |
+| Administrar identidad laboral | Handoff | propietario administrativo de workforce |
+| Cambiar rol o autorización | Handoff | propietario de workforce/autorización |
+| Cambiar sede o área asignada | Handoff | propietario administrativo del contexto laboral |
+| Activar o desactivar vínculo | Handoff | lifecycle laboral propietario |
+| Eliminar o disponer historia | Fuera de Team | lifecycle de información y retención aplicable |
+| Operación masiva | Fuera de Team ordinario | workspace administrativo especializado |
+
+Esta matriz define fronteras UX; no crea endpoints, pantallas físicas ni permisos nuevos.
+
+---
+
+#### 27. Handoff hacia una superficie propietaria
+
+Cuando una persona autorizada necesita una acción fuera de Team, el handoff debe conservar conceptualmente:
+
+```text
+actor efectivo
++ persona objetivo autorizada
++ intención humana
++ contexto territorial relevante
++ referencia segura al recurso
++ origen ANIMA Team
+→ superficie propietaria
+→ nueva resolución de autorización
+```
+
+Reglas:
+
+1. el handoff no transporta permiso ni decisión de autoridad;
+2. el destino vuelve a autorizar;
+3. no se transportan secretos o datos sensibles innecesarios en navegación;
+4. si el destino no puede abrirse, ANIMA explica la limitación sin ofrecer una mutación local alternativa;
+5. regresar a Team reconstruye el resumen desde la fuente vigente.
+
+---
+
+#### 28. Minimización de datos
+
+El directorio y sus búsquedas aplican minimización antes de entregar información al cliente.
+
+No basta ocultar campos en la tarjeta si ya fueron consultados innecesariamente.
+
+Quedan fuera por defecto:
+
+- documentos personales;
+- información financiera;
+- datos médicos o de SST;
+- historiales completos de asistencia;
+- matrices de permisos;
+- tokens o referencias de autenticación;
+- metadatos técnicos internos;
+- información de otros territorios no autorizados.
+
+La necesidad administrativa concreta puede habilitar una proyección distinta solo mediante contrato y autorización apropiados.
+
+---
+
+#### 29. Conteos y métricas de Team
+
+Los conteos visibles se calculan sobre el mismo alcance autorizado que el directorio o uno más restrictivo.
+
+Un resumen puede mostrar, cuando la fuente esté completa y fresca:
+
+- personas visibles;
+- activas visibles;
+- inactivas visibles;
+- invitaciones pendientes visibles.
+
+No se muestra `0` como cifra global cuando la consulta es parcial, falló o carece de autoridad suficiente para determinar el universo.
+
+Los conteos no revelan poblaciones ocultas.
+
+---
+
+#### 30. Estados vacíos y fallos
+
+La experiencia distingue:
+
+| Estado | Mensaje semántico | Acción permitida |
+| --- | --- | --- |
+| Sin personas visibles | el alcance autorizado no devuelve personas | revisar filtros o continuar sin acción |
+| Filtro sin coincidencias | no hay coincidencias dentro del conjunto visible | limpiar filtros |
+| Sin acceso | la función no está disponible para el actor | volver a una superficie permitida |
+| Alcance no resoluble | no puede confirmarse qué población corresponde | reintentar o escalar según causa |
+| Fuente no disponible | no puede verificarse el directorio | reintentar de forma segura |
+| Proyección obsoleta | la información requiere actualización | refrescar antes de actuar |
+| Invitación no accionable | falta una condición de autoridad o contrato | corregir condición o usar handoff |
+
+Ningún fallo técnico se presenta como `No hay empleados`.
+
+---
+
+#### 31. Frescura y refresco
+
+Team debe poder indicar que la información visible corresponde a una proyección confirmada o que requiere actualización cuando la frescura sea material.
+
+Reglas:
+
+1. refrescar no amplía alcance;
+2. cambios de rol, permiso, sede, área o estado invalidan la proyección incompatible;
+3. una tarjeta abierta con datos antiguos no conserva autoridad para mutar;
+4. después de una invitación confirmada se actualiza la lista sin asumir aceptación;
+5. después de un handoff se vuelve a consultar la fuente antes de afirmar el nuevo estado.
+
+---
+
+#### 32. Acceso directo y navegación
+
+Conocer la ruta de Team no concede acceso.
+
+La entrada directa debe resolver nuevamente:
+
+- sesión válida;
+- actor efectivo;
+- permiso aplicable;
+- alcance;
+- relevancia de la superficie.
+
+La respuesta sin acceso no enumera personas, conteos, roles, sedes o acciones que el actor no deba conocer.
+
+---
+
+#### 33. Cambios concurrentes
+
+Si la información de una persona cambia mientras Team está abierto:
+
+1. el cliente no sobrescribe el valor autoritativo desde una copia vieja;
+2. la invitación o handoff se valida contra estado vigente;
+3. una persona retirada del alcance desaparece en la siguiente proyección autorizada;
+4. una acción que ya no sea válida se bloquea de forma comprensible;
+5. la interfaz evita presentar un resultado parcial como actualización completa.
+
+---
+
+#### 34. Accesibilidad y móvil
+
+La simplificación debe mejorar la operación móvil sin reducir controles de seguridad.
+
+La experiencia:
+
+- prioriza targets táctiles adecuados;
+- usa nombre y estado legibles sin depender de color;
+- permite búsqueda con teclado y tecnologías de asistencia;
+- expone nombre accesible de acciones e iconos;
+- evita menús de acciones densos por tarjeta;
+- mantiene el CTA de invitación separado de la apertura de una persona;
+- conserva foco y retorno comprensibles después de modales o handoffs.
+
+---
+
+#### 35. Auditoría y soporte
+
+Team no necesita mostrar al operador detalles técnicos de auditoría, pero las acciones materiales deben poder correlacionarse con la evidencia propietaria.
+
+Para invitaciones y handoffs se conserva, cuando el contrato lo produzca:
+
+- actor;
+- persona o invitación objetivo;
+- instante;
+- intención;
+- alcance relevante;
+- resultado confirmado, fallido o desconocido;
+- referencia no secreta utilizable por soporte.
+
+Un error no expone SQL, payloads, tokens, claves internas ni matrices de permisos.
+
+---
+
+#### 36. Hallazgos AS-IS que motivan la simplificación
+
+El código vigente de `vento-anima` presenta una superficie Team más amplia que el contrato objetivo:
+
+1. `app/(app)/team.tsx` condiciona acceso con capabilities locales `team.view` y `team.invite` y conserva fallbacks por roles gerenciales cuando la matriz todavía no está cargada;
+2. la pantalla combina directorio, búsqueda, métricas, invitación, edición y un flujo excepcional de eliminación;
+3. `use-team-data.ts` consulta empleados y relaciones de sede y área para construir una vista amplia;
+4. `use-team-editing.ts` escribe directamente sobre nombre, alias, rol, sede principal, actividad, `employee_sites` y selección de sede del trabajador;
+5. `app/(app)/team.tsx` contiene además un flujo de eliminación permanente condicionado por identidad de propietario que invoca la Edge Function `employee-delete`;
+6. `use-team-invitations.ts` materializa la intención de invitación mediante el contrato servidor existente;
+7. la navegación oculta Team según capability, pero esa condición visual no sustituye protección de servidor;
+8. la matriz local de capabilities se deriva de roles y no constituye la fuente canónica de autoridad.
+
+Estos hallazgos son AS-IS y no autorizan cambios físicos durante esta tarea.
+
+---
+
+#### 37. Migración conceptual desde el AS-IS
+
+La transición debe realizarse por intención, no mediante un recorte visual indiscriminado:
+
+| Elemento AS-IS | Tratamiento TO-BE |
+| --- | --- |
+| permiso legacy `anima.team.view` | converger hacia `anima.workforce.team_members.view` |
+| permiso legacy `anima.team.invite` | converger hacia `anima.workforce.staff_invitations.create` |
+| capability local `team.view` | dejar de tratarla como autoridad y derivar visibilidad desde el permiso canónico efectivo |
+| capability local `team.invite` | dejar de tratarla como autoridad y derivar accionabilidad desde el permiso canónico efectivo |
+| Directorio | conservar con alcance y minimización canónicos |
+| Búsqueda | conservar sobre población ya autorizada |
+| Métricas | conservar solo si usan el mismo alcance autorizado y fuente confiable |
+| Invitación | conservar como intención independiente y reautorizada |
+| Editor genérico de miembro | retirar del flujo ordinario y dividir por intención/ownership |
+| Toggle de actividad | sustituir por handoff al lifecycle propietario |
+| Edición de rol | sustituir por handoff al propietario de workforce/autorización |
+| Edición de sede/área | sustituir por handoff al propietario del contexto laboral |
+| Eliminación permanente | retirar de Team ordinario |
+| Acciones masivas | mantener fuera de Team móvil ordinario |
+
+No se retira una capacidad física hasta que la implementación propietaria correspondiente tenga reemplazo, pruebas y rollout aprobados.
+
+---
+
+#### 38. Matriz de escenarios UX
+
+| Escenario | Resultado esperado |
+| --- | --- |
+| Trabajador sin permiso de equipo | Team no forma parte de su experiencia ordinaria |
+| Actor con lectura de equipo | puede consultar únicamente población autorizada |
+| Actor con lectura pero sin invitación | ve directorio sin CTA de invitar |
+| Actor con invitación accionable | puede iniciar el flujo de invitación |
+| Actor conoce deep link pero perdió permiso | entrada bloqueada sin enumerar equipo |
+| Gerente con rol verbal pero permiso revocado | no conserva Team por fallback de rol |
+| Actor autorizado solo para una sede | directorio y conteos se limitan a esa sede |
+| Actor filtra otra sede | el filtro no amplía alcance ni revela población |
+| Búsqueda sin coincidencias | se informa vacío filtrado, no inexistencia global |
+| Fuente de equipo falla | se informa fallo de verificación, no `0 trabajadores` |
+| Directorio parcial | no se presenta un total global como confirmado |
+| Persona sale del alcance durante la sesión | desaparece tras revalidación y no queda editable |
+| Actor abre un miembro | obtiene resumen mínimo, no editor universal |
+| Actor necesita corregir nombre | Team deriva al propietario, no modifica copia local |
+| Actor necesita cambiar rol | Team deriva al propietario de workforce/autorización |
+| Actor necesita reasignar sede | Team deriva al propietario administrativo correspondiente |
+| Actor necesita desactivar vínculo | Team no usa toggle genérico; abre handoff propietario |
+| Actor intenta eliminar permanentemente | la acción no existe en Team ordinario |
+| Actor intenta modificar permisos | la acción no existe en Team ordinario |
+| Invitación requiere opción no autorizada | esa opción no se ofrece ni se fabrica localmente |
+| Invitación enviada | se muestra resultado de invitación, no trabajador activo |
+| Respuesta de invitación se pierde | resultado queda desconocido hasta reconciliación |
+| Invitación ya existente | se evita crear duplicado equivalente cuando el contrato lo permita |
+| Persona ya existe | no se crea una nueva identidad por conveniencia de UI |
+| Conteo incluye población oculta | escenario inválido; debe recalcularse después de autorización |
+| Se cambia actor o sesión | se recalculan capacidad, población y datos visibles |
+| Retorno desde un handoff | Team refresca antes de mostrar el nuevo estado |
+| Dispositivo con pantalla pequeña | conserva funciones autorizadas sin menú denso ni pérdida de contexto |
+
+---
+
+#### 39. Requisitos de prueba derivados
+
+NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea especializa experiencia y ownership sobre reglas de autorización, minimización, separación de carriles, handoff y navegación ya cubiertas por el registro vigente. No introduce una obligación verificable nueva que requiera modificar el registro canónico.
+
+---
+
+#### 40. Cobertura de prueba vigente reutilizada
+
+Esta sección registra trazabilidad y no modifica el registro de requisitos.
+
+Cobertura existente especialmente aplicable:
+
+- `TREQ-UX-003`: información, acciones y densidad adecuadas a tarea y autorización, con minimización de datos sensibles;
+- `TREQ-UX-005`: fuente de verdad visible y prohibición de copias mutables competidoras;
+- `TREQ-UX-008`: separación o handoff cuando una superficie mezcla intenciones materiales;
+- `TREQ-UX-010`: contexto y alcance explícitos en superficies administrativas;
+- `TREQ-UX-014`: la presentación visual no concede autoridad y ocultar controles no sustituye protección de servidor;
+- `TREQ-UX-016`: experiencia personal, supervisión, configuración y administración permanecen separadas;
+- `TREQ-UX-017`: proyección mínima y protección de datos por finalidad;
+- `TREQ-UX-050`: acceso directo y navegación revalidan permiso;
+- `TREQ-UX-059`: autorización, visibilidad y posibilidad de actuar son estados distintos;
+- `TREQ-UX-060`: relevancia se resuelve desde hechos autoritativos, no desde el frontend;
+- `TREQ-UX-061`: acceso no autorizado no enumera destinos o datos sensibles;
+- `TREQ-UX-064`: las superficies administrativas conservan territorio, población, autoridad, sensibilidad y segregación;
+- `TREQ-UX-068`: minimización aplica también a consulta, filtros, previews y payloads;
+- `TREQ-UX-069`: conteos y agregados no revelan población oculta;
+- `TREQ-UX-070`: búsqueda, recientes y accesos recalculan relevancia y autorización;
+- `TREQ-UX-075`: configuración, gobierno, auditoría y excepciones permanecen separadas del flujo ordinario;
+- `TREQ-UX-078`: asignación territorial, filtro y contexto operativo no se confunden.
+
+---
+
+#### 41. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La compilación del plan se reserva al checkout actualizado después de materializar documentalmente esta tarea. |
+| LOCAL | NOT_EXECUTED | No se ejecutaron validadores del checkout local del usuario desde este entorno. |
+| REMOTA | PASS | Se contrastaron fuentes canónicas vigentes de `vento-shell`, código actual de `vento-anima`, catálogo de permisos, ownership de workforce y fragmentos 04A aplicables; la continuidad remota ubica ANIMA-UX-014 como tarea actual. |
+| OPERATIVA | NOT_EXECUTED | La validación con administradores o responsables reales corresponde al ciclo posterior de implementación y pruebas. |
+| FÍSICA | NOT_APPLICABLE | La topología de ANIMA-UX-001 a ANIMA-UX-017 es DEFINE_ONCE y esta tarea no posee instancia física propia. |
+
+---
+
+#### 42. Criterios de aceptación
+
+1. Team se mantiene como superficie administrativa y no personal.
+2. La experiencia ordinaria se reduce a directorio autorizado, resumen mínimo e invitación cuando sea accionable.
+3. `anima.workforce.team_members.view` gobierna conceptualmente la lectura autorizada.
+4. `anima.workforce.staff_invitations.create` gobierna conceptualmente la creación de invitación.
+5. `anima.team.view` y `anima.team.invite` se reconocen como permisos legacy normalizados; `team.view` y `team.invite` permanecen solo como capabilities locales AS-IS, no como autoridad normativa.
+6. Un rol textual no concede acceso por fallback.
+7. La pestaña puede ocultarse por irrelevancia sin tratar ese ocultamiento como seguridad.
+8. El acceso directo vuelve a autorizar.
+9. Los filtros solo reducen el conjunto autorizado.
+10. La búsqueda no enumera identidades fuera de alcance.
+11. El directorio minimiza campos antes de llegar al cliente.
+12. El resumen de miembro no se convierte en editor maestro.
+13. La invitación se mantiene separada de la lectura del directorio.
+14. La invitación no equivale a alta laboral completa.
+15. Enviar una invitación no equivale a aceptación.
+16. Una invitación no concede por sí sola autoridad para asignar cualquier rol, sede o área.
+17. Las opciones sensibles de invitación deben provenir de elegibilidad autoritativa.
+18. No se inventa un permiso nuevo de mutación de miembros.
+19. El editor genérico AS-IS queda fuera del flujo ordinario TO-BE.
+20. Nombre, alias, correo y perfil laboral no se editan localmente sin ownership explícito.
+21. Activación y desactivación no se modelan como toggle ordinario.
+22. Cambiar rol requiere un flujo propietario independiente.
+23. Cambiar sede o área requiere un flujo propietario independiente.
+24. Team no administra matrices de permisos.
+25. Team no administra delegación o simulación.
+26. La eliminación permanente no está disponible como acción ordinaria.
+27. Desactivación y eliminación permanecen semánticamente distintas.
+28. La salida de una cuenta o vínculo no borra automáticamente historia preservable.
+29. Las acciones masivas sensibles permanecen fuera del Team móvil ordinario.
+30. Cada handoff vuelve a resolver autorización en destino.
+31. Un handoff no transporta autoridad.
+32. Los conteos usan el mismo alcance autorizado que el detalle o uno más restrictivo.
+33. Una consulta parcial no se representa como total global confirmado.
+34. Un fallo de fuente no se presenta como ausencia de trabajadores.
+35. Un vacío filtrado no se presenta como inexistencia global.
+36. Cambios de actor, permiso o territorio invalidan proyecciones incompatibles.
+37. La interfaz no conserva una mutación habilitada sobre datos obsoletos.
+38. La experiencia móvil evita menús densos y mantiene accesibilidad táctil y semántica.
+39. Datos sensibles y detalles técnicos permanecen fuera del directorio ordinario.
+40. El AS-IS queda documentado sin autorizar cambios físicos.
+41. La tarea crea cero requisitos de prueba y reutiliza cobertura vigente.
+42. ANIMA-UX-015 permanece reservada y no se desarrolla dentro de esta tarea.
+
+---
+
+#### 43. Hallazgos y dependencias diferidas
+
+| Hallazgo diferido | ¿Bloquea esta tarea? | Propietario | Condición de salida |
+| --- | --- | --- | --- |
+| Sustitución física de `team.view` y `team.invite` por consumo de permisos canónicos | No | paquete físico de ANIMA/autorización que materialice la UX aprobada | cliente y servidor consumen permisos canónicos y pruebas demuestran ausencia de fallback permisivo |
+| Retiro físico del editor genérico de miembro | No | paquete físico de ANIMA y propietarios administrativos de workforce | existe handoff materializado para las intenciones que deban conservarse y el editor legacy puede retirarse sin pérdida funcional |
+| Retiro de eliminación permanente desde Team | No | paquete físico de ANIMA + lifecycle de información/workforce | UI deja de exponer borrado directo y el lifecycle propietario cubre desactivación, conservación y disposición |
+| Definición física de destinos de handoff | No | tareas y paquetes propietarios de VISO y de los contratos transversales de autorización | cada destino posee identidad navegable, contrato de entrada y reautorización implementados |
+| Validación móvil con actores reales | No | ANIMA-UX-015 y paquetes de prueba posteriores | piloto ejecutado con actores, sedes y permisos representativos y evidencia vinculada a requisitos vigentes |
+
+Ningún hallazgo anterior autoriza crear una tarea nueva ni cambia la continuidad documental actual.
+
+---
+
+#### 44. Límites
+
+1. Esta tarea no modifica código de `vento-anima`.
+2. Esta tarea no modifica Supabase, datos, migraciones, RLS, RPC, Storage, Realtime, Auth, Edge Functions ni configuración.
+3. No crea permisos, roles, tablas, vistas, endpoints, rutas físicas, componentes ni esquemas.
+4. No autoriza la instancia física `AUTH-DB-035::GLOBAL` ni altera su estado.
+5. No redefine el modelo canónico de autorización.
+6. No redefine el ownership general de workforce, identidad, roles, permisos, sedes o áreas.
+7. No convierte ANIMA en backoffice integral de RR. HH.
+8. No diseña administración masiva detallada; únicamente fija que no pertenece al Team móvil ordinario.
+9. No define políticas legales de retención o eliminación; consume las existentes.
+10. No diseña ni ejecuta la validación con trabajadores reales reservada a ANIMA-UX-015.
+11. No crea ni modifica requisitos de prueba.
+12. No materializa cambios físicos propios por corresponder a una tarea DEFINE_ONCE.
+
+---
+
+#### 45. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-013 — Simplificar documentos y datos personales`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-014 — Simplificar administración de equipo autorizada`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales`
+
+
 ### [ ] ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
 ### [ ] ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
 ### [ ] ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
