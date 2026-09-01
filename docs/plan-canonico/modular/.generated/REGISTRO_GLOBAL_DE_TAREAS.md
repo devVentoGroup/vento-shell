@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1094** |
+| Aprobadas | **1095** |
 | En propuesta | **0** |
-| No iniciadas | **502** |
+| No iniciadas | **501** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **68.55% (1094/1596)** |
+| Porcentaje de completamiento | **68.61% (1095/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-AUTH-003` — Administrar permisos por rol base | ✅ APROBADA |
-| Tarea actual | `VISO-AUTH-004` — Administrar permisos por rol operativo | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-AUTH-005` — Administrar roles permitidos por sede | ⬜ NO INICIADA |
+| Última aprobada | `VISO-AUTH-004` — Administrar permisos por rol operativo | ✅ APROBADA |
+| Tarea actual | `VISO-AUTH-005` — Administrar roles permitidos por sede | ⬜ NO INICIADA |
+| Siguiente reservada | `VISO-AUTH-006` — Administrar roles permitidos por área | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -637,7 +637,7 @@
 | ✅ APROBADA | `VISO-AUTH-001` | Crear catálogo administrativo de roles base | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-002` | Crear catálogo administrativo de roles operativos | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-003` | Administrar permisos por rol base | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
-| ⬜ NO INICIADA | `VISO-AUTH-004` | Administrar permisos por rol operativo | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
+| ✅ APROBADA | `VISO-AUTH-004` | Administrar permisos por rol operativo | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-005` | Administrar roles permitidos por sede | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-006` | Administrar roles permitidos por área | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-007` | Administrar perfiles operativos por trabajador | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |

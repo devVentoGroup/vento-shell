@@ -1442,7 +1442,832 @@ La identidad exacta de la unidad física se resolverá únicamente mediante el p
 `VISO-AUTH-004 — Administrar permisos por rol operativo`
 
 
-### [ ] VISO-AUTH-004 — Administrar permisos por rol operativo
+### ✅ VISO-AUTH-004 — Administrar permisos por rol operativo
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-003 — Administrar permisos por rol base
+**Tarea siguiente:** VISO-AUTH-005 — Administrar roles permitidos por sede
+**Tipo de tarea:** documental; definición del contrato administrativo para consultar y gobernar concesiones de permisos por rol operativo sin convertir VISO, una tabla legacy o una matriz territorial en fuente paralela de autorización
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VISO deberá consultar y gobernar las concesiones del carril operativo para los doce roles operativos canónicos, conservando separados:
+
+- catálogo de roles operativos;
+- catálogo de permisos;
+- concesión positiva por rol operativo;
+- modalidad de autorización;
+- contexto laboral y territorial;
+- alcance contractual;
+- disponibilidad del rol por sede o área;
+- asignación del rol al turno;
+- check-in cuando corresponda;
+- denegaciones;
+- excepciones individuales;
+- decisión efectiva.
+
+La regla raíz queda:
+
+```text
+ROL OPERATIVO CANÓNICO
++
+PERMISO CANÓNICO
++
+MODALIDAD COMPATIBLE CON CARRIL OPERATIVO
++
+GRANT OPERATIVO VIGENTE
++
+ROL OPERATIVO EFECTIVO
++
+CONTEXTO, RECURSO Y TERRITORIO COMPATIBLES
++
+SIN DENEGACIÓN PREVALENTE
+→
+OPERATIONAL_ALLOW POSIBLE
+```
+
+Y nunca:
+
+```text
+ROL OPERATIVO EN CATÁLOGO
+→ AUTORIZACIÓN
+```
+
+ni:
+
+```text
+GRANT OPERATIVO
+→ OPERACIÓN FUERA DE TURNO O CONTEXTO
+```
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva sin reescribir:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-002`, `AUTH-MOD-005`, `AUTH-MOD-006`, `AUTH-MOD-009`, `AUTH-MOD-010`, `AUTH-MOD-018` y `AUTH-MOD-019`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-009` a `AUTH-RBAC-019`;
+- `AUTH-RBAC-025`, `AUTH-RBAC-027` y `AUTH-RBAC-028`;
+- `SHELL-CON-003`, `SHELL-CON-005` y `SHELL-CON-006`;
+- `VISO-AUTH-002` — catálogo de doce roles operativos;
+- `VISO-AUTH-003` — gobierno administrativo de grants base.
+
+Contratos compartidos vigentes:
+
+```text
+vento.authorization@1.0.0
+vento.authorization.operational-role-grants@1.0.0
+OperationalRoleCode@1.0.0
+PermissionScopeCode@1.0.0
+```
+
+VISO administra configuración efectiva gobernada por estos contratos. La interfaz no edita los archivos versionados de `@vento/contracts`, no crea nuevos códigos de rol y no transforma strings legacy en identidades canónicas.
+
+---
+
+#### 3. Universo administrativo cerrado
+
+La administración opera exclusivamente sobre:
+
+```text
+OperationalRoleCode = 12
+PermissionKey activas = 140
+operational-role-grants de referencia = 240
+```
+
+Roles admitidos:
+
+1. `cajero_satelite`;
+2. `barista_satelite`;
+3. `cocinero_satelite`;
+4. `servicio_salon`;
+5. `mostrador_satelite`;
+6. `operador_integral_satelite`;
+7. `produccion_cocina`;
+8. `produccion_panaderia`;
+9. `produccion_reposteria`;
+10. `bodeguero`;
+11. `conductor_logistica`;
+12. `gerencia_operativa`.
+
+No se admiten:
+
+- roles base;
+- `propietario_admin`;
+- oficios legacy;
+- roles creados por aplicación;
+- roles creados por sede o área;
+- aliases locales;
+- usuarios o empleados concretos como sustitutos del rol;
+- dispositivos como sujetos de grant;
+- claves de permiso desconocidas, retiradas o legacy bloqueadas.
+
+La identidad del sujeto de esta matriz es siempre `OperationalRoleCode`.
+
+---
+
+#### 4. Matriz operativa vigente
+
+`operational-role-grants@1.0.0` contiene exactamente:
+
+| Rol operativo | Grants | Directos | Componentes |
+| --- | ---: | ---: | ---: |
+| `cajero_satelite` | 20 | 15 | 5 |
+| `barista_satelite` | 11 | 11 | 0 |
+| `cocinero_satelite` | 11 | 11 | 0 |
+| `servicio_salon` | 11 | 11 | 0 |
+| `mostrador_satelite` | 11 | 11 | 0 |
+| `operador_integral_satelite` | 21 | 16 | 5 |
+| `produccion_cocina` | 16 | 16 | 0 |
+| `produccion_panaderia` | 16 | 16 | 0 |
+| `produccion_reposteria` | 16 | 16 | 0 |
+| `bodeguero` | 36 | 36 | 0 |
+| `conductor_logistica` | 16 | 16 | 0 |
+| `gerencia_operativa` | 55 | 43 | 12 |
+| **Total** | **240** | **218** | **22** |
+
+Cada concesión de referencia relaciona, como mínimo:
+
+```text
+operational_role_code
+permission_key
+authorization_mode
+lane
+grant_type
+effect
+scope_expression
+condition_expression
+source_task
+```
+
+Las 240 filas usan:
+
+```text
+lane = OPERATIONAL
+effect = ALLOW
+```
+
+La matriz operativa es `ALLOW_ONLY`.
+
+---
+
+#### 5. Distribuciones contractuales
+
+##### 5.1 Modalidad de autorización
+
+```text
+BASE_OR_OPERATIONAL = 174
+OPERATIONAL_ONLY = 44
+BASE_AND_OPERATIONAL = 22
+BASE_ONLY = 0
+TOTAL = 240
+```
+
+##### 5.2 Tipo de grant
+
+```text
+DIRECT_OPERATIONAL = 218
+OPERATIONAL_COMPONENT = 22
+TOTAL = 240
+```
+
+##### 5.3 Aplicación del permiso
+
+```text
+FOGO = 19
+NEXO = 181
+ORIGO = 9
+PULSO = 31
+TOTAL = 240
+```
+
+##### 5.4 Integridad
+
+```text
+pares rol-permiso únicos = 240
+roles base dentro del dataset = 0
+propietario_admin = 0
+BASE_ONLY = 0
+wildcards = 0
+legacy dispatch = 0
+```
+
+Huella contractual:
+
+```text
+sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f
+```
+
+Estas cifras son controles de integridad del snapshot contractual y no cuotas configurables.
+
+---
+
+#### 6. Significado de las modalidades operativas
+
+| Modalidad | Regla del carril operativo |
+| --- | --- |
+| `BASE_OR_OPERATIONAL` | Un grant operativo directo puede satisfacer el carril operativo cuando existe contexto operativo válido; el carril base sigue siendo una alternativa independiente. |
+| `OPERATIONAL_ONLY` | La capacidad solo puede satisfacerse por carril operativo válido. No puede crearse un grant base equivalente. |
+| `BASE_AND_OPERATIONAL` | La fila operativa es exclusivamente `OPERATIONAL_COMPONENT`; la acción final exige además el componente base compatible del mismo actor. |
+| `BASE_ONLY` | Está prohibida en la matriz operativa. |
+
+Reglas:
+
+```text
+OPERATIONAL_COMPONENT
+→ nunca autorización completa
+```
+
+```text
+BASE_ONLY
+→ nunca operational grant
+```
+
+```text
+BASE_AND_OPERATIONAL
+→ mismo actor
+→ componente base válido
+→ componente operativo válido
+→ misma decisión final
+```
+
+No se permite combinar el componente base de una persona con el componente operativo de otra.
+
+---
+
+#### 7. Contexto operativo obligatorio
+
+Un operational grant no se vuelve efectivo por existir en la matriz.
+
+La evaluación deberá resolver, según el contrato exacto del permiso:
+
+- actor humano efectivo;
+- turno publicado y vigente;
+- rol operativo asignado;
+- rol operativo efectivo;
+- sede activa;
+- área activa cuando corresponda;
+- compatibilidad rol × sede;
+- compatibilidad rol × área;
+- check-in cuando la condición contractual lo requiera;
+- recurso objetivo;
+- relación del recurso con actor, sede, área, ruta, caja, bodega, orden o proceso aplicables;
+- modalidad;
+- denegaciones prevalentes.
+
+La regla general es:
+
+```text
+GRANT OPERATIVO
++
+CONTEXTO OPERATIVO VÁLIDO
+→ CANDIDATO A ALLOW
+```
+
+pero no todas las capacidades tienen idéntico prerrequisito de presencia.
+
+Por ejemplo, una capacidad de entrada a una aplicación puede permitir mostrar el contexto y sus bloqueos sin exigir todavía check-in si su contrato así lo declara, mientras una mutación física puede exigir turno + check-in + recurso compatible.
+
+Por tanto, VISO no podrá aplicar una regla simplificada de:
+
+```text
+TODO PERMISO OPERATIVO
+→ SIEMPRE MISMO CHECK-IN
+```
+
+La condición se obtiene del contrato exacto de la concesión y del permiso.
+
+---
+
+#### 8. Alcance operativo y prohibición de globalidad accidental
+
+La matriz operativa canónica no contiene alcance operacional global.
+
+Las 240 concesiones utilizan expresiones contextuales `CTX-*` y no perfiles base o globales.
+
+VISO deberá representar esa semántica sin convertirla en un selector libre de:
+
+```text
+global
+cualquier sede
+cualquier área
+```
+
+La taxonomía compartida de scopes continúa siendo:
+
+```text
+NT, ORG, G, AS, SS, AST, TST, AA, SA, AAT, ATW, CTX, OWN
+```
+
+pero esta tarea no puede usarla para fabricar autoridad territorial.
+
+Reglas obligatorias:
+
+1. `CTX` no sustituye turno, check-in o área;
+2. un grant operativo no habilita el rol en una sede por sí mismo;
+3. un grant operativo no habilita el rol en un área por sí mismo;
+4. la disponibilidad del rol por sede pertenece a `VISO-AUTH-005`;
+5. la disponibilidad del rol por área pertenece a `VISO-AUTH-006`;
+6. la asignación del rol al turno pertenece a `VISO-AUTH-010`;
+7. la validez del turno y del área pertenece a `VISO-AUTH-011` y `VISO-AUTH-012`;
+8. una dimensión territorial obligatoria irresoluble falla cerrada;
+9. no existe fallback hacia un territorio más amplio.
+
+---
+
+#### 9. Operaciones administrativas canónicas
+
+El catálogo vigente separa exactamente cinco capacidades para gobernar grants operativos:
+
+```text
+viso.authorization.operational_grants.view
+viso.authorization.operational_grants.create
+viso.authorization.operational_grants.approve
+viso.authorization.operational_grants.suspend
+viso.authorization.operational_grants.revoke
+```
+
+| Acción | Semántica |
+| --- | --- |
+| `view` | Consultar matriz operativa, modalidad, grant type, condición, contexto y procedencia. |
+| `create` | Registrar una propuesta válida de operational grant; no la vuelve efectiva por sí sola. |
+| `approve` | Aprobar una propuesta después de revalidar rol, permiso, modalidad, seguridad, contexto contractual y segregación. |
+| `suspend` | Interrumpir temporalmente la eficacia administrativa del allow conservando historia. |
+| `revoke` | Retirar su eficacia futura conservando evidencia histórica. |
+
+No existe una capacidad canónica genérica equivalente a:
+
+```text
+manage operational permissions
+```
+
+Cada operación administrativa debe autorizarse independientemente en servidor.
+
+---
+
+#### 10. Autoridad para administrar grants operativos
+
+El snapshot base vigente concede las cinco capacidades `operational_grants.*` únicamente a:
+
+- `propietario`;
+- `gerente_general`.
+
+No están concedidas a los otros seis roles base.
+
+Para ambos roles las cinco capacidades son:
+
+```text
+authorization_mode = BASE_ONLY
+grant_type = DIRECT_BASE
+scope = ORG
+```
+
+y sus condiciones exigen:
+
+- reautenticación fuerte;
+- actor activo;
+- recurso objetivo válido;
+- segregación de funciones;
+- auditoría;
+- no autoaprobación;
+- no autoafectación.
+
+Administrar una matriz operativa es una capacidad administrativa base. No requiere que el administrador haga check-in para adquirir la autoridad administrativa cuando el contrato base la concede.
+
+---
+
+#### 11. Segregación y lifecycle de cambios
+
+La administración deberá separar:
+
+```text
+PROPUESTA
+→ APROBACIÓN
+→ GRANT OPERATIVO VIGENTE
+→ SUSPENSIÓN O REVOCACIÓN
+```
+
+Reglas:
+
+```text
+CREATE ≠ APPROVE
+```
+
+```text
+PROPONER ≠ APROBAR EL PROPIO CAMBIO
+```
+
+```text
+ADMINISTRADOR ≠ PODER AMPLIAR SU PROPIA AUTORIDAD
+```
+
+Antes de crear o aprobar un cambio deberán resolverse:
+
+- actor administrador;
+- permiso administrativo exacto;
+- rol operativo objetivo;
+- permiso objetivo;
+- modalidad;
+- tipo de grant;
+- expresión contextual;
+- condiciones;
+- procedencia;
+- posible autoafectación;
+- actor que propuso;
+- actor que aprueba;
+- motivo y evidencia requeridos.
+
+La segregación no puede depender únicamente de esconder controles en frontend.
+
+---
+
+#### 12. Reglas de creación y aprobación
+
+Una propuesta de operational grant solo es válida cuando:
+
+1. el rol pertenece a los doce `OperationalRoleCode`;
+2. el permiso pertenece al catálogo activo;
+3. la modalidad es `BASE_OR_OPERATIONAL`, `OPERATIONAL_ONLY` o `BASE_AND_OPERATIONAL`;
+4. `BASE_ONLY` queda rechazado;
+5. `BASE_AND_OPERATIONAL` usa `OPERATIONAL_COMPONENT`;
+6. `OPERATIONAL_COMPONENT` solo se usa para `BASE_AND_OPERATIONAL`;
+7. el par rol-permiso no es un duplicado ambiguo;
+8. no se usa wildcard;
+9. no se usa `propietario_admin`;
+10. no se usa un rol base;
+11. no se usa una clave legacy bloqueada;
+12. no se infiere un permiso por prefijo;
+13. existe condición contextual no vacía;
+14. existe expresión de scope no vacía;
+15. existe `source_task`;
+16. el actor posee `operational_grants.create`;
+17. no existe autoafectación prohibida;
+18. se registra trazabilidad.
+
+`approve` debe revalidar todo el contrato de la propuesta.
+
+Si cambió el rol, permiso, modalidad, contexto, versión contractual, procedencia o evidencia desde la revisión, la propuesta deberá volver a evaluarse antes de adquirir eficacia.
+
+---
+
+#### 13. Ausencia, suspensión, revocación y deny
+
+VISO deberá distinguir:
+
+| Estado conceptual | Efecto |
+| --- | --- |
+| Sin operational grant | No existe `OPERATIONAL_ALLOW` para ese par. |
+| Grant vigente | Puede aportar allow únicamente con contexto operativo válido. |
+| Grant suspendido | No aporta allow mientras la suspensión aplique. |
+| Grant revocado | No aporta allow hacia futuro; conserva evidencia histórica. |
+| Denegación explícita | Es una regla de deny separada con su propia clase y precedencia. |
+
+La matriz operativa continúa siendo `ALLOW_ONLY`.
+
+Por tanto:
+
+```text
+is_allowed = false
+```
+
+no se utilizará como atajo para inventar una denegación contractual.
+
+La ausencia de operational grant tampoco se interpreta como un deny explícito contra el carril base de un permiso `BASE_OR_OPERATIONAL`.
+
+---
+
+#### 14. Experiencia administrativa mínima
+
+La vista deberá permitir entender, para cada combinación:
+
+- rol operativo;
+- familia funcional;
+- aplicación;
+- permiso;
+- etiqueta humana;
+- modalidad;
+- `DIRECT_OPERATIONAL` u `OPERATIONAL_COMPONENT`;
+- expresión contextual;
+- condición;
+- procedencia;
+- existencia o ausencia del grant;
+- si exige componente base adicional;
+- estado administrativo de la propuesta o grant.
+
+La UI podrá agrupar por aplicación o familia funcional, pero la decisión permanece atómica por permiso.
+
+Está prohibido:
+
+- activar permisos por prefijo;
+- convertir `<app>.access` en acceso a todas las capacidades internas;
+- conceder una familia completa mediante un único switch;
+- presentar un `OPERATIONAL_COMPONENT` como permiso final;
+- mostrar un rol catalogado como si fuera efectivo;
+- convertir “todas las sedes” en alcance operativo global;
+- presentar una propuesta pendiente como grant vigente.
+
+---
+
+#### 15. Reconciliación AS-IS del runtime y VISO
+
+El corte remoto read-only observado para `public.operational_role_permissions` conserva:
+
+```text
+filas = 32
+roles con filas = 7
+permission_code distintos = 11
+is_allowed = false = 0
+filas sin site_id, area_id y area_kind = 32
+```
+
+Distribución AS-IS:
+
+| Rol observado | Filas |
+| --- | ---: |
+| `barista_satelite` | 3 |
+| `bodeguero` | 5 |
+| `cajero_satelite` | 5 |
+| `cocinero_satelite` | 3 |
+| `conductor_logistica` | 3 |
+| `gerencia_operativa` | 7 |
+| `operador_integral_satelite` | 6 |
+| **Total** | **32** |
+
+Los cinco roles canónicos sin filas en esa tabla son:
+
+- `servicio_salon`;
+- `mostrador_satelite`;
+- `produccion_cocina`;
+- `produccion_panaderia`;
+- `produccion_reposteria`.
+
+Además, el catálogo físico `public.operational_roles` observado todavía contiene trece códigos activos porque conserva `propietario_admin`.
+
+Esa fila física legacy:
+
+```text
+propietario_admin
+```
+
+no pertenece al `OperationalRoleCode` canónico y no puede adquirir grants por compatibilidad.
+
+El dataset contractual objetivo conserva 240 grants sobre 12 roles y cuatro aplicaciones. Las 32 filas físicas actuales no sustituyen ese contrato.
+
+En el repositorio VISO observado, `/operations/preview` lee `operational_role_permissions` para mostrar permisos junto con la matriz de sede/área. La búsqueda estática no identificó una superficie VISO que materialice el lifecycle TO-BE de `operational_grants.create/approve/suspend/revoke`.
+
+Por tanto:
+
+```text
+RUNTIME AS-IS OBSERVADO
+≠
+CONTRATO ADMINISTRATIVO APROBADO
+```
+
+La reconciliación física queda diferida a la instancia propietaria autorizada.
+
+---
+
+#### 16. Frontera con la matriz territorial
+
+`VISO-AUTH-004` administra qué capacidades puede aportar un rol operativo bajo contexto válido.
+
+No administra dónde puede existir ese rol.
+
+La separación obligatoria es:
+
+```text
+VISO-AUTH-004
+rol operativo × permiso
+```
+
+```text
+VISO-AUTH-005
+rol operativo × sede
+```
+
+```text
+VISO-AUTH-006
+rol operativo × área
+```
+
+y posteriormente:
+
+```text
+VISO-AUTH-010
+trabajador × turno × rol operativo
+```
+
+Por tanto, los campos legacy `site_id`, `area_id` o `area_kind` presentes en una tabla física no autorizan a absorber dentro de esta tarea las responsabilidades territoriales reservadas.
+
+La futura implementación deberá reconciliar la persistencia física sin crear dos fuentes contradictorias de territorio.
+
+---
+
+#### 17. Fallo cerrado
+
+La operación se rechaza ante:
+
+| Caso | Resultado |
+| --- | --- |
+| Rol no perteneciente a los doce códigos canónicos | Rechazar |
+| `propietario_admin` | Rechazar |
+| Rol base usado como operativo | Rechazar |
+| PermissionKey inexistente, retirada o legacy bloqueada | Rechazar |
+| `BASE_ONLY` | Rechazar operational grant |
+| `BASE_AND_OPERATIONAL` sin `OPERATIONAL_COMPONENT` | Rechazar |
+| `OPERATIONAL_COMPONENT` sobre otra modalidad | Rechazar |
+| Wildcard | Rechazar |
+| Duplicado ambiguo | Rechazar |
+| Expresión contextual vacía | Rechazar |
+| Condición vacía | Rechazar |
+| Actor sin permiso administrativo exacto | Rechazar |
+| Reautenticación requerida ausente | Rechazar |
+| Autoaprobación | Rechazar |
+| Autoafectación prohibida | Rechazar |
+| Contexto obligatorio irresoluble | Rechazar |
+| Auditoría no persistible | Rechazar |
+| Versión contractual incompatible | Rechazar |
+| Intento de crear deny con `is_allowed=false` | Rechazar dentro de esta matriz |
+| Discrepancia UI-servidor | Prevalece servidor; no guardar |
+
+---
+
+#### 18. Handoff contractual
+
+La tarea entrega una matriz administrativa cerrada y verificable:
+
+```text
+12 roles operativos
++
+140 permisos activos como universo de identidad
++
+240 grants de referencia
++
+218 DIRECT_OPERATIONAL
++
+22 OPERATIONAL_COMPONENT
++
+174 BASE_OR_OPERATIONAL
++
+44 OPERATIONAL_ONLY
++
+22 BASE_AND_OPERATIONAL
++
+0 BASE_ONLY
++
+5 operaciones administrativas separadas
++
+contexto operativo obligatorio
++
+sin globalidad operativa
++
+deny separado
++
+fallo cerrado
+```
+
+`VISO-AUTH-005` consumirá exactamente los doce roles definidos aquí para administrar su disponibilidad por sede.
+
+No podrá modificar la matriz de permisos al administrar territorio.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea materializa en VISO obligaciones ya aprobadas de catálogo operativo, matriz operativa, administración de seguridad, contexto laboral, segregación, territorialidad y coherencia. No introduce nuevos códigos, modalidades, scopes ni reglas empresariales que exijan ampliar el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 20. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza la cobertura vigente que protege:
+
+- el conjunto exacto de doce roles operativos y la huella de `operational-role-grants@1.0.0`;
+- el conjunto permitido de scopes y el fallo cerrado ante territorios irresolubles;
+- la prohibición de autorización por listas locales de roles;
+- la validez de `PermissionKey`;
+- la administración de roles y permisos mediante capacidad explícita;
+- la exigencia de contexto operativo para capacidades operativas;
+- la resolución determinista de sede y área;
+- la segregación de funciones;
+- la coherencia entre configuración VISO y resultado consumido por las aplicaciones.
+
+Esta trazabilidad no cambia estado, contenido, paquete, evidencia ni secuencia de ningún requisito existente.
+
+---
+
+#### 21. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea aún no fue insertada ni validada dentro de la rama documental local. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, topología, políticas, archivo propietario, catálogo de 140 permisos, doce roles operativos, dataset 1.0.0, validador de 240 grants, permisos administrativos `operational_grants.*`, código VISO y estado read-only de `public.operational_role_permissions` y `public.operational_roles`. |
+| OPERATIVA | NOT_APPLICABLE | No se cambian turnos, grants efectivos, asignaciones, check-ins ni acciones de trabajadores durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, `operational_role_permissions`, `operational_roles`, migraciones, RLS, RPC ni contratos distribuidos. |
+
+---
+
+#### 22. Criterios de aceptación
+
+- [ ] Se administran exclusivamente los doce `OperationalRoleCode`.
+- [ ] `propietario_admin` queda excluido.
+- [ ] No existe solapamiento entre roles base y operativos.
+- [ ] El universo de identidad conserva 140 `PermissionKey` activas.
+- [ ] El snapshot conserva exactamente 240 grants y 240 pares únicos.
+- [ ] Los conteos por rol son 20, 11, 11, 11, 11, 21, 16, 16, 16, 36, 16 y 55.
+- [ ] Se conservan 218 `DIRECT_OPERATIONAL` y 22 `OPERATIONAL_COMPONENT`.
+- [ ] Se conservan 174 `BASE_OR_OPERATIONAL`, 44 `OPERATIONAL_ONLY`, 22 `BASE_AND_OPERATIONAL` y 0 `BASE_ONLY`.
+- [ ] Se conservan 19 grants FOGO, 181 NEXO, 9 ORIGO y 31 PULSO.
+- [ ] La huella contractual permanece `sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f`.
+- [ ] La matriz continúa siendo `ALLOW_ONLY`.
+- [ ] `BASE_ONLY` no puede agregarse al carril operativo.
+- [ ] `OPERATIONAL_COMPONENT` solo puede representar `BASE_AND_OPERATIONAL`.
+- [ ] Un grant operativo nunca reemplaza turno, rol efectivo, sede, área o recurso.
+- [ ] No se introduce alcance operativo global.
+- [ ] El check-in se exige conforme al contrato exacto y no mediante una regla simplificada global.
+- [ ] Las cinco acciones `operational_grants.*` se autorizan independientemente.
+- [ ] Solo `propietario` y `gerente_general` poseen actualmente las cinco capacidades administrativas del snapshot base.
+- [ ] Toda mutación sensible aplica reautenticación, segregación y auditoría.
+- [ ] No existe autoaprobación ni autoafectación unilateral.
+- [ ] Ausencia, suspensión, revocación y deny explícito permanecen separados.
+- [ ] La tabla AS-IS de 32 filas no se declara equivalente al dataset canónico de 240.
+- [ ] `public.operational_roles` AS-IS no convierte `propietario_admin` en rol canónico.
+- [ ] No se absorben responsabilidades de `VISO-AUTH-005`, `VISO-AUTH-006` ni `VISO-AUTH-010` a `VISO-AUTH-012`.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 23. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- crea una pantalla física de administración;
+- modifica `/operations/preview`;
+- modifica `/operations/site-roles`;
+- modifica `@vento/contracts`;
+- modifica `operational-roles.json`;
+- modifica `operational-role-grants.jsonl`;
+- modifica `public.operational_roles`;
+- modifica `public.operational_role_permissions`;
+- elimina `propietario_admin`;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- modifica RLS;
+- modifica RPC;
+- modifica triggers;
+- modifica grants PostgreSQL;
+- crea nuevos roles;
+- crea nuevos permisos;
+- crea nuevos scopes;
+- administra la matriz base;
+- administra disponibilidad de roles por sede;
+- administra disponibilidad de roles por área;
+- administra perfiles operativos;
+- asigna roles a trabajadores o turnos;
+- cambia check-ins;
+- crea excepciones individuales;
+- crea denegaciones;
+- ejecuta simulaciones;
+- selecciona package;
+- prepara package gate;
+- aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la unidad física se resolverá únicamente mediante el package y gate aplicables.
+
+---
+
+#### 24. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-003 — Administrar permisos por rol base`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-004 — Administrar permisos por rol operativo`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-005 — Administrar roles permitidos por sede`
+
+
 ### [ ] VISO-AUTH-005 — Administrar roles permitidos por sede
 ### [ ] VISO-AUTH-006 — Administrar roles permitidos por área
 ### [ ] VISO-AUTH-007 — Administrar perfiles operativos por trabajador
