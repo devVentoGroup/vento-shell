@@ -1770,16 +1770,6 @@ function dominantTaskLabel(pkg) {
   return task ? `${task.task_id} — ${task.title}` : pkg.objective;
 }
 
-function renderNearestTable(result) {
-  const rows = result.registry.nearest_to_ready_queue.map((entry, index) => {
-    const pkg = result.registry.packages.find(({ package_id: packageId }) => packageId === entry.package_id);
-    return `| ${index + 1} | ${packageLink(entry.package_id)} | ${statusIcon(entry.status)} ${entry.status} | ${entry.task_progress.approved}/${entry.task_progress.total} | ${entry.gate_progress.passed}/${entry.gate_progress.total} | **${entry.remaining_obligations}** | ${markdownCell(entry.exit_owner ?? pkg?.owner_application)} |`;
-  });
-  return rows.length > 0
-    ? `| # | Package | Estado | Tareas | Gates | Faltan | Responsable de salida |\n| -: | --- | --- | ---: | ---: | ---: | --- |\n${rows.join('\n')}`
-    : '_No hay candidatos diagnósticos._';
-}
-
 function renderExecutionSequence(result) {
   const execution = result.registry.package_execution;
   if (!execution) return '_La ejecución lineal no fue evaluada en este fixture._';
