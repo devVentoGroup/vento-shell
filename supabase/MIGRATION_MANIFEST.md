@@ -25,10 +25,11 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260831152828 | 20260831152828_auth_db_033_corr_001_contract_conformance.sql | f7cf352fcc1cf2c821be47ba2248fb903230984d041460e1c6c8cd80502dfb76 | 51904 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260831212234 | 20260831212234_auth_db_036_organization_scope.sql | be5fbe23626e745e5d2eba90585903ff7dc107778d20f1b9f789a88f7dd833d6 | 7112 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260831233918 | 20260831233918_auth_db_035_context_freshness.sql | c174b7073f82a0ea086e6b2ffef3de03ca54b51954d4934f009dab6d3031d372 | 83597 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260901062557 | 20260901062557_auth_db_034_authorization_evaluator.sql | 2d18153540c74630e1271f284a93da398ed23c4eb71e14c21c83420b2754dc91 | 891217 | STANDARD |  |  | SIN_HALLAZGO |
 
 ## Inventory summary
 
-- Physical files: 14
+- Physical files: 15
 - Empty files: 0
 - Content-duplicate groups: 0
 - Same-logical-family groups: 0

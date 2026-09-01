@@ -195,8 +195,8 @@ select is(
       'vital'
     )
   ),
-  372::bigint,
-  'governed function universe includes eight AUTH-DB-035 freshness functions'
+  381::bigint,
+  'governed function universe includes nine AUTH-DB-034 authorization evaluator functions'
 );
 
 select is(
@@ -215,8 +215,8 @@ select is(
     )
       and p.prosecdef
   ),
-  210::bigint,
-  'SECURITY DEFINER total includes six AUTH-DB-035 privileged freshness functions'
+  212::bigint,
+  'SECURITY DEFINER total includes two AUTH-DB-034 private privileged borders'
 );
 
 select is(
@@ -234,8 +234,8 @@ select is(
     )
       and p.prosecdef
   ),
-  205::bigint,
-  'Vento SECURITY DEFINER total includes six AUTH-DB-035 privileged freshness functions'
+  207::bigint,
+  'Vento SECURITY DEFINER total includes two AUTH-DB-034 private privileged borders'
 );
 
 select is(
@@ -268,8 +268,8 @@ select is(
       and p.prosecdef
       and p.prorettype <> 'trigger'::regtype
   ),
-  176::bigint,
-  'direct SECURITY DEFINER total includes four AUTH-DB-035 direct privileged freshness borders'
+  178::bigint,
+  'direct SECURITY DEFINER total includes two AUTH-DB-034 direct privileged borders'
 );
 
 select is(

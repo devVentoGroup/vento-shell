@@ -650,7 +650,8 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 246::bigint, 'direct Vento routine inventory includes six direct AUTH-DB-035 freshness routines' );
+                        and d.deptype = 'e' ) ), 255::bigint,
+  'direct Vento routine inventory includes nine AUTH-DB-034 authorization routines' );
         select
             is(
             (
@@ -691,7 +692,8 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 171::bigint, 'direct SECURITY DEFINER inventory includes four AUTH-DB-035 direct privileged borders' );
+                        and d.deptype = 'e' ) ), 173::bigint,
+  'direct SECURITY DEFINER inventory includes two AUTH-DB-034 direct privileged borders' );
         select
             is(
             (
@@ -982,7 +984,7 @@ begin;
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
                         and d.deptype = 'e' )
-                and has_function_privilege('authenticated', p.oid, 'EXECUTE') ) + 1::bigint, 'api contains published legacy wrappers plus the physically present but withheld AUTH-DB-033 safe wrapper' );
+                and has_function_privilege('authenticated', p.oid, 'EXECUTE') ) + 2::bigint, 'api contains published legacy wrappers plus the governed AUTH-DB-033 and AUTH-DB-034 safe wrappers' );
         select
             is(
             (
@@ -1012,7 +1014,7 @@ begin;
                     n.oid = p.pronamespace
                 where
                     n.nspname = 'api'
-                and p.prosecdef ), 1::bigint, 'api contains exactly the AUTH-DB-033 safe SECURITY DEFINER wrapper' );
+                and p.prosecdef ), 2::bigint, 'api contains exactly the AUTH-DB-033 and AUTH-DB-034 safe SECURITY DEFINER wrappers' );
         select
             is(
             (
