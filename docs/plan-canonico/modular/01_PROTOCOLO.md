@@ -1142,7 +1142,7 @@ fail-closed. Ninguno de estos comandos concede autorización física.
 Secuencia obligatoria:
 
 1. Para el package actual indicado por `docs:package:execution:status`,
-   `npm run docs:package:prepare -- --package-id GAP-PKG-NNN` crea o actualiza el
+   `npm run docs:package:start -- --package-id GAP-PKG-NNN` crea o actualiza el
    expediente; nunca se crea manualmente ni se adelanta otro package.
 2. Se completan identidad física exacta, unidades de implementación, plan de
    pruebas, observabilidad, aceptación y rollback. Estas son especificaciones de
@@ -1162,3 +1162,17 @@ Secuencia obligatoria:
 física conserva su autorización separada en `implementation-instances/`.
 `docs:plan:build`, `docs:plan:check`, `docs:plan:test` y los iniciadores ChatGPT
 incluyen este lifecycle como comprobación obligatoria.
+
+### Lifecycle operativo de rama y corrección del orden
+
+El ingreso ordinario a un package canónico se realiza mediante `docs:package:start`. El comando debe resolver primero el package actual de la línea, sincronizar `main`, abrir o reanudar la rama `infra/package-gate-<package_id>` y solo entonces crear o actualizar su expediente.
+
+Las mutaciones `prepare`, `approve`, `finish` y `handoff` son fail-closed: deben rechazar cualquier `package_id` distinto del actual. El check global debe rechazar además expedientes package-gate e instancias `SHELL-CI-020..024` correspondientes a posiciones posteriores de la línea.
+
+`docs:package:finish` publica el expediente aprobado mediante PR y gates remotos. Cuando el package ya satisface también los prerrequisitos físicos, el mismo cierre puede materializar `SHELL-CI-020::<package_id>` únicamente como `PENDING_AUTHORIZATION`. Si esos prerrequisitos maduran después, `docs:package:handoff` materializa el mismo handoff cuando la acción lineal exacta lo solicite.
+
+La existencia del handoff no concede autorización. La autorización y ejecución física continúan exclusivamente en el lifecycle `docs:implementation:status` → autorización humana → `docs:implementation:start` → evidencia → `docs:implementation:finish`.
+
+Si la secuencia derivada de `DELIV-PKG-015` contradice una decisión canónica ya aprobada, queda prohibido ejecutar otro package por selección humana, fuerza o bypass. Debe abrirse una corrección documental de `DELIV-PKG-015` con razón `DOCUMENTARY_CONTRADICTION`. Mientras exista una corrección de la fuente de orden que no esté `VERIFIED` en `main`, todas las mutaciones de package permanecen congeladas.
+
+El lifecycle de correcciones solo restaura conformidad con contratos o decisiones ya aprobados. No puede utilizarse para repriorizar packages por conveniencia ni para introducir nuevas dependencias de negocio fuera del proceso documental canónico.

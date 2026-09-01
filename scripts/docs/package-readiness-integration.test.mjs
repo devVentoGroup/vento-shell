@@ -7,6 +7,7 @@ const buildSource = fs.readFileSync('scripts/docs/build-plan-canonico.mjs', 'utf
 const syncSource = fs.readFileSync('scripts/docs/sync-local-derived-artifacts.mjs', 'utf8');
 const scannerSource = fs.readFileSync('scripts/docs/package-readiness-scanner.mjs', 'utf8');
 const starterSource = fs.readFileSync('scripts/docs/chatgpt-work-starter-readiness.mjs', 'utf8');
+const packageGateLifecycleSource = fs.readFileSync('scripts/docs/package-gate-lifecycle.mjs', 'utf8');
 const lifecycleSource = fs.readFileSync('scripts/docs/task-branch-lifecycle-readiness.mjs', 'utf8');
 const index = JSON.parse(fs.readFileSync(
   'scripts/docs/package-readiness/implementation-capability-index.json',
@@ -51,10 +52,13 @@ test('package.json enruta starter, status, commit-scope y lifecycle por readines
   assert.equal(packageJson.scripts['docs:task:finish'], 'node scripts/docs/task-branch-lifecycle-readiness.mjs finish');
   assert.match(packageJson.scripts['docs:plan:check'], /chatgpt-work-starter-readiness\.mjs --check/u);
   assert.doesNotMatch(packageJson.scripts['docs:plan:check'], /chatgpt-work-starter\.mjs --check/u);
+  assert.equal(packageJson.scripts['docs:package:start'], 'node scripts/docs/package-gate-lifecycle.mjs start');
   assert.equal(packageJson.scripts['docs:package:prepare'], 'node scripts/docs/package-gate-lifecycle.mjs prepare');
   assert.equal(packageJson.scripts['docs:package:gate:status'], 'node scripts/docs/package-gate-lifecycle.mjs status');
   assert.equal(packageJson.scripts['docs:package:gate:check'], 'node scripts/docs/package-gate-lifecycle.mjs check');
   assert.equal(packageJson.scripts['docs:package:gate:approve'], 'node scripts/docs/package-gate-lifecycle.mjs approve');
+  assert.equal(packageJson.scripts['docs:package:finish'], 'node scripts/docs/package-gate-lifecycle.mjs finish');
+  assert.equal(packageJson.scripts['docs:package:handoff'], 'node scripts/docs/package-gate-lifecycle.mjs handoff');
   assert.equal(packageJson.scripts['docs:package:execution:status'], 'node scripts/docs/package-execution-control.mjs status');
   assert.equal(packageJson.scripts['docs:package:execution:check'], 'node scripts/docs/package-execution-control.mjs check');
   assert.equal(packageJson.scripts['docs:package:select'], undefined);
@@ -74,6 +78,18 @@ test('el lifecycle documental escanea antes y después del cierre y no publica P
   assert.ok(finish > pre);
   assert.ok(post > finish);
   assert.ok(replay > post);
+});
+
+test('package lifecycle obliga turno, rama, publicación y handoff PENDING', () => {
+  assert.match(packageGateLifecycleSource, /assertPackageMutationAllowed/u);
+  assert.match(packageGateLifecycleSource, /assertNoFuturePackageArtifacts/u);
+  assert.match(packageGateLifecycleSource, /loadValidatedCorrectionControl/u);
+  assert.match(packageGateLifecycleSource, /PACKAGE_EXECUTION_ORDER_CORRECTION_OPEN|openOrderCorrections/u);
+  assert.match(packageGateLifecycleSource, /infra\/package-gate-/u);
+  assert.match(packageGateLifecycleSource, /docs:infra:publish/u);
+  assert.match(packageGateLifecycleSource, /pendingInstanceRecord/u);
+  assert.match(packageGateLifecycleSource, /PENDING_AUTHORIZATION/u);
+  assert.match(packageGateLifecycleSource, /docs:implementation:status/u);
 });
 
 test('scanner separa registry documental persistente de estado físico efectivo', () => {
@@ -96,6 +112,9 @@ test('los iniciadores usan una única proyección readiness y prohíben cambio s
   assert.doesNotMatch(starterSource, /packages\.find\(\(\{ package_gate/u);
   assert.match(starterSource, /Selección humana de package: FALSE/u);
   assert.match(starterSource, /Un bloqueo conserva el turno/u);
+  assert.match(starterSource, /docs:package:start/u);
+  assert.match(starterSource, /DELIV-PKG-015/u);
+  assert.match(starterSource, /PENDING_AUTHORIZATION/u);
 });
 
 test('el índice inicial no inventa un catálogo masivo y solo siembra identidades canónicas explícitas', () => {

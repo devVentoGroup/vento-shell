@@ -1590,6 +1590,9 @@ export function applyPhysicalOverlay({ registry, contract, instances, capability
     const physicalDependencies = evaluatePhysicalDependencies({ contract, instances, capability });
     const effectiveGate = evaluateEffectiveGate(persisted.gate_documentary, physicalDependencies);
     const physical = physicalLifecycleStatus(persisted.package_id, instances, contract);
+    const physicalEntryInstance = instances.get(
+      `${contract.implementation_entry_task}::${persisted.package_id}`,
+    ) ?? null;
     let status = persisted.status;
     if (physical) status = physical.status;
     else if (persisted.status === 'READY_FOR_GATE' && effectiveGate.pass) status = 'IMPLEMENTATION_READY';
@@ -1605,7 +1608,7 @@ export function applyPhysicalOverlay({ registry, contract, instances, capability
     const packageGateNext = persisted.source_kind === 'CANONICAL_GAP_PACKAGE'
       ? persisted.package_gate
         ? `npm run docs:package:gate:status -- --package-id ${persisted.package_id}`
-        : `npm run docs:package:prepare -- --package-id ${persisted.package_id}`
+        : `npm run docs:package:start -- --package-id ${persisted.package_id}`
       : null;
     const projected = {
       ...persisted,
@@ -1615,6 +1618,12 @@ export function applyPhysicalOverlay({ registry, contract, instances, capability
       status_history: history,
       gate: effectiveGate,
       physical_dependencies: physicalDependencies,
+      physical_entry_instance: physicalEntryInstance
+        ? {
+          instance_id: physicalEntryInstance.instance_id,
+          status: physicalEntryInstance.status,
+        }
+        : null,
       blockers: [...new Set(effectiveBlockers)],
       next_execution: status === 'IMPLEMENTATION_READY'
         ? `${contract.implementation_entry_task}::${persisted.package_id}`
@@ -2015,6 +2024,19 @@ Cada ficha muestra exclusivamente información derivada: descripción, estado, t
 
 ${packages.map(renderPackageCard).join('\n\n')}
 
+## Corrección excepcional del orden
+
+La línea no admite selección humana ni bypass del package actual.
+
+Si el orden derivado contradice una decisión canónica ya aprobada, se corrige la fuente \`DELIV-PKG-015\` mediante el lifecycle de correcciones. Mientras exista una corrección de esa tarea que todavía no esté \`VERIFIED\`, las mutaciones de package permanecen bloqueadas.
+
+La apertura controlada de esa corrección se inicia con:
+
+\`\`\`powershell
+npm run docs:correction:prepare -- --task-id DELIV-PKG-015 --type DOCUMENTARY --reason-code DOCUMENTARY_CONTRADICTION --block-target SHELL-CI-020
+\`\`\`
+
+Una corrección restaura conformidad con contratos ya aprobados. No puede utilizarse para repriorizar packages por conveniencia ni para introducir una dependencia nueva no aprobada.
 ## Fuentes canónicas y responsabilidad
 
 | Función | Fuente / control |
@@ -2032,11 +2054,13 @@ ${packages.map(renderPackageCard).join('\n\n')}
 ## Uso operativo
 
 \`\`\`powershell
-npm run docs:package:readiness
-npm run docs:package:readiness:check
 npm run docs:package:execution:status
-npm run docs:package:execution:check
-npm run docs:package:readiness -- --package GAP-PKG-001
+npm run docs:package:start -- --package-id GAP-PKG-001
+npm run docs:chatgpt:starter
+npm run docs:package:gate:status -- --package-id GAP-PKG-001
+npm run docs:package:finish -- --package-id GAP-PKG-001
+npm run docs:package:handoff -- --package-id GAP-PKG-001
+npm run docs:implementation:status
 \`\`\`
 
 Artefactos derivados:
