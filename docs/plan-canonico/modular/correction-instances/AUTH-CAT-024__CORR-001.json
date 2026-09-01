@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "correction_id": "AUTH-CAT-024::CORR-001",
+  "task_id": "AUTH-CAT-024",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "DOCUMENTARY_CONTRADICTION",
+  "status": "PENDING_AUTHORIZATION",
+  "blocking": true,
+  "blocked_targets": [
+    "AUTH-DB-034::GLOBAL"
+  ],
+  "baseline": {
+    "main_commit": "290fb7d610c4a400fb4392aae08313009f3e5022",
+    "target_task_path": "docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "target_task_sha256": "87e1e32d60c4af0225a87d0e2830ac331448788c382b00cdaa312393f3546f88",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [],
+  "authorized_changes": [],
+  "validation_commands": [],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
+  "authorization": null,
+  "evidence": [],
+  "opened_at": "2026-09-01T02:47:51.332Z"
+}
