@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "DOCUMENTARY_CONTRADICTION",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "AUTH-DB-034::GLOBAL"
@@ -17,12 +17,61 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY"
+    }
+  ],
+  "validation_commands": [
+    "git grep -q -F \"AUTH-CAT-024::CORR-001\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "git grep -q -F \"catalog_version = 1.1.0\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "git grep -q -F \"active_permission_keyset_changed = false\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "git grep -q -F \"permission_count = 140\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "npm run docs:task:format -- --file docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md --task-id AUTH-CAT-025 --check",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:eol:check",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "zero_treq_reason": "Corrección documental de verificación sin cambio de capacidades, PermissionKey, datasets ni requisitos TREQ; AUTH-CAT-025 publica el sucesor contractual.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-01T00:26:15.792-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza AUTH-CAT-024::CORR-001 para verificar y cerrar documentalmente la no conformidad mediante AUTH-CAT-025@1.1.0, sin modificar en sitio AUTH-CAT-024 ni vento.authorization@1.0.0, sin cambiar el conjunto de 140 permisos, modalidades, grants o TREQ, y manteniendo AUTH-DB-034::GLOBAL bloqueada hasta VERIFIED_ON_MAIN.",
+    "source_contract_sha256": "bb1d13bb1beb08527a921dc30519617a9e7245a7f76f8afd73811fcd3460a5fb"
+  },
+  "evidence": [
+    "IMPLEMENTED correction scope is verification-only; AUTH-CAT-024 and vento.authorization@1.0.0 remain unmodified.",
+    "IMPLEMENTED contractual resolution is provided by approved AUTH-CAT-025@1.1.0.",
+    "IMPLEMENTED npm run quality:repair executed exactly once: PASS.",
+    "IMPLEMENTED owner document remains unchanged relative to origin/main after quality:repair.",
+    "VERIFIED AUTH-CAT-025 explicitly references AUTH-CAT-024::CORR-001.",
+    "VERIFIED AUTH-CAT-025 publishes catalog_version=1.1.0.",
+    "VERIFIED AUTH-CAT-025 preserves active_permission_keyset_changed=false.",
+    "VERIFIED AUTH-CAT-025 preserves permission_count=140.",
+    "VERIFIED docs:task:format AUTH-CAT-025 PASS.",
+    "VERIFIED npm run docs:correction:starter regenerated the canonical correction projection for IMPLEMENTED.",
+    "VERIFIED npm run docs:plan:check PASS after correction starter synchronization.",
+    "VERIFIED npm run docs:plan:test PASS.",
+    "VERIFIED npm run docs:treq:check PASS.",
+    "VERIFIED npm run docs:treq:test PASS.",
+    "VERIFIED npm run docs:correction:check PASS.",
+    "VERIFIED npm run docs:correction:test PASS.",
+    "VERIFIED npm run docs:eol:check PASS.",
+    "VERIFIED git --no-pager diff --check PASS.",
+    "VERIFIED AUTH-CAT-024 and vento.authorization@1.0.0 remain unmodified."
+  ],
   "opened_at": "2026-09-01T02:47:51.332Z"
 }
