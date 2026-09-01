@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1596** |
 | Tareas `AUTH` únicas | **319** |
-| Tareas aprobadas | **1092** |
+| Tareas aprobadas | **1093** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **504** |
+| Tareas no iniciadas | **503** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **68.42% (1092/1596)** |
+| Porcentaje de completamiento | **68.48% (1093/1596)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **VISO-AUTH-001 — Crear catálogo administrativo de roles base** |
-| Tarea actual | **VISO-AUTH-002 — Crear catálogo administrativo de roles operativos** |
+| Última tarea aprobada | **VISO-AUTH-002 — Crear catálogo administrativo de roles operativos** |
+| Tarea actual | **VISO-AUTH-003 — Administrar permisos por rol base** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **VISO-AUTH-003 — Administrar permisos por rol base** |
+| Siguiente tarea | **VISO-AUTH-004 — Administrar permisos por rol operativo** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
-| Progreso del bloque | **BLOQUES G Y G2: 1 de 26 aprobadas; VISO-AUTH-002 pendiente** |
+| Progreso del bloque | **BLOQUES G Y G2: 2 de 26 aprobadas; VISO-AUTH-003 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-034::GLOBAL** |
-| Carril documental | **ACTIVO — VISO-AUTH-002** |
+| Carril documental | **ACTIVO — VISO-AUTH-003** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-034::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `VISO-AUTH-001` — Crear catálogo administrativo de roles base |
-| Tarea actual | `VISO-AUTH-002` — Crear catálogo administrativo de roles operativos — **NO INICIADA** |
-| Siguiente tarea | `VISO-AUTH-003` — Administrar permisos por rol base |
+| Última aprobada | `VISO-AUTH-002` — Crear catálogo administrativo de roles operativos |
+| Tarea actual | `VISO-AUTH-003` — Administrar permisos por rol base — **NO INICIADA** |
+| Siguiente tarea | `VISO-AUTH-004` — Administrar permisos por rol operativo |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 1 DE 26 APROBADAS — ACTUAL VISO-AUTH-002** |
+| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 2 DE 26 APROBADAS — ACTUAL VISO-AUTH-003** |
 | Implementación física | **AUTH-DB-034::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-VISO-AUTH-001 — Crear catálogo administrativo de roles base
-        ↓
-TAREA ACTUAL
 VISO-AUTH-002 — Crear catálogo administrativo de roles operativos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 VISO-AUTH-003 — Administrar permisos por rol base
         ↓
+SIGUIENTE TAREA RESERVADA
+VISO-AUTH-004 — Administrar permisos por rol operativo
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUES G Y G2 — 1 de 26 tareas aprobadas
+BLOQUES G Y G2 — 2 de 26 tareas aprobadas
 ```

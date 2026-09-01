@@ -408,7 +408,575 @@ La existencia AS-IS de superficies administrativas no las convierte automáticam
 `VISO-AUTH-002 — Crear catálogo administrativo de roles operativos`
 
 
-### [ ] VISO-AUTH-002 — Crear catálogo administrativo de roles operativos
+### ✅ VISO-AUTH-002 — Crear catálogo administrativo de roles operativos
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-001 — Crear catálogo administrativo de roles base
+**Tarea siguiente:** VISO-AUTH-003 — Administrar permisos por rol base
+**Tipo de tarea:** documental; definición del catálogo administrativo canónico de roles operativos que VISO deberá presentar y consumir como universo temporal separado de roles base, permisos, sedes, áreas, perfiles y turnos efectivos
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a la topología `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el catálogo administrativo de roles operativos que VISO deberá utilizar para representar las funciones temporales que un empleado puede ejecutar durante un turno, sin convertir el catálogo en fuente de identidad laboral, permiso, asignación territorial o rol efectivo.
+
+El catálogo administrativo no crea un universo nuevo. Su función es proyectar de forma comprensible y administrable el catálogo operativo canónico versionado, conservando una correspondencia exacta con la fuente compartida y evitando que VISO, una sede, una aplicación, una pantalla o un perfil creen códigos operativos locales.
+
+La regla raíz queda:
+
+```text
+CATÁLOGO OPERATIVO VERSIONADO
++
+DOCE CÓDIGOS CANÓNICOS
++
+SEMÁNTICA FUNCIONAL APROBADA
++
+SEPARACIÓN ENTRE CATÁLOGO Y TURNO EFECTIVO
++
+SEPARACIÓN ENTRE ROL Y PERMISO
+→
+CATÁLOGO ADMINISTRATIVO VISO
+```
+
+Y nunca:
+
+```text
+APARECER EN EL CATÁLOGO
+→
+ROL OPERATIVO EFECTIVO
+```
+
+ni:
+
+```text
+NOMBRE DEL ROL
+→
+AUTORIZACIÓN
+```
+
+---
+
+#### 2. Base normativa y fuentes de autoridad
+
+Esta tarea consume y conserva las decisiones aprobadas de identidad, autorización, contexto, matrices y procesos sin redefinirlas.
+
+Fuentes vinculantes:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-001` — identidad laboral y actor efectivo;
+- `AUTH-MOD-002` — separación entre rol base y rol operativo;
+- `AUTH-MOD-005` — catálogo operativo canónico;
+- `AUTH-MOD-006` — casos híbridos sin crear roles híbridos;
+- `AUTH-MOD-009` y `AUTH-MOD-010` — turno, check-in y rol operativo efectivo;
+- `PROC-ACTOR-002` — aplicabilidad de los doce roles operativos sobre los procesos canónicos;
+- `SHELL-CON-005` — contrato compartido versionado de roles operativos y grants operativos;
+- el catálogo versionado `packages/contracts/authorization/catalog/operational-roles/versions/1.0.0/operational-roles.json`.
+
+La autoridad para la identidad de un rol operativo es el código canónico versionado. VISO no será una fuente paralela capaz de crear una identidad operativa que el contrato compartido no reconozca.
+
+La relación conceptual continúa siendo:
+
+```text
+empleado activo
+→ turno publicado y válido
+→ rol operativo asignado
+→ rol activo
+→ sede habilitada
+→ área compatible
+→ check-in cuando la política lo exige
+→ rol operativo efectivo
+→ permisos operativos explícitos
+→ evaluación de autorización
+```
+
+El catálogo contiene identidades posibles. No demuestra que una de ellas sea efectiva para un actor en este instante.
+
+---
+
+#### 3. Resultado canónico
+
+VISO deberá exponer un catálogo administrativo con exactamente las doce identidades vigentes de `OperationalRoleCode@1.0.0`:
+
+1. `cajero_satelite`;
+2. `barista_satelite`;
+3. `cocinero_satelite`;
+4. `servicio_salon`;
+5. `mostrador_satelite`;
+6. `operador_integral_satelite`;
+7. `produccion_cocina`;
+8. `produccion_panaderia`;
+9. `produccion_reposteria`;
+10. `bodeguero`;
+11. `conductor_logistica`;
+12. `gerencia_operativa`.
+
+La cardinalidad contractual es:
+
+```text
+roles operativos canónicos = 12
+familias funcionales = 4
+duplicados = 0
+roles base dentro del catálogo operativo = 0
+oficios legacy dentro del catálogo operativo = 0
+propietario_admin = 0
+aliases locales = 0
+fallbacks entre catálogos = 0
+```
+
+La proyección administrativa deberá conservar el mismo conjunto y orden contractual de códigos que la fuente compartida. Una lista local divergente, una copia manual no versionada o un valor aceptado únicamente por una interfaz no serán equivalentes al catálogo canónico.
+
+---
+
+#### 4. Catálogo administrativo materializado documentalmente
+
+| Rol operativo | Familia | Función principal | Área normalmente requerida | Procesos aplicables |
+| --- | --- | --- | --- | ---: |
+| `cajero_satelite` | Operación satélite | Caja, cobro y operación POS en sede y área habilitadas. | Sí | 39 |
+| `barista_satelite` | Operación satélite | Preparación y control de bebidas y barra. | Sí | 38 |
+| `cocinero_satelite` | Operación satélite | Preparación y producción de cocina en punto de venta. | Sí | 38 |
+| `servicio_salon` | Operación satélite | Atención, servicio, entrega y seguimiento de salón y mesa. | Sí | 33 |
+| `mostrador_satelite` | Operación satélite | Atención, alistamiento, entrega y operación de mostrador. | Sí | 40 |
+| `operador_integral_satelite` | Operación satélite | Ejecución integrada únicamente en sedes que habiliten esa variante. | Depende de la sede | 45 |
+| `produccion_cocina` | Producción | Cocina caliente central dentro del área asignada. | Sí | 33 |
+| `produccion_panaderia` | Producción | Panadería y galletería dentro del área asignada. | Sí | 33 |
+| `produccion_reposteria` | Producción | Repostería y pastelería dentro del área asignada. | Sí | 33 |
+| `bodeguero` | Logística | Bodega, inventario, custodia y preparación logística. | Sí | 36 |
+| `conductor_logistica` | Logística | Transporte y custodia durante rutas y entregas asignadas. | Puede usar área general | 25 |
+| `gerencia_operativa` | Coordinación | Coordinación directa de la operación durante el turno. | Depende de la sede | 51 |
+
+La distribución suma **444 vínculos proceso–rol aplicables**.
+
+La familia funcional organiza la presentación del catálogo, pero no crea herencia de permisos entre roles de la misma familia.
+
+---
+
+#### 5. Aplicabilidad sobre procesos canónicos
+
+`PROC-ACTOR-002` evalúa los doce roles operativos contra los 69 procesos canónicos.
+
+Resultado vigente:
+
+```text
+procesos evaluados = 69
+roles operativos = 12
+pares proceso-rol posibles = 828
+vínculos aplicables = 444
+procesos con al menos un rol operativo aplicable = 51
+procesos sin rol operativo directo = 18
+roles desconocidos, legacy o base usados como operativos = 0
+```
+
+La aplicabilidad de un rol a un proceso significa únicamente que ese rol puede participar operativamente en alguna variante o tramo del proceso bajo contexto válido.
+
+No significa:
+
+- que posea todos los permisos del proceso;
+- que pueda ejecutar cualquier transición;
+- que pueda aprobar o cerrar el proceso;
+- que pueda actuar en cualquier sede o área;
+- que pueda acceder a cualquier recurso del proceso;
+- que el proceso deba ejecutarse durante un turno;
+- que un rol base pueda sustituirse por el rol operativo;
+- que un proceso marcado `NO_APLICA` pueda habilitarse por tener turno.
+
+Por tanto:
+
+```text
+ROL OPERATIVO APLICABLE
+≠
+PERMISO CONCEDIDO
+≠
+ROL EFECTIVO
+≠
+AUTORIZACIÓN FINAL
+```
+
+Los 18 procesos sin rol operativo directo permanecen deliberadamente fuera de la autoridad derivada del turno.
+
+---
+
+#### 6. Rol catalogado, asignado y efectivo
+
+VISO deberá mantener separados tres estados conceptuales:
+
+| Concepto | Significado | Concede autoridad por sí mismo |
+| --- | --- | ---: |
+| Rol catalogado | Código operativo existente dentro del universo canónico. | No |
+| Rol asignado | Rol programado en un turno concreto. | No |
+| Rol operativo efectivo | Rol asignado cuyo turno, sede, área, actividad y precondiciones operativas son válidos en el contexto evaluado. | No; habilita únicamente el carril operativo para evaluar permisos explícitos |
+
+La resolución efectiva conserva:
+
+```text
+rol asignado
++
+turno válido
++
+sede válida
++
+área válida
++
+política de check-in aplicable
+=
+rol operativo efectivo posible
+```
+
+Incluso con rol operativo efectivo:
+
+```text
+ROL EFECTIVO
++
+PERMISO OPERATIVO EXPLÍCITO
++
+ALCANCE COMPATIBLE
++
+RECURSO COMPATIBLE
++
+SIN DENEGACIÓN PREVALENTE
+=
+AUTORIZACIÓN OPERATIVA POSIBLE
+```
+
+Un perfil operativo predeterminado solo puede proponer un valor al planificar un turno. No constituye evidencia de rol efectivo.
+
+Un dispositivo compartido no asigna roles operativos y su `navigation_role` no puede sustituir el contexto real del actor.
+
+---
+
+#### 7. Reglas funcionales obligatorias por familia
+
+##### 7.1 Operación satélite
+
+Los seis roles de operación satélite representan funciones concretas del punto de venta.
+
+`cajero_satelite` no concede configuración general de PULSO ni administración comercial.
+
+`barista_satelite` y `cocinero_satelite` conservan especialidades distintas aunque una sede pueda compartir físicamente un área.
+
+`servicio_salon` no se convierte en caja por participar en cobro, entrega o cierre de una mesa.
+
+`mostrador_satelite` no equivale automáticamente a `cajero_satelite`.
+
+`operador_integral_satelite` representa una variante operativa aprobada para formatos pequeños o integrados. No es la unión automática de los demás cinco roles y no funciona como superusuario.
+
+##### 7.2 Producción
+
+`produccion_cocina`, `produccion_panaderia` y `produccion_reposteria` son identidades operativas distintas.
+
+Compartir procesos productivos no permite intercambiar las tres identidades ni ampliar automáticamente un área de producción hacia otra.
+
+La participación productiva no concede ajuste global de inventario, administración de catálogos o liberación de decisiones reservadas si el permiso exacto no lo permite.
+
+##### 7.3 Logística
+
+`bodeguero` permanece como rol operativo. No forma parte del catálogo base.
+
+Su ámbito natural es bodega, inventario, custodia y preparación logística, sin adquirir producción por la sola manipulación de materiales.
+
+`conductor_logistica` representa transporte y custodia en tránsito. No adquiere facultades productivas, de inventario global, recepción general ni cierre administrativo por el nombre del rol.
+
+##### 7.4 Coordinación
+
+`gerencia_operativa` representa coordinación directa durante un turno.
+
+No es:
+
+- rol base;
+- administrador global;
+- sustituto de `gerente` o `gerente_general`;
+- bypass;
+- wildcard;
+- permiso para actuar fuera de la sede, área, recurso o proceso autorizado.
+
+Un actor puede combinar un rol base administrativo con `gerencia_operativa`, pero ambos carriles permanecen independientes.
+
+---
+
+#### 8. Integridad con el contrato de grants operativos
+
+El catálogo administrativo de VISO deberá permanecer compatible con el contrato operativo compartido vigente sin administrar todavía su matriz.
+
+La versión `vento.authorization.operational-role-grants@1.0.0` conserva:
+
+```text
+registros = 240
+pares rol-permiso únicos = 240
+DIRECT_OPERATIONAL = 218
+OPERATIONAL_COMPONENT = 22
+BASE_OR_OPERATIONAL = 174
+OPERATIONAL_ONLY = 44
+BASE_AND_OPERATIONAL = 22
+BASE_ONLY = 0
+```
+
+La huella contractual vigente es:
+
+```text
+sha256:3e28cb780c346fbc5cf583fe9cf20d1a88333c4fd459fc233380d9e627c6f94f
+```
+
+Estos valores funcionan como frontera de integridad entre el catálogo y la futura administración de permisos operativos.
+
+`VISO-AUTH-002` no modifica, agrega, elimina ni reinterpreta ninguno de esos grants.
+
+La administración de la matriz operativa pertenece a `VISO-AUTH-004`.
+
+---
+
+#### 9. Gobierno de identidad y versionado
+
+Reglas obligatorias:
+
+1. `operational_role_code` es la identidad estable de la entrada;
+2. la versión vigente consumida por esta tarea es `1.0.0`;
+3. VISO no podrá reconocer como canónico un código ausente del contrato compartido vigente;
+4. una etiqueta visible no podrá sustituir el código;
+5. una renombrada visual no podrá cambiar la identidad contractual;
+6. un nuevo código exigirá primero una versión canónica aprobada del catálogo compartido;
+7. un retiro o sustitución deberá respetar el gobierno de compatibilidad y transición aplicable;
+8. un código operativo no podrá convertirse en rol base por coincidencia de nombre, uso histórico o conveniencia de interfaz;
+9. un código base no podrá aceptarse como operativo;
+10. no se crearán roles por aplicación;
+11. no se crearán roles por sede;
+12. no se crearán roles por área;
+13. no se crearán roles desde un perfil individual;
+14. no se crearán roles desde una estación o dispositivo;
+15. una versión desconocida o incompatible deberá impedir que la proyección se presente como canónicamente vigente;
+16. el orden visual no establece jerarquía ni precedencia de autorización;
+17. pertenecer al catálogo no concede permisos.
+
+---
+
+#### 10. Exclusiones obligatorias
+
+No forman parte del catálogo administrativo de roles operativos:
+
+- los ocho roles base canónicos;
+- cargos administrativos;
+- oficios legacy usados históricamente como roles base;
+- `propietario_admin`;
+- usuarios técnicos de dispositivo;
+- `service_role`;
+- perfiles operativos de trabajador;
+- turnos;
+- check-ins;
+- sedes;
+- áreas;
+- tipos de sede o área;
+- permisos;
+- excepciones individuales;
+- grupos de navegación;
+- nombres de estaciones;
+- códigos generados localmente por una aplicación.
+
+Una coincidencia semántica de nombre no convierte ninguna de esas entidades en `OperationalRoleCode`.
+
+---
+
+#### 11. Separación de responsabilidades dentro de VISO
+
+`VISO-AUTH-002` fija únicamente el catálogo administrativo de identidades operativas y su semántica mínima de presentación.
+
+| Tarea | Responsabilidad reservada |
+| --- | --- |
+| `VISO-AUTH-003` | Administración de permisos y matriz por rol base. |
+| `VISO-AUTH-004` | Administración de permisos y matriz por rol operativo. |
+| `VISO-AUTH-005` | Roles operativos permitidos por sede. |
+| `VISO-AUTH-006` | Roles operativos permitidos por área. |
+| `VISO-AUTH-007` | Perfiles operativos por trabajador. |
+| `VISO-AUTH-008` | Sedes asignadas al trabajador. |
+| `VISO-AUTH-009` | Áreas asignadas al trabajador. |
+| `VISO-AUTH-010` | Rol operativo asignado y efectivo dentro del turno. |
+| `VISO-AUTH-011` | Validación de turnos sin rol operativo. |
+| `VISO-AUTH-012` | Validación de incompatibilidad entre rol, sede y área. |
+| `VISO-AUTH-013` | Vista previa trabajador × sede × área × turno. |
+| `VISO-AUTH-014` | Simulación de permisos efectivos. |
+| `VISO-AUTH-015` | Origen de cada permiso. |
+| `VISO-AUTH-016` | Conflictos de configuración. |
+| `VISO-AUTH-017` | Excepciones individuales. |
+| `VISO-AUTH-018` | Auditoría de cambios de seguridad. |
+| `VISO-AUTH-019` | Restricción de quién administra seguridad. |
+| `VISO-AUTH-020` | Exporte de matriz de acceso. |
+
+La secuencia canónica continúa por `VISO-AUTH-003`, aunque la matriz que consume directamente las doce identidades operativas se desarrolle después en `VISO-AUTH-004`.
+
+Esta tarea no adelanta ninguna de esas responsabilidades.
+
+---
+
+#### 12. Reconciliación con superficies físicas observadas
+
+El código actual de VISO ya contiene una superficie de matriz operativa que consume un catálogo denominado `vento_operational_roles_v1` y una matriz territorial denominada `vento_site_operational_role_matrix_v1`.
+
+Esa superficie ya expresa dos fronteras compatibles con esta tarea:
+
+- los roles se seleccionan desde un catálogo aprobado;
+- la habilitación por sede o área se administra como relación separada del catálogo.
+
+También existe una superficie distinta de permisos por rol que actualmente consulta el catálogo base `roles` y su matriz `role_permissions`.
+
+Estas observaciones no convierten ninguna de las dos superficies en la unidad física propietaria de esta tarea.
+
+La existencia AS-IS de una pantalla, vista, RPC o tabla no autoriza:
+
+- modificarla durante el cierre documental;
+- declarar que `VISO-AUTH-002` ya está implementada;
+- fusionar catálogo operativo con matriz territorial;
+- fusionar catálogo operativo con permisos;
+- omitir el package y gate físicos;
+- reutilizar un comportamiento legacy como fuente contractual.
+
+La identidad exacta de la futura unidad de implementación se resolverá exclusivamente dentro del package y gate físico correspondiente.
+
+---
+
+#### 13. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea materializa en VISO decisiones de catálogo operativo, separación de carriles, temporalidad del rol, aplicabilidad por proceso y límites de autoridad que ya están protegidas por el registro vigente. No introduce un nuevo código operativo, una nueva modalidad de autorización, un grant, una regla territorial, una transición física ni un comportamiento operativo adicional que requiera ampliar el registro.
+
+---
+
+#### 14. Cobertura de prueba vigente reutilizada
+
+La tarea reutiliza, sin modificar, la cobertura vigente:
+
+- `TREQ-SHELL-041` protege el conjunto exacto de doce `OperationalRoleCode`, la integridad del dataset operativo, la exclusión de roles base y `propietario_admin`, y la ausencia de aliases o fallbacks;
+- `TREQ-AUTH-001` protege que una lista local o nombre de rol no conceda autorización final;
+- `TREQ-AUTH-007` protege que la administración de roles operativos y su disponibilidad territorial requiera capacidad administrativa explícita;
+- `TREQ-AUTH-008` protege que las capacidades operativas dependan de turno, check-in, rol operativo efectivo y compatibilidad territorial;
+- `TREQ-AUTH-010` protege segregación de funciones entre caja, producción, bodega, logística y otras responsabilidades operativas;
+- `TREQ-VISO-001` protege la coherencia posterior entre configuración administrativa de VISO y el resultado consumido por las aplicaciones operativas.
+
+Esta trazabilidad no cambia estado, contenido, paquete, evidencia ni secuencia de esos requisitos.
+
+---
+
+#### 15. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | Esta definición documental no ejecutó el build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | No se registró una ejecución local de los validadores documentales sobre el artefacto insertado en el checkout. |
+| REMOTA | PASS | La rama canónica vigente fue contrastada en solo lectura contra continuidad, topología, políticas documentales, `OperationalRoleCode@1.0.0`, `AUTH-MOD-005`, `PROC-ACTOR-002`, el validador del dataset operativo, el Registro 04A y las superficies VISO relacionadas. |
+| OPERATIVA | NOT_APPLICABLE | La tarea define el contrato administrativo del catálogo y no cambia turnos, asignaciones, permisos efectivos ni acciones reales de trabajadores. |
+| FÍSICA | NOT_EXECUTED | No se modificaron UI, Server Actions, contratos distribuidos, migraciones, datos ni Supabase; la materialización permanece detrás de `POST_E5_PACKAGE`. |
+
+---
+
+#### 16. Criterios de aceptación
+
+- [ ] El catálogo contiene exactamente los doce códigos operativos vigentes.
+- [ ] Los doce códigos pertenecen exactamente a cuatro familias funcionales.
+- [ ] No existe solapamiento con los ocho roles base canónicos.
+- [ ] `propietario_admin` no aparece como rol operativo.
+- [ ] No aparecen oficios legacy, aliases o códigos creados por aplicación, sede, área, perfil o dispositivo.
+- [ ] Cada rol conserva su familia, función principal, requerimiento de área y cantidad vigente de procesos aplicables.
+- [ ] La suma de vínculos aplicables permanece en 444 sobre 828 pares posibles.
+- [ ] Se conservan 51 procesos con rol operativo aplicable y 18 sin rol operativo directo.
+- [ ] La aplicabilidad de proceso no se interpreta como grant ni autorización.
+- [ ] El catálogo distingue rol catalogado, rol asignado y rol efectivo.
+- [ ] Un perfil predeterminado no autoriza.
+- [ ] Un dispositivo no asigna roles.
+- [ ] `operador_integral_satelite` no se convierte en superusuario ni unión automática de permisos.
+- [ ] `gerencia_operativa` no se convierte en administrador global ni bypass.
+- [ ] `bodeguero` permanece como rol operativo y no como rol base.
+- [ ] `conductor_logistica` no adquiere producción, inventario global o recepción general por nombre.
+- [ ] Los roles productivos permanecen separados por especialidad.
+- [ ] El catálogo no administra grants ni invade `VISO-AUTH-004`.
+- [ ] La matriz territorial no se absorbe en esta tarea y permanece reservada a `VISO-AUTH-005` y `VISO-AUTH-006`.
+- [ ] La asignación y efectividad del turno permanecen reservadas a `VISO-AUTH-010` a `VISO-AUTH-012`.
+- [ ] La versión operativa compartida permanece `1.0.0`.
+- [ ] La frontera contractual de 240 grants y su huella vigente no se modifica.
+- [ ] Los cambios físicos permanecen fuera del cierre documental y detrás de la topología y gate vigentes.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 17. Límites
+
+Esta tarea no:
+
+- crea ni modifica código de VISO;
+- crea rutas, pantallas, componentes o Server Actions;
+- declara un archivo físico de VISO como implementation unit;
+- modifica el paquete compartido de contratos;
+- modifica `operational-roles.json`;
+- modifica el dataset `operational-role-grants@1.0.0`;
+- modifica `public.operational_roles`;
+- modifica matrices de sede o área;
+- modifica turnos;
+- modifica perfiles operativos;
+- modifica check-ins;
+- crea migraciones;
+- crea o modifica RLS, RPC, triggers o grants;
+- administra permisos por rol base;
+- administra permisos por rol operativo;
+- habilita roles en sedes;
+- habilita roles en áreas;
+- asigna roles a trabajadores;
+- asigna roles a turnos;
+- crea excepciones individuales;
+- ejecuta simulaciones;
+- modifica precedencia, denegaciones o autorización efectiva;
+- crea aliases para compatibilidad legacy;
+- retira físicamente roles legacy;
+- selecciona package;
+- autoriza implementación física.
+
+---
+
+#### 18. Handoff contractual
+
+El resultado de esta tarea entrega un universo operativo cerrado y no ambiguo:
+
+```text
+12 roles operativos canónicos
++
+4 familias
++
+función principal por rol
++
+requerimiento territorial de referencia
++
+444 vínculos de aplicabilidad
++
+fronteras de autoridad
++
+separación entre catálogo, asignación y efectividad
+```
+
+`VISO-AUTH-003` continuará con la administración de permisos por rol base y deberá conservar intacto el universo operativo definido aquí.
+
+`VISO-AUTH-004` deberá consumir exactamente estas doce identidades al administrar la matriz operativa, sin incorporar roles base, aliases, `propietario_admin` ni códigos locales.
+
+Las tareas territoriales y de turno posteriores podrán vincular estos códigos a sedes, áreas, perfiles y turnos, pero ninguna podrá redefinir silenciosamente qué identidades pertenecen al catálogo operativo.
+
+---
+
+#### 19. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-001 — Crear catálogo administrativo de roles base`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-002 — Crear catálogo administrativo de roles operativos`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-003 — Administrar permisos por rol base`
+
+
 ### [ ] VISO-AUTH-003 — Administrar permisos por rol base
 ### [ ] VISO-AUTH-004 — Administrar permisos por rol operativo
 ### [ ] VISO-AUTH-005 — Administrar roles permitidos por sede
