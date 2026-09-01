@@ -255,6 +255,14 @@ select is(
     from pg_catalog.pg_policy p
     where p.polrelid =
       'org_governance.organization_scopes'::regclass
+      and (
+        0::oid = any(p.polroles)
+        or p.polroles && array[
+          'anon'::regrole::oid,
+          'authenticated'::regrole::oid,
+          'service_role'::regrole::oid
+        ]
+      )
   ),
   0::bigint,
   'organization_scopes publishes no client RLS policy'

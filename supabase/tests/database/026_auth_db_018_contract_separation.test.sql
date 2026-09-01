@@ -551,7 +551,7 @@ begin;
                                   'talento'
                                   ,
                                   'viso')
-                and c.relkind = 'v' ), 62::bigint, 'current Vento view inventory remains 62' );
+                and c.relkind = 'v' ), 63::bigint, 'current Vento view inventory includes the private AUTH-DB-035 session freshness bridge' );
         select
             is(
             (
@@ -610,7 +610,7 @@ begin;
                                   'viso')
                 and c.relkind = 'v'
                 and not (
-                        coalesce(c.reloptions, array[]::text[]) @> array['security_invoker=true']::text[]) ), 4::bigint, 'four privileged source views remain blocked as-is' );
+                        coalesce(c.reloptions, array[]::text[]) @> array['security_invoker=true']::text[]) ), 5::bigint, 'five privileged source views include the private AUTH-DB-035 session freshness bridge' );
         select
             is(
             (
@@ -650,7 +650,7 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 240::bigint, 'direct Vento routine inventory includes AUTH-DB-036 resolve_organization_id while SECURITY DEFINER remains unchanged' );
+                        and d.deptype = 'e' ) ), 246::bigint, 'direct Vento routine inventory includes six direct AUTH-DB-035 freshness routines' );
         select
             is(
             (
@@ -691,7 +691,7 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 167::bigint, 'direct SECURITY DEFINER inventory includes only the single AUTH-DB-033 private privileged border' );
+                        and d.deptype = 'e' ) ), 171::bigint, 'direct SECURITY DEFINER inventory includes four AUTH-DB-035 direct privileged borders' );
         select
             is(
             (
@@ -732,7 +732,7 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 73::bigint, 'current trigger function inventory remains 73' );
+                        and d.deptype = 'e' ) ), 75::bigint, 'trigger function inventory includes two AUTH-DB-035 freshness trigger functions' );
         select
             is(
             (
@@ -774,7 +774,7 @@ begin;
                         and d.objid   = p.oid
                         and d.deptype = 'e' ) ), 4::bigint, 'four extension routines are explicitly platform-managed' );
         select
-            is( 62::bigint + 240::bigint, 302::bigint, 'primary classification universe includes AUTH-DB-036 organization resolver' );
+            is( 63::bigint + 246::bigint, 309::bigint, 'primary classification universe includes AUTH-DB-035 private freshness infrastructure' );
         select
             is(
             (

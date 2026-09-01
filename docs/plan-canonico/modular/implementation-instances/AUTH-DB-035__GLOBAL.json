@@ -1,10 +1,158 @@
 {
   "instance_id": "AUTH-DB-035::GLOBAL",
   "task_id": "AUTH-DB-035",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-035__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Registrar autorizacion, lifecycle y evidencia consolidada de AUTH-DB-035::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/roles.sql",
+      "change": "MODIFY",
+      "scope": "Crear el owner tecnico no interactivo vento_context_freshness_owner y su membresia SET controlada desde postgres."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260831233918_auth_db_035_context_freshness.sql",
+      "change": "CREATE",
+      "scope": "Crear exactamente una migration forward generada por Supabase CLI para generations, bindings, runtime, outbox, session freshness bridge privado, funciones, backfill y triggers de AUTH-DB-035."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/042_auth_db_035_context_freshness.test.sql",
+      "change": "CREATE",
+      "scope": "Crear la prueba pgTAP de AUTH-DB-035 para estructura, token, sesion, transacciones, bindings, temporalidad, seguridad, outbox, concurrencia, idempotencia y operacion."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql",
+      "change": "MODIFY",
+      "scope": "Avanzar exclusivamente los ratchets de funciones y SECURITY DEFINER por los ocho objetos funcionales de AUTH-DB-035."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/026_auth_db_018_contract_separation.test.sql",
+      "change": "MODIFY",
+      "scope": "Avanzar exclusivamente los ratchets de vista privada, rutinas directas, SECURITY DEFINER, trigger functions y universo primario por AUTH-DB-035."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/028_auth_db_019_identity_links.test.sql",
+      "change": "MODIFY",
+      "scope": "Avanzar exclusivamente el ratchet de triggers de AUTH-DB-019 para admitir los seis triggers exactos de context freshness de AUTH-DB-035 y continuar rechazando cualquier trigger adicional."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/041_auth_db_036_organization_scope.test.sql",
+      "change": "MODIFY",
+      "scope": "Preservar el contrato de cero politicas RLS para roles cliente de AUTH-DB-036 mientras se admite exclusivamente la politica interna owner-only de context freshness de AUTH-DB-035."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerar el manifiesto canonico despues de incorporar la migration AUTH-DB-035."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Regenerar y validar el manifiesto de migrations."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar replay limpio y la suite pgTAP local."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar recovery drill local gobernado."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Certificar drift local estricto contra un candidato Git limpio."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar quality:repair exactamente una vez antes de IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Gobernar apertura y cierre de AUTH-DB-035::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validar el alcance fisico contra authorized_changes."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-08-31T18:39:19-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza AUTH-DB-035::GLOBAL hasta VERIFIED y merge exclusivamente para materializar ContextFreshnessToken@1.0.0, generations, bindings, runtime identity, invalidacion transaccional y outbox; L1 permanece deshabilitada, cache mode permanece REQUEST_ONLY, no se modifica Supabase hosted, no se exponen objetos nuevos a Data API y no se autoriza AUTH-DB-034::GLOBAL.",
+    "source_contract_sha256": "a1a423e001821a8eff712f018560a60a2c4dff3aaf4b1560b95f48f851325859"
+  },
+  "evidence": [
+    "PRE_AUTHORIZATION main=48687cd410948097d3faf3d8d0e0b3425ac67e64",
+    "PRE_AUTHORIZATION decision=APPROVED approved_by=VENTO_OWNER",
+    "SOURCE_CONTRACT_SHA256 a1a423e001821a8eff712f018560a60a2c4dff3aaf4b1560b95f48f851325859",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once files_before=11 files_after=11 normalized=0",
+    "MATERIALIZATION owner=vento_context_freshness_owner posture=NOLOGIN NOINHERIT NOCREATEDB NOCREATEROLE NOSUPERUSER",
+    "MATERIALIZATION migration=supabase/migrations/20260831233918_auth_db_035_context_freshness.sql",
+    "MATERIALIZATION test=supabase/tests/database/042_auth_db_035_context_freshness.test.sql assertions=109",
+    "MATERIALIZATION contract=ContextFreshnessToken@1.0.0 fields=17 authorization_decision=NONE",
+    "MATERIALIZATION generations=app_private.context_freshness_generations",
+    "MATERIALIZATION bindings=app_private.context_freshness_bindings",
+    "MATERIALIZATION session_bridge=app_private.context_freshness_auth_sessions secret_fields=NONE",
+    "MATERIALIZATION outbox=audit.context_invalidation_outbox transactional=YES automatic_purge=NO",
+    "MATERIALIZATION invalidation_triggers=6 exact_ratchet=YES",
+    "MATERIALIZATION generation_and_outbox_rollback_together=YES",
+    "MATERIALIZATION concurrent_generation_bumps=SERIALIZED",
+    "MATERIALIZATION L1=DISABLED cache_mode=REQUEST_ONLY",
+    "MATERIALIZATION Data_API_exposure=NO runtime_client_data_privileges=NONE",
+    "MATERIALIZATION REMOTE_TARGETS_USED=NO",
+    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS files=14 empty=0 duplicates=0 naming_violations=0",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS postgres=17 migrations=14 pgTAP_files=16 assertions=556",
+    "VALIDATION #2 categories schema=PASS integrity=PASS rls=PASS rpc=PASS migrations=PASS",
+    "VALIDATION #3 npm run supabase:recovery:local PASS outcome=PASS_ROLLBACK_VERIFIED RPO_actual=0 RTO_actual_ms=29119",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0",
+    "VALIDATION #4 candidate_sha=e4d2a7dfe6e6bf3da0f81b5b3375421ef6dc0616",
+    "VALIDATION #4 expected_digest=892034df77a3a2bf3a7af56f8eb777c169b0f035828d1fa4df53c7169899f882",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS historical_errors=10 historical_warnings=11 touched_clean_files=0",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS",
+    "CHECKPOINT_LOCAL e4d2a7dfe6e6bf3da0f81b5b3375421ef6dc0616",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "RESULT AUTH-DB-035::GLOBAL VERIFIED"
+  ]
 }
