@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-034::GLOBAL",
   "task_id": "AUTH-DB-034",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -121,6 +121,16 @@
     "RECOVERY prior_close_failed_at=CHECKPOINT_COMMIT implementation_state_preserved=YES",
     "QUALITY_REPAIR_RERUN NO",
     "REMOTE_TARGETS_USED NO",
-    "REMOTE_DIRECT_MUTATIONS NO"
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS",
+    "VALIDATION #3 npm run supabase:recovery:local PASS",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0",
+    "VALIDATION #4 candidate_sha=0034a5c4d530ce0aaef3d0eda5d801c1282f199a",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS",
+    "CHECKPOINT_LOCAL 0034a5c4d530ce0aaef3d0eda5d801c1282f199a",
+    "RESULT AUTH-DB-034::GLOBAL VERIFIED"
   ]
 }
