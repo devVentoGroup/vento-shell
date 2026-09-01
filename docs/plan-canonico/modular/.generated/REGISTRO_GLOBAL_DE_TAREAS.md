@@ -8,13 +8,13 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1595** |
-| Tareas `AUTH` | **318** |
-| Aprobadas | **1089** |
+| Tareas con marcador | **1596** |
+| Tareas `AUTH` | **319** |
+| Aprobadas | **1090** |
 | En propuesta | **0** |
 | No iniciadas | **506** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **68.28% (1089/1595)** |
+| Porcentaje de completamiento | **68.30% (1090/1596)** |
 
 ## Continuidad activa
 
@@ -116,6 +116,7 @@
 | ✅ APROBADA | `AUTH-CAT-022` | Descomponer permisos legacy maduros y definir nuevas claves atómicas | `bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md` |
 | ✅ APROBADA | `AUTH-CAT-023` | Actualizar matrices, excepciones, denegaciones y paquetes de dispositivo afectados por el diff contractual | `bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md` |
 | ✅ APROBADA | `AUTH-CAT-024` | Validar, publicar y congelar la versión canónica que alimentará los datasets | `bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md` |
+| ✅ APROBADA | `AUTH-CAT-025` | Completar contratos de alcance y recurso de las 29 PermissionKey incorporadas por AUTH-CAT-024 y publicar la versión contractual sucesora | `bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md` |
 | ✅ APROBADA | `AUTH-RBAC-024` | Definir dataset canónico de matriz base | `bloques/D_MATRICES/09_DATASETS.md` |
 | ✅ APROBADA | `AUTH-RBAC-025` | Definir dataset canónico de matriz operativa | `bloques/D_MATRICES/09_DATASETS.md` |
 | ✅ APROBADA | `AUTH-RBAC-026` | Definir dataset canónico de excepciones y denegaciones | `bloques/D_MATRICES/09_DATASETS.md` |
