@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1090** |
+| Aprobadas | **1091** |
 | En propuesta | **0** |
-| No iniciadas | **506** |
+| No iniciadas | **505** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **68.30% (1090/1596)** |
+| Porcentaje de completamiento | **68.36% (1091/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `ANIMA-UX-016` — Auditar y completar recordatorios operativos de inicio y cierre de turno | ✅ APROBADA |
-| Tarea actual | `ANIMA-UX-017` — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-AUTH-001` — Crear catálogo administrativo de roles base | ⬜ NO INICIADA |
+| Última aprobada | `ANIMA-UX-017` — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad | ✅ APROBADA |
+| Tarea actual | `VISO-AUTH-001` — Crear catálogo administrativo de roles base | ⬜ NO INICIADA |
+| Siguiente reservada | `VISO-AUTH-002` — Crear catálogo administrativo de roles operativos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -633,7 +633,7 @@
 | ✅ APROBADA | `ANIMA-UX-014` | Simplificar administración de equipo autorizada | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-015` | Probar check-in y check-out con trabajadores reales | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ✅ APROBADA | `ANIMA-UX-016` | Auditar y completar recordatorios operativos de inicio y cierre de turno | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
-| ⬜ NO INICIADA | `ANIMA-UX-017` | Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
+| ✅ APROBADA | `ANIMA-UX-017` | Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad | `bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-001` | Crear catálogo administrativo de roles base | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-002` | Crear catálogo administrativo de roles operativos | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-003` | Administrar permisos por rol base | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
