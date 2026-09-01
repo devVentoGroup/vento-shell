@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-035::GLOBAL",
   "task_id": "AUTH-DB-035",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -138,6 +138,21 @@
     "MATERIALIZATION L1=DISABLED cache_mode=REQUEST_ONLY",
     "MATERIALIZATION Data_API_exposure=NO runtime_client_data_privileges=NONE",
     "MATERIALIZATION REMOTE_TARGETS_USED=NO",
-    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO"
+    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS files=14 empty=0 duplicates=0 naming_violations=0",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS postgres=17 migrations=14 pgTAP_files=16 assertions=556",
+    "VALIDATION #2 categories schema=PASS integrity=PASS rls=PASS rpc=PASS migrations=PASS",
+    "VALIDATION #3 npm run supabase:recovery:local PASS outcome=PASS_ROLLBACK_VERIFIED RPO_actual=0 RTO_actual_ms=29119",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0",
+    "VALIDATION #4 candidate_sha=e4d2a7dfe6e6bf3da0f81b5b3375421ef6dc0616",
+    "VALIDATION #4 expected_digest=892034df77a3a2bf3a7af56f8eb777c169b0f035828d1fa4df53c7169899f882",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS historical_errors=10 historical_warnings=11 touched_clean_files=0",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS",
+    "CHECKPOINT_LOCAL e4d2a7dfe6e6bf3da0f81b5b3375421ef6dc0616",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "RESULT AUTH-DB-035::GLOBAL VERIFIED"
   ]
 }
