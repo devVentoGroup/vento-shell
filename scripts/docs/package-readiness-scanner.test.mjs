@@ -569,7 +569,16 @@ test('detalle por package lista tareas, gates y obligaciones restantes', () => {
   assert.match(detail, /TOTAL REMAINING OBLIGATIONS:/u);
   assert.equal(result.integrityAudit.status, 'PASS');
   const report = renderReadinessMarkdown(result);
-  assert.match(report, /Readiness de packages e implementaciones siguientes/u);
+  assert.match(report, /GUÍA VIVA DE EJECUCIÓN LINEAL Y READINESS DE PACKAGES/u);
+  assert.match(report, /## Panel de control/u);
+  assert.match(report, /## Cómo funciona la línea/u);
+  assert.match(report, /## Package actual/u);
+  assert.match(report, /## Progreso por capa/u);
+  assert.match(report, /## Lista lineal completa/u);
+  assert.match(report, /## Packages diferidos fuera de la línea activa/u);
+  assert.match(report, /PREPARE_PACKAGE_GATE/u);
+  assert.match(report, /npm run docs:package:prepare -- --package-id GAP-PKG-001/u);
+  assert.match(report, /Ningún package posterior puede adelantarlo/u);
   assert.match(report, /Catálogo completo/u);
   assert.match(report, /Tareas faltantes/u);
   assert.match(report, /TEST-PENDING-001/u);
