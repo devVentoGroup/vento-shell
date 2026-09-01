@@ -1838,24 +1838,131 @@ export function renderReadinessMarkdown(result) {
     : '- ✅ Sin advertencias estructurales.';
   const execution = result.registry.package_execution ?? null;
   const current = execution?.current ?? null;
+  const currentPackage = current
+    ? packages.find(({ package_id: packageId }) => packageId === current.package_id) ?? null
+    : null;
+  const currentTasks = currentPackage?.readiness_progress?.task_prerequisites ?? null;
+  const currentGates = currentPackage?.readiness_progress?.gates ?? null;
+  const currentPackageGate = currentPackage?.package_gate?.status
+    ?? (currentPackage?.source_kind === 'CANONICAL_GAP_PACKAGE' ? 'NOT_PREPARED' : 'N/A');
   const readyMessage = current
     ? `El turno único corresponde a **${current.package_id}** (${current.position}/${execution.sequence.length}). Su acción exacta es **${current.next_action.type}** sobre **${current.next_action.target}**. Aunque otro package llegue a IMPLEMENTATION_READY, no puede adelantarlo.`
     : 'La línea ejecutable está completa o no fue evaluada. No existe una selección humana pendiente.';
+  const layerGroups = new Map();
+  for (const entry of execution?.sequence ?? []) {
+    const group = layerGroups.get(entry.layer) ?? [];
+    group.push(entry);
+    layerGroups.set(entry.layer, group);
+  }
+  const layerRows = [...layerGroups.entries()]
+    .sort(([left], [right]) => Number(left) - Number(right))
+    .map(([layer, entries]) => {
+      const closed = entries.filter(({ status }) => status === 'CLOSED').length;
+      const layerCurrent = entries.find(({ current: isCurrent }) => isCurrent)?.package_id ?? '—';
+      return `| ${layer} | ${entries.length} | ${closed} | ${entries.length - closed} | ${markdownCell(layerCurrent)} |`;
+    }).join('\n');
+  const layerTable = layerRows
+    ? `| Capa | Packages | Cerrados | Restantes | Package actual |\n| -: | ---: | ---: | ---: | --- |\n${layerRows}`
+    : '_No hay packages en la línea ejecutable._';
+  const deferredTable = execution?.deferred?.length > 0
+    ? `| Package | Estado | Motivo de diferimiento |\n| --- | --- | --- |\n${execution.deferred.map((entry) => `| ${packageLink(entry.package_id)} | ${statusIcon(entry.status)} ${entry.status} | ${markdownCell(entry.reason)} |`).join('\n')}`
+    : '✅ No hay packages diferidos fuera de la línea activa.';
   const specialTable = special.length > 0
     ? `| Package especial | Objetivo | Estado | Tareas | Gates | Faltan |\n| --- | --- | --- | ---: | ---: | ---: |\n${special.map((pkg) => `| ${packageLink(pkg.package_id)} | ${markdownCell(pkg.objective)} | ${statusIcon(pkg.status)} ${pkg.status} | ${pkg.readiness_progress.task_prerequisites.approved}/${pkg.readiness_progress.task_prerequisites.total} | ${pkg.readiness_progress.gates.passed}/${pkg.readiness_progress.gates.total} | **${pkg.readiness_progress.remaining_obligations}** |`).join('\n')}`
     : '_No hay capacidades especiales declaradas._';
 
-  return `# VENTO OS — Readiness de packages e implementaciones siguientes
+  return `# VENTO OS — GUÍA VIVA DE EJECUCIÓN LINEAL Y READINESS DE PACKAGES
 
 > [!IMPORTANT]
 > Este archivo es **autogenerado y regenerable**. No lo edites manualmente ni lo uses como fuente canónica. Se reconstruye con \`npm run docs:package:readiness\` y durante el build del plan.
+>
+> Está diseñado como vista humana para Preview Markdown. La autoridad estructural continúa en \`DELIV-PKG-015\`, \`${READINESS_PATHS.packageExecutionPolicy}\`, los expedientes package-gate y el control de implementación física.
 
 **Generado:** ${result.scannedAt}<br>
 **Trigger:** \`${result.trigger}\`<br>
 **Carril documental actual:** \`${documentationCurrent(result.activeSequence) ?? 'EMPTY'}\`<br>
 **Auditoría lógica:** ${statusIcon(result.integrityAudit.status)} **${result.integrityAudit.status}**
 
-## Resumen ejecutivo
+## Panel de control
+
+| Concepto | Estado |
+| --- | --- |
+| Política | \`${execution?.policy_id ?? 'NOT_EVALUATED'}\` |
+| Modo | \`${execution?.mode ?? 'NOT_EVALUATED'}\` |
+| Siguiente automático | **${execution?.automatic_next === true ? 'SÍ' : 'NO'}** |
+| Selección humana de package | **${execution?.human_package_selection === false ? 'NO' : 'NO EVALUADO'}** |
+| Estado de la línea | **${execution?.state ?? 'NOT_EVALUATED'}** |
+| Package actual | **${current?.package_id ?? 'NONE'}** |
+| Posición actual | **${current ? `${current.position}/${execution.sequence.length}` : `0/${execution?.sequence.length ?? 0}`}** |
+| Acción exacta | **${current?.next_action.type ?? 'NONE'}** |
+| Objetivo | ${markdownCell(current?.next_action.target ?? 'NONE')} |
+| Packages diferidos | **${execution?.deferred.length ?? 0}** |
+| Autorización física | **Siempre separada y explícita** |
+
+## Cómo funciona la línea
+
+\`\`\`text
+DELIV-PKG-015
+     |
+     v
+DEPENDENCIAS EXPLICITAS ENTRE PACKAGES
+     |
+     v
+CAPA DE IMPLEMENTACION (0 -> 4)
+     |
+     v
+PACKAGE_ID COMO DESEMPATE ESTABLE
+     |
+     v
+PRIMER PACKAGE NO CERRADO = TURNO ACTUAL
+     |
+     +--> BLOQUEADO --------> CONSERVA EL TURNO
+     |
+     +--> GATE COMPLETO ----> IMPLEMENTATION_READY
+                                  |
+                                  v
+                         AUTORIZACION FISICA HUMANA
+                                  |
+                                  v
+                         IMPLEMENTACION / CIERRE
+                                  |
+                                  v
+                         SIGUIENTE PACKAGE AUTOMATICO
+\`\`\`
+
+### Reglas inmutables
+
+1. **Existe una sola línea ejecutable.** No hay una lista de candidatos entre los cuales escoger manualmente.
+2. **Las dependencias explícitas mandan primero.** La fuente es \`DELIV-PKG-015\`.
+3. **La capa de implementación ordena después de las dependencias.** Las capas válidas son 0 a 4.
+4. **\`package_id\` solo desempata de forma estable.** No crea prioridad empresarial nueva.
+5. **El primer package no \`CLOSED\` conserva el turno aunque esté bloqueado.** Ningún package posterior puede adelantarlo.
+6. **\`IMPLEMENTATION_READY\` no equivale a \`AUTHORIZED\`.** La autorización física humana sigue siendo obligatoria.
+7. **Los packages sin orden físico canónico quedan diferidos fuera de la línea activa.** No bloquean la secuencia hasta que su fuente propietaria materialice un orden válido.
+
+## Package actual
+
+${readyMessage}
+
+${current ? `| Campo | Valor |\n| --- | --- |\n| Package | ${packageLink(current.package_id)} |\n| Posición | **${current.position}/${execution.sequence.length}** |\n| Capa | **${current.layer}** |\n| Estado efectivo | ${statusIcon(current.status)} **${current.status}** |\n| Dependencias explícitas | ${markdownCell(current.depends_on_package_ids.join(', ') || 'ninguna')} |\n| Tareas prerrequisito | ${currentTasks ? `**${currentTasks.approved}/${currentTasks.total}**` : 'N/A'} |\n| Gates de readiness | ${currentGates ? `**${currentGates.passed}/${currentGates.total}**` : 'N/A'} |\n| Package gate | **${markdownCell(currentPackageGate)}** |\n| Acción exacta | **${markdownCell(current.next_action.type)}** |\n| Objetivo | ${markdownCell(current.next_action.target)} |\n| Comando | \`${current.next_action.command}\` |\n| Autorización física | **REQUERIDA; este reporte no la concede** |\n\n**Por qué conserva el turno:** ${markdownCell(current.next_action.reason)}` : '✅ No existe un package actual pendiente.'}
+
+## Progreso por capa
+
+> Esta tabla resume la secuencia ejecutable. Un package posterior puede estar técnicamente listo y aun así permanecer pendiente porque el turno es lineal.
+
+${layerTable}
+
+## Lista lineal completa
+
+> **Lectura:** \`ACTUAL\` es el único package que puede avanzar. \`PENDIENTE\` significa esperar turno, incluso cuando el readiness técnico sea favorable.
+
+${renderExecutionSequence(result)}
+
+## Packages diferidos fuera de la línea activa
+
+${deferredTable}
+
+## Diagnóstico de readiness
 
 | Indicador | Resultado |
 | --- | ---: |
@@ -1869,12 +1976,6 @@ export function renderReadinessMarkdown(result) {
 | Vínculos de tarea aprobados | **${metrics.task_links_approved}/${metrics.task_links_total}** |
 | Vínculos de tarea pendientes | **${metrics.task_links_remaining}** |
 | Packages IMPLEMENTATION_READY | **${result.registry.implementation_ready_queue.length}** |
-| Modo de ejecución | **${execution?.mode ?? 'NOT_EVALUATED'}** |
-| Selección humana de package | **FALSE** |
-| Package actual | **${current?.package_id ?? 'NONE'}** |
-| Posición actual | **${current ? `${current.position}/${execution.sequence.length}` : `0/${execution?.sequence.length ?? 0}`}** |
-| Acción siguiente | **${current?.next_action.type ?? 'NONE'}** |
-| Packages diferidos fuera de línea | **${execution?.deferred.length ?? 0}** |
 
 ### Estados actuales
 
@@ -1891,18 +1992,6 @@ ${statusRows}
 - ✅ La línea consume dependencias explícitas de DELIV-PKG-015, luego capa y finalmente package_id como desempate estable.
 - ✅ Un package bloqueado conserva el turno; ningún package posterior puede adelantarlo.
 ${warningRows}
-
-## Ejecución actual
-
-${readyMessage}
-
-${current ? `- **Estado:** \`${current.status}\`\n- **Capa:** \`${current.layer}\`\n- **Acción:** \`${current.next_action.type}\`\n- **Objetivo:** \`${current.next_action.target}\`\n- **Motivo:** ${current.next_action.reason}\n- **Comando:** \`${current.next_action.command}\`` : '- **Acción:** `NONE`'}
-
-> **Regla:** solo el package actual puede avanzar. IMPLEMENTATION_READY sigue requiriendo autorización física humana, pero nunca una elección humana entre packages.
-
-## Lista lineal completa
-
-${renderExecutionSequence(result)}
 
 ## Capacidades especiales
 
@@ -1926,30 +2015,33 @@ Cada ficha muestra exclusivamente información derivada: descripción, estado, t
 
 ${packages.map(renderPackageCard).join('\n\n')}
 
-## Fuentes y reglas
+## Fuentes canónicas y responsabilidad
 
-- Catálogo e identidad: \`DELIV-PKG-001\` y \`DELIV-PKG-025\`.
-- Relaciones de proceso: \`DELIV-PKG-002\`.
-- Tarea dominante y runtime: \`DELIV-PKG-007\` y \`DELIV-PKG-017\`.
-- Tareas primarias y de soporte: matriz \`GAP-CTRL-006\`.
-- Dependencias y capas de ejecución: \`DELIV-PKG-015\`.
-- Un PASS exige evidencia trazable; evidencia ausente se degrada a UNKNOWN y bloquea readiness.
-- La línea se ordena por dependencias explícitas, capa de implementación y \`package_id\`.
-- Los packages \`NO_EJECUTABLE\` sin orden físico canónico permanecen diferidos y no bloquean la línea activa.
-- IMPLEMENTATION_READY no autoriza ejecución física.
+| Función | Fuente / control |
+| --- | --- |
+| Dependencias, capas y orden posterior al gate | \`DELIV-PKG-015\` |
+| Política de ejecución lineal | \`${READINESS_PATHS.packageExecutionPolicy}\` |
+| Política de gate por package | \`${READINESS_PATHS.packageGatePolicy}\` |
+| Expedientes package-gate | \`${READINESS_PATHS.packageGateInstances}/\` |
+| Readiness y proyección humana | \`scripts/docs/package-readiness-scanner.mjs\` |
+| Implementación física | \`${READINESS_PATHS.implementationInstances}/\` |
+| Registro persistente mínimo | \`${READINESS_PATHS.packageRegistry}\` |
 
-## Uso
+> Esta guía **no decide el orden, no concede gates y no autoriza implementación**. Solo proyecta de forma legible el estado derivado de las fuentes anteriores.
+
+## Uso operativo
 
 \`\`\`powershell
 npm run docs:package:readiness
 npm run docs:package:readiness:check
 npm run docs:package:execution:status
+npm run docs:package:execution:check
 npm run docs:package:readiness -- --package GAP-PKG-001
 \`\`\`
 
 Artefactos derivados:
 
-- \`${READINESS_PATHS.reportMarkdown}\` — tablero humano navegable.
+- \`${READINESS_PATHS.reportMarkdown}\` — guía viva y tablero humano navegable.
 - \`${READINESS_PATHS.reportJson}\` — detalle estructurado para automatización.
 - \`${READINESS_PATHS.packageRegistry}\` — estado persistente mínimo, no dossier detallado.
 `;
