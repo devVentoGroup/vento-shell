@@ -10885,6 +10885,759 @@ Ningún hallazgo anterior autoriza crear una tarea nueva ni cambia la continuida
 `ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales`
 
 
-### [ ] ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
+### ✅ ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-014 — Simplificar administración de equipo autorizada
+**Tarea siguiente:** ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
+**Tipo de tarea:** documental; especificación de validación UX controlada del check-in y check-out de ANIMA con trabajadores reales o participantes laborales expresamente autorizados, en dispositivos representativos y sin producir efectos laborales o productivos no autorizados
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** NINGUNO
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir la validación controlada que deberá realizarse con trabajadores reales para comprobar que el flujo personal de asistencia de ANIMA permite comprender, ejecutar y recuperar un check-in y un check-out sin ambigüedad, duplicación, confirmaciones falsas ni dependencia de conocimiento técnico.
+
+La validación deberá observar el comportamiento del trabajador frente al producto y no limitarse a preguntar si la interfaz “se entiende”. El resultado esperado es evidencia reproducible sobre si una persona puede:
+
+- identificar si corresponde iniciar o terminar asistencia;
+- ejecutar la acción correcta sin ayuda indebida;
+- comprender cuándo la marcación quedó confirmada, pendiente, bloqueada o incierta;
+- diferenciar problemas de ubicación, turno, autorización y conectividad;
+- recuperarse de una interrupción sin crear una segunda intención de negocio;
+- reconocer el estado final de su asistencia después de completar o reanudar el flujo.
+
+Esta tarea define el protocolo, la muestra mínima, los escenarios, la evidencia y los gates de decisión. La ejecución con participantes se registra únicamente cuando exista evidencia operativa real.
+
+---
+
+#### 2. Resultado contractual
+
+ANIMA deberá disponer de un protocolo de validación reproducible para check-in y check-out que convierta las decisiones UX ya aprobadas en escenarios observables con trabajadores reales.
+
+El protocolo deberá demostrar por separado:
+
+1. comprensión de la acción disponible;
+2. comprensión del contexto laboral visible;
+3. ejecución de check-in;
+4. ejecución de check-out;
+5. interpretación del estado de resultado;
+6. manejo de prerequisitos y bloqueos;
+7. comportamiento ante conectividad degradada;
+8. reanudación después de interrupciones;
+9. ausencia de duplicación ante repetición o incertidumbre;
+10. consistencia entre el estado mostrado y la evidencia autoritativa disponible.
+
+La aprobación documental de esta tarea no equivale a afirmar que los trabajadores ya fueron probados ni que la experiencia está certificada en campo.
+
+---
+
+#### 3. Base canónica consumida
+
+La validación consume las decisiones documentales ya aprobadas del minibloque ANIMA, en especial:
+
+- ANIMA-UX-005 para contexto visible de sede, área, horario y rol operativo;
+- ANIMA-UX-006 para simplificación de check-in;
+- ANIMA-UX-007 para simplificación de check-out;
+- ANIMA-UX-008 para diferenciar marcación confirmada y pendiente;
+- ANIMA-UX-009 para explicar por qué no se puede marcar;
+- ANIMA-UX-010 para diferenciar errores de ubicación, turno y autorización;
+- ANIMA-UX-011 para cola offline comprensible;
+- ANIMA-UX-012 para reanudación de una marcación interrumpida.
+
+También consume la línea base transversal que exige lenguaje comprensible, protocolo neutral, participantes representativos, conectividad explícita, reanudación segura, accesibilidad y minimización de datos.
+
+---
+
+#### 4. Frontera con ANIMA-UX-016
+
+ANIMA-UX-015 valida de forma controlada el flujo concreto de check-in y check-out con trabajadores reales y condiciones reproducibles.
+
+ANIMA-UX-016 permanece reservada para auditar y completar los recordatorios operativos de inicio y cierre de turno. Esta tarea no define ni materializa la política de recordatorios, sus disparadores, notificaciones, frecuencia, escalamiento ni programación.
+
+Los hallazgos de UX-015 podrán identificar fricción asociada a la comprensión del momento de marcar, pero cualquier cambio contractual sobre recordatorios deberá resolverse en ANIMA-UX-016.
+
+---
+
+#### 5. Frontera entre validación documental y ejecución operativa
+
+La tarea documental establece qué debe probarse y qué evidencia será suficiente.
+
+La ejecución operativa requiere una sesión real o expresamente autorizada que cumpla el protocolo. Mientras esa sesión no exista:
+
+- no se registrará PASS de usabilidad con trabajadores;
+- no se afirmará que el check-in fue validado en campo;
+- no se afirmará que el check-out fue validado en campo;
+- no se sustituirá evidencia real por simulación narrativa;
+- no se usarán resultados imaginados para cerrar defectos.
+
+Una futura ejecución deberá anexar evidencia trazable sin alterar retroactivamente el contrato definido aquí.
+
+---
+
+#### 6. Entorno de prueba
+
+La prueba ordinaria deberá realizarse en un entorno controlado que represente ANIMA sin producir consecuencias laborales o productivas no autorizadas.
+
+El entorno deberá permitir:
+
+- usar build y versión identificables;
+- conocer si el backend es local, CI, staging o equivalente autorizado;
+- diferenciar datos de prueba de datos productivos;
+- ejecutar o simular de forma controlada condiciones de red cuando sea necesario;
+- preservar el estado necesario para repetir escenarios;
+- impedir que una sesión de usabilidad genere pagos, sanciones, cierres laborales, ajustes de nómina o decisiones administrativas reales por accidente.
+
+Si la única forma de ejecutar un escenario genera efectos reales no reversibles o no autorizados, el escenario se detiene y queda pendiente de un entorno seguro.
+
+---
+
+#### 7. Participantes mínimos
+
+La cobertura mínima deberá incluir trabajadores reales de Vento o participantes laborales expresamente autorizados que representen, en conjunto:
+
+- uso de ANIMA en Android;
+- uso de ANIMA en iOS;
+- al menos una sesión con conectividad degradada o intermitente;
+- al menos una persona que no conozca previamente el flujo nuevo de check-in y check-out.
+
+Una misma persona podrá cubrir más de una condición cuando quede documentado y no se pierda cobertura de plataforma, experiencia o riesgo.
+
+Ningún perfil de trabajador se considerará cubierto únicamente mediante simulación del facilitador.
+
+---
+
+#### 8. Selección de participantes
+
+La selección deberá evitar una muestra formada exclusivamente por personas que diseñaron, desarrollaron o documentaron el flujo.
+
+Se priorizarán participantes que realmente deban usar ANIMA para asistencia y que permitan cubrir diferencias razonables de:
+
+- familiaridad tecnológica;
+- antigüedad en la organización;
+- plataforma móvil;
+- sede o contexto laboral cuando sea relevante;
+- familiaridad previa con el sistema.
+
+No se utilizarán atributos sensibles para segmentar la muestra salvo necesidad justificada, autorizada y minimizada.
+
+---
+
+#### 9. Identidad y privacidad del participante
+
+El registro de prueba deberá usar un identificador pseudonimizado o referencia segura de participante.
+
+La evidencia no deberá incluir innecesariamente:
+
+- contraseñas;
+- tokens;
+- PIN completos;
+- documentos de identidad;
+- coordenadas precisas cuando no sean indispensables;
+- datos médicos;
+- información salarial;
+- conversaciones privadas;
+- información laboral de terceros.
+
+Cuando una captura contenga datos no necesarios, deberá redaccionarse antes de conservarse como evidencia de la sesión.
+
+---
+
+#### 10. Principio de autonomía del trabajador
+
+El facilitador no ejecutará la marcación por el participante ni le dictará la secuencia ordinaria.
+
+El trabajador deberá poder leer, interpretar y actuar por sí mismo. El facilitador podrá intervenir únicamente cuando:
+
+- exista riesgo de producir un efecto no autorizado;
+- el participante solicite ayuda;
+- se alcance un criterio de aborto;
+- el escenario requiera una condición técnica controlada que el participante no deba configurar.
+
+Toda intervención que cambie materialmente el resultado deberá registrarse.
+
+---
+
+#### 11. Protocolo neutral
+
+Las instrucciones de sesión deberán describir el objetivo laboral, no la respuesta esperada de la interfaz.
+
+Ejemplo de intención válida:
+
+> Necesitas iniciar tu jornada con ANIMA. Muéstrame qué harías.
+
+La prueba no deberá anticipar:
+
+- el botón exacto;
+- el texto exacto que el trabajador “debería” buscar;
+- la existencia de una cola offline;
+- el resultado que se espera obtener;
+- la causa de un bloqueo antes de que el participante la interprete.
+
+Las preguntas posteriores podrán explorar comprensión sin convertir la sesión en capacitación.
+
+---
+
+#### 12. Precondiciones de sesión
+
+Antes de iniciar cada sesión se deberá registrar:
+
+- versión o build de ANIMA;
+- plataforma y versión del sistema operativo;
+- tipo de dispositivo;
+- estado de sesión autenticada;
+- identidad laboral de prueba válida;
+- turno o contexto laboral preparado para el escenario;
+- conectividad inicial;
+- permisos relevantes del dispositivo;
+- condición de ubicación necesaria para el caso;
+- escenario a ejecutar;
+- estado esperado antes de la primera acción.
+
+La sesión no comenzará si el facilitador no puede distinguir un defecto del producto de una precondición incorrecta.
+
+---
+
+#### 13. Unidad de observación
+
+La unidad primaria no es la pantalla ni el toque individual: es la intención laboral de marcar entrada o salida.
+
+Cada escenario deberá seguir la intención desde que el trabajador identifica la necesidad hasta que puede explicar el estado final de su asistencia.
+
+Una repetición causada por doble toque, reintento, reanudación, navegación o respuesta tardía continúa perteneciendo a la misma intención cuando corresponda según el contrato de idempotencia y recuperación.
+
+---
+
+#### 14. Estados que el trabajador debe poder distinguir
+
+La prueba deberá verificar que el participante diferencia, cuando aparezcan:
+
+- listo para marcar;
+- procesando;
+- confirmado;
+- pendiente de sincronización;
+- bloqueado por contexto;
+- bloqueado por autorización;
+- bloqueado por ubicación o permiso;
+- sin conectividad antes de persistencia durable;
+- intento durable pendiente;
+- resultado remoto incierto;
+- conflicto que requiere conciliación;
+- estado recuperado después de reanudación.
+
+La UI no deberá obligar al participante a inferir estos estados desde un spinner indefinido o desde la ausencia de respuesta.
+
+---
+
+#### 15. Matriz obligatoria de escenarios
+
+| ID | Escenario controlado | Intención | Evidencia principal |
+| --- | --- | --- | --- |
+| `UX015-S01` | check-in online sin incidente | entrada | acción descubierta, resultado confirmado y estado final comprensible |
+| `UX015-S02` | check-out online sin incidente | salida | acción descubierta, resultado confirmado y estado final comprensible |
+| `UX015-S03` | doble toque o repetición rápida | entrada o salida | una sola intención y ausencia de efecto duplicado |
+| `UX015-S04` | permiso de ubicación denegado | entrada | bloqueo explicable y ruta segura de recuperación |
+| `UX015-S05` | permiso habilitado después del bloqueo | entrada | prerequisito revalidado antes de continuar |
+| `UX015-S06` | ubicación no disponible o desactualizada | entrada | mensaje causal sin confirmación falsa |
+| `UX015-S07` | pérdida de red antes de persistencia durable | entrada o salida | no se afirma que el evento quedó en cola sin evidencia durable |
+| `UX015-S08` | pérdida de red después de persistencia durable | entrada o salida | estado pendiente comprensible y misma identidad de intención |
+| `UX015-S09` | background y retorno durante la marcación | entrada o salida | reanudación desde el último punto seguro |
+| `UX015-S10` | reinicio de la aplicación con intención durable pendiente | entrada o salida | recuperación sin generar una nueva marcación |
+| `UX015-S11` | respuesta remota perdida después de posible efecto | entrada o salida | resultado incierto, conciliación y no repetición ciega |
+| `UX015-S12` | sesión expirada durante el flujo | entrada o salida | reautenticación y revalidación antes de cualquier efecto |
+| `UX015-S13` | turno o contexto laboral cambia durante interrupción | entrada o salida | estado obsoleto no se usa como autoridad |
+| `UX015-S14` | estado autoritativo contradice el supuesto local | entrada o salida | conflicto visible y ausencia de last-write-wins de interfaz |
+| `UX015-S15` | retorno a Home después del resultado | entrada o salida | Home representa el mismo estado material |
+| `UX015-S16` | consulta posterior del estado/historial disponible | entrada o salida | el trabajador puede corroborar el resultado sin crear otro evento |
+
+La ejecución podrá agregar casos, pero no retirar estos escenarios sin una justificación documental explícita.
+
+---
+
+#### 16. Escenario limpio de check-in
+
+El participante deberá comenzar desde un estado laboral válido para entrada y sin instrucciones sobre controles específicos.
+
+Se observará si puede:
+
+1. identificar su contexto relevante;
+2. reconocer que la acción disponible corresponde a iniciar asistencia;
+3. completar los prerequisitos permitidos;
+4. ejecutar una sola intención de check-in;
+5. reconocer cuándo la marcación está confirmada;
+6. explicar con sus propias palabras qué ocurrió.
+
+El escenario falla si el trabajador cree estar marcado cuando el sistema no puede sostener esa afirmación o si genera más de un efecto para una sola intención.
+
+---
+
+#### 17. Escenario limpio de check-out
+
+El participante deberá comenzar desde un estado laboral válido para salida.
+
+Se observará si puede:
+
+1. identificar que su asistencia está activa;
+2. reconocer la acción de cierre;
+3. diferenciar check-out de otras acciones laborales;
+4. completar una sola intención de salida;
+5. reconocer el resultado confirmado;
+6. explicar si su jornada quedó cerrada o si existe una condición pendiente.
+
+La UI no deberá requerir conocimiento de estados internos o nomenclatura técnica para comprender el cierre.
+
+---
+
+#### 18. Prueba de repetición e idempotencia visible
+
+El facilitador deberá reproducir al menos una repetición razonable: doble toque, toque repetido por demora o reanudación que expone nuevamente una acción.
+
+Se verificará que:
+
+- la interfaz no incentive una segunda intención material;
+- el estado visible no cambie de forma contradictoria;
+- el backend o contrato de prueba no materialice dos efectos para el mismo intento cuando exista identidad estable;
+- una respuesta tardía no provoque una falsa necesidad de volver a marcar;
+- el participante pueda saber qué hacer sin “probar otra vez” a ciegas.
+
+---
+
+#### 19. Permisos y ubicación
+
+Los escenarios de permiso y ubicación deberán comprobar que el trabajador entiende la causa del bloqueo y la acción permitida para resolverlo.
+
+Abrir configuración del sistema no se considerará equivalente a conceder el permiso.
+
+Al retornar a ANIMA deberán revalidarse los prerequisitos actuales. Una ubicación obtenida antes de una interrupción no conserva validez indefinida por haber pertenecido al mismo flujo.
+
+---
+
+#### 20. Turno, sede, área y rol
+
+Cuando el flujo dependa del turno o contexto laboral, la prueba deberá comprobar que el trabajador puede identificar el contexto relevante sin confundirlo con preferencias, geocerca, perfil genérico o información histórica.
+
+Si el contexto cambia durante una interrupción, ANIMA deberá revalidar el hecho autoritativo antes de continuar.
+
+Un contexto obsoleto no podrá conservar autoridad solo porque estaba visible al inicio de la intención.
+
+---
+
+#### 21. Autorización
+
+La prueba deberá distinguir entre una acción no disponible por falta de autoridad y una falla técnica.
+
+La experiencia deberá:
+
+- evitar presentar como ejecutable una acción que el actor no puede completar;
+- evitar revelar detalles internos de políticas de autorización;
+- ofrecer una explicación humana suficiente;
+- revalidar autoridad después de renovación de sesión o cambio material de contexto.
+
+El facilitador no convertirá una cuenta privilegiada en sustituto del participante para “hacer pasar” el escenario.
+
+---
+
+#### 22. Conectividad antes de persistencia durable
+
+Cuando se pierda conectividad antes de que exista evidencia durable de la intención, la interfaz no deberá afirmar que la marcación está guardada, encolada o pendiente de sincronización.
+
+El participante deberá recibir una salida que no le induzca a abandonar el flujo creyendo que el evento quedó protegido cuando no puede demostrarse.
+
+La sesión registrará si la persona comprende la diferencia entre “no se pudo guardar todavía” y “quedó pendiente para sincronizar”.
+
+---
+
+#### 23. Conectividad después de persistencia durable
+
+Cuando la intención ya esté persistida de forma durable, la prueba deberá comprobar que el trabajador reconoce que existe un evento pendiente y que no necesita crear otro.
+
+El estado deberá sobrevivir a navegación, background o reinicio conforme al contrato vigente y conservar identidad estable.
+
+La prueba falla si el participante recibe señales que razonablemente lo lleven a duplicar la marcación.
+
+---
+
+#### 24. Resultado remoto incierto
+
+Si la comunicación se pierde después de que el servidor pudo haber aplicado el efecto, la prueba deberá observar que ANIMA no representa el caso como un fallo ordinario que invite a repetir.
+
+El estado deberá comunicar incertidumbre o conciliación según corresponda y preservar suficiente evidencia para resolver el resultado.
+
+La ausencia de respuesta no podrá interpretarse automáticamente como ausencia de efecto.
+
+---
+
+#### 25. Interrupción y reanudación
+
+Se deberá interrumpir al menos un flujo mediante background, bloqueo del dispositivo, reinicio de la aplicación o una condición equivalente controlada.
+
+Al reingresar se verificará que ANIMA:
+
+- recupera la misma intención cuando existe identidad durable;
+- identifica el último punto seguro;
+- revalida datos que pudieron caducar;
+- no reusa permisos, autorización, ubicación o contexto obsoletos como autoridad;
+- no genera una marcación adicional por reconstruir la pantalla;
+- conduce al participante a un estado comprensible.
+
+---
+
+#### 26. Renovación de sesión
+
+Cuando la sesión expire durante un flujo, la reautenticación deberá preservar únicamente la referencia segura necesaria para continuar o conciliar.
+
+Antes de cualquier nuevo efecto se deberá verificar que:
+
+- el actor autenticado corresponde al propietario de la intención;
+- la autoridad sigue vigente;
+- el turno y contexto siguen siendo válidos;
+- la intención no fue ya aplicada;
+- no existe conflicto que requiera intervención.
+
+---
+
+#### 27. Conflicto autoritativo
+
+Cuando la fuente autoritativa contradiga el estado local, la interfaz deberá dejar de presentar el supuesto local como verdad.
+
+La prueba deberá comprobar que el participante recibe una salida comprensible y que el sistema preserva evidencia para conciliación.
+
+Un conflicto no deberá transformarse silenciosamente en retry ordinario ni resolverse mediante último estado visual escrito.
+
+---
+
+#### 28. Consistencia Home y estado posterior
+
+Después de cada escenario materializado o conciliado, se deberá volver a la superficie personal donde el trabajador consulta su asistencia.
+
+La prueba verificará que:
+
+- el estado no contradice el resultado del flujo;
+- una marcación pendiente sigue diferenciándose de una confirmada;
+- un conflicto sigue siendo visible como condición no resuelta cuando corresponda;
+- la acción principal disponible es coherente con el estado actual;
+- el participante no necesita recordar manualmente qué hizo para interpretar la pantalla.
+
+---
+
+#### 29. Lenguaje y comprensión
+
+Para cada mensaje material se preguntará al participante, después de su primera interpretación:
+
+- qué cree que ocurrió;
+- si su entrada o salida ya quedó registrada;
+- qué cree que debe hacer ahora;
+- qué condición está impidiendo continuar, cuando exista bloqueo.
+
+Las respuestas se registrarán de forma resumida y pseudonimizada.
+
+La capacitación posterior no corregirá retroactivamente una incomprensión observada.
+
+---
+
+#### 30. Accesibilidad observada
+
+La sesión deberá registrar barreras que impidan o dificulten comprender o ejecutar el flujo por:
+
+- tamaño o alcance táctil;
+- contraste o dependencia exclusiva de color;
+- jerarquía visual;
+- lectura del texto;
+- foco o lector de pantalla cuando aplique a la muestra;
+- tiempo insuficiente;
+- controles demasiado próximos;
+- feedback dependiente únicamente de animación, háptica o iconografía.
+
+Un hallazgo de accesibilidad se clasifica por impacto y se conserva aunque el participante logre terminar mediante compensación o ayuda.
+
+---
+
+#### 31. Métricas de sesión
+
+Cada escenario deberá registrar al menos:
+
+- completado, fallido o abortado;
+- resultado esperado y resultado observado;
+- número de intentos iniciados por el participante;
+- repeticiones o toques adicionales motivados por incertidumbre;
+- intervención del facilitador;
+- comprensión del estado final;
+- recuperación exitosa o no después de interrupción;
+- existencia de duplicación material;
+- existencia de confirmación falsa;
+- barreras de accesibilidad;
+- defectos o fricciones detectados.
+
+El tiempo podrá registrarse como evidencia contextual, pero esta tarea no fija un umbral universal de segundos sin datos operativos que lo justifiquen.
+
+---
+
+#### 32. Esquema mínimo de evidencia
+
+Cada registro de escenario deberá conservar:
+
+| Campo | Regla |
+| --- | --- |
+| `session_ref` | referencia segura de la sesión |
+| `participant_ref` | pseudónimo o identificador no sensible |
+| `coverage_tags` | plataforma, primera experiencia, condición de red u otras etiquetas necesarias |
+| `build_ref` | versión o build identificable |
+| `environment_ref` | entorno autorizado de prueba |
+| `scenario_id` | identificador de la matriz UX015 |
+| `precondition` | estado previo relevante |
+| `expected_outcome` | resultado contractual esperado |
+| `observed_outcome` | resultado realmente observado |
+| `participant_understanding` | interpretación resumida del participante |
+| `facilitator_intervention` | ninguna o intervención registrada |
+| `result` | PASS, FAIL o ABORTED para el escenario operativo |
+| `issue_ref` | referencia de hallazgo cuando exista |
+| `evidence_refs` | capturas, logs o referencias seguras y redactadas |
+| `decision` | continuar, repetir justificadamente, corregir o bloquear |
+
+La evidencia de una futura ejecución no se inventará dentro de este artefacto documental.
+
+---
+
+#### 33. Clasificación de hallazgos
+
+Cada hallazgo deberá clasificarse al menos como:
+
+- comprensión o lenguaje;
+- jerarquía o descubribilidad;
+- contexto laboral;
+- autorización;
+- ubicación o permiso;
+- conectividad;
+- persistencia o sincronización;
+- idempotencia o duplicación;
+- reanudación;
+- estado autoritativo o conciliación;
+- accesibilidad;
+- privacidad;
+- defecto técnico;
+- problema de preparación del escenario.
+
+La clasificación no sustituye el diagnóstico técnico. Su función es impedir que una falla de producto se cierre como “error del usuario” y que una mala precondición se atribuya al producto sin evidencia.
+
+---
+
+#### 34. Severidad y bloqueo
+
+Se consideran bloqueantes para aprobar la ejecución operativa:
+
+- cualquier duplicación material de check-in o check-out causada por una sola intención;
+- cualquier confirmación visible de éxito que no pueda sostenerse con el estado material disponible;
+- cualquier situación en la que el participante no pueda determinar si está dentro o fuera de asistencia y no exista una ruta explícita de recuperación o conciliación;
+- exposición de datos sensibles no necesarios;
+- bypass de autorización;
+- pérdida de una intención durable sin mecanismo de recuperación;
+- conflicto convertido silenciosamente en estado exitoso;
+- una barrera de accesibilidad que impida completar una acción laboral crítica a un participante cubierto.
+
+Un fallo bloqueante no podrá compensarse mediante promedio de éxito del resto de participantes.
+
+---
+
+#### 35. Criterios de aborto de sesión
+
+La sesión se abortará de forma controlada cuando:
+
+- exista riesgo de producir un efecto laboral o productivo no autorizado;
+- se detecte exposición de datos sensibles que no pueda contenerse;
+- el participante o facilitador pierda certeza sobre el entorno utilizado;
+- la identidad de prueba sea incorrecta;
+- el escenario pueda afectar a un tercero;
+- un defecto impida recuperar el estado seguro;
+- continuar requiera conceder privilegios fuera del alcance de la prueba.
+
+Un escenario abortado no se registrará como PASS ni como FAIL del producto sin distinguir la causa.
+
+---
+
+#### 36. Regla de repetición
+
+Un escenario podrá repetirse cuando:
+
+- la precondición estaba mal preparada;
+- el entorno falló de forma ajena al comportamiento bajo prueba;
+- se requiere confirmar reproducibilidad de un hallazgo;
+- se prueba la corrección de un defecto posterior.
+
+La repetición no borrará el resultado original. Ambos intentos deberán conservar relación trazable.
+
+---
+
+#### 37. Gate de decisión de la ejecución operativa
+
+Una futura ejecución podrá declararse PASS únicamente cuando:
+
+1. exista cobertura real de los perfiles mínimos;
+2. todos los escenarios obligatorios tengan evidencia;
+3. no permanezca ningún fallo bloqueante abierto;
+4. no exista duplicación material por una sola intención;
+5. no exista confirmación falsa de asistencia;
+6. los participantes puedan distinguir confirmado, pendiente, bloqueado e incierto cuando esos estados aparezcan;
+7. los escenarios de interrupción y conectividad mantengan recuperación comprensible;
+8. los hallazgos no bloqueantes tengan propietario y salida definida;
+9. la evidencia respete privacidad y minimización;
+10. el veredicto sea reproducible a partir de los registros de sesión.
+
+Hasta entonces el resultado operativo será NOT_EXECUTED o FAIL según la evidencia realmente disponible.
+
+---
+
+#### 38. Handoff de hallazgos
+
+Los hallazgos deberán dirigirse a la tarea o propietario canónico que corresponda.
+
+Esta tarea no crea automáticamente nuevas tareas por cada observación.
+
+Cuando el hallazgo pertenezca a contratos ya definidos de check-in, check-out, estado visible, bloqueo, offline o reanudación, deberá vincularse al contrato propietario existente y a su futura materialización.
+
+Cuando el hallazgo sea específicamente sobre recordatorios de inicio o cierre de turno, se deriva a ANIMA-UX-016 sin desarrollar aquí su solución.
+
+---
+
+#### 39. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La tarea operacionaliza obligaciones de prueba ya existentes sobre marcación, idempotencia, estado visible, conectividad, reanudación y validación con trabajadores reales. No introduce una regla de producto nueva que justifique duplicar el registro canónico.
+
+---
+
+#### 40. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificación la cobertura existente, entre otros:
+
+- `TREQ-ANIMA-003`, para persistencia durable offline, identidad estable, replay, idempotencia, conflicto y recuperación de marcaciones;
+- `TREQ-ANIMA-015`, para mantener separados en Home los estados de asistencia y los condicionantes que no deben confundirse con la confirmación material;
+- `TREQ-UX-274` a `TREQ-UX-296`, como cobertura transversal de checkpoint semántico, interrupciones, reanudación y estados visibles;
+- `TREQ-UX-297` a `TREQ-UX-319`, como cobertura transversal de validación semántica con participantes representativos, protocolo neutral, severidad y comprensión de términos y acciones.
+
+Esta enumeración es trazabilidad hacia requisitos vigentes y no modifica el registro canónico de requisitos.
+
+---
+
+#### 41. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build de ANIMA ni del repositorio durante el desarrollo documental de este contrato. |
+| LOCAL | PASS | El artefacto se verificó estructuralmente como una sola tarea, con metadata completa, secciones obligatorias, cero requisitos derivados, continuidad cerrada y sin instrucciones operativas internas. |
+| REMOTA | PASS | Se verificaron en las fuentes canónicas vigentes la tarea actual ANIMA-UX-015, la continuidad desde ANIMA-UX-014, la reserva de ANIMA-UX-016, la topología DEFINE_ONCE, los contratos previos de check-in/check-out y la cobertura de prueba reutilizada. |
+| OPERATIVA | NOT_EXECUTED | No se ejecutaron sesiones reales con trabajadores durante el desarrollo documental; los resultados de participantes, escenarios y métricas deberán provenir de una ejecución posterior trazable. |
+| FÍSICA | NOT_APPLICABLE | ANIMA-UX-015 es documental y DEFINE_ONCE; no autoriza cambios de código, Supabase, datos productivos, dispositivos, despliegues ni efectos laborales. |
+
+---
+
+#### 42. Criterios de aceptación
+
+1. La tarea define una validación específica de check-in y check-out con trabajadores reales y no una encuesta genérica de satisfacción.
+2. La tarea conserva ANIMA-UX-014 como tarea anterior exacta.
+3. La tarea conserva ANIMA-UX-016 como siguiente tarea reservada exacta.
+4. La tarea no desarrolla la política de recordatorios reservada a ANIMA-UX-016.
+5. La aprobación documental no se presenta como evidencia de que las sesiones con trabajadores ya ocurrieron.
+6. La muestra mínima cubre Android.
+7. La muestra mínima cubre iOS.
+8. La muestra mínima cubre al menos una condición de conectividad degradada o intermitente.
+9. La muestra mínima cubre al menos una persona sin conocimiento previo del flujo nuevo.
+10. Ningún perfil de trabajador se declara cubierto únicamente mediante simulación del facilitador.
+11. La selección evita depender exclusivamente de autores o desarrolladores del flujo.
+12. La evidencia usa referencias pseudonimizadas y minimiza datos personales.
+13. Las credenciales y secretos no forman parte de la evidencia ordinaria.
+14. El facilitador no ejecuta la acción ordinaria por el participante.
+15. Toda intervención material del facilitador queda registrada.
+16. Las instrucciones de prueba describen la intención laboral y no revelan el control que debe pulsarse.
+17. El protocolo registra build, plataforma, dispositivo, sesión, contexto, conectividad, permisos y precondición.
+18. La unidad de observación es la intención laboral de marcar y no cada montaje de pantalla.
+19. El escenario limpio de check-in verifica descubribilidad, ejecución y comprensión del resultado.
+20. El escenario limpio de check-out verifica descubribilidad, ejecución y comprensión del resultado.
+21. Una sola intención no puede producir dos efectos materiales por repetición de interacción.
+22. Un doble toque o respuesta tardía no debe inducir una segunda marcación.
+23. Permiso de ubicación denegado se presenta como causa comprensible y no como error genérico.
+24. Regresar desde configuración del sistema obliga a revalidar el permiso actual.
+25. Una ubicación desactualizada no conserva autoridad por pertenecer al flujo previo.
+26. El contexto de turno se revalida cuando pudo cambiar durante una interrupción.
+27. Una falta de autorización se diferencia de una falla técnica sin revelar políticas internas sensibles.
+28. Antes de persistencia durable la UI no afirma que la marcación quedó en cola.
+29. Después de persistencia durable la UI puede representar el evento como pendiente sin invitar a duplicarlo.
+30. Un reinicio de la aplicación recupera una intención durable según el contrato existente.
+31. Background y foreground no crean una nueva intención por sí mismos.
+32. Una respuesta remota perdida después de un posible efecto se trata como resultado incierto o conciliable, no como retry ciego.
+33. Una sesión expirada exige reautenticación y revalidación antes de un nuevo efecto.
+34. Un conflicto autoritativo no se resuelve mediante last-write-wins de interfaz.
+35. Home representa un estado coherente con el resultado material o pendiente del flujo.
+36. El participante puede explicar si está marcado, pendiente, bloqueado o en incertidumbre cuando cada estado aparece.
+37. La capacitación posterior no convierte una incomprensión inicial en PASS retroactivo.
+38. Se registran barreras de accesibilidad aunque el participante logre completar mediante compensación.
+39. Cada escenario conserva resultado esperado y observado.
+40. Cada escenario conserva la comprensión resumida del participante.
+41. Cada escenario conserva intervenciones del facilitador.
+42. Cada escenario conserva referencia de hallazgo cuando exista.
+43. Un escenario abortado se distingue de PASS y FAIL del producto.
+44. Las repeticiones conservan el resultado original y su relación con el nuevo intento.
+45. Cualquier duplicación material de asistencia bloquea el PASS operativo.
+46. Cualquier confirmación falsa de asistencia bloquea el PASS operativo.
+47. Un bypass de autorización bloquea el PASS operativo.
+48. Una exposición material de datos sensibles bloquea el PASS operativo.
+49. Un fallo bloqueante no puede compensarse mediante promedio de éxito del resto de la muestra.
+50. La ejecución operativa solo podrá declararse PASS con cobertura mínima, escenarios completos, evidencia trazable y cero bloqueantes abiertos.
+51. Los hallazgos no crean tareas nuevas cuando ya existe un propietario canónico.
+52. Los hallazgos sobre recordatorios se derivan a ANIMA-UX-016 sin desarrollar su solución.
+53. La sección de requisitos derivados declara cero requisitos y no contiene identificadores de requisitos.
+54. La cobertura reutilizada se documenta fuera de la sección de requisitos derivados.
+55. La tarea no modifica el registro 04A.
+56. BUILD permanece NOT_EXECUTED mientras no exista ejecución real de build asociada a esta entrega documental.
+57. OPERATIVA permanece NOT_EXECUTED mientras no exista evidencia real de sesiones con trabajadores.
+58. FÍSICA permanece NOT_APPLICABLE porque la tarea no autoriza materialización física.
+59. La continuidad termina exactamente en ANIMA-UX-016.
+60. Ninguna conclusión de esta tarea autoriza implementación física, cambios productivos o avance automático de continuidad.
+
+---
+
+#### 43. Límites
+
+Esta tarea no:
+
+- implementa cambios en ANIMA;
+- modifica componentes, rutas o navegación;
+- crea o modifica tablas, funciones, RLS, migraciones o configuración de Supabase;
+- ejecuta una marcación productiva;
+- altera nómina, asistencia oficial o programación laboral;
+- autoriza recopilación de datos sensibles adicionales;
+- define recordatorios operativos de entrada o salida;
+- sustituye pruebas automatizadas de idempotencia, persistencia o autorización;
+- declara aprobada la usabilidad real sin sesiones trazables;
+- convierte a un facilitador en representante del trabajador;
+- autoriza acceso a información de terceros;
+- crea una instancia física propia.
+
+---
+
+#### 44. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-014 — Simplificar administración de equipo autorizada`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno`
+
+
 ### [ ] ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
 ### [ ] ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
