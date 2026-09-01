@@ -350,16 +350,12 @@
     ]
   },
   "queue_policy": {
-    "active_priority_lane_first": true,
-    "fallback_order": [
-      "ready_for_gate_at",
-      "package_id"
-    ],
+    "implementation_ready_diagnostic_only": true,
+    "linear_execution_source": "DELIV-PKG-015",
     "nearest_to_ready_order": [
       "blocker_count",
       "package_id"
     ],
-    "nearest_to_ready_limit": 10,
-    "decision_wave_is_implementation_priority": false
+    "nearest_to_ready_limit": 10
   }
 }

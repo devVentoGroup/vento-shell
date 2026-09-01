@@ -11,9 +11,9 @@ import {
   readPackageGatePolicy,
 } from './package-gate-control.mjs';
 import {
-  assessPackageSelection,
-  readPackageSelectionPolicy,
-} from './package-selection-control.mjs';
+  deriveLinearPackageExecution,
+  readPackageExecutionPolicy,
+} from './package-execution-control.mjs';
 
 export const READINESS_PATHS = Object.freeze({
   contract: 'scripts/docs/package-readiness/package-readiness-contract.json',
@@ -26,7 +26,7 @@ export const READINESS_PATHS = Object.freeze({
   implementationInstances: 'docs/plan-canonico/modular/implementation-instances',
   packageGatePolicy: 'docs/plan-canonico/modular/package-gate-policy.json',
   packageGateInstances: 'docs/plan-canonico/modular/package-gate-instances',
-  packageSelectionPolicy: 'docs/plan-canonico/modular/package-selection-policy.json',
+  packageExecutionPolicy: 'docs/plan-canonico/modular/package-execution-policy.json',
   canonicalPackageSource: 'docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md',
   gapRoutingSource: 'docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md',
   reportJson: '.delivery/package-readiness-scan.json',
@@ -396,11 +396,11 @@ function validateContract(contract) {
     if (catalog.expected_append_only_gap_memberships !== 6) errors.push('canonical_package_catalog.expected_append_only_gap_memberships debe ser 6.');
   }
   const queuePolicy = contract?.queue_policy;
-  if (!queuePolicy || queuePolicy.active_priority_lane_first !== true) {
-    errors.push('queue_policy.active_priority_lane_first debe ser true.');
+  if (!queuePolicy || queuePolicy.implementation_ready_diagnostic_only !== true) {
+    errors.push('queue_policy.implementation_ready_diagnostic_only debe ser true.');
   }
-  if (!Array.isArray(queuePolicy?.fallback_order) || queuePolicy.fallback_order.join('|') !== 'ready_for_gate_at|package_id') {
-    errors.push('queue_policy.fallback_order debe ser [ready_for_gate_at, package_id].');
+  if (queuePolicy?.linear_execution_source !== 'DELIV-PKG-015') {
+    errors.push('queue_policy.linear_execution_source debe ser DELIV-PKG-015.');
   }
 
   if (errors.length) fail(`package-readiness-contract.json inválido:\n- ${errors.join('\n- ')}`);
@@ -839,6 +839,53 @@ function parseProcessProjection(source) {
   }]));
 }
 
+export function parsePackageExecutionProjection(source) {
+  const block = extractTaskBlock(source, 'DELIV-PKG-015');
+  const table = findTable(block, ['package_id', 'dependencia entre paquetes', 'orden posterior al gate']);
+  if (!table) {
+    fail('DELIV-PKG-015 no contiene la matriz canónica de dependencias y orden de package.');
+  }
+
+  const projection = new Map();
+  const dependencyCells = new Map();
+  for (const row of table.rows) {
+    const packageId = tableValue(row, table, ['package_id']);
+    if (!/^GAP-PKG-\d{3}$/u.test(packageId)) continue;
+    if (projection.has(packageId)) fail(`DELIV-PKG-015 duplica el orden de ${packageId}.`);
+    const orderCurrent = tableValue(row, table, ['orden actual']);
+    const orderAfterGate = tableValue(row, table, ['orden posterior al gate']);
+    const layerMatch = orderAfterGate.match(/\bCapa\s+([0-4])\b/iu);
+    const deferred = /^NO_EJECUTABLE$/iu.test(orderCurrent)
+      || /\bSin orden f[ií]sico\b/iu.test(orderAfterGate)
+      || !layerMatch;
+    projection.set(packageId, {
+      layer: layerMatch ? Number(layerMatch[1]) : null,
+      depends_on_package_ids: [],
+      order_current: orderCurrent,
+      order_after_gate: orderAfterGate,
+      deferred,
+      deferred_reason: deferred ? `${orderCurrent || 'SIN_ORDEN_ACTUAL'}: ${orderAfterGate || 'SIN_ORDEN_POSTERIOR'}` : null,
+    });
+    dependencyCells.set(packageId, tableValue(row, table, ['dependencia entre paquetes']));
+  }
+
+  const dependenciesByPackage = new Map([...projection.keys()].map((packageId) => [packageId, new Set()]));
+  for (const dependencyCell of dependencyCells.values()) {
+    for (const match of dependencyCell.matchAll(/(GAP-PKG-\d{3})\s*(?:→|->)\s*(GAP-PKG-\d{3})/gu)) {
+      const [, predecessorId, dependentId] = match;
+      if (!projection.has(predecessorId) || !projection.has(dependentId)) {
+        fail(`DELIV-PKG-015 contiene arista hacia package desconocido: ${predecessorId} → ${dependentId}.`);
+      }
+      dependenciesByPackage.get(dependentId).add(predecessorId);
+    }
+  }
+  for (const [packageId, dependencies] of dependenciesByPackage) {
+    projection.get(packageId).depends_on_package_ids = [...dependencies]
+      .sort((left, right) => left.localeCompare(right, 'en'));
+  }
+  return projection;
+}
+
 export function parseCanonicalPackageCatalogFromSource(source, contract, gapRoutingSource = '') {
   const config = contract.canonical_package_catalog;
   const block = extractTaskBlock(source, config.final_decision_task);
@@ -851,6 +898,7 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
   const taskRouting = parsePackageTaskRouting(gapRoutingSource);
   const membershipAudit = parseGapMembershipAudit(gapRoutingSource, config);
   const dominantProjection = parseDominantTaskProjection(source);
+  const executionProjection = parsePackageExecutionProjection(source);
   const packages = [];
   const seen = new Set();
   for (const row of table.rows) {
@@ -872,6 +920,7 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
       ...(processProjection.get(packageId) ?? { capability_ids: [], process_ids: [], gap_ids_sampled_from_deliv_pkg_002: [] }),
       ...(taskRouting.get(packageId) ?? { primary_task_ids: [], support_task_ids: [] }),
       ...(dominantProjection.get(packageId) ?? { dominant_task_id: null, runtime_profile_007: null, runtime_state_007: null }),
+      execution: executionProjection.get(packageId) ?? null,
       gap_membership_count: membershipAudit.by_package.get(packageId) ?? 0,
     });
   }
@@ -892,6 +941,10 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
   const withoutDominant = packages.filter(({ dominant_task_id: dominant }) => !dominant);
   if (withoutDominant.length > 0) {
     fail(`DELIV-PKG-007 no resolvió tarea dominante para ${withoutDominant.length} package(s): ${withoutDominant.slice(0, 10).map(({ package_id: packageId }) => packageId).join(', ')}${withoutDominant.length > 10 ? ', ...' : ''}.`);
+  }
+  const withoutExecutionOrder = packages.filter(({ execution }) => !execution);
+  if (withoutExecutionOrder.length > 0) {
+    fail(`DELIV-PKG-015 no resolvió orden para ${withoutExecutionOrder.length} package(s): ${withoutExecutionOrder.slice(0, 10).map(({ package_id: packageId }) => packageId).join(', ')}${withoutExecutionOrder.length > 10 ? ', ...' : ''}.`);
   }
   return {
     catalog_id: config.catalog_id,
@@ -1343,6 +1396,12 @@ function reconcileSpecialRegistry({ registry, capabilityResults, capabilityIndex
       capability_id: capabilityResult.capability_id,
       objective: capability.objective,
       owner_application: capability.owner_application,
+      execution: capability.execution ?? {
+        layer: null,
+        depends_on_package_ids: [],
+        deferred: true,
+        deferred_reason: 'NO_CANONICAL_EXECUTION_ORDER',
+      },
       priority_lane_id: capability.priority_lane_id ?? null,
       status,
       status_scope: 'DOCUMENTARY_READINESS',
@@ -1397,6 +1456,7 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
       owner_application: null,
       repository_owner: entry.repository_owner ?? null,
       runtime_profile: entry.runtime_profile ?? null,
+      execution: entry.execution,
       status,
       status_scope: 'DOCUMENTARY_READINESS',
       capability_status: 'CANONICAL_E5_PACKAGE',
@@ -1480,21 +1540,8 @@ function activePriorityLane(packageId, priorityLanes) {
   return lane.active !== false && !BLOCKING_LANE_STATES.has(status);
 }
 
-function timeRank(value) {
-  if (!value) return Number.MAX_SAFE_INTEGER;
-  const timestamp = Date.parse(value);
-  return Number.isFinite(timestamp) ? timestamp : Number.MAX_SAFE_INTEGER;
-}
-
-export function prioritizeImplementationReadyQueue(queue, priorityLanes = { lanes: [] }) {
-  return [...queue].sort((left, right) => {
-    const leftPriority = activePriorityLane(left.package_id, priorityLanes) ? 0 : 1;
-    const rightPriority = activePriorityLane(right.package_id, priorityLanes) ? 0 : 1;
-    if (leftPriority !== rightPriority) return leftPriority - rightPriority;
-    const timeDelta = timeRank(left.ready_for_gate_at) - timeRank(right.ready_for_gate_at);
-    if (timeDelta !== 0) return timeDelta;
-    return left.package_id.localeCompare(right.package_id, 'en');
-  });
+export function prioritizeImplementationReadyQueue(queue) {
+  return [...queue].sort((left, right) => left.package_id.localeCompare(right.package_id, 'en'));
 }
 
 function nearestToReady(packages, contract) {
@@ -1593,14 +1640,13 @@ export function applyPhysicalOverlay({ registry, contract, instances, capability
       explicit_priority_lane: activePriorityLane(pkg.package_id, priorityLanes),
       physical_authorization_required: true,
     }));
-  const implementationReadyQueue = prioritizeImplementationReadyQueue(unsortedQueue, priorityLanes);
+  const implementationReadyQueue = prioritizeImplementationReadyQueue(unsortedQueue);
   const nearest = nearestToReady(packages, contract);
   return {
     ...registry,
     status_scope: 'EFFECTIVE_RUNTIME',
     packages,
     implementation_ready_queue: implementationReadyQueue,
-    recommended_next_package: implementationReadyQueue[0] ?? null,
     nearest_to_ready_queue: nearest,
   };
 }
@@ -1673,19 +1719,13 @@ function blockerFamily(blocker) {
 export function renderReadinessBlock({ capabilityResults, registry, activeSequence, trigger, indexCoverage, canonicalCatalog }) {
   const readyCaps = capabilityResults.filter(({ status }) => status === 'READY_FOR_COMPILATION');
   const blockedCaps = capabilityResults.filter(({ status }) => status === 'BLOCKED');
-  const readyRows = registry.implementation_ready_queue.length > 0
-    ? registry.implementation_ready_queue.map((entry, index) => `- ${index + 1}. ${entry.package_id}  NEXT: ${entry.next_execution}`).join('\n')
-    : '- NONE';
-  const nearestRows = registry.nearest_to_ready_queue.length > 0
-    ? registry.nearest_to_ready_queue.map((entry, index) => {
-      const missingTasks = entry.task_progress.missing_task_ids.slice(0, 5);
-      const taskLine = `TASKS: ${entry.task_progress.approved}/${entry.task_progress.total} (${entry.task_progress.progress_percent}%)`;
-      const gateLine = `GATES: ${entry.gate_progress.passed}/${entry.gate_progress.total}`;
-      return `- ${index + 1}. ${entry.package_id}  ${taskLine}  ${gateLine}  REMAINING: ${entry.remaining_obligations}${missingTasks.length ? `\n     MISSING TASKS: ${missingTasks.join(', ')}${entry.task_progress.missing_task_ids.length > 5 ? ', ...' : ''}` : ''}${entry.exit_owner ? `\n     OWNER: ${entry.exit_owner}` : ''}${entry.exit_condition ? `\n     EXIT: ${entry.exit_condition}` : ''}`;
-    }).join('\n')
-    : '- NONE';
   const unmapped = indexCoverage?.unmapped_package_ids ?? [];
-  const recommended = registry.recommended_next_package;
+  const execution = registry.package_execution ?? null;
+  const current = execution?.current ?? null;
+  const currentPackage = current
+    ? registry.packages.find(({ package_id: packageId }) => packageId === current.package_id) ?? null
+    : null;
+  const action = current?.next_action ?? null;
   const packageStatusSummary = summaryLines(countBy(registry.packages, (pkg) => pkg.status));
   const sourceSummary = summaryLines(countBy(registry.packages, (pkg) => pkg.source_kind));
   const blockerSummary = summaryLines(countBy(
@@ -1693,7 +1733,7 @@ export function renderReadinessBlock({ capabilityResults, registry, activeSequen
     blockerFamily,
   ).slice(0, 10));
   const blockedPackageCount = registry.packages.filter((pkg) => (pkg.blockers ?? []).length > 0).length;
-  return `=== PACKAGE READINESS SUMMARY ===\n\nTRIGGER: ${trigger}\nCANONICAL GAP PACKAGE CATALOG: ${catalogSummary(canonicalCatalog)}\nTOTAL PACKAGES EVALUATED: ${registry.packages.length}\nBLOCKED PACKAGES: ${blockedPackageCount}\nIMPLEMENTATION_READY: ${registry.implementation_ready_queue.length}\n\nPACKAGE SOURCES:\n${sourceSummary}\n\nSTATUS SUMMARY:\n${packageStatusSummary}\n\nSPECIAL CAPABILITIES:\n- detected: ${capabilityResults.length}\n- blocked/maturing: ${blockedCaps.length}\n- ready_for_compilation: ${readyCaps.length}\n- unmapped: ${unmapped.length}\n\nRECOMMENDED NEXT PACKAGE:\n${recommended ? `- ${recommended.package_id}\n  NEXT: ${recommended.next_execution}\n  HUMAN AUTHORIZATION REQUIRED: TRUE` : '- NONE'}\n\nIMPLEMENTATION READY — PRIORITIZED:\n${readyRows}\n\nNEAREST TO READY — DIAGNOSTIC ONLY:\n${nearestRows}\n\nTOP BLOCKER FAMILIES:\n${blockerSummary}\n\nNEXT DOCUMENTATION WORK:\n${documentationCurrent(activeSequence) ?? 'EMPTY'}\n\nPERSISTENT REGISTRY:\n- ${READINESS_PATHS.packageRegistry}\n- compact state only; do not use it as the detailed dossier\n\nDERIVED DETAIL:\n- ${READINESS_PATHS.reportJson}\n- ${READINESS_PATHS.reportMarkdown}\n- regenerable; full package diagnostics live here\n\n=== END PACKAGE READINESS SUMMARY ===`;
+  return `=== PACKAGE READINESS SUMMARY ===\n\nTRIGGER: ${trigger}\nCANONICAL GAP PACKAGE CATALOG: ${catalogSummary(canonicalCatalog)}\nTOTAL PACKAGES EVALUATED: ${registry.packages.length}\nBLOCKED PACKAGES: ${blockedPackageCount}\nIMPLEMENTATION_READY: ${registry.implementation_ready_queue.length}\n\nLINEAR EXECUTION:\n- MODE: ${execution?.mode ?? 'NOT_EVALUATED'}\n- HUMAN PACKAGE SELECTION: FALSE\n- STATE: ${execution?.state ?? 'NOT_EVALUATED'}\n- CURRENT PACKAGE: ${current?.package_id ?? 'NONE'}\n- POSITION: ${current ? `${current.position}/${execution.sequence.length}` : `0/${execution?.sequence.length ?? 0}`}\n- LAYER: ${current?.layer ?? 'NONE'}\n- STATUS: ${currentPackage?.status ?? 'NONE'}\n- ACTION: ${action?.type ?? 'NONE'}\n- TARGET: ${action?.target ?? 'NONE'}\n- REASON: ${action?.reason ?? 'NONE'}\n- COMMAND: ${action?.command ?? 'NONE'}\n- DEFERRED OUTSIDE ACTIVE LINE: ${execution?.deferred.length ?? 0}\n- RULE: a blocked current package retains its turn; later ready packages never bypass it\n\nPACKAGE SOURCES:\n${sourceSummary}\n\nSTATUS SUMMARY:\n${packageStatusSummary}\n\nSPECIAL CAPABILITIES:\n- detected: ${capabilityResults.length}\n- blocked/maturing: ${blockedCaps.length}\n- ready_for_compilation: ${readyCaps.length}\n- unmapped: ${unmapped.length}\n\nTOP BLOCKER FAMILIES:\n${blockerSummary}\n\nNEXT DOCUMENTATION WORK:\n${documentationCurrent(activeSequence) ?? 'EMPTY'}\n\nPERSISTENT REGISTRY:\n- ${READINESS_PATHS.packageRegistry}\n- compact state only; do not use it as the detailed dossier\n\nDERIVED DETAIL:\n- ${READINESS_PATHS.reportJson}\n- ${READINESS_PATHS.reportMarkdown}\n- regenerable; full package diagnostics live here\n\n=== END PACKAGE READINESS SUMMARY ===`;
 }
 
 function markdownCell(value) {
@@ -1730,14 +1770,14 @@ function dominantTaskLabel(pkg) {
   return task ? `${task.task_id} — ${task.title}` : pkg.objective;
 }
 
-function renderNearestTable(result) {
-  const rows = result.registry.nearest_to_ready_queue.map((entry, index) => {
-    const pkg = result.registry.packages.find(({ package_id: packageId }) => packageId === entry.package_id);
-    return `| ${index + 1} | ${packageLink(entry.package_id)} | ${statusIcon(entry.status)} ${entry.status} | ${entry.task_progress.approved}/${entry.task_progress.total} | ${entry.gate_progress.passed}/${entry.gate_progress.total} | **${entry.remaining_obligations}** | ${markdownCell(entry.exit_owner ?? pkg?.owner_application)} |`;
+function renderExecutionSequence(result) {
+  const execution = result.registry.package_execution;
+  if (!execution) return '_La ejecución lineal no fue evaluada en este fixture._';
+  const rows = execution.sequence.map((entry) => {
+    const marker = entry.current ? '**ACTUAL**' : entry.status === 'CLOSED' ? 'CERRADO' : 'PENDIENTE';
+    return `| ${entry.position} | ${packageLink(entry.package_id)} | ${entry.layer} | ${statusIcon(entry.status)} ${entry.status} | ${marker} | ${markdownCell(entry.depends_on_package_ids.join(', ') || 'ninguna explícita')} |`;
   });
-  return rows.length > 0
-    ? `| # | Package | Estado | Tareas | Gates | Faltan | Responsable de salida |\n| -: | --- | --- | ---: | ---: | ---: | --- |\n${rows.join('\n')}`
-    : '_No hay candidatos diagnósticos._';
+  return `| Posición | Package | Capa | Estado | Turno | Depende de |\n| -: | --- | -: | --- | --- | --- |\n${rows.join('\n')}`;
 }
 
 function renderRepositorySummary(packages) {
@@ -1796,9 +1836,11 @@ export function renderReadinessMarkdown(result) {
   const warningRows = result.integrityAudit.warnings.length > 0
     ? result.integrityAudit.warnings.map((warning) => `- 🟡 ${warning}`).join('\n')
     : '- ✅ Sin advertencias estructurales.';
-  const readyMessage = result.registry.implementation_ready_queue.length > 0
-    ? `Hay **${result.registry.implementation_ready_queue.length}** package(s) elegible(s) en IMPLEMENTATION_READY. La cola no selecciona automáticamente; la autorización física sigue siendo obligatoria.`
-    : 'Actualmente **ningún package está IMPLEMENTATION_READY**. La tabla siguiente es proximidad diagnóstica y no autoriza ejecución ni altera la prioridad empresarial.';
+  const execution = result.registry.package_execution ?? null;
+  const current = execution?.current ?? null;
+  const readyMessage = current
+    ? `El turno único corresponde a **${current.package_id}** (${current.position}/${execution.sequence.length}). Su acción exacta es **${current.next_action.type}** sobre **${current.next_action.target}**. Aunque otro package llegue a IMPLEMENTATION_READY, no puede adelantarlo.`
+    : 'La línea ejecutable está completa o no fue evaluada. No existe una selección humana pendiente.';
   const specialTable = special.length > 0
     ? `| Package especial | Objetivo | Estado | Tareas | Gates | Faltan |\n| --- | --- | --- | ---: | ---: | ---: |\n${special.map((pkg) => `| ${packageLink(pkg.package_id)} | ${markdownCell(pkg.objective)} | ${statusIcon(pkg.status)} ${pkg.status} | ${pkg.readiness_progress.task_prerequisites.approved}/${pkg.readiness_progress.task_prerequisites.total} | ${pkg.readiness_progress.gates.passed}/${pkg.readiness_progress.gates.total} | **${pkg.readiness_progress.remaining_obligations}** |`).join('\n')}`
     : '_No hay capacidades especiales declaradas._';
@@ -1827,9 +1869,12 @@ export function renderReadinessMarkdown(result) {
 | Vínculos de tarea aprobados | **${metrics.task_links_approved}/${metrics.task_links_total}** |
 | Vínculos de tarea pendientes | **${metrics.task_links_remaining}** |
 | Packages IMPLEMENTATION_READY | **${result.registry.implementation_ready_queue.length}** |
-| Estado de selección | **${result.registry.package_selection?.state ?? 'NOT_EVALUATED'}** |
-| Responsable de selección | **${result.registry.package_selection?.owner ?? 'OWN-OPS'}** |
-| Package seleccionado | **${result.registry.package_selection?.selected_package_id ?? 'NONE'}** |
+| Modo de ejecución | **${execution?.mode ?? 'NOT_EVALUATED'}** |
+| Selección humana de package | **FALSE** |
+| Package actual | **${current?.package_id ?? 'NONE'}** |
+| Posición actual | **${current ? `${current.position}/${execution.sequence.length}` : `0/${execution?.sequence.length ?? 0}`}** |
+| Acción siguiente | **${current?.next_action.type ?? 'NONE'}** |
+| Packages diferidos fuera de línea | **${execution?.deferred.length ?? 0}** |
 
 ### Estados actuales
 
@@ -1843,16 +1888,21 @@ ${statusRows}
 - ✅ Los 207 GAP-PKG tienen tarea primaria, tarea dominante, runtime, repositorio o estado explícito, propietario y condición de salida.
 - ✅ No existen referencias a tareas desconocidas.
 - ✅ Los contadores de tareas, gates y obligaciones restantes cuadran package por package.
-- ✅ La cola solo admite packages sin blockers y con estado IMPLEMENTATION_READY.
+- ✅ La línea consume dependencias explícitas de DELIV-PKG-015, luego capa y finalmente package_id como desempate estable.
+- ✅ Un package bloqueado conserva el turno; ningún package posterior puede adelantarlo.
 ${warningRows}
 
-## Implementaciones siguientes
+## Ejecución actual
 
 ${readyMessage}
 
-${renderNearestTable(result)}
+${current ? `- **Estado:** \`${current.status}\`\n- **Capa:** \`${current.layer}\`\n- **Acción:** \`${current.next_action.type}\`\n- **Objetivo:** \`${current.next_action.target}\`\n- **Motivo:** ${current.next_action.reason}\n- **Comando:** \`${current.next_action.command}\`` : '- **Acción:** `NONE`'}
 
-> **Regla:** “más cercano” significa menos obligaciones verificables restantes. No equivale a prioridad aprobada ni concede autorización física.
+> **Regla:** solo el package actual puede avanzar. IMPLEMENTATION_READY sigue requiriendo autorización física humana, pero nunca una elección humana entre packages.
+
+## Lista lineal completa
+
+${renderExecutionSequence(result)}
 
 ## Capacidades especiales
 
@@ -1882,8 +1932,10 @@ ${packages.map(renderPackageCard).join('\n\n')}
 - Relaciones de proceso: \`DELIV-PKG-002\`.
 - Tarea dominante y runtime: \`DELIV-PKG-007\` y \`DELIV-PKG-017\`.
 - Tareas primarias y de soporte: matriz \`GAP-CTRL-006\`.
+- Dependencias y capas de ejecución: \`DELIV-PKG-015\`.
 - Un PASS exige evidencia trazable; evidencia ausente se degrada a UNKNOWN y bloquea readiness.
-- La prioridad solo ordena packages ya IMPLEMENTATION_READY.
+- La línea se ordena por dependencias explícitas, capa de implementación y \`package_id\`.
+- Los packages \`NO_EJECUTABLE\` sin orden físico canónico permanecen diferidos y no bloquean la línea activa.
 - IMPLEMENTATION_READY no autoriza ejecución física.
 
 ## Uso
@@ -1891,6 +1943,7 @@ ${packages.map(renderPackageCard).join('\n\n')}
 \`\`\`powershell
 npm run docs:package:readiness
 npm run docs:package:readiness:check
+npm run docs:package:execution:status
 npm run docs:package:readiness -- --package GAP-PKG-001
 \`\`\`
 
@@ -1925,9 +1978,8 @@ function writeDerivedReports(root, result) {
     index_coverage: result.indexCoverage,
     packages: result.registry.packages,
     implementation_ready_queue: result.registry.implementation_ready_queue,
-    package_selection: result.registry.package_selection,
-    selected_package: result.registry.selected_package,
-    recommended_next_package: result.registry.recommended_next_package,
+    package_execution: result.registry.package_execution,
+    current_package: result.registry.current_package,
     nearest_to_ready_queue: result.registry.nearest_to_ready_queue,
     documentation_current: documentationCurrent(result.activeSequence),
   }), 'utf8');
@@ -2033,23 +2085,17 @@ export function scanPackageReadiness({
     capabilityIndex,
     priorityLanes,
   });
-  const packageSelection = supplied.skipPackageSelection
+  const packageExecutionPolicy = supplied.skipPackageExecution || supplied.skipPackageSelection
     ? null
-    : assessPackageSelection(
-      supplied.packageSelectionPolicy ?? readPackageSelectionPolicy(root),
-      physicalRegistry,
-    );
-  const selectedPackage = packageSelection?.selected_package_id
-    ? physicalRegistry.implementation_ready_queue.find(
-      ({ package_id: packageId }) => packageId === packageSelection.selected_package_id,
-    ) ?? null
+    : supplied.packageExecutionPolicy ?? readPackageExecutionPolicy(root);
+  const packageExecution = packageExecutionPolicy
+    ? deriveLinearPackageExecution(physicalRegistry, packageExecutionPolicy)
     : null;
-  const effectiveRegistry = packageSelection
+  const effectiveRegistry = packageExecution
     ? {
       ...physicalRegistry,
-      package_selection: packageSelection,
-      first_eligible_package: physicalRegistry.recommended_next_package,
-      selected_package: selectedPackage,
+      package_execution: packageExecution,
+      current_package: packageExecution.current,
     }
     : physicalRegistry;
   const integrityAudit = auditPackageRegistry({ registry: effectiveRegistry, canonicalCatalog });
@@ -2072,6 +2118,7 @@ export function scanPackageReadiness({
     capabilityIndex,
     canonicalCatalog,
     packageGatePolicy,
+    packageExecutionPolicy,
     packageGateRecords: packageGateResult,
     capabilityResults,
     indexCoverage,
@@ -2144,23 +2191,21 @@ function printCliResult(result, { json = false, packageId = null } = {}) {
       capability_results: result.capabilityResults,
       packages: result.registry.packages,
       implementation_ready_queue: result.registry.implementation_ready_queue,
-      package_selection: result.registry.package_selection,
-      selected_package: result.registry.selected_package,
-      recommended_next_package: result.registry.recommended_next_package,
+      package_execution: result.registry.package_execution,
+      current_package: result.registry.current_package,
       nearest_to_ready_queue: result.registry.nearest_to_ready_queue,
       registry_changed: result.registryChanged,
     }, null, 2));
     return;
   }
   console.log(result.block);
-  const first = result.registry.recommended_next_package;
-  if (first) {
+  const current = result.registry.package_execution?.current ?? null;
+  if (current?.next_action.type === 'AUTHORIZE_PHYSICAL_IMPLEMENTATION') {
     console.log('');
     console.log('PACKAGE IMPLEMENTABLE DETECTED');
-    console.log(first.package_id);
-    console.log(`E5-GATE: PASS (${first.gate_id})`);
+    console.log(current.package_id);
     console.log('BLOCKERS: 0');
-    console.log(`NEXT EXECUTION: ${first.next_execution}`);
+    console.log(`NEXT EXECUTION: ${current.next_action.target}`);
     console.log('PHYSICAL AUTHORIZATION: REQUIRED');
   }
 }

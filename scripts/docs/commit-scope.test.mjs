@@ -20,6 +20,10 @@ test('clasifica fuentes canónicas y herramientas transversales por separado', (
     classifyCommitPath('docs/plan-canonico/modular/package-selection-policy.json'),
     'TRANSVERSAL',
   );
+  assert.equal(
+    classifyCommitPath('docs/plan-canonico/modular/package-execution-policy.json'),
+    'TRANSVERSAL',
+  );
   assert.equal(classifyCommitPath('.gitattributes'), 'TRANSVERSAL');
   assert.equal(classifyCommitPath('.editorconfig'), 'TRANSVERSAL');
   assert.equal(
