@@ -195,8 +195,8 @@ select is(
       'vital'
     )
   ),
-  364::bigint,
-  'governed function universe includes AUTH-DB-036 organization resolver without adding SECURITY DEFINER'
+  372::bigint,
+  'governed function universe includes eight AUTH-DB-035 freshness functions'
 );
 
 select is(
@@ -215,8 +215,8 @@ select is(
     )
       and p.prosecdef
   ),
-  204::bigint,
-  'SECURITY DEFINER total includes only the single AUTH-DB-033 private privileged border'
+  210::bigint,
+  'SECURITY DEFINER total includes six AUTH-DB-035 privileged freshness functions'
 );
 
 select is(
@@ -234,8 +234,8 @@ select is(
     )
       and p.prosecdef
   ),
-  199::bigint,
-  'Vento SECURITY DEFINER total includes only the single AUTH-DB-033 private privileged border'
+  205::bigint,
+  'Vento SECURITY DEFINER total includes six AUTH-DB-035 privileged freshness functions'
 );
 
 select is(
@@ -268,8 +268,8 @@ select is(
       and p.prosecdef
       and p.prorettype <> 'trigger'::regtype
   ),
-  172::bigint,
-  'direct SECURITY DEFINER total includes only the single AUTH-DB-033 private privileged border'
+  176::bigint,
+  'direct SECURITY DEFINER total includes four AUTH-DB-035 direct privileged freshness borders'
 );
 
 select is(
@@ -289,8 +289,8 @@ select is(
       and p.prosecdef
       and p.prorettype = 'trigger'::regtype
   ),
-  32::bigint,
-  'authoritative trigger SECURITY DEFINER cohort remains unchanged at 32'
+  34::bigint,
+  'authoritative trigger SECURITY DEFINER cohort includes two AUTH-DB-035 freshness trigger functions'
 );
 
 with expected(signature) as (

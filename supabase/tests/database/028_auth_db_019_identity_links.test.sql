@@ -205,9 +205,17 @@ select is(
     join pg_catalog.pg_namespace n on n.oid = c.relnamespace
     where n.nspname = 'identity_access'
       and not t.tgisinternal
+      and t.tgname not in (
+        'context_freshness_principals_insert',
+        'context_freshness_principals_update',
+        'context_freshness_principals_delete',
+        'context_freshness_links_insert',
+        'context_freshness_links_update',
+        'context_freshness_links_delete'
+      )
   ),
   0::bigint,
-  'AUTH-DB-019 creates no user triggers in identity_access'
+  'identity_access has no user triggers outside the AUTH-DB-035 allowlist'
 );
 
 -- 15

@@ -86,3 +86,46 @@ $auth_db_033_roles_posture$;
 
 grant vento_access_context_owner to postgres
   with admin false, inherit false, set true;
+
+-- AUTH-DB-035
+-- Isolated owner for private context-freshness state and privileged borders.
+do $auth_db_035_roles$
+begin
+  if not exists (
+    select 1
+    from pg_catalog.pg_roles
+    where rolname = 'vento_context_freshness_owner'
+  ) then
+    create role vento_context_freshness_owner
+      nologin
+      noinherit
+      nosuperuser
+      nocreatedb
+      nocreaterole
+      noreplication
+      nobypassrls;
+  end if;
+end
+$auth_db_035_roles$;
+
+do $auth_db_035_roles_posture$
+begin
+  if not exists (
+    select 1
+    from pg_catalog.pg_roles r
+    where r.rolname = 'vento_context_freshness_owner'
+      and not r.rolcanlogin
+      and not r.rolinherit
+      and not r.rolsuper
+      and not r.rolcreatedb
+      and not r.rolcreaterole
+      and not r.rolreplication
+      and not r.rolbypassrls
+  ) then
+    raise exception 'AUTH_DB_035_FRESHNESS_OWNER_POSTURE_INVALID';
+  end if;
+end
+$auth_db_035_roles_posture$;
+
+grant vento_context_freshness_owner to postgres
+  with admin false, inherit false, set true;
