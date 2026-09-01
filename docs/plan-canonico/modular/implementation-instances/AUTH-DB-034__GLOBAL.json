@@ -113,6 +113,14 @@
     "MATERIALIZATION self_test direct_db_reset=PASS pgtap_043=154/154 full_suite_assertions=710 result=PASS",
     "MATERIALIZATION TREQ_CHANGES=0 04A_CHANGES=0",
     "MATERIALIZATION REMOTE_TARGETS_USED=NO",
-    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO"
+    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO",
+    "SELF_TEST direct_db_reset PASS",
+    "SELF_TEST full_pgTAP PASS files=17 assertions=710",
+    "SELF_TEST AUTH-DB-034 043 PASS assertions=154/154",
+    "SELF_TEST AUTH-DB-035 concurrency_blocker_this_run=NO",
+    "RECOVERY prior_close_failed_at=CHECKPOINT_COMMIT implementation_state_preserved=YES",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO"
   ]
 }
