@@ -2268,7 +2268,705 @@ La identidad exacta de la unidad física se resolverá únicamente mediante el p
 `VISO-AUTH-005 — Administrar roles permitidos por sede`
 
 
-### [ ] VISO-AUTH-005 — Administrar roles permitidos por sede
+### ✅ VISO-AUTH-005 — Administrar roles permitidos por sede
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-004 — Administrar permisos por rol operativo
+**Tarea siguiente:** VISO-AUTH-006 — Administrar roles permitidos por área
+**Tipo de tarea:** documental; definición del contrato administrativo de elegibilidad rol operativo × sede, separado de permisos, áreas, perfiles de trabajador, turnos y autorización efectiva
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VISO deberá administrar la disponibilidad de los doce roles operativos canónicos por sede operativa elegible, sin convertir esa relación territorial en permiso, perfil de trabajador, rol de turno ni autorización final.
+
+La unidad lógica de esta tarea es:
+
+```text
+site_id
++
+operational_role_code
+→
+RELACIÓN EXPLÍCITA DE ELEGIBILIDAD POR SEDE
+```
+
+La regla raíz queda:
+
+```text
+SEDE OPERATIVA ELEGIBLE
++
+OperationalRoleCode CANÓNICO
++
+RELACIÓN ACTIVA ROL × SEDE
+→
+ROL DISPONIBLE PARA SER EVALUADO EN ESA SEDE
+```
+
+Y nunca:
+
+```text
+ROL PERMITIDO EN SEDE
+→ PERMISO CONCEDIDO
+```
+
+ni:
+
+```text
+ROL PERMITIDO EN SEDE
+→ ROL EFECTIVO DEL TRABAJADOR
+```
+
+ni:
+
+```text
+ROL PERMITIDO EN SEDE
+→ AUTORIZACIÓN FINAL
+```
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva y consume, sin reescribir:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-005` — catálogo operativo separado;
+- `AUTH-MOD-007` — sede asignada, sede activa y elegibilidad operativa;
+- `AUTH-MOD-008` — área asignada, área activa y relación sede–área;
+- `AUTH-MOD-009` y `AUTH-MOD-010` — turno publicado y contexto operativo;
+- `AUTH-RBAC-008` a `AUTH-RBAC-019` — matrices de los doce roles operativos;
+- `AUTH-RBAC-025` — dataset operativo canónico;
+- `AUTH-RBAC-027` y `AUTH-RBAC-028` — separación entre carril base y operativo y compatibilidad contextual;
+- `VISO-AUTH-002` — catálogo administrativo de doce roles operativos;
+- `VISO-AUTH-004` — permisos por rol operativo y frontera con la matriz territorial;
+- `SHELL-CON-005` — contrato compartido de roles operativos.
+
+La fuente de identidad del rol continúa siendo `OperationalRoleCode@1.0.0`.
+
+La fuente del catálogo de sedes continúa siendo `public.sites`, pero no todo registro de ese catálogo es una sede operativa elegible.
+
+La administración de VISO no crea nuevos códigos de rol ni nuevos códigos de sede.
+
+---
+
+#### 3. Identidad de la relación por sede
+
+La identidad lógica de una regla de esta tarea es:
+
+```text
+(site_id, operational_role_code)
+```
+
+donde:
+
+- `site_id` identifica una sede operativa elegible;
+- `operational_role_code` pertenece exactamente al catálogo canónico de doce roles;
+- la relación declara elegibilidad territorial a nivel de sede;
+- una misma pareja no puede existir de forma ambigua o duplicada.
+
+No forman parte de la identidad site-level:
+
+- `area_id`;
+- `area_kind`;
+- `employee_id`;
+- `shift_id`;
+- `permission_key`;
+- `is_default`;
+- nombre visible de la sede;
+- etiqueta visible del rol;
+- familia funcional;
+- punto físico de check-in o checkout.
+
+Una etiqueta o nombre visible no sustituye ninguno de los dos identificadores estables.
+
+---
+
+#### 4. Universo de sedes operativas elegibles
+
+Una sede solo puede participar en esta matriz cuando:
+
+1. existe en el catálogo canónico de sedes;
+2. está activa;
+3. es utilizable como sede operativa o laboral;
+4. no es un punto físico usado únicamente para marcación;
+5. no es un entorno aislado de revisión;
+6. no está oculta de la operación;
+7. su identidad es resoluble de forma inequívoca.
+
+El corte remoto vigente contiene exactamente cinco sedes que satisfacen la proyección operativa actualmente utilizada por VISO:
+
+| Código de sede | Sede | Tipo contractual observado |
+| --- | --- | --- |
+| `CENTRO_PROD` | Centro de Producción | `production_center` |
+| `MOLKA_PRINCIPAL` | Molka | `satellite` |
+| `SAUDO` | Saudo | `satellite` |
+| `VENTO_CAFE` | Vento Café | `satellite` |
+| `VENTO_GROUP` | Vento Group | `admin` |
+
+El baseline actual excluye expresamente:
+
+| Código | Motivo de exclusión |
+| --- | --- |
+| `APP-REVIEW` | Entorno aislado de revisión; no es sede laboral operativa ordinaria. |
+| `pickup_camioneta_principal` | Punto físico de marcación; no define la sede operativa ni concede territorio. |
+
+La proyección física `viso_operational_sites` filtra actualmente por sede activa y `operational_visibility = operational`. Esa vista es evidencia AS-IS compatible con este corte, no una autorización para que una futura clasificación desconocida se convierta automáticamente en sede elegible.
+
+Una nueva sede futura deberá primero ser una sede operativa válida según el catálogo y su gobierno antes de poder recibir relaciones rol × sede.
+
+---
+
+#### 5. Matriz inicial de roles permitidos por sede
+
+El baseline documental adopta exclusivamente las dieciséis relaciones activas y únicas observadas en el corte remoto porque:
+
+- todas pertenecen a las cinco sedes operativas elegibles;
+- todas utilizan uno de los doce `OperationalRoleCode`;
+- cubren los doce roles canónicos;
+- no contienen duplicados site-level;
+- son coherentes con las familias y funciones operativas ya aprobadas;
+- no requieren inferir nuevas relaciones.
+
+La matriz queda:
+
+| Sede | Roles operativos permitidos | Cantidad |
+| --- | --- | ---: |
+| `CENTRO_PROD` — Centro de Producción | `bodeguero`; `conductor_logistica`; `produccion_cocina`; `produccion_panaderia`; `produccion_reposteria` | 5 |
+| `MOLKA_PRINCIPAL` — Molka | `operador_integral_satelite` | 1 |
+| `SAUDO` — Saudo | `barista_satelite`; `cajero_satelite`; `cocinero_satelite`; `servicio_salon` | 4 |
+| `VENTO_CAFE` — Vento Café | `barista_satelite`; `cajero_satelite`; `cocinero_satelite`; `mostrador_satelite`; `servicio_salon` | 5 |
+| `VENTO_GROUP` — Vento Group | `gerencia_operativa` | 1 |
+| **Total** | **12 roles canónicos cubiertos** | **16** |
+
+No se agrega ninguna relación adicional por semejanza de nombre, tipo de sede, familia funcional, uso histórico o conveniencia de interfaz.
+
+---
+
+#### 6. Invariantes cuantitativos del baseline
+
+La proyección site-level inicial queda cerrada con:
+
+```text
+sedes operativas elegibles = 5
+relaciones activas rol × sede = 16
+relaciones únicas rol × sede = 16
+roles operativos cubiertos = 12 de 12
+duplicados rol × sede = 0
+sedes operativas sin rol permitido = 0
+relaciones fuera del universo de sedes elegibles = 0
+```
+
+Estos conteos representan el baseline documental de esta tarea.
+
+No son una regla que obligue a conservar para siempre cinco sedes o dieciséis relaciones. Una evolución futura deberá modificar explícitamente la configuración canónica aplicable y conservar trazabilidad; nunca se inferirá automáticamente desde `site_type`, familia de rol o una nueva fila física.
+
+---
+
+#### 7. Reglas por familia y sede
+
+##### 7.1 Operación satélite
+
+Los roles de familia satélite no se habilitan automáticamente en todas las sedes `satellite`.
+
+Cada relación debe existir explícitamente.
+
+Por tanto:
+
+```text
+site_type = satellite
+≠
+todos los roles satélite permitidos
+```
+
+El baseline distingue:
+
+- Molka mediante `operador_integral_satelite`;
+- Saudo mediante cuatro roles explícitos;
+- Vento Café mediante cinco roles explícitos.
+
+`operador_integral_satelite` no es la unión automática de los demás roles y no convierte una sede pequeña en una superficie de privilegio amplio.
+
+##### 7.2 Producción
+
+Los roles `produccion_cocina`, `produccion_panaderia` y `produccion_reposteria` están permitidos por sede únicamente en `CENTRO_PROD` dentro del baseline.
+
+La especialidad de área permanece separada y será gobernada por `VISO-AUTH-006`.
+
+##### 7.3 Logística
+
+`bodeguero` y `conductor_logistica` están permitidos por sede en `CENTRO_PROD` dentro del baseline.
+
+La relación de `conductor_logistica` con Centro de Producción no convierte sus puntos físicos de entrada o salida en sedes operativas, ni le concede operación organizacional global.
+
+##### 7.4 Coordinación
+
+`gerencia_operativa` está permitida por sede en `VENTO_GROUP` dentro del baseline.
+
+Ese rol continúa sin ser:
+
+- rol base;
+- administrador global;
+- bypass;
+- wildcard;
+- sustituto de `gerente` o `gerente_general`.
+
+Una relación futura con otra sede requeriría una configuración explícita; no se hereda por la familia `gerencia`.
+
+---
+
+#### 8. Relación entre sede y área
+
+Esta tarea define únicamente el nivel de sede.
+
+La dependencia hacia `VISO-AUTH-006` queda:
+
+```text
+ROL PERMITIDO EN ÁREA
+→ requiere
+ROL PERMITIDO EN LA SEDE PADRE
+```
+
+Por tanto:
+
+```text
+area_id válido
++
+rol permitido en área
++
+rol NO permitido en sede
+→ configuración inválida
+```
+
+Una relación site-level no demuestra, por sí sola, que el rol pueda operar en cualquier área de la sede.
+
+Para roles que normalmente requieren área, la relación por sede es solo el dominio padre sobre el cual `VISO-AUTH-006` podrá definir compatibilidad más específica.
+
+Para roles que pueden operar site-wide, la ausencia de `area_id` no significa organización completa ni todas las sedes.
+
+---
+
+#### 9. `is_default` no es autoridad site-level
+
+La elegibilidad rol × sede no define un rol predeterminado para todos los trabajadores de la sede.
+
+El estado físico actual contiene `is_default`, pero su unicidad vigente está asociada a sede + área y no a la pareja lógica site-level de esta tarea.
+
+Por tanto:
+
+```text
+rol permitido en sede
+≠ rol default de la sede
+≠ rol default del trabajador
+≠ rol del turno
+```
+
+`VISO-AUTH-005` no asigna semántica contractual nueva a `is_default`.
+
+La selección predeterminada y la asignación efectiva deberán permanecer en las tareas de área, perfil y turno que correspondan, sin convertir un default de interfaz en autorización.
+
+---
+
+#### 10. Efecto de una relación activa o inactiva
+
+Una relación activa rol × sede significa únicamente que el rol es elegible para ser usado en esa sede dentro de una configuración operativa válida.
+
+Una relación inactiva no podrá utilizarse para crear una nueva asignación operativa que dependa de esa elegibilidad.
+
+Cambiar la disponibilidad no autoriza a reescribir silenciosamente:
+
+- turnos históricos;
+- asistencia histórica;
+- eventos auditados;
+- decisiones de autorización históricas.
+
+Los turnos abiertos, futuros o todavía no ejecutados que queden incompatibles deberán ser revalidados por las tareas de turno y compatibilidad correspondientes; esta tarea no define cancelación automática ni mutación retroactiva.
+
+---
+
+#### 11. Validación de una mutación administrativa
+
+Una modificación de la matriz site-level solo puede considerarse válida cuando:
+
+1. el `site_id` existe;
+2. la sede está activa y es operativamente elegible;
+3. la sede no es APP-REVIEW, punto exclusivo de marcación, superficie técnica aislada ni registro oculto para operación;
+4. el rol pertenece a los doce `OperationalRoleCode`;
+5. el rol está vigente;
+6. no se usa `propietario_admin`;
+7. no se usa un rol base ni oficio legacy;
+8. no existe una relación duplicada para la misma pareja rol × sede;
+9. el cambio no modifica permisos del rol;
+10. el cambio no crea una relación de área;
+11. el actor administrativo tiene autoridad explícita y territorio suficiente;
+12. el servidor revalida la sede y el rol, sin confiar en valores del cliente;
+13. la mutación puede conservar trazabilidad;
+14. cualquier contradicción con el catálogo o el territorio falla cerrada.
+
+No se habilitan roles por prefijo, familia, tipo de sede o coincidencia de etiquetas.
+
+---
+
+#### 12. Autoridad administrativa y territorio del administrador
+
+La relación rol × sede es configuración de seguridad operacional.
+
+Su administración debe cumplir simultáneamente:
+
+```text
+CAPACIDAD ADMINISTRATIVA EXPLÍCITA
++
+ACTOR ADMINISTRATIVO VÁLIDO
++
+SEDE OBJETIVO DENTRO DE SU COBERTURA
++
+VALIDACIÓN EN SERVIDOR
+→ MUTACIÓN POSIBLE
+```
+
+El rol base `gerente` no concede administración global por su nombre.
+
+La cobertura del administrador y la sede objetivo deberán resolverse antes de escribir.
+
+El catálogo vigente no contiene una clave específica dedicada a “administrar roles permitidos por sede”. Esta tarea no inventa una.
+
+La vinculación definitiva de estas mutaciones a una capacidad administrativa canónica y a su segregación pertenece a `VISO-AUTH-019 — Restringir quién administra seguridad`.
+
+Condición exacta de salida de ese carryover:
+
+```text
+la implementación física no podrá habilitar mutaciones site-role
+hasta que cada escritura tenga
+capacidad administrativa explícita
++
+territorio del actor validado
++
+autorización de servidor
++
+auditoría
+```
+
+La ausencia de esa vinculación no bloquea la definición documental de la matriz, pero sí bloquea declarar conforme una futura superficie física de escritura.
+
+---
+
+#### 13. Consumo por planificación y turnos
+
+La matriz por sede es un prerrequisito de elegibilidad para la programación operativa.
+
+`VISO-AUTH-010` solo podrá asignar un rol operativo a un turno cuando:
+
+1. la sede del turno sea operativa y válida;
+2. exista una relación activa rol × sede;
+3. si el rol requiere área, exista además compatibilidad de área definida por `VISO-AUTH-006`;
+4. el trabajador sea elegible para la sede;
+5. se satisfagan las demás condiciones de planificación.
+
+La relación rol × sede no asigna el rol al trabajador.
+
+`VISO-AUTH-011` y `VISO-AUTH-012` deberán detectar turnos sin rol o incompatibles con la configuración territorial vigente, sin reinterpretar esta matriz como permiso.
+
+---
+
+#### 14. Reconciliación AS-IS de Supabase
+
+El corte remoto read-only observado contiene:
+
+```text
+public.site_operational_roles
+filas activas = 16
+filas inactivas = 0
+pares site_id + role_code únicos = 16
+roles cubiertos = 12
+sedes operativas cubiertas = 5 de 5
+filas fuera de sedes operativas = 0
+```
+
+La tabla física combina actualmente:
+
+```text
+site_id
+area_id opcional
+role_code
+is_default
+is_active
+```
+
+y posee índices de unicidad tanto para sede + área + rol como para sede + rol.
+
+Esta tarea canonicaliza únicamente la relación site-level:
+
+```text
+site_id + operational_role_code
+```
+
+No convierte el shape físico actual, el índice site + role, el campo `area_id` ni la semántica de `is_default` en contrato de esta tarea.
+
+La materialización de `VISO-AUTH-006` deberá reconciliar el nivel área sin depender de una restricción física accidental que impida representar el contrato aprobado.
+
+---
+
+#### 15. Reconciliación AS-IS de catálogo y RPC
+
+El runtime observado todavía presenta una diferencia entre catálogo físico y catálogo canónico:
+
+```text
+vento_operational_roles_v1 = 13 roles activos
+OperationalRoleCode canónico = 12 roles
+diferencia legacy = propietario_admin
+```
+
+`propietario_admin` permanece excluido de esta tarea aunque la vista física lo muestre.
+
+La RPC observada:
+
+```text
+upsert_site_operational_role(uuid, uuid, text, boolean, boolean)
+```
+
+valida que:
+
+- exista `site_id`;
+- el rol físico exista y esté activo;
+- un `area_id` indicado pertenezca a la sede;
+- el default sea único en la combinación física correspondiente.
+
+Sin embargo, el corte observado no demuestra dentro de esa función:
+
+- pertenencia al catálogo canónico de doce roles;
+- elegibilidad operacional de la sede;
+- exclusión de APP-REVIEW o puntos de marcación;
+- capacidad administrativa exacta del actor;
+- límite territorial del administrador.
+
+Además, la función es `SECURITY DEFINER` y el rol `authenticated` conserva permiso de ejecución en el corte observado.
+
+Por tanto, esa RPC es evidencia AS-IS y no autoridad TO-BE para esta tarea.
+
+---
+
+#### 16. Reconciliación AS-IS de seguridad y VISO
+
+La política RLS observada para administrar `site_operational_roles` permite actualmente la operación a condiciones nominales de owner, global manager o manager.
+
+Eso no demuestra todavía el requisito canónico de:
+
+```text
+capacidad administrativa explícita
++
+territorio autorizado del actor
+```
+
+La superficie actual de VISO `/operations/site-roles`:
+
+- carga `viso_operational_sites`;
+- carga `vento_operational_roles_v1`;
+- carga `vento_site_operational_role_matrix_v1`;
+- crea mediante `upsert_site_operational_role`;
+- actualiza y elimina directamente sobre `site_operational_roles`;
+- usa `requireAppAccess` para acceso general a VISO.
+
+La superficie es evidencia funcional existente.
+
+No se declara conforme a este contrato por su sola existencia porque todavía deberá demostrar:
+
+- exclusión contractual de `propietario_admin`;
+- validación explícita de autoridad administrativa;
+- límite territorial por escritura;
+- separación entre nivel sede y nivel área;
+- coherencia de create, update y delete;
+- fallo cerrado equivalente entre UI, Server Action, RPC y RLS.
+
+Los propietarios documentales de la restricción administrativa permanecen en `VISO-AUTH-019`; las protecciones de escritura y territorio permanecen además en las tareas canónicas de servidor y base de datos ya existentes.
+
+---
+
+#### 17. Fallo cerrado
+
+La administración deberá rechazar o bloquear:
+
+| Caso | Resultado |
+| --- | --- |
+| Sede inexistente | Rechazar |
+| Sede inactiva | Rechazar |
+| APP-REVIEW | Rechazar como sede operativa ordinaria |
+| Punto exclusivo de check-in o checkout | Rechazar como sede operativa |
+| Sede oculta o no operativa | Rechazar |
+| Rol desconocido o inactivo | Rechazar |
+| `propietario_admin` | Rechazar |
+| Rol base u oficio legacy | Rechazar |
+| Par rol × sede duplicado o ambiguo | Rechazar |
+| Inferencia automática por familia o `site_type` | Rechazar |
+| Área que intenta introducir un rol no permitido en la sede | Rechazar |
+| Actor sin capacidad administrativa explícita | Rechazar |
+| Sede objetivo fuera de la cobertura del administrador | Rechazar |
+| Cliente que envía una sede o rol no revalidado | Rechazar |
+| Auditoría o trazabilidad requerida no persistible | No guardar |
+| Discrepancia entre UI y servidor | Prevalece servidor; no guardar |
+| Versión contractual incompatible | Rechazar |
+
+---
+
+#### 18. Handoff contractual hacia VISO-AUTH-006
+
+`VISO-AUTH-006` recibe un dominio padre cerrado:
+
+```text
+5 sedes operativas elegibles en el baseline
++
+16 relaciones site-level activas y únicas
++
+12 OperationalRoleCode cubiertos
++
+0 pares inferidos
++
+0 relaciones fuera del universo operativo
+```
+
+La tarea siguiente deberá administrar compatibilidad por área sin alterar la matriz site-level definida aquí.
+
+Reglas de handoff:
+
+1. toda relación de área debe tener una relación site-level padre válida;
+2. un área no puede habilitar un rol que la sede no permite;
+3. `area_id = null` no significa todas las áreas ni todas las sedes;
+4. la existencia de un rol site-wide debe conservar una semántica explícita y no global;
+5. los defaults físicos actuales no se interpretan como autorización;
+6. la identidad de los doce roles permanece intacta;
+7. los 240 grants de `VISO-AUTH-004` permanecen intactos.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea concreta en VISO reglas de elegibilidad territorial, administración explícita, compatibilidad de sede, catálogo operativo y fallo cerrado que ya están protegidas por requisitos vigentes. No introduce una nueva identidad de rol, una nueva identidad de sede, una modalidad de autorización, un scope contractual ni una regla empresarial adicional que requiera ampliar el registro.
+
+---
+
+#### 20. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, esta tarea reutiliza la cobertura vigente:
+
+- `TREQ-AUTH-001` — un nombre o lista de roles no concede autorización final;
+- `TREQ-AUTH-004` — todos los evaluadores deben producir decisiones coherentes para el mismo contexto;
+- `TREQ-AUTH-007` — administración de roles operativos y disponibilidad por sede o área exige capacidad administrativa explícita y territorio autorizado;
+- `TREQ-AUTH-008` — operación exige contexto válido y compatibilidad de sede y área;
+- `TREQ-AUTH-009` — la sede y el área efectivas deben resolverse determinísticamente y los cruces territoriales se deniegan;
+- `TREQ-AUTH-010` — las matrices operativas preservan segregación de funciones;
+- `TREQ-SHELL-041` — el catálogo operativo conserva exactamente doce roles y excluye `propietario_admin`;
+- `TREQ-VISO-001` — la configuración administrativa de VISO debe producir el mismo resultado consumido por las aplicaciones operativas.
+
+Esta trazabilidad no cambia estado, contenido, paquete, evidencia ni secuencia de ningún requisito.
+
+---
+
+#### 21. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea aún no fue insertada ni validada dentro de la rama documental local. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, topología, políticas, VISO-AUTH-002/004, modelo territorial, catálogo de roles, catálogo de permisos, VISO `/operations/site-roles` y el corte read-only de sedes, matriz site-role, RPC, RLS y catálogo operativo en Supabase. |
+| OPERATIVA | NOT_APPLICABLE | No se modifican relaciones site-role, trabajadores, turnos, permisos efectivos ni operación real durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, `site_operational_roles`, RPC, RLS, contratos, migraciones ni datos. |
+
+---
+
+#### 22. Criterios de aceptación
+
+- [ ] La relación site-level se identifica por `site_id + operational_role_code`.
+- [ ] Se administran exclusivamente los doce `OperationalRoleCode` canónicos.
+- [ ] `propietario_admin`, roles base y oficios legacy quedan excluidos.
+- [ ] El baseline contiene exactamente cinco sedes operativas elegibles.
+- [ ] APP-REVIEW y el punto de marcación observado quedan fuera del universo de sedes operativas ordinarias.
+- [ ] El baseline contiene exactamente dieciséis pares activos y únicos rol × sede.
+- [ ] Los dieciséis pares cubren los doce roles canónicos.
+- [ ] Las cinco sedes operativas del baseline tienen al menos un rol permitido.
+- [ ] No existe ninguna relación del baseline fuera del universo de sedes operativas.
+- [ ] `CENTRO_PROD` conserva cinco roles; `MOLKA_PRINCIPAL` uno; `SAUDO` cuatro; `VENTO_CAFE` cinco; `VENTO_GROUP` uno.
+- [ ] Ningún rol se habilita automáticamente por familia o `site_type`.
+- [ ] `operador_integral_satelite` no se convierte en unión automática de roles.
+- [ ] `gerencia_operativa` no se convierte en administrador global ni bypass.
+- [ ] La relación de `conductor_logistica` no convierte un punto de check-in en sede operativa.
+- [ ] Una relación site-level no concede permisos.
+- [ ] Una relación site-level no asigna trabajadores.
+- [ ] Una relación site-level no asigna el rol efectivo de un turno.
+- [ ] Una relación de área futura exige una relación site-level padre válida.
+- [ ] `is_default` no adquiere autoridad site-level en esta tarea.
+- [ ] La mutación exige autoridad administrativa explícita y territorio suficiente.
+- [ ] La ausencia actual de una clave dedicada a esta administración no produce una clave inventada.
+- [ ] `VISO-AUTH-019` conserva la propiedad de vincular las mutaciones a la autoridad administrativa canónica antes de habilitar escritura conforme.
+- [ ] La RPC y RLS AS-IS no se declaran conformes por su sola existencia.
+- [ ] La pantalla `/operations/site-roles` no se declara implementación canónica completa por su sola existencia.
+- [ ] `VISO-AUTH-006` recibe exactamente el dominio site-level y no puede ampliarlo por inferencia.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 23. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica `/operations/site-roles`;
+- modifica `/operations/preview`;
+- modifica `@vento/contracts`;
+- modifica `operational-roles.json`;
+- modifica `operational-role-grants@1.0.0`;
+- modifica `public.sites`;
+- modifica `public.operational_roles`;
+- modifica `public.site_operational_roles`;
+- modifica `public.vento_operational_roles_v1`;
+- modifica `public.vento_site_operational_role_matrix_v1`;
+- modifica `public.upsert_site_operational_role`;
+- modifica RLS, RPC, triggers o grants PostgreSQL;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- crea roles operativos;
+- crea sedes;
+- crea permisos;
+- crea scopes;
+- administra grants operativos;
+- administra roles permitidos por área;
+- administra perfiles operativos por trabajador;
+- asigna sedes o áreas a trabajadores;
+- asigna roles a turnos;
+- crea excepciones individuales;
+- crea denegaciones;
+- ejecuta simulaciones;
+- define quién administra seguridad fuera del carryover reservado a `VISO-AUTH-019`;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la futura unidad física se resolverá únicamente mediante el package y gate aplicables.
+
+---
+
+#### 24. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-004 — Administrar permisos por rol operativo`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-005 — Administrar roles permitidos por sede`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-006 — Administrar roles permitidos por área`
+
+
 ### [ ] VISO-AUTH-006 — Administrar roles permitidos por área
 ### [ ] VISO-AUTH-007 — Administrar perfiles operativos por trabajador
 ### [ ] VISO-AUTH-008 — Administrar sedes asignadas
