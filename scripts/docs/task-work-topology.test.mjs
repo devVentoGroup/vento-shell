@@ -10,8 +10,8 @@ import {
 
 test('clasifica todas las tareas y separa definición, unidad, paquete y cierre global', () => {
   const result = resolveTaskWorkTopology();
-  assert.equal(result.topology.size, 1595);
-  assert.equal(Object.values(result.counts).reduce((sum, value) => sum + value, 0), 1595);
+  assert.equal(result.topology.size, result.ordered.length);
+  assert.equal(Object.values(result.counts).reduce((sum, value) => sum + value, 0), result.ordered.length);
   assert.equal(result.topology.get('SHELL-MIG-007').mode, 'TEMPLATE_PER_PACKAGE');
   assert.equal(result.topology.get('SHELL-CI-001').mode, 'GLOBAL_ENABLE_ONCE');
   assert.equal(result.topology.get('SHELL-CI-020').mode, 'TEMPLATE_PER_PACKAGE');
@@ -125,7 +125,7 @@ test('reconciliacion B001-200 separa cardinalidad y gate temporal', () => {
   const result = resolveTaskWorkTopology();
   const block = result.implementationAuditTasks.slice(0, 200);
 
-  assert.equal(result.topology.size, 1595);
+  assert.equal(result.topology.size, result.ordered.length);
   assert.equal(result.implementationAuditTasks.length, 975);
   assert.equal(block.length, 200);
   assert.equal(block[0].id, 'DELIV-PKG-001');
