@@ -12417,4 +12417,1206 @@ ANIMA-UX-016 no:
 `ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad`
 
 
-### [ ] ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
+### ✅ ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
+**Tarea siguiente:** VISO-AUTH-001 — Crear catálogo administrativo de roles base
+**Tipo de tarea:** documental; diseño UX TO-BE del ciclo editorial completo de novedades internas de ANIMA, separando lectura personal de administración y definiendo audiencia persistente, publicación, edición, reenvío, archivo, vigencia, notificación, visibilidad, auditoría y fallback sin materialización física
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** ninguno durante esta tarea
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Diseñar el ciclo TO-BE completo de las novedades internas de ANIMA para que una comunicación laboral tenga una identidad persistente, una audiencia de lectura inequívoca, un estado editorial comprensible y una relación explícita con las notificaciones que se envían para anunciarla.
+
+El diseño debe cerrar de extremo a extremo las decisiones que el estado AS-IS deja mezcladas o incompletas:
+
+1. quién puede leer una novedad;
+2. quién puede administrarla;
+3. cómo se define y persiste su audiencia;
+4. cuándo una novedad existe como borrador y cuándo queda publicada;
+5. cómo se modifica sin perder historia;
+6. cómo se reenvía una notificación sin cambiar silenciosamente la visibilidad;
+7. cómo se archiva sin borrar la evidencia editorial;
+8. cómo se limita su vigencia;
+9. cómo se relacionan audiencia de lectura y audiencia de notificación;
+10. qué ocurre si el canal push falla o no está disponible;
+11. cómo se comporta la pantalla en modo fallback o solo lectura;
+12. qué evidencia debe quedar disponible para auditoría y soporte.
+
+La tarea define el contrato UX y funcional. No implementa tablas, migraciones, Edge Functions, RLS, RPC, rutas, componentes, cron, notificaciones productivas ni despliegues.
+
+---
+
+#### 2. Handoff recibido y decisiones preservadas
+
+Esta tarea consume sin reabrir las decisiones ya aprobadas de ANIMA y de la auditoría E1.
+
+De `ANIMA-UX-003` recibe la separación obligatoria entre:
+
+```text
+TRABAJADOR
+→ leer novedades aplicables
+
+ADMINISTRACIÓN ANIMA
+→ crear, editar, definir audiencia, publicar, archivar y notificar
+```
+
+De `ANIMA-UX-016` recibe la distinción entre notificación y fuente de verdad:
+
+```text
+NOTIFICACIÓN
+≠
+HECHO EMPRESARIAL AUTORITATIVO
+```
+
+De la auditoría de código recibe cuatro brechas ya propietarias de este cierre:
+
+- la audiencia elegida al crear una novedad se usa para una notificación puntual, pero no queda demostrada como audiencia persistente de lectura;
+- la audiencia no se recupera ni se modifica de forma explícita al editar;
+- la eliminación observada es física y no demuestra archivo ni historial editorial;
+- el modo fallback permite lectura local, pero conserva una experiencia de administración que no puede completar sus mutaciones de forma coherente.
+
+La tarea no crea una fuente de verdad paralela ni cambia los propietarios canónicos de autorización, identidad, contexto o notificaciones.
+
+---
+
+#### 3. Principio rector
+
+La novedad es primero un objeto editorial persistente y después, opcionalmente, el origen de una notificación.
+
+```text
+NOVEDAD PERSISTIDA
++
+REVISIÓN EDITORIAL
++
+AUDIENCIA DE LECTURA PERSISTIDA
++
+ESTADO DE PUBLICACIÓN
++
+VIGENCIA
+=
+VISIBILIDAD
+
+VISIBILIDAD VÁLIDA
++
+DECISIÓN EXPLÍCITA DE NOTIFICAR
++
+CANAL DISPONIBLE
+=
+INTENTO DE NOTIFICACIÓN
+```
+
+Por tanto:
+
+```text
+AUDIENCIA DE NOTIFICACIÓN
+NO DEFINE POR SÍ SOLA
+AUDIENCIA DE LECTURA
+```
+
+Y también:
+
+```text
+PUSH ENVIADO
+NO CONVIERTE
+UNA NOVEDAD EN PUBLICADA
+```
+
+La publicación debe quedar persistida y ser legible por la audiencia autorizada aunque el proveedor de notificaciones falle.
+
+---
+
+#### 4. Dos experiencias separadas
+
+El ciclo queda dividido en dos experiencias funcionales con datos compartidos, pero intenciones distintas.
+
+| Experiencia | Actor | Intención principal | Acciones ordinarias |
+| --- | --- | --- | --- |
+| `LECTOR_ANIMA` | trabajador autenticado | consultar comunicaciones vigentes que realmente le aplican | listar, abrir, leer, refrescar |
+| `EDITOR_ANIMA` | actor con capacidad administrativa efectiva | gobernar el ciclo editorial | crear borrador, definir audiencia, publicar, editar, reenviar, archivar, consultar historia |
+
+La experiencia del trabajador no muestra controles editoriales por tener un rol textual elevado.
+
+La experiencia administrativa no adquiere autoridad por estar dentro de ANIMA. Cada acción vuelve a resolver capacidad, alcance y condiciones de servidor.
+
+La materialización física podrá usar una superficie administrativa separada, un modo administrativo inequívoco o un handoff compatible con `ANIMA-UX-003`, pero nunca una única pantalla de lectura con botones administrativos mezclados como contrato final.
+
+---
+
+#### 5. Estado AS-IS observado
+
+La implementación vigente demuestra un ciclo parcial:
+
+1. `/announcements` carga novedades remotas activas o usa una lista local de fallback;
+2. el cliente considera administradores a `propietario`, `gerente_general` y `gerente` mediante strings locales;
+3. crear inserta inmediatamente una fila activa y asigna el instante actual como publicación;
+4. después de insertar, el cliente invoca `announcement-notify`;
+5. durante creación pueden seleccionarse sedes y roles;
+6. esos filtros se envían al notificador, pero no se persisten como parte de la novedad observada;
+7. editar modifica título, cuerpo y etiqueta, sin recuperar ni editar audiencia;
+8. editar no define reenvío;
+9. eliminar ejecuta borrado físico de la fila;
+10. no se observa un estado de borrador, archivo, vigencia o historia de revisiones en la experiencia;
+11. el fallback local conserva lectura, pero crear o editar se rechaza después de abrir la interacción;
+12. el flujo de eliminación no aplica la misma guarda de fallback;
+13. la función de notificación resuelve destinatarios por sedes y roles y envía a tokens activos;
+14. el tipo de notificación `announcement` emitido por el productor no tiene un destino de respuesta registrado en la navegación móvil observada.
+
+Estos hallazgos describen el AS-IS. No se convierten automáticamente en contrato TO-BE.
+
+---
+
+#### 6. Identidad estable de la novedad
+
+Cada novedad conserva una identidad empresarial estable durante todo su ciclo.
+
+Conceptualmente:
+
+```text
+ANNOUNCEMENT_ID
+→ identidad de la comunicación
+
+REVISION
+→ versión editorial de contenido, audiencia, vigencia y metadata publicable
+
+EVENTO EDITORIAL
+→ hecho que explica creación, publicación, edición, reenvío o archivo
+```
+
+Editar una novedad publicada no debe crear otra identidad de comunicación únicamente para conservar historial.
+
+La identidad estable permite correlacionar:
+
+- lectura;
+- revisiones;
+- audiencia vigente;
+- notificaciones;
+- archivo;
+- soporte;
+- auditoría.
+
+No se exponen identificadores internos al trabajador cuando no aportan valor de uso.
+
+---
+
+#### 7. Estados editoriales canónicos
+
+El ciclo mínimo utiliza tres estados editoriales persistentes:
+
+| Estado | Significado | Visible al trabajador | Notificable |
+| --- | --- | --- | --- |
+| `BORRADOR` | contenido todavía no publicado | NO | NO |
+| `PUBLICADA` | revisión vigente publicada y dentro de sus condiciones de visibilidad | SÍ, si la audiencia aplica | SÍ, mediante acción explícita y segura |
+| `ARCHIVADA` | publicación retirada del feed activo sin destruir su historia | NO | NO |
+
+La condición `VENCIDA` es un estado de visibilidad derivado de una publicación cuya vigencia terminó. No exige convertir el historial en otra identidad ni borrar la publicación.
+
+Esta tarea no introduce publicación programada futura como requisito. La vigencia comienza al publicar y puede tener un fin opcional.
+
+---
+
+#### 8. Transiciones editoriales
+
+Las transiciones quedan:
+
+```text
+CREAR
+→ BORRADOR
+
+BORRADOR
+→ EDITAR BORRADOR
+→ PUBLICAR
+→ ARCHIVAR / RETIRAR BORRADOR SEGÚN POLÍTICA DE CONSERVACIÓN
+
+PUBLICADA
+→ EDITAR COMO NUEVA REVISIÓN
+→ REENVIAR NOTIFICACIÓN
+→ ARCHIVAR
+→ VENCER POR FIN DE VIGENCIA
+
+ARCHIVADA
+→ CONSULTAR HISTORIA
+→ REPUBLICAR SOLO MEDIANTE UNA NUEVA REVISIÓN Y NUEVA DECISIÓN EXPLÍCITA
+```
+
+No existe una transición ordinaria:
+
+```text
+PUBLICADA
+→ DELETE FÍSICO
+```
+
+El borrado físico, si alguna obligación futura lo permite, pertenece al lifecycle propietario de información y retención, no al control ordinario de Novedades.
+
+---
+
+#### 9. Separación entre guardar y publicar
+
+Guardar contenido no equivale a publicar.
+
+La experiencia administrativa debe permitir preparar una comunicación sin exponerla inmediatamente.
+
+```text
+GUARDAR BORRADOR
+→ persiste contenido de trabajo
+→ no crea visibilidad
+→ no dispara notificación
+
+PUBLICAR
+→ valida contenido + audiencia + vigencia + autorización
+→ persiste la revisión publicable
+→ activa visibilidad
+→ opcionalmente inicia notificación
+```
+
+Esta separación elimina el acoplamiento AS-IS en el que crear una fila activa y notificar ocurren como una sola intención visible.
+
+---
+
+#### 10. Modelo de audiencia de lectura
+
+Toda novedad publicada debe tener una audiencia de lectura persistida y comprensible.
+
+La audiencia puede ser:
+
+```text
+GLOBAL
+```
+
+o:
+
+```text
+SEGMENTADA
+```
+
+`GLOBAL` significa el universo laboral elegible dentro de la organización y contexto autorizados por los contratos propietarios.
+
+`SEGMENTADA` utiliza únicamente dimensiones de identidad y contexto que el actor administrador esté autorizado a usar y que el servidor pueda resolver de forma confiable.
+
+La ausencia de filtros no se interpreta silenciosamente de dos maneras distintas. La interfaz debe indicar expresamente cuándo la decisión es `Todos los trabajadores elegibles`.
+
+---
+
+#### 11. Dimensiones de segmentación
+
+El contrato admite conceptualmente estas dimensiones cuando exista una fuente canónica y una autorización suficiente:
+
+- sede;
+- rol o función laboral elegible;
+- trabajador específico.
+
+La materialización no está obligada a exponer las tres desde la primera versión si alguna dimensión carece todavía de selector autorizado y confiable.
+
+Regla de interfaz:
+
+```text
+CONTROL VISIBLE
+→ dimensión realmente disponible
+
+CONTROL NO IMPLEMENTADO
+→ no se nombra como si existiera
+```
+
+Por tanto, el texto observado `Seleccionar sede o trabajador` no es válido si la interfaz materializada solo ofrece sede y rol.
+
+---
+
+#### 12. Semántica de combinación de filtros
+
+La audiencia segmentada debe tener semántica determinista y visible.
+
+Regla inicial:
+
+- varios valores dentro de la misma dimensión se combinan como alternativas válidas;
+- dimensiones diferentes se combinan como condiciones simultáneas;
+- una dimensión vacía no restringe por esa dimensión;
+- todas las dimensiones vacías equivalen únicamente a `GLOBAL` cuando el administrador lo haya confirmado de forma explícita.
+
+Ejemplo conceptual:
+
+```text
+SEDES = [Centro, Satélite A]
+ROLES = [Barista, Cajero]
+
+AUDIENCIA
+=
+(trabaja en Centro O Satélite A)
+Y
+(es Barista O Cajero)
+```
+
+La interfaz debe mostrar un resumen humano antes de publicar y no obligar al administrador a inferir operadores booleanos ocultos.
+
+---
+
+#### 13. Audiencia y territorio del administrador
+
+Definir audiencia es una acción administrativa y no puede ampliar el territorio del actor.
+
+Antes de ofrecer opciones o publicar se debe resolver:
+
+1. actor efectivo;
+2. capacidad administrativa aplicable;
+3. alcance territorial y laboral permitido;
+4. opciones de sede, rol o trabajador que realmente pueda administrar;
+5. intersección entre la audiencia solicitada y el universo autorizable.
+
+Un selector no debe cargar globalmente sedes, roles o trabajadores para luego ocultarlos visualmente.
+
+Un valor fuera de alcance debe ser rechazado por servidor aunque haya sido manipulado desde el cliente.
+
+---
+
+#### 14. Persistencia de audiencia
+
+La regla de audiencia que produjo una publicación forma parte de la revisión editorial.
+
+Debe conservarse de forma suficiente para responder posteriormente:
+
+- qué alcance se publicó;
+- qué filtros estaban vigentes;
+- quién los definió;
+- cuándo se publicaron;
+- qué revisión los contenía;
+- si fueron modificados después;
+- qué audiencia corresponde a la revisión actualmente visible.
+
+No es suficiente conservar únicamente una lista efímera en memoria del formulario ni el conjunto de tokens que recibió un push.
+
+---
+
+#### 15. Evaluación de visibilidad al leer
+
+La lectura de la novedad se decide contra la publicación vigente, no contra el hecho de haber recibido una notificación.
+
+Un trabajador puede leer una novedad cuando simultáneamente:
+
+1. la novedad está `PUBLICADA`;
+2. su vigencia actual la mantiene visible;
+3. no está archivada;
+4. la identidad laboral del actor coincide con la audiencia persistida;
+5. la autorización y el alcance de lectura continúan siendo válidos;
+6. la fuente de datos puede demostrar ese resultado.
+
+La restricción debe aplicarse en la frontera propietaria antes de entregar contenido que el actor no deba conocer.
+
+No es suficiente descargar todas las novedades y ocultarlas en el cliente.
+
+---
+
+#### 16. Audiencia dinámica y evidencia histórica
+
+La audiencia persistida representa una regla de elegibilidad, no una afirmación eterna de pertenencia de cada trabajador.
+
+Al leer se utiliza el contexto laboral vigente conforme al contrato propietario.
+
+Por tanto, un cambio posterior de sede, rol, vínculo o estado puede cambiar la elegibilidad para una novedad todavía vigente.
+
+A la vez, la auditoría debe conservar:
+
+- la regla de audiencia de cada revisión;
+- el contexto necesario para explicar cada publicación;
+- el conjunto o resumen resoluble de destinatarios de cada intento de notificación cuando corresponda.
+
+La historia de notificación no sustituye la regla de visibilidad actual.
+
+---
+
+#### 17. Audiencia de notificación
+
+La audiencia de notificación es una proyección de la audiencia de lectura, no un segundo universo independiente.
+
+Regla:
+
+```text
+DESTINATARIOS DE PUSH
+⊆
+TRABAJADORES ELEGIBLES PARA LEER LA REVISIÓN PUBLICADA
+```
+
+La ausencia de permiso del sistema operativo, token activo o canal disponible puede reducir la audiencia de notificación sin reducir la audiencia de lectura.
+
+No se permite notificar deliberadamente a una persona que no pueda abrir la comunicación por su audiencia vigente.
+
+La decisión de no enviar push tampoco oculta la novedad dentro de ANIMA.
+
+---
+
+#### 18. Publicación global
+
+La publicación global debe ser una decisión explícita.
+
+Antes de confirmar, la experiencia administrativa muestra de forma inequívoca:
+
+```text
+AUDIENCIA
+Todos los trabajadores elegibles dentro de tu alcance autorizado
+```
+
+El servidor vuelve a validar que el actor puede publicar con ese alcance.
+
+Un formulario sin filtros no se convierte automáticamente en publicación global si el actor no confirmó esa intención o no posee el alcance necesario.
+
+---
+
+#### 19. Publicación segmentada
+
+Antes de publicar una audiencia segmentada, la experiencia debe mostrar:
+
+- dimensiones usadas;
+- valores seleccionados en lenguaje humano;
+- resumen de combinación;
+- resultado resoluble o advertencia si la audiencia actual no puede determinarse;
+- vigencia;
+- decisión de notificar o no notificar.
+
+Una audiencia vacía o no resoluble no se transforma automáticamente en `GLOBAL`.
+
+Si el sistema no puede demostrar a quién aplica una publicación segmentada, la publicación queda bloqueada o requiere una resolución propietaria explícita; nunca se amplía por fallback.
+
+---
+
+#### 20. Orden de publicación y notificación
+
+La publicación debe quedar persistida antes de intentar el push.
+
+Orden conceptual:
+
+```text
+VALIDAR AUTORIDAD
+→ VALIDAR REVISIÓN
+→ VALIDAR AUDIENCIA
+→ VALIDAR VIGENCIA
+→ PERSISTIR PUBLICACIÓN Y AUDIENCIA
+→ CONFIRMAR PUBLICACIÓN
+→ RESOLVER DESTINATARIOS DE NOTIFICACIÓN
+→ INTENTAR PUSH
+→ REGISTRAR RESULTADO DEL CANAL
+```
+
+El canal de notificación es un efecto posterior y recuperable.
+
+No es válido:
+
+```text
+ENVIAR PUSH
+→ FALLAR AL PERSISTIR AUDIENCIA
+→ DEJAR AL RECEPTOR SIN CONTENIDO LEGIBLE
+```
+
+---
+
+#### 21. Fallo parcial al notificar
+
+Una publicación confirmada no debe desaparecer porque el push falle después.
+
+Si la persistencia editorial fue confirmada y el proveedor de notificaciones falla:
+
+```text
+PUBLICACIÓN = CONFIRMADA
+NOTIFICACIÓN = FALLIDA / PARCIAL / DESCONOCIDA
+```
+
+La interfaz administrativa debe distinguir esos estados.
+
+La recuperación puede permitir reintento o reenvío según la política, siempre sobre la misma publicación y con trazabilidad suficiente.
+
+Nunca se presenta `publicación fallida` si lo único que falló fue el canal push.
+
+---
+
+#### 22. Edición de borrador
+
+Mientras una novedad permanece en `BORRADOR`, un actor autorizado puede modificar:
+
+- título;
+- cuerpo;
+- etiqueta;
+- audiencia prevista;
+- vigencia prevista.
+
+Guardar cambios no publica ni notifica.
+
+La interfaz diferencia claramente `Guardar borrador` de `Publicar`.
+
+Los borradores no aparecen en el feed del trabajador ni pueden ser inferidos mediante una consulta ordinaria de lectura.
+
+---
+
+#### 23. Edición de una publicación
+
+Editar una novedad publicada crea una nueva revisión editorial en lugar de sobrescribir silenciosamente la historia.
+
+La nueva revisión debe conservar trazabilidad de:
+
+- contenido anterior y vigente en la medida necesaria;
+- audiencia anterior y vigente;
+- vigencia anterior y vigente;
+- actor;
+- instante;
+- motivo cuando la política lo exija.
+
+Guardar una revisión de una publicación no dispara automáticamente un reenvío.
+
+Si la audiencia cambia, la nueva regla de visibilidad comienza a gobernar la lectura cuando la revisión quede confirmada.
+
+Una notificación ya mostrada por un sistema operativo no puede retirarse retroactivamente; al abrir ANIMA se aplica la visibilidad vigente.
+
+---
+
+#### 24. Reenvío
+
+`Reenviar notificación` es una intención independiente de editar y publicar.
+
+Solo es elegible cuando:
+
+- existe una publicación vigente;
+- el actor está autorizado;
+- la audiencia de lectura actual es resoluble;
+- no existe una condición de archivo o vencimiento que haga engañoso el aviso.
+
+El reenvío:
+
+1. no cambia contenido;
+2. no cambia audiencia de lectura;
+3. no reactiva una publicación archivada o vencida;
+4. vuelve a resolver los destinatarios actualmente elegibles;
+5. registra actor, instante, revisión y resultado del canal;
+6. evita que un doble toque genere dos campañas lógicas equivalentes.
+
+Cuando se requiera modificar contenido o audiencia, primero se confirma la nueva revisión y después se decide si corresponde notificarla.
+
+---
+
+#### 25. Archivo
+
+Archivar es la acción ordinaria para retirar una novedad publicada del feed activo.
+
+```text
+ARCHIVAR
+→ retira visibilidad ordinaria
+→ conserva identidad
+→ conserva revisiones
+→ conserva audiencia histórica
+→ conserva eventos de notificación
+→ conserva auditoría
+```
+
+El archivo no intenta eliminar notificaciones ya entregadas en dispositivos.
+
+Al abrir una referencia antigua hacia una novedad archivada, ANIMA no debe exponer su cuerpo a un actor que ya no tenga derecho a verla.
+
+La razón de archivo debe conservarse cuando sea material para explicar el retiro.
+
+---
+
+#### 26. Vigencia
+
+Una publicación puede tener un final de vigencia opcional.
+
+Mientras la vigencia esté activa, la lectura continúa sometida a audiencia y autorización.
+
+Cuando termina:
+
+- la novedad deja de aparecer en el feed activo;
+- no se emiten nuevos reenvíos ordinarios;
+- la historia permanece disponible para administración autorizada;
+- no se borra el objeto ni sus revisiones;
+- un push antiguo no restaura visibilidad.
+
+Modificar la vigencia de una publicación es un cambio editorial auditable.
+
+Esta tarea no define publicación programada futura ni cronograma editorial avanzado.
+
+---
+
+#### 27. Etiquetas editoriales
+
+Las etiquetas observadas `IMPORTANTE`, `INFO` y `ALERTA` pueden conservarse como clasificación visual mientras sigan siendo útiles.
+
+No conceden por sí mismas:
+
+- prioridad de autorización;
+- bypass de audiencia;
+- entrega garantizada;
+- obligación disciplinaria;
+- permiso para usar datos adicionales;
+- mayor persistencia que la definida por el ciclo editorial.
+
+Una etiqueta orienta presentación. No sustituye estado, audiencia ni vigencia.
+
+---
+
+#### 28. Historial editorial
+
+La administración debe poder reconstruir el ciclo de una novedad sin depender de logs técnicos crudos.
+
+El historial conceptual incluye, cuando ocurra:
+
+- creación;
+- cambios de borrador relevantes;
+- publicación;
+- revisión de contenido;
+- cambio de audiencia;
+- cambio de vigencia;
+- intento inicial de notificación;
+- reenvíos;
+- archivo;
+- republicación mediante nueva revisión.
+
+Cada evento conserva al menos actor, instante, acción y referencia a la revisión afectada.
+
+La auditoría técnica puede conservar más detalle, pero la experiencia administrativa no expone secretos, tokens, SQL ni payloads internos.
+
+---
+
+#### 29. Experiencia del trabajador
+
+La superficie personal de Novedades prioriza lectura y contexto.
+
+Cada elemento visible presenta únicamente información útil para el trabajador, por ejemplo:
+
+- título;
+- contenido;
+- etiqueta;
+- fecha de publicación o actualización pertinente;
+- estado de vigencia cuando sea necesario para comprender la comunicación.
+
+No muestra:
+
+- reglas internas de audiencia;
+- listados de otros destinatarios;
+- tokens;
+- conteos administrativos sensibles;
+- botones de publicar, editar, archivar o reenviar.
+
+Un trabajador con rol administrativo sigue viendo el carril personal como lector cuando entra a la experiencia del trabajador.
+
+---
+
+#### 30. Experiencia administrativa
+
+La superficie administrativa organiza el trabajo por estado y decisión.
+
+Como mínimo debe permitir comprender:
+
+- borradores;
+- publicaciones vigentes;
+- publicaciones vencidas o archivadas;
+- audiencia de cada revisión vigente;
+- vigencia;
+- último cambio;
+- estado resumido de notificación cuando exista evidencia;
+- acciones realmente permitidas para el actor.
+
+La acción principal depende del estado:
+
+```text
+BORRADOR
+→ Publicar
+
+PUBLICADA
+→ Editar / Reenviar / Archivar según capacidad
+
+ARCHIVADA O VENCIDA
+→ Consultar historia / preparar nueva revisión cuando corresponda
+```
+
+No se usa un botón genérico `Eliminar` como acción primaria sobre una publicación histórica.
+
+---
+
+#### 31. Modo fallback o solo lectura
+
+El fallback local no se presenta como una fuente equivalente a las novedades vigentes de la organización.
+
+Cuando la fuente principal no está disponible y la aplicación usa contenido local:
+
+```text
+MODO LOCAL / CONTENIDO DE RESPALDO
+→ lectura explícita
+→ sin mutaciones
+→ sin publicación
+→ sin edición
+→ sin archivo
+→ sin audiencia
+→ sin reenvío
+```
+
+Los controles editoriales deben ocultarse o quedar inequívocamente no accionables antes de que el usuario complete formularios.
+
+La restauración de la fuente remota vuelve a resolver autoridad y datos; no mezcla silenciosamente borradores locales con publicaciones reales.
+
+---
+
+#### 32. Estados de error y degradación
+
+La experiencia distingue al menos:
+
+| Estado | Significado | Tratamiento |
+| --- | --- | --- |
+| fuente no disponible | no puede verificarse el ciclo remoto | mostrar indisponibilidad o fallback explícito |
+| sin novedades visibles | la consulta autorizada no devuelve publicaciones aplicables | estado vacío real |
+| sin acceso administrativo | el actor no puede gestionar novedades | mantener experiencia personal o denegar entrada administrativa |
+| audiencia no resoluble | no puede determinarse el alcance solicitado | bloquear publicación, no ampliar a global |
+| guardado fallido | la revisión no quedó persistida | conservar datos editados y permitir recuperación segura |
+| publicación confirmada / push fallido | la novedad sí quedó visible, pero el canal falló | mostrar estados separados y permitir recuperación |
+| resultado de push desconocido | no existe evidencia suficiente del proveedor | no declarar entrega |
+| publicación archivada o vencida | ya no pertenece al feed activo | mostrar historia solo a administración autorizada |
+
+Un fallo técnico nunca se transforma en `No hay novedades` si la fuente no pudo determinar el conjunto.
+
+---
+
+#### 33. Notificación y contenido de pantalla bloqueada
+
+La notificación debe ser útil sin revelar más información laboral de la necesaria.
+
+Como regla base puede incluir:
+
+- existencia de una nueva novedad;
+- título o resumen mínimo cuando la clasificación permita exponerlo;
+- referencia opaca suficiente para correlacionar la comunicación.
+
+No debe incluir por defecto:
+
+- audiencia completa;
+- nombres de otros trabajadores;
+- reglas de permiso;
+- datos sensibles innecesarios;
+- contenido que no deba aparecer en pantalla bloqueada.
+
+La clasificación de la novedad puede exigir una notificación más genérica que el contenido disponible dentro de ANIMA.
+
+---
+
+#### 34. Estados de notificación reutilizados
+
+Esta tarea reutiliza la semántica de canal ya definida para recordatorios operativos:
+
+- no enviado o suprimido;
+- intento realizado;
+- aceptado por el proveedor cuando exista evidencia;
+- rechazado;
+- resultado desconocido;
+- duplicado omitido.
+
+Aceptar un mensaje en el proveedor no significa que el trabajador lo haya leído.
+
+La tarea no introduce recibos de lectura obligatorios ni confirmación disciplinaria de recepción.
+
+La visibilidad dentro de ANIMA existe independientemente de que el trabajador tenga permiso de notificaciones o un token activo.
+
+---
+
+#### 35. Respuesta a una notificación
+
+El payload de una notificación es una referencia de navegación o correlación, no una credencial de lectura.
+
+Si la materialización permite abrir una novedad desde una notificación, antes de mostrar su contenido debe volver a resolver:
+
+- sesión;
+- actor;
+- publicación vigente;
+- vigencia;
+- audiencia de lectura;
+- autorización.
+
+Si la publicación dejó de ser visible, la aplicación muestra un estado seguro y no reproduce el cuerpo desde el payload.
+
+El tipo AS-IS `announcement` actualmente emitido no amplía por sí solo el allowlist de navegación. La incorporación de un destino de respuesta debe pasar por el propietario canónico de navegación y seguridad; esta tarea no modifica ese allowlist ni crea una ruta física.
+
+---
+
+#### 36. Múltiples dispositivos y tokens
+
+Los tokens son canales y no identidades de audiencia.
+
+Un trabajador con varios dispositivos puede recibir más de una copia física del mismo aviso, pero:
+
+- la audiencia empresarial contiene una sola identidad laboral;
+- el evento editorial de publicación es único;
+- el evento lógico de campaña o reenvío es único;
+- cada token puede producir un resultado técnico distinto;
+- abrir desde cualquier dispositivo vuelve a aplicar visibilidad actual.
+
+Desactivar un token inválido no cambia la audiencia de lectura ni el estado laboral.
+
+---
+
+#### 37. Privacidad y minimización
+
+La administración de novedades aplica minimización en selección, previsualización, envío y auditoría.
+
+No se debe cargar o exponer población global únicamente para construir un selector cuando el actor posee un alcance menor.
+
+La vista administrativa muestra solo datos suficientes para definir y revisar audiencia.
+
+La auditoría de notificación prioriza identificadores seguros, conteos y estados; los listados nominales completos se muestran únicamente cuando exista una finalidad y autorización explícitas.
+
+La experiencia del trabajador no revela por qué filtros internos fue incluido ni quién más recibió la comunicación salvo que exista una razón empresarial aprobada.
+
+---
+
+#### 38. Accesibilidad y comprensión
+
+El ciclo debe poder operarse sin depender únicamente de color, iconos, posición o notificaciones sonoras.
+
+La experiencia administrativa debe nombrar de forma explícita:
+
+- estado editorial;
+- audiencia;
+- vigencia;
+- acción de publicar;
+- acción de archivar;
+- acción de reenviar.
+
+La experiencia personal debe diferenciar fecha, etiqueta y contenido con semántica accesible.
+
+Los controles destructivos o de alcance amplio requieren etiquetas inequívocas y targets táctiles adecuados.
+
+---
+
+#### 39. Migración conceptual desde el AS-IS
+
+| Elemento AS-IS | Tratamiento TO-BE |
+| --- | --- |
+| misma pantalla mezcla lector y editor | separar intención personal y administrativa conforme a ANIMA-UX-003 |
+| rol textual decide administración | resolver capacidad efectiva y protección de servidor |
+| crear inserta como activa y publicada | crear primero borrador y publicar mediante intención separada |
+| selector de sede/rol solo alimenta push | persistir audiencia de lectura como parte de la revisión |
+| audiencia no se recupera al editar | cargar y versionar audiencia junto con la revisión |
+| filtro vacío significa `enviar a todos` implícitamente | exigir decisión global explícita |
+| opciones de sede y rol se cargan ampliamente | entregar únicamente opciones autorizadas y resolubles |
+| editar modifica contenido sin reenvío definido | separar nueva revisión de la acción de reenviar |
+| eliminación física ordinaria | sustituir por archivo con historia conservada |
+| `is_active` usado como proxy amplio | materializar estados editoriales explícitos sin depender de un booleano ambiguo |
+| sin vigencia | permitir fin de vigencia opcional y auditable |
+| fallback conserva affordances de administración | fallback explícitamente de solo lectura |
+| push usa audiencia efímera | derivar notificación de una publicación y audiencia persistidas |
+| `sent` agregado como resultado | distinguir publicación de resultados técnicos del proveedor |
+| productor emite `announcement` sin respuesta móvil registrada | resolver en el propietario de navegación antes de habilitar apertura dirigida |
+
+La tabla define destino contractual. No ejecuta la migración física.
+
+---
+
+#### 40. Contrato conceptual de datos
+
+Sin imponer nombres de tablas, columnas ni API, la materialización futura deberá poder representar conceptualmente:
+
+| Entidad lógica | Responsabilidad |
+| --- | --- |
+| Novedad | identidad estable de la comunicación |
+| Revisión | snapshot editorial de contenido, etiqueta, audiencia y vigencia |
+| Regla de audiencia | criterio persistente aplicado a lectura y usado como base de notificación |
+| Evento editorial | creación, publicación, edición, reenvío, archivo y republicación |
+| Intento de notificación | resultado técnico por campaña/canal con correlación a revisión |
+
+La forma física podrá reutilizar estructuras existentes o normalizarlas durante el paquete propietario.
+
+Esta tarea no aprueba un esquema SQL específico.
+
+---
+
+#### 41. Autorización y ownership
+
+La UI no inventa permisos nuevos ni usa un string de rol como autoridad final.
+
+Las acciones conceptuales se separan por intención:
+
+| Acción | Requisito de autoridad |
+| --- | --- |
+| leer | identidad del trabajador + publicación visible para su audiencia |
+| crear borrador | capacidad administrativa efectiva |
+| definir audiencia | capacidad administrativa + alcance suficiente sobre las dimensiones elegidas |
+| publicar | capacidad efectiva de publicación + validación de servidor |
+| editar | capacidad efectiva sobre la publicación y su alcance |
+| reenviar | capacidad efectiva de notificación sobre una publicación vigente |
+| archivar | capacidad efectiva de retiro editorial |
+| consultar historia | capacidad administrativa o de auditoría aplicable |
+
+`ANIMA-AUTH-019` continúa gobernando la prohibición de que ANIMA se otorgue autoridad a sí misma.
+
+La materialización de servidor permanece bajo los propietarios de autorización y Supabase correspondientes.
+
+---
+
+#### 42. Concurrencia e idempotencia editorial
+
+El ciclo debe tolerar acciones repetidas y cambios concurrentes sin producir publicaciones ambiguas.
+
+Reglas conceptuales:
+
+1. publicar dos veces la misma revisión por doble toque no crea dos publicaciones lógicas;
+2. un reenvío repetido accidentalmente no crea dos campañas lógicas equivalentes;
+3. editar una revisión obsoleta no sobrescribe silenciosamente una revisión más reciente;
+4. archivar una publicación ya archivada devuelve un resultado estable o no-op seguro;
+5. una respuesta perdida exige reconciliación antes de repetir una acción material;
+6. la audiencia utilizada por cada publicación queda vinculada a la revisión confirmada;
+7. la notificación nunca se usa para reparar una publicación que no pudo persistirse.
+
+Los mecanismos físicos de versión, idempotency key o concurrencia pertenecen al paquete de implementación.
+
+---
+
+#### 43. Métricas y evidencia
+
+La observabilidad del ciclo debe permitir distinguir, sin convertir la comunicación en vigilancia disciplinaria:
+
+- borradores creados;
+- publicaciones confirmadas;
+- publicaciones archivadas;
+- revisiones editoriales;
+- campañas o reenvíos iniciados;
+- destinatarios elegibles resueltos por campaña;
+- tokens intentados;
+- aceptación o rechazo del proveedor cuando exista evidencia;
+- resultados desconocidos;
+- fallos de autorización;
+- fallos de persistencia;
+- fallos de resolución de audiencia.
+
+No se infiere lectura humana a partir de entrega técnica.
+
+Esta tarea no exige telemetría de lectura individual ni acuse obligatorio.
+
+---
+
+#### 44. Matriz canónica de escenarios
+
+| Escenario | Resultado TO-BE |
+| --- | --- |
+| trabajador abre Novedades | ve únicamente publicaciones vigentes cuya audiencia le aplica |
+| trabajador con rol gerencial entra por carril personal | sigue viendo experiencia de lectura sin controles editoriales mezclados |
+| actor sin capacidad abre administración | acceso bloqueado sin exponer borradores, audiencias o historia |
+| administrador crea una novedad | obtiene un borrador, no una publicación automática |
+| administrador guarda borrador | no se envía push ni aparece al trabajador |
+| publicación global autorizada | audiencia global queda explícita y persistida |
+| publicación global fuera de alcance | servidor la rechaza; no se degrada a otro alcance |
+| publicación segmentada por sede | solo trabajadores actualmente elegibles para esa sede pueden leer |
+| publicación segmentada por rol | solo trabajadores actualmente elegibles para ese rol pueden leer |
+| sede y rol seleccionados | ambas dimensiones se aplican simultáneamente y la UI lo explica |
+| filtro manipulado fuera de alcance | servidor rechaza la publicación o la selección |
+| audiencia actual no resoluble | publicación bloqueada; nunca se amplía a todos |
+| publicación confirmada y push exitoso | visibilidad y resultado de canal quedan trazados por separado |
+| publicación confirmada y push falla | la novedad sigue publicada; el canal queda fallido o desconocido |
+| trabajador sin permiso de notificaciones | puede leer la novedad si pertenece a la audiencia |
+| trabajador recibe push pero cambia de contexto antes de abrir | la apertura vuelve a evaluar visibilidad actual |
+| trabajador ya no pertenece a audiencia | el contenido no se expone por conservar un push antiguo |
+| administrador edita contenido publicado | se crea nueva revisión; no se borra la anterior |
+| administrador cambia audiencia | la nueva revisión gobierna lectura después de confirmarse |
+| edición confirmada | no produce reenvío automático |
+| administrador decide reenviar | se usa la revisión vigente y la audiencia actual, con evento separado |
+| doble toque en reenviar | no crea dos campañas lógicas equivalentes |
+| administrador archiva | sale del feed activo y conserva historia |
+| publicación vence | sale del feed activo sin borrarse |
+| push antiguo de publicación archivada | no restaura acceso al contenido |
+| modo fallback | lectura local explícita y ninguna mutación disponible |
+| fuente remota falla sin fallback válido | se muestra indisponibilidad, no un falso vacío |
+| dos administradores editan concurrentemente | una revisión obsoleta no sobrescribe silenciosamente la nueva |
+| productor emite tipo de notificación sin ruta autorizada | no se habilita navegación arbitraria por inferencia |
+
+---
+
+#### 45. Hallazgos y propietarios de salida
+
+| Hallazgo | Bloquea esta especificación | Propietario de materialización o cierre |
+| --- | --- | --- |
+| audiencia de lectura no persistida en AS-IS | NO | paquete ANIMA de novedades; contratos de servidor y Supabase ya asignados por backlog |
+| audiencia no recuperable al editar | NO | mismo paquete ANIMA de novedades |
+| eliminación física sin archivo/historia | NO | mismo paquete ANIMA de novedades + gobierno de información cuando aplique |
+| fallback incoherente con mutaciones | NO | paquete ANIMA de novedades y contrato de degradación |
+| control administrativo basado en roles locales | NO | ANIMA-AUTH-019 y propietarios de autorización de servidor |
+| opciones de audiencia no limitadas por territorio demostrado | NO | autorización/contexto de servidor y paquete ANIMA de novedades |
+| `announcement` no tiene respuesta móvil registrada | NO | propietarios de navegación segura y validación de pantalla; no se amplía el allowlist en esta tarea |
+| resultado de push no demuestra lectura | NO | integración de notificaciones; esta tarea conserva la distinción |
+
+No se crea una tarea nueva. Cada brecha ya tiene propietario canónico o paquete de implementación asociado.
+
+---
+
+#### 46. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Requisitos creados:** 0
+
+**Requisitos modificados:** 0
+
+La tarea desarrolla y especifica con mayor detalle comportamientos ya registrados por la auditoría y por el Registro Canónico de Requisitos de Prueba para audiencia persistente, coherencia entre visibilidad y notificación, administración autorizada, archivo/historial y modo fallback. No introduce una regla material fuera de esa cobertura que justifique duplicar requisitos existentes.
+
+---
+
+#### 47. Cobertura de prueba vigente reutilizada
+
+La cobertura ya registrada que se reutiliza sin modificar sus filas incluye:
+
+- `TREQ-ANIMA-001`: distingue audiencia de notificación y visibilidad persistente, exige conservar, editar, auditar y aplicar el modelo de audiencia al leer;
+- `TREQ-ANIMA-002`: obliga a que fallback o solo lectura no expongan controles de crear, editar o eliminar que no puedan completarse;
+- `TREQ-ANIMA-020`: exige coherencia entre audiencia persistida, audiencia notificada y visibilidad, y bloquea mutaciones no autorizadas;
+- `TREQ-ANIMA-014`: conserva la navegación de notificaciones bajo un conjunto de destinos explícitamente autorizado y evita rutas arbitrarias;
+- los requisitos transversales vigentes de autorización, error, integración, recuperación y trazabilidad que ya protegen acciones de servidor y estados degradados.
+
+Esta sección documenta trazabilidad reutilizada. No representa creación ni modificación del registro.
+
+---
+
+#### 48. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La tarea es documental y no se ejecutó build de `vento-shell` ni de `vento-anima` durante su preparación. |
+| LOCAL | PASS | El artefacto fue verificado estructuralmente como una sola tarea, con metadata obligatoria, declaración numérica de cero requisitos, sección derivada sin identificadores de requisito, cinco clases de evidencia y continuidad cerrada. |
+| REMOTA | PASS | Se contrastaron el protocolo, contrato de entrega, manifest, continuidad, topología, políticas de tarea, archivo propietario, auditorías E1, registro ANIMA vigente, `package.json`, pantalla y hook de Novedades, fallback local, función `announcement-notify` y navegación móvil observada. |
+| OPERATIVA | NOT_EXECUTED | No se publicaron novedades reales, no se enviaron push productivos y no se ejecutaron sesiones con trabajadores o administradores durante esta definición documental. |
+| FÍSICA | NOT_APPLICABLE | ANIMA-UX-017 está gobernada por `DEFINE_ONCE / NO_PHYSICAL_INSTANCE`; no crea una instancia física propia ni autoriza código, Supabase, datos o despliegues. |
+
+---
+
+#### 49. Criterios de aceptación
+
+1. La experiencia personal de Novedades queda separada de la experiencia administrativa.
+2. Una novedad conserva identidad estable durante su ciclo editorial.
+3. El contenido publicado se gobierna mediante revisiones y no mediante sobreescritura histórica silenciosa.
+4. El ciclo mínimo distingue `BORRADOR`, `PUBLICADA` y `ARCHIVADA`.
+5. Una publicación vencida deja de ser visible sin borrar su historia.
+6. Guardar borrador no publica ni notifica.
+7. Publicar es una intención explícita distinta de guardar.
+8. La audiencia de lectura queda persistida como parte de la revisión publicada.
+9. La audiencia puede ser global o segmentada de forma explícita.
+10. La ausencia de filtros no se interpreta silenciosamente como global.
+11. Varias opciones de una misma dimensión se interpretan como alternativas.
+12. Dimensiones distintas de audiencia se aplican simultáneamente.
+13. La UI explica la combinación de filtros en lenguaje humano.
+14. Solo se muestran opciones de audiencia dentro del alcance autorizable del actor.
+15. Manipular un filtro en cliente no amplía el alcance de publicación.
+16. Una audiencia segmentada no resoluble no se degrada a global.
+17. La visibilidad se aplica en la frontera propietaria antes de entregar contenido no autorizado.
+18. Recibir un push no concede derecho de lectura.
+19. Los destinatarios de push son un subconjunto de la audiencia elegible para leer.
+20. No disponer de token o permiso push no elimina visibilidad dentro de ANIMA.
+21. La publicación se persiste antes de intentar notificación.
+22. Un fallo del push no revierte una publicación ya confirmada.
+23. Un fallo de publicación impide usar la notificación como sustituto de persistencia.
+24. Editar una publicación crea una nueva revisión auditable.
+25. Editar no produce reenvío automático.
+26. Reenviar es una acción explícita separada de editar y publicar.
+27. Reenviar no cambia audiencia de lectura ni contenido.
+28. Un reenvío vuelve a resolver destinatarios elegibles actuales.
+29. Dobles toques o reintentos no crean dos campañas lógicas equivalentes.
+30. Archivar sustituye la eliminación física como acción ordinaria sobre una publicación.
+31. Archivar retira del feed y conserva revisiones, audiencia y evidencia editorial.
+32. La vigencia opcional puede retirar una publicación del feed sin borrarla.
+33. Las etiquetas visuales no cambian autorización ni audiencia.
+34. La historia permite reconstruir creación, publicación, edición, cambio de audiencia, reenvío y archivo.
+35. La experiencia del trabajador no muestra controles administrativos mezclados.
+36. Un actor administrativo en carril personal sigue siendo lector.
+37. El carril administrativo exige capacidad efectiva y protección de servidor.
+38. Roles locales no constituyen autoridad final.
+39. Fallback es explícitamente de solo lectura.
+40. Fallback no presenta acciones editoriales que no pueda completar.
+41. Un fallo de fuente se distingue de un conjunto vacío real.
+42. El resultado técnico del proveedor se distingue de lectura humana.
+43. No se introducen recibos de lectura obligatorios ni vigilancia disciplinaria implícita.
+44. El contenido de lock screen aplica minimización.
+45. Abrir una notificación vuelve a validar publicación, audiencia y autorización antes de exponer el cuerpo.
+46. El tipo AS-IS `announcement` no amplía por sí solo el allowlist de navegación.
+47. Múltiples tokens no crean múltiples identidades de audiencia.
+48. Un token inválido no modifica visibilidad ni vínculo laboral.
+49. La tarea no impone nombres de tablas, columnas, RPC ni endpoints.
+50. La tarea no implementa código ni modifica Supabase.
+51. La tarea no crea migraciones, RLS, grants, funciones, Edge Functions, cron o secretos.
+52. La tarea no envía notificaciones reales.
+53. La tarea no crea una ruta móvil nueva.
+54. La tarea no modifica el registro canónico de requisitos de prueba.
+55. La sección de requisitos derivados declara cero cambios y no contiene identificadores de requisitos.
+56. La cobertura reutilizada se documenta fuera de la sección de requisitos derivados.
+57. BUILD permanece NOT_EXECUTED hasta una ejecución real de build.
+58. OPERATIVA permanece NOT_EXECUTED hasta pruebas reales de publicación, audiencia y notificación.
+59. FÍSICA permanece NOT_APPLICABLE por topología `DEFINE_ONCE`.
+60. El cierre de esta tarea completa el minibloque ANIMA-UX-001 a ANIMA-UX-017.
+61. La continuidad posterior queda reservada a VISO-AUTH-001.
+62. Ninguna decisión de esta tarea autoriza materialización física automática.
+
+---
+
+#### 50. Límites
+
+ANIMA-UX-017 no:
+
+- modifica `vento-anima`;
+- modifica componentes, rutas o navegación;
+- modifica `vento-shell` fuera del documento canónico de esta tarea;
+- implementa tablas o esquemas de novedades;
+- crea migraciones;
+- crea o modifica RLS, RPC, triggers, grants o funciones;
+- modifica `announcement-notify`;
+- registra o desactiva tokens productivos;
+- envía push reales;
+- crea publicación programada futura;
+- crea recibos obligatorios de lectura;
+- crea acuses disciplinarios;
+- define sanciones por no leer una comunicación;
+- convierte etiquetas editoriales en permisos;
+- amplía el allowlist de navegación de notificaciones;
+- crea rutas físicas de administración;
+- define un esquema SQL definitivo para revisiones, audiencia o eventos;
+- modifica el Registro Canónico de Requisitos de Prueba;
+- crea una instancia física propia;
+- adelanta tareas de VISO.
+
+---
+
+#### 51. Estado de salida documental
+
+El minibloque ANIMA-UX queda cerrado documentalmente con un contrato de experiencia que cubre:
+
+- separación trabajador/administración;
+- inicio y contexto de turno;
+- check-in y check-out simplificados;
+- estados confirmados, pendientes y bloqueados;
+- recuperación, offline y reanudación;
+- documentos y datos personales;
+- administración de equipo autorizada;
+- prueba de marcación con trabajadores;
+- recordatorios de inicio y cierre;
+- ciclo completo de novedades internas.
+
+Para Novedades, el handoff materializable queda definido como:
+
+```text
+BORRADOR
+→ AUDIENCIA PERSISTENTE
+→ PUBLICACIÓN
+→ VISIBILIDAD AUTORIZADA
+→ NOTIFICACIÓN OPCIONAL Y TRAZABLE
+→ EDICIÓN VERSIONADA
+→ REENVÍO EXPLÍCITO
+→ VIGENCIA
+→ ARCHIVO
+→ HISTORIA AUDITABLE
+```
+
+La implementación posterior debe satisfacer este contrato mediante los paquetes y propietarios ya asignados, sin reinterpretar la audiencia efímera AS-IS como diseño final.
+
+---
+
+#### 52. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-001 — Crear catálogo administrativo de roles base`
