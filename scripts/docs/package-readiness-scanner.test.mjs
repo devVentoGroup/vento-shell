@@ -577,7 +577,7 @@ test('detalle por package lista tareas, gates y obligaciones restantes', () => {
   assert.match(report, /## Lista lineal completa/u);
   assert.match(report, /## Packages diferidos fuera de la línea activa/u);
   assert.match(report, /PREPARE_PACKAGE_GATE/u);
-  assert.match(report, /npm run docs:package:prepare -- --package-id GAP-PKG-001/u);
+  assert.match(report, /npm run docs:package:start -- --package-id GAP-PKG-001/u);
   assert.match(report, /Ningún package posterior puede adelantarlo/u);
   assert.match(report, /Catálogo completo/u);
   assert.match(report, /Tareas faltantes/u);

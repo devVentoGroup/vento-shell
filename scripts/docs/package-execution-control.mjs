@@ -16,6 +16,92 @@ function canonicalPackageId(value) {
   return /^GAP-PKG-\d{3}$/u.test(String(value ?? ''));
 }
 
+export function assertPackageMutationAllowed({
+  execution,
+  packageId,
+  operation = 'PACKAGE_MUTATION',
+  openOrderCorrections = [],
+} = {}) {
+  const normalizedPackageId = String(packageId ?? '').trim().toUpperCase();
+  if (!canonicalPackageId(normalizedPackageId)) {
+    fail(`PACKAGE_ID_INVALID: ${packageId ?? 'EMPTY'}.`);
+  }
+
+  const corrections = [...new Set(
+    (openOrderCorrections ?? [])
+      .map((entry) => typeof entry === 'string' ? entry : entry?.correction_id)
+      .map((entry) => String(entry ?? '').trim())
+      .filter(Boolean),
+  )].sort((left, right) => left.localeCompare(right, 'en'));
+
+  if (corrections.length > 0) {
+    fail(
+      `PACKAGE_EXECUTION_ORDER_CORRECTION_OPEN: ${operation} bloqueado mientras `
+      + `${corrections.join(', ')} no quede VERIFIED en main.`,
+    );
+  }
+
+  if (!execution?.current) {
+    fail(`PACKAGE_EXECUTION_COMPLETE: ${operation} no tiene un package actual ejecutable.`);
+  }
+
+  if (execution.current.package_id !== normalizedPackageId) {
+    fail(
+      `PACKAGE_OUT_OF_TURN: ${operation} solo admite ${execution.current.package_id}; `
+      + `solicitado ${normalizedPackageId}.`,
+    );
+  }
+
+  return execution.current;
+}
+
+export function assertNoFuturePackageArtifacts({
+  execution,
+  packageGateIds = [],
+  implementationInstanceIds = [],
+} = {}) {
+  if (!execution) fail('PACKAGE_EXECUTION_NOT_EVALUATED.');
+  if (!execution.current) return true;
+
+  const positions = new Map(
+    execution.sequence.map(({ package_id: packageId, position }) => [packageId, position]),
+  );
+  const currentPosition = execution.current.position;
+  const violations = [];
+
+  for (const packageId of packageGateIds) {
+    const normalized = String(packageId ?? '').trim().toUpperCase();
+    if (!canonicalPackageId(normalized)) continue;
+    const position = positions.get(normalized);
+    if (!Number.isInteger(position)) {
+      violations.push(`PACKAGE_GATE_OUTSIDE_LINEAR_SEQUENCE:${normalized}`);
+    } else if (position > currentPosition) {
+      violations.push(`FUTURE_PACKAGE_GATE:${normalized}:${position}`);
+    }
+  }
+
+  for (const instanceId of implementationInstanceIds) {
+    const match = /^SHELL-CI-02[0-4]::(GAP-PKG-\d{3})$/u.exec(String(instanceId ?? ''));
+    if (!match) continue;
+    const packageId = match[1];
+    const position = positions.get(packageId);
+    if (!Number.isInteger(position)) {
+      violations.push(`PHYSICAL_INSTANCE_OUTSIDE_LINEAR_SEQUENCE:${instanceId}`);
+    } else if (position > currentPosition) {
+      violations.push(`FUTURE_PHYSICAL_INSTANCE:${instanceId}:${position}`);
+    }
+  }
+
+  if (violations.length > 0) {
+    fail(
+      `PACKAGE_LINEAR_ARTIFACT_VIOLATION: actual=${execution.current.package_id}; `
+      + violations.join(', '),
+    );
+  }
+
+  return true;
+}
+
 export function readPackageExecutionPolicy(root = process.cwd()) {
   const target = absolute(root, PACKAGE_EXECUTION_POLICY_PATH);
   if (!fs.existsSync(target)) fail(`No existe ${PACKAGE_EXECUTION_POLICY_PATH}.`);
@@ -52,11 +138,19 @@ function comparePackage(left, right, layerRank) {
 
 function nextAction(pkg) {
   if (pkg.status === 'IMPLEMENTATION_READY') {
+    if (!pkg.physical_entry_instance) {
+      return {
+        type: 'MATERIALIZE_PHYSICAL_HANDOFF',
+        target: pkg.next_execution,
+        command: `npm run docs:package:handoff -- --package-id ${pkg.package_id}`,
+        reason: `${pkg.package_id} completó dossier, gate y dependencias; falta materializar su registro físico PENDING_AUTHORIZATION.`,
+      };
+    }
     return {
       type: 'AUTHORIZE_PHYSICAL_IMPLEMENTATION',
-      target: pkg.next_execution,
+      target: pkg.physical_entry_instance.instance_id,
       command: 'npm run docs:implementation:status',
-      reason: `${pkg.package_id} completó dossier, gate y dependencias; falta autorización física humana.`,
+      reason: `${pkg.package_id} ya tiene handoff físico PENDING_AUTHORIZATION; falta autorización física humana.`,
     };
   }
   if (['IMPLEMENTING', 'DEPLOYED'].includes(pkg.status)) {
@@ -71,7 +165,7 @@ function nextAction(pkg) {
     return {
       type: 'PREPARE_PACKAGE_GATE',
       target: pkg.package_id,
-      command: `npm run docs:package:prepare -- --package-id ${pkg.package_id}`,
+      command: `npm run docs:package:start -- --package-id ${pkg.package_id}`,
       reason: `${pkg.package_id} ocupa el turno lineal y todavía no tiene expediente package-gate.`,
     };
   }
@@ -199,7 +293,13 @@ export function deriveLinearPackageExecution(registry, policy) {
     mode: policy.mode,
     automatic_next: true,
     human_package_selection: false,
-    state: current ? (currentPackage.status === 'IMPLEMENTATION_READY' ? 'READY_FOR_AUTHORIZATION' : 'BLOCKED_ON_CURRENT') : 'COMPLETE',
+    state: current
+      ? current.next_action.type === 'MATERIALIZE_PHYSICAL_HANDOFF'
+        ? 'READY_FOR_HANDOFF'
+        : currentPackage.status === 'IMPLEMENTATION_READY'
+          ? 'READY_FOR_AUTHORIZATION'
+          : 'BLOCKED_ON_CURRENT'
+      : 'COMPLETE',
     current,
     sequence: entries,
     deferred: deferred.sort((left, right) => left.package_id.localeCompare(right.package_id, 'en')),

@@ -45,10 +45,11 @@ function packageGateLifecycleBlock(readiness) {
   const next = current?.next_action.command ?? 'NONE';
   return `PACKAGE GATE LIFECYCLE — VALIDACIÓN OBLIGATORIA
 
-Cada package canónico usa un expediente autogenerado y versionado. No cree el JSON manualmente.
+Cada package canónico usa un expediente autogenerado y versionado. El ingreso normal es docs:package:start, que abre o reanuda la rama exacta del package; no cree el JSON manualmente.
 Los gates EVIDENCE_023, PHYSICAL_IDENTITY, IMPLEMENTATION_UNIT y FINAL_DECISION_025 solo pasan cuando el expediente está completo y contiene APROBADO humano explícito.
-La aprobación del expediente habilita únicamente la candidatura SHELL-CI-020; no crea ni autoriza una instancia física.
+La aprobación del expediente no autoriza implementación física. docs:package:finish publica el gate y materializa el handoff PENDING_AUTHORIZATION cuando los prerrequisitos físicos ya están listos; si quedan pendientes, docs:package:handoff lo materializa únicamente cuando la línea lo solicite.
 La posición se deriva automáticamente de dependencias, capa y package_id. Un bloqueo conserva el turno.
+Si el orden contradice un contrato ya aprobado, no elija otro package: abra una corrección documental de DELIV-PKG-015. Mientras esa corrección no quede VERIFIED en main, las mutaciones de package permanecen bloqueadas.
 
 - Modo: ${execution?.mode ?? 'NOT_EVALUATED'}
 - Selección humana de package: FALSE
