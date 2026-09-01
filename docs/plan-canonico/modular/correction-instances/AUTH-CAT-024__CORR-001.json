@@ -11,9 +11,9 @@
     "AUTH-DB-034::GLOBAL"
   ],
   "baseline": {
-    "main_commit": "290fb7d610c4a400fb4392aae08313009f3e5022",
+    "main_commit": "9d18ad6dae9fa5f9fc7c9e70ee0fbb352fb05e39",
     "target_task_path": "docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
-    "target_task_sha256": "87e1e32d60c4af0225a87d0e2830ac331448788c382b00cdaa312393f3546f88",
+    "target_task_sha256": "bb1d13bb1beb08527a921dc30519617a9e7245a7f76f8afd73811fcd3460a5fb",
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
