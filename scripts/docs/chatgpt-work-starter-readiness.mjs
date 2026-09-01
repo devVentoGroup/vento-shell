@@ -16,63 +16,59 @@ export const CHATGPT_STARTER_PATHS = Object.freeze({
 });
 
 function firstReady(registry) {
-  return registry?.implementation_ready_queue?.[0] ?? null;
+  const current = registry?.package_execution?.current ?? null;
+  if (current?.next_action.type !== 'AUTHORIZE_PHYSICAL_IMPLEMENTATION') return null;
+  return registry?.implementation_ready_queue?.find(
+    ({ package_id: packageId }) => packageId === current.package_id,
+  ) ?? null;
 }
 
 function queueLines(registry) {
-  const queue = registry?.implementation_ready_queue ?? [];
-  return queue.length > 0
-    ? queue.map((entry) => `- ${entry.package_id} -> ${entry.next_execution}`).join('\n')
-    : '- NONE';
+  const execution = registry?.package_execution ?? null;
+  const current = execution?.current ?? null;
+  if (!current) return '- NONE';
+  return `- ${current.position}/${execution.sequence.length}: ${current.package_id} -> ${current.next_action.type} -> ${current.next_action.target}`;
 }
 
 function packageGateLifecycleBlock(readiness) {
   const packages = readiness?.registry?.packages ?? [];
-  const selection = readiness?.registry?.package_selection ?? {
-    state: 'NOT_DUE',
-    owner: 'OWN-OPS',
-    selected_package_id: null,
-    eligible_package_ids: [],
-  };
-  const selected = selection.selected_package_id
-    ? packages.find(({ package_id: packageId }) => packageId === selection.selected_package_id)
+  const execution = readiness?.registry?.package_execution ?? null;
+  const current = execution?.current ?? null;
+  const focused = current
+    ? packages.find(({ package_id: packageId }) => packageId === current.package_id) ?? null
     : null;
-  const packageId = selected?.package_id ?? 'NONE';
-  const gate = selected?.package_gate ?? null;
+  const packageId = current?.package_id ?? 'NONE';
+  const gate = focused?.package_gate ?? null;
   const file = gate?.relative_path ?? (packageId === 'NONE'
     ? 'NONE'
     : `docs/plan-canonico/modular/package-gate-instances/${packageId}.json`);
-  const next = packageId === 'NONE'
-    ? selection.state === 'AWAITING_DECISION'
-      ? 'npm run docs:package:selection:status'
-      : 'NONE'
-    : gate
-      ? `npm run docs:package:gate:status -- --package-id ${packageId}`
-      : `npm run docs:package:prepare -- --package-id ${packageId}`;
+  const next = current?.next_action.command ?? 'NONE';
   return `PACKAGE GATE LIFECYCLE — VALIDACIÓN OBLIGATORIA
 
 Cada package canónico usa un expediente autogenerado y versionado. No cree el JSON manualmente.
 Los gates EVIDENCE_023, PHYSICAL_IDENTITY, IMPLEMENTATION_UNIT y FINAL_DECISION_025 solo pasan cuando el expediente está completo y contiene APROBADO humano explícito.
 La aprobación del expediente habilita únicamente la candidatura SHELL-CI-020; no crea ni autoriza una instancia física.
-La existencia de un expediente o su posición en una cola nunca selecciona un package.
+La posición se deriva automáticamente de dependencias, capa y package_id. Un bloqueo conserva el turno.
 
-- Estado de selección: ${selection.state}
-- Responsable de selección: ${selection.owner}
-- Selección automática: FALSE
-- Packages elegibles: ${selection.eligible_package_ids.length > 0 ? selection.eligible_package_ids.join(', ') : 'NONE'}
-- Package enfocado: ${packageId}
+- Modo: ${execution?.mode ?? 'NOT_EVALUATED'}
+- Selección humana de package: FALSE
+- Estado lineal: ${execution?.state ?? 'NOT_EVALUATED'}
+- Package actual: ${packageId}
+- Posición: ${current ? `${current.position}/${execution.sequence.length}` : 'NONE'}
+- Acción exacta: ${current?.next_action.type ?? 'NONE'}
+- Objetivo exacto: ${current?.next_action.target ?? 'NONE'}
 - Expediente exacto: ${file}
 - Estado del expediente: ${gate?.status ?? 'NOT_PREPARED'}
 - Siguiente comando: ${next}
 
 Comprobaciones obligatorias:
 - npm run docs:package:gate:check
-- npm run docs:package:selection:check
+- npm run docs:package:execution:check
 - npm run docs:plan:build
 - npm run docs:plan:check
 - npm run docs:plan:test
 
-Nunca ejecute docs:package:gate:approve ni docs:package:select por inferencia. Ambos requieren APROBADO explícito, dueño competente y evidencia trazable.`;
+Nunca ejecute docs:package:gate:approve por inferencia. La aprobación del gate exige APROBADO explícito, dueño competente y evidencia trazable; el package actual no se elige manualmente.`;
 }
 
 export function stableReadinessStarterProjection(block) {
@@ -83,18 +79,18 @@ export function stableReadinessStarterProjection(block) {
 export function renderReadinessStarterBlock({ readiness, lane, coordinated = null }) {
   const candidate = firstReady(readiness.registry);
   const laneRule = lane === 'DOCUMENTATION'
-    ? 'Si aparece un package IMPLEMENTATION_READY, registrarlo, avisarlo y conservar esta conversación en DOCUMENTATION. NO cambiar de carril.'
+    ? 'Conservar esta conversación en DOCUMENTATION. Informar el package actual y su acción exacta; NO cambiar de carril.'
     : lane === 'PHYSICAL_IMPLEMENTATION'
-      ? 'IMPLEMENTATION_READY solo crea un candidato para autorización. No equivale a AUTHORIZED y no permite tocar repositorios.'
-      : 'Nunca declarar que no existe trabajo de implementación pendiente sin evaluar IMPLEMENTATION_READY_QUEUE.';
+      ? 'Solo el package actual puede avanzar. IMPLEMENTATION_READY exige autorización humana y no equivale a AUTHORIZED.'
+      : 'Nunca elegir entre packages: consumir el package actual derivado por PACKAGE_EXECUTION_LINEAR.';
   const candidateBlock = candidate
-    ? `\nPACKAGE IMPLEMENTABLE DETECTED\n- Package: ${candidate.package_id}\n- Gate: ${candidate.gate_id} = PASS\n- Blockers: 0\n- Next execution candidate: ${candidate.next_execution}\n- Physical authorization required: TRUE`
+    ? `\nPACKAGE IMPLEMENTABLE DETECTED\n- Package: ${candidate.package_id}\n- Gate: ${candidate.gate_id} = PASS\n- Blockers: 0\n- Next execution: ${candidate.next_execution}\n- Physical authorization required: TRUE`
     : '';
   const coordinatedBlock = coordinated?.readinessCandidate
-    ? `\nCOORDINATED PHYSICAL CANDIDATE\n- Status: READY_FOR_AUTHORIZATION\n- Instance: ${coordinated.readinessCandidate.instanceId}\n- Source: IMPLEMENTATION_READY_QUEUE\n- Authorization required: TRUE\n- No implementation instance is authorized by this projection.`
+    ? `\nCOORDINATED PHYSICAL CANDIDATE\n- Status: READY_FOR_AUTHORIZATION\n- Instance: ${coordinated.readinessCandidate.instanceId}\n- Source: PACKAGE_EXECUTION_LINEAR\n- Authorization required: TRUE\n- No implementation instance is authorized by this projection.`
     : '';
   const readinessProjection = stableReadinessStarterProjection(readiness.block);
-  return `PACKAGE READINESS SCANNER — OBLIGATORIO\n\nAntes de seleccionar la siguiente tarea y después del cierre de cada tarea, el estado debe haber pasado por PACKAGE READINESS SCAN.\nToda condición PASS exige evidencia trazable. Si la evidencia no puede demostrarse, el estado es UNKNOWN y readiness queda bloqueado.\nDELIV-PKG-001..025 y E5-GATE-008 son contratos globales reutilizables; no se reejecutan cronológicamente como tareas globales por cada package.\nIMPLEMENTATION_READY requiere: package_id, dossier DELIV-PKG completo, E5-GATE-008::<package_id> PASS, cero bloqueadores y dependencias físicas disponibles.\n${laneRule}\n\n${packageGateLifecycleBlock(readiness)}\n\nIMPLEMENTATION_READY_QUEUE:\n${queueLines(readiness.registry)}${candidateBlock}${coordinatedBlock}\n\n${readinessProjection}`;
+  return `PACKAGE READINESS SCANNER — OBLIGATORIO\n\nAntes de determinar la siguiente acción y después del cierre de cada tarea, el estado debe haber pasado por PACKAGE READINESS SCAN.\nToda condición PASS exige evidencia trazable. Si la evidencia no puede demostrarse, el estado es UNKNOWN y el package actual conserva el turno bloqueado.\nDELIV-PKG-001..025 y E5-GATE-008 son contratos globales reutilizables; no se reejecutan cronológicamente como tareas globales por cada package.\nIMPLEMENTATION_READY requiere: package_id, dossier DELIV-PKG completo, E5-GATE-008::<package_id> PASS, cero bloqueadores y dependencias físicas disponibles.\n${laneRule}\n\n${packageGateLifecycleBlock(readiness)}\n\nPACKAGE_EXECUTION_LINEAR — TURNO ÚNICO:\n${queueLines(readiness.registry)}${candidateBlock}${coordinatedBlock}\n\n${readinessProjection}`;
 }
 
 export function injectReadinessIntoSources({ baseResult, readiness, coordinated }) {
@@ -136,13 +132,15 @@ function renderFromTemplate(template, currentWork, intent) {
 }
 
 function terminalFallback({ root, readiness }) {
+  const execution = readiness.registry?.package_execution ?? null;
+  const current = execution?.current ?? null;
   const candidate = firstReady(readiness.registry);
-  if (!candidate) throw new Error('No existe continuidad documental ni package listo para construir un iniciador terminal.');
+  if (!current) throw new Error('No existe continuidad documental ni package actual para construir un iniciador terminal.');
   const template = fs.readFileSync(path.join(root, ...TEMPLATE_PATH.split('/')), 'utf8').replace(/\r\n?/gu, '\n');
   if (template.split(SLOT).length !== 2) throw new Error(`${TEMPLATE_PATH} debe contener exactamente una ranura ${SLOT}.`);
-  const selector = `VENTO OS — SELECTOR DE INICIADOR POR INTENCIÓN\n\nDOCUMENTATION_QUEUE: EMPTY\nIMPLEMENTATION_READY_QUEUE: NON_EMPTY\nNEXT: ${candidate.next_execution}\nPHYSICAL_AUTHORIZATION_REQUIRED: TRUE\n`;
-  const documentationCurrent = `INTENT_LOCK: DOCUMENTATION\nCONVERSATION_LANE: DOCUMENTARY\nDO_NOT_SWITCH_LANES: TRUE\n\nDOCUMENTATION_QUEUE = EMPTY\n\nNo inventes una tarea documental. El trabajo documental terminó para la continuidad visible.\nExiste ${candidate.package_id} en IMPLEMENTATION_READY_QUEUE. Regístralo y usa el iniciador físico para preparar su autorización; esta conversación no autoriza ni ejecuta el package.\n\n${renderReadinessStarterBlock({ readiness, lane: 'DOCUMENTATION' })}`;
-  const implementationCurrent = `INTENT_LOCK: PHYSICAL_IMPLEMENTATION\nCONVERSATION_LANE: PHYSICAL\nDO_NOT_SWITCH_LANES: TRUE\n\nPACKAGE READY CANDIDATE\n- Package: ${candidate.package_id}\n- Instance candidate: ${candidate.next_execution}\n- Gate: ${candidate.gate_id} = PASS\n- Status: READY_FOR_AUTHORIZATION\n- PHYSICAL_AUTHORIZATION_REQUIRED: TRUE\n\nNo ejecutes docs:implementation:start ni crees AUTHORIZED hasta que el usuario apruebe el alcance físico exacto.\n\n${renderReadinessStarterBlock({ readiness, lane: 'PHYSICAL_IMPLEMENTATION' })}`;
+  const selector = `VENTO OS — SELECTOR DE INICIADOR POR INTENCIÓN\n\nDOCUMENTATION_QUEUE: EMPTY\nPACKAGE_EXECUTION_CURRENT: ${current.package_id}\nPACKAGE_EXECUTION_ACTION: ${current.next_action.type}\nNEXT: ${current.next_action.target}\nHUMAN_PACKAGE_SELECTION: FALSE\n`;
+  const documentationCurrent = `INTENT_LOCK: DOCUMENTATION\nCONVERSATION_LANE: DOCUMENTARY\nDO_NOT_SWITCH_LANES: TRUE\n\nDOCUMENTATION_QUEUE = EMPTY\n\nNo inventes una tarea documental ni elijas otro package. ${current.package_id} conserva el turno y exige ${current.next_action.type} sobre ${current.next_action.target}.\n\n${renderReadinessStarterBlock({ readiness, lane: 'DOCUMENTATION' })}`;
+  const implementationCurrent = `INTENT_LOCK: PHYSICAL_IMPLEMENTATION\nCONVERSATION_LANE: PHYSICAL\nDO_NOT_SWITCH_LANES: TRUE\n\nPACKAGE EXECUTION CURRENT\n- Package: ${current.package_id}\n- Position: ${current.position}/${execution.sequence.length}\n- Action: ${current.next_action.type}\n- Target: ${current.next_action.target}\n- Command: ${current.next_action.command}\n- Status: ${candidate ? 'READY_FOR_AUTHORIZATION' : 'BLOCKED_ON_CURRENT'}\n- PHYSICAL_AUTHORIZATION_REQUIRED: ${candidate ? 'TRUE' : 'NOT_YET_APPLICABLE'}\n\n${candidate ? 'No ejecutes docs:implementation:start ni crees AUTHORIZED hasta que el usuario apruebe el alcance físico exacto.' : 'No saltes a otro package. Resuelve la acción exacta del package actual antes de iniciar implementación física.'}\n\n${renderReadinessStarterBlock({ readiness, lane: 'PHYSICAL_IMPLEMENTATION' })}`;
   return {
     control: null,
     source: selector,
@@ -169,7 +167,7 @@ export function buildReadinessChatgptWorkStarter({
     try {
       resolvedBase = buildBaseChatgptWorkStarter({ root: repositoryRoot });
     } catch (error) {
-      if (!firstReady(readiness.registry)) throw error;
+      if (!readiness.registry?.package_execution?.current) throw error;
       resolvedBase = terminalFallback({ root: repositoryRoot, readiness });
     }
   }

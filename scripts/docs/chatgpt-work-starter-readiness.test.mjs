@@ -8,16 +8,36 @@ import {
 } from './chatgpt-work-starter-readiness.mjs';
 
 function readiness(ready = true) {
+  const packageId = 'NEXO-PACKAGE-001';
   const queue = ready ? [{
-    package_id: 'NEXO-PACKAGE-001',
+    package_id: packageId,
     capability_id: 'NEXO_PACKAGE',
     owner_application: 'nexo',
     gate_id: 'E5-GATE-008::NEXO-PACKAGE-001',
     next_execution: 'SHELL-CI-020::NEXO-PACKAGE-001',
   }] : [];
+  const current = {
+    position: 1,
+    package_id: packageId,
+    layer: 2,
+    status: ready ? 'IMPLEMENTATION_READY' : 'COMPILED',
+    next_action: ready
+      ? { type: 'AUTHORIZE_PHYSICAL_IMPLEMENTATION', target: `SHELL-CI-020::${packageId}`, command: 'npm run docs:implementation:status', reason: 'Listo.' }
+      : { type: 'PREPARE_PACKAGE_GATE', target: packageId, command: `npm run docs:package:prepare -- --package-id ${packageId}`, reason: 'Falta expediente.' },
+  };
   return {
     block: '=== PACKAGE READINESS SCAN ===\nIMPLEMENTATION READY:\n- NEXO-PACKAGE-001\n=== END PACKAGE READINESS ===',
-    registry: { implementation_ready_queue: queue, packages: [] },
+    registry: {
+      implementation_ready_queue: queue,
+      package_execution: {
+        mode: 'DETERMINISTIC_LINEAR_TOPOLOGICAL',
+        state: ready ? 'READY_FOR_AUTHORIZATION' : 'BLOCKED_ON_CURRENT',
+        current,
+        sequence: [current],
+        deferred: [],
+      },
+      packages: [{ package_id: packageId, package_gate: ready ? { status: 'APPROVED_FOR_IMPLEMENTATION' } : null }],
+    },
   };
 }
 
@@ -60,7 +80,7 @@ test('el mismo snapshot de readiness se inyecta en selector y ambos iniciadores'
 
 test('el iniciador documental avisa package listo sin cambiar de carril', () => {
   const block = renderReadinessStarterBlock({ readiness: readiness(), lane: 'DOCUMENTATION', coordinated });
-  assert.match(block, /conservar esta conversación en DOCUMENTATION/u);
+  assert.match(block, /Conservar esta conversación en DOCUMENTATION/u);
   assert.match(block, /NO cambiar de carril/u);
   assert.match(block, /PACKAGE IMPLEMENTABLE DETECTED/u);
   assert.match(block, /Physical authorization required: TRUE/u);
@@ -68,35 +88,35 @@ test('el iniciador documental avisa package listo sin cambiar de carril', () => 
 
 test('el iniciador físico distingue package listo de instancia AUTHORIZED', () => {
   const block = renderReadinessStarterBlock({ readiness: readiness(), lane: 'PHYSICAL_IMPLEMENTATION', coordinated });
-  assert.match(block, /IMPLEMENTATION_READY solo crea un candidato para autorización/u);
-  assert.match(block, /No equivale a AUTHORIZED/u);
+  assert.match(block, /Solo el package actual puede avanzar/u);
+  assert.match(block, /no equivale a AUTHORIZED/u);
   assert.match(block, /Status: READY_FOR_AUTHORIZATION/u);
   assert.match(block, /No implementation instance is authorized/u);
 });
 
 test('cola vacía no inventa candidato implementable', () => {
   const block = renderReadinessStarterBlock({ readiness: readiness(false), lane: 'SELECTOR', coordinated: null });
-  assert.match(block, /IMPLEMENTATION_READY_QUEUE:\n- NONE/u);
+  assert.match(block, /PACKAGE_EXECUTION_LINEAR — TURNO ÚNICO:\n- 1\/1: NEXO-PACKAGE-001 -> PREPARE_PACKAGE_GATE/u);
   assert.doesNotMatch(block, /PACKAGE IMPLEMENTABLE DETECTED/u);
 });
 
-test('un expediente existente no se convierte en package enfocado sin selección explícita', () => {
+test('el expediente enfocado siempre pertenece al package actual derivado', () => {
   const snapshot = readiness(false);
-  snapshot.registry.package_selection = {
-    state: 'NOT_DUE',
-    owner: 'OWN-OPS',
-    selected_package_id: null,
-    eligible_package_ids: [],
+  snapshot.registry.package_execution.current = {
+    ...snapshot.registry.package_execution.current,
+    package_id: 'GAP-PKG-061',
+    next_action: { type: 'MATURE_PACKAGE_GATE', target: 'GAP-PKG-061', command: 'npm run docs:package:gate:status -- --package-id GAP-PKG-061', reason: 'Completar gate.' },
   };
+  snapshot.registry.package_execution.sequence = [snapshot.registry.package_execution.current];
   snapshot.registry.packages = [{
     package_id: 'GAP-PKG-061',
     package_gate: { status: 'WAITING_DOCUMENTATION', relative_path: 'package-gate-instances/GAP-PKG-061.json' },
   }];
   const block = renderReadinessStarterBlock({ readiness: snapshot, lane: 'SELECTOR', coordinated: null });
-  assert.match(block, /Estado de selección: NOT_DUE/u);
-  assert.match(block, /Responsable de selección: OWN-OPS/u);
-  assert.match(block, /Package enfocado: NONE/u);
-  assert.doesNotMatch(block, /Package enfocado: GAP-PKG-061/u);
+  assert.match(block, /Selección humana de package: FALSE/u);
+  assert.match(block, /Package actual: GAP-PKG-061/u);
+  assert.match(block, /Expediente exacto: package-gate-instances\/GAP-PKG-061.json/u);
+  assert.match(block, /Acción exacta: MATURE_PACKAGE_GATE/u);
 });
 
 test('la proyección del starter es determinista entre triggers operacionales', () => {

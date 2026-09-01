@@ -1125,11 +1125,25 @@ package. Cada `GAP-PKG-NNN` madura esos contratos en un expediente exclusivo baj
 `package-gate-instances/GAP-PKG-NNN.json`, gobernado por
 `package-gate-policy.json`.
 
+El orden de maduración e implementación es único y automático. La fuente
+canónica es la matriz de dependencias y capas de `DELIV-PKG-015`; el control
+aplica, en este orden, aristas explícitas entre packages, capa de implementación
+y `package_id` como desempate estable. No existe selección humana de package.
+El primer package no cerrado conserva el turno aunque esté bloqueado y aunque
+otro posterior alcance `IMPLEMENTATION_READY`. Los packages declarados
+`NO_EJECUTABLE` sin orden físico canónico permanecen diferidos fuera de la línea
+activa hasta que su fuente propietaria materialice un orden válido.
+
+`npm run docs:package:execution:status` muestra siempre un único package actual,
+su posición, la acción exacta, el objetivo y el comando de continuación.
+`npm run docs:package:execution:check` valida la misma derivación en modo
+fail-closed. Ninguno de estos comandos concede autorización física.
+
 Secuencia obligatoria:
 
-1. `npm run docs:package:prepare -- --package-id GAP-PKG-NNN` crea o actualiza el
-   expediente; nunca se crea manualmente ni se selecciona otro package por
-   inferencia.
+1. Para el package actual indicado por `docs:package:execution:status`,
+   `npm run docs:package:prepare -- --package-id GAP-PKG-NNN` crea o actualiza el
+   expediente; nunca se crea manualmente ni se adelanta otro package.
 2. Se completan identidad física exacta, unidades de implementación, plan de
    pruebas, observabilidad, aceptación y rollback. Estas son especificaciones de
    evidencia futura; no se presentan como ejecución física ya realizada.
@@ -1141,8 +1155,8 @@ Secuencia obligatoria:
    build, scanner o iniciador puede inferir esta aprobación.
 5. Solo cuando las tareas prerrequisito están aprobadas, las cuatro secciones
    están completas, la autorización es explícita y las dependencias globales
-   están `VERIFIED`, el scanner puede proyectar `IMPLEMENTATION_READY` y proponer
-   `SHELL-CI-020::<package-id>`.
+   están `VERIFIED`, el scanner puede proyectar `IMPLEMENTATION_READY` para el
+   turno vigente y exponer `SHELL-CI-020::<package-id>` para autorización física.
 
 `IMPLEMENTATION_READY` sigue sin equivaler a `AUTHORIZED`: la implementación
 física conserva su autorización separada en `implementation-instances/`.

@@ -5,6 +5,7 @@ import test from 'node:test';
 import {
   evaluateCapability,
   parseCanonicalPackageCatalogFromSource,
+  parsePackageExecutionProjection,
   parsePackageTaskRouting,
   prioritizeImplementationReadyQueue,
   renderPackageDetail,
@@ -194,7 +195,11 @@ function canonicalCatalogSource({ passPackage = null } = {}) {
     const dominant = packageId === 'GAP-PKG-001' ? 'TEST-DOM-001' : 'TEST-CAP-001';
     return `| \`${packageId}\` | \`${dominant}\` | \`DATABASE_RPC_BOUNDARY\` | \`YES\` | \`YES\` | \`NO\` | \`YES\` | \`NO\` | \`ESPECIFICADO\` |`;
   }).join('\n');
-  return `### ✅ DELIV-PKG-002 — Vincular\n\n| package_id | process_id | gap_id estable E1 | capability_id |\n| --- | --- | --- | --- |\n| \`GAP-PKG-001\` | \`VPROC-0001\` | \`H-001\` | \`CAP-01.01\` |\n\n### ✅ DELIV-PKG-007 — Runtime\n\n| package_id | Tarea dominante | runtime_profile | Lógica | Server Action | API | RPC | Edge | Estado |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${dominantRows}\n\n### ✅ DELIV-PKG-017 — Observabilidad\n\n| Paquete | Repositorio propietario | Perfil 016 | Runtime | Responsable de decisión | Resultado 017 | Gate heredado |\n| --- | --- | --- | --- | --- | --- | --- |\n${runtimeRows}\n\n### ✅ DELIV-PKG-025 — Cierre final\n\n| package_id | Disposición 025 | Estado 023 heredado | Estado físico heredado | implementation_unit_id | Decisión final 025 | Propietario de salida | Condición de salida |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n${finalRows}\n`;
+  const orderRows = Array.from({ length: 207 }, (_, index) => {
+    const packageId = `GAP-PKG-${String(index + 1).padStart(3, '0')}`;
+    return `| \`${packageId}\` | ninguna arista confirmada | \`BLOQUEADO_POR_IDENTIDAD\` | Capa 1: contrato/datos autoritativos |`;
+  }).join('\n');
+  return `### ✅ DELIV-PKG-002 — Vincular\n\n| package_id | process_id | gap_id estable E1 | capability_id |\n| --- | --- | --- | --- |\n| \`GAP-PKG-001\` | \`VPROC-0001\` | \`H-001\` | \`CAP-01.01\` |\n\n### ✅ DELIV-PKG-007 — Runtime\n\n| package_id | Tarea dominante | runtime_profile | Lógica | Server Action | API | RPC | Edge | Estado |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${dominantRows}\n\n### ✅ DELIV-PKG-015 — Orden\n\n| package_id | Dependencia entre paquetes | Orden actual | Orden posterior al gate |\n| --- | --- | --- | --- |\n${orderRows}\n\n### ✅ DELIV-PKG-017 — Observabilidad\n\n| Paquete | Repositorio propietario | Perfil 016 | Runtime | Responsable de decisión | Resultado 017 | Gate heredado |\n| --- | --- | --- | --- | --- | --- | --- |\n${runtimeRows}\n\n### ✅ DELIV-PKG-025 — Cierre final\n\n| package_id | Disposición 025 | Estado 023 heredado | Estado físico heredado | implementation_unit_id | Decisión final 025 | Propietario de salida | Condición de salida |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n${finalRows}\n`;
 }
 
 test('el contrato conserva 14 condiciones, DELIV-PKG-001..025 y catálogo GAP-PKG-001..207', () => {
@@ -209,7 +214,21 @@ test('el contrato conserva 14 condiciones, DELIV-PKG-001..025 y catálogo GAP-PK
   assert.equal(contract.canonical_package_catalog.expected_gap_memberships, 820);
   assert.equal(contract.canonical_package_catalog.expected_historical_gap_memberships, 814);
   assert.equal(contract.canonical_package_catalog.expected_append_only_gap_memberships, 6);
-  assert.equal(contract.queue_policy.decision_wave_is_implementation_priority, false);
+  assert.equal(contract.queue_policy.implementation_ready_diagnostic_only, true);
+  assert.equal(contract.queue_policy.linear_execution_source, 'DELIV-PKG-015');
+});
+
+test('DELIV-PKG-015 materializa capas y aristas explícitas sin depender de la fila que contiene la flecha', () => {
+  const projection = parsePackageExecutionProjection(`### ✅ DELIV-PKG-015 — Orden
+
+| package_id | Dependencia entre paquetes | Orden actual | Orden posterior al gate |
+| --- | --- | --- | --- |
+| \`GAP-PKG-001\` | \`GAP-PKG-001 → GAP-PKG-002\` | \`BLOQUEADO\` | Capa 1: contrato |
+| \`GAP-PKG-002\` | ninguna adicional | \`BLOQUEADO\` | Capa 2: dominio |
+`);
+  assert.equal(projection.get('GAP-PKG-001').layer, 1);
+  assert.equal(projection.get('GAP-PKG-002').layer, 2);
+  assert.deepEqual(projection.get('GAP-PKG-002').depends_on_package_ids, ['GAP-PKG-001']);
 });
 
 test('evidencia ausente produce UNKNOWN y bloquea la creación del package especial', () => {
@@ -257,7 +276,8 @@ test('dossier completo + gate + dependencias VERIFIED produce IMPLEMENTATION_REA
   assert.equal(pkg.blockers.length, 0);
   assert.equal(pkg.next_execution, 'SHELL-CI-020::TEST-CAPABILITY-001');
   assert.equal(second.registry.implementation_ready_queue[0].physical_authorization_required, true);
-  assert.equal(second.registry.recommended_next_package.package_id, 'TEST-CAPABILITY-001');
+  assert.equal(second.registry.package_execution.current, null);
+  assert.deepEqual(second.registry.package_execution.deferred.map(({ package_id: packageId }) => packageId), ['TEST-CAPABILITY-001']);
 });
 
 test('dossier completo sin fundación física VERIFIED queda READY_FOR_GATE y fuera de la cola', () => {
@@ -366,7 +386,8 @@ test('scanner de producción reconcilia los 207 GAP-PKG directamente desde E5', 
   assert.equal(effective.task_prerequisites.approved, 3);
   assert.deepEqual(effective.task_prerequisites.missing_task_ids, ['TEST-PENDING-001']);
   assert.equal(result.registry.implementation_ready_queue.length, 0);
-  assert.equal(result.registry.recommended_next_package, null);
+  assert.equal(result.registry.package_execution.current.package_id, 'GAP-PKG-001');
+  assert.equal(result.registry.package_execution.current.next_action.type, 'PREPARE_PACKAGE_GATE');
 });
 
 
@@ -427,8 +448,9 @@ test('un GAP-PKG con DELIV-PKG-025 PASS entra a la cola solo cuando dependencias
     },
   });
   assert.equal(result.registry.implementation_ready_queue.length, 1);
-  assert.equal(result.registry.recommended_next_package.package_id, 'GAP-PKG-004');
-  assert.equal(result.registry.recommended_next_package.next_execution, 'SHELL-CI-020::GAP-PKG-004');
+  assert.equal(result.registry.implementation_ready_queue[0].package_id, 'GAP-PKG-004');
+  assert.equal(result.registry.package_execution.current.package_id, 'GAP-PKG-001');
+  assert.equal(result.registry.package_execution.current.next_action.type, 'PREPARE_PACKAGE_GATE');
 });
 
 test('GAP-CTRL-006 aporta tareas primarias y de soporte sin inferencia semántica', () => {
@@ -497,7 +519,7 @@ test('el package muestra tareas aprobadas, pendientes y progreso exacto', () => 
   assert.ok(!pkg.blockers.some((blocker) => blocker.startsWith('GATE:')));
 });
 
-test('nearest-to-ready usa obligaciones reales y no package_id como proximidad primaria', () => {
+test('nearest-to-ready queda como dato diagnóstico y no compite con el turno lineal', () => {
   const result = scanPackageReadiness({
     root: process.cwd(),
     trigger: 'test-nearest-progress',
@@ -517,8 +539,9 @@ test('nearest-to-ready usa obligaciones reales y no package_id como proximidad p
   });
   assert.equal(result.registry.nearest_to_ready_queue[0].package_id, 'GAP-PKG-002');
   assert.equal(result.registry.nearest_to_ready_queue[0].task_progress.remaining, 0);
-  assert.match(result.block, /TASKS: 1\/1 \(100%\)/u);
-  assert.match(result.block, /GATES:/u);
+  assert.match(result.block, /CURRENT PACKAGE: GAP-PKG-001/u);
+  assert.match(result.block, /ACTION: PREPARE_PACKAGE_GATE/u);
+  assert.doesNotMatch(result.block, /NEAREST TO READY/u);
 });
 
 test('detalle por package lista tareas, gates y obligaciones restantes', () => {
@@ -553,11 +576,11 @@ test('detalle por package lista tareas, gates y obligaciones restantes', () => {
   assert.match(report, /package-gap-pkg-001/u);
 });
 
-test('priorización usa carril explícito activo y luego antigüedad de readiness, no ola de decisión', () => {
+test('la cola diagnóstica de ready es estable y no decide el turno por carril ni antigüedad', () => {
   const queue = prioritizeImplementationReadyQueue([
     { package_id: 'GAP-PKG-002', ready_for_gate_at: '2026-08-29T10:00:00Z' },
     { package_id: 'GAP-PKG-001', ready_for_gate_at: '2026-08-29T11:00:00Z' },
     { package_id: 'SPECIAL-001', ready_for_gate_at: '2026-08-29T12:00:00Z' },
   ], { lanes: [{ lane_id: 'SPECIAL-001', active: true, status: 'ACTIVE' }] });
-  assert.deepEqual(queue.map(({ package_id: packageId }) => packageId), ['SPECIAL-001', 'GAP-PKG-002', 'GAP-PKG-001']);
+  assert.deepEqual(queue.map(({ package_id: packageId }) => packageId), ['GAP-PKG-001', 'GAP-PKG-002', 'SPECIAL-001']);
 });

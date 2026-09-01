@@ -4,10 +4,11 @@ import path from 'node:path';
 import { scanPackageReadiness } from './package-readiness-scanner.mjs';
 
 function queueCandidate(registry) {
-  const selectedPackageId = registry?.package_selection?.selected_package_id ?? null;
-  const first = selectedPackageId
-    ? registry?.implementation_ready_queue?.find(({ package_id: packageId }) => packageId === selectedPackageId) ?? null
-    : null;
+  const current = registry?.package_execution?.current ?? null;
+  if (current?.next_action.type !== 'AUTHORIZE_PHYSICAL_IMPLEMENTATION') return null;
+  const first = registry?.implementation_ready_queue?.find(
+    ({ package_id: packageId }) => packageId === current.package_id,
+  ) ?? null;
   if (!first) return null;
   return {
     packageId: first.package_id,
@@ -16,8 +17,25 @@ function queueCandidate(registry) {
     gateId: first.gate_id,
     instanceId: first.next_execution,
     status: 'READY_FOR_AUTHORIZATION',
-    source: 'IMPLEMENTATION_READY_QUEUE',
+    source: 'PACKAGE_EXECUTION_LINEAR',
     authorizationRequired: true,
+  };
+}
+
+function linearPackageAction(registry) {
+  const execution = registry?.package_execution ?? null;
+  const current = execution?.current ?? null;
+  if (!current) return null;
+  const action = current.next_action;
+  return {
+    type: action.type,
+    target: action.target,
+    title: `${current.package_id} ocupa el turno ${current.position}/${execution.sequence.length}`,
+    instruction: `${action.reason} Ejecutar: ${action.command}`,
+    why: 'La secuencia es determinista; un package bloqueado conserva el turno y no puede ser adelantado.',
+    command: action.command,
+    packageId: current.package_id,
+    source: 'PACKAGE_EXECUTION_LINEAR',
   };
 }
 
@@ -26,54 +44,36 @@ export function coordinateImplementationStatus({ baseControl, registry }) {
     throw new Error('baseControl es obligatorio.');
   }
   const candidate = queueCandidate(registry);
-  const selection = registry?.package_selection ?? null;
+  const current = registry?.package_execution?.current ?? null;
+  const linearAction = linearPackageAction(registry);
   const baseActive = baseControl.physical?.active ?? null;
 
   if (baseActive) {
     return {
       ...baseControl,
       readinessCandidate: candidate,
+      readinessCurrent: current,
       coordinatedPrimaryAction: baseControl.primaryAction,
       coordinationSource: 'IMPLEMENTATION_CONTROL_ACTIVE_INSTANCE',
     };
   }
 
-  if (!candidate) {
-    if (selection?.state === 'AWAITING_DECISION') {
-      return {
-        ...baseControl,
-        readinessCandidate: null,
-        coordinatedPrimaryAction: {
-          type: 'DECIDIR_PACKAGE',
-          target: 'NONE',
-          title: 'Seleccionar explícitamente un package elegible',
-          instruction: `El responsable ${selection.owner} debe aplicar los criterios de PACKAGE-SELECTION-001 y registrar APROBADO con evidencia; la cola no selecciona automáticamente.`,
-          why: `${selection.eligible_package_ids.length} package(s) están elegibles y ninguno está seleccionado.`,
-          source: 'PACKAGE_SELECTION_POLICY',
-        },
-        coordinationSource: 'PACKAGE_SELECTION_AWAITING_DECISION',
-      };
-    }
+  if (!linearAction) {
     return {
       ...baseControl,
       readinessCandidate: null,
+      readinessCurrent: null,
       coordinatedPrimaryAction: baseControl.primaryAction,
-      coordinationSource: 'IMPLEMENTATION_CONTROL_NO_READY_PACKAGE',
+      coordinationSource: 'PACKAGE_EXECUTION_COMPLETE',
     };
   }
 
   return {
     ...baseControl,
     readinessCandidate: candidate,
-    coordinatedPrimaryAction: {
-      type: 'AUTORIZAR_IMPLEMENTACION',
-      target: candidate.instanceId,
-      title: `Package ${candidate.packageId} listo para autorización física`,
-      instruction: `Definir y aprobar el alcance físico exacto de ${candidate.instanceId}; no crear AUTHORIZED ni ejecutar cambios antes de aprobación humana explícita.`,
-      why: `${candidate.packageId} está en IMPLEMENTATION_READY_QUEUE con ${candidate.gateId} PASS y cero bloqueadores.`,
-      source: candidate.source,
-    },
-    coordinationSource: 'IMPLEMENTATION_READY_QUEUE',
+    readinessCurrent: current,
+    coordinatedPrimaryAction: linearAction,
+    coordinationSource: 'PACKAGE_EXECUTION_LINEAR',
   };
 }
 
@@ -91,6 +91,11 @@ function printStatus(status) {
   console.log(`COORDINATION_SOURCE: ${status.coordinationSource}`);
   console.log(`ACTION: ${action.type}`);
   console.log(`TARGET: ${action.target}`);
+  if (action.command) console.log(`COMMAND: ${action.command}`);
+  if (status.readinessCurrent) {
+    console.log(`CURRENT_PACKAGE: ${status.readinessCurrent.package_id}`);
+    console.log(`CURRENT_POSITION: ${status.readinessCurrent.position}`);
+  }
   if (status.readinessCandidate) {
     console.log(`PACKAGE_ID: ${status.readinessCandidate.packageId}`);
     console.log(`PACKAGE_GATE: ${status.readinessCandidate.gateId}`);

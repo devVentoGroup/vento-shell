@@ -14,11 +14,20 @@ function baseControl(active = null) {
 }
 
 const readyRegistry = {
-  package_selection: {
-    state: 'SELECTED',
-    owner: 'OWN-OPS',
-    selected_package_id: 'NEXO-PACKAGE-001',
-    eligible_package_ids: ['NEXO-PACKAGE-001'],
+  package_execution: {
+    mode: 'DETERMINISTIC_LINEAR_TOPOLOGICAL',
+    state: 'READY_FOR_AUTHORIZATION',
+    sequence: [{ package_id: 'NEXO-PACKAGE-001' }],
+    current: {
+      position: 1,
+      package_id: 'NEXO-PACKAGE-001',
+      next_action: {
+        type: 'AUTHORIZE_PHYSICAL_IMPLEMENTATION',
+        target: 'SHELL-CI-020::NEXO-PACKAGE-001',
+        command: 'npm run docs:implementation:status',
+        reason: 'Gate completo; falta autorización física humana.',
+      },
+    },
   },
   implementation_ready_queue: [{
     package_id: 'NEXO-PACKAGE-001',
@@ -37,36 +46,44 @@ test('una instancia física ya activa conserva prioridad sobre la cola de packag
   assert.equal(result.readinessCandidate.packageId, 'NEXO-PACKAGE-001');
 });
 
-test('sin instancia activa, IMPLEMENTATION_READY_QUEUE produce candidato READY_FOR_AUTHORIZATION', () => {
+test('sin instancia activa, el package actual ready produce candidato READY_FOR_AUTHORIZATION', () => {
   const result = coordinateImplementationStatus({ baseControl: baseControl(), registry: readyRegistry });
-  assert.equal(result.coordinationSource, 'IMPLEMENTATION_READY_QUEUE');
-  assert.equal(result.coordinatedPrimaryAction.type, 'AUTORIZAR_IMPLEMENTACION');
+  assert.equal(result.coordinationSource, 'PACKAGE_EXECUTION_LINEAR');
+  assert.equal(result.coordinatedPrimaryAction.type, 'AUTHORIZE_PHYSICAL_IMPLEMENTATION');
   assert.equal(result.coordinatedPrimaryAction.target, 'SHELL-CI-020::NEXO-PACKAGE-001');
   assert.equal(result.readinessCandidate.status, 'READY_FOR_AUTHORIZATION');
   assert.equal(result.readinessCandidate.authorizationRequired, true);
   assert.equal(result.implementationAuthorized, undefined);
 });
 
-test('cola vacía conserva la acción documental base', () => {
+test('línea completa conserva la acción documental base', () => {
   const base = baseControl();
   const result = coordinateImplementationStatus({
     baseControl: base,
-    registry: { implementation_ready_queue: [] },
+    registry: { implementation_ready_queue: [], package_execution: { current: null, sequence: [] } },
   });
-  assert.equal(result.coordinationSource, 'IMPLEMENTATION_CONTROL_NO_READY_PACKAGE');
+  assert.equal(result.coordinationSource, 'PACKAGE_EXECUTION_COMPLETE');
   assert.equal(result.coordinatedPrimaryAction, base.primaryAction);
   assert.equal(result.readinessCandidate, null);
 });
 
-test('una cola elegible sin selección exige decisión de OWN-OPS y no crea candidato físico', () => {
+test('un package actual bloqueado conserva el turno aunque otro esté ready', () => {
   const result = coordinateImplementationStatus({
     baseControl: baseControl(),
     registry: {
-      package_selection: {
-        state: 'AWAITING_DECISION',
-        owner: 'OWN-OPS',
-        selected_package_id: null,
-        eligible_package_ids: ['GAP-PKG-061'],
+      package_execution: {
+        state: 'BLOCKED_ON_CURRENT',
+        sequence: [{ package_id: 'GAP-PKG-001' }, { package_id: 'GAP-PKG-061' }],
+        current: {
+          position: 1,
+          package_id: 'GAP-PKG-001',
+          next_action: {
+            type: 'PREPARE_PACKAGE_GATE',
+            target: 'GAP-PKG-001',
+            command: 'npm run docs:package:prepare -- --package-id GAP-PKG-001',
+            reason: 'Falta expediente.',
+          },
+        },
       },
       implementation_ready_queue: [{
         package_id: 'GAP-PKG-061',
@@ -74,8 +91,8 @@ test('una cola elegible sin selección exige decisión de OWN-OPS y no crea cand
       }],
     },
   });
-  assert.equal(result.coordinationSource, 'PACKAGE_SELECTION_AWAITING_DECISION');
-  assert.equal(result.coordinatedPrimaryAction.type, 'DECIDIR_PACKAGE');
-  assert.equal(result.coordinatedPrimaryAction.target, 'NONE');
+  assert.equal(result.coordinationSource, 'PACKAGE_EXECUTION_LINEAR');
+  assert.equal(result.coordinatedPrimaryAction.type, 'PREPARE_PACKAGE_GATE');
+  assert.equal(result.coordinatedPrimaryAction.target, 'GAP-PKG-001');
   assert.equal(result.readinessCandidate, null);
 });

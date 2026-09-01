@@ -55,13 +55,13 @@ test('package.json enruta starter, status, commit-scope y lifecycle por readines
   assert.equal(packageJson.scripts['docs:package:gate:status'], 'node scripts/docs/package-gate-lifecycle.mjs status');
   assert.equal(packageJson.scripts['docs:package:gate:check'], 'node scripts/docs/package-gate-lifecycle.mjs check');
   assert.equal(packageJson.scripts['docs:package:gate:approve'], 'node scripts/docs/package-gate-lifecycle.mjs approve');
-  assert.equal(packageJson.scripts['docs:package:selection:status'], 'node scripts/docs/package-selection-control.mjs status');
-  assert.equal(packageJson.scripts['docs:package:selection:check'], 'node scripts/docs/package-selection-control.mjs check');
-  assert.equal(packageJson.scripts['docs:package:select'], 'node scripts/docs/package-selection-control.mjs select');
+  assert.equal(packageJson.scripts['docs:package:execution:status'], 'node scripts/docs/package-execution-control.mjs status');
+  assert.equal(packageJson.scripts['docs:package:execution:check'], 'node scripts/docs/package-execution-control.mjs check');
+  assert.equal(packageJson.scripts['docs:package:select'], undefined);
   assert.match(packageJson.scripts['docs:plan:check'], /package-gate-lifecycle\.mjs check/u);
-  assert.match(packageJson.scripts['docs:plan:check'], /package-selection-control\.mjs check/u);
+  assert.match(packageJson.scripts['docs:plan:check'], /package-execution-control\.mjs check/u);
   assert.match(packageJson.scripts['docs:plan:test'], /package-gate-control\.test\.mjs/u);
-  assert.match(packageJson.scripts['docs:plan:test'], /package-selection-control\.test\.mjs/u);
+  assert.match(packageJson.scripts['docs:plan:test'], /package-execution-control\.test\.mjs/u);
   assert.match(packageJson.scripts['docs:plan:test'], /correction-starter\.test\.mjs/u);
 });
 
@@ -87,14 +87,15 @@ test('scanner separa registry documental persistente de estado físico efectivo'
 test('los iniciadores usan una única proyección readiness y prohíben cambio silencioso de carril', () => {
   assert.match(starterSource, /PACKAGE READINESS SCANNER — OBLIGATORIO/u);
   assert.match(starterSource, /NO cambiar de carril/u);
-  assert.match(starterSource, /No equivale a AUTHORIZED/u);
+  assert.match(starterSource, /no equivale a AUTHORIZED/u);
   assert.match(starterSource, /DOCUMENTATION_QUEUE = EMPTY/u);
   assert.match(starterSource, /READY_FOR_AUTHORIZATION/u);
   assert.match(starterSource, /PACKAGE GATE LIFECYCLE — VALIDACIÓN OBLIGATORIA/u);
   assert.match(starterSource, /docs:package:gate:check/u);
-  assert.match(starterSource, /Nunca ejecute docs:package:gate:approve ni docs:package:select por inferencia/u);
+  assert.match(starterSource, /Nunca ejecute docs:package:gate:approve por inferencia/u);
   assert.doesNotMatch(starterSource, /packages\.find\(\(\{ package_gate/u);
-  assert.match(starterSource, /Responsable de selección/u);
+  assert.match(starterSource, /Selección humana de package: FALSE/u);
+  assert.match(starterSource, /Un bloqueo conserva el turno/u);
 });
 
 test('el índice inicial no inventa un catálogo masivo y solo siembra identidades canónicas explícitas', () => {
