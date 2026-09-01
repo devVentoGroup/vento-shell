@@ -11639,5 +11639,782 @@ Esta tarea no:
 `ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno`
 
 
-### [ ] ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
+### ✅ ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
+
+**Estado:** APROBADA
+**Tarea anterior:** ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
+**Tarea siguiente:** ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
+**Tipo de tarea:** documental; auditoría AS-IS y diseño UX TO-BE de recordatorios operativos personales de inicio y cierre de turno en ANIMA, con elegibilidad derivada del turno publicado y del estado real de asistencia, supresión, deduplicación, navegación segura y trazabilidad, sin materialización física
+**Bloque:** F_ANIMA — EXPERIENCIA DEL TRABAJADOR Y ADMINISTRACION
+**Repositorio propietario:** vento-group-sas/vento-shell
+**Archivo propietario:** docs/plan-canonico/modular/bloques/F_ANIMA/02_EXPERIENCIA_DEL_TRABAJADOR_Y_ADMINISTRACION.md
+**Estado físico resultante:** ESPECIFICADO_NO_MATERIALIZADO
+**Cambios físicos autorizados:** NINGUNO
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Auditar el comportamiento existente de recordatorios asociados al turno de ANIMA y completar el contrato UX objetivo para que el trabajador reciba avisos oportunos de inicio y cierre únicamente cuando la fuente laboral vigente y el estado de asistencia indiquen que el aviso sigue siendo pertinente.
+
+La tarea debe resolver, de forma cerrada y reutilizable:
+
+- cuándo existe un recordatorio de inicio elegible;
+- cuándo existe un recordatorio de cierre elegible;
+- qué condiciones suprimen cada aviso;
+- cómo se evita repetir el mismo recordatorio por ejecución, dispositivo o reintento;
+- cómo se representa un recordatorio previo y uno posterior al hito horario;
+- cómo se comporta una notificación que llega tarde o después de cambiar el estado real;
+- cómo se mantiene separada la notificación de la acción material de asistencia;
+- cómo se conserva navegación segura sin ampliar destinos por conveniencia;
+- cómo se diferencia intento de envío, aceptación del proveedor y recepción real;
+- cómo se conserva el flujo aunque el trabajador haya negado notificaciones.
+
+Esta tarea define experiencia y contrato. No implementa scheduler, Edge Functions, cambios de aplicación, migraciones, cron, tablas, políticas ni despliegues.
+
+---
+
+#### 2. Resultado contractual
+
+ANIMA deberá tratar los recordatorios de turno como una proyección auxiliar del estado laboral vigente y nunca como fuente de verdad de asistencia.
+
+El resultado TO-BE queda gobernado por esta relación:
+
+```text
+TURNO PUBLICADO VIGENTE
++
+ESTADO REAL DE ASISTENCIA
++
+VENTANA TEMPORAL CONFIGURADA
++
+CANAL DISPONIBLE
++
+REGLA DE SUPRESIÓN Y DEDUPLICACIÓN
+=
+RECORDATORIO ELEGIBLE
+```
+
+Y por estas negaciones obligatorias:
+
+```text
+RECORDATORIO
+≠ CHECK-IN
+≠ CHECK-OUT
+≠ AUTORIZACIÓN
+≠ CONFIRMACIÓN DE ASISTENCIA
+≠ PRUEBA DE ENTREGA AL USUARIO
+≠ FUENTE DE VERDAD DEL TURNO
+```
+
+El recordatorio puede conducir a una superficie de consulta, pero la acción posterior vuelve a resolver estado, contexto y autoridad mediante sus propietarios canónicos.
+
+---
+
+#### 3. Base canónica consumida
+
+La tarea consume sin reabrir las decisiones aprobadas del minibloque ANIMA, especialmente:
+
+- ANIMA-UX-004 para turno actual y siguiente turno;
+- ANIMA-UX-005 para horario, sede, área y rol operativo visibles;
+- ANIMA-UX-006 y ANIMA-UX-007 para las intenciones de check-in y check-out;
+- ANIMA-UX-008 para diferenciar resultado confirmado y pendiente;
+- ANIMA-UX-009 y ANIMA-UX-010 para bloqueos y causas comprensibles;
+- ANIMA-UX-011 y ANIMA-UX-012 para persistencia, offline y reanudación;
+- ANIMA-UX-015 para la validación controlada de la experiencia de marcación.
+
+También preserva el contrato vigente de navegación de notificaciones de ANIMA y la separación entre programación publicada, asistencia material y estado local del dispositivo.
+
+---
+
+#### 4. Frontera con ANIMA-UX-017
+
+ANIMA-UX-016 cubre exclusivamente recordatorios operativos vinculados al inicio y cierre de un turno personal.
+
+ANIMA-UX-017 permanece reservada para el ciclo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad.
+
+Por tanto, esta tarea no define:
+
+- notificaciones editoriales de novedades;
+- campañas o anuncios generales;
+- audiencias administrativas;
+- publicación de comunicados;
+- preferencias editoriales;
+- notificaciones de soporte;
+- mensajes masivos no vinculados a un turno concreto.
+
+Compartir infraestructura push no convierte esas familias en un mismo contrato funcional.
+
+---
+
+#### 5. Unidad de recordatorio
+
+La unidad lógica es una combinación estable de:
+
+```text
+trabajador
++
+turno publicado
++
+clase de recordatorio
++
+etapa temporal
+```
+
+La identidad del recordatorio no se define por token push, dispositivo, ejecución del cron ni intento HTTP.
+
+Un trabajador con dos dispositivos puede recibir copias del mismo aviso sin que eso cree dos recordatorios empresariales distintos.
+
+Una reejecución técnica no debe crear una nueva unidad si corresponde a la misma combinación lógica.
+
+---
+
+#### 6. Auditoría AS-IS verificada
+
+La inspección del estado actual muestra una base funcional parcial:
+
+| Hallazgo AS-IS | Lectura contractual |
+| --- | --- |
+| ANIMA ya integra `expo-notifications` y registra/sincroniza tokens push. | Existe infraestructura de canal; no equivale a un contrato completo de recordatorios de turno. |
+| El runtime de turnos consulta programación publicada, asistencia y tokens activos. | Existe una base autoritativa suficiente para evaluar recordatorios de cierre. |
+| Existe recordatorio antes del final del turno para sesiones todavía abiertas. | El cierre previo está parcialmente materializado. |
+| Existe un segundo recordatorio si el turno sigue abierto después de finalizar. | El cierre posterior existe, pero su identidad de navegación diverge del allowlist móvil vigente. |
+| No se encontró recordatorio operativo equivalente para el inicio del turno. | La familia de inicio está incompleta. |
+| El runtime actual usa por defecto cinco minutos antes del cierre. | Existe una referencia operacional vigente para la anticipación previa. |
+| El runtime actual usa una espera posterior asociada a la gracia configurada, con fallback de treinta minutos. | Existe un comportamiento AS-IS de seguimiento posterior; el contrato TO-BE separa recordatorio de autocierre. |
+| El autocierre programado por tiempo está deshabilitado y el autocierre observado pertenece al flujo de salida de geocerca. | Un recordatorio posterior no debe transformarse en check-out automático por reloj. |
+| El cliente navega a Turnos para tipos de turno reconocidos. | La navegación segura ya tiene una frontera explícita que debe preservarse. |
+| El backend emite actualmente `shift_end_reminder_followup`, pero el cliente no lo reconoce en su allowlist de navegación. | Existe drift de contrato entre productor y consumidor. |
+| El envío push puede fallar en proveedor y el flujo técnico actual continúa acumulando eventos de runtime. | La evidencia futura debe distinguir intento, aceptación y entrega; no debe registrar éxito semántico sin evidencia suficiente. |
+
+La auditoría describe implementación vigente; no la convierte automáticamente en contrato permanente.
+
+---
+
+#### 7. Principio de pertinencia
+
+Un aviso solo se genera cuando todavía ayuda al trabajador a realizar una acción legítima.
+
+Antes de emitirlo se deberá revalidar, como mínimo:
+
+1. que el turno existe;
+2. que continúa publicado;
+3. que no está cancelado;
+4. que corresponde a jornada laboral y no a descanso;
+5. que pertenece al trabajador objetivo;
+6. que el hito temporal aplicable sigue vigente;
+7. que el estado de asistencia no vuelve innecesario el recordatorio;
+8. que no existe ya un evento lógico equivalente procesado;
+9. que una intención durable pendiente no haría engañoso invitar a repetir la acción.
+
+La existencia de una programación histórica no basta para enviar un aviso actual.
+
+---
+
+#### 8. Taxonomía TO-BE de recordatorios
+
+La familia operativa queda compuesta por cuatro etapas:
+
+| Clase | Etapa | Objetivo |
+| --- | --- | --- |
+| `INICIO` | `ANTES_DEL_INICIO` | avisar que el turno está próximo y facilitar que el trabajador consulte su contexto antes de marcar |
+| `INICIO` | `DESPUES_DEL_INICIO` | avisar que el turno ya comenzó cuando todavía no existe evidencia de entrada ni una intención durable pendiente |
+| `CIERRE` | `ANTES_DEL_FIN` | avisar que el turno está próximo a terminar cuando la asistencia continúa abierta |
+| `CIERRE` | `DESPUES_DEL_FIN` | avisar que el turno continúa abierto después de su fin programado cuando todavía corresponde una salida manual |
+
+Cada etapa se deduplica por turno y trabajador.
+
+Una etapa posterior no se emite por el solo hecho de haber emitido la anterior; vuelve a evaluar pertinencia.
+
+---
+
+#### 9. Compatibilidad con la navegación vigente
+
+Esta tarea no amplía el conjunto de destinos permitido por la navegación de notificaciones.
+
+Para preservar el contrato vigente:
+
+- los recordatorios de inicio reutilizan la familia de tipo de turno ya permitida y agregan semántica de recordatorio en el payload;
+- los recordatorios de cierre reutilizan `shift_end_reminder` para las etapas previa y posterior, diferenciadas mediante metadata de etapa;
+- `shift_auto_checkout` continúa reservado a informar un autocierre material ya producido por su flujo propietario;
+- una actualización de programación continúa separada mediante el tipo de actualización vigente;
+- ningún tipo desconocido abre una ruta arbitraria.
+
+El identificador AS-IS `shift_end_reminder_followup` se considera drift de productor y no una nueva identidad canónica que deba incorporarse al allowlist.
+
+---
+
+#### 10. Recordatorio previo de inicio
+
+El recordatorio previo de inicio se evalúa sobre un turno laboral publicado que todavía no ha comenzado.
+
+Baseline de diseño:
+
+- anticipación inicial: cinco minutos antes del inicio programado;
+- una sola unidad lógica por turno;
+- contenido centrado en hora y contexto necesario;
+- navegación hacia Turnos para consultar la asignación vigente;
+- ninguna ejecución automática de check-in al abrir la notificación.
+
+La anticipación es una política configurable por el propietario futuro de runtime; el valor inicial conserva una ventana corta coherente con el recordatorio previo de cierre observado.
+
+El aviso se suprime si ya existe una entrada confirmada o una intención durable de entrada cuyo resultado todavía debe resolverse.
+
+---
+
+#### 11. Recordatorio posterior de inicio
+
+Después del inicio programado podrá existir un seguimiento único cuando el trabajador aún no aparece con una entrada confirmada y tampoco existe una intención durable pendiente o un conflicto que deba conciliarse.
+
+Baseline de diseño:
+
+- evaluación inicial cinco minutos después del inicio;
+- máximo un seguimiento por turno;
+- no califica al trabajador como ausente ni incumplido;
+- no genera sanción ni novedad laboral automáticamente;
+- no presume que el trabajador debía poder marcar si existe bloqueo de autorización, ubicación, sesión, conectividad o contexto.
+
+Su función es recordar, no clasificar cumplimiento laboral.
+
+---
+
+#### 12. Recordatorio previo de cierre
+
+El aviso previo de cierre solo es elegible cuando el turno correspondiente mantiene una sesión de asistencia abierta.
+
+Baseline vigente:
+
+- cinco minutos antes del fin programado cuando no exista otra política válida;
+- un aviso previo por turno;
+- supresión inmediata si la salida ya está confirmada;
+- supresión si existe una intención durable de salida pendiente o un resultado incierto que deba conciliarse;
+- navegación a Turnos sin ejecutar check-out desde la respuesta de notificación.
+
+No se envía un recordatorio de cierre a una persona que nunca inició asistencia únicamente porque su turno estaba programado.
+
+---
+
+#### 13. Recordatorio posterior de cierre
+
+Si el fin programado ya ocurrió y la asistencia continúa autoritativamente abierta, podrá generarse un seguimiento posterior.
+
+La política futura debe usar un parámetro explícito de recordatorio posterior al fin. Mientras exista una transición desde el comportamiento legacy, el valor de gracia observado puede actuar únicamente como compatibilidad temporal documentada; no deberá seguir acoplando semánticamente el recordatorio al concepto de autocierre.
+
+Reglas:
+
+1. el seguimiento se evalúa nuevamente contra estado actual;
+2. se emite como máximo una vez por turno y etapa;
+3. se suprime cuando la salida ya quedó confirmada;
+4. se suprime cuando existe salida durable pendiente o resultado incierto;
+5. no ejecuta autocierre por reloj;
+6. no amenaza ni presume una falta laboral;
+7. utiliza la misma familia canónica de recordatorio de cierre y una metadata de etapa distinta.
+
+---
+
+#### 14. Separación del autocierre
+
+Recordatorio posterior y autocierre son comportamientos distintos.
+
+```text
+FIN PROGRAMADO
+→ PUEDE GENERAR RECORDATORIO
+
+FIN PROGRAMADO
+↛ NO GENERA CHECK-OUT AUTOMÁTICO POR SÍ SOLO
+```
+
+El autocierre observado por salida física de geocerca permanece gobernado por su contrato propio y, cuando produzca realmente una salida, puede informar ese resultado mediante `shift_auto_checkout`.
+
+Esta tarea no habilita `scheduled_auto_checkout_enabled`, no redefine geocercas y no cambia el propietario del autocierre.
+
+---
+
+#### 15. Matriz de elegibilidad y supresión
+
+| Situación | Inicio | Cierre | Decisión |
+| --- | --- | --- | --- |
+| Turno no publicado | NO | NO | suprimir |
+| Turno cancelado | NO | NO | suprimir |
+| Turno de descanso | NO | NO | suprimir |
+| Turno laboral futuro sin entrada | SÍ, según ventana | NO | recordar inicio |
+| Entrada confirmada antes del inicio | NO | según fin y sesión | suprimir inicio |
+| Entrada durable pendiente | NO | NO hasta resolver estado aplicable | no inducir duplicación |
+| Inicio ya pasó sin entrada | SÍ, seguimiento único | NO | recordar sin declarar ausencia |
+| Sesión abierta cerca del fin | NO | SÍ | recordar cierre |
+| Salida confirmada | NO | NO | suprimir cierre |
+| Salida durable pendiente | NO | NO | esperar/conciliar |
+| Resultado remoto incierto | NO | NO | no invitar a repetir |
+| Autocierre ya aplicado | NO | NO | mostrar resultado actual, no recordar salida |
+| Conflicto de asistencia | NO | NO | dirigir a resolución vigente |
+| Turno reprogramado | reevaluar | reevaluar | usar versión vigente, no horario viejo |
+
+La matriz define decisión de envío; no reemplaza la lógica autorizativa de la marcación.
+
+---
+
+#### 16. Reprogramación y cancelación
+
+Un recordatorio se calcula sobre la versión vigente del turno en el momento de evaluar el envío.
+
+Si el turno cambia:
+
+- el horario anterior pierde autoridad para recordatorios futuros;
+- un aviso ya recibido no conserva autoridad sobre el turno actual;
+- al abrir una notificación antigua, ANIMA consulta el estado vigente;
+- una cancelación suprime recordatorios todavía no emitidos;
+- una reprogramación vuelve a calcular las ventanas sobre la programación publicada vigente;
+- no se duplica el recordatorio por conservar simultáneamente la versión anterior y la nueva.
+
+El historial de cambios puede conservarse para auditoría sin convertirse en agenda activa.
+
+---
+
+#### 17. Notificación tardía o estado obsoleto
+
+El dispositivo y el proveedor pueden entregar una notificación después del momento esperado.
+
+Al responder a cualquier recordatorio, ANIMA debe:
+
+1. tratar el payload como referencia, no como autoridad;
+2. recuperar el turno vigente;
+3. recuperar el estado de asistencia vigente y los pendientes durables aplicables;
+4. ignorar la invitación original si ya no corresponde;
+5. presentar el estado real actual.
+
+Ejemplos:
+
+- un recordatorio de inicio abierto después del check-in muestra el turno ya iniciado, no invita a volver a marcar;
+- un recordatorio de cierre abierto después del check-out muestra el estado cerrado;
+- un recordatorio de un turno cancelado no ofrece acción sobre ese turno;
+- un recordatorio de una versión anterior dirige al turno vigente cuando sigue existiendo.
+
+---
+
+#### 18. Dedupe lógico
+
+El sistema deberá impedir duplicación por:
+
+- reejecución del scheduler;
+- dos workers concurrentes;
+- retry de red;
+- varios tokens del mismo trabajador;
+- token duplicado;
+- reinicio del proceso;
+- reprogramación sin cambio de etapa lógica;
+- respuesta tardía del proveedor.
+
+La deduplicación se aplica a la unidad trabajador + turno + clase + etapa, no al mensaje físico individual.
+
+Varios dispositivos pueden recibir el mismo recordatorio, pero el registro empresarial de la etapa continúa siendo uno.
+
+---
+
+#### 19. Estados de entrega
+
+La trazabilidad técnica no podrá reducir el ciclo a `enviado = true`.
+
+Como mínimo deberá poder distinguir conceptualmente:
+
+- `SUPPRESSED`: no correspondía emitir;
+- `READY`: elegible y pendiente de intento;
+- `ATTEMPTED`: se realizó un intento hacia el proveedor;
+- `PROVIDER_ACCEPTED`: el proveedor aceptó la solicitud cuando exista evidencia de ello;
+- `PROVIDER_REJECTED`: el proveedor rechazó la solicitud o el token;
+- `DELIVERY_UNKNOWN`: no existe evidencia suficiente para afirmar entrega;
+- `DUPLICATE_SKIPPED`: la misma unidad lógica ya fue procesada.
+
+`PROVIDER_ACCEPTED` no equivale a leído por el trabajador.
+
+La ausencia de receipt de dispositivo no deberá representarse como prueba de recepción humana.
+
+---
+
+#### 20. Fallo del proveedor y evidencia honesta
+
+Un fallo HTTP, excepción de red o rechazo del proveedor no podrá persistirse como recordatorio enviado únicamente porque el scheduler llegó a esa rama de ejecución.
+
+Cuando el intento falle:
+
+- se conserva la razón necesaria para diagnóstico;
+- el estado no se presenta como entregado;
+- la política de retry respeta dedupe e identidad lógica;
+- un retry no crea una nueva etapa;
+- tokens inválidos pueden desactivarse mediante el lifecycle propietario;
+- la falla de notificación no altera el turno ni la asistencia.
+
+Esta regla corrige semánticamente el riesgo observado sin implementar aquí su solución física.
+
+---
+
+#### 21. Permiso del sistema y token push
+
+El permiso de notificaciones es auxiliar.
+
+Si está denegado, indeterminado o el token no está disponible:
+
+- ANIMA sigue permitiendo consultar turnos;
+- check-in y check-out continúan por sus contratos normales;
+- no se representa el recordatorio como entregado;
+- la aplicación puede explicar cómo habilitar notificaciones sin convertirlo en requisito laboral;
+- una negativa del sistema operativo no se interpreta como incumplimiento del trabajador.
+
+La reparación o registro de token nunca concede autoridad de asistencia.
+
+---
+
+#### 22. Experiencia dentro de la aplicación
+
+Cuando ANIMA está abierta, Home y Turnos pueden proyectar el mismo estado oportuno sin depender de que el push aparezca visualmente.
+
+La experiencia in-app debe priorizar estado actual:
+
+- próximo turno cuando aún no inicia;
+- turno actual y acción de entrada cuando corresponda;
+- asistencia activa y cierre cuando corresponda;
+- pendiente, incertidumbre o conflicto cuando corresponda;
+- estado terminado cuando la salida ya está confirmada.
+
+No se requiere crear una bandeja paralela de recordatorios para cumplir esta tarea.
+
+---
+
+#### 23. Navegación desde un recordatorio
+
+Responder a un recordatorio de turno lleva a la superficie personal de Turnos permitida por el contrato vigente.
+
+Desde allí el trabajador puede comprender:
+
+- qué turno originó el aviso;
+- si el turno sigue vigente;
+- su horario y contexto publicados;
+- su estado actual de asistencia;
+- qué acción corresponde, si existe una acción segura.
+
+La notificación no ejecuta mutaciones al tocarla.
+
+Si una acción de asistencia requiere Home o un flujo propietario, la navegación posterior usa el contrato normal de ANIMA y vuelve a validar condiciones.
+
+---
+
+#### 24. Múltiples dispositivos
+
+Los tokens representan canales, no identidades laborales independientes.
+
+Reglas:
+
+1. un trabajador puede tener varios tokens activos;
+2. todos pueden recibir una copia cuando la política lo permita;
+3. la unidad lógica se registra una sola vez;
+4. una copia abierta en un dispositivo no invalida automáticamente otra copia ya entregada;
+5. cualquier dispositivo que abra el aviso consulta el estado actual;
+6. una acción realizada desde otro dispositivo suprime cualquier nueva emisión que ya no corresponda.
+
+---
+
+#### 25. Conectividad y apertura offline
+
+Una notificación previamente entregada puede abrir ANIMA sin conectividad.
+
+En ese caso:
+
+- el payload no se convierte en fuente de verdad;
+- la aplicación usa únicamente estado durable local identificado como tal;
+- no afirma que el turno o la asistencia siguen iguales si no puede demostrar frescura;
+- una acción offline de asistencia conserva los contratos de persistencia e idempotencia existentes;
+- al recuperar red se reconcilia con servidor antes de presentar como actual una suposición obsoleta.
+
+---
+
+#### 26. Horario, zona temporal y turnos nocturnos
+
+Los recordatorios consumen los instantes de inicio y fin resueltos por el contrato propietario de programación.
+
+No reconstruyen semántica temporal desde el cliente mediante:
+
+- sumar una duración estimada;
+- asumir que el fin ocurre el mismo día calendario;
+- convertir texto de hora sin zona temporal;
+- reutilizar la fecha del dispositivo como autoridad;
+- aplicar un offset fijo fuera del contrato vigente.
+
+Turnos nocturnos, cambios de fecha y demás reglas temporales conservan su propietario canónico.
+
+---
+
+#### 27. Contenido y minimización
+
+El contenido de pantalla bloqueada debe ser útil sin exponer datos laborales innecesarios.
+
+Puede incluir, cuando corresponda:
+
+- que el turno está próximo a iniciar o terminar;
+- hora relevante;
+- sede cuando sea necesaria para orientar al trabajador.
+
+No deberá incluir por defecto:
+
+- UUID;
+- códigos internos de turno;
+- políticas de autorización;
+- coordenadas;
+- nombres de otros trabajadores;
+- datos salariales;
+- información disciplinaria;
+- detalles administrativos sensibles;
+- diagnóstico técnico.
+
+La cantidad exacta visible puede reducirse según las preferencias de privacidad del dispositivo.
+
+---
+
+#### 28. Lenguaje y tono operativo
+
+Los avisos serán neutrales, accionables y no sancionatorios.
+
+Patrones conceptuales válidos:
+
+- “Tu turno empieza pronto”;
+- “Tu turno ya comenzó. Revisa tu estado en ANIMA”;
+- “Se acerca el fin de tu turno”;
+- “Tu turno sigue abierto. Revisa el cierre en ANIMA”.
+
+La interfaz evitará mensajes que afirmen sin evidencia:
+
+- “Llegaste tarde”;
+- “Incumpliste tu turno”;
+- “No marcaste” cuando existe una intención pendiente;
+- “Tu salida falló” cuando el resultado remoto es incierto;
+- “Debes marcar de nuevo” sin haber conciliado la intención previa.
+
+---
+
+#### 29. Accesibilidad
+
+El recordatorio no dependerá únicamente de sonido, vibración, color o iconografía.
+
+La experiencia deberá permitir:
+
+- texto comprensible en la notificación;
+- lectura mediante tecnologías de asistencia del sistema;
+- navegación posterior a una superficie con jerarquía accesible;
+- interpretación sin requerir reconocer códigos técnicos;
+- acción segura aunque sonido o háptica estén desactivados.
+
+La ausencia de feedback háptico nunca cambia el estado del recordatorio ni de la asistencia.
+
+---
+
+#### 30. Observabilidad mínima
+
+La implementación futura deberá permitir auditar sin exponer contenido sensible:
+
+- turno de referencia;
+- trabajador de referencia en forma segura;
+- clase y etapa lógica;
+- instante programado;
+- instante evaluado;
+- motivo de elegibilidad o supresión;
+- resultado de dedupe;
+- cantidad de canales objetivo;
+- estado de intento/proveedor;
+- token invalidado cuando corresponda mediante referencia segura;
+- versión de política utilizada.
+
+La observabilidad se utiliza para explicar comportamiento técnico, no para crear un sistema disciplinario implícito.
+
+---
+
+#### 31. Matriz de escenarios obligatorios
+
+| ID | Escenario | Resultado esperado |
+| --- | --- | --- |
+| `UX016-S01` | turno publicado próximo a iniciar, sin entrada | recordatorio previo único |
+| `UX016-S02` | entrada confirmada antes de ventana | recordatorio de inicio suprimido |
+| `UX016-S03` | inicio pasado, sin entrada ni pendiente | seguimiento de inicio único |
+| `UX016-S04` | entrada durable pendiente | seguimiento de inicio suprimido |
+| `UX016-S05` | turno cancelado antes de aviso | aviso suprimido |
+| `UX016-S06` | turno reprogramado | ventana recalculada sobre versión vigente |
+| `UX016-S07` | sesión abierta cerca del fin | recordatorio previo de cierre único |
+| `UX016-S08` | salida confirmada antes del fin | recordatorio de cierre suprimido |
+| `UX016-S09` | turno sigue abierto después del fin | seguimiento posterior único |
+| `UX016-S10` | salida durable pendiente al vencer seguimiento | seguimiento suprimido |
+| `UX016-S11` | autocierre ya aplicado | no se envía recordatorio de cierre posterior |
+| `UX016-S12` | scheduler se ejecuta dos veces | una unidad lógica, sin duplicación |
+| `UX016-S13` | trabajador tiene dos tokens | copias de canal permitidas, una unidad lógica |
+| `UX016-S14` | proveedor rechaza el push | no se registra como entrega exitosa |
+| `UX016-S15` | notificación llega tarde tras check-in/check-out | se muestra estado vigente, no acción obsoleta |
+| `UX016-S16` | notificaciones denegadas | asistencia y consulta siguen disponibles |
+| `UX016-S17` | tap sobre recordatorio reconocido | navegación segura a Turnos, sin mutación automática |
+| `UX016-S18` | tipo de notificación desconocido | no abre destino arbitrario |
+| `UX016-S19` | follow-up legacy de cierre | productor debe converger a la familia canónica permitida, no ampliar allowlist por drift |
+| `UX016-S20` | apertura offline de aviso antiguo | estado local identificado como no autoritativo y conciliación posterior |
+
+---
+
+#### 32. Handoff de materialización futura
+
+La materialización física correspondiente deberá resolver, sin reabrir este contrato documental:
+
+1. añadir evaluación de recordatorios de inicio sobre turnos publicados;
+2. separar parámetros de inicio y cierre cuando el runtime lo requiera;
+3. desacoplar el recordatorio posterior de cierre de la semántica de gracia de autocierre;
+4. hacer converger el follow-up de cierre hacia la familia de notificación canónica ya permitida;
+5. aplicar supresión por entrada/salida confirmada, intención durable, incertidumbre y conflicto;
+6. mantener identidad lógica y dedupe por turno/clase/etapa;
+7. persistir estados de entrega honestos;
+8. evitar registrar `push_sent` cuando no exista evidencia suficiente del intento aceptado;
+9. mantener permiso/token como condición del canal y no de la asistencia;
+10. probar navegación tardía, reprogramación, cancelación, múltiples dispositivos y fallos del proveedor.
+
+Este handoff describe el resultado esperado; no autoriza implementación durante ANIMA-UX-016.
+
+---
+
+#### 33. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Requisitos creados: **0**
+Requisitos modificados: **0**
+Requisitos diferidos: **0**
+Requisitos descartados: **0**
+Requisitos obsoletos: **0**
+
+La tarea concreta, para recordatorios de turno, obligaciones ya protegidas por la cobertura vigente de navegación segura, estado de asistencia, deduplicación, reanudación y consistencia de fuente de verdad. La taxonomía TO-BE reutiliza tipos de navegación ya permitidos en lugar de crear una nueva superficie o un destino adicional, por lo que no requiere alterar el registro canónico.
+
+---
+
+#### 34. Cobertura de prueba vigente reutilizada
+
+Se reutiliza sin modificación:
+
+- `TREQ-ANIMA-014`, que restringe las respuestas de notificación de turno a destinos permitidos y bloquea navegación arbitraria;
+- `TREQ-ANIMA-015`, que obliga a mantener separados estado real de asistencia, pendientes, sincronización y diagnóstico;
+- `TREQ-ANIMA-016`, que protege la separación de la lectura personal de Turnos frente a funciones de gestión;
+- `TREQ-ANIMA-003`, para persistencia durable e idempotencia cuando una intención de asistencia existe y todavía no está conciliada;
+- la cobertura UX transversal vigente sobre mensajes comprensibles, fuente de verdad, conectividad, reanudación y prevención de efectos duplicados.
+
+Esta enumeración es trazabilidad hacia cobertura existente y no modifica ninguna fila del registro.
+
+---
+
+#### 35. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó build del repositorio ni de ANIMA durante la preparación documental de esta tarea. |
+| LOCAL | PASS | El artefacto se verificó estructuralmente como una sola tarea, con metadata completa, sección de requisitos derivados sin identificadores `TREQ-*`, cinco clases de evidencia, continuidad cerrada y ausencia de instrucciones operativas internas. |
+| REMOTA | PASS | Se verificaron en GitHub el estado vigente de `vento-shell`, la continuidad ANIMA-UX-015 → ANIMA-UX-016 → ANIMA-UX-017, la topología `DEFINE_ONCE`, el registro ANIMA vigente, la navegación móvil de notificaciones, el registro de tokens, el runtime actual de turnos, los recordatorios de cierre y el autocierre por salida de geocerca. |
+| OPERATIVA | NOT_EXECUTED | No se enviaron notificaciones reales ni se ejecutaron sesiones con trabajadores; entrega, latencia, permisos y comprensión deberán comprobarse durante la materialización y validación operativa propietarias. |
+| FÍSICA | NOT_APPLICABLE | ANIMA-UX-016 es `DEFINE_ONCE`; no crea instancia física propia ni autoriza código, Supabase, cron, datos, notificaciones productivas o despliegues. |
+
+---
+
+#### 36. Criterios de aceptación
+
+1. La tarea cubre recordatorios personales de inicio y cierre de turno y no notificaciones editoriales de novedades.
+2. La unidad lógica de dedupe combina trabajador, turno, clase y etapa.
+3. El recordatorio nunca se trata como check-in o check-out.
+4. El recordatorio nunca concede autorización.
+5. El payload de una notificación nunca sustituye el estado autoritativo vigente.
+6. Solo un turno publicado puede originar recordatorios operativos.
+7. Turnos cancelados no originan recordatorios pendientes.
+8. Los descansos no originan recordatorios de entrada o salida laboral.
+9. El recordatorio previo de inicio tiene baseline de cinco minutos antes del inicio.
+10. El recordatorio posterior de inicio tiene baseline de cinco minutos después del inicio.
+11. Una entrada confirmada suprime recordatorios de inicio posteriores.
+12. Una intención durable de entrada pendiente suprime recordatorios que inducirían repetición.
+13. El seguimiento de inicio no declara ausencia, tardanza o incumplimiento.
+14. El recordatorio previo de cierre solo se emite para asistencia abierta.
+15. El baseline previo de cierre conserva cinco minutos cuando no exista política diferente vigente.
+16. Una salida confirmada suprime recordatorios de cierre posteriores.
+17. Una intención durable de salida pendiente suprime recordatorios que inducirían repetición.
+18. Un resultado remoto incierto no produce un mensaje que invite a marcar otra vez.
+19. El seguimiento posterior de cierre no ejecuta autocierre por reloj.
+20. El autocierre por salida de geocerca conserva su propietario y significado independiente.
+21. La política posterior al cierre debe desacoplarse del concepto de gracia de autocierre.
+22. Cada etapa lógica se emite como máximo una vez por turno y trabajador.
+23. Múltiples tokens no crean múltiples unidades empresariales de recordatorio.
+24. Reintentos del scheduler no duplican la etapa lógica.
+25. Reprogramar el turno recalcula recordatorios contra la programación vigente.
+26. Cancelar el turno suprime avisos todavía no emitidos.
+27. Abrir una notificación antigua obliga a recuperar el estado vigente.
+28. Un aviso de inicio abierto después del check-in no ofrece una segunda entrada.
+29. Un aviso de cierre abierto después del check-out no ofrece una segunda salida.
+30. Los recordatorios de inicio reutilizan una familia de navegación ya permitida.
+31. Las etapas de cierre reutilizan `shift_end_reminder` y se distinguen por metadata, sin ampliar el allowlist por el drift legacy.
+32. `shift_end_reminder_followup` no se consolida como nueva identidad canónica.
+33. Tipos desconocidos no abren destinos arbitrarios.
+34. Responder al recordatorio no ejecuta una mutación automática.
+35. El permiso de notificaciones no es requisito para trabajar ni marcar asistencia.
+36. La ausencia de token no se representa como recordatorio entregado.
+37. El sistema distingue supresión, intento, aceptación, rechazo y resultado desconocido cuando exista la evidencia correspondiente.
+38. Un fallo del proveedor no puede persistirse como entrega exitosa.
+39. Aceptación del proveedor no se presenta como lectura humana.
+40. Tokens inválidos pueden desactivarse sin modificar el estado laboral.
+41. La aplicación abierta puede proyectar el mismo estado sin crear una bandeja paralela obligatoria.
+42. Una apertura offline no convierte datos del payload en fuente de verdad.
+43. Turnos nocturnos consumen instantes resueltos por el propietario temporal y no se recalculan ingenuamente en cliente.
+44. El contenido de lock screen minimiza información laboral.
+45. Los mensajes son neutrales y no sancionatorios.
+46. El recordatorio es comprensible sin depender exclusivamente de sonido, háptica, color o icono.
+47. La observabilidad conserva motivo de elegibilidad, supresión y estado técnico sin crear un sistema disciplinario implícito.
+48. La matriz obligatoria cubre inicio, cierre, dedupe, reprogramación, cancelación, proveedor, permisos, navegación, múltiples dispositivos y offline.
+49. La tarea no modifica código de `vento-anima`.
+50. La tarea no modifica código, Edge Functions, cron o Supabase de `vento-shell`.
+51. La tarea no crea migraciones, tablas, columnas, RLS, RPC ni secretos.
+52. La tarea no envía notificaciones reales.
+53. La tarea no habilita autocierre programado por tiempo.
+54. La sección de requisitos derivados declara cero requisitos y no contiene identificadores `TREQ-*`.
+55. La cobertura reutilizada se documenta fuera de la sección de requisitos derivados.
+56. El registro 04A permanece sin cambios.
+57. BUILD permanece NOT_EXECUTED hasta una ejecución real de build.
+58. OPERATIVA permanece NOT_EXECUTED hasta una prueba real de notificaciones y comprensión.
+59. FÍSICA permanece NOT_APPLICABLE por topología `DEFINE_ONCE`.
+60. La continuidad termina exactamente en ANIMA-UX-017.
+61. Ninguna decisión de esta tarea autoriza materialización física automática.
+
+---
+
+#### 37. Límites
+
+ANIMA-UX-016 no:
+
+- implementa recordatorios;
+- modifica `vento-anima`;
+- modifica Edge Functions;
+- modifica Supabase;
+- crea migraciones;
+- crea tablas o columnas;
+- cambia RLS, RPC, grants o secretos;
+- programa cron;
+- registra tokens productivos;
+- envía push reales;
+- modifica la programación de trabajadores;
+- crea, cancela o reprograma turnos;
+- ejecuta check-in o check-out;
+- habilita autocierre programado;
+- redefine el autocierre por salida de geocerca;
+- declara tardanza, ausencia o incumplimiento;
+- crea una bandeja obligatoria de notificaciones;
+- diseña notificaciones de novedades internas;
+- modifica el ciclo editorial reservado a ANIMA-UX-017;
+- modifica el registro canónico de requisitos de prueba;
+- crea una instancia física propia.
+
+---
+
+#### 38. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales`
+
+**TAREA ACTUAL APROBADA**
+`ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad`
+
+
 ### [ ] ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad

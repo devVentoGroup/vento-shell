@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1595** |
 | Tareas `AUTH` únicas | **318** |
-| Tareas aprobadas | **1088** |
+| Tareas aprobadas | **1089** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **507** |
+| Tareas no iniciadas | **506** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **68.21% (1088/1595)** |
+| Porcentaje de completamiento | **68.28% (1089/1595)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales** |
-| Tarea actual | **ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno** |
+| Última tarea aprobada | **ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno** |
+| Tarea actual | **ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad** |
+| Siguiente tarea | **VISO-AUTH-001 — Crear catálogo administrativo de roles base** |
 | Bloque actual | **BLOQUE F — ANIMA** |
-| Progreso del bloque | **BLOQUE F: 35 de 37 aprobadas; ANIMA-UX-016 pendiente** |
+| Progreso del bloque | **BLOQUE F: 36 de 37 aprobadas; ANIMA-UX-017 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-034::GLOBAL** |
-| Carril documental | **ACTIVO — ANIMA-UX-016** |
+| Carril documental | **ACTIVO — ANIMA-UX-017** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-034::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `ANIMA-UX-015` — Probar check-in y check-out con trabajadores reales |
-| Tarea actual | `ANIMA-UX-016` — Auditar y completar recordatorios operativos de inicio y cierre de turno — **NO INICIADA** |
-| Siguiente tarea | `ANIMA-UX-017` — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad |
+| Última aprobada | `ANIMA-UX-016` — Auditar y completar recordatorios operativos de inicio y cierre de turno |
+| Tarea actual | `ANIMA-UX-017` — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad — **NO INICIADA** |
+| Siguiente tarea | `VISO-AUTH-001` — Crear catálogo administrativo de roles base |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE F: 35 DE 37 APROBADAS — ACTUAL ANIMA-UX-016** |
+| CONTINUIDAD ACTIVA | **BLOQUE F: 36 DE 37 APROBADAS — ACTUAL ANIMA-UX-017** |
 | Implementación física | **AUTH-DB-034::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-ANIMA-UX-015 — Probar check-in y check-out con trabajadores reales
-        ↓
-TAREA ACTUAL
 ANIMA-UX-016 — Auditar y completar recordatorios operativos de inicio y cierre de turno
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 ANIMA-UX-017 — Diseñar ciclo completo de novedades internas: audiencia, publicación, edición, archivo, notificación y visibilidad
         ↓
+SIGUIENTE TAREA RESERVADA
+VISO-AUTH-001 — Crear catálogo administrativo de roles base
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE F — 35 de 37 tareas aprobadas
+BLOQUE F — 36 de 37 tareas aprobadas
 ```
