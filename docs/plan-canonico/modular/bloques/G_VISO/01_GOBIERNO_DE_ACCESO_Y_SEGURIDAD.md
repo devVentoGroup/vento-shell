@@ -977,7 +977,471 @@ Las tareas territoriales y de turno posteriores podrán vincular estos códigos 
 `VISO-AUTH-003 — Administrar permisos por rol base`
 
 
-### [ ] VISO-AUTH-003 — Administrar permisos por rol base
+### ✅ VISO-AUTH-003 — Administrar permisos por rol base
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-002 — Crear catálogo administrativo de roles operativos
+**Tarea siguiente:** VISO-AUTH-004 — Administrar permisos por rol operativo
+**Tipo de tarea:** documental; definición del contrato administrativo para gobernar concesiones de permisos por rol base sin crear una fuente paralela de catálogo, autorización o denegaciones
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VISO deberá consultar y gobernar las concesiones del carril base para los ocho roles base canónicos, manteniendo separados catálogo, grant, alcance, modalidad, condición, denegación, contexto operativo y decisión efectiva.
+
+La regla raíz es:
+
+```text
+ROL BASE CANÓNICO
++ PERMISO CANÓNICO
++ MODALIDAD COMPATIBLE CON BASE
++ ALCANCE Y RECURSO VÁLIDOS
++ CONCESIÓN BASE VIGENTE
++ SIN DENEGACIÓN PREVALENTE
+→ BASE ALLOW POSIBLE
+```
+
+Nunca:
+
+```text
+NOMBRE DEL ROL → AUTORIZACIÓN
+CAMBIO EN UI → AUTORIZACIÓN INMEDIATA
+```
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva sin reescribir:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-002`, `AUTH-MOD-003`, `AUTH-MOD-004`, `AUTH-MOD-018`, `AUTH-MOD-019` y `AUTH-MOD-021`;
+- `AUTH-CAT-001` a `AUTH-CAT-024`;
+- `AUTH-RBAC-001` a `AUTH-RBAC-007`, `AUTH-RBAC-024`, `AUTH-RBAC-027` y `AUTH-RBAC-028`;
+- `SHELL-CON-003`, `SHELL-CON-004` y `SHELL-CON-006`;
+- `VISO-AUTH-001` y `VISO-AUTH-002`.
+
+Contratos compartidos vigentes:
+
+```text
+vento.authorization@1.0.0
+vento.authorization.base-role-grants@1.1.0
+BaseRoleCode@1.1.0
+PermissionScopeCode@1.0.0
+```
+
+VISO administra configuración efectiva gobernada por estos contratos. La interfaz no modifica los archivos versionados de `@vento/contracts` ni crea códigos contractuales nuevos.
+
+---
+
+#### 3. Universo administrativo cerrado
+
+La administración opera exclusivamente sobre:
+
+```text
+BaseRoleCode = 8
+PermissionKey activas = 140
+base-role-grants de referencia = 504
+```
+
+Roles admitidos:
+
+1. `propietario`;
+2. `gerente_general`;
+3. `gerente`;
+4. `supervisor`;
+5. `auxiliar_administrativa`;
+6. `contador`;
+7. `marketing`;
+8. `trabajador_operativo`.
+
+No se admiten roles operativos, oficios legacy, `propietario_admin`, dispositivos, usuarios técnicos, aplicaciones como sujetos, aliases locales ni claves de permiso desconocidas o retiradas.
+
+---
+
+#### 4. Matriz base vigente
+
+`base-role-grants@1.1.0` contiene:
+
+| Rol base | Concesiones |
+| --- | ---: |
+| `propietario` | 121 |
+| `gerente_general` | 119 |
+| `gerente` | 93 |
+| `supervisor` | 58 |
+| `auxiliar_administrativa` | 47 |
+| `contador` | 45 |
+| `marketing` | 16 |
+| `trabajador_operativo` | 5 |
+| **Total** | **504** |
+
+Cada concesión referencia `role_code`, `permission_key`, `authorization_mode`, `lane`, `grant_type`, `effect`, `scope_expression`, `condition_expression` y `source_task`.
+
+Las 504 filas usan:
+
+```text
+lane = BASE
+effect = ALLOW
+```
+
+La matriz administra concesiones positivas. Ausencia de concesión significa ausencia de `BASE_ALLOW`; no crea por sí misma una denegación explícita.
+
+Distribuciones de integridad:
+
+```text
+DIRECT_BASE = 468
+BASE_COMPONENT = 36
+
+BASE_ONLY = 256
+BASE_OR_OPERATIONAL = 212
+BASE_AND_OPERATIONAL = 36
+OPERATIONAL_ONLY = 0
+```
+
+Por aplicación:
+
+```text
+shell=8, anima=52, aura=3, fogo=19, nexo=251,
+numera=27, origo=31, pass=2, pulso=18, viso=93
+```
+
+---
+
+#### 5. Modalidades y límites del carril base
+
+| Modalidad | Regla administrativa |
+| --- | --- |
+| `BASE_ONLY` | Puede satisfacerse por carril base sin turno ni check-in, sujeto a actor, alcance, recurso y denegaciones. |
+| `BASE_OR_OPERATIONAL` | El carril base puede autorizar completamente; el carril operativo sigue siendo alternativa independiente. |
+| `BASE_AND_OPERATIONAL` | El grant base es solo `BASE_COMPONENT`; la acción final exige componente operativo compatible del mismo actor. |
+| `OPERATIONAL_ONLY` | No admite grant base y debe bloquearse en esta tarea. |
+
+La modalidad proviene del contrato del permiso. No se infiere desde rol, ruta, pantalla ni tabla.
+
+---
+
+#### 6. Alcance
+
+VISO deberá consumir la taxonomía canónica:
+
+```text
+NT, ORG, G, AS, SS, AST, TST, AA, SA, AAT, ATW, CTX, OWN
+```
+
+Solo podrá presentar scopes admitidos por el permiso y respetará `AllowedScopeSet`, `MaximumScope`, recurso y modalidad.
+
+Reglas:
+
+- `G` no es wildcard;
+- `ORG` no significa todas las sedes por inferencia;
+- `TST` no se infiere desde `AST`;
+- `CTX` no sustituye turno, check-in ni área;
+- `OWN` no amplía territorio;
+- un territorio o recurso obligatorio irresoluble bloquea el cambio;
+- no existe fallback hacia un scope más amplio para permitir guardar.
+
+---
+
+#### 7. Operaciones administrativas canónicas
+
+El catálogo vigente separa exactamente:
+
+```text
+viso.authorization.base_grants.view
+viso.authorization.base_grants.create
+viso.authorization.base_grants.approve
+viso.authorization.base_grants.suspend
+viso.authorization.base_grants.revoke
+```
+
+| Acción | Semántica |
+| --- | --- |
+| `view` | Consultar matriz, modalidad, alcance, condición y procedencia. |
+| `create` | Registrar una propuesta de concesión válida; no equivale a aprobación. |
+| `approve` | Aprobar una propuesta después de revalidar seguridad, scope, recurso y segregación. |
+| `suspend` | Interrumpir temporalmente la eficacia de un allow conservando historia. |
+| `revoke` | Retirar la eficacia futura del allow conservando evidencia histórica. |
+
+No existe un permiso canónico genérico equivalente a `manage all permissions`.
+
+Cada acción se autoriza por separado en servidor.
+
+---
+
+#### 8. Autoridad para administrar grants base
+
+El snapshot vigente concede las cinco capacidades anteriores únicamente a:
+
+- `propietario`;
+- `gerente_general`.
+
+No están concedidas a los otros seis roles base.
+
+Para ambos roles son `BASE_ONLY`, `DIRECT_BASE`, con alcance `ORG`, y exigen:
+
+- reautenticación fuerte;
+- actor activo;
+- recurso objetivo válido;
+- segregación de funciones;
+- auditoría;
+- no autoaprobación;
+- no autoafectación.
+
+Por tanto:
+
+```text
+CREATE ≠ APPROVE
+PROPONER ≠ APROBAR EL PROPIO CAMBIO
+ADMINISTRAR ≠ AMPLIAR LA PROPIA AUTORIDAD
+```
+
+Una restricción de segregación no puede existir solo en frontend.
+
+---
+
+#### 9. Reglas de mutación
+
+Una propuesta de grant base solo es válida cuando:
+
+1. el rol pertenece a los ocho `BaseRoleCode`;
+2. el permiso pertenece a las 140 identidades activas;
+3. la modalidad admite carril base;
+4. el scope pertenece al conjunto admitido por el permiso;
+5. territorio y recurso son resolubles;
+6. no existe duplicado ambiguo;
+7. no se usa clave legacy, alias o inferencia por prefijo;
+8. el actor posee la capacidad administrativa exacta;
+9. no existe autoafectación prohibida;
+10. quedan registrados motivo, actor y trazabilidad;
+11. `create` permanece separado de `approve`.
+
+`approve` debe revalidar todo el cambio. No podrá confiar en una validación antigua si cambió rol, permiso, scope, recurso, versión contractual o propuesta.
+
+Suspender o revocar un allow no crea un deny.
+
+La matriz base no podrá usar:
+
+```text
+is_allowed = false
+```
+
+como atajo para crear una denegación contractual nueva. Las denegaciones pertenecen al modelo separado de deny y precedencia.
+
+---
+
+#### 10. `trabajador_operativo`
+
+Su snapshot vigente conserva exactamente cinco grants:
+
+```text
+shell.access
+anima.access
+anima.workforce.employee_documents.view
+anima.workforce.employee_documents.upload
+anima.workforce.employee_photos.upload
+```
+
+Los cinco son `BASE_ONLY` y `DIRECT_BASE`.
+
+La administración no podrá convertir este rol mínimo en sustituto de roles operativos ni eludir turno, sede, área, check-in o matriz operativa.
+
+---
+
+#### 11. Experiencia administrativa mínima
+
+Para cada combinación relevante VISO deberá distinguir:
+
+- rol base;
+- aplicación;
+- permiso y etiqueta humana;
+- modalidad;
+- grant type;
+- scope;
+- condición;
+- procedencia;
+- existencia o ausencia de `BASE_ALLOW`;
+- condición de `BASE_COMPONENT`;
+- operación administrativa pendiente.
+
+Está prohibido:
+
+- conceder por prefijo;
+- conceder una aplicación completa mediante `<app>.access`;
+- conceder una familia mediante un switch masivo;
+- convertir “todos” en wildcard;
+- ocultar la doble condición de `BASE_AND_OPERATIONAL`;
+- presentar una propuesta como grant efectivo;
+- confundir ausencia con deny explícito.
+
+Las vistas completas de simulación, origen, conflictos y auditoría permanecen reservadas a tareas posteriores.
+
+---
+
+#### 12. Reconciliación AS-IS de VISO
+
+La superficie actual `/roles-permissions`:
+
+- consulta roles activos y permisos;
+- modifica `role_permissions`;
+- usa scopes genéricos `global`, `site`, `site_type`, `area`, `area_kind`;
+- usa `permissionCode: "staff.permissions.manage"` dentro del guard de VISO;
+- guarda mediante delete + insert;
+- admite `is_allowed`.
+
+Es evidencia AS-IS, no contrato TO-BE.
+
+La futura materialización deberá reconciliar:
+
+| AS-IS | TO-BE |
+| --- | --- |
+| guard genérico | `base_grants.view/create/approve/suspend/revoke` separados |
+| delete + insert | ciclo gobernado de creación, aprobación, suspensión y revocación |
+| `is_allowed=false` | deny explícito separado de la matriz positiva |
+| scopes genéricos | scopes derivados del contrato canónico |
+| roles de tabla local | membresía validada contra ocho `BaseRoleCode` |
+| permiso local existente | identidad validada contra catálogo versionado |
+| control principalmente de UI | autorización, reauth y segregación en servidor |
+
+Esta tarea no modifica esa ruta ni Supabase.
+
+---
+
+#### 13. Fallo cerrado
+
+Se rechaza la operación ante:
+
+- rol base desconocido;
+- permiso desconocido, legacy o retirado;
+- permiso `OPERATIONAL_ONLY`;
+- scope no admitido;
+- territorio o recurso obligatorio irresoluble;
+- actor sin permiso administrativo exacto;
+- reautenticación requerida ausente;
+- autoaprobación;
+- autoafectación;
+- duplicado ambiguo;
+- cambio concurrente no revalidado;
+- auditoría no persistible;
+- versión contractual incompatible;
+- intento de convertir `is_allowed=false` en deny nuevo;
+- discrepancia entre UI y servidor.
+
+Prevalece siempre la decisión de servidor.
+
+---
+
+#### 14. Separación de responsabilidades
+
+`VISO-AUTH-003` no absorbe:
+
+- `VISO-AUTH-004`: permisos por rol operativo;
+- `VISO-AUTH-005` y `006`: disponibilidad por sede y área;
+- `VISO-AUTH-007` a `012`: perfiles, asignaciones y rol operativo efectivo;
+- `VISO-AUTH-013`: vista previa trabajador × sede × área × turno;
+- `VISO-AUTH-014`: simulación;
+- `VISO-AUTH-015`: origen de permisos;
+- `VISO-AUTH-016`: conflictos;
+- `VISO-AUTH-017`: excepciones individuales;
+- `VISO-AUTH-018`: auditoría administrativa;
+- `VISO-AUTH-019`: restricción de quién administra seguridad;
+- `VISO-AUTH-020`: exporte de matriz.
+
+La futura implementación física de esta tarea continúa detrás de `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Las reglas materializadas ya están protegidas por requisitos vigentes de catálogo, autorización, administración territorial, separación de carriles, integridad de la matriz base y coherencia de VISO. No se introduce una nueva identidad, modalidad, scope o regla empresarial que exija ampliar el registro.
+
+---
+
+#### 16. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza la cobertura que protege:
+
+- exactitud de los ocho roles base y de `base-role-grants@1.1.0`;
+- prohibición de autorización por listas locales de roles;
+- validez de claves de permiso;
+- administración de seguridad mediante capacidad explícita;
+- independencia entre administración y turno/check-in;
+- segregación de funciones;
+- coherencia entre configuración VISO y resultado consumido por las aplicaciones.
+
+Esta trazabilidad no cambia estado, contenido, paquete ni evidencia de ningún requisito.
+
+---
+
+#### 17. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea aún no fue insertada ni validada en el checkout local de su rama documental. |
+| REMOTA | PASS | Se contrastaron continuidad, topología, políticas, archivo propietario, catálogo de 140 permisos, ocho roles, dataset base 1.1.0, validador de 504 grants, scopes y superficie VISO AS-IS. |
+| OPERATIVA | NOT_APPLICABLE | No se cambian permisos efectivos ni acciones reales de trabajadores durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Server Actions, `role_permissions`, Supabase, migraciones ni contratos distribuidos. |
+
+---
+
+#### 18. Criterios de aceptación
+
+- [ ] Se administran exclusivamente ocho `BaseRoleCode`.
+- [ ] El universo de capacidades conserva 140 `PermissionKey` activas.
+- [ ] El snapshot conserva 504 grants: 468 `DIRECT_BASE` y 36 `BASE_COMPONENT`.
+- [ ] Los conteos por rol son 121, 119, 93, 58, 47, 45, 16 y 5.
+- [ ] La matriz sigue siendo `ALLOW_ONLY`.
+- [ ] `OPERATIONAL_ONLY` no puede agregarse al carril base.
+- [ ] `BASE_COMPONENT` no se presenta como autorización completa.
+- [ ] Ausencia, suspensión, revocación y deny explícito no se confunden.
+- [ ] Los scopes provienen del contrato y no de una lista genérica local.
+- [ ] Las cinco acciones `base_grants.*` se autorizan por separado.
+- [ ] Solo `propietario` y `gerente_general` poseen actualmente las cinco capacidades administrativas del snapshot.
+- [ ] Toda mutación sensible exige reautenticación fuerte, segregación y auditoría.
+- [ ] No existe autoaprobación ni autoafectación unilateral.
+- [ ] `trabajador_operativo` conserva sus cinco grants mínimos en el snapshot vigente.
+- [ ] `/roles-permissions` no se declara canónica por su sola existencia.
+- [ ] El guard legacy observado no se conserva como autoridad TO-BE.
+- [ ] No se invade la matriz operativa de `VISO-AUTH-004`.
+- [ ] No se modifican contratos, datos ni Supabase durante el cierre documental.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 19. Límites
+
+Esta tarea no modifica código de VISO, rutas, componentes, Server Actions, `@vento/contracts`, catálogos, datasets, `role_permissions`, `employee_permissions`, `operational_role_permissions`, denegaciones, migraciones, SQL, RLS, RPC, triggers ni datos Supabase.
+
+Tampoco crea roles, permisos, scopes, aliases, excepciones, perfiles operativos, asignaciones de sede/área, roles de turno, simulaciones, packages ni autorizaciones físicas.
+
+La identidad exacta de la unidad física se resolverá únicamente mediante el package y gate aplicables.
+
+---
+
+#### 20. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-002 — Crear catálogo administrativo de roles operativos`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-003 — Administrar permisos por rol base`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-004 — Administrar permisos por rol operativo`
+
+
 ### [ ] VISO-AUTH-004 — Administrar permisos por rol operativo
 ### [ ] VISO-AUTH-005 — Administrar roles permitidos por sede
 ### [ ] VISO-AUTH-006 — Administrar roles permitidos por área
