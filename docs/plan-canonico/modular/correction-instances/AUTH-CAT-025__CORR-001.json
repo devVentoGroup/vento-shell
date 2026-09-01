@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "DOCUMENTARY_CONTRADICTION",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "AUTH-DB-034::GLOBAL"
@@ -17,12 +17,76 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY"
+    }
+  ],
+  "validation_commands": [
+    "git grep -q -F \"AUTH-CAT-025::CORR-001\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "git grep -q -F \"resource_contract_identity_completion = PUBLISHED\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "git grep -q -F \"active_permission_count = 140\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "git grep -q -F \"inherited_resource_contract_count = 111\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "git grep -q -F \"successor_resource_contract_count = 29\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "git grep -q -F \"unresolved_resource_contract_id = 0\" -- docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md",
+    "npm run docs:task:format -- --file docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md --task-id AUTH-CAT-025 --check",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:eol:check",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "zero_treq_reason": "Corrección documental para completar de forma reproducible la identidad técnica de los contratos de recurso activos heredados por vento.authorization@1.1.0; no modifica capacidades, PermissionKey, semántica de recurso, modalidades, scopes, grants, datasets ni requisitos TREQ.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-01T12:54:04.305-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza AUTH-CAT-025::CORR-001 exclusivamente para cerrar la contradicción documental que impide reproducir los resource_contract_id heredados necesarios por vento.authorization@1.1.0; preservar las 140 PermissionKey activas, los 29 contratos publicados por AUTH-CAT-025, la semántica de recurso histórica, modalidades, scopes, prerrequisitos, grants, datasets, hashes contractuales publicados y TREQ; AUTH-DB-034::GLOBAL permanece bloqueada hasta VERIFIED_ON_MAIN.",
+    "source_contract_sha256": "52de1f25e97a97c4997da0ce9c36fd61a2ff4b8f5d34106527cc2cfb24444b7d"
+  },
+  "evidence": [
+    "IMPLEMENTED AUTH-CAT-025::CORR-001 explicit resource contract identity completion materialized.",
+    "IMPLEMENTED 29 successor resource_contract_id values preserved exactly.",
+    "IMPLEMENTED 111 inherited resource_contract_id values explicitly assigned and published.",
+    "IMPLEMENTED assignment_scheme=<permission_key>.v1 limited to AUTH-CAT-025::CORR-001.",
+    "IMPLEMENTED runtime_derivation_allowed=false.",
+    "IMPLEMENTED total effective resource_contract_id=140 unique.",
+    "IMPLEMENTED unresolved_resource_contract_id=0.",
+    "IMPLEMENTED semantic_change=false.",
+    "IMPLEMENTED PermissionKey, resource semantics, modalities, scopes, prerequisites, grants and datasets unchanged.",
+    "IMPLEMENTED TREQ_CHANGES=0 and 04A_CHANGES=0.",
+    "IMPLEMENTED identity_registry_sha256=sha256:2f19d2ebabcc87f8a6bb8029da8f87e05ea86c9acb027aec134995d338604bf4",
+    "VERIFIED correction marker PASS.",
+    "VERIFIED successor resource_contract_id preservation=29.",
+    "VERIFIED inherited explicit resource_contract_id assignment=111.",
+    "VERIFIED total resolved resource_contract_id=140.",
+    "VERIFIED unresolved_resource_contract_id=0.",
+    "VERIFIED runtime_derivation_allowed=false.",
+    "VERIFIED docs:task:format --check PASS.",
+    "VERIFIED docs:plan:build PASS.",
+    "VERIFIED docs:plan:check PASS.",
+    "VERIFIED docs:plan:test PASS.",
+    "VERIFIED docs:treq:check PASS.",
+    "VERIFIED docs:treq:test PASS.",
+    "VERIFIED docs:correction:check PASS.",
+    "VERIFIED docs:correction:test PASS.",
+    "VERIFIED docs:eol:check PASS.",
+    "VERIFIED git --no-pager diff --check PASS."
+  ],
   "opened_at": "2026-09-01T14:25:04.866Z"
 }
