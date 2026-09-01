@@ -1,10 +1,136 @@
 {
   "instance_id": "AUTH-DB-034::GLOBAL",
   "task_id": "AUTH-DB-034",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "VERIFIED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-034__GLOBAL.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/roles.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260901062557_auth_db_034_authorization_evaluator.sql",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/043_auth_db_034_authorization_evaluator.test.sql",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/026_auth_db_018_contract_separation.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/027_auth_db_017_data_api_privileges.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY"
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-01T18:57:25.097Z",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: reanuda AUTH-DB-034::GLOBAL hasta VERIFIED y merge para materializar exclusivamente el evaluador canonico de autorizacion sobre vento.authorization@1.1.0, contract_release_hash sha256:9e8d1d7452ed5844fa76b9c718e7bb82ae029d6031234b3b6d9a17f22c2a4359 y el registry complementario VERIFIED AUTH-CAT-025::CORR-001 sha256:2f19d2ebabcc87f8a6bb8029da8f87e05ea86c9acb027aec134995d338604bf4; la cardinalidad observada es 140 PermissionKey activos pero no se hardcodea como cardinalidad eterna; los 29 resource_contract_id sucesores se preservan y los 111 heredados se consumen literalmente desde la correccion, sin derivacion runtime; no se modifica @vento/contracts, no se persisten AuthorizationDecision, no se implementa simulacion, no se reescriben las policies legacy existentes, no se migran consumidores RPC, no se retiran helpers legacy, no se modifica Supabase hosted directamente, no se modifica 04A/TREQ y no se autoriza AUTH-DB-032::GLOBAL.",
+    "source_contract_sha256": "b428724a67032dfd1238e7537679c0bffcf62deddaff440b191c753506e696b7"
+  },
+  "evidence": [
+    "BASE_MAIN 926b21cf3e05b9df608da0cf49b96e5af3a5f23c",
+    "PRE_AUTHORIZATION decision=APPROVED approved_by=VENTO_OWNER",
+    "SOURCE_CONTRACT_SHA256 b428724a67032dfd1238e7537679c0bffcf62deddaff440b191c753506e696b7",
+    "PRE_VALIDATION_GATE quality:repair PASS exactly once",
+    "MATERIALIZATION migration=supabase/migrations/20260901062557_auth_db_034_authorization_evaluator.sql",
+    "MATERIALIZATION test=supabase/tests/database/043_auth_db_034_authorization_evaluator.test.sql assertions=154",
+    "MATERIALIZATION release=sha256:9e8d1d7452ed5844fa76b9c718e7bb82ae029d6031234b3b6d9a17f22c2a4359",
+    "MATERIALIZATION identity_registry=sha256:2f19d2ebabcc87f8a6bb8029da8f87e05ea86c9acb027aec134995d338604bf4",
+    "MATERIALIZATION evaluator=app_private.evaluate_authorization(jsonb) safe_wrapper=api.get_safe_authorization_decision(jsonb)",
+    "MATERIALIZATION active_permission_snapshot=140 resource_contract_ids_resolved=140 unresolved=0",
+    "MATERIALIZATION resource_contract_id_runtime_derivation=NO",
+    "MATERIALIZATION self_test direct_db_reset=PASS pgtap_043=154/154 full_suite_assertions=710 result=PASS",
+    "MATERIALIZATION TREQ_CHANGES=0 04A_CHANGES=0",
+    "MATERIALIZATION REMOTE_TARGETS_USED=NO",
+    "MATERIALIZATION REMOTE_DIRECT_MUTATIONS=NO",
+    "SELF_TEST direct_db_reset PASS",
+    "SELF_TEST full_pgTAP PASS files=17 assertions=710",
+    "SELF_TEST AUTH-DB-034 043 PASS assertions=154/154",
+    "SELF_TEST AUTH-DB-035 concurrency_blocker_this_run=NO",
+    "RECOVERY prior_close_failed_at=CHECKPOINT_COMMIT implementation_state_preserved=YES",
+    "QUALITY_REPAIR_RERUN NO",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS",
+    "VALIDATION #3 npm run supabase:recovery:local PASS",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0",
+    "VALIDATION #4 candidate_sha=0034a5c4d530ce0aaef3d0eda5d801c1282f199a",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS",
+    "CHECKPOINT_LOCAL 0034a5c4d530ce0aaef3d0eda5d801c1282f199a",
+    "RESULT AUTH-DB-034::GLOBAL VERIFIED"
+  ]
 }

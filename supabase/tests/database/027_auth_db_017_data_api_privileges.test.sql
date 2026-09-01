@@ -165,8 +165,7 @@ select is(
       and p.prokind = 'f'
       and p.prosecdef
   ),
-  1::bigint,
-  'api contains exactly the AUTH-DB-033 safe SECURITY DEFINER RPC'
+  2::bigint, 'api contains exactly the AUTH-DB-033 and AUTH-DB-034 safe SECURITY DEFINER RPCs'
 );
 
 select is(
