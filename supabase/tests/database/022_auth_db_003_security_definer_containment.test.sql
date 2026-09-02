@@ -195,8 +195,8 @@ select is(
       'vital'
     )
   ),
-  396::bigint,
-  'governed function universe includes AUTH-DB-013 simulation-audit helpers and legacy containment'
+  407::bigint,
+  'governed function universe includes AUTH-DB-014 device-audit helpers and legacy containment'
 );
 
 select is(
@@ -215,8 +215,8 @@ select is(
     )
       and p.prosecdef
   ),
-  216::bigint,
-  'SECURITY DEFINER total includes AUTH-DB-013 private append helpers after legacy simulation containment'
+  222::bigint,
+  'SECURITY DEFINER total includes six AUTH-DB-014 privileged device-audit writers after the AUTH-DB-013 baseline'
 );
 
 select is(
@@ -234,8 +234,8 @@ select is(
     )
       and p.prosecdef
   ),
-  211::bigint,
-  'Vento SECURITY DEFINER total includes AUTH-DB-013 private append helpers after legacy simulation containment'
+  217::bigint,
+  'Vento SECURITY DEFINER total includes six AUTH-DB-014 privileged device-audit writers after the AUTH-DB-013 baseline'
 );
 
 select is(
@@ -268,8 +268,8 @@ select is(
       and p.prosecdef
       and p.prorettype <> 'trigger'::regtype
   ),
-  182::bigint,
-  'direct SECURITY DEFINER total includes AUTH-DB-013 private append helpers after legacy simulation containment'
+  188::bigint,
+  'direct SECURITY DEFINER total includes six AUTH-DB-014 privileged device-audit writers after the AUTH-DB-013 baseline'
 );
 
 select is(
