@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1099** |
+| Aprobadas | **1100** |
 | En propuesta | **0** |
-| No iniciadas | **497** |
+| No iniciadas | **496** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **68.86% (1099/1596)** |
+| Porcentaje de completamiento | **68.92% (1100/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-AUTH-008` — Administrar sedes asignadas | ✅ APROBADA |
-| Tarea actual | `VISO-AUTH-009` — Administrar áreas asignadas | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-AUTH-010` — Asignar rol operativo al turno | ⬜ NO INICIADA |
+| Última aprobada | `VISO-AUTH-009` — Administrar áreas asignadas | ✅ APROBADA |
+| Tarea actual | `VISO-AUTH-010` — Asignar rol operativo al turno | ⬜ NO INICIADA |
+| Siguiente reservada | `VISO-AUTH-011` — Validar turnos sin rol operativo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -642,7 +642,7 @@
 | ✅ APROBADA | `VISO-AUTH-006` | Administrar roles permitidos por área | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-007` | Administrar perfiles operativos por trabajador | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-008` | Administrar sedes asignadas | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
-| ⬜ NO INICIADA | `VISO-AUTH-009` | Administrar áreas asignadas | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
+| ✅ APROBADA | `VISO-AUTH-009` | Administrar áreas asignadas | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-010` | Asignar rol operativo al turno | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-011` | Validar turnos sin rol operativo | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-012` | Validar turnos con área incompatible | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
