@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1596** |
 | Tareas `AUTH` únicas | **319** |
-| Tareas aprobadas | **1097** |
+| Tareas aprobadas | **1098** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **499** |
+| Tareas no iniciadas | **498** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **68.73% (1097/1596)** |
+| Porcentaje de completamiento | **68.80% (1098/1596)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **VISO-AUTH-006 — Administrar roles permitidos por área** |
-| Tarea actual | **VISO-AUTH-007 — Administrar perfiles operativos por trabajador** |
+| Última tarea aprobada | **VISO-AUTH-007 — Administrar perfiles operativos por trabajador** |
+| Tarea actual | **VISO-AUTH-008 — Administrar sedes asignadas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **VISO-AUTH-008 — Administrar sedes asignadas** |
+| Siguiente tarea | **VISO-AUTH-009 — Administrar áreas asignadas** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
-| Progreso del bloque | **BLOQUES G Y G2: 6 de 26 aprobadas; VISO-AUTH-007 pendiente** |
+| Progreso del bloque | **BLOQUES G Y G2: 7 de 26 aprobadas; VISO-AUTH-008 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-012::GLOBAL** |
-| Carril documental | **ACTIVO — VISO-AUTH-007** |
+| Carril documental | **ACTIVO — VISO-AUTH-008** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-012::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `VISO-AUTH-006` — Administrar roles permitidos por área |
-| Tarea actual | `VISO-AUTH-007` — Administrar perfiles operativos por trabajador — **NO INICIADA** |
-| Siguiente tarea | `VISO-AUTH-008` — Administrar sedes asignadas |
+| Última aprobada | `VISO-AUTH-007` — Administrar perfiles operativos por trabajador |
+| Tarea actual | `VISO-AUTH-008` — Administrar sedes asignadas — **NO INICIADA** |
+| Siguiente tarea | `VISO-AUTH-009` — Administrar áreas asignadas |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 6 DE 26 APROBADAS — ACTUAL VISO-AUTH-007** |
+| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 7 DE 26 APROBADAS — ACTUAL VISO-AUTH-008** |
 | Implementación física | **AUTH-DB-012::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-VISO-AUTH-006 — Administrar roles permitidos por área
-        ↓
-TAREA ACTUAL
 VISO-AUTH-007 — Administrar perfiles operativos por trabajador
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 VISO-AUTH-008 — Administrar sedes asignadas
         ↓
+SIGUIENTE TAREA RESERVADA
+VISO-AUTH-009 — Administrar áreas asignadas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUES G Y G2 — 6 de 26 tareas aprobadas
+BLOQUES G Y G2 — 7 de 26 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1097** |
+| Aprobadas | **1098** |
 | En propuesta | **0** |
-| No iniciadas | **499** |
+| No iniciadas | **498** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **68.73% (1097/1596)** |
+| Porcentaje de completamiento | **68.80% (1098/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-AUTH-006` — Administrar roles permitidos por área | ✅ APROBADA |
-| Tarea actual | `VISO-AUTH-007` — Administrar perfiles operativos por trabajador | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-AUTH-008` — Administrar sedes asignadas | ⬜ NO INICIADA |
+| Última aprobada | `VISO-AUTH-007` — Administrar perfiles operativos por trabajador | ✅ APROBADA |
+| Tarea actual | `VISO-AUTH-008` — Administrar sedes asignadas | ⬜ NO INICIADA |
+| Siguiente reservada | `VISO-AUTH-009` — Administrar áreas asignadas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -640,7 +640,7 @@
 | ✅ APROBADA | `VISO-AUTH-004` | Administrar permisos por rol operativo | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-005` | Administrar roles permitidos por sede | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-006` | Administrar roles permitidos por área | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
-| ⬜ NO INICIADA | `VISO-AUTH-007` | Administrar perfiles operativos por trabajador | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
+| ✅ APROBADA | `VISO-AUTH-007` | Administrar perfiles operativos por trabajador | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-008` | Administrar sedes asignadas | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-009` | Administrar áreas asignadas | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-010` | Asignar rol operativo al turno | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
