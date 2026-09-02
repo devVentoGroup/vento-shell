@@ -225,6 +225,8 @@ Cuando ChatGPT entregue una batería, conjunto de validaciones o comando cuya ev
 5. el resumen final nunca sustituye ni altera el código de salida real: un fallo conserva estado no cero y no puede presentarse como PASS;
 6. si un fallo impide producir el bloque final o el resumen resulta insuficiente para diagnosticarlo, solo entonces pide la salida adicional estrictamente necesaria.
 
+Para la batería global documental, `npm run docs:plan:build` es el paso de sincronización previo a `npm run docs:plan:check`. Su contrato incluye regenerar los iniciadores locales documental, físico y de correcciones; no omitas el build ni ejecutes el check global contra iniciadores derivados potencialmente desactualizados.
+
 REGLA DE SEGURIDAD DE TERMINAL INTERACTIVA
 
 Todo bloque de comandos que ChatGPT entregue para que el usuario lo pegue o ejecute manualmente en PowerShell, CMD, Bash u otra terminal interactiva debe conservar abierta la sesión del usuario.

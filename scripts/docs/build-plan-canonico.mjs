@@ -67,10 +67,12 @@ try {
   const { scanPackageReadiness } = await import('./package-readiness-scanner.mjs');
   const { writeImplementationControlArtifacts } = await import('./implementation-control.mjs');
   const { writeReadinessChatgptWorkStarter: writeChatgptWorkStarter } = await import('./chatgpt-work-starter-readiness.mjs');
+  const { writeCorrectionStarter } = await import('./correction-starter.mjs');
 
   readinessResult = scanPackageReadiness({ root, write: true, trigger: 'plan-build' });
   implementationControl = writeImplementationControlArtifacts({ root }).control;
   writeChatgptWorkStarter({ root, readinessResult });
+  writeCorrectionStarter({ root });
 } catch (error) {
   console.error('[PACKAGE READINESS] Compilaci\u00f3n bloqueada:');
   console.error(error instanceof Error ? error.message : String(error));
@@ -109,6 +111,7 @@ try {
   }
   console.log('[PLAN CAN\u00d3NICO]   Iniciador documental: .delivery/INICIADOR_VENTO_DOCUMENTACION.txt');
   console.log('[PLAN CAN\u00d3NICO]   Iniciador implementaci\u00f3n: .delivery/INICIADOR_VENTO_IMPLEMENTACION.txt');
+  console.log('[PLAN CAN\u00d3NICO]   Iniciador correcci\u00f3n: .delivery/INICIADOR_VENTO_CORRECCION.txt');
   console.log('[PLAN CAN\u00d3NICO]   Selector legacy: INICIADOR_VENTO_ACTUAL.txt');
 } catch (error) {
   console.warn(

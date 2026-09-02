@@ -26,3 +26,9 @@ test('check tolera ausencia de la proyección no versionada en CI', () => {
     const source = fs.readFileSync('scripts/docs/correction-starter.mjs', 'utf8');
     assert.match(source, /check && changed && fs\.existsSync\(outputPath\)/u);
 });
+
+test('docs:plan:build sincroniza el iniciador de correcciones antes del check global', () => {
+    const source = fs.readFileSync('scripts/docs/build-plan-canonico.mjs', 'utf8');
+    assert.match(source, /import\('\.\/correction-starter\.mjs'\)/u);
+    assert.match(source, /writeCorrectionStarter\(\{ root \}\)/u);
+});
