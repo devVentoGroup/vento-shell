@@ -2967,7 +2967,850 @@ La identidad exacta de la futura unidad física se resolverá únicamente median
 `VISO-AUTH-006 — Administrar roles permitidos por área`
 
 
-### [ ] VISO-AUTH-006 — Administrar roles permitidos por área
+### ✅ VISO-AUTH-006 — Administrar roles permitidos por área
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-005 — Administrar roles permitidos por sede
+**Tarea siguiente:** VISO-AUTH-007 — Administrar perfiles operativos por trabajador
+**Tipo de tarea:** documental; definición del contrato administrativo de elegibilidad rol operativo × área, subordinado a la matriz rol × sede y separado de permisos, perfiles de trabajador, turnos y autorización efectiva
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VISO deberá administrar la compatibilidad entre roles operativos canónicos y áreas concretas dentro de una sede previamente habilitada, sin convertir esa compatibilidad en permiso, perfil individual, selección automática, rol efectivo del turno ni autorización final.
+
+La unidad lógica de una habilitación exacta queda:
+
+```text
+site_id
++
+area_id
++
+operational_role_code
+→
+EXACT_BINDING
+```
+
+con la invariante:
+
+```text
+areas.site_id
+=
+site_id de la relación padre rol × sede
+```
+
+La regla raíz es:
+
+```text
+ROL PERMITIDO EN SEDE
++
+ÁREA ACTIVA DE ESA SEDE
++
+ROL OPERATIVO CANÓNICO
++
+BINDING DE ÁREA EXPLÍCITO Y ACTIVO
+→
+ROL ELEGIBLE EN ESA ÁREA
+```
+
+Y nunca:
+
+```text
+area_id = null
+→ todas las áreas
+```
+
+ni:
+
+```text
+una sola área visible
+→ área inferida
+```
+
+ni:
+
+```text
+rol permitido en área
+→ permiso concedido
+```
+
+ni:
+
+```text
+rol permitido en área
+→ rol efectivo del turno
+```
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva y consume, sin reescribir:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-005` — catálogo operativo separado;
+- `AUTH-MOD-007` — sede asignada y sede activa;
+- `AUTH-MOD-008` — área asignada, área activa, pertenencia área–sede y áreas site-wide;
+- `AUTH-MOD-009` y `AUTH-MOD-010` — turno publicado y contexto operativo;
+- `AUTH-RBAC-008` a `AUTH-RBAC-019` — matrices de los doce roles operativos;
+- `AUTH-RBAC-025`, `AUTH-RBAC-027` y `AUTH-RBAC-028`;
+- `AUTH-SIM-003` — sede simulada;
+- `AUTH-SIM-004` — semántica aprobada de binding de área;
+- `AUTH-SIM-005` — turno simulado y compatibilidad contextual;
+- `VISO-AUTH-002` — catálogo administrativo de roles operativos;
+- `VISO-AUTH-004` — permisos por rol operativo;
+- `VISO-AUTH-005` — dominio padre rol operativo × sede;
+- `SHELL-CON-005` — contrato compartido de roles operativos.
+
+La identidad de rol continúa gobernada por `OperationalRoleCode@1.0.0`.
+
+La identidad del área procede de `public.areas`. El nombre visible y `area_kind` son atributos de clasificación o presentación y no sustituyen `area_id`.
+
+---
+
+#### 3. Dependencia obligatoria del dominio padre
+
+`VISO-AUTH-006` no puede crear territorio operativo nuevo por debajo de una sede que no permita el rol.
+
+La relación obligatoria es:
+
+```text
+VISO-AUTH-005
+(site_id, operational_role_code)
+        ↓
+VISO-AUTH-006
+(site_id, area_id, operational_role_code)
+```
+
+Por tanto:
+
+```text
+binding de área activo
+AND
+binding de sede ausente o inactivo
+→
+CONFIGURACIÓN INVÁLIDA
+```
+
+Toda habilitación de área deberá comprobar que:
+
+1. la sede existe y es operativamente elegible;
+2. el área existe y está activa;
+3. el área pertenece exactamente a esa sede;
+4. el rol pertenece a los doce `OperationalRoleCode`;
+5. existe una relación padre activa rol × sede;
+6. no existe una duplicación ambigua del mismo binding exacto.
+
+`area_id` no puede trasladar un rol hacia otra sede ni ampliar la matriz de `VISO-AUTH-005`.
+
+---
+
+#### 4. Estados contractuales del binding de área
+
+La administración deberá distinguir explícitamente tres estados semánticos:
+
+| Estado | Significado | Efecto |
+| --- | --- | --- |
+| `EXACT_BINDING` | Existe una relación explícita entre sede, área concreta y rol operativo. | El rol puede ser evaluado para esa área, sujeto al resto del contexto. |
+| `AREA_BINDING_UNRESOLVED` | La sede permite el rol, pero no existe un área exacta ni una decisión canónica que permita omitirla. | No se infiere área; una operación que requiera área queda indeterminada o denegada. |
+| `NO_AREA_NOT_REQUIRED` | Un contrato canónico explícito determina que esa variante no exige área. | `area_id` permanece nulo sin significar wildcard; solo aplica dentro de la sede y variante autorizadas. |
+
+Regla crítica:
+
+```text
+area_id = null
+≠
+NO_AREA_NOT_REQUIRED
+```
+
+`NO_AREA_NOT_REQUIRED` debe provenir de una decisión contractual explícita. Nunca se obtiene automáticamente por ausencia de área, por existir una sola área, por un default, por el nombre del rol o por el tipo de sede.
+
+En el baseline aprobado consumido por esta tarea:
+
+```text
+EXACT_BINDING = 13
+AREA_BINDING_UNRESOLVED = 3
+NO_AREA_NOT_REQUIRED = 0
+TOTAL relaciones rol × sede evaluadas = 16
+```
+
+---
+
+#### 5. Baseline exacto de vínculos rol–sede–área
+
+Los trece vínculos exactos ya materializados documentalmente por el contrato aprobado de simulación se convierten en baseline de administración para VISO:
+
+| Sede | Área canónica | Rol operativo | Estado |
+| --- | --- | --- | --- |
+| `CENTRO_PROD` | `BODEGA` | `bodeguero` | `EXACT_BINDING` |
+| `CENTRO_PROD` | `COC-CAL` | `produccion_cocina` | `EXACT_BINDING` |
+| `CENTRO_PROD` | `PAN-GALL` | `produccion_panaderia` | `EXACT_BINDING` |
+| `CENTRO_PROD` | `REPOSTERIA` | `produccion_reposteria` | `EXACT_BINDING` |
+| `SAUDO` | `COCINA_BARRA` | `barista_satelite` | `EXACT_BINDING` |
+| `SAUDO` | `CAJA` | `cajero_satelite` | `EXACT_BINDING` |
+| `SAUDO` | `COCINA_BARRA` | `cocinero_satelite` | `EXACT_BINDING` |
+| `SAUDO` | `SALON` | `servicio_salon` | `EXACT_BINDING` |
+| `VENTO_CAFE` | `BARRA` | `barista_satelite` | `EXACT_BINDING` |
+| `VENTO_CAFE` | `CAJA` | `cajero_satelite` | `EXACT_BINDING` |
+| `VENTO_CAFE` | `COCINA` | `cocinero_satelite` | `EXACT_BINDING` |
+| `VENTO_CAFE` | `MOSTRADOR` | `mostrador_satelite` | `EXACT_BINDING` |
+| `VENTO_CAFE` | `SALON` | `servicio_salon` | `EXACT_BINDING` |
+
+Este baseline contiene:
+
+```text
+bindings exactos = 13
+sedes con al menos un binding exacto = 3
+áreas con al menos un binding exacto = 12
+roles distintos con binding exacto = 9
+bindings duplicados = 0
+bindings sin relación padre de sede = 0
+```
+
+Compartir una misma área no fusiona roles. En `SAUDO / COCINA_BARRA`, `barista_satelite` y `cocinero_satelite` conservan identidades, permisos y responsabilidades independientes.
+
+---
+
+#### 6. Vínculos de área no resueltos
+
+Las tres relaciones restantes del baseline de sede se conservan exactamente como no resueltas:
+
+| Sede | Rol operativo | Área | Estado | Regla |
+| --- | --- | --- | --- | --- |
+| `CENTRO_PROD` | `conductor_logistica` | — | `AREA_BINDING_UNRESOLVED` | No se infiere Bodega, Ruta, General ni otra área. |
+| `MOLKA_PRINCIPAL` | `operador_integral_satelite` | — | `AREA_BINDING_UNRESOLVED` | No se infiere Mostrador, General ni todas las áreas. |
+| `VENTO_GROUP` | `gerencia_operativa` | — | `AREA_BINDING_UNRESOLVED` | No se infiere Dirección, Gerencia General ni otra área administrativa. |
+
+Estos tres casos no pueden presentarse como:
+
+```text
+General
+Todos
+Cualquier área
+Site-wide
+Sin restricción
+```
+
+mientras no exista una decisión canónica explícita que cambie su estado.
+
+Condición exacta de salida:
+
+```text
+AREA_BINDING_UNRESOLVED
+→ EXACT_BINDING
+```
+
+solo cuando se configure un `area_id` válido y explícito dentro de la sede padre;
+
+o:
+
+```text
+AREA_BINDING_UNRESOLVED
+→ NO_AREA_NOT_REQUIRED
+```
+
+solo cuando una decisión contractual explícita autorice esa variante sin área.
+
+La simple persistencia de `NULL` no satisface ninguna de las dos condiciones.
+
+---
+
+#### 7. Cardinalidad y unicidad
+
+Una sede puede contener múltiples áreas y una misma área puede permitir múltiples roles operativos.
+
+También puede ser válido que el mismo rol operativo sea habilitado en más de un área de la misma sede si cada relación es explícita y compatible con el contrato.
+
+Por tanto, la cardinalidad conceptual es muchos-a-muchos:
+
+```text
+área
+↔
+OperationalRoleCode
+```
+
+dentro del dominio padre de una sede.
+
+La unicidad exigida es:
+
+```text
+(site_id, area_id, operational_role_code)
+→ máximo una relación lógica activa equivalente
+```
+
+No se autoriza la regla más restrictiva:
+
+```text
+(site_id, operational_role_code)
+→ máximo un área
+```
+
+como definición contractual general de `VISO-AUTH-006`.
+
+`site_id` permanece en el tuple de validación para demostrar el dominio padre, pero no es un valor libre: debe coincidir con `areas.site_id`.
+
+---
+
+#### 8. Área exacta y `area_kind`
+
+`area_id` representa el territorio concreto de esta tarea.
+
+`area_kind` puede utilizarse para:
+
+- explicación;
+- filtros;
+- compatibilidad de permisos que expresamente utilicen tipo de área;
+- agrupación administrativa;
+- validaciones adicionales de contrato.
+
+No puede utilizarse para inventar un binding exacto.
+
+Regla:
+
+```text
+area_kind = cocina
+≠
+area_id de una cocina concreta
+```
+
+Dos sedes pueden poseer áreas de igual tipo o nombre y seguir siendo territorios distintos.
+
+Una relación por `area_kind` en otro contrato de autorización no sustituye el binding exacto rol × área administrado aquí.
+
+---
+
+#### 9. Roles normalmente ligados a área
+
+Los roles ya documentados como normalmente ligados a un área deben conservar una relación exacta antes de utilizarse en un contexto que exija área.
+
+El baseline demuestra bindings exactos para:
+
+- `cajero_satelite`;
+- `barista_satelite`;
+- `cocinero_satelite`;
+- `servicio_salon`;
+- `mostrador_satelite`;
+- `produccion_cocina`;
+- `produccion_panaderia`;
+- `produccion_reposteria`;
+- `bodeguero`.
+
+La existencia de una relación de sede para cualquiera de ellos no permite omitir el binding de área.
+
+Para `conductor_logistica`, `operador_integral_satelite` y `gerencia_operativa`, esta tarea conserva el estado no resuelto observado; no crea una excepción de área por el nombre o la familia del rol.
+
+---
+
+#### 10. `is_default` como preferencia, no autoridad
+
+Una relación exacta puede coexistir con información física de `is_default`, pero ese flag no crea compatibilidad.
+
+Reglas:
+
+```text
+is_default = true
+→ puede sugerir una relación ya válida
+```
+
+```text
+is_default = true
+≠ crea binding
+≠ autoriza
+≠ asigna trabajador
+≠ asigna turno
+```
+
+Un default solo puede apuntar a una relación que ya sea válida en sede y área.
+
+Cuando un área admite varios roles, como `SAUDO / COCINA_BARRA`, la existencia o ausencia de un default no fusiona roles ni elimina la obligación de conservar una selección operativa inequívoca.
+
+---
+
+#### 11. Alta, cambio, desactivación y retiro
+
+Una operación administrativa sobre la matriz de área deberá conservar identidad y trazabilidad.
+
+##### Alta
+
+Solo puede crear un `EXACT_BINDING` cuando sede, área, rol y relación padre son válidos.
+
+##### Cambio de área
+
+No se interpreta como edición cosmética. Cambia territorio y debe revalidar:
+
+- pertenencia del área a la sede;
+- relación padre rol × sede;
+- compatibilidad del rol;
+- turnos futuros o abiertos afectados;
+- perfiles que lo utilicen como sugerencia;
+- defaults relacionados.
+
+##### Desactivación
+
+Impide utilizar el binding para nuevas asignaciones o nuevas decisiones efectivas después de la vigencia de la desactivación.
+
+##### Retiro
+
+No elimina ni reescribe historia de:
+
+- turnos ejecutados;
+- asistencia;
+- auditoría;
+- decisiones ya registradas;
+- evidencia de configuración.
+
+Una desactivación o retiro puede generar incompatibilidad prospectiva, pero no autoriza una mutación retroactiva silenciosa.
+
+---
+
+#### 12. Validación administrativa de una mutación
+
+Toda mutación de `VISO-AUTH-006` deberá verificar, como mínimo:
+
+1. `site_id` válido y operativamente elegible;
+2. `area_id` válido, activo y perteneciente a esa sede;
+3. `operational_role_code` dentro de los doce códigos canónicos;
+4. rol vigente;
+5. relación padre rol × sede activa;
+6. ausencia de `propietario_admin`, roles base u oficios legacy;
+7. ausencia de duplicado exacto;
+8. estado de binding explícito;
+9. prohibición de convertir `NULL` en wildcard;
+10. prohibición de inferir área desde nombre, `area_kind`, sede, default, perfil o unicidad visual;
+11. autoridad administrativa explícita del actor;
+12. territorio suficiente del actor administrador;
+13. revalidación en servidor;
+14. trazabilidad persistible;
+15. fallo cerrado ante ambigüedad o versión incompatible.
+
+Los valores enviados desde la interfaz son intención y deben volver a resolverse contra fuentes canónicas antes de escribir.
+
+---
+
+#### 13. Autoridad para administrar seguridad territorial
+
+Administrar compatibilidad rol × área es una operación de seguridad.
+
+Debe satisfacerse:
+
+```text
+CAPACIDAD ADMINISTRATIVA EXPLÍCITA
++
+ACTOR ADMINISTRATIVO VÁLIDO
++
+SEDE OBJETIVO AUTORIZADA
++
+ÁREA OBJETIVO AUTORIZADA
++
+VALIDACIÓN DE SERVIDOR
++
+AUDITORÍA
+→
+MUTACIÓN POSIBLE
+```
+
+El rol base `gerente` no concede administración global por nombre.
+
+El catálogo vigente no contiene una `PermissionKey` dedicada específicamente a “administrar roles permitidos por área”. Esta tarea no inventa una.
+
+La vinculación final de estas escrituras con la capacidad administrativa canónica y su segregación permanece reservada a:
+
+`VISO-AUTH-019 — Restringir quién administra seguridad`.
+
+Condición exacta de salida del carryover:
+
+```text
+ninguna implementación de escritura rol × área
+se declara conforme
+hasta demostrar
+capacidad administrativa explícita
++
+territorio sede/área del administrador
++
+autorización en servidor
++
+auditoría
+```
+
+---
+
+#### 14. Consumo por perfiles y turnos
+
+Esta tarea define elegibilidad territorial; no define asignación individual.
+
+El encadenamiento posterior queda:
+
+```text
+VISO-AUTH-005
+rol × sede
++
+VISO-AUTH-006
+rol × área
+        ↓
+VISO-AUTH-007
+perfil operativo del trabajador
+        ↓
+VISO-AUTH-010
+rol operativo del turno
+        ↓
+VISO-AUTH-012
+validación de incompatibilidad de área
+```
+
+Un perfil de trabajador podrá sugerir un rol, pero no crear un binding inexistente.
+
+Un turno solo podrá usar un `area_id` exacto cuando exista compatibilidad válida entre:
+
+```text
+sede del turno
++
+área del turno
++
+rol operativo del turno
+```
+
+Si el binding permanece `AREA_BINDING_UNRESOLVED`, una acción o turno que contractualmente requiera área no puede completar el contexto mediante inferencia.
+
+---
+
+#### 15. Prohibición de inferencias para planificación
+
+La planificación no podrá resolver un área mediante:
+
+- única área disponible;
+- único rol visible;
+- único registro físico;
+- `is_default`;
+- área primaria del trabajador;
+- área seleccionada en interfaz;
+- `employees.area_id`;
+- nombre del rol;
+- `role_family`;
+- `area_kind`;
+- sede primaria;
+- valor histórico de otro turno.
+
+Regla:
+
+```text
+ÁREA EFECTIVA
+→ área exacta del turno o decisión contractual explícita de no requerir área
+```
+
+y nunca:
+
+```text
+fallback conveniente
+→ área efectiva
+```
+
+`VISO-AUTH-010` y `VISO-AUTH-012` deberán consumir esta regla sin ampliar el territorio.
+
+---
+
+#### 16. Reconciliación AS-IS de la superficie VISO
+
+La superficie física actual `/operations/site-roles` combina administración por sede y por área en una sola vista.
+
+El código observado:
+
+- consulta `areas`;
+- filtra las áreas visibles por la sede seleccionada;
+- permite `area_id` opcional;
+- envía `area_id || null`;
+- presenta la opción vacía como `General de la sede`;
+- renderiza filas sin área como `General`;
+- permite `is_default`.
+
+Ese comportamiento es evidencia AS-IS y no contrato TO-BE.
+
+La representación:
+
+```text
+area_id = null
+→ "General"
+```
+
+es insuficiente para el contrato aprobado porque oculta la diferencia entre:
+
+```text
+AREA_BINDING_UNRESOLVED
+```
+
+y:
+
+```text
+NO_AREA_NOT_REQUIRED
+```
+
+La futura materialización deberá mostrar esa diferencia explícitamente y no permitirá que una etiqueta visual transforme un estado no resuelto en autorización territorial.
+
+---
+
+#### 17. Reconciliación AS-IS de planificación VISO
+
+El código actual de programación consulta `vento_site_operational_role_matrix_v1` y, al resolver el rol/área, puede seleccionar una fila mediante una cadena que incluye:
+
+1. coincidencia con `area_id` solicitado;
+2. fila marcada `is_default`;
+3. única fila disponible para el rol;
+4. único `area_id` disponible.
+
+Ese comportamiento se clasifica como drift AS-IS frente al contrato aprobado de área cuando una de esas ramas produce un área que no fue seleccionada o resuelta contractualmente de forma explícita.
+
+La regla TO-BE es:
+
+```text
+exact match explícito
+→ válido
+```
+
+mientras:
+
+```text
+default
+o fila única
+o área única
+→ no sustituyen binding ni selección exacta
+```
+
+La corrección física del flujo de asignación y validación de turnos permanece además dentro de las responsabilidades de `VISO-AUTH-010` y `VISO-AUTH-012`; esta tarea no modifica esos consumidores.
+
+---
+
+#### 18. Reconciliación AS-IS de persistencia
+
+La persistencia observada para `public.site_operational_roles` combina:
+
+```text
+site_id
+area_id nullable
+role_code
+is_default
+is_active
+```
+
+y el estado físico conocido contiene dos restricciones relevantes:
+
+```text
+unicidad por site_id + area_id + role_code
+```
+
+y:
+
+```text
+unicidad por site_id + role_code
+```
+
+La primera es compatible con la identidad de un `EXACT_BINDING`.
+
+La segunda no constituye una regla canónica de `VISO-AUTH-006`, porque impediría representar dos bindings explícitos del mismo rol en dos áreas distintas de una misma sede.
+
+El baseline actual no exige todavía esa cardinalidad, pero la implementación física futura deberá reconciliar la restricción antes de declarar soporte completo del contrato muchos-a-muchos.
+
+No se modifica ninguna restricción durante el cierre documental.
+
+---
+
+#### 19. Fallo cerrado
+
+La administración deberá rechazar o bloquear:
+
+| Caso | Resultado |
+| --- | --- |
+| Sede inexistente, inactiva o no operativa | Rechazar |
+| Área inexistente o inactiva | Rechazar |
+| Área perteneciente a otra sede | Rechazar |
+| Rol fuera de los doce códigos canónicos | Rechazar |
+| `propietario_admin`, rol base u oficio legacy | Rechazar |
+| Relación padre rol × sede ausente o inactiva | Rechazar |
+| Binding exacto duplicado | Rechazar |
+| `area_id = null` interpretado como todas las áreas | Rechazar |
+| `area_id = null` interpretado automáticamente como `NO_AREA_NOT_REQUIRED` | Rechazar |
+| Área inferida por default | Rechazar |
+| Área inferida por existir una sola opción | Rechazar |
+| Área inferida por nombre, tipo o familia | Rechazar |
+| Actor sin capacidad administrativa explícita | Rechazar |
+| Área fuera de la cobertura del administrador | Rechazar |
+| Auditoría requerida no persistible | No guardar |
+| Discrepancia entre UI y servidor | Prevalece servidor; no guardar |
+| Versión contractual incompatible | Rechazar |
+
+---
+
+#### 20. Handoff contractual
+
+`VISO-AUTH-007` recibe una matriz territorial que distingue:
+
+```text
+16 relaciones padre rol × sede
+=
+13 EXACT_BINDING
++
+3 AREA_BINDING_UNRESOLVED
++
+0 NO_AREA_NOT_REQUIRED
+```
+
+y conserva:
+
+```text
+12 OperationalRoleCode
++
+12 áreas con al menos un binding exacto
++
+9 roles distintos con binding exacto
++
+3 roles con binding de área no resuelto
+```
+
+El perfil operativo por trabajador no podrá ampliar esta matriz.
+
+En particular:
+
+1. un perfil no crea una sede permitida;
+2. un perfil no crea un área permitida;
+3. un perfil no convierte un binding no resuelto en exacto;
+4. un perfil no convierte un default en autorización;
+5. un perfil no concede permisos;
+6. la asignación efectiva continúa reservada al turno;
+7. la validación de incompatibilidad continúa reservada a `VISO-AUTH-012`.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea materializa en VISO una semántica de área ya protegida por contratos y requisitos vigentes: compatibilidad determinista sede–área–rol, administración territorial explícita, prohibición de inferencias, separación entre configuración y autorización, y coherencia entre VISO y consumidores.
+
+No introduce una nueva identidad de rol, una nueva identidad de área, una modalidad de autorización, un scope, una transición empresarial o una regla de seguridad no cubierta que exija ampliar el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 22. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza la cobertura vigente:
+
+- `TREQ-AUTH-001` — una lista o nombre de rol no concede autorización final;
+- `TREQ-AUTH-004` — evaluadores distintos deben producir la misma decisión para el mismo actor, sede, área, permiso y contexto;
+- `TREQ-AUTH-007` — la administración de disponibilidad por sede o área exige capacidad administrativa explícita y territorio autorizado;
+- `TREQ-AUTH-008` — la operación exige rol operativo efectivo y compatibilidad de sede y área;
+- `TREQ-AUTH-009` — sede y área deben resolverse determinísticamente y los cruces territoriales se deniegan;
+- `TREQ-AUTH-010` — las matrices operativas conservan segregación de funciones;
+- `TREQ-SHELL-041` — el catálogo operativo conserva exactamente doce roles y excluye `propietario_admin`;
+- `TREQ-VISO-001` — la configuración administrativa de VISO debe producir el mismo resultado que consumen las aplicaciones operativas.
+
+Esta trazabilidad no cambia estado, contenido, paquete, evidencia ni secuencia de ningún requisito.
+
+---
+
+#### 23. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea aún no fue insertada ni validada dentro de la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, topología, políticas, VISO-AUTH-005, `OperationalRoleCode@1.0.0`, AUTH-SIM-004/005, 04A aplicable y el código VISO de matriz y programación. El refresco read-only de Supabase fue intentado pero el conector devolvió error de red, por lo que no se incorporaron hechos nuevos de runtime y se conservaron exclusivamente los snapshots canónicos ya aprobados. |
+| OPERATIVA | NOT_APPLICABLE | No se modifican bindings, perfiles, turnos, permisos efectivos ni operación real durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, tablas, índices, RPC, RLS, contratos, migraciones ni datos. |
+
+---
+
+#### 24. Criterios de aceptación
+
+- [ ] Se administran exclusivamente los doce `OperationalRoleCode` canónicos.
+- [ ] Toda relación de área exige una relación padre rol × sede activa de `VISO-AUTH-005`.
+- [ ] `area_id` pertenece exactamente a la sede indicada.
+- [ ] El baseline conserva 16 relaciones rol × sede evaluadas.
+- [ ] El baseline conserva exactamente 13 `EXACT_BINDING`.
+- [ ] El baseline conserva exactamente 3 `AREA_BINDING_UNRESOLVED`.
+- [ ] El baseline conserva 0 `NO_AREA_NOT_REQUIRED`.
+- [ ] Los trece bindings exactos se distribuyen en Centro de Producción, Saudo y Vento Café sin omisiones.
+- [ ] Existen doce áreas distintas con al menos un binding exacto.
+- [ ] Existen nueve roles distintos con al menos un binding exacto.
+- [ ] `conductor_logistica`, `operador_integral_satelite` y `gerencia_operativa` permanecen no resueltos a nivel de área.
+- [ ] Ninguno de los tres casos no resueltos se presenta como General, Todos, site-wide o sin restricción.
+- [ ] `NULL` no significa wildcard.
+- [ ] `NO_AREA_NOT_REQUIRED` solo puede provenir de una decisión contractual explícita.
+- [ ] `area_kind` no sustituye `area_id`.
+- [ ] Una misma área puede contener varios roles explícitos sin fusionar autoridad.
+- [ ] La identidad lógica exacta conserva `site_id + area_id + operational_role_code`.
+- [ ] La cardinalidad contractual no limita un rol a una sola área por sede.
+- [ ] `is_default` no crea binding ni autorización.
+- [ ] Una desactivación no reescribe historia.
+- [ ] Ningún perfil de trabajador amplía la matriz territorial.
+- [ ] Ningún turno obtiene área mediante default, fila única, área única, primaria o preferencia visual.
+- [ ] La superficie AS-IS que rotula `NULL` como General no se declara conforme por su sola existencia.
+- [ ] El fallback AS-IS de planificación se reconoce como drift frente a la resolución explícita.
+- [ ] La restricción física `site_id + role_code` no se eleva a regla canónica de área.
+- [ ] Toda futura escritura exige capacidad administrativa explícita, territorio y auditoría.
+- [ ] `VISO-AUTH-019` conserva la propiedad de cerrar la autoridad administrativa de escritura.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 25. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica `/operations/site-roles`;
+- modifica programación semanal o mensual;
+- modifica `@vento/contracts`;
+- modifica `operational-roles.json`;
+- modifica `operational-role-grants@1.0.0`;
+- modifica `public.sites`;
+- modifica `public.areas`;
+- modifica `public.operational_roles`;
+- modifica `public.site_operational_roles`;
+- modifica vistas de la matriz;
+- modifica índices o constraints;
+- modifica RPC, RLS, triggers o grants PostgreSQL;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- resuelve arbitrariamente los tres `AREA_BINDING_UNRESOLVED`;
+- crea un `NO_AREA_NOT_REQUIRED` para el baseline actual;
+- crea roles, sedes, áreas, permisos o scopes;
+- administra permisos por rol;
+- administra perfiles operativos por trabajador;
+- asigna sedes o áreas al trabajador;
+- asigna el rol operativo al turno;
+- valida o corrige físicamente turnos incompatibles;
+- crea excepciones individuales;
+- crea denegaciones;
+- ejecuta simulaciones;
+- define quién administra seguridad fuera del carryover de `VISO-AUTH-019`;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la futura unidad física se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 26. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-005 — Administrar roles permitidos por sede`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-006 — Administrar roles permitidos por área`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-007 — Administrar perfiles operativos por trabajador`
+
 ### [ ] VISO-AUTH-007 — Administrar perfiles operativos por trabajador
 ### [ ] VISO-AUTH-008 — Administrar sedes asignadas
 ### [ ] VISO-AUTH-009 — Administrar áreas asignadas
