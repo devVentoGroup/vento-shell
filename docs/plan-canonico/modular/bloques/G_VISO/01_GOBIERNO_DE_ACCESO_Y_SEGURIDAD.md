@@ -5781,7 +5781,1065 @@ La identidad exacta de la futura unidad física se resolverá exclusivamente med
 `VISO-AUTH-009 — Administrar áreas asignadas`
 
 
-### [ ] VISO-AUTH-009 — Administrar áreas asignadas
+### ✅ VISO-AUTH-009 — Administrar áreas asignadas
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-008 — Administrar sedes asignadas
+**Tarea siguiente:** VISO-AUTH-010 — Asignar rol operativo al turno
+**Tipo de tarea:** documental; definición del contrato administrativo canónico de asignaciones laborales trabajador × área, área primaria por sede y reconciliación con configuraciones funcionales existentes, sin convertir afiliación habitual, propósito, selección, turno, rol o legado en autorización
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VISO deberá administrar las áreas laboralmente asignadas a un trabajador sin confundir esa afiliación habitual con el área de un turno, un binding rol × área, un propósito funcional, una preferencia de navegación o la autorización efectiva.
+
+La regla raíz queda:
+
+```text
+EMPLEADO LABORALMENTE VÁLIDO
++
+SEDE PADRE ASIGNADA Y UTILIZABLE
++
+ÁREA ACTIVA PERTENECIENTE A ESA SEDE
++
+RELACIÓN EXPLÍCITA TRABAJADOR × ÁREA
+→
+ÁREA ASIGNADA
+```
+
+y nunca:
+
+```text
+rol
+o área seleccionada
+o área primaria
+o turno
+o propósito operativo/remisión
+o area_kind
+o nombre humano
+o employees.area_id
+→
+crear una asignación laboral de área por inferencia
+```
+
+La asignación de área expresa afiliación permanente o habitual. No concede permisos y no es requisito universal para operar.
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva y consume, sin redefinirlas:
+
+- `ADR-AUTH-001`;
+- `AUTH-AUD-008` — inventario de `employee_sites` y `employee_areas`;
+- `AUTH-MOD-007` — sede asignada, primaria, seleccionada, administrativa, operativa y del recurso;
+- `AUTH-MOD-008` — área asignada, primaria, seleccionada, administrativa, operativa y del recurso;
+- `AUTH-MOD-015` a `AUTH-MOD-017` — alcance territorial por área y tipo;
+- `AUTH-CTX-009` — `assigned_sites`, `assigned_areas` y `administrative_coverage`;
+- `AUTH-CTX-013` — sede y área operativas;
+- `AUTH-CTX-028` — compatibilidad temporal con fuentes legacy;
+- `AUTH-CTX-029` — invalidación y frescura;
+- `VISO-AUTH-006` — roles permitidos por área;
+- `VISO-AUTH-008` — sedes asignadas al trabajador;
+- las obligaciones vigentes de autorización de servidor, territorialidad, auditoría y propiedad laboral de VISO.
+
+La fuente normativa de la afiliación laboral trabajador–área continúa siendo:
+
+```text
+public.employee_areas
+```
+
+`public.areas` continúa siendo la fuente de identidad y pertenencia territorial del área.
+
+---
+
+#### 3. Separación conceptual obligatoria
+
+VISO deberá mantener separados los siguientes conceptos:
+
+| Concepto | Fuente conceptual | Función | Concede permisos |
+| --- | --- | --- | ---: |
+| Área organizacional | `public.areas` | Identidad funcional dentro de una sede | No |
+| Área asignada | `public.employee_areas` | Afiliación laboral permanente o habitual | No |
+| Área primaria por sede | `employee_areas.is_primary` | Referencia habitual dentro de una sede | No |
+| Área seleccionada | `employee_settings.selected_area_id` | Preferencia de interfaz | No |
+| Área administrativa activa | `AdministrativeAreaContext` | Filtro administrativo resuelto | No |
+| Área operativa activa | `employee_shifts.area_id` | Territorio del turno vigente | No |
+| Área del recurso | recurso objetivo | Territorio real de la acción | No |
+| Binding rol × área | matriz territorial de `VISO-AUTH-006` | Compatibilidad del rol en un área | No por sí solo |
+| Área por propósito | configuración funcional específica | Preferencia o destino para un propósito concreto | No |
+| Permiso efectivo | evaluador canónico | Capacidad concreta | Sí, únicamente si la decisión final es `ALLOW` |
+
+Reglas obligatorias:
+
+```text
+ÁREA ASIGNADA
+≠ ÁREA PRIMARIA
+≠ ÁREA SELECCIONADA
+≠ ÁREA OPERATIVA
+≠ ÁREA DEL RECURSO
+≠ BINDING ROL × ÁREA
+≠ ÁREA POR PROPÓSITO
+```
+
+y:
+
+```text
+ASIGNACIÓN DE ÁREA
+≠ PERMISO
+```
+
+---
+
+#### 4. Identidad territorial del área
+
+Cada `area_id` pertenece a exactamente una sede:
+
+```text
+areas.id
+→ areas.site_id
+→ sites.id
+```
+
+La identidad de una asignación laboral de área es:
+
+```text
+(employee_id, area_id)
+```
+
+El `site_id` se deriva del área y no crea una segunda identidad para la misma relación.
+
+Reglas:
+
+1. un mismo `area_id` no puede pertenecer a dos sedes;
+2. dos áreas con el mismo nombre en sedes diferentes son identidades distintas;
+3. `area_kind` clasifica el área, pero no sustituye `area_id`;
+4. nombre, etiqueta, tipo o posición visual no identifican una asignación;
+5. una pareja trabajador–área aparece como máximo una vez;
+6. un trabajador puede tener cero, una o varias áreas asignadas;
+7. un trabajador multisede puede tener áreas asignadas en varias sedes, siempre mediante relaciones explícitas.
+
+---
+
+#### 5. Dependencia obligatoria de la sede padre
+
+`VISO-AUTH-009` recibe de `VISO-AUTH-008` esta relación padre:
+
+```text
+employee_id + site_id
+→ asignación laboral de sede
+```
+
+Una asignación de área es utilizable únicamente si el trabajador tiene una asignación activa y utilizable a la sede propietaria del área.
+
+Por tanto:
+
+```text
+employee_area activa
++
+employee_site padre ausente o no utilizable
+→ área asignada no utilizable
+```
+
+Crear o reactivar una asignación de área no puede:
+
+- crear una fila de `employee_sites`;
+- reactivar una sede retirada;
+- convertir una sede seleccionada en sede asignada;
+- sustituir la validación de la sede padre;
+- ampliar cobertura administrativa.
+
+Si la sede padre se desactiva, la asignación de área conserva historia pero deja de ser utilizable prospectivamente.
+
+---
+
+#### 6. Validez y utilizabilidad
+
+Una asignación de área es utilizable cuando:
+
+```text
+employee.is_active = true
+AND
+employee_area.is_active = true
+AND
+area.is_active = true
+AND
+site.is_active = true
+AND
+area.site_id = sede padre
+AND
+employee_site padre es activo y utilizable
+```
+
+La presencia física de una fila no basta.
+
+| Estado observado | Interpretación |
+| --- | --- |
+| empleado activo + relación activa + área activa + sede padre utilizable | asignación utilizable |
+| empleado inactivo | relación observada, no utilizable |
+| `employee_area.is_active = false` | relación histórica o retirada, no utilizable |
+| área inactiva | relación observada, no utilizable |
+| sede padre inactiva o retirada | relación observada, no utilizable |
+| área vinculada a sede distinta de la esperada | inconsistencia territorial |
+| sede padre no asignada al trabajador | configuración inválida |
+| referencia inexistente o ambigua | fallo cerrado |
+
+---
+
+#### 7. Cobertura y ausencia de asignaciones
+
+`employee_areas` representa afiliación habitual. Su cobertura no tiene que ser completa para que el trabajador pueda operar.
+
+```text
+assigned_areas = []
+```
+
+significa:
+
+```text
+no se resolvieron afiliaciones laborales de área representables
+```
+
+No significa:
+
+- trabajador inválido;
+- sin permisos;
+- sin sede;
+- todas las áreas de la sede;
+- área del último turno;
+- área seleccionada;
+- área primaria inferida;
+- área única disponible;
+- área del rol;
+- denegación operativa automática.
+
+La ausencia de `employee_areas` es válida cuando el trabajo rota, el rol es transversal, la operación se define íntegramente en el turno o no existe afiliación fija.
+
+---
+
+#### 8. Área primaria por sede
+
+El área primaria es una referencia habitual opcional dentro de una sede.
+
+La cardinalidad canónica es:
+
+```text
+employee_id + site_id
+→ máximo una área primaria activa
+```
+
+Un trabajador multisede puede tener una primaria distinta en cada sede.
+
+Reglas:
+
+1. la primaria debe pertenecer a una asignación de área existente;
+2. una primaria utilizable debe estar activa y pertenecer a una sede padre utilizable;
+3. cero primarias es un estado válido;
+4. más de una primaria activa para el mismo trabajador y sede es inconsistencia;
+5. la primaria no concede permisos;
+6. no limita otras áreas asignadas de la misma sede;
+7. no se convierte automáticamente en área administrativa activa;
+8. no se convierte automáticamente en área de turno;
+9. no sirve como fallback de autorización cuando el recurso o contexto no son resolubles.
+
+---
+
+#### 9. Cambio de área primaria
+
+Cambiar la primaria es una operación explícita distinta de crear una asignación.
+
+La operación deberá:
+
+```text
+validar trabajador
++
+validar sede padre
++
+validar área objetivo
++
+validar asignación trabajador × área
++
+validar que la asignación sea utilizable
++
+desmarcar la primaria anterior de esa misma sede cuando corresponda
++
+marcar la primaria objetivo
++
+preservar asignaciones de otras áreas y sedes
++
+registrar efecto y auditoría
+```
+
+Queda prohibido elegir primaria por:
+
+- primera fila de una consulta;
+- UUID;
+- área seleccionada;
+- último turno;
+- `area_kind`;
+- único binding rol × área;
+- único propósito;
+- `employees.area_id`;
+- nombre humano;
+- sede primaria del trabajador.
+
+---
+
+#### 10. Alta y reactivación
+
+Para crear o reactivar una asignación de área deberán verificarse, como mínimo:
+
+1. empleado existente;
+2. estado laboral compatible;
+3. área existente y activa;
+4. sede propietaria existente y activa;
+5. asignación trabajador–sede padre activa y utilizable;
+6. coincidencia exacta `area.site_id = site_id` derivado;
+7. ausencia de una relación activa equivalente;
+8. autoridad administrativa efectiva;
+9. territorio suficiente del actor sobre sede y área objetivo;
+10. estado de primaria resultante cuando aplique;
+11. efectos sobre preferencias, propósitos, turnos futuros y contexto;
+12. revalidación server-side;
+13. auditoría persistible.
+
+Si la pareja trabajador–área ya existe inactiva, la operación ordinaria es una reactivación de la misma relación, no la creación de un duplicado.
+
+La reactivación de la sede padre no reactiva automáticamente una asignación de área que permanezca inactiva.
+
+---
+
+#### 11. Desactivación y retiro
+
+El ciclo normal de retiro de una afiliación de área es:
+
+```text
+employee_areas.is_active = false
+```
+
+La desactivación:
+
+- preserva historia;
+- retira la afiliación prospectiva;
+- obliga a revalidar una primaria que apunte a esa relación;
+- obliga a revalidar preferencias y configuraciones funcionales dependientes;
+- invalida contexto y decisiones derivadas cuando participaban de esa afiliación;
+- no borra turnos históricos;
+- no borra asistencia;
+- no borra auditoría;
+- no reescribe el área de turnos ya ejecutados.
+
+`DELETE` no forma parte del ciclo normal de administración de `employee_areas`.
+
+Una eliminación destructiva solo podrá existir en una corrección de datos explícita, auditada y autorizada que demuestre que conservar la fila como historia sería incorrecto.
+
+---
+
+#### 12. Reingreso laboral
+
+Una afiliación histórica de un episodio laboral terminado no se restaura automáticamente durante un reingreso.
+
+```text
+employee_area histórica
+≠ afiliación vigente del nuevo episodio
+```
+
+El nuevo vínculo deberá aprobar de nuevo sus asignaciones aplicables mediante el workflow laboral autorizado.
+
+No se utilizarán como restauración automática:
+
+- último turno;
+- última primaria;
+- última sede;
+- configuración por propósito;
+- último rol;
+- último `area_kind`.
+
+---
+
+#### 13. Cambio del catálogo de áreas
+
+Una asignación depende de la identidad estable del área y de su sede propietaria.
+
+Si un área se desactiva:
+
+```text
+area_active = false
+→ asignación no utilizable
+```
+
+Si una modificación estructural trasladara conceptualmente un área a otra sede, no se permitirá retargetear silenciosamente las afiliaciones existentes.
+
+Un cambio territorial de esa naturaleza deberá:
+
+- preservar evidencia del estado anterior;
+- validar la nueva sede;
+- exigir asignación laboral del trabajador a la nueva sede;
+- materializar una relación explícita cuando corresponda;
+- revalidar permisos, perfiles, propósitos y turnos afectados;
+- evitar mutaciones retroactivas.
+
+---
+
+#### 14. Campo legacy y selección administrativa
+
+`employees.area_id` permanece como campo legacy y no es fuente de verdad de `assigned_areas`.
+
+`employee_settings.selected_area_id` es una preferencia de interfaz.
+
+Reglas:
+
+```text
+employees.area_id
+≠ asignación laboral canónica
+```
+
+```text
+selected_area_id
+≠ asignación laboral
+≠ autorización
+```
+
+Cambiar una primaria no obliga a persistir una nueva área seleccionada.
+
+Cambiar un área seleccionada no crea, activa, desactiva ni convierte una fila de `employee_areas`.
+
+Una selección visual podrá servir para filtrar una vista administrativa después de ser validada, pero nunca para ampliar autoridad ni completar contexto operativo.
+
+---
+
+#### 15. Relación con `VISO-AUTH-006`
+
+`VISO-AUTH-006` administra compatibilidad:
+
+```text
+rol operativo × sede × área
+```
+
+`VISO-AUTH-009` administra afiliación:
+
+```text
+trabajador × área
+```
+
+Ninguna relación crea la otra.
+
+Por tanto:
+
+```text
+rol permitido en área
+≠ trabajador asignado al área
+```
+
+y:
+
+```text
+trabajador asignado al área
+≠ rol permitido en esa área
+```
+
+Una afiliación habitual puede existir aunque el trabajador utilice distintos roles según turnos válidos.
+
+La asignación individual no modifica `site_operational_roles`, bindings exactos, estados no resueltos ni defaults de `VISO-AUTH-006`.
+
+---
+
+#### 16. Relación con el área operativa del turno
+
+`employee_areas` no es requisito operativo universal.
+
+El área operativa efectiva continúa siendo:
+
+```text
+employee_shifts.area_id
+```
+
+Cuando el rol o la acción exige área, el turno deberá contener o resolver contractualmente un área válida conforme a sus propias reglas.
+
+Un trabajador puede operar temporalmente en un área que no sea su afiliación habitual cuando:
+
+- pertenece a la sede;
+- el rol está permitido en esa área;
+- el turno está válidamente construido y publicado;
+- no existe restricción aplicable;
+- el resultado queda auditado.
+
+Por tanto:
+
+```text
+assigned_area
+→ puede sugerir planificación
+```
+
+pero nunca:
+
+```text
+assigned_area
+→ completar silenciosamente shift.area_id
+```
+
+La persistencia del rol y contexto del turno permanece bajo `VISO-AUTH-010`. La incompatibilidad área–rol permanece bajo `VISO-AUTH-012`.
+
+---
+
+#### 17. Relación con check-in y dispositivo
+
+Ni el check-in ni el dispositivo son fuentes de afiliación de área.
+
+```text
+check-in
+≠ employee_area
+```
+
+```text
+device.area_id
+≠ employee_area
+```
+
+Un punto de marcación, dispositivo fijo o sesión compartida no crea ni cambia una relación laboral trabajador–área.
+
+La operación deberá seguir evaluando el área del turno, el área del recurso y los límites del dispositivo por sus contratos propios.
+
+---
+
+#### 18. Configuraciones por propósito
+
+La tabla física observada:
+
+```text
+employee_area_purpose_assignments
+```
+
+representa una capa distinta de configuración funcional.
+
+Sus propósitos actuales son:
+
+```text
+operational
+remission
+```
+
+Esa tabla no sustituye `employee_areas`.
+
+Reglas:
+
+```text
+área por propósito
+≠ área laboral asignada
+```
+
+```text
+área laboral asignada
+≠ área obligatoria para cada propósito
+```
+
+Una configuración por propósito no puede crear, reactivar ni retirar una afiliación canónica.
+
+La existencia de una configuración por propósito sin `employee_areas` no se convierte por inferencia en una asignación laboral, porque el contrato aprobado no exige `employee_areas` como prerrequisito universal de operación.
+
+Sin embargo, una configuración por propósito solo puede considerarse utilizable cuando:
+
+- el empleado está activo;
+- su sede padre está asignada y utilizable;
+- el área existe, está activa y pertenece a esa sede;
+- el propósito es válido;
+- cualquier restricción adicional del proceso se satisface.
+
+---
+
+#### 19. Reconciliación AS-IS de `employee_areas`
+
+El corte remoto read-only verificado conserva:
+
+```text
+employee_areas totales = 1
+employee_areas activas = 1
+primarias = 1
+trabajadores distintos = 1
+
+trabajadores activos = 40
+activos con employee_area activa = 1
+activos sin employee_area activa = 39
+cobertura descriptiva = 2,5 %
+```
+
+La única relación observada es internamente coherente:
+
+- empleado activo;
+- área activa;
+- sede padre asignada y activa;
+- relación activa;
+- primaria activa.
+
+El baseline confirma que `employee_areas` continúa prácticamente sin materializarse para la plantilla general.
+
+Ese vacío no puede interpretarse como ausencia de área operativa autorizable.
+
+---
+
+#### 20. Drift físico de la primaria
+
+La estructura física actual contiene:
+
+```text
+PRIMARY KEY (employee_id, area_id)
+```
+
+compatible con la identidad de afiliación.
+
+Sin embargo, contiene además un índice único parcial equivalente a:
+
+```text
+UNIQUE (employee_id)
+WHERE is_primary = true
+```
+
+Ese índice permite como máximo una primaria global por trabajador.
+
+El contrato canónico exige:
+
+```text
+máximo una primaria por trabajador y sede
+```
+
+y permite primarias diferentes para un mismo trabajador multisede.
+
+Por tanto:
+
+```text
+índice físico actual
+≠ cardinalidad canónica completa
+```
+
+La futura materialización deberá reconciliar esta restricción mediante una solución equivalente a la cardinalidad trabajador + sede, sin modificarla durante el cierre documental.
+
+---
+
+#### 21. Reconciliación AS-IS de legado y selección
+
+El estado remoto observado conserva:
+
+```text
+employees.area_id no nulo = 0
+employee_settings.selected_area_id no nulo = 0
+```
+
+Por tanto, en el baseline actual:
+
+- el campo legacy no aporta afiliaciones;
+- la preferencia de área no aporta afiliaciones;
+- no existe una proyección física equivalente a la sincronización observada para sedes.
+
+Esto no elimina la obligación de mantener ambos conceptos separados si aparecen en una futura transición.
+
+---
+
+#### 22. Reconciliación AS-IS de áreas por propósito
+
+El corte remoto read-only observado para `employee_area_purpose_assignments` contiene:
+
+```text
+filas totales = 45
+filas activas = 45
+trabajadores distintos = 16
+áreas distintas = 7
+sedes distintas = 3
+
+purpose = operational → 23
+purpose = remission   → 22
+
+filas de empleados activos = 25
+filas de empleados inactivos = 20
+filas sin sede padre activa = 2
+filas con area.site_id distinto de site_id = 0
+filas con employee_area activa equivalente = 0
+```
+
+Conclusiones:
+
+1. las 45 filas por propósito no son evidencia de 45 afiliaciones laborales;
+2. ninguna de ellas puede copiarse automáticamente a `employee_areas`;
+3. las 20 filas de empleados inactivos no son utilizables prospectivamente;
+4. las 2 filas sin sede padre activa son configuraciones no utilizables hasta reconciliación;
+5. la ausencia de una `employee_area` equivalente no invalida por sí sola el propósito, porque ambas capas tienen responsabilidades distintas;
+6. la integridad mínima de empleado, sede y área debe comprobarse independientemente en servidor.
+
+---
+
+#### 23. Reconciliación AS-IS de VISO
+
+La búsqueda estática del repositorio VISO observado no identificó consumo directo de:
+
+```text
+public.employee_areas
+```
+
+La superficie actual `/staff/[id]` administra:
+
+```text
+employee_area_purpose_assignments
+```
+
+mediante el panel:
+
+```text
+Áreas por propósito
+```
+
+No existe evidencia de que esa superficie materialice el lifecycle canónico de `employee_areas`.
+
+La acción observada:
+
+- recibe trabajador, sede, propósito y área;
+- verifica que el área exista;
+- verifica que `area.site_id` coincida con la sede enviada;
+- escribe mediante cliente administrativo;
+- elimina físicamente la fila por propósito cuando se selecciona `Sin definir`.
+
+Ese comportamiento es evidencia AS-IS de una configuración funcional y no debe reutilizarse como lifecycle de afiliación laboral.
+
+---
+
+#### 24. Reconciliación AS-IS de autorización
+
+La acción actual de áreas por propósito exige:
+
+```text
+viso.staff.manage
+```
+
+pero el guard observado no recibe como contexto autoritativo la sede y el área objetivo de la mutación.
+
+Después del guard, la escritura utiliza un cliente administrativo.
+
+Por tanto, el flujo actual no demuestra que:
+
+```text
+target_site_id
++
+target_area_id
+⊆ territorio efectivo del actor
+```
+
+Las políticas RLS observadas para `employee_areas` y para configuraciones por propósito restringen escritura a condiciones administrativas amplias, pero no sustituyen la autorización territorial cuando un cliente privilegiado ejecuta la mutación.
+
+La futura materialización deberá revalidar explícitamente:
+
+- actor;
+- permiso administrativo;
+- trabajador objetivo;
+- sede objetivo;
+- área objetivo;
+- pertenencia área–sede;
+- cobertura administrativa;
+- estado actual;
+- efecto resultante.
+
+---
+
+#### 25. Autoridad administrativa
+
+La capacidad canónica existente para administración general de trabajadores es:
+
+```text
+viso.staff.manage
+```
+
+Su presencia es necesaria para las mutaciones de esta tarea, pero no es suficiente por sí sola.
+
+La decisión deberá resolver:
+
+```text
+ACTOR EFECTIVO
++
+PERMISO EFECTIVO
++
+COBERTURA ADMINISTRATIVA
++
+TRABAJADOR OBJETIVO
++
+SEDE PADRE
++
+ÁREA OBJETIVO
++
+ESTADO ACTUAL
++
+EFECTO RESULTANTE
++
+AUSENCIA DE DENEGACIONES
+→
+MUTACIÓN POSIBLE
+```
+
+El rol base `gerente` no concede administración global por nombre.
+
+Un `service_role`, un admin client o una política amplia de base de datos no constituyen autoridad empresarial.
+
+La segregación final de quién administra seguridad permanece bajo `VISO-AUTH-019`.
+
+---
+
+#### 26. Efecto previo y conflictos
+
+Antes de guardar una mutación, VISO deberá poder mostrar el efecto resultante sobre el trabajador.
+
+Como mínimo deberá advertir:
+
+- si la afiliación queda activa o inactiva;
+- si cambia una primaria de esa sede;
+- si la sede padre no es utilizable;
+- si el área pertenece a otra sede;
+- si el área está inactiva;
+- si existen configuraciones por propósito relacionadas;
+- si existen turnos futuros afectados;
+- si la selección administrativa queda inválida;
+- si el empleado está inactivo;
+- si existe conflicto de territorio del administrador;
+- si la operación requiere reconciliación adicional.
+
+Un conflicto no se resuelve seleccionando silenciosamente otra área.
+
+---
+
+#### 27. Auditoría
+
+Toda alta, reactivación, cambio de primaria, desactivación o corrección deberá conservar evidencia correlacionable de:
+
+- actor real;
+- empleado objetivo;
+- sede padre;
+- área objetivo;
+- operación;
+- estado anterior;
+- estado resultante;
+- primaria anterior y resultante cuando aplique;
+- permiso y cobertura utilizados;
+- motivo cuando corresponda;
+- configuraciones dependientes detectadas;
+- correlación;
+- timestamp;
+- versión contractual.
+
+La tabla física `employee_areas` observada contiene `created_at`, pero no materializa por sí sola el historial completo de mutaciones.
+
+La auditoría transversal de cambios de seguridad permanece bajo `VISO-AUTH-018`.
+
+---
+
+#### 28. Fallo cerrado
+
+La administración deberá rechazar o bloquear:
+
+| Caso | Resultado |
+| --- | --- |
+| Empleado inexistente | Rechazar |
+| Alta o reactivación prospectiva para empleado inactivo | Rechazar |
+| Área inexistente | Rechazar |
+| Área inactiva | Rechazar |
+| Sede propietaria inexistente o inactiva | Rechazar |
+| Trabajador sin sede padre activa y utilizable | Rechazar |
+| Área asociada a otra sede | Rechazar |
+| Duplicado trabajador × área | Rechazar |
+| Más de una primaria activa del trabajador dentro de la misma sede | Rechazar |
+| Primaria que no pertenece a una asignación utilizable | Rechazar |
+| Área primaria inferida por selección, turno, propósito, rol, nombre o unicidad | Rechazar inferencia |
+| `employees.area_id` usado como autoridad | Rechazar |
+| `selected_area_id` usado como autoridad | Rechazar |
+| Turno usado para crear afiliación permanente | Rechazar |
+| Binding rol × área usado para crear afiliación individual | Rechazar |
+| Configuración por propósito usada para crear afiliación laboral | Rechazar |
+| Ausencia de `employee_areas` interpretada como denegación operativa universal | Rechazar interpretación |
+| Actor sin `viso.staff.manage` efectivo | Rechazar |
+| Sede o área objetivo fuera de cobertura del actor | Rechazar |
+| Escritura privilegiada sin revalidación territorial de servidor | Rechazar |
+| Retiro normal mediante borrado destructivo de `employee_areas` | Rechazar |
+| Auditoría requerida no persistible | No guardar |
+| Referencia o versión incompatible | Rechazar |
+
+---
+
+#### 29. Handoff a VISO-AUTH-010
+
+`VISO-AUTH-010` recibe `employee_areas` exclusivamente como configuración habitual opcional.
+
+Deberá conservar:
+
+```text
+employee_area
+→ sugerencia posible de planificación
+```
+
+y nunca:
+
+```text
+employee_area
+→ área operativa efectiva automática
+```
+
+La tarea siguiente deberá:
+
+1. mantener `employee_shifts.area_id` como área operativa del turno;
+2. no rechazar un turno únicamente porque el trabajador carezca de `employee_areas`;
+3. no usar la primaria como fallback silencioso;
+4. no usar una configuración por propósito como área efectiva automática;
+5. validar la sede del trabajador y la compatibilidad rol × sede × área;
+6. conservar `area_id = null` únicamente cuando el contrato del rol y del turno permitan ausencia de área;
+7. dejar a `VISO-AUTH-012` la validación específica de incompatibilidad territorial del turno.
+
+---
+
+#### 30. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea materializa administrativamente decisiones ya protegidas sobre afiliación de áreas, territorialidad, separación entre configuración y operación, autorización de servidor, invalidación, auditoría y coherencia entre VISO y consumidores.
+
+No introduce una identidad territorial nueva, una modalidad de autorización, un scope, una transición empresarial o un riesgo no registrado que exija ampliar el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 31. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-AUTH-004` — paridad de decisión entre evaluadores;
+- `TREQ-AUTH-007` — administración territorial con capacidad explícita y límite por territorio del actor;
+- `TREQ-AUTH-008` — separación entre carril administrativo y operativo;
+- `TREQ-AUTH-009` — resolución determinista de sede y área y denegación de cruces territoriales;
+- `TREQ-AUTH-013` — protección de mutaciones frente a formularios, API o RPC manipuladas;
+- `TREQ-AUTH-014` — invalidación por cambio de área o asignación;
+- `TREQ-AUTH-015` — evidencia correlacionable y auditoría;
+- `TREQ-AUTH-016` — revocación coordinada y no restauración automática de asignaciones;
+- `TREQ-VISO-001` — efecto previo, conflictos, territorio, auditoría y coherencia de configuración VISO;
+- `TREQ-TALENTO-063` — propiedad de VISO o dominio laboral autorizado sobre la materialización de asignaciones;
+- `TREQ-TALENTO-064` — sede, área y roles son solicitudes validadas y no permisos concedidos.
+
+Esta trazabilidad no cambia contenido, estado, paquete, evidencia ni secuencia de ningún requisito.
+
+---
+
+#### 32. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea aún no fue insertada ni validada dentro de su rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, topología, políticas, VISO-AUTH-006, VISO-AUTH-008, AUTH-MOD-008, AUTH-CTX-009, 04A aplicable, código VISO y estado read-only de Supabase para `employee_areas`, `employee_area_purpose_assignments`, áreas, sedes, primarias, índices y RLS. |
+| OPERATIVA | NOT_APPLICABLE | No se crearon, activaron, desactivaron, retiraron ni cambiaron afiliaciones reales de área durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, tablas, índices, constraints, RLS, contratos, migraciones ni datos. |
+
+---
+
+#### 33. Criterios de aceptación
+
+- [ ] `employee_areas` permanece como fuente canónica de afiliaciones laborales de área.
+- [ ] La identidad lógica es exactamente `employee_id + area_id`.
+- [ ] `areas.site_id` determina la sede propietaria del área.
+- [ ] Un área no puede pertenecer simultáneamente a dos sedes.
+- [ ] `area_kind` no sustituye `area_id`.
+- [ ] Un trabajador puede tener cero o varias áreas asignadas.
+- [ ] La ausencia de `employee_areas` no invalida automáticamente la operación.
+- [ ] Toda asignación utilizable exige empleado activo, relación activa, área activa y sede padre utilizable.
+- [ ] Una asignación de área no crea ni reactiva `employee_sites`.
+- [ ] Desactivar la sede padre vuelve no utilizable la afiliación de área sin borrar historia.
+- [ ] La primaria es opcional.
+- [ ] Existe como máximo una primaria activa por trabajador y sede.
+- [ ] Un trabajador multisede puede tener primarias distintas por sede.
+- [ ] La primaria no concede permisos.
+- [ ] La primaria no se convierte automáticamente en área administrativa ni operativa.
+- [ ] La primaria no se infiere por selección, turno, propósito, rol, nombre ni orden técnico.
+- [ ] El alta no crea automáticamente turno, rol, binding, propósito, permiso ni excepción.
+- [ ] La reactivación reutiliza la identidad trabajador–área sin duplicarla.
+- [ ] Un reingreso no restaura automáticamente afiliaciones históricas.
+- [ ] El retiro normal usa desactivación y preserva historia.
+- [ ] El borrado destructivo queda fuera del ciclo normal de `employee_areas`.
+- [ ] `employees.area_id` permanece legacy y no fuente autoritativa.
+- [ ] `selected_area_id` permanece como preferencia y no autorización.
+- [ ] `VISO-AUTH-006` y `VISO-AUTH-009` conservan responsabilidades separadas.
+- [ ] El binding rol × área no crea afiliación trabajador × área.
+- [ ] La afiliación trabajador × área no crea compatibilidad de rol.
+- [ ] `employee_shifts.area_id` continúa siendo el área operativa del turno.
+- [ ] Una afiliación habitual puede sugerirse, pero no completar silenciosamente el turno.
+- [ ] `employee_area_purpose_assignments` permanece como capa funcional distinta.
+- [ ] Una configuración por propósito no crea ni retira `employee_areas`.
+- [ ] Las 45 filas por propósito no se migran por inferencia a afiliaciones laborales.
+- [ ] El baseline de `employee_areas` conserva 1 relación activa sobre 40 empleados activos y 39 sin afiliación.
+- [ ] El índice físico de primaria global se reconoce como drift frente a la cardinalidad por sede.
+- [ ] La corrección de ese índice queda diferida a la futura instancia física.
+- [ ] El baseline conserva cero `employees.area_id` y cero `selected_area_id` no nulos.
+- [ ] Las 20 filas por propósito de empleados inactivos no se consideran utilizables.
+- [ ] Las 2 filas por propósito sin sede padre activa no se consideran utilizables.
+- [ ] Toda mutación exige `viso.staff.manage` efectivo y cobertura suficiente sobre sede y área objetivo.
+- [ ] Un cliente administrativo no sustituye autorización server-side.
+- [ ] VISO muestra efecto y conflictos antes de guardar.
+- [ ] La superficie actual de “Áreas por propósito” no se declara equivalente a administración de `employee_areas`.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 34. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- crea una nueva pantalla;
+- modifica `/staff/[id]`;
+- modifica `public.employee_areas`;
+- modifica `public.employee_sites`;
+- modifica `public.areas`;
+- modifica `public.employees`;
+- modifica `public.employee_settings`;
+- modifica `employee_area_purpose_assignments`;
+- copia filas por propósito hacia `employee_areas`;
+- backfillea los 39 trabajadores activos sin afiliación;
+- corrige las 20 filas por propósito de empleados inactivos;
+- corrige las 2 filas por propósito sin sede padre activa;
+- modifica el índice `employee_areas_one_primary`;
+- modifica índices, constraints, triggers, grants o RLS;
+- modifica bindings rol × área;
+- modifica perfiles operativos;
+- modifica turnos;
+- modifica asistencia;
+- modifica check-ins o dispositivos;
+- modifica permisos o matrices RBAC;
+- modifica guards ni `createAdminClient`;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- define el rol operativo efectivo del turno;
+- valida definitivamente incompatibilidades del turno, responsabilidad de `VISO-AUTH-012`;
+- implementa auditoría física, responsabilidad posterior de `VISO-AUTH-018`;
+- redefine la restricción administrativa transversal de `VISO-AUTH-019`;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la futura unidad física se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 35. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-008 — Administrar sedes asignadas`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-009 — Administrar áreas asignadas`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-010 — Asignar rol operativo al turno`
+
+
 ### [ ] VISO-AUTH-010 — Asignar rol operativo al turno
 ### [ ] VISO-AUTH-011 — Validar turnos sin rol operativo
 ### [ ] VISO-AUTH-012 — Validar turnos con área incompatible
