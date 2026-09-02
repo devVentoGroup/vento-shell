@@ -115,6 +115,11 @@ $auth_db_014_preconditions$;
 grant usage, create on schema audit, app_private to vento_authorization_owner;
 grant usage on schema extensions to vento_authorization_owner;
 grant execute on function extensions.digest(text, text), extensions.gen_random_uuid() to vento_authorization_owner;
+-- Temporary replay-only reads. These grants are revoked before commit and do not alter the final legacy ACL.
+grant select on table
+  public.shared_operational_devices,
+  public.shared_operational_device_events
+to vento_authorization_owner;
 
 set local role vento_authorization_owner;
 
@@ -1797,7 +1802,26 @@ revoke all on function
   app_private.reject_authorization_device_audit_mutation()
 from public, anon, authenticated, service_role;
 
-reset role;
+-- The local database harness runs as postgres. Mirror the AUTH-DB-013 internal test/operator boundary:
+-- postgres may read evidence and call hardened operational writers, but receives no direct mutation grant.
+grant execute on function
+  app_private.derive_authorization_device_state(uuid),
+  app_private.append_authorization_device(jsonb),
+  app_private.append_authorization_device_revision(jsonb),
+  app_private.append_authorization_device_event(jsonb),
+  app_private.append_authorization_device_attempt(jsonb),
+  app_private.link_authorization_device_evidence(jsonb),
+  app_private.correct_authorization_device_audit(jsonb)
+to postgres;
+
+grant select on table
+  audit.authorization_devices,
+  audit.authorization_device_revisions,
+  audit.authorization_device_events,
+  audit.authorization_device_attempts,
+  audit.authorization_device_links,
+  audit.authorization_device_corrections
+to postgres;
 
 -- Import whatever verifiable legacy evidence exists in the environment at migration time.
 -- Clean replay may legitimately contain zero legacy rows; hosted deployment may contain the audited snapshot.
@@ -1843,6 +1867,12 @@ begin
   end if;
 end
 $auth_db_014_post_import$;
+
+reset role;
+revoke select on table
+  public.shared_operational_devices,
+  public.shared_operational_device_events
+from vento_authorization_owner;
 
 -- Restore schema creation to default-deny after the installation transaction.
 revoke create on schema audit, app_private from vento_authorization_owner;

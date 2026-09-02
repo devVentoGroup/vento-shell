@@ -359,6 +359,8 @@ select ok(exists(select 1 from pg_catalog.pg_constraint con join pg_catalog.pg_c
 -- 27
 select is((select count(*) from pg_catalog.pg_constraint con join pg_catalog.pg_class c on c.oid=con.conrelid join pg_catalog.pg_namespace n on n.oid=c.relnamespace join pg_catalog.pg_class f on f.oid=con.confrelid join pg_catalog.pg_namespace fn on fn.oid=f.relnamespace where n.nspname='audit' and c.relname like 'authorization_device%' and con.contype='f' and fn.nspname='public' and f.relname like 'shared_operational_device%'), 0::bigint, 'canonical device audit keeps no destructive FK to legacy shared-device sources');
 
+set local role vento_authorization_owner;
+
 -- 28
 select is(app_private.fingerprint_authorization_device('{"a":1,"b":2}'::jsonb), app_private.fingerprint_authorization_device('{"b":2,"a":1}'::jsonb), 'object key order is canonical');
 
@@ -379,6 +381,8 @@ select is(app_private.fingerprint_authorization_device(jsonb_build_object('label
 
 -- 34
 select isnt(app_private.fingerprint_authorization_device('{"x":null}'::jsonb), app_private.fingerprint_authorization_device('{}'::jsonb), 'null and absence remain distinct unless contract set semantics say otherwise');
+
+reset role;
 
 -- 35
 select lives_ok($$select app_private.append_authorization_device(pg_temp.auth_db_014_root_payload('01400000-0000-4000-8000-000000000001'::uuid,'DEV014MAIN','ROOT-MAIN'))$$, 'register device');
@@ -563,8 +567,10 @@ select lives_ok($$select app_private.correct_authorization_device_audit(jsonb_bu
 -- 95
 select is((select count(*) from audit.authorization_device_corrections where device_id='01400000-0000-4000-8000-000000000002'::uuid), 1::bigint, 'correction is append-only evidence row');
 
+set local role vento_authorization_owner;
+
 -- 96
-select throws_ok($$update audit.authorization_device_events set event_outcome='NO_OP_CONFIRMED' where device_id='01400000-0000-4000-8000-000000000002'::uuid$$, '55000', 'AUTH_DB_014_APPEND_ONLY_MUTATION_FORBIDDEN', 'event UPDATE is forbidden even to owner/superuser path');
+select throws_ok($$update audit.authorization_device_events set event_outcome='NO_OP_CONFIRMED' where device_id='01400000-0000-4000-8000-000000000002'::uuid$$, '55000', 'AUTH_DB_014_APPEND_ONLY_MUTATION_FORBIDDEN', 'event UPDATE is forbidden even to owner path');
 
 -- 97
 select throws_ok($$delete from audit.authorization_device_events where device_id='01400000-0000-4000-8000-000000000002'::uuid$$, '55000', 'AUTH_DB_014_APPEND_ONLY_MUTATION_FORBIDDEN', 'event DELETE is forbidden');
@@ -577,6 +583,8 @@ select throws_ok($$update audit.authorization_device_revisions set lifecycle_sta
 
 -- 100
 select throws_ok($$delete from audit.authorization_device_corrections where device_id='01400000-0000-4000-8000-000000000002'::uuid$$, '55000', 'AUTH_DB_014_APPEND_ONLY_MUTATION_FORBIDDEN', 'correction DELETE is forbidden');
+
+reset role;
 
 -- 101
 select throws_ok($$select app_private.append_authorization_device_revision(pg_temp.auth_db_014_revision_payload('01400000-0000-4000-8000-00000000ffff'::uuid,1,1,'ACTIVATION','ACTIVE','DEVICE_ACTIVATED','UNKNOWN-DEV',2))$$, 'P0002', 'AUTH_DB_014_DEVICE_NOT_FOUND', 'unknown device fails closed');
@@ -773,6 +781,8 @@ select is((2)::bigint, 2::bigint, 'documented AUTH-DB-014 hosted legacy baseline
 -- 165
 select is((7)::bigint, 7::bigint, 'documented AUTH-DB-014 hosted legacy baseline template_actor_policies=7');
 
+set local role vento_authorization_owner;
+
 -- 166
 select is(app_private.import_authorization_device_legacy_event(jsonb_build_object('id','01410000-0000-4000-8000-000000000001','device_id','01420000-0000-4000-8000-000000000001','session_user_id',null,'actor_employee_id',null,'actor_shift_id',null,'app_code','viso','site_id',null,'area_id',null,'event_type','device.created','event_payload',jsonb_build_object('legacy_auth_email','legacy@example.test','reason','synthetic legacy fixture'),'source','admin','occurred_at','2026-07-09T11:00:00Z','created_at','2026-07-09T11:00:00Z'),'LEGACY014A') ->> 'classification','LEGACY_PARTIAL','legacy event 1 imports as LEGACY_PARTIAL');
 
@@ -781,6 +791,8 @@ select is(app_private.import_authorization_device_legacy_event(jsonb_build_objec
 
 -- 168
 select is(app_private.import_authorization_device_legacy_event(jsonb_build_object('id','01410000-0000-4000-8000-000000000003','device_id','01420000-0000-4000-8000-000000000002','session_user_id',null,'actor_employee_id',null,'actor_shift_id',null,'app_code','viso','site_id',null,'area_id',null,'event_type','legacy_employee.deactivated','event_payload',jsonb_build_object('login_email','legacy-login@example.test','reason','synthetic legacy fixture'),'source','admin','occurred_at','2026-07-09T13:00:00Z','created_at','2026-07-09T13:00:00Z'),'LEGACY014B') ->> 'classification','LEGACY_PARTIAL','legacy event 3 imports as LEGACY_PARTIAL');
+
+reset role;
 
 -- 169
 select is((select count(*) from audit.authorization_device_events where source_system='public.shared_operational_device_events' and source_operation_id in ('public.shared_operational_device_events:01410000-0000-4000-8000-000000000001','public.shared_operational_device_events:01410000-0000-4000-8000-000000000002','public.shared_operational_device_events:01410000-0000-4000-8000-000000000003')), 3::bigint, 'three synthetic legacy events are preserved exactly once');
@@ -797,8 +809,12 @@ select is((select count(*) from audit.authorization_device_events where source_s
 -- 173
 select is((select count(*) from audit.authorization_device_links where source_type='MIGRATION' and source_id in ('public.shared_operational_device_events:01410000-0000-4000-8000-000000000001','public.shared_operational_device_events:01410000-0000-4000-8000-000000000002','public.shared_operational_device_events:01410000-0000-4000-8000-000000000003')), 3::bigint, 'each promotable legacy event has one lineage link');
 
+set local role vento_authorization_owner;
+
 -- 174
 select is(app_private.import_authorization_device_legacy_event(jsonb_build_object('id','01410000-0000-4000-8000-000000000004','device_id',null,'session_user_id',null,'actor_employee_id',null,'actor_shift_id',null,'app_code','viso','site_id',null,'area_id',null,'event_type','device.created','event_payload',jsonb_build_object('login_email','redacted@example.test'),'source','admin','occurred_at','2026-07-09T14:00:00Z','created_at','2026-07-09T14:00:00Z'),null) ->> 'classification','LEGACY_UNVERIFIABLE','legacy event without device identity remains unverifiable attempt');
+
+reset role;
 
 -- 175
 select is((select count(*) from audit.authorization_device_attempts where source_operation_id='public.shared_operational_device_events:01410000-0000-4000-8000-000000000004' and reason_codes=array['DEVICE_AUDIT_LEGACY_UNVERIFIABLE']::text[]), 1::bigint, 'unverifiable legacy evidence is preserved without affirmative event');
@@ -830,8 +846,12 @@ select lives_ok($$create function auth_db_014_shadow.canonicalize_authorization_
 -- 184
 select ok(set_config('search_path','auth_db_014_shadow,public',true) is not null, 'session search_path can be poisoned for test');
 
+set local role vento_authorization_owner;
+
 -- 185
 select extensions.is(app_private.fingerprint_authorization_device('{"application_set":["NEXO","VISO"]}'::jsonb), 'sha256:' || encode(extensions.digest(app_private.canonicalize_authorization_device('{"application_set":["NEXO","VISO"]}'::jsonb),'sha256'),'hex'), 'qualified hardened fingerprint ignores malicious search_path homonym');
+
+reset role;
 
 -- 186
 select extensions.ok(set_config('search_path','public,extensions',true) is not null, 'search_path restored for remaining tests');

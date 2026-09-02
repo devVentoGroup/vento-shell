@@ -31,7 +31,7 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260902024254 | 20260902024254_auth_db_032_authorization_decision_persistence.sql | 5537f5a1fc208c3ae0f457669ba897ddd851e27e45b67d5505cfda08a28115f5 | 70544 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260902131605 | 20260902131605_auth_db_012_authorization_permission_audit.sql | f992e7ec7bb1148904b65f9c8461749684cafa6e225e6fb3c80ceeb6af37f71f | 77103 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260902183434 | 20260902183434_auth_db_013_authorization_simulation_audit.sql | 8dd71dddf305f543717853d87e5efa9fd326e99de09cd4de0beaa2b081c3d97b | 132384 | STANDARD |  |  | SIN_HALLAZGO |
-| 20260902212940 | 20260902212940_auth_db_014_authorization_device_audit.sql | 41e9c7302130d810f2f7713f29f42de951d736cf869edf7e476379c69701c7e9 | 103577 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260902212940 | 20260902212940_auth_db_014_authorization_device_audit.sql | 25282ad974fb93ccd396a57073a6cd54cdf81964b49e83bd9176bff1b7bfc4a5 | 104855 | STANDARD |  |  | SIN_HALLAZGO |
 
 ## Inventory summary
 
