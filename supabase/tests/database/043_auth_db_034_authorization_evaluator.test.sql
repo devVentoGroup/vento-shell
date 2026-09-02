@@ -5,7 +5,7 @@ create extension if not exists
   pgtap
 with schema extensions;
 
-select plan(154);
+select plan(174);
 
 create temporary table
   auth_db_034_fixture
@@ -4512,6 +4512,282 @@ select is(
   0::bigint,
   '154 AUTH-DB-034 does not attach the new predicate to legacy policies'
 );
+
+-- ==========================================================
+-- 155-174 — CORR-001 AuthorizationAuditContext conformance
+-- ==========================================================
+
+select pg_catalog.set_config(
+  'request.jwt.claims',
+  '{}',
+  true
+);
+
+select pg_catalog.set_config(
+  'request.jwt.claim.sub',
+  '',
+  true
+);
+
+create temporary table
+  auth_db_034_corr_001_result
+on commit drop
+as
+select
+  app_private.evaluate_authorization(
+    pg_temp.auth_db_034_request(
+      'shell',
+      'shell.access',
+      'APP_ACCESS',
+      'NON_RESOURCE'
+    )
+  ) as decision;
+
+select is(
+  pg_catalog.jsonb_typeof(
+    decision -> 'audit'
+  ),
+  'object',
+  '155 corrected issuer returns an audit object'
+)
+from auth_db_034_corr_001_result;
+
+select ok(
+  decision -> 'audit'
+    ?& array[
+      'decision_id',
+      'correlation_id',
+      'actor_id',
+      'principal_id',
+      'device_id',
+      'app_code',
+      'permission_key',
+      'resource_type',
+      'resource_ids',
+      'outcome',
+      'authorizing_lanes',
+      'context_fingerprint',
+      'resource_fingerprint',
+      'catalog_hash',
+      'dataset_hashes',
+      'evaluator_name',
+      'evaluator_version'
+    ]::text[],
+  '156 audit contains the complete AuthorizationAuditContext key set'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,decision_id}',
+  decision ->>
+    'decision_id',
+  '157 audit decision_id equals decision decision_id'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>
+    '{audit,correlation_id}',
+  decision ->
+    'correlation_id',
+  '158 audit correlation_id equals decision correlation_id'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,app_code}',
+  decision #>>
+    '{request,app_code}',
+  '159 audit app_code equals decision request app_code'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,permission_key}',
+  decision #>>
+    '{request,permission_key}',
+  '160 audit permission_key equals decision request permission_key'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,actor_id}',
+  decision #>>
+    '{access_context_ref,actor_id}',
+  '161 audit actor_id equals access context reference actor_id'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,principal_id}',
+  decision #>>
+    '{access_context_ref,principal_id}',
+  '162 audit principal_id equals access context reference principal_id'
+)
+from auth_db_034_corr_001_result;
+
+select ok(
+  decision -> 'audit'
+    ? 'device_id'
+  and decision #>
+        '{audit,device_id}'
+      = 'null'::jsonb,
+  '163 anonymous evaluation preserves nullable device_id'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,resource_type}',
+  decision #>>
+    '{resource,resource_type}',
+  '164 audit resource_type equals resolved decision resource type'
+)
+from auth_db_034_corr_001_result;
+
+select ok(
+  pg_catalog.jsonb_typeof(
+    decision #>
+      '{audit,resource_ids}'
+  ) = 'array'
+  and decision #>
+        '{audit,resource_ids}'
+      = '[]'::jsonb,
+  '165 non-resource evaluation emits deterministic empty resource_ids'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,outcome}',
+  decision ->>
+    'final_decision',
+  '166 audit outcome equals final decision'
+)
+from auth_db_034_corr_001_result;
+
+select ok(
+  decision ->>
+    'final_decision'
+    = 'DENY'
+  and pg_catalog.jsonb_typeof(
+        decision #>
+          '{audit,authorizing_lanes}'
+      ) = 'array'
+  and decision #>
+        '{audit,authorizing_lanes}'
+      = '[]'::jsonb,
+  '167 denied anonymous evaluation has no authorizing lane'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,context_fingerprint}',
+  decision #>>
+    '{access_context_ref,context_fingerprint}',
+  '168 audit context_fingerprint equals access context reference'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,resource_fingerprint}',
+  decision #>>
+    '{resource,resource_fingerprint}',
+  '169 audit resource_fingerprint equals resolved resource fingerprint'
+)
+from auth_db_034_corr_001_result;
+
+select ok(
+  decision #>>
+    '{audit,catalog_hash}'
+    =
+  decision #>>
+    '{audit,contract_release_hash}'
+  and (
+    decision #>>
+      '{audit,catalog_hash}'
+  ) ~ '^sha256:[0-9a-f]{64}$',
+  '170 audit catalog_hash preserves the evaluated contract release hash'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>
+    '{audit,dataset_hashes}',
+  (
+    select coalesce(
+      pg_catalog.jsonb_object_agg(
+        row_data.dataset_key,
+        row_data.dataset_fingerprint
+        order by row_data.dataset_key
+      ),
+      '{}'::jsonb
+    )
+    from (
+      select distinct
+        item ->> 'dataset_key'
+          as dataset_key,
+        item ->> 'dataset_fingerprint'
+          as dataset_fingerprint
+      from pg_catalog.jsonb_array_elements(
+        coalesce(
+          decision #>
+            '{audit,dataset_evidence}',
+          '[]'::jsonb
+        )
+      ) as evidence(item)
+      where pg_catalog.jsonb_typeof(item) =
+            'object'
+        and nullif(
+              item ->> 'dataset_key',
+              ''
+            ) is not null
+        and nullif(
+              item ->> 'dataset_fingerprint',
+              ''
+            ) is not null
+    ) as row_data
+  ),
+  '171 audit dataset_hashes is the deterministic dataset evidence map'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,evaluator_name}',
+  'vento.authorization.evaluate_authorization',
+  '172 audit evaluator_name is canonical'
+)
+from auth_db_034_corr_001_result;
+
+select is(
+  decision #>>
+    '{audit,evaluator_version}',
+  '20260901230518',
+  '173 audit evaluator_version is exact and immutable'
+)
+from auth_db_034_corr_001_result;
+
+select ok(
+  decision -> 'audit'
+    ?& array[
+      'request_fingerprint',
+      'permission_contract_fingerprint',
+      'contract_release_hash',
+      'identity_registry_sha256',
+      'dataset_evidence',
+      'request_source'
+    ]::text[],
+  '174 correction preserves pre-existing private audit evidence'
+)
+from auth_db_034_corr_001_result;
 
 select * from finish();
 

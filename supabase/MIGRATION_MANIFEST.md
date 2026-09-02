@@ -26,11 +26,12 @@ Regenerate with `npm run supabase:migrations:manifest:build` and validate with `
 | 20260831212234 | 20260831212234_auth_db_036_organization_scope.sql | be5fbe23626e745e5d2eba90585903ff7dc107778d20f1b9f789a88f7dd833d6 | 7112 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260831233918 | 20260831233918_auth_db_035_context_freshness.sql | c174b7073f82a0ea086e6b2ffef3de03ca54b51954d4934f009dab6d3031d372 | 83597 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260901062557 | 20260901062557_auth_db_034_authorization_evaluator.sql | 2d18153540c74630e1271f284a93da398ed23c4eb71e14c21c83420b2754dc91 | 891217 | STANDARD |  |  | SIN_HALLAZGO |
+| 20260901230518 | 20260901230518_auth_db_034_corr_001_contract_conformance.sql | dc608b492f1b687eaf89c6f33e290a88e75afb0640b4d14d677354bc158ac444 | 7726 | STANDARD |  |  | SIN_HALLAZGO |
 | 20260902004242 | 20260902004242_auth_db_035_corr_001_context_freshness_concurrency.sql | 5cd797ad6f34b39298fb3a95f2281495743a424b20cbf23d04589d67af21ce36 | 10228 | STANDARD |  |  | SIN_HALLAZGO |
 
 ## Inventory summary
 
-- Physical files: 16
+- Physical files: 17
 - Empty files: 0
 - Content-duplicate groups: 0
 - Same-logical-family groups: 0
