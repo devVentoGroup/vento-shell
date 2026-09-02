@@ -63,6 +63,21 @@ function assertIncludes(source, expected, label) {
   }
 }
 
+export function assertMarkdownTableRow(source, expectedCells, label) {
+  const found = source.split('\n').some((line) => {
+    const row = line.trim();
+    if (!row.startsWith('|') || !row.endsWith('|')) return false;
+
+    const cells = row.slice(1, -1).split('|').map((cell) => cell.trim());
+    return cells.length === expectedCells.length
+      && cells.every((cell, index) => cell === expectedCells[index]);
+  });
+
+  if (!found) {
+    fail(`${label} is missing required canonical table row: ${expectedCells.join(' | ')}`);
+  }
+}
+
 function validateCanonicalSources() {
   const contextSource = readCanonical(contextSourcePath, 'AUTH-CTX');
   const shellSource = readCanonical(shellSourcePath, 'SHELL-CON');
@@ -91,8 +106,6 @@ function validateCanonicalSources() {
   const shellMarkers = [
     '### ✅ SHELL-CON-007 — Centralizar tipos de contexto',
     '### ✅ SHELL-CON-008 — Centralizar códigos de error',
-    'modalidad física | `GLOBAL_ENABLE_ONCE`',
-    'gate temporal | `PRE_E5_FOUNDATION`',
     'vento.authorization.response-contracts@1.0.0',
     releaseHash,
     '`BaseRoleContext.role_code`',
@@ -111,6 +124,17 @@ function validateCanonicalSources() {
   for (const marker of shellMarkers) {
     assertIncludes(shellSource, marker, 'SHELL-CON canonical source');
   }
+
+  assertMarkdownTableRow(
+    shellSource,
+    ['modalidad física', '`GLOBAL_ENABLE_ONCE`'],
+    'SHELL-CON canonical source',
+  );
+  assertMarkdownTableRow(
+    shellSource,
+    ['gate temporal', '`PRE_E5_FOUNDATION`'],
+    'SHELL-CON canonical source',
+  );
 }
 
 function renderHeader(sourceLabel) {
