@@ -7726,7 +7726,820 @@ La identidad exacta de la futura unidad física se resolverá exclusivamente med
 `VISO-AUTH-011 — Validar turnos sin rol operativo`
 
 
-### [ ] VISO-AUTH-011 — Validar turnos sin rol operativo
+### ✅ VISO-AUTH-011 — Validar turnos sin rol operativo
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-010 — Asignar rol operativo al turno
+**Tarea siguiente:** VISO-AUTH-012 — Validar turnos con área incompatible
+**Tipo de tarea:** documental; definición del contrato canónico de detección, clasificación y bloqueo de turnos laborales sin rol operativo, incluido el gate previo a publicación y la reconciliación del histórico legacy, sin inferir ni completar el rol desde perfiles, rol base, defaults, histórico, área o cliente
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única qué significa que un turno carezca de rol operativo, cuándo esa ausencia es válida, cuándo representa un turno laboral incompleto o inválido, qué debe bloquear VISO antes de publicar y cómo se conserva el histórico legacy sin inventar autoridad retroactiva.
+
+La regla raíz queda:
+
+```text
+shift_kind = laboral
++
+operational_role ausente
+→
+turno laboral sin rol operativo
+```
+
+y:
+
+```text
+shift_kind = descanso
++
+operational_role = null
+→
+ausencia válida de rol
+```
+
+Un turno laboral sin rol no puede convertirse en contexto operativo mediante fallback.
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva y consume, sin redefinirlas:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-002` — separación entre rol base y rol operativo;
+- `AUTH-MOD-005` — identidad del rol operativo;
+- `AUTH-MOD-007` y `AUTH-MOD-008` — sede y área del turno;
+- `AUTH-MOD-009` — turno publicado;
+- `AUTH-MOD-010` — check-in activo;
+- `AUTH-CTX-010` a `AUTH-CTX-013` — resolución del turno y contexto operativo;
+- `AUTH-CTX-029` — frescura e invalidación;
+- `VISO-AUTH-007` — perfil operativo como configuración de planificación;
+- `VISO-AUTH-010` — asignación explícita del rol operativo al turno;
+- el catálogo compartido `OperationalRoleCode@1.0.0`;
+- los reason codes públicos vigentes, incluido `AUTH_OPERATIONAL_ROLE_REQUIRED`;
+- el reason code de disponibilidad `OPERATIONAL_ROLE_NOT_AVAILABLE`, reservado a ausencia de rol porque no existe turno aplicable.
+
+La tarea no crea un nuevo reason code público ni un segundo concepto de rol operativo.
+
+---
+
+#### 3. Definición exacta de ausencia
+
+Para esta validación, el rol está ausente cuando el valor de entrada normalizado no contiene un código:
+
+```text
+operational_role = null
+OR
+trim(operational_role) = ""
+```
+
+La base física observada utiliza una columna `text` nullable. La validación de frontera deberá tratar un string vacío o compuesto solo por espacios como ausencia, aunque el baseline actual se materialice principalmente mediante `null`.
+
+La ausencia se evalúa sobre el dato autoritativo del turno. No se evalúa sobre una etiqueta visible, una opción seleccionada únicamente en cliente, un perfil, un rol base, un default o una matriz que contenga una sola opción.
+
+---
+
+#### 4. Matriz canónica de clasificación
+
+| Turno observado | Rol | Clasificación | ¿Bloquea publicación? | ¿Puede participar en contexto operativo? |
+| --- | --- | --- | ---: | ---: |
+| `descanso` | ausente | ausencia válida | No por esta causa | No aplica |
+| `descanso` | presente | no es rol faltante; contradice la representación aprobada del descanso | Según contrato propietario | No por ser descanso |
+| `laboral` borrador | presente y válido | completo respecto del rol | No por esta causa | No mientras siga siendo borrador |
+| `laboral` borrador | ausente | borrador laboral incompleto | Sí | No |
+| `laboral` publicado y vigente | presente y válido | candidato a turno operativo | No por esta causa | Solo si satisface el resto del contrato |
+| `laboral` publicado | ausente | configuración publicada inválida para carril operativo | Ya no debió publicarse; debe fallar cerrado al consumir | No |
+| `laboral` cancelado | ausente | deuda histórica no ejecutable | No aplica mientras permanezca cancelado | No |
+| `laboral` con rol desconocido, inactivo o no canónico | presente pero inválido | rol inválido, no rol ausente | Sí por su contrato propietario | No |
+| fuente crítica no verificable | indeterminado | validación inconclusa | Sí hasta resolver fuente | No |
+
+El orden de evaluación queda:
+
+```text
+TIPO DE TURNO
+→ PRESENCIA DEL ROL
+→ IDENTIDAD Y VIGENCIA DEL ROL
+→ COMPATIBILIDAD CON SEDE
+→ COMPATIBILIDAD CON ÁREA
+→ RESTO DEL CONTEXTO OPERATIVO
+```
+
+`VISO-AUTH-011` cierra el segundo paso. `VISO-AUTH-012` recibe únicamente el paso territorial posterior.
+
+---
+
+#### 5. Descansos
+
+Los descansos están excluidos del defecto “turno sin rol operativo”.
+
+La representación aprobada es:
+
+```text
+shift_kind = descanso
+operational_role = null
+```
+
+Por tanto:
+
+- un descanso no exige un `OperationalRoleCode`;
+- un descanso publicado no se vuelve inválido por tener rol nulo;
+- un descanso no debe contarse en métricas de turnos laborales sin rol;
+- un validador que marque descansos como missing-role produce un falso positivo;
+- agregar un rol a un descanso para satisfacer un validador sería una corrección incorrecta.
+
+La ausencia de rol en descanso es `NOT_APPLICABLE` para la función operativa.
+
+---
+
+#### 6. Borrador laboral incompleto
+
+Un turno laboral en borrador puede encontrarse físicamente sin rol por deuda histórica, importación, copia legacy o estado previo a la aplicación completa del contrato.
+
+Ese estado es representable para diagnóstico, pero no es un resultado completo de la mutación normal de VISO.
+
+Reglas:
+
+1. debe mostrarse explícitamente como incompleto;
+2. no puede publicarse;
+3. no puede usarse como fuente de autoridad;
+4. no puede repararse automáticamente;
+5. una edición que lo deje listo para publicación debe exigir selección explícita y validada del rol;
+6. un nuevo flujo normal no debe producir voluntariamente esta forma como resultado exitoso.
+
+La existencia de un borrador incompleto no autoriza un fallback.
+
+---
+
+#### 7. Gate obligatorio antes de publicación
+
+Toda operación que publique uno o más turnos deberá ejecutar, inmediatamente antes de escribir `published_at` o su equivalente, una validación server-side sobre el conjunto exacto que pretende publicar.
+
+Para cada fila:
+
+```text
+shift_kind = laboral
+→ operational_role debe estar presente
+```
+
+```text
+shift_kind = descanso
+→ operational_role nulo es válido
+```
+
+Si existe al menos un turno laboral sin rol:
+
+```text
+PUBLICACIÓN COMPLETA
+→ BLOQUEADA
+```
+
+y el efecto debe ser:
+
+```text
+published_at sin cambios
+published_by sin cambios
+cero publicación parcial silenciosa
+cero notificaciones de publicación exitosa
+cero autoridad nueva
+```
+
+La validación debe ocurrir sobre datos releídos o bloqueados de forma suficiente para que una modificación concurrente no invalide la decisión entre el check y la escritura.
+
+---
+
+#### 8. Atomicidad del bloqueo de publicación
+
+Una publicación semanal, mensual o masiva es una intención administrativa única para el alcance seleccionado.
+
+Si dentro de ese alcance existen filas laborales sin rol:
+
+- no se publican solo las filas válidas dejando las inválidas atrás sin declaración;
+- no se elimina la fila inválida;
+- no se cambia automáticamente a descanso;
+- no se sustituye el rol;
+- no se altera el trabajador o la sede;
+- no se recorta silenciosamente el periodo.
+
+VISO deberá devolver un conflicto accionable que permita localizar las filas afectadas dentro del ámbito que el actor está autorizado a administrar.
+
+La corrección y un nuevo intento son operaciones posteriores.
+
+---
+
+#### 9. Información mínima del conflicto
+
+La superficie administrativa deberá poder explicar, con alcance autorizado, al menos:
+
+- cantidad de turnos laborales bloqueantes;
+- trabajador objetivo o referencia administrativa equivalente;
+- fecha;
+- intervalo horario;
+- sede;
+- identidad del turno;
+- estado de publicación;
+- acción requerida: asignar un rol operativo válido antes de publicar.
+
+El mensaje no debe sugerir cambiar el rol base, crear un perfil para desbloquear autoridad, utilizar el último turno, aceptar un default como autorización o ignorar el conflicto.
+
+La interfaz podrá agrupar los conflictos, pero no ocultar su cardinalidad.
+
+---
+
+#### 10. Reason code operativo
+
+Cuando una solicitud protegida encuentra un turno laboral aplicable pero el turno carece de rol operativo, la ausencia corresponde al reason code público existente:
+
+```text
+AUTH_OPERATIONAL_ROLE_REQUIRED
+```
+
+No corresponde utilizar:
+
+```text
+OPERATIONAL_ROLE_NOT_AVAILABLE
+```
+
+porque ese código de disponibilidad representa el caso donde no existe rol operativo al no existir turno aplicable.
+
+La distinción queda:
+
+```text
+NO HAY TURNO APLICABLE
+→ OPERATIONAL_ROLE_NOT_AVAILABLE
+```
+
+```text
+HAY TURNO LABORAL APLICABLE
++
+EL TURNO NO TIENE ROL
+→ AUTH_OPERATIONAL_ROLE_REQUIRED
+```
+
+Una ausencia ordinaria no se convierte por sí sola en `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT` cuando existe un reason code más específico.
+
+---
+
+#### 11. Fallo cerrado en el carril operativo
+
+Un turno laboral sin rol nunca produce un rol operativo efectivo.
+
+Si un consumidor encuentra ese turno dentro de una evaluación operativa:
+
+```text
+operational_role_effective = null
+operational_lane = no ejecutable
+```
+
+La aplicación debe preservar la sesión cuando el contrato lo permita, pero la acción que requiera el carril operativo no puede continuar.
+
+Ninguno de estos datos puede reparar el turno durante la evaluación:
+
+- `employees.role`;
+- `employee_site_operational_profiles.default_operational_role`;
+- rol de navegación;
+- área;
+- sede primaria;
+- último turno;
+- primer rol de la matriz;
+- fila `is_default`;
+- única opción disponible;
+- caché cliente.
+
+---
+
+#### 12. Rol presente pero inválido
+
+Un valor presente que no pertenezca al catálogo canónico, esté inactivo o no sea admisible para el turno no se clasifica como “rol ausente”.
+
+```text
+operational_role = "valor"
++
+valor desconocido/inactivo/no canónico
+→
+ROL PRESENTE PERO INVÁLIDO
+```
+
+No deberá normalizarse a `null` para reutilizar el error de ausencia.
+
+`VISO-AUTH-010` conserva la identidad y vigencia del rol; `VISO-AUTH-012` conserva la incompatibilidad territorial posterior.
+
+---
+
+#### 13. Fuente no verificable
+
+Si la lectura del turno o de un dato crítico falla, no existe evidencia suficiente para afirmar que el rol está ausente.
+
+La salida es una validación inconclusa o indisponibilidad técnica conforme al contrato transversal aplicable.
+
+Queda prohibido:
+
+```text
+ERROR DE LECTURA
+→ asumir operational_role = null
+```
+
+y también:
+
+```text
+ERROR DE LECTURA
+→ usar un default
+```
+
+El sistema falla cerrado sin fabricar la causa.
+
+---
+
+#### 14. Copia de turnos y propagación de deuda
+
+Copiar una fila es crear una nueva configuración prospectiva.
+
+Por tanto, una operación de copia, asignación masiva, duplicación de día o copia de semana no puede propagar automáticamente:
+
+```text
+shift_kind = laboral
++
+operational_role ausente
+```
+
+desde una fuente legacy hacia un nuevo borrador.
+
+Si la fuente contiene un turno laboral sin rol:
+
+- la operación debe identificar el conflicto;
+- no debe inventar el rol;
+- no debe reutilizar el rol base;
+- no debe rellenarlo desde un perfil;
+- no debe copiar silenciosamente la fila defectuosa.
+
+El actor deberá resolver explícitamente el rol antes de materializar el nuevo turno laboral conforme al contrato.
+
+---
+
+#### 15. Generadores, IA e importaciones
+
+La misma regla aplica a sugerencias automáticas, generación de horarios, IA, importaciones, presets, plantillas y repetición de patrones.
+
+Una propuesta puede contener una necesidad aún sin resolver en memoria o en una vista previa, pero una mutación que materialice un turno laboral nuevo no puede declarar éxito dejando `operational_role` ausente.
+
+La automatización no adquiere permiso para inferir autoridad.
+
+---
+
+#### 16. Corrección explícita
+
+Resolver un borrador laboral sin rol exige una mutación explícita del turno:
+
+```text
+shift_id conocido
++
+rol canónico seleccionado
++
+rol activo
++
+compatibilidad con sede
++
+área válida cuando corresponda
++
+autoridad administrativa
++
+revalidación server-side
+→
+turno corregido respecto del rol
+```
+
+La corrección no modifica el rol base, no modifica automáticamente el perfil, no reescribe otros turnos, no cambia permisos y no publica por sí sola salvo que el workflow propietario combine ambas operaciones de manera explícita y atómica.
+
+---
+
+#### 17. Histórico legacy
+
+El histórico con rol ausente se conserva como evidencia.
+
+Reglas:
+
+1. no se hace backfill automático;
+2. no se deduce el rol desde el trabajador;
+3. no se deduce desde turnos adyacentes;
+4. no se deduce desde el área;
+5. no se deduce desde el perfil actual;
+6. no se deduce desde una matriz actual para explicar una configuración histórica;
+7. una fila cancelada permanece no ejecutable;
+8. una fila histórica publicada no obtiene autoridad actual por haber sido publicada;
+9. una corrección histórica, si alguna vez es necesaria, deberá tener alcance, evidencia y autorización propios.
+
+La deuda histórica no bloquea por existencia todo el sistema si queda fuera del contexto temporal aplicable.
+
+---
+
+#### 18. Baseline físico read-only
+
+El corte remoto verificado contiene:
+
+```text
+turnos totales = 3634
+turnos laborales = 3063
+descansos = 571
+
+turnos laborales con rol = 1522
+turnos laborales sin rol = 1541
+```
+
+Los `1541` turnos laborales sin rol se descomponen exactamente así:
+
+| Estado | Publicación | Sin rol | Rango del defecto |
+| --- | --- | ---: | --- |
+| `scheduled` | publicado | 1534 | 2026-03-16 a 2026-06-28 |
+| `scheduled` | borrador | 4 | 2026-04-20 a 2026-05-20 |
+| `cancelled` | publicado | 2 | 2026-03-31 a 2026-06-24 |
+| `confirmed` | publicado | 1 | 2026-04-14 |
+
+La suma es:
+
+```text
+1534 + 4 + 2 + 1 = 1541
+```
+
+Los `571` descansos observados también tienen rol nulo:
+
+```text
+31 borradores
+540 publicados
+```
+
+y son válidos respecto de esta regla.
+
+---
+
+#### 19. Separación entre deuda histórica y operación reciente
+
+El último turno laboral sin rol observado termina el:
+
+```text
+2026-06-28
+```
+
+El corte heredado de `VISO-AUTH-010` conserva:
+
+```text
+desde 2026-09-02
+turnos laborales no cancelados = 119
+con rol = 119
+sin rol = 0
+```
+
+y para los treinta días anteriores al corte:
+
+```text
+turnos laborales no cancelados = 696
+con rol = 696
+sin rol = 0
+```
+
+Por tanto, la evidencia no demuestra que la operación reciente esté creando turnos laborales sin rol en el camino habitual.
+
+La deuda histórica sigue siendo relevante para auditoría, consultas históricas, copias, duplicaciones, reportes y consumidores que no acoten correctamente el contexto.
+
+---
+
+#### 20. Reconciliación AS-IS del guardado semanal
+
+La superficie semanal actual intenta producir turnos laborales con rol y descansos con rol nulo.
+
+Sin embargo, antes de guardar puede resolver automáticamente el rol mediante único rol disponible, default, única fila o única área.
+
+Esos fallbacks ya fueron clasificados por `VISO-AUTH-010` como ayudas de planificación y no como autoridad.
+
+`VISO-AUTH-011` no reabre esa decisión. Su responsabilidad es asegurar que, si pese a cualquier camino existe una fila laboral con rol ausente, la ausencia sea detectada y no atraviese los gates posteriores.
+
+---
+
+#### 21. Reconciliación AS-IS de copias y asignaciones masivas
+
+La implementación semanal observada contiene caminos que copian literalmente:
+
+```text
+operational_role: source.operational_role ?? null
+```
+
+hacia nuevos borradores.
+
+Eso ocurre en superficies de asignación masiva, copia de semana anterior y copia de un día hacia otros días.
+
+Si una fuente legacy carece de rol, esos caminos pueden propagar la deuda hacia una fecha nueva sin seleccionar un rol canónico.
+
+Ese comportamiento no cumple el contrato TO-BE. La futura materialización deberá validar las filas fuente antes de crear cualquier turno laboral nuevo.
+
+---
+
+#### 22. Reconciliación AS-IS de publicación semanal
+
+La publicación semanal observada consulta actualmente:
+
+```text
+id
+employee_id
+shift_date
+start_time
+end_time
+published_at
+```
+
+y después marca como publicados todos los borradores del periodo.
+
+No consulta ni valida en ese gate:
+
+```text
+shift_kind
+operational_role
+```
+
+Por tanto, el camino actual no demuestra:
+
+```text
+TODOS LOS TURNOS LABORALES A PUBLICAR TIENEN ROL
+```
+
+antes de escribir `published_at`.
+
+Esta es una brecha física específica de `VISO-AUTH-011`.
+
+---
+
+#### 23. Reconciliación AS-IS de publicación mensual
+
+La publicación mensual observada sí carga `shift_kind` y `operational_role`, pero el gate actual valida límites mensuales y después publica todos los borradores del alcance.
+
+No se observó un rechazo previo equivalente a:
+
+```text
+laboral + operational_role ausente
+→ bloquear publicación
+```
+
+Por tanto, tener el dato cargado no equivale a validarlo.
+
+La futura materialización deberá aplicar el mismo precondition contract que en publicación semanal.
+
+---
+
+#### 24. Reconciliación AS-IS del API rápido
+
+El route handler rápido observado separa correctamente:
+
+```text
+action = labor
+→ resuelve un rol antes de insertar
+```
+
+y:
+
+```text
+action = rest
+→ operational_role = null
+```
+
+Si no puede resolver un rol laboral, devuelve error y no guarda el turno laboral.
+
+Este camino reduce la creación directa del defecto, pero no sustituye el gate de publicación ni protege otros caminos de copia o importación.
+
+---
+
+#### 25. Reconciliación AS-IS de la vista operativa mensual
+
+La vista mensual observada ya puede representar una fila laboral sin rol mediante el texto humano:
+
+```text
+Sin rol operativo
+```
+
+y representa descansos como:
+
+```text
+Descanso
+```
+
+Esa capacidad de visualización es compatible como diagnóstico. No constituye reparación, autorización, publicación válida, fallback ni evidencia de que el turno pueda operar.
+
+---
+
+#### 26. Consumidores posteriores
+
+ANIMA consume turnos publicados y lee `operational_role` desde `employee_shifts`.
+
+Por tanto, VISO no puede suponer que un consumidor posterior corregirá un turno publicado incompleto.
+
+La obligación es:
+
+```text
+VISO PUBLICA CONFIGURACIÓN VÁLIDA
+→ consumidores reciben rol explícito
+```
+
+y no:
+
+```text
+VISO PUBLICA SIN ROL
+→ consumidor deduce rol
+```
+
+Cualquier fallback de diagnóstico o presentación en un consumidor no se eleva a contrato de autorización.
+
+---
+
+#### 27. Autoridad administrativa
+
+Detectar el defecto es una operación de lectura; corregirlo o publicar continúa siendo una mutación protegida.
+
+La mutación deberá validar en servidor:
+
+```text
+ACTOR EFECTIVO
++
+CAPACIDAD ADMINISTRATIVA
++
+TERRITORIO
++
+TURNO OBJETIVO
++
+ROL OBJETIVO CUANDO SE CORRIGE
++
+ESTADO ACTUAL
++
+EFECTO RESULTANTE
++
+AUDITORÍA
+→
+MUTACIÓN POSIBLE
+```
+
+Un cliente administrativo o `service_role` no sustituye la autorización empresarial. El acceso a la pantalla tampoco equivale a autorización para modificar o publicar.
+
+---
+
+#### 28. Handoff a VISO-AUTH-012
+
+`VISO-AUTH-012` recibe únicamente turnos laborales cuyo rol ya está presente.
+
+El orden de evaluación queda:
+
+```text
+1. shift_kind
+2. presencia de operational_role
+3. identidad/vigencia del rol
+4. compatibilidad rol × sede
+5. compatibilidad rol × área
+```
+
+Si el rol está ausente:
+
+```text
+VISO-AUTH-011 BLOQUEA
+→
+VISO-AUTH-012 NO DEBE INVENTARLO
+```
+
+Si el rol existe pero el área es incompatible:
+
+```text
+VISO-AUTH-011 NO LO CLASIFICA COMO AUSENTE
+→
+VISO-AUTH-012 RESUELVE LA INCOMPATIBILIDAD
+```
+
+La tarea siguiente no podrá utilizar el área para inferir el rol.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La detección de un turno laboral sin rol, el fallo cerrado del carril operativo, la protección server-side de mutaciones, la invalidación del contexto, la trazabilidad y la coherencia entre VISO y consumidores ya están cubiertos por requisitos vigentes.
+
+La tarea no introduce un nuevo reason code, un nuevo estado de turno, una nueva modalidad de autorización, una nueva identidad territorial ni una nueva transición empresarial que exija ampliar el registro.
+
+---
+
+#### 30. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-AUTH-001` — un nombre o lista de roles no concede autorización final;
+- `TREQ-AUTH-008` — el carril operativo exige turno publicado y vigente, check-in activo, rol operativo efectivo y compatibilidad territorial;
+- `TREQ-AUTH-009` — sede y área se resuelven de forma determinista y los cruces territoriales se deniegan;
+- `TREQ-AUTH-013` — formularios, API, RPC y mutaciones manipuladas no pueden eludir la revalidación de servidor;
+- `TREQ-AUTH-014` — cambios de turno, área, trabajador, rol o asignación invalidan contexto derivado;
+- `TREQ-AUTH-015` — las decisiones y acciones protegidas conservan evidencia correlacionable;
+- `TREQ-VISO-001` — la configuración administrada por VISO debe ser coherente con el resultado consumido por las aplicaciones operativas.
+
+Estas referencias son trazabilidad heredada y no cambian contenido, estado, paquete, evidencia ni secuencia de ningún requisito.
+
+---
+
+#### 31. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó el build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea todavía no fue insertada ni validada en la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, topología, políticas, `VISO-AUTH-010`, contratos de autorización, reason codes vigentes, 04A aplicable, código VISO semanal/mensual/API/vista operativa, consumidores ANIMA y el baseline read-only de `employee_shifts`. |
+| OPERATIVA | NOT_APPLICABLE | No se publicaron, corrigieron, copiaron, cancelaron ni modificaron turnos reales durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, ANIMA, Supabase, turnos, funciones, RLS, migraciones, datos ni despliegues. |
+
+---
+
+#### 32. Criterios de aceptación
+
+- [ ] `laboral + operational_role ausente` se clasifica como turno laboral sin rol.
+- [ ] `descanso + operational_role = null` se clasifica como ausencia válida y no como defecto.
+- [ ] `null`, string vacío y whitespace se normalizan como ausencia en la frontera de validación.
+- [ ] Un borrador laboral sin rol se representa como incompleto y no puede publicarse.
+- [ ] Un turno laboral publicado sin rol no puede producir rol operativo efectivo.
+- [ ] Un turno cancelado sin rol permanece no ejecutable y no exige backfill automático.
+- [ ] Un rol presente pero desconocido, inactivo o no canónico no se confunde con rol ausente.
+- [ ] Una fuente no verificable no se convierte en ausencia inferida.
+- [ ] El reason code operativo para turno aplicable sin rol reutiliza `AUTH_OPERATIONAL_ROLE_REQUIRED`.
+- [ ] `OPERATIONAL_ROLE_NOT_AVAILABLE` permanece reservado al caso sin turno aplicable.
+- [ ] Ningún perfil, rol base, default, último turno o área completa silenciosamente el rol.
+- [ ] Toda publicación revalida server-side cada fila del alcance.
+- [ ] Si existe al menos un laboral sin rol, la publicación completa se bloquea.
+- [ ] El bloqueo conserva `published_at` y `published_by` sin cambios y no notifica éxito.
+- [ ] No existe publicación parcial silenciosa.
+- [ ] Copias y asignaciones masivas no propagan turnos laborales legacy sin rol.
+- [ ] Generadores, IA e importaciones no adquieren permiso para inferir el rol.
+- [ ] No se realiza backfill automático sobre las 1541 filas laborales históricas sin rol.
+- [ ] El baseline conserva 1534 `scheduled` publicados sin rol, 4 `scheduled` borrador, 2 `cancelled` publicados y 1 `confirmed` publicado.
+- [ ] Los 571 descansos con rol nulo quedan excluidos del defecto.
+- [ ] El último laboral sin rol observado permanece en 2026-06-28.
+- [ ] La evidencia reciente conserva cero laborales no cancelados sin rol desde 2026-09-02.
+- [ ] La publicación semanal AS-IS se reconoce como brecha porque no consulta `shift_kind` ni `operational_role`.
+- [ ] La publicación mensual AS-IS se reconoce como brecha porque carga esos campos pero no bloquea la ausencia.
+- [ ] La vista “Sin rol operativo” se conserva como diagnóstico y no autoridad.
+- [ ] ANIMA recibe el rol publicado sin tener que inferirlo.
+- [ ] `VISO-AUTH-012` recibe únicamente la incompatibilidad posterior, sin inventar roles.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 33. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica código de ANIMA;
+- modifica `public.employee_shifts`;
+- agrega constraints o foreign keys;
+- modifica funciones, triggers, RLS o grants;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- publica, despublica, cancela o corrige turnos reales;
+- hace backfill de las 1541 filas sin rol;
+- asigna roles retroactivamente;
+- cambia estados de turno;
+- modifica `published_at` ni `published_by`;
+- modifica perfiles operativos ni roles base;
+- modifica matrices rol × sede o rol × área;
+- redefine `OperationalRoleCode`;
+- crea reason codes;
+- implementa mensajes de interfaz;
+- implementa el gate semanal o mensual;
+- cambia las funciones de copia;
+- cambia generadores o IA;
+- resuelve incompatibilidades de área, responsabilidad de `VISO-AUTH-012`;
+- redefine el workflow integral de programación, responsabilidad de `VISO-SCH-*`;
+- implementa auditoría física transversal;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la futura unidad física se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 34. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-010 — Asignar rol operativo al turno`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-011 — Validar turnos sin rol operativo`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-012 — Validar turnos con área incompatible`
+
+
 ### [ ] VISO-AUTH-012 — Validar turnos con área incompatible
 ### [ ] VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno
 ### [ ] VISO-AUTH-014 — Crear simulador de permisos efectivos
