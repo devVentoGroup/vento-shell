@@ -1198,7 +1198,7 @@ select is(audit.append_authorization_decision(pg_temp.auth_db_032_decision('0320
 select is((select pg_catalog.count(*) from audit.authorization_decisions where decision_id='03200000-0000-0000-0000-000000000201'), 1::bigint, 'idempotent append does not duplicate decision');
 
 -- 319
-select throws_ok($$select audit.append_authorization_decision(pg_catalog.jsonb_set(pg_temp.auth_db_032_decision('03200000-0000-0000-0000-000000000201','ALLOW','APP_ACCESS','SERVER_ACTION','NON_RESOURCE','{}',false), '{audit,resource_fingerprint}', to_jsonb('sha256:' || repeat('9',64)), true))$$, '23505', 'AUTH_DB_032_DECISION_INTEGRITY_CONFLICT', 'same decision id with incompatible fingerprint fails closed');
+select throws_ok($$select audit.append_authorization_decision(pg_catalog.jsonb_set(pg_temp.auth_db_032_decision('03200000-0000-0000-0000-000000000201','ALLOW','APP_ACCESS','SERVER_ACTION','NON_RESOURCE','{}',false), '{decided_at}', '"2000-01-01T00:00:00.001Z"'::jsonb, true))$$, '23505', 'AUTH_DB_032_DECISION_INTEGRITY_CONFLICT', 'same decision id with incompatible fingerprint fails closed');
 
 -- 320
 select throws_ok($$select audit.append_authorization_decision(pg_catalog.jsonb_set(pg_temp.auth_db_032_decision('03200000-0000-0000-0000-000000000205','ALLOW','APP_ACCESS','SERVER_ACTION','NON_RESOURCE','{}',false), '{audit,decision_id}', '"DIFFERENT"'::jsonb, true))$$, '22023', 'AUTH_DB_032_DECISION_ID_MISMATCH', 'root and audit decision_id mismatch is rejected');
@@ -1236,6 +1236,8 @@ select ok((select bool_and(link_fingerprint ~ '^sha256:[0-9a-f]{64}$') from audi
 -- 331
 select is((select pg_catalog.count(*) from audit.authorization_decision_resources where decision_id='03200000-0000-0000-0000-000000000201'), 0::bigint, 'non-resource decision has zero child resources');
 
+set local role vento_authorization_owner;
+
 -- 332
 select throws_ok($$update audit.authorization_decisions set recorded_at=recorded_at where decision_id='03200000-0000-0000-0000-000000000201'$$, '55000', 'AUTH_DB_032_APPEND_ONLY_MUTATION_FORBIDDEN', 'UPDATE is rejected on append-only authorization_decisions');
 
@@ -1247,6 +1249,8 @@ select throws_ok($$update audit.authorization_decision_resources set recorded_at
 
 -- 335
 select throws_ok($$delete from audit.authorization_decision_resources where decision_id='03200000-0000-0000-0000-000000000202' and resource_ordinal=1$$, '55000', 'AUTH_DB_032_APPEND_ONLY_MUTATION_FORBIDDEN', 'DELETE is rejected on append-only authorization_decision_resources');
+
+reset role;
 
 select audit.append_authorization_decision_link(pg_temp.auth_db_032_link('03200000-0000-0000-0000-000000000202','COMMAND','REF-1',null));
 
@@ -1325,11 +1329,15 @@ select is((select observed_resource_version from audit.authorization_decision_li
 -- 356
 select is((select idempotency_key_reference from audit.authorization_decision_links where decision_id='03200000-0000-0000-0000-000000000202' and link_kind='COMMAND'), 'IDEMPOTENCY-REF-032', 'idempotency reference is persisted without payload');
 
+set local role vento_authorization_owner;
+
 -- 357
 select throws_ok($$update audit.authorization_decision_links set result_code='X' where decision_id='03200000-0000-0000-0000-000000000202' and link_kind='COMMAND'$$, '55000', 'AUTH_DB_032_APPEND_ONLY_MUTATION_FORBIDDEN', 'decision links are append-only on UPDATE');
 
 -- 358
 select throws_ok($$delete from audit.authorization_decision_links where decision_id='03200000-0000-0000-0000-000000000202' and link_kind='COMMAND'$$, '55000', 'AUTH_DB_032_APPEND_ONLY_MUTATION_FORBIDDEN', 'decision links are append-only on DELETE');
+
+reset role;
 
 select audit.append_authorization_evaluation_failure(pg_temp.auth_db_032_failure('AUTH-DB-032-FAILURE-001'));
 
@@ -1387,11 +1395,15 @@ select is(audit.append_authorization_evaluation_failure(pg_temp.auth_db_032_fail
 -- 376
 select throws_ok($$select audit.append_authorization_evaluation_failure(pg_catalog.jsonb_set(pg_temp.auth_db_032_failure('AUTH-DB-032-FAILURE-001'), '{duration_ms}', '16'::jsonb, true))$$, '23505', 'AUTH_DB_032_TECHNICAL_FAILURE_INTEGRITY_CONFLICT', 'same evaluation attempt with different evidence fails closed');
 
+set local role vento_authorization_owner;
+
 -- 377
 select throws_ok($$update audit.authorization_evaluation_failures set duration_ms=16 where evaluation_attempt_id='AUTH-DB-032-FAILURE-001'$$, '55000', 'AUTH_DB_032_APPEND_ONLY_MUTATION_FORBIDDEN', 'technical failures are append-only on UPDATE');
 
 -- 378
 select throws_ok($$delete from audit.authorization_evaluation_failures where evaluation_attempt_id='AUTH-DB-032-FAILURE-001'$$, '55000', 'AUTH_DB_032_APPEND_ONLY_MUTATION_FORBIDDEN', 'technical failures are append-only on DELETE');
+
+reset role;
 
 select audit.append_authorization_evaluation_failure_attempt(pg_temp.auth_db_032_failure_attempt('AUTH-DB-032-FAILURE-001',1));
 
@@ -1423,11 +1435,15 @@ select throws_ok($$select audit.append_authorization_evaluation_failure_attempt(
 -- 386
 select throws_ok($$select audit.append_authorization_evaluation_failure_attempt(pg_temp.auth_db_032_failure_attempt('MISSING-FAILURE',1))$$, '23503', 'AUTH_DB_032_FAILURE_ATTEMPT_PARENT_MISSING', 'failure attempt requires parent technical failure');
 
+set local role vento_authorization_owner;
+
 -- 387
 select throws_ok($$update audit.authorization_evaluation_failure_attempts set duration_ms=11 where evaluation_attempt_id='AUTH-DB-032-FAILURE-001' and attempt_ordinal=1$$, '55000', 'AUTH_DB_032_APPEND_ONLY_MUTATION_FORBIDDEN', 'failure attempts are append-only on UPDATE');
 
 -- 388
 select throws_ok($$delete from audit.authorization_evaluation_failure_attempts where evaluation_attempt_id='AUTH-DB-032-FAILURE-001' and attempt_ordinal=1$$, '55000', 'AUTH_DB_032_APPEND_ONLY_MUTATION_FORBIDDEN', 'failure attempts are append-only on DELETE');
+
+reset role;
 
 -- 389
 select is(audit.get_authorization_decision('03200000-0000-0000-0000-000000000201') ->> 'decision_id', '03200000-0000-0000-0000-000000000201', 'private get returns requested decision');
@@ -1558,7 +1574,7 @@ select is((select pg_catalog.count(*) from pg_catalog.pg_trigger tg where tg.tgr
 select is((select pg_catalog.count(*) from pg_catalog.pg_trigger tg where tg.tgrelid='audit.authorization_evaluation_failures'::regclass and not tg.tgisinternal and tg.tgname like 'trg_auth_db_032%append_only'), 1::bigint, 'authorization_evaluation_failures has one append-only trigger');
 
 -- 428
-select is((select pg_catalog.count(*) from pg_catalog.pg_trigger tg where tg.tgrelid='audit.authorization_evaluation_failure_attempts'::regclass and not tg.tgisinternal and tg.tgname like 'trg_auth_db_032%append_only'), 1::bigint, 'authorization_evaluation_failure_attempts has one append-only trigger');
+select is((select pg_catalog.count(*) from pg_catalog.pg_trigger tg join pg_catalog.pg_proc p on p.oid=tg.tgfoid join pg_catalog.pg_namespace n on n.oid=p.pronamespace where tg.tgrelid='audit.authorization_evaluation_failure_attempts'::regclass and not tg.tgisinternal and n.nspname='audit' and p.proname='reject_authorization_record_mutation'), 1::bigint, 'authorization_evaluation_failure_attempts has one append-only trigger');
 
 -- 429
 select ok(pg_catalog.to_regclass('audit.uq_authorization_decision_persistence_policy_active') is not null, 'index uq_authorization_decision_persistence_policy_active exists for required query pattern');

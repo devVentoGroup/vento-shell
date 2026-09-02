@@ -127,6 +127,12 @@
     "VALIDATION_ATTEMPT supabase:db:test:clean FAIL test=044 line=1667 permission_denied=authorization_decision_persistence_policies remote_targets_used=NO",
     "IMPLEMENTATION_REPAIR PGTAP_044 policy-evolution fixture now switches locally to vento_authorization_owner for the two temporary policy updates",
     "IMPLEMENTATION_REPAIR prior_test_sha256=1881d6c00341032cc64c628309cbeb9c86f7fcf2944b6dbabd995c32d76f3374 repaired_test_sha256=b194325dfb8d42f0f90ef4ca6d20278e0cbd90a3e39f94c3aadfef7ae8e2dbe5",
-    "IMPLEMENTATION_REPAIR migration_unchanged=YES runtime_privileges_unchanged=YES quality_repair_rerun=NO"
+    "IMPLEMENTATION_REPAIR migration_unchanged=YES runtime_privileges_unchanged=YES quality_repair_rerun=NO",
+    "VALIDATION_ATTEMPT targeted_pgtap_044 FAIL failed_tests=319,332-335,357-358,377-378,387-388,428",
+    "IMPLEMENTATION_REPAIR PGTAP_044 assertion_319 now mutates decided_at to reach decision fingerprint conflict after contract consistency checks",
+    "IMPLEMENTATION_REPAIR PGTAP_044 append_only mutation probes execute as vento_authorization_owner and reset immediately after each probe group",
+    "IMPLEMENTATION_REPAIR PGTAP_044 assertion_428 resolves append-only trigger by trigger function because PostgreSQL truncates the 69-character trigger identifier to 63 bytes",
+    "IMPLEMENTATION_REPAIR prior_test_sha256=b194325dfb8d42f0f90ef4ca6d20278e0cbd90a3e39f94c3aadfef7ae8e2dbe5 repaired_test_sha256=644dd30c41117c03d224c9571a47d704e7524389bd2058da6c8ff8e2a881496d",
+    "TARGETED_PGTAP_044 PASS assertions=457"
   ]
 }
