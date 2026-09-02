@@ -5,7 +5,7 @@
   "target_instance_id": "SHELL-CON-007::GLOBAL",
   "correction_type": "PHYSICAL",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "VISO-AUTH-012"
@@ -17,12 +17,61 @@
     "target_instance_record_path": "docs/plan-canonico/modular/implementation-instances/SHELL-CON-007__GLOBAL.json",
     "target_instance_record_sha256": "bf451821271456787653373ffa48e5e8ce244fa9cd063cfe8a1fad7e56af441c"
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/contracts/authorization/scripts/generate-response-contracts.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/contracts/authorization/scripts/generate-response-contracts.test.mjs",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "packages/contracts/authorization/scripts/validate-response-contracts.mjs",
+      "change": "EXECUTE_ONLY"
+    }
+  ],
+  "validation_commands": [
+    "node --test packages/contracts/authorization/scripts/generate-response-contracts.test.mjs",
+    "node packages/contracts/authorization/scripts/generate-response-contracts.mjs --check",
+    "node packages/contracts/authorization/scripts/validate-response-contracts.mjs",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [
+    "TREQ-SHELL-043"
+  ],
+  "zero_treq_reason": null,
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-02T12:02:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "Listo si, haz todo, osea la corrección, la batería final de la tarea y las subidas al main cada una por su vía del lifecycle. Autorización aplicada exclusivamente a SHELL-CON-007::CORR-001 para hacer tolerante al padding Markdown la validación de los marcadores modalidad física y gate temporal, añadir regresión automatizada y preservar intacta la semántica contractual.",
+    "source_contract_sha256": "63450829623c0d1fcc490b7417d70f71b61a2c160b029437412bc01b82de40f8"
+  },
+  "evidence": [
+    "IMPLEMENTED canonical Markdown table-row validation trims alignment whitespace per cell.",
+    "IMPLEMENTED exact cell count, property name and contractual value remain fail-closed.",
+    "IMPLEMENTED response contract source semantics, generated artifacts, versions and release hash unchanged.",
+    "VERIFIED padding regression tests 3/3 PASS.",
+    "VERIFIED generate-response-contracts --check PASS with all generated artifacts FRESH.",
+    "VERIFIED validate-response-contracts PASS for response-contracts@1.0.0.",
+    "VERIFIED TREQ-SHELL-043 reused without registry modification.",
+    "VERIFIED docs:plan:check PASS.",
+    "VERIFIED docs:plan:test 344/344 PASS.",
+    "VERIFIED docs:correction:check PASS.",
+    "VERIFIED docs:correction:test 19/19 PASS.",
+    "VERIFIED git diff --check PASS."
+  ],
   "opened_at": "2026-09-02T16:57:36.899Z"
 }
