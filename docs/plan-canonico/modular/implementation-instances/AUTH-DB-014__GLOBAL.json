@@ -106,7 +106,7 @@
     "AUTHORIZATION decision=APPROVED approved_by=VENTO_OWNER",
     "SOURCE_CONTRACT_SHA256 17823df588e49b5ac27dec4fa2b75e222d1797841818611629f306a9a34ee11c",
     "MATERIALIZATION migration=supabase/migrations/20260902212940_auth_db_014_authorization_device_audit.sql sha256=25282ad974fb93ccd396a57073a6cd54cdf81964b49e83bd9176bff1b7bfc4a5",
-    "MATERIALIZATION test=supabase/tests/database/047_auth_db_014_authorization_device_audit.test.sql assertions=199 sha256=fa79589f1361ae3d18ab05e3754168eb1d4512cd17e50a3f5c10daecb1bf1591",
+    "MATERIALIZATION test=supabase/tests/database/047_auth_db_014_authorization_device_audit.test.sql assertions=199 sha256=1c0d495a888fffd15c1eef4ce6d23389998f7ea966844afa104de657149c566f",
     "ARTIFACT_STATIC audit_tables=6 app_private_functions=11 privileged_security_definer=6 append_only_triggers=12 event_catalog=35",
     "MATERIALIZATION ratchet_022 governed=407 security_definer=222 vento_security_definer=217 direct_security_definer=188 trigger_security_definer=34",
     "MATERIALIZATION ratchet_026 direct_routines=279 direct_security_definer=183 trigger_functions=77 primary_classification=331",
@@ -123,6 +123,8 @@
     "VALIDATION_REPAIR owner_only_helpers=canonicalize,fingerprint,legacy_import security_definer_added=NO",
     "VALIDATION_REPAIR legacy_owner_temporary_select=2 revoked_before_commit=YES final_legacy_acl_changed=NO",
     "VALIDATION_REPAIR test_owner_wrappers=fingerprint,immutability,legacy_import,search_path",
-    "QUALITY_REPAIR_RERUN NO"
+    "QUALITY_REPAIR_RERUN NO",
+    "PGTAP_REPAIR assertion_184=PGTAP_INTERNAL_SEARCH_PATH test_only=YES migration_change=NO acl_broadening=NO",
+    "PGTAP_REPAIR poisoned_search_path=auth_db_014_shadow,public,extensions malicious_schema_precedence=PRESERVED"
   ]
 }

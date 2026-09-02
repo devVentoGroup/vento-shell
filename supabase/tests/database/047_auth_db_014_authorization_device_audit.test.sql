@@ -844,7 +844,7 @@ select lives_ok($$create schema auth_db_014_shadow$$, 'malicious shadow schema f
 select lives_ok($$create function auth_db_014_shadow.canonicalize_authorization_device(jsonb) returns text language sql immutable as 'select ''MALICIOUS''::text'$$, 'malicious homonym fixture exists');
 
 -- 184
-select ok(set_config('search_path','auth_db_014_shadow,public',true) is not null, 'session search_path can be poisoned for test');
+select extensions.ok(set_config('search_path','auth_db_014_shadow,public,extensions',true) is not null, 'session search_path can be poisoned for test while pgTAP remains resolvable');
 
 set local role vento_authorization_owner;
 
