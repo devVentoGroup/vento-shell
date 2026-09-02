@@ -4750,7 +4750,1037 @@ La identidad exacta de la futura unidad física se resolverá exclusivamente med
 `VISO-AUTH-008 — Administrar sedes asignadas`
 
 
-### [ ] VISO-AUTH-008 — Administrar sedes asignadas
+### ✅ VISO-AUTH-008 — Administrar sedes asignadas
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-007 — Administrar perfiles operativos por trabajador
+**Tarea siguiente:** VISO-AUTH-009 — Administrar áreas asignadas
+**Tipo de tarea:** documental; definición del contrato administrativo canónico de asignaciones laborales trabajador × sede, sede primaria y ciclo de vida de la relación, sin convertir asignación, primaria, selección, turno, perfil o legado en permiso ni autoridad
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VISO deberá administrar las sedes laboralmente asignadas a cada trabajador y la referencia de sede primaria sin mezclar esa relación con navegación, turno, perfil operativo, punto de marcación, alcance de permisos ni autorización final.
+
+La regla raíz queda:
+
+```text
+EMPLEADO LABORALMENTE VÁLIDO
++
+SEDE LABORAL ASIGNABLE
++
+RELACIÓN EXPLÍCITA TRABAJADOR × SEDE
++
+ESTADO DE ASIGNACIÓN
+→
+SEDE ASIGNADA
+```
+
+y nunca:
+
+```text
+employees.site_id
+o sede seleccionada
+o turno
+o check-in
+o perfil operativo
+o rol
+→
+crear una asignación laboral por inferencia
+```
+
+La asignación habilita elegibilidad territorial. No concede permisos.
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva y consume, sin redefinirlas:
+
+- `ADR-AUTH-001`;
+- `AUTH-AUD-008` — inventario de `employee_sites` y `employee_areas`;
+- `AUTH-MOD-007` — sede asignada, primaria, seleccionada, administrativa, operativa y del recurso;
+- `AUTH-MOD-008` — área asignada y área activa;
+- `AUTH-MOD-014` — alcance por sedes asignadas;
+- `AUTH-CTX-009` — `assigned_sites`, `assigned_areas` y `administrative_coverage`;
+- `AUTH-CTX-013` — sede y área operativas;
+- `AUTH-CTX-028` — compatibilidad temporal con `employees.site_id` y fuentes legacy;
+- `AUTH-CTX-029` — invalidación y frescura;
+- `AUTH-SRV-006` y `AUTH-SRV-012` — validación territorial en escrituras;
+- `VISO-AUTH-007` — perfiles operativos por trabajador;
+- `TREQ-TALENTO-063` — VISO o el dominio laboral autorizado como propietario de la materialización de `employee_sites`;
+- el catálogo canónico de permisos vigente, incluido `viso.staff.manage`.
+
+La fuente normativa de la relación laboral trabajador–sede continúa siendo:
+
+```text
+public.employee_sites
+```
+
+---
+
+#### 3. Separación conceptual obligatoria
+
+VISO deberá mantener separados los siguientes conceptos:
+
+| Concepto | Fuente conceptual | Función | Concede permisos |
+| --- | --- | --- | ---: |
+| Sede organizacional | `public.sites` | Identidad territorial | No |
+| Sede asignada | `public.employee_sites` | Relación laboral explícita | No |
+| Sede primaria | `employee_sites.is_primary` | Referencia laboral principal | No |
+| Sede seleccionada | `employee_settings.selected_site_id` | Preferencia de interfaz | No |
+| Sede administrativa activa | `AdministrativeSiteContext` | Contexto administrativo resuelto | No |
+| Sede operativa activa | turno válido | Territorio operativo vigente | No |
+| Sede del recurso | recurso objetivo | Territorio real de la acción | No |
+| Punto físico de marcación | catálogo de `sites` con función de check-in/check-out | Evidencia física | No |
+| Permiso efectivo | evaluador canónico | Capacidad concreta | Sí, únicamente si la decisión final es `ALLOW` |
+
+Reglas obligatorias:
+
+```text
+SEDE ASIGNADA
+≠ SEDE PRIMARIA
+≠ SEDE SELECCIONADA
+≠ SEDE OPERATIVA
+≠ SEDE DEL RECURSO
+```
+
+y:
+
+```text
+ASIGNACIÓN DE SEDE
+≠ PERMISO
+```
+
+---
+
+#### 4. Fuente de verdad y dirección de sincronización
+
+La relación canónica se resuelve desde:
+
+```text
+employee_sites.employee_id
++
+employee_sites.site_id
++
+employee_sites.is_active
++
+employee_sites.is_primary
+```
+
+`employees.site_id` permanece como campo legacy y no podrá actuar como fuente autoritativa para crear, reactivar o ampliar `employee_sites`.
+
+La dirección conceptual admitida durante transición es:
+
+```text
+employee_sites canónico
+→ proyección legacy compatible cuando todavía sea necesaria
+```
+
+y no:
+
+```text
+employees.site_id
+→ crear o reactivar autoridad territorial
+```
+
+La compatibilidad física temporal con el campo legacy permanece bajo `AUTH-CTX-028`.
+
+Una sincronización transitoria no cambia la propiedad de la verdad.
+
+---
+
+#### 5. Identidad y cardinalidad de la asignación
+
+La identidad lógica de una asignación es:
+
+```text
+(employee_id, site_id)
+```
+
+Reglas:
+
+1. una pareja trabajador–sede aparece como máximo una vez;
+2. un trabajador puede tener cero, una o varias sedes asignadas;
+3. varias sedes asignadas representan una lista finita y explícita;
+4. varias sedes asignadas no equivalen a cobertura organizacional;
+5. `is_active` expresa vigencia de la relación;
+6. `is_primary` expresa referencia laboral principal;
+7. ni el rol base ni el rol operativo forman parte de la identidad de la asignación;
+8. un cambio de rol no crea otra fila trabajador–sede;
+9. un perfil operativo no crea otra fila trabajador–sede;
+10. un área no modifica la identidad de la relación padre trabajador–sede.
+
+La clave física actual `(employee_id, site_id)` es compatible con esta identidad.
+
+---
+
+#### 6. Sede laboral asignable
+
+`public.sites` es un catálogo mixto. No toda fila es una sede laboral asignable.
+
+Una sede candidata ordinaria deberá:
+
+```text
+existir
++
+estar activa
++
+ser laboralmente utilizable
++
+tener visibilidad operativa compatible
++
+no ser punto técnico u oculto
++
+no ser entorno aislado o demo
+```
+
+No se ofrecerán como asignaciones ordinarias:
+
+- puntos de check-in o check-out;
+- sitios con `operational_visibility = hidden`;
+- espacios técnicos;
+- ubicaciones físicas que solo sirven de evidencia;
+- entornos aislados;
+- `APP-REVIEW` como si fuera una sede laboral ordinaria.
+
+Un entorno demo aislado solo podrá participar mediante su contrato específico y nunca será precedente para ampliar el catálogo laboral.
+
+La implementación física actual ya bloquea nuevas filas de `employee_sites` para sedes cuya `operational_visibility` no sea `operational`. La interfaz futura deberá aplicar la misma clasificación antes de ofrecer candidatos, sin depender del error de base de datos como filtro visual.
+
+---
+
+#### 7. Validez y utilizabilidad de una asignación
+
+Una asignación solo es utilizable cuando:
+
+```text
+employee.is_active = true
+AND
+employee_site.is_active = true
+AND
+site.is_active = true
+AND
+site es laboralmente asignable
+```
+
+La presencia física de una fila no basta.
+
+Estados:
+
+| Estado observado | Interpretación |
+| --- | --- |
+| empleado activo + relación activa + sede utilizable | asignación utilizable |
+| empleado inactivo + relación físicamente activa | relación residual; no utilizable |
+| relación inactiva | historia o asignación retirada; no utilizable |
+| sede inactiva | relación observada; no utilizable |
+| sede no laboral o aislada | no utilizable como asignación ordinaria |
+| referencia inexistente o contradictoria | configuración inválida; fallo cerrado |
+
+Una fila residual jamás reactiva a un empleado.
+
+---
+
+#### 8. Cobertura multisede
+
+Un trabajador puede pertenecer laboralmente a varias sedes.
+
+Ejemplo conceptual:
+
+```text
+empleado
+├── VENTO_CAFE
+├── SAUDO
+└── CENTRO_PROD
+```
+
+Esto significa únicamente:
+
+```text
+assigned_sites = conjunto explícito de esas sedes
+```
+
+No significa:
+
+- organización completa;
+- todas las sedes del mismo tipo;
+- todas las sedes futuras;
+- permiso global;
+- rol operativo válido en todas ellas;
+- área válida en todas ellas;
+- turno activo en todas ellas.
+
+Una sede nueva nunca entra automáticamente en `assigned_sites`.
+
+---
+
+#### 9. Sede primaria
+
+La sede primaria es una referencia laboral principal dentro de las asignaciones del trabajador.
+
+Reglas:
+
+1. una primaria debe corresponder a una asignación existente;
+2. una primaria utilizable debe corresponder a una asignación activa y una sede utilizable;
+3. cuando existen asignaciones activas y la configuración está completa, existe exactamente una primaria;
+4. más de una primaria constituye inconsistencia estructural;
+5. cero primarias con asignaciones activas es un estado representable para diagnóstico, pero constituye configuración incompleta y no debe declararse como cierre normal exitoso de una mutación administrativa;
+6. cero asignaciones activas puede coexistir con cero primaria;
+7. la primaria no concede permisos;
+8. la primaria no limita por sí sola una cobertura multisede;
+9. la primaria no sustituye el territorio del recurso;
+10. la primaria no sustituye la sede del turno;
+11. la primaria no es fallback autoritativo ante contexto incompleto.
+
+La representación contextual podrá conservar una primaria inactiva como evidencia observada, pero esa fila no será utilizable.
+
+---
+
+#### 10. Cambio de sede primaria
+
+Cambiar la primaria es una operación explícita distinta de agregar una sede.
+
+La operación deberá:
+
+```text
+validar asignación objetivo
++
+validar que esté activa y sea utilizable
++
+desmarcar primaria anterior cuando corresponda
++
+marcar primaria objetivo
++
+preservar el resto de asignaciones
++
+registrar efecto y auditoría
+```
+
+Agregar una segunda sede no cambia automáticamente la primaria.
+
+Si la primera asignación activa de un trabajador deja una configuración que exige primaria, VISO podrá preseleccionar visualmente esa única sede, pero el efecto que se guardará deberá ser explícito y la transacción deberá terminar en un estado coherente.
+
+Queda prohibido elegir una nueva primaria por:
+
+- orden físico de filas;
+- UUID menor;
+- primera fila de una consulta;
+- sede seleccionada;
+- último turno;
+- último check-in;
+- perfil operativo;
+- nombre del rol;
+- `employees.site_id` como autoridad.
+
+---
+
+#### 11. Sede seleccionada
+
+`employee_settings.selected_site_id` es una preferencia de interfaz.
+
+Regla:
+
+```text
+selected_site_id
+≠ is_primary
+≠ autorización
+```
+
+Cambiar la primaria no deberá persistir automáticamente una nueva sede seleccionada.
+
+Si una sede seleccionada queda inválida o deja de ser navegable:
+
+- podrá limpiarse mediante el contrato correspondiente;
+- podrá mostrarse visualmente la primaria como fallback inicial;
+- deberá conservarse la independencia conceptual;
+- nunca se utilizará ese fallback para ampliar autoridad.
+
+Una mutación sobre `employee_sites` no convierte la preferencia visual en fuente de verdad laboral.
+
+---
+
+#### 12. Alta de una asignación
+
+Para crear o reactivar una asignación deberán verificarse, como mínimo:
+
+1. empleado existente;
+2. estado laboral compatible;
+3. sede existente;
+4. sede activa;
+5. sede laboralmente asignable;
+6. ausencia de una relación activa equivalente ya existente;
+7. autoridad administrativa efectiva;
+8. territorio suficiente del actor sobre la sede objetivo;
+9. estado de primaria resultante;
+10. efectos sobre perfiles, turnos, áreas y contexto;
+11. revalidación server-side;
+12. auditoría persistible.
+
+La operación no podrá crear automáticamente:
+
+- un perfil operativo;
+- un área asignada;
+- un rol operativo;
+- un turno;
+- un permiso;
+- una excepción individual;
+- una sede seleccionada persistente.
+
+---
+
+#### 13. Reactivación
+
+Si la pareja trabajador–sede ya existe inactiva, la operación ordinaria será una reactivación de la relación existente, no la creación de un duplicado.
+
+La reactivación deberá volver a comprobar:
+
+- vigencia del vínculo laboral;
+- sede;
+- elegibilidad territorial;
+- primaria resultante;
+- perfiles dependientes;
+- áreas dependientes;
+- permisos y contexto derivados.
+
+Dentro del mismo episodio laboral, una configuración dependiente podrá volver a ser utilizable únicamente después de su propia revalidación.
+
+En un reingreso posterior a la terminación del vínculo laboral:
+
+```text
+asignación histórica
+≠ asignación restaurada automáticamente
+```
+
+El nuevo episodio deberá aprobar sus asignaciones de forma nueva y trazable.
+
+---
+
+#### 14. Desactivación y retiro
+
+El mecanismo normal de retiro de una sede asignada es:
+
+```text
+employee_sites.is_active = false
+```
+
+y no la eliminación destructiva de la fila.
+
+La desactivación:
+
+- preserva historia;
+- retira elegibilidad prospectiva;
+- invalida el uso del perfil asociado a esa sede;
+- obliga a revalidar áreas dependientes;
+- obliga a revalidar turnos presentes o futuros afectados;
+- invalida contexto y decisiones derivadas;
+- no borra asistencia ni turnos históricos;
+- no modifica permisos históricos ya auditados.
+
+Si la sede retirada es primaria y permanecen otras asignaciones activas, la operación deberá resolver explícitamente la nueva primaria dentro del workflow autorizado.
+
+Si no queda ninguna asignación activa:
+
+```text
+assigned_sites = []
+```
+
+y el trabajador no obtiene territorio por fallback.
+
+---
+
+#### 15. Eliminación destructiva
+
+`DELETE` no forma parte del ciclo normal de administración de sedes asignadas.
+
+La acción administrativa visible equivalente a “Quitar” deberá materializar retiro o desactivación preservando historia.
+
+Una eliminación física solo podrá existir dentro de una corrección de datos explícita, auditada y autorizada que demuestre que preservar la fila como historia sería incorrecto.
+
+Nunca se utilizará `DELETE` para:
+
+- ocultar una asignación histórica;
+- resolver una primaria incorrecta;
+- limpiar un vínculo al terminar el empleo;
+- preparar un reingreso;
+- evitar conflictos de perfil, área o turno.
+
+---
+
+#### 16. Empleado inactivo
+
+La actividad del empleado es un prerrequisito de utilizabilidad de la asignación.
+
+```text
+employee.is_active = false
+→ cero sedes asignadas utilizables
+```
+
+aunque existan filas físicas `employee_sites.is_active = true`.
+
+El retiro o terminación laboral deberá revocar coordinadamente las asignaciones activas según el contrato de offboarding vigente.
+
+Una fila residual activa perteneciente a un empleado inactivo:
+
+- no concede autoridad;
+- no habilita turnos;
+- no habilita perfiles;
+- no integra cobertura administrativa;
+- debe tratarse como pendiente de reconciliación física.
+
+Un reingreso no restaura esas relaciones por inferencia.
+
+---
+
+#### 17. Relación con perfiles operativos
+
+Se conserva íntegramente el handoff de `VISO-AUTH-007`:
+
+```text
+PERFIL OPERATIVO
+→ consume una asignación trabajador × sede
+→ nunca la crea
+```
+
+Por tanto:
+
+1. un perfil activo exige una asignación trabajador–sede utilizable;
+2. desactivar la asignación vuelve inutilizable prospectivamente el perfil;
+3. una fila de perfil residual no puede reactivar la sede;
+4. reactivar la sede no convierte automáticamente el perfil en rol efectivo;
+5. el punto de check-in del perfil no es una sede laboral asignada;
+6. el perfil no modifica primaria ni sede seleccionada.
+
+El estado remoto observado contiene un único perfil y actualmente su pareja trabajador–sede posee asignación activa; no existen perfiles huérfanos observados en ese corte.
+
+---
+
+#### 18. Relación con áreas asignadas
+
+La asignación de sede es la relación territorial padre de las áreas del trabajador.
+
+El encadenamiento queda:
+
+```text
+VISO-AUTH-008
+trabajador × sede
+        ↓
+VISO-AUTH-009
+trabajador × área
+```
+
+`VISO-AUTH-008` no crea ni modifica `employee_areas` ni otras asignaciones funcionales de área.
+
+Una futura asignación de área solo podrá ser utilizable cuando su sede padre sea una asignación trabajador–sede utilizable.
+
+Desactivar la sede no borra silenciosamente la historia del área, pero la vuelve no utilizable hasta su reconciliación.
+
+---
+
+#### 19. Relación con turno y operación
+
+Una sede asignada habilita elegibilidad para planificación y contexto. No crea una sede operativa activa.
+
+```text
+asignación activa
+≠ turno activo
+```
+
+La sede operativa continúa proviniendo del turno válido.
+
+Un turno no podrá crear retrospectivamente una asignación laboral.
+
+Cuando una asignación se desactive:
+
+- cualquier turno que dependa de esa sede deberá revalidarse;
+- un turno futuro incompatible no convierte de nuevo la sede en asignada;
+- una sesión o caché previa deberá invalidarse;
+- la autorización operativa deberá fallar cerrada hasta recuperar coherencia.
+
+La corrección de turnos corresponde a sus tareas propietarias; esta tarea define únicamente la dependencia territorial.
+
+---
+
+#### 20. Autoridad administrativa
+
+La capacidad canónica existente para administración general de trabajadores es:
+
+```text
+viso.staff.manage
+```
+
+Su presencia es necesaria para las mutaciones de esta tarea, pero no es suficiente por sí sola.
+
+La decisión debe resolver:
+
+```text
+ACTOR EFECTIVO
++
+PERMISO EFECTIVO
++
+COBERTURA ADMINISTRATIVA
++
+SEDE OBJETIVO
++
+TRABAJADOR OBJETIVO
++
+ESTADO ACTUAL
++
+EFECTO RESULTANTE
++
+AUSENCIA DE DENEGACIONES
+→
+MUTACIÓN POSIBLE
+```
+
+La sede objetivo debe evaluarse como recurso territorial de la mutación.
+
+El rol base `gerente` no concede administración global por nombre.
+
+Un cliente privilegiado de base de datos no sustituye esta evaluación.
+
+La segregación final de quién puede administrar seguridad y los controles administrativos transversales permanece bajo `VISO-AUTH-019`.
+
+---
+
+#### 21. Efecto previo y conflictos
+
+Antes de guardar una mutación, VISO deberá poder mostrar el efecto resultante sobre el trabajador.
+
+Como mínimo deberá advertir:
+
+- si cambia la primaria;
+- si queda sin sedes activas;
+- si se invalida un perfil operativo;
+- si existen áreas dependientes;
+- si existen turnos presentes o futuros afectados;
+- si la sede seleccionada queda inválida;
+- si el empleado está inactivo;
+- si la sede no es laboralmente asignable;
+- si existe conflicto de territorio del administrador;
+- si la operación requiere reconciliación adicional.
+
+Un conflicto no se resuelve eligiendo silenciosamente otra sede.
+
+---
+
+#### 22. Auditoría
+
+Toda alta, reactivación, cambio de primaria, desactivación o corrección deberá conservar evidencia correlacionable de:
+
+- actor real;
+- empleado objetivo;
+- sede objetivo;
+- operación;
+- estado anterior;
+- estado resultante;
+- primaria anterior y resultante cuando aplique;
+- permiso y cobertura utilizados;
+- motivo cuando corresponda;
+- conflictos detectados;
+- correlación;
+- timestamp;
+- versión contractual.
+
+La tabla física `employee_sites` actualmente conserva `created_at`, pero no materializa por sí sola todo ese historial de mutaciones.
+
+La auditoría transversal de cambios de seguridad permanece bajo `VISO-AUTH-018`.
+
+---
+
+#### 23. Reconciliación AS-IS de VISO
+
+La superficie física actual de administración está integrada en:
+
+```text
+/staff/[id]
+```
+
+La vista permite:
+
+- agregar una sede;
+- solicitar que sea principal;
+- activar o desactivar una relación;
+- marcar otra sede como principal;
+- “Quitar” una sede.
+
+El código actual presenta varias divergencias frente al contrato TO-BE:
+
+1. carga el catálogo completo de `sites` sin filtrar previamente sedes laborales asignables;
+2. puede mostrar como opciones un punto físico oculto y el entorno `APP-REVIEW`, aunque la base rechaza nuevas asignaciones no operativas;
+3. `addEmployeeSite` crea la relación y después actualiza `employees.site_id`, manteniendo al campo legacy dentro del camino de escritura;
+4. `setPrimarySite` escribe `employees.site_id` como entrada de la operación, en lugar de expresar primero la primaria sobre la fuente canónica;
+5. `removeEmployeeSite` ejecuta `DELETE` físico;
+6. no muestra antes de guardar el impacto completo sobre perfil, áreas, turnos y contexto;
+7. las acciones utilizan un cliente administrativo después del guard, por lo que la autorización server-side sobre la sede objetivo es una frontera crítica.
+
+La existencia de la interfaz no demuestra conformidad contractual.
+
+---
+
+#### 24. Reconciliación AS-IS de autorización territorial
+
+Las mutaciones observadas exigen `viso.staff.manage`, pero el guard se invoca sin suministrar la `site_id` objetivo de la asignación.
+
+Después del guard, la escritura utiliza un cliente administrativo.
+
+Por tanto, el flujo actual no demuestra que:
+
+```text
+target_site_id
+⊆ territorio efectivo del actor
+```
+
+para cada alta, cambio, activación, desactivación o retiro.
+
+Las políticas RLS físicas de escritura sobre `employee_sites` están limitadas a condiciones administrativas amplias, pero no constituyen protección para una escritura ejecutada mediante un cliente que las bypassa.
+
+La materialización futura deberá evaluar explícitamente el recurso territorial objetivo antes de cualquier escritura privilegiada.
+
+---
+
+#### 25. Reconciliación AS-IS de sincronización primaria y selección
+
+El estado físico actual contiene sincronización bidireccional legacy:
+
+```text
+employee_sites
+→ employees.site_id
+```
+
+y:
+
+```text
+employees.site_id
+→ employee_sites
+```
+
+Además, los triggers observados actualizan `employee_settings.selected_site_id` como efecto lateral de cambios de primaria.
+
+Eso no es contrato TO-BE.
+
+La regla aprobada permanece:
+
+```text
+employee_sites
+→ fuente canónica de asignación y primaria
+```
+
+```text
+employees.site_id
+→ proyección legacy temporal
+```
+
+```text
+selected_site_id
+→ preferencia independiente
+```
+
+La función física actual también puede elegir una siguiente sede activa mediante orden técnico cuando cambia la relación. Una decisión de ese tipo no sustituye una elección administrativa explícita de primaria.
+
+La compatibilidad y retiro del flujo legacy permanecen vinculados a `AUTH-CTX-028` y a la materialización física aplicable.
+
+---
+
+#### 26. Baseline físico read-only
+
+El corte remoto verificado contiene:
+
+```text
+employees totales = 62
+employees activos = 40
+employees inactivos = 22
+
+employee_sites totales = 93
+employee_sites activas = 93
+primarias registradas = 62
+trabajadores con filas employee_sites = 62
+
+activos con al menos una sede activa = 40
+activos sin sede activa = 0
+trabajadores con múltiples primarias activas = 0
+activos sin primaria activa = 0
+
+trabajadores inactivos con relación activa = 22
+filas activas pertenecientes a inactivos = 27
+```
+
+Distribución de sedes activas entre los 40 trabajadores activos:
+
+| Cantidad de sedes activas | Trabajadores |
+| ---: | ---: |
+| 1 | 26 |
+| 2 | 9 |
+| 3 | 1 |
+| 4 | 1 |
+| 5 | 3 |
+
+Por tanto:
+
+```text
+trabajadores activos multisede = 14
+```
+
+La proyección legacy actual conserva:
+
+```text
+62 de 62 employees.site_id
+=
+primaria de employee_sites
+```
+
+sin divergencias observadas en el corte.
+
+Esto demuestra sincronía física actual; no cambia la fuente normativa.
+
+---
+
+#### 27. Baseline territorial por sede
+
+Las 93 relaciones actuales se distribuyen así:
+
+| Sede | Filas | Primarias | Filas de empleados activos | Filas de empleados inactivos |
+| --- | ---: | ---: | ---: | ---: |
+| `APP-REVIEW` | 1 | 1 | 1 | 0 |
+| `CENTRO_PROD` | 35 | 23 | 20 | 15 |
+| `MOLKA_PRINCIPAL` | 7 | 3 | 7 | 0 |
+| `SAUDO` | 9 | 2 | 7 | 2 |
+| `VENTO_CAFE` | 30 | 24 | 21 | 9 |
+| `VENTO_GROUP` | 11 | 9 | 10 | 1 |
+
+El total de la última columna es 27 filas, correspondientes a 22 empleados inactivos.
+
+La fila existente de `APP-REVIEW` se clasifica como estado legacy/aislado observado y no como precedente para nuevas asignaciones ordinarias.
+
+---
+
+#### 28. Reconciliación AS-IS de ciclo de vida
+
+Todas las 93 filas actuales de `employee_sites` están físicamente activas.
+
+Por tanto, el estado remoto no demuestra uso real del ciclo:
+
+```text
+activa
+→ inactiva
+```
+
+para preservar historia.
+
+El hecho de que existan 27 filas activas asociadas a empleados inactivos confirma que la desactivación del trabajador y la revocación de sus asignaciones todavía no están materializadas como una transición coordinada en el baseline observado.
+
+La autoridad sigue fallando cerrada por actividad del empleado según el contrato, pero la reconciliación física del vínculo permanece pendiente.
+
+---
+
+#### 29. Fallo cerrado
+
+La administración deberá rechazar o bloquear:
+
+| Caso | Resultado |
+| --- | --- |
+| Empleado inexistente | Rechazar |
+| Alta ordinaria para empleado inactivo | Rechazar |
+| Sede inexistente | Rechazar |
+| Sede inactiva | Rechazar |
+| Punto de marcación u otro site técnico usado como sede laboral | Rechazar |
+| `APP-REVIEW` usado como sede laboral ordinaria | Rechazar |
+| Duplicado trabajador × sede | Rechazar |
+| Nueva primaria que no es una asignación activa utilizable | Rechazar |
+| Más de una primaria | Rechazar |
+| Mutación normal que deja asignaciones activas pero ninguna primaria sin declararlo como conflicto | No guardar como configuración completa |
+| Primaria elegida por primera fila, UUID, selección visual o legado | Rechazar inferencia |
+| Sede seleccionada usada como autorización | Rechazar |
+| `employees.site_id` usado como única prueba de asignación | Rechazar |
+| Perfil utilizado para crear la asignación | Rechazar |
+| Turno utilizado para crear la asignación | Rechazar |
+| Actor sin `viso.staff.manage` efectivo | Rechazar |
+| Sede objetivo fuera de la cobertura del actor | Rechazar |
+| Escritura privilegiada sin validación territorial de servidor | Rechazar |
+| Retiro normal mediante borrado destructivo | Rechazar |
+| Auditoría requerida no persistible | No guardar |
+| Referencia o versión incompatible | Rechazar |
+
+---
+
+#### 30. Handoff a VISO-AUTH-009
+
+`VISO-AUTH-009` recibe una relación padre trabajador–sede con estas reglas:
+
+```text
+employee_id + site_id
+→ identidad de asignación laboral de sede
+```
+
+y:
+
+```text
+área asignada utilizable
+→ requiere sede padre asignada utilizable
+```
+
+La tarea siguiente deberá conservar:
+
+1. una asignación de área no crea una asignación de sede;
+2. el área debe pertenecer exactamente a una sede ya asignada al trabajador;
+3. desactivar la sede vuelve no utilizable el área dependiente;
+4. la primaria no implica todas las áreas de esa sede;
+5. la sede seleccionada no implica un área;
+6. el turno no materializa una asignación laboral permanente;
+7. `employee_areas` y cualquier modelo posterior de propósito deberán reconciliarse sin redefinir `employee_sites`.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Esta tarea materializa administrativamente decisiones ya protegidas sobre asignaciones territoriales, administración autorizada, invalidación, revocación, auditoría, propiedad laboral de VISO y coherencia entre configuración y consumidores.
+
+No introduce una nueva identidad territorial, modalidad de autorización, alcance, transición empresarial o riesgo no registrado que exija ampliar el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 32. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-AUTH-004` — paridad de decisión entre evaluadores;
+- `TREQ-AUTH-007` — administración territorial con capacidad explícita y límite por territorio del actor;
+- `TREQ-AUTH-008` — separación entre carril administrativo y operativo;
+- `TREQ-AUTH-009` — resolución determinista de sede y área y denegación de cruces territoriales;
+- `TREQ-AUTH-013` — protección de mutaciones frente a formularios, API o RPC manipuladas;
+- `TREQ-AUTH-014` — invalidación por cambio de asignación, turno, área, rol o actor;
+- `TREQ-AUTH-015` — evidencia correlacionable y auditoría;
+- `TREQ-AUTH-016` — revocación coordinada de asignaciones al terminar o suspender el vínculo;
+- `TREQ-VISO-001` — efecto previo, conflictos, territorio, auditoría y coherencia de configuración VISO;
+- `TREQ-TALENTO-063` — propiedad de VISO o dominio laboral autorizado sobre materialización de `employee_sites`.
+
+Esta trazabilidad no cambia contenido, estado, paquete, evidencia ni secuencia de ningún requisito.
+
+---
+
+#### 33. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea aún no fue insertada ni validada dentro de su rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, topología, políticas, VISO-AUTH-007, AUTH-MOD-007, AUTH-CTX-009, 04A aplicable, `vento-viso` `/staff/[id]` y su guard, y el estado read-only de Supabase para `employee_sites`, `sites`, primarias, perfiles, triggers y RLS. |
+| OPERATIVA | NOT_APPLICABLE | No se crearon, activaron, desactivaron, retiraron ni cambiaron asignaciones reales durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, tablas, funciones, triggers, RLS, contratos, migraciones ni datos. |
+
+---
+
+#### 34. Criterios de aceptación
+
+- [ ] `employee_sites` permanece como fuente canónica de asignaciones laborales de sede.
+- [ ] La identidad lógica es exactamente `employee_id + site_id`.
+- [ ] Un trabajador puede tener cero, una o varias sedes asignadas.
+- [ ] Multisede no equivale a global.
+- [ ] Una asignación no concede permisos.
+- [ ] Una fila solo es utilizable con empleado activo, relación activa, sede activa y sede asignable.
+- [ ] Los sitios técnicos, ocultos y puntos de marcación quedan fuera de las asignaciones ordinarias.
+- [ ] `APP-REVIEW` no se presenta como sede laboral ordinaria.
+- [ ] La sede primaria pertenece a una asignación válida.
+- [ ] Una configuración completa con asignaciones activas conserva exactamente una primaria.
+- [ ] Más de una primaria falla cerrado.
+- [ ] Cero primarias con asignaciones activas se representa como configuración incompleta, no como autorización.
+- [ ] La primaria no limita ni amplía permisos.
+- [ ] Agregar una sede secundaria no cambia silenciosamente la primaria.
+- [ ] La nueva primaria no se elige por orden técnico, sede seleccionada, perfil, turno ni campo legacy.
+- [ ] `selected_site_id` permanece independiente de la primaria.
+- [ ] `employees.site_id` permanece como proyección legacy y no fuente autoritativa.
+- [ ] La compatibilidad inversa legacy no se eleva a contrato definitivo.
+- [ ] El alta no crea automáticamente perfil, área, rol, turno, permiso ni excepción.
+- [ ] Una reactivación reutiliza la identidad trabajador–sede sin duplicarla.
+- [ ] Un reingreso no restaura automáticamente asignaciones históricas.
+- [ ] El retiro normal usa desactivación y preserva historia.
+- [ ] El borrado destructivo queda fuera del ciclo normal.
+- [ ] Un empleado inactivo tiene cero sedes utilizables aunque existan filas residuales.
+- [ ] Las filas residuales de empleados inactivos no reactivan autoridad.
+- [ ] Un perfil consume la asignación y nunca la crea.
+- [ ] La tarea no crea áreas; `VISO-AUTH-009` recibe la dependencia padre.
+- [ ] La sede operativa continúa proviniendo del turno válido.
+- [ ] Cambiar una asignación invalida contexto y decisiones derivadas.
+- [ ] Toda mutación exige `viso.staff.manage` efectivo y cobertura suficiente sobre la sede objetivo.
+- [ ] Un cliente administrativo no sustituye autorización server-side.
+- [ ] VISO muestra el efecto y los conflictos antes de guardar.
+- [ ] La superficie AS-IS `/staff/[id]` no se declara conforme por su sola existencia.
+- [ ] El selector AS-IS no debe seguir ofreciendo sites no asignables.
+- [ ] `removeEmployeeSite` no conserva su semántica de `DELETE` como ciclo normal TO-BE.
+- [ ] La escritura de primaria no utiliza `employees.site_id` como fuente TO-BE.
+- [ ] Los triggers no pueden sincronizar primaria y selección como una sola verdad.
+- [ ] El baseline remoto se conserva como evidencia, no como regla normativa.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 35. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica `/staff/[id]`;
+- modifica `public.employee_sites`;
+- modifica `public.employees`;
+- modifica `public.employee_settings`;
+- modifica `public.sites`;
+- modifica `public.employee_areas`;
+- modifica perfiles operativos;
+- modifica turnos;
+- modifica asistencia;
+- modifica puntos de marcación;
+- modifica áreas;
+- modifica permisos;
+- modifica matrices RBAC;
+- modifica `createAdminClient`;
+- modifica guards;
+- modifica triggers de sincronización;
+- modifica índices, constraints, RLS, grants o RPC;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- corrige las 27 filas activas observadas sobre empleados inactivos;
+- elimina la fila legacy observada de `APP-REVIEW`;
+- cambia la primaria de ningún trabajador;
+- cambia la sede seleccionada de ningún trabajador;
+- crea, activa, desactiva o elimina asignaciones reales;
+- administra áreas asignadas, responsabilidad de `VISO-AUTH-009`;
+- asigna rol operativo al turno;
+- define excepciones individuales;
+- implementa auditoría física, responsabilidad posterior de `VISO-AUTH-018`;
+- redefine la restricción administrativa transversal de `VISO-AUTH-019`;
+- retira físicamente `employees.site_id`, responsabilidad de la transición legacy aplicable;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la futura unidad física se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 36. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-007 — Administrar perfiles operativos por trabajador`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-008 — Administrar sedes asignadas`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-009 — Administrar áreas asignadas`
+
+
 ### [ ] VISO-AUTH-009 — Administrar áreas asignadas
 ### [ ] VISO-AUTH-010 — Asignar rol operativo al turno
 ### [ ] VISO-AUTH-011 — Validar turnos sin rol operativo
