@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1103** |
+| Aprobadas | **1104** |
 | En propuesta | **0** |
-| No iniciadas | **493** |
+| No iniciadas | **492** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **69.11% (1103/1596)** |
+| Porcentaje de completamiento | **69.17% (1104/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-AUTH-012` — Validar turnos con área incompatible | ✅ APROBADA |
-| Tarea actual | `VISO-AUTH-013` — Crear vista previa trabajador × sede × área × turno | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-AUTH-014` — Crear simulador de permisos efectivos | ⬜ NO INICIADA |
+| Última aprobada | `VISO-AUTH-013` — Crear vista previa trabajador × sede × área × turno | ✅ APROBADA |
+| Tarea actual | `VISO-AUTH-014` — Crear simulador de permisos efectivos | ⬜ NO INICIADA |
+| Siguiente reservada | `VISO-AUTH-015` — Mostrar origen de cada permiso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -646,7 +646,7 @@
 | ✅ APROBADA | `VISO-AUTH-010` | Asignar rol operativo al turno | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-011` | Validar turnos sin rol operativo | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-012` | Validar turnos con área incompatible | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
-| ⬜ NO INICIADA | `VISO-AUTH-013` | Crear vista previa trabajador × sede × área × turno | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
+| ✅ APROBADA | `VISO-AUTH-013` | Crear vista previa trabajador × sede × área × turno | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-014` | Crear simulador de permisos efectivos | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-015` | Mostrar origen de cada permiso | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-016` | Mostrar conflictos de configuración | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
