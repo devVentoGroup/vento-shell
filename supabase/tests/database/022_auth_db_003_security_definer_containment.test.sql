@@ -195,8 +195,8 @@ select is(
       'vital'
     )
   ),
-  381::bigint,
-  'governed function universe includes nine AUTH-DB-034 authorization evaluator functions'
+  383::bigint,
+  'governed function universe includes nine AUTH-DB-034 authorization evaluator functions plus two AUTH-DB-032 app_private persistence routines'
 );
 
 select is(
@@ -215,8 +215,8 @@ select is(
     )
       and p.prosecdef
   ),
-  212::bigint,
-  'SECURITY DEFINER total includes two AUTH-DB-034 private privileged borders'
+  213::bigint,
+  'SECURITY DEFINER total includes two AUTH-DB-034 private privileged borders plus one AUTH-DB-032 persistent coordinator'
 );
 
 select is(
@@ -234,8 +234,8 @@ select is(
     )
       and p.prosecdef
   ),
-  207::bigint,
-  'Vento SECURITY DEFINER total includes two AUTH-DB-034 private privileged borders'
+  208::bigint,
+  'Vento SECURITY DEFINER total includes two AUTH-DB-034 private privileged borders plus one AUTH-DB-032 persistent coordinator'
 );
 
 select is(
@@ -268,8 +268,8 @@ select is(
       and p.prosecdef
       and p.prorettype <> 'trigger'::regtype
   ),
-  178::bigint,
-  'direct SECURITY DEFINER total includes two AUTH-DB-034 direct privileged borders'
+  179::bigint,
+  'direct SECURITY DEFINER total includes two AUTH-DB-034 direct privileged borders plus one AUTH-DB-032 persistent coordinator'
 );
 
 select is(
