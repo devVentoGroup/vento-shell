@@ -650,8 +650,8 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 257::bigint,
-  'direct Vento routine inventory includes nine AUTH-DB-034 authorization routines plus two AUTH-DB-032 app_private persistence routines' );
+                        and d.deptype = 'e' ) ), 259::bigint,
+  'direct Vento routine inventory includes AUTH-DB-034 and AUTH-DB-032 authorization routines plus two AUTH-DB-012 app_private permission-audit helpers' );
         select
             is(
             (
@@ -776,7 +776,7 @@ begin;
                         and d.objid   = p.oid
                         and d.deptype = 'e' ) ), 4::bigint, 'four extension routines are explicitly platform-managed' );
         select
-            is( 63::bigint + 246::bigint, 309::bigint, 'primary classification universe includes AUTH-DB-035 private freshness infrastructure' );
+            is( 63::bigint + 248::bigint, 311::bigint, 'primary classification universe includes AUTH-DB-035 private freshness infrastructure plus two AUTH-DB-012 app_private permission-audit helpers' );
         select
             is(
             (

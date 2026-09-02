@@ -195,8 +195,8 @@ select is(
       'vital'
     )
   ),
-  383::bigint,
-  'governed function universe includes nine AUTH-DB-034 authorization evaluator functions plus two AUTH-DB-032 app_private persistence routines'
+  385::bigint,
+  'governed function universe includes AUTH-DB-034 and AUTH-DB-032 authorization routines plus two AUTH-DB-012 app_private permission-audit helpers'
 );
 
 select is(

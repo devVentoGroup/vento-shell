@@ -35,9 +35,9 @@
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
 | Progreso del bloque | **BLOQUES G Y G2: 8 de 26 aprobadas; VISO-AUTH-009 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-012::GLOBAL** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-013::GLOBAL** |
 | Carril documental | **ACTIVO — VISO-AUTH-009** |
-| Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-012::GLOBAL** |
+| Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-013::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 8 DE 26 APROBADAS — ACTUAL VISO-AUTH-009** |
-| Implementación física | **AUTH-DB-012::GLOBAL — PENDING_AUTHORIZATION** |
+| Implementación física | **AUTH-DB-013::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 
