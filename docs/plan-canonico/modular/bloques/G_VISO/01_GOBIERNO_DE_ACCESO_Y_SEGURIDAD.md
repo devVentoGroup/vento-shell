@@ -8540,7 +8540,1233 @@ La identidad exacta de la futura unidad física se resolverá exclusivamente med
 `VISO-AUTH-012 — Validar turnos con área incompatible`
 
 
-### [ ] VISO-AUTH-012 — Validar turnos con área incompatible
+### ✅ VISO-AUTH-012 — Validar turnos con área incompatible
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-011 — Validar turnos sin rol operativo
+**Tarea siguiente:** VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno
+**Tipo de tarea:** documental; definición del contrato canónico de validación de compatibilidad territorial entre el rol operativo presente del turno, su sede y su área, incluido el gate previo a publicación, los estados `EXACT_BINDING`, `AREA_BINDING_UNRESOLVED` y `NO_AREA_NOT_REQUIRED`, y la reconciliación read-only del histórico sin inferir área desde defaults, perfiles, afiliaciones, selección, dispositivo, nombres o unicidad física
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única cuándo el área de un turno laboral es compatible con el rol operativo y la sede ya resueltos, cuándo el área está ausente, es inválida, pertenece a otra sede, carece de binding exacto o permanece contractualmente no resuelta, y qué debe bloquear VISO antes de publicar o reutilizar ese turno.
+
+La regla raíz queda:
+
+```text
+TURNO LABORAL
++
+ROL OPERATIVO PRESENTE Y VÁLIDO
++
+SEDE DEL TURNO RESUELTA
++
+ÁREA DEL TURNO
++
+CONTRATO ROL × SEDE × ÁREA
+→
+VALIDACIÓN DE COMPATIBILIDAD TERRITORIAL
+```
+
+La validación nunca puede transformar una ausencia o incompatibilidad en una selección automática.
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva y consume, sin redefinirlas:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-007` — sede asignada y sede activa;
+- `AUTH-MOD-008` — área asignada, área activa, área operativa del turno y pertenencia área–sede;
+- `AUTH-MOD-009` — turno publicado;
+- `AUTH-MOD-010` — check-in activo;
+- `AUTH-CTX-010` a `AUTH-CTX-013` — resolución del turno y contexto operativo;
+- `AUTH-CTX-029` — frescura e invalidación;
+- `AUTH-SIM-004` — identidad exacta de área y compatibilidad rol–sede–área;
+- `AUTH-SIM-005` — elegibilidad del turno y ausencia explícita de área;
+- `VISO-AUTH-005` — relación padre rol operativo × sede;
+- `VISO-AUTH-006` — matriz rol operativo × sede × área;
+- `VISO-AUTH-007` — perfiles como configuración de planificación, no autoridad;
+- `VISO-AUTH-008` — sedes asignadas al trabajador;
+- `VISO-AUTH-009` — áreas asignadas como afiliación habitual, no área operativa efectiva;
+- `VISO-AUTH-010` — rol operativo explícito del turno;
+- `VISO-AUTH-011` — tratamiento de turno laboral sin rol operativo;
+- los reason codes vigentes `AUTH_ACTIVE_AREA_REQUIRED`, `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE` y `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`.
+
+La identidad del área continúa gobernada por `public.areas`. El área operativa del turno continúa siendo `employee_shifts.area_id`.
+
+---
+
+#### 3. Handoff recibido de VISO-AUTH-011
+
+Esta tarea comienza únicamente después de resolver la presencia del rol.
+
+```text
+operational_role ausente
+→ VISO-AUTH-011
+→ VISO-AUTH-012 no inventa rol
+```
+
+```text
+operational_role presente
+→ continuar con identidad y territorio
+```
+
+Por tanto, un turno sin rol no se reclasifica como incompatibilidad de área.
+
+El orden contractual queda:
+
+```text
+1. shift_kind
+2. presencia de operational_role
+3. identidad y vigencia del rol
+4. compatibilidad rol × sede
+5. identidad y vigencia del área
+6. compatibilidad rol × sede × área
+```
+
+`VISO-AUTH-012` es propietaria de los pasos 5 y 6 dentro del turno ya provisto de rol y sede.
+
+---
+
+#### 4. Unidad exacta de validación
+
+La unidad de compatibilidad es:
+
+```text
+shift.site_id
++
+shift.area_id
++
+shift.operational_role
+```
+
+y se contrasta contra:
+
+```text
+site_id
++
+area_id
++
+operational_role_code
+→ EXACT_BINDING
+```
+
+La coincidencia se realiza por identidades estables, no por etiquetas.
+
+Quedan fuera de la identidad:
+
+- `area_name`;
+- `area_kind`;
+- posición visual;
+- orden de filas;
+- `is_default`;
+- área primaria;
+- área seleccionada;
+- perfil del trabajador;
+- último turno;
+- dispositivo;
+- geocerca;
+- texto de interfaz.
+
+---
+
+#### 5. Estados contractuales de compatibilidad
+
+Se conservan exactamente los tres estados aprobados por `VISO-AUTH-006`:
+
+| Estado | Significado | Resultado para un turno |
+| --- | --- | --- |
+| `EXACT_BINDING` | Existe relación activa y explícita rol × sede × área. | Puede ser compatible si el turno usa exactamente esa área y las demás condiciones son válidas. |
+| `AREA_BINDING_UNRESOLVED` | La sede permite el rol, pero no existe área exacta ni decisión contractual que permita omitirla. | No produce compatibilidad; no se infiere área. |
+| `NO_AREA_NOT_REQUIRED` | Una decisión contractual explícita determina que esa variante puede operar sin área. | Solo permite `area_id = null` dentro del contrato exacto que lo autoriza. |
+
+El baseline vigente conserva:
+
+```text
+EXACT_BINDING = 13
+AREA_BINDING_UNRESOLVED = 3
+NO_AREA_NOT_REQUIRED = 0
+TOTAL relaciones rol × sede = 16
+```
+
+---
+
+#### 6. Orden determinista de evaluación
+
+Para un turno laboral con rol presente, la validación debe seguir este orden:
+
+```text
+SEDE EXISTE Y ES VÁLIDA
+→ ROL VÁLIDO PARA LA SEDE
+→ ÁREA PRESENTE O AUSENCIA CONTRACTUAL
+→ ÁREA EXISTE
+→ ÁREA ACTIVA
+→ ÁREA PERTENECE A LA SEDE
+→ BINDING EXACTO ROL × SEDE × ÁREA
+→ CONTEXTO OPERATIVO POSTERIOR
+```
+
+No se evalúa un binding exacto contra un `area_id` que ya es inexistente, inactivo o territorialmente contradictorio.
+
+Una causa específica anterior conserva prioridad sobre una causa genérica posterior.
+
+---
+
+#### 7. Compatibilidad exacta
+
+Un turno es compatible respecto de esta tarea cuando:
+
+```text
+shift_kind = laboral
++
+operational_role canónico y vigente
++
+site_id válido
++
+area_id válido y activo
++
+areas.site_id = shift.site_id
++
+EXACT_BINDING activo para
+  shift.site_id
+  + shift.area_id
+  + shift.operational_role
+→
+AREA_COMPATIBLE
+```
+
+La compatibilidad de área no concede por sí misma:
+
+- permiso;
+- check-in;
+- acceso a aplicación;
+- acceso al recurso;
+- autoridad administrativa;
+- asignación laboral permanente;
+- aprobación del turno;
+- autorización final.
+
+Es un prerrequisito territorial del carril operativo.
+
+---
+
+#### 8. Área obligatoria ausente
+
+Cuando el rol y la configuración exigen un área exacta:
+
+```text
+EXACT_BINDING esperado
++
+shift.area_id = null
+→
+ÁREA ACTIVA REQUERIDA Y AUSENTE
+```
+
+Ese estado:
+
+- no puede completarse desde el binding conocido;
+- no puede completarse desde un default;
+- no puede completarse desde `employee_areas`;
+- no puede completarse desde área primaria;
+- no puede completarse desde selección administrativa;
+- no puede completarse desde el área del último turno.
+
+Para una evaluación operativa que requiere área, el reason code público existente es:
+
+```text
+AUTH_ACTIVE_AREA_REQUIRED
+```
+
+La posibilidad de conocer cuál área sería compatible no autoriza a escribirla retroactivamente en el turno.
+
+---
+
+#### 9. Área presente sin binding exacto
+
+Cuando el área existe, está activa y pertenece a la sede, pero no existe la relación exacta para el rol:
+
+```text
+ROL VÁLIDO EN SEDE
++
+ÁREA VÁLIDA DE ESA SEDE
++
+NO EXISTE EXACT_BINDING
+→
+ROL INVÁLIDO PARA ESA ÁREA
+```
+
+El reason code público existente es:
+
+```text
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+```
+
+La presencia de otro binding del mismo rol en la misma sede no amplía la compatibilidad.
+
+La presencia de otro rol en esa área tampoco amplía la compatibilidad.
+
+---
+
+#### 10. AREA_BINDING_UNRESOLVED
+
+Los tres vínculos contractualmente no resueltos permanecen:
+
+| Sede | Rol operativo | Estado |
+| --- | --- | --- |
+| `CENTRO_PROD` | `conductor_logistica` | `AREA_BINDING_UNRESOLVED` |
+| `MOLKA_PRINCIPAL` | `operador_integral_satelite` | `AREA_BINDING_UNRESOLVED` |
+| `VENTO_GROUP` | `gerencia_operativa` | `AREA_BINDING_UNRESOLVED` |
+
+Para ellos:
+
+```text
+area_id = null
+≠ compatible
+≠ site-wide
+≠ todas las áreas
+≠ General
+≠ NO_AREA_NOT_REQUIRED
+```
+
+Si una acción exige área y el turno no la posee, la evaluación falla cerrada.
+
+Si el turno trae un área que no tiene un binding exacto autoritativo, esa área tampoco se acepta por conveniencia.
+
+La salida contractual solo puede ocurrir mediante:
+
+```text
+AREA_BINDING_UNRESOLVED
+→ EXACT_BINDING
+```
+
+con un área explícita y válida;
+
+o:
+
+```text
+AREA_BINDING_UNRESOLVED
+→ NO_AREA_NOT_REQUIRED
+```
+
+mediante una decisión contractual explícita que realmente permita operar sin área.
+
+---
+
+#### 11. NO_AREA_NOT_REQUIRED
+
+`NO_AREA_NOT_REQUIRED` no se deriva de `null`.
+
+Solo puede aplicarse cuando el contrato exacto demuestre simultáneamente que:
+
+- el rol puede operar sin área en esa variante;
+- el permiso evaluado no exige área;
+- la acción no exige área;
+- el recurso no exige área;
+- la sede y el resto del contexto son válidos.
+
+Regla:
+
+```text
+NO_AREA_NOT_REQUIRED explícito
++
+acción no territorial a nivel área
++
+recurso no territorial a nivel área
+→
+area_id puede permanecer null
+```
+
+El baseline vigente tiene:
+
+```text
+NO_AREA_NOT_REQUIRED = 0
+```
+
+Por tanto, esta tarea no inventa ninguna excepción site-wide para los tres vínculos no resueltos.
+
+---
+
+#### 12. Área inexistente, inactiva o de otra sede
+
+Un `area_id` no se considera simplemente “incompatible con el rol” si su propia identidad territorial ya es inválida.
+
+La clasificación previa debe distinguir:
+
+| Caso | Resultado |
+| --- | --- |
+| `area_id` inexistente | área inválida; fallo cerrado |
+| área inactiva | área no utilizable; fallo cerrado |
+| `areas.site_id != shift.site_id` | cruce territorial; fallo cerrado |
+| referencia ambigua o no reproducible | validación inconclusa; fallo cerrado |
+| área válida pero sin binding del rol | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA` |
+
+El sistema no debe ocultar un cruce de sede presentándolo únicamente como “rol no permitido en área”.
+
+---
+
+#### 13. Rol no válido para la sede
+
+La incompatibilidad rol × sede es anterior a la incompatibilidad rol × área.
+
+```text
+rol no habilitado en shift.site_id
+→ AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE
+```
+
+`VISO-AUTH-012` no puede convertir ese caso en un falso error de área.
+
+Solo después de confirmar que el rol es elegible en la sede se evalúa el área.
+
+---
+
+#### 14. Área asignada al trabajador no es área del turno
+
+`employee_areas` representa afiliación laboral habitual y no constituye un prerrequisito universal de operación.
+
+Por tanto:
+
+```text
+trabajador sin employee_area
+≠ turno incompatible
+```
+
+y:
+
+```text
+employee_area distinta de shift.area_id
+≠ incompatibilidad automática
+```
+
+Un trabajador puede operar temporalmente en un área distinta de su afiliación habitual cuando:
+
+- pertenece a la sede;
+- el rol del turno es compatible con el área exacta;
+- el turno es válido;
+- las restricciones aplicables se satisfacen;
+- el resultado queda auditado.
+
+Nunca:
+
+```text
+employee_area
+→ completar silenciosamente shift.area_id
+```
+
+---
+
+#### 15. Área primaria y área seleccionada
+
+Las preferencias administrativas permanecen fuera de la autoridad operativa.
+
+```text
+employee_areas.is_primary
+≠ shift.area_id
+```
+
+```text
+employee_settings.selected_area_id
+≠ shift.area_id
+```
+
+Una primaria o selección puede orientar la interfaz de planificación, pero el valor persistido en el turno debe ser explícito y validado.
+
+Una mutación server-side no puede usar esas preferencias para reparar una ausencia.
+
+---
+
+#### 16. Área de dispositivo, check-in y recurso
+
+Se mantienen separados:
+
+```text
+área del turno
+área del rol
+área del recurso
+área del dispositivo
+área seleccionada
+```
+
+El check-in tampoco define el área del turno.
+
+La compatibilidad de `VISO-AUTH-012` valida el área operacional persistida en el turno contra la matriz del rol.
+
+Las restricciones adicionales del recurso o dispositivo se evalúan por sus contratos propietarios y pueden reducir autoridad, nunca ampliar el área del turno.
+
+---
+
+#### 17. Descansos
+
+Un descanso no participa en la matriz rol × área porque:
+
+```text
+shift_kind = descanso
+operational_role = null
+area_id operacional = no aplicable
+```
+
+Por tanto, un descanso con área nula no es un “turno con área incompatible”.
+
+Si una fila de descanso contiene rol o área operativos, esa contradicción pertenece al contrato de forma del turno y no debe transformarse en un falso binding operacional válido.
+
+`VISO-AUTH-012` no asigna área a descansos.
+
+---
+
+#### 18. Borradores laborales
+
+Un borrador laboral debe quedar territorialmente resoluble antes de publicación.
+
+Estados posibles:
+
+```text
+rol + sede + área + EXACT_BINDING
+→ borrador compatible respecto del área
+```
+
+```text
+rol + sede + área ausente cuando se requiere
+→ borrador incompleto
+```
+
+```text
+rol + sede + área sin binding exacto
+→ borrador incompatible
+```
+
+```text
+rol + sede + AREA_BINDING_UNRESOLVED
+→ borrador territorialmente no resuelto
+```
+
+Los últimos tres estados no pueden atravesar el gate de publicación.
+
+---
+
+#### 19. Gate obligatorio antes de publicación
+
+Toda publicación semanal, mensual o masiva deberá releer y validar server-side el conjunto exacto de borradores que pretende publicar.
+
+Por cada turno laboral:
+
+1. el rol debe estar presente y válido;
+2. la sede debe ser válida;
+3. el binding rol × sede debe seguir activo;
+4. el área debe satisfacer la semántica de esta tarea;
+5. si existe área, debe ser activa y pertenecer a la sede;
+6. debe existir `EXACT_BINDING`, salvo un futuro `NO_AREA_NOT_REQUIRED` explícito y aplicable;
+7. la decisión debe ser fresca respecto del momento de escritura.
+
+Si cualquier fila falla:
+
+```text
+PUBLICACIÓN DEL ALCANCE
+→ BLOQUEADA
+```
+
+---
+
+#### 20. Atomicidad del bloqueo de publicación
+
+El bloqueo conserva:
+
+```text
+published_at sin cambios
+published_by sin cambios
+cero publicación parcial silenciosa
+cero notificación de publicación exitosa
+cero autoridad nueva
+```
+
+VISO no puede:
+
+- publicar solo los turnos compatibles sin advertirlo;
+- cambiar automáticamente el área;
+- descartar las filas incompatibles;
+- cambiar el rol;
+- convertir el turno en descanso;
+- reducir el rango solicitado;
+- marcar el conflicto como warning no bloqueante.
+
+La corrección y el nuevo intento son operaciones posteriores.
+
+---
+
+#### 21. Información mínima del conflicto
+
+La superficie administrativa deberá poder mostrar, dentro del territorio autorizado del actor:
+
+- cantidad total de filas bloqueantes;
+- identidad del turno;
+- trabajador;
+- fecha;
+- horario;
+- sede;
+- rol operativo;
+- área persistida o ausencia;
+- estado del binding;
+- causa concreta;
+- acción requerida.
+
+Las causas deben distinguir como mínimo:
+
+```text
+AREA_REQUIRED_MISSING
+AREA_NOT_FOUND
+AREA_INACTIVE
+AREA_WRONG_SITE
+AREA_BINDING_UNRESOLVED
+ROLE_INVALID_FOR_AREA
+```
+
+Estos nombres son clasificaciones administrativas internas de esta tarea y no crean nuevos reason codes públicos de autorización.
+
+---
+
+#### 22. Reason codes públicos reutilizados
+
+Esta tarea no crea reason codes.
+
+La distribución pública existente permanece:
+
+```text
+turno laboral aplicable sin rol
+→ AUTH_OPERATIONAL_ROLE_REQUIRED
+```
+
+```text
+rol presente pero no válido para la sede
+→ AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE
+```
+
+```text
+área activa requerida pero ausente
+→ AUTH_ACTIVE_AREA_REQUIRED
+```
+
+```text
+área válida de la sede pero rol no compatible con esa área
+→ AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+```
+
+Una causa de área inexistente, inactiva, contradictoria o una fuente no verificable conserva la razón específica propietaria que corresponda; no se fuerza dentro de `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA` si el fallo ocurrió antes de evaluar compatibilidad del rol.
+
+---
+
+#### 23. Fallo cerrado del carril operativo
+
+Un turno territorialmente no resuelto o incompatible no produce área operativa autorizable.
+
+```text
+area_compatible = false
+→ carril operativo no ejecutable para la acción que exige ese contexto
+```
+
+Ninguno de estos valores puede reparar la evaluación:
+
+- `employee_areas`;
+- área primaria;
+- área seleccionada;
+- `employees.area_id`;
+- perfil operativo;
+- `is_default`;
+- única fila del rol;
+- única área de la sede;
+- `area_kind`;
+- nombre del rol;
+- último turno;
+- dispositivo;
+- estado React;
+- payload cliente.
+
+La sesión podrá preservarse conforme al contrato de bloqueo, pero la acción protegida no continúa.
+
+---
+
+#### 24. Copias y asignaciones masivas
+
+Copiar un turno crea una nueva configuración prospectiva.
+
+Antes de materializar cada fila destino deberá revalidarse:
+
+```text
+target site
++
+target role
++
+target area
++
+matriz vigente
++
+estado vigente de área
+```
+
+Una fila histórica compatible en su fecha de origen no garantiza compatibilidad futura.
+
+Una fila legacy con `area_id = null` no puede propagarse a una nueva fecha para un rol que exige binding exacto.
+
+Una fila perteneciente a `AREA_BINDING_UNRESOLVED` tampoco puede transformarse automáticamente en site-wide durante la copia.
+
+---
+
+#### 25. Generadores, IA, presets e importaciones
+
+La misma validación aplica a:
+
+- generadores de horarios;
+- sugerencias automáticas;
+- IA;
+- plantillas;
+- presets;
+- importaciones;
+- repetición de patrones;
+- creación mensual;
+- creación semanal;
+- edición masiva.
+
+Una propuesta en memoria puede estar incompleta.
+
+Una mutación que declare éxito no puede persistir un área inferida como autoridad.
+
+La automatización debe entregar una intención que después se valida contra las mismas fuentes canónicas que una captura manual.
+
+---
+
+#### 26. Cambios posteriores e invalidación
+
+La compatibilidad no es permanente.
+
+Deben invalidar o exigir revalidación, según el contrato propietario:
+
+- desactivación del área;
+- cambio de sede del área;
+- retiro del binding exacto;
+- desactivación del rol;
+- retiro del rol de la sede;
+- cambio de `shift.area_id`;
+- cambio de `shift.site_id`;
+- cambio de `shift.operational_role`;
+- sustitución de la revisión publicada;
+- cancelación del turno;
+- cambios contractuales que afecten `NO_AREA_NOT_REQUIRED`.
+
+Una decisión en caché no puede continuar autorizando después de un cambio material.
+
+---
+
+#### 27. Histórico y política de no backfill
+
+El histórico observado se conserva como evidencia.
+
+Reglas:
+
+1. no se reescribe por inferencia;
+2. no se rellena `area_id` desde la matriz actual;
+3. no se asume que la matriz actual era idéntica al contrato histórico;
+4. no se usa el área del turno anterior o posterior;
+5. no se usa la afiliación actual del trabajador;
+6. no se convierte `null` histórico en site-wide;
+7. no se corrigen filas publicadas sin una operación de corrección histórica explícita y auditada;
+8. un turno histórico incompatible no obtiene autoridad actual por haber sido publicado.
+
+La deuda histórica no autoriza degradar las reglas prospectivas.
+
+---
+
+#### 28. Baseline físico read-only de turnos con rol
+
+El corte remoto verificado contiene:
+
+```text
+turnos laborales con operational_role = 1522
+con area_id presente = 1368
+con area_id nulo = 154
+```
+
+Para los `1368` turnos con área presente:
+
+```text
+área inexistente = 0
+área inactiva = 0
+área perteneciente a otra sede = 0
+sin EXACT_BINDING activo = 0
+EXACT_BINDING coincidente = 1368
+```
+
+Por tanto:
+
+```text
+1368 / 1368
+```
+
+de los turnos laborales con rol y área presente coinciden con el binding físico activo observado.
+
+---
+
+#### 29. Descomposición de los 154 turnos laborales con área nula
+
+El corte se descompone exactamente así:
+
+| Sede | Rol | Estado canónico del binding | Turnos | Publicados | Borradores | Rango |
+| --- | --- | --- | ---: | ---: | ---: | --- |
+| `VENTO_GROUP` | `gerencia_operativa` | `AREA_BINDING_UNRESOLVED` | 81 | 81 | 0 | 2026-07-03 a 2026-07-25 |
+| `MOLKA_PRINCIPAL` | `operador_integral_satelite` | `AREA_BINDING_UNRESOLVED` | 62 | 54 | 8 | 2026-06-29 a 2026-08-30 |
+| `CENTRO_PROD` | `conductor_logistica` | `AREA_BINDING_UNRESOLVED` | 9 | 9 | 0 | 2026-06-24 a 2026-07-18 |
+| `SAUDO` | `cocinero_satelite` | binding exacto `COCINA_BARRA` | 2 | 2 | 0 | 2026-06-26 a 2026-06-27 |
+| **Total** |  |  | **154** | **146** | **8** |  |
+
+La aritmética queda:
+
+```text
+81 + 62 + 9 = 152 AREA_BINDING_UNRESOLVED
+152 + 2 = 154 area_id nulo
+```
+
+Los `152` casos de roles no resueltos no se reinterpretan como válidos ni reciben un área inferida.
+
+---
+
+#### 30. Dos defectos históricos claros de área requerida ausente
+
+Existen exactamente dos filas observadas que combinan:
+
+```text
+site = SAUDO
+role = cocinero_satelite
+shift.area_id = null
+binding exacto vigente = SAUDO / COCINA_BARRA / cocinero_satelite
+published_at != null
+```
+
+Fechas:
+
+```text
+2026-06-26
+2026-06-27
+```
+
+Ambas están publicadas y con estado `scheduled`.
+
+El binding actual permite identificar que el rol tiene una relación exacta vigente, pero no autoriza un backfill histórico automático de `COCINA_BARRA`.
+
+Se conservan como evidencia de deuda legacy.
+
+---
+
+#### 31. Operación reciente
+
+Desde `2026-09-02`, el corte read-only contiene:
+
+```text
+turnos laborales no cancelados con rol = 119
+missing required area = 0
+area present without exact binding = 0
+```
+
+Por tanto, la evidencia actual no demuestra que el flujo reciente esté generando turnos incompatibles respecto de los bindings exactos vigentes.
+
+La tarea se mantiene necesaria para impedir regresiones, proteger publicación y reconciliar caminos alternos de creación o copia.
+
+---
+
+#### 32. Reconciliación AS-IS del guardado semanal
+
+El flujo semanal observado consulta `vento_site_operational_role_matrix_v1`.
+
+Su resolución actual puede elegir una fila mediante:
+
+1. coincidencia con el `area_id` enviado;
+2. `is_default`;
+3. única fila del rol;
+4. único `area_id` disponible.
+
+También puede sustituir el rol si la sede posee un único rol visible.
+
+La primera coincidencia exacta es compatible con esta tarea.
+
+Los fallbacks restantes son ayudas AS-IS de planificación y no autoridad TO-BE.
+
+La futura materialización deberá impedir que una selección server-side por default o unicidad se convierta silenciosamente en `shift.area_id` autoritativo.
+
+---
+
+#### 33. Reconciliación AS-IS de creación mensual
+
+El flujo mensual observado recibe un `roleContext` compuesto por rol y área.
+
+Primero busca coincidencia exacta, pero si no la encuentra puede usar:
+
+```text
+is_default
+o única fila del rol
+```
+
+Ese fallback no demuestra compatibilidad explícitamente seleccionada.
+
+La futura materialización deberá distinguir:
+
+```text
+candidato sugerido
+≠ área autoritativa persistida
+```
+
+y exigir una resolución exacta conforme a esta tarea.
+
+---
+
+#### 34. Reconciliación AS-IS del API rápido
+
+El route handler rápido observado resuelve rol y área desde la matriz.
+
+Puede seleccionar:
+
+- rol explícito;
+- rol default;
+- único rol;
+- fila `is_default`;
+- única fila;
+- único `area_id`.
+
+Ese comportamiento es evidencia funcional AS-IS.
+
+No constituye la semántica TO-BE de compatibilidad porque una fila inferida por default o unicidad no sustituye una selección exacta cuando el contrato exige área.
+
+El API rápido deberá someter su resultado final al mismo contrato territorial que los planners completos.
+
+---
+
+#### 35. Reconciliación AS-IS de publicación semanal
+
+La publicación semanal observada lee únicamente:
+
+```text
+id
+employee_id
+shift_date
+start_time
+end_time
+published_at
+```
+
+antes de marcar los borradores como publicados.
+
+No relee en ese gate:
+
+```text
+shift_kind
+operational_role
+site_id de cada fila como dato validado
+area_id
+binding rol × sede × área
+```
+
+Por tanto, la implementación actual no demuestra el precondition contract de `VISO-AUTH-012`.
+
+La publicación semanal deberá incorporar validación territorial server-side antes del update de `published_at`.
+
+---
+
+#### 36. Reconciliación AS-IS de publicación mensual
+
+La publicación mensual observada sí carga:
+
+```text
+shift_kind
+operational_role
+site_id
+area_id
+```
+
+pero el gate actual se concentra en el límite mensual de horas antes de marcar todos los borradores del alcance como publicados.
+
+No se observa una validación previa equivalente a:
+
+```text
+cada turno laboral
+→ área compatible con rol + sede
+```
+
+Por tanto:
+
+```text
+dato cargado
+≠ dato validado
+```
+
+La publicación mensual deberá aplicar el mismo gate territorial que la publicación semanal.
+
+---
+
+#### 37. Consumidores posteriores
+
+ANIMA consume desde el turno publicado:
+
+```text
+shift.area_id
+shift.operational_role
+```
+
+para construir contexto operacional.
+
+Por tanto:
+
+```text
+VISO publica área válida
+→ consumidor usa área explícita
+```
+
+y nunca:
+
+```text
+VISO publica área nula o incompatible
+→ ANIMA repara desde perfil, selección o dispositivo
+```
+
+La corrección pertenece al productor administrativo antes de publicar o a un workflow explícito de corrección posterior.
+
+---
+
+#### 38. Autoridad administrativa
+
+Detectar incompatibilidades puede ser una operación de lectura.
+
+Corregir el turno o publicarlo es una mutación protegida.
+
+La decisión debe resolver server-side:
+
+```text
+ACTOR EFECTIVO
++
+CAPACIDAD ADMINISTRATIVA
++
+TERRITORIO DEL ACTOR
++
+TRABAJADOR OBJETIVO
++
+TURNO OBJETIVO
++
+SEDE OBJETIVO
++
+ROL OBJETIVO
++
+ÁREA OBJETIVO
++
+ESTADO ACTUAL
++
+EFECTO RESULTANTE
++
+AUDITORÍA
+→
+MUTACIÓN POSIBLE
+```
+
+El acceso a la pantalla no equivale a autorización de escritura.
+
+Un cliente administrativo o `service_role` tampoco sustituye la autorización empresarial.
+
+---
+
+#### 39. Handoff a VISO-AUTH-013
+
+`VISO-AUTH-013` recibe únicamente contextos que preservan la causa real.
+
+Cuando el turno es territorialmente compatible:
+
+```text
+trabajador
++
+turno
++
+sede
++
+área exacta o ausencia explícitamente permitida
++
+rol
+→
+candidato para vista previa efectiva
+```
+
+Cuando existe conflicto:
+
+```text
+VISO-AUTH-012
+→ conserva causa y evidencia
+→ VISO-AUTH-013 puede mostrarla
+→ VISO-AUTH-013 no la repara
+```
+
+La vista previa no podrá:
+
+- inferir área;
+- escoger un default;
+- usar área primaria como autoridad;
+- transformar `AREA_BINDING_UNRESOLVED`;
+- tratar `null` como wildcard;
+- ocultar un binding inválido.
+
+---
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La compatibilidad de área exacta, pertenencia área–sede, estados no resueltos, prohibición de inferencias, fallo cerrado, coherencia entre fuentes territoriales, protección server-side, invalidación y consistencia de VISO ya están cubiertos por requisitos vigentes.
+
+La tarea no introduce un nuevo `OperationalRoleCode`, una nueva identidad de área, un nuevo reason code, una nueva modalidad de autorización, un nuevo estado empresarial ni una nueva semántica de scope.
+
+---
+
+#### 41. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-AUTH-008` — el carril operativo exige turno publicado y vigente, rol operativo efectivo y compatibilidad territorial;
+- `TREQ-AUTH-009` — sede y área se resuelven de forma determinista y los cruces territoriales se deniegan;
+- `TREQ-AUTH-013` — ninguna mutación puede eludir validación server-side;
+- `TREQ-AUTH-014` — cambios de turno, área, trabajador, rol o asignación invalidan contexto derivado;
+- `TREQ-AUTH-015` — decisiones y acciones protegidas conservan evidencia correlacionable;
+- `TREQ-AUTH-101` — un área exacta debe pertenecer a la sede aceptada y estar activa;
+- `TREQ-AUTH-102` — se conservan los 13 bindings exactos y los tres `AREA_BINDING_UNRESOLVED` no se resuelven por inferencia;
+- `TREQ-AUTH-103` — agregados `todos` o `GENERAL` no actúan como áreas exactas ni wildcard;
+- `TREQ-AUTH-105` — `NO_AREA_NOT_REQUIRED` solo aplica cuando rol, permiso, acción y recurso no exigen área;
+- `TREQ-AUTH-106` — área de rol, turno, recurso, dispositivo y selección permanecen separadas;
+- `TREQ-VISO-001` — la configuración de VISO debe producir el mismo resultado consumido por las aplicaciones operativas.
+
+Estas referencias son trazabilidad heredada y no cambian contenido, estado, paquete, evidencia ni secuencia de ningún requisito.
+
+---
+
+#### 42. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea todavía no fue insertada ni validada en la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, topología, políticas, `VISO-AUTH-006`, `VISO-AUTH-009`, `VISO-AUTH-010`, `VISO-AUTH-011`, contratos de área, reason codes vigentes, 04A aplicable, código VISO semanal/mensual/API, consumidor ANIMA y el baseline read-only actual de `employee_shifts`, `areas` y `site_operational_roles`. |
+| OPERATIVA | NOT_APPLICABLE | No se modificaron, publicaron, corrigieron, copiaron ni cancelaron turnos reales durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, ANIMA, Supabase, tablas, bindings, índices, RPC, RLS, funciones, migraciones, datos ni despliegues. |
+
+---
+
+#### 43. Criterios de aceptación
+
+- [ ] `VISO-AUTH-012` solo evalúa turnos cuyo rol ya está presente.
+- [ ] La unidad de compatibilidad es `site_id + area_id + operational_role`.
+- [ ] `area_id` y `area_kind` permanecen separados.
+- [ ] El área operativa proviene del turno.
+- [ ] Un área presente debe existir, estar activa y pertenecer a la sede del turno.
+- [ ] Un turno con área presente necesita un `EXACT_BINDING` para ese rol y sede.
+- [ ] Los 13 `EXACT_BINDING` del baseline permanecen intactos.
+- [ ] Los 3 `AREA_BINDING_UNRESOLVED` permanecen no resueltos.
+- [ ] `NO_AREA_NOT_REQUIRED` permanece en 0 mientras no exista decisión contractual explícita.
+- [ ] `area_id = null` nunca significa todas las áreas.
+- [ ] `AREA_BINDING_UNRESOLVED` nunca significa site-wide.
+- [ ] Área ausente cuando es requerida reutiliza `AUTH_ACTIVE_AREA_REQUIRED`.
+- [ ] Área válida pero incompatible con el rol reutiliza `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`.
+- [ ] Rol inválido para la sede permanece bajo `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE`.
+- [ ] Turno sin rol permanece bajo `VISO-AUTH-011`.
+- [ ] Área inexistente, inactiva o de otra sede no se oculta como simple role-area mismatch.
+- [ ] `employee_areas` no se convierte en requisito operativo universal.
+- [ ] Área primaria no completa el turno.
+- [ ] Área seleccionada no completa el turno.
+- [ ] Área del dispositivo o check-in no completa el turno.
+- [ ] `is_default` no crea compatibilidad.
+- [ ] Única fila o única área no crean compatibilidad.
+- [ ] Descansos no se clasifican como turnos laborales con área incompatible.
+- [ ] Borradores territoriales incompletos no pueden publicarse.
+- [ ] Toda publicación revalida el área de cada turno laboral server-side.
+- [ ] Una fila bloqueante impide publicación parcial silenciosa.
+- [ ] El bloqueo conserva `published_at` y `published_by`.
+- [ ] El bloqueo no emite notificación de publicación exitosa.
+- [ ] Copias y asignaciones masivas revalidan el binding vigente.
+- [ ] IA, presets e importaciones no adquieren permiso para inferir área.
+- [ ] Cambios de área, rol, sede o binding invalidan decisiones derivadas.
+- [ ] El baseline conserva 1522 turnos laborales con rol.
+- [ ] El baseline conserva 1368 turnos con área presente y binding exacto coincidente.
+- [ ] El baseline conserva 154 turnos laborales con rol y área nula.
+- [ ] Los 154 se dividen en 152 sobre bindings no resueltos y 2 defectos históricos de área requerida ausente.
+- [ ] Los 2 defectos históricos corresponden a `SAUDO / cocinero_satelite`, 2026-06-26 y 2026-06-27.
+- [ ] No se ejecuta backfill automático sobre esas dos filas.
+- [ ] No se ejecuta backfill automático sobre los 152 casos no resueltos.
+- [ ] Desde 2026-09-02 se conservan 119 turnos laborales no cancelados con rol y cero incompatibilidades exactas observadas.
+- [ ] El fallback semanal AS-IS por default/unicidad se reconoce como drift.
+- [ ] El fallback mensual AS-IS por default/única fila se reconoce como drift.
+- [ ] El API rápido AS-IS no se declara contrato TO-BE por resolver mediante defaults.
+- [ ] La publicación semanal AS-IS se reconoce como brecha por no releer área ni binding.
+- [ ] La publicación mensual AS-IS se reconoce como brecha por cargar área pero no ejecutar el gate territorial.
+- [ ] ANIMA consume el área del turno sin repararla.
+- [ ] `VISO-AUTH-013` recibe el resultado y no repara incompatibilidades.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 44. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica código de ANIMA;
+- modifica `public.employee_shifts`;
+- modifica `public.areas`;
+- modifica `public.site_operational_roles`;
+- modifica `public.employee_areas`;
+- modifica `vento_site_operational_role_matrix_v1`;
+- modifica RPC, RLS, grants, triggers, índices ni funciones;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- crea, publica, despublica, corrige, copia o cancela turnos;
+- realiza backfill histórico;
+- decide nuevos bindings rol × área;
+- convierte `AREA_BINDING_UNRESOLVED` en `EXACT_BINDING`;
+- convierte `AREA_BINDING_UNRESOLVED` en `NO_AREA_NOT_REQUIRED`;
+- crea áreas;
+- crea roles;
+- modifica la matriz rol × sede;
+- modifica la matriz rol × área;
+- modifica perfiles;
+- modifica sedes o áreas asignadas al trabajador;
+- modifica roles base;
+- crea reason codes;
+- modifica mensajes públicos;
+- redefine el workflow integral de programación de `VISO-SCH-*`;
+- implementa el gate semanal o mensual;
+- cambia funciones de copia;
+- cambia generadores o IA;
+- implementa la vista previa de `VISO-AUTH-013`;
+- implementa simulación de `VISO-AUTH-014`;
+- implementa auditoría física transversal;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la futura unidad física se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 45. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-011 — Validar turnos sin rol operativo`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-012 — Validar turnos con área incompatible`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno`
+
+
 ### [ ] VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno
 ### [ ] VISO-AUTH-014 — Crear simulador de permisos efectivos
 ### [ ] VISO-AUTH-015 — Mostrar origen de cada permiso
