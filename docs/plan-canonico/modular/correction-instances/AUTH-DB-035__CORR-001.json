@@ -5,7 +5,7 @@
   "target_instance_id": "AUTH-DB-035::GLOBAL",
   "correction_type": "PHYSICAL",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "AUTH-DB-032::GLOBAL"
@@ -17,12 +17,95 @@
     "target_instance_record_path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-035__GLOBAL.json",
     "target_instance_record_sha256": "94948ae42e3325e233c48562b7901cc7f9ccfa09e7dd4661b28143310df16863"
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260902004242_auth_db_035_corr_001_context_freshness_concurrency.sql",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/042_auth_db_035_context_freshness.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/lint-ratchet.mjs",
+      "change": "EXECUTE_ONLY"
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [
+    "TREQ-AUTH-014",
+    "TREQ-AUTH-015"
+  ],
+  "zero_treq_reason": null,
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-01T19:48:40-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza AUTH-DB-035::CORR-001 exclusivamente para corregir el defecto físico de concurrencia y reentrancia de AUTH-DB-035 mediante una forward migration nueva y regresiones pgTAP, preservando la migración histórica, la instancia VERIFIED, la semántica de ContextFreshnessToken@1.0.0, L1 deshabilitada, cache mode REQUEST_ONLY y sin mutaciones directas sobre Supabase hosted.",
+    "source_contract_sha256": "2f2c3d1019a739e5f66900720e7559af077e100964f3cd12cc45e908823343f0"
+  },
+  "evidence": [
+    "PRE_AUTHORIZATION Supabase CLI reserved migration identity supabase/migrations/20260902004242_auth_db_035_corr_001_context_freshness_concurrency.sql",
+    "PRE_AUTHORIZATION historical migration supabase/migrations/20260831233918_auth_db_035_context_freshness.sql and VERIFIED implementation instance AUTH-DB-035::GLOBAL remained immutable",
+    "IMPLEMENTED forward migration 20260902004242_auth_db_035_corr_001_context_freshness_concurrency.sql corrects the concurrent updated_at race with greatest(target.updated_at, pg_catalog.statement_timestamp())",
+    "IMPLEMENTED forward migration preserves the final app_private privilege posture by revoking temporary CREATE before COMMIT",
+    "IMPLEMENTED pgTAP 042 adds reentrant stale dblink cleanup, deterministic concurrent overlap and monotonic updated_at regression coverage",
+    "IMPLEMENTED npm run quality:repair executed exactly once before validation: PASS",
+    "VERIFIED npm run supabase:migrations:manifest:check PASS",
+    "VERIFIED npm run supabase:db:test:clean PASS",
+    "VERIFIED npm run supabase:recovery:local PASS",
+    "VERIFIED node scripts/supabase/environment-drift.mjs local --strict PASS: LOCAL_CERTIFIED; drift_total=0; unauthorized_drift=0; insufficient_evidence=0",
+    "VERIFIED npm run quality:lint:ratchet PASS",
+    "VERIFIED npm run docs:correction:check PASS",
+    "VERIFIED npm run docs:correction:test PASS",
+    "VERIFIED git --no-pager diff --check PASS",
+    "REMOTE_TARGETS_USED: NO"
+  ],
   "opened_at": "2026-09-02T00:33:33.731Z"
 }

@@ -1667,6 +1667,28 @@ select is(
 
 reset role;
 
+do $auth_db_035_disconnect_stale_concurrency_connections$
+declare
+  v_connection text;
+begin
+  foreach v_connection in array
+    coalesce(
+      extensions.dblink_get_connections(),
+      array[]::text[]
+    )
+  loop
+    if v_connection in (
+      'auth_db_035_c1',
+      'auth_db_035_c2'
+    ) then
+      perform
+        extensions.dblink_disconnect(
+          v_connection
+        );
+    end if;
+  end loop;
+end
+$auth_db_035_disconnect_stale_concurrency_connections$;
 select is(
   extensions.dblink_connect(
     'auth_db_035_c1',
@@ -1674,6 +1696,50 @@ select is(
   ),
   'OK',
   'first concurrency connection opens'
+);
+select is(
+  extensions.dblink_exec(
+    'auth_db_035_c1',
+    'set role vento_context_freshness_owner'
+  ),
+  'SET',
+  'concurrency pre-clean enters freshness owner'
+);
+
+select matches(
+  extensions.dblink_exec(
+    'auth_db_035_c1',
+    $q$
+      delete from audit.context_invalidation_outbox
+      where producer =
+        'AUTH-DB-035-PGTAP-CONCURRENCY'
+    $q$
+  ),
+  '^DELETE [0-9]+$',
+  'concurrency pre-clean removes residual outbox fixtures'
+);
+
+select matches(
+  extensions.dblink_exec(
+    'auth_db_035_c1',
+    $q$
+      delete from app_private.context_freshness_generations
+      where scope_type = 'ACTOR'
+        and scope_key =
+          'AUTH_DB_035_CONCURRENCY'
+    $q$
+  ),
+  '^DELETE [0-9]+$',
+  'concurrency pre-clean removes residual generation fixture'
+);
+
+select is(
+  extensions.dblink_exec(
+    'auth_db_035_c1',
+    'reset role'
+  ),
+  'RESET',
+  'concurrency pre-clean restores postgres role'
 );
 
 select is(
@@ -1689,6 +1755,9 @@ select is(
   extensions.dblink_send_query(
     'auth_db_035_c1',
     $q$
+      with auth_db_035_c1_delay as materialized (
+        select pg_catalog.pg_sleep(1.00)
+      )
       select
         app_private.bump_context_freshness(
           pg_catalog.jsonb_build_object(
@@ -1717,11 +1786,14 @@ select is(
             '1.0.0'
           )
         )::text
+      from auth_db_035_c1_delay
     $q$
   ),
   1,
   'first concurrent generation bump starts'
 );
+
+select pg_catalog.pg_sleep(0.20);
 
 select is(
   extensions.dblink_send_query(
@@ -1882,6 +1954,14 @@ select is(
   'second concurrency connection closes'
 );
 
+select matches(
+  pg_catalog.pg_get_functiondef(
+    'app_private.bump_context_freshness(jsonb)'
+      ::regprocedure
+  ),
+  'updated_at[[:space:]]*=[[:space:]]*greatest\([[:space:]]*target\.updated_at,[[:space:]]*pg_catalog\.statement_timestamp\(\)[[:space:]]*\)',
+  'concurrent conflict update preserves monotonic updated_at'
+);
 select matches(
   pg_catalog.pg_get_functiondef(
     'app_private.bump_context_freshness(jsonb)'
