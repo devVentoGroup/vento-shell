@@ -5,7 +5,7 @@
   "target_instance_id": "AUTH-DB-034::GLOBAL",
   "correction_type": "PHYSICAL",
   "reason_code": "CONTRACT_NON_CONFORMANCE",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "AUTH-DB-032::GLOBAL"
@@ -104,7 +104,20 @@
     "IMPLEMENTED TREQ_CHANGES=0 04A_CHANGES=0",
     "PRE_VALIDATION_GATE quality:repair PASS exactly once",
     "REMOTE_TARGETS_USED NO",
-    "REMOTE_DIRECT_MUTATIONS NO"
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "RECONCILIATION AUTH-DB-035::CORR-001 VERIFIED_ON_MAIN integrated before final AUTH-DB-034 validation",
+    "CHECKPOINT_LOCAL 0e8d9691cd6e0733478fa2796a5301a2d607be7b",
+    "VERIFIED npm run supabase:migrations:manifest:check PASS files=17 empty=0 content_duplicate_groups=0 logical_family_groups=0 repeated_versions=0 legacy_naming=0 new_name_violations=0",
+    "VERIFIED npm run supabase:db:test:clean PASS postgres=17 migrations=17 pgtap_files=17 assertions=735 schema=PASS integrity=PASS rls=PASS rpc=PASS migrations_category=PASS",
+    "VERIFIED npm run supabase:recovery:local PASS outcome=PASS_ROLLBACK_VERIFIED rpo_actual=0 rto_actual_ms=21973",
+    "VERIFIED node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0 unauthorized_drift=0 insufficient_evidence=0 candidate_sha=0e8d9691cd6e0733478fa2796a5301a2d607be7b",
+    "VERIFIED npm run quality:lint:ratchet PASS historical_errors=10 historical_warnings=11 touched_clean_files=0",
+    "VERIFIED npm run docs:correction:check PASS records=6",
+    "VERIFIED npm run docs:correction:test PASS tests=18 fail=0",
+    "VERIFIED git --no-pager diff --check PASS",
+    "FINAL_PHYSICAL_BATTERY 8/8 PASS",
+    "REMOTE_TARGETS_USED: NO",
+    "REMOTE_DIRECT_MUTATIONS: NO"
   ],
   "opened_at": "2026-09-01T22:34:41.111Z"
 }
