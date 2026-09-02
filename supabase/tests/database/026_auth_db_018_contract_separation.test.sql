@@ -650,8 +650,8 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 259::bigint,
-  'direct Vento routine inventory includes AUTH-DB-034 and AUTH-DB-032 authorization routines plus two AUTH-DB-012 app_private permission-audit helpers' );
+                        and d.deptype = 'e' ) ), 269::bigint,
+  'direct Vento routine inventory includes ten AUTH-DB-013 non-trigger app_private simulation-audit helpers' );
         select
             is(
             (
@@ -692,8 +692,8 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 174::bigint,
-  'direct SECURITY DEFINER inventory includes two AUTH-DB-034 direct privileged borders plus one AUTH-DB-032 persistent coordinator' );
+                        and d.deptype = 'e' ) ), 177::bigint,
+  'direct SECURITY DEFINER inventory includes AUTH-DB-013 private append helpers after legacy simulation containment' );
         select
             is(
             (
@@ -734,7 +734,7 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 75::bigint, 'trigger function inventory includes two AUTH-DB-035 freshness trigger functions' );
+                        and d.deptype = 'e' ) ), 76::bigint, 'trigger function inventory includes the AUTH-DB-013 append-only mutation guard plus existing freshness triggers' );
         select
             is(
             (
@@ -776,7 +776,7 @@ begin;
                         and d.objid   = p.oid
                         and d.deptype = 'e' ) ), 4::bigint, 'four extension routines are explicitly platform-managed' );
         select
-            is( 63::bigint + 248::bigint, 311::bigint, 'primary classification universe includes AUTH-DB-035 private freshness infrastructure plus two AUTH-DB-012 app_private permission-audit helpers' );
+            is( 63::bigint + 258::bigint, 321::bigint, 'primary classification universe includes ten AUTH-DB-013 non-trigger app_private simulation-audit helpers' );
         select
             is(
             (
