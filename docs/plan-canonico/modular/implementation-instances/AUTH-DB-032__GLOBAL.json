@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-032::GLOBAL",
   "task_id": "AUTH-DB-032",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -133,6 +133,16 @@
     "IMPLEMENTATION_REPAIR PGTAP_044 append_only mutation probes execute as vento_authorization_owner and reset immediately after each probe group",
     "IMPLEMENTATION_REPAIR PGTAP_044 assertion_428 resolves append-only trigger by trigger function because PostgreSQL truncates the 69-character trigger identifier to 63 bytes",
     "IMPLEMENTATION_REPAIR prior_test_sha256=b194325dfb8d42f0f90ef4ca6d20278e0cbd90a3e39f94c3aadfef7ae8e2dbe5 repaired_test_sha256=644dd30c41117c03d224c9571a47d704e7524389bd2058da6c8ff8e2a881496d",
-    "TARGETED_PGTAP_044 PASS assertions=457"
+    "TARGETED_PGTAP_044 PASS assertions=457",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS prior_attempt",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS prior_attempt remote_targets_used=NO",
+    "VALIDATION #3 npm run supabase:recovery:local PASS prior_attempt outcome=PASS_ROLLBACK_VERIFIED remote_targets_used=NO",
+    "DERIVED_PROJECTION_RECONCILIATION restored_to_checkpoint_before_local_drift paths=docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md,docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED drift_total=0 unauthorized_drift=0 insufficient_evidence=0 candidate_sha=76185dc16941d233041233fd073e9120090914b6 remote_mutations=NO",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS",
+    "CHECKPOINT_LOCAL 76185dc16941d233041233fd073e9120090914b6",
+    "QUALITY_REPAIR_RERUN NO"
   ]
 }
