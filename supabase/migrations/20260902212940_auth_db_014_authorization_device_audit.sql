@@ -1597,7 +1597,7 @@ create or replace function app_private.import_authorization_device_legacy_event(
 returns jsonb
 language plpgsql
 volatile
-strict
+called on null input
 set search_path = pg_catalog, audit, app_private, extensions
 as $auth_db_014_import_legacy$
 declare

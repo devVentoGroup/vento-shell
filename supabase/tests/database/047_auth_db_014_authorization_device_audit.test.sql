@@ -576,7 +576,7 @@ select throws_ok($$update audit.authorization_device_events set event_outcome='N
 select throws_ok($$delete from audit.authorization_device_events where device_id='01400000-0000-4000-8000-000000000002'::uuid$$, '55000', 'AUTH_DB_014_APPEND_ONLY_MUTATION_FORBIDDEN', 'event DELETE is forbidden');
 
 -- 98
-select throws_ok($$truncate table audit.authorization_device_events$$, '55000', 'AUTH_DB_014_APPEND_ONLY_MUTATION_FORBIDDEN', 'event TRUNCATE is forbidden');
+select throws_ok($$truncate table audit.authorization_device_events cascade$$, '55000', 'AUTH_DB_014_APPEND_ONLY_MUTATION_FORBIDDEN', 'event TRUNCATE is forbidden');
 
 -- 99
 select throws_ok($$update audit.authorization_device_revisions set lifecycle_state='DRAFT' where device_id='01400000-0000-4000-8000-000000000002'::uuid$$, '55000', 'AUTH_DB_014_APPEND_ONLY_MUTATION_FORBIDDEN', 'revision UPDATE is forbidden');
