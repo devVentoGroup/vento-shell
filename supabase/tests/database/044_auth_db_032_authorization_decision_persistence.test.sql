@@ -1659,12 +1659,16 @@ select is(
   'sensitive aggregate escalates from anchor to full decision'
 );
 
+set local role vento_authorization_owner;
+
 update audit.authorization_decision_persistence_policies
 set evidence_storage_mode = 'FULL_DECISION',
     sensitivity_floor = 'FUNCTIONAL_SENSITIVE',
     retention_class = 'RET_OBLIGATION'
 where category = 'NAVIGATION'
   and status = 'ACTIVE';
+
+reset role;
 
 -- 457
 select is(
@@ -1683,12 +1687,16 @@ select is(
   'historical retry reuses persisted profile after policy evolution'
 );
 
+set local role vento_authorization_owner;
+
 update audit.authorization_decision_persistence_policies
 set evidence_storage_mode = 'AUDIT_ANCHOR',
     sensitivity_floor = 'FUNCTIONAL',
     retention_class = 'RET_BUSINESS_CYCLE'
 where category = 'NAVIGATION'
   and status = 'ACTIVE';
+
+reset role;
 
 select * from finish();
 rollback;

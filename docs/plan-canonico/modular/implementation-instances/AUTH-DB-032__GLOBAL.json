@@ -123,6 +123,10 @@
     "MATERIALIZATION TREQ_CHANGES=0 04A_CHANGES=0",
     "QUALITY_REPAIR PASS EXACTLY_ONCE",
     "REMOTE_TARGETS_USED NO",
-    "REMOTE_DIRECT_MUTATIONS NO"
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "VALIDATION_ATTEMPT supabase:db:test:clean FAIL test=044 line=1667 permission_denied=authorization_decision_persistence_policies remote_targets_used=NO",
+    "IMPLEMENTATION_REPAIR PGTAP_044 policy-evolution fixture now switches locally to vento_authorization_owner for the two temporary policy updates",
+    "IMPLEMENTATION_REPAIR prior_test_sha256=1881d6c00341032cc64c628309cbeb9c86f7fcf2944b6dbabd995c32d76f3374 repaired_test_sha256=b194325dfb8d42f0f90ef4ca6d20278e0cbd90a3e39f94c3aadfef7ae8e2dbe5",
+    "IMPLEMENTATION_REPAIR migration_unchanged=YES runtime_privileges_unchanged=YES quality_repair_rerun=NO"
   ]
 }
