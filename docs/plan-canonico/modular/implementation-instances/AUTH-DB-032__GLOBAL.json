@@ -1,10 +1,128 @@
 {
   "instance_id": "AUTH-DB-032::GLOBAL",
   "task_id": "AUTH-DB-032",
-  "status": "PENDING_AUTHORIZATION",
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "authorization": null,
-  "evidence": []
+  "status": "IMPLEMENTED",
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-032__GLOBAL.json",
+      "change": "MODIFY",
+      "scope": "Registrar exclusivamente autorizacion, lifecycle y evidencia consolidada de AUTH-DB-032::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260902024254_auth_db_032_authorization_decision_persistence.sql",
+      "change": "CREATE",
+      "scope": "Materializar exclusivamente la persistencia canonica y vinculacion de AuthorizationDecision definida por AUTH-DB-032 mediante la migration forward previamente reservada."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/044_auth_db_032_authorization_decision_persistence.test.sql",
+      "change": "CREATE",
+      "scope": "Crear la suite pgTAP especifica de AUTH-DB-032 con un minimo de 180 comprobaciones fisicas contractuales."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/022_auth_db_003_security_definer_containment.test.sql",
+      "change": "MODIFY",
+      "scope": "Avanzar exclusivamente los ratchets afectados por resolve_authorization_persistence_profile y evaluate_and_record_authorization."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/026_auth_db_018_contract_separation.test.sql",
+      "change": "MODIFY",
+      "scope": "Avanzar exclusivamente los ratchets de rutinas directas y SECURITY DEFINER afectados por las dos funciones app_private de AUTH-DB-032."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY",
+      "scope": "Regenerar el manifiesto canonico despues de incorporar la migration AUTH-DB-032."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Regenerar y validar el manifiesto de migrations."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar replay limpio y suite pgTAP."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar recovery drill local gobernado."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Certificar drift local estricto sobre el candidato."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Ejecutar quality:repair exactamente una vez antes del checkpoint IMPLEMENTED."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Gobernar apertura y cierre de AUTH-DB-032::GLOBAL."
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "EXECUTE_ONLY",
+      "scope": "Validar que los cambios fisicos permanezcan dentro de authorized_changes."
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "git --no-pager diff --check origin/main...HEAD"
+  ],
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-01T22:09:20-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autorizo AUTH-DB-032::GLOBAL hasta VERIFIED y merge exclusivamente en vento-group-sas/vento-shell para crear la forward migration supabase/migrations/20260902024254_auth_db_032_authorization_decision_persistence.sql, crear supabase/tests/database/044_auth_db_032_authorization_decision_persistence.test.sql con un minimo de 180 comprobaciones fisicas del contrato, modificar exclusivamente los ratchets 022 y 026 afectados por las dos nuevas funciones app_private, regenerar supabase/MIGRATION_MANIFEST.md y registrar el lifecycle en AUTH-DB-032__GLOBAL.json; reutilizar vento_authorization_owner; no modificar supabase/roles.sql, los tests 027, 041 o 043, 04A/TREQ ni migraciones historicas; no modificar Supabase hosted directamente; mantener audit fuera de Data API y sin acceso directo de anon, authenticated o service_role; AUTH-DB-012 permanece sin desarrollar.",
+    "source_contract_sha256": "b4ac332aebb731370919938eb29bb491ded5f17df360ce1fc731733a63b9c925"
+  },
+  "evidence": [
+    "PRE_AUTHORIZATION_MAIN 8e0adbc5f9bef0b31cd399df9712bb0871cb2312",
+    "PRE_AUTHORIZATION_MIGRATION supabase/migrations/20260902024254_auth_db_032_authorization_decision_persistence.sql",
+    "PRE_AUTHORIZATION_STASH ee6faac253df994b8014dd7ae97aca0e69d6ee72",
+    "PRE_AUTHORIZATION decision=APPROVED approved_by=VENTO_OWNER",
+    "SOURCE_CONTRACT_SHA256 b4ac332aebb731370919938eb29bb491ded5f17df360ce1fc731733a63b9c925",
+    "MATERIALIZATION_OWNER vento_authorization_owner reuse=YES roles_sql_change=NO",
+    "TREQ_CHANGES=0 04A_CHANGES=0",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO",
+    "MATERIALIZATION migration=supabase/migrations/20260902024254_auth_db_032_authorization_decision_persistence.sql sha256=5537f5a1fc208c3ae0f457669ba897ddd851e27e45b67d5505cfda08a28115f5",
+    "MATERIALIZATION test=supabase/tests/database/044_auth_db_032_authorization_decision_persistence.test.sql assertions=457 sha256=1881d6c00341032cc64c628309cbeb9c86f7fcf2944b6dbabd995c32d76f3374",
+    "MATERIALIZATION ratchet_022 governed=383 security_definer=213 vento_security_definer=208 direct_security_definer=179",
+    "MATERIALIZATION ratchet_026 direct_routines=257 direct_security_definer=174",
+    "MATERIALIZATION manifest_regenerated=PASS",
+    "MATERIALIZATION persistence_tables=6",
+    "MATERIALIZATION audit_functions=8 app_private_functions=2",
+    "MATERIALIZATION safe_wrapper_persistent_route=YES",
+    "MATERIALIZATION rls_predicate_side_effect_free=YES",
+    "MATERIALIZATION TREQ_CHANGES=0 04A_CHANGES=0",
+    "QUALITY_REPAIR PASS EXACTLY_ONCE",
+    "REMOTE_TARGETS_USED NO",
+    "REMOTE_DIRECT_MUTATIONS NO"
+  ]
 }

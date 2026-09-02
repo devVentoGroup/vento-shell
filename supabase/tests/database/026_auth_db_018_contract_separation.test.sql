@@ -650,8 +650,8 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 255::bigint,
-  'direct Vento routine inventory includes nine AUTH-DB-034 authorization routines' );
+                        and d.deptype = 'e' ) ), 257::bigint,
+  'direct Vento routine inventory includes nine AUTH-DB-034 authorization routines plus two AUTH-DB-032 app_private persistence routines' );
         select
             is(
             (
@@ -692,8 +692,8 @@ begin;
                         where
                             d.classid = 'pg_proc'::regclass
                         and d.objid   = p.oid
-                        and d.deptype = 'e' ) ), 173::bigint,
-  'direct SECURITY DEFINER inventory includes two AUTH-DB-034 direct privileged borders' );
+                        and d.deptype = 'e' ) ), 174::bigint,
+  'direct SECURITY DEFINER inventory includes two AUTH-DB-034 direct privileged borders plus one AUTH-DB-032 persistent coordinator' );
         select
             is(
             (
