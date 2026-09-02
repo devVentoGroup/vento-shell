@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "correction_id": "SHELL-CON-007::CORR-001",
+  "task_id": "SHELL-CON-007",
+  "target_instance_id": "SHELL-CON-007::GLOBAL",
+  "correction_type": "PHYSICAL",
+  "reason_code": "IMPLEMENTATION_DEFECT",
+  "status": "PENDING_AUTHORIZATION",
+  "blocking": true,
+  "blocked_targets": [
+    "VISO-AUTH-012"
+  ],
+  "baseline": {
+    "main_commit": "785bc7e5ea09ec7402a8fcfe26f5539d793f64cc",
+    "target_task_path": "docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md",
+    "target_task_sha256": "63450829623c0d1fcc490b7417d70f71b61a2c160b029437412bc01b82de40f8",
+    "target_instance_record_path": "docs/plan-canonico/modular/implementation-instances/SHELL-CON-007__GLOBAL.json",
+    "target_instance_record_sha256": "bf451821271456787653373ffa48e5e8ce244fa9cd063cfe8a1fad7e56af441c"
+  },
+  "target_repositories": [],
+  "authorized_changes": [],
+  "validation_commands": [],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
+  "authorization": null,
+  "evidence": [],
+  "opened_at": "2026-09-02T16:57:36.899Z"
+}
