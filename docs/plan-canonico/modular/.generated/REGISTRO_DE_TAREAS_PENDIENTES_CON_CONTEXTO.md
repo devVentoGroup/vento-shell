@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `VISO-AUTH-015` — Mostrar origen de cada permiso | `VISO-AUTH-016` — Mostrar conflictos de configuración | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `IN_PROGRESS` | `AUTH-DB-014::GLOBAL` — Implementar auditoría de dispositivos | SIN SIGUIENTE PROYECTADA | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `SIN_INSTANCIA_ACTIVA` | — | SIN SIGUIENTE PROYECTADA | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,12 +20,12 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1104/1596 aprobadas** | **491** no aprobadas (1 propuesta, 0 rechazadas) | `VISO-AUTH-015` |
-| 🟧 **Implementación física conocida** | **95/96 VERIFIED** | **1** no terminales | `AUTH-DB-014::GLOBAL` |
+| 🟧 **Implementación física conocida** | **96/96 VERIFIED** | **0** no terminales | — |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-G-VISO-CORE` — VISO administrador del modelo y núcleo operativo
 - **Siguiente etapa documental:** `PHASE-04-H2-SHELL-APPLICATION`
-- **Acción física prioritaria:** `EJECUTAR_IMPLEMENTACION` — `AUTH-DB-014::GLOBAL`
+- **Acción física prioritaria:** `DOCUMENTAR_TAREA` — `VISO-AUTH-015`
 - **Instancias físicas en espera de predecesora:** **0**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
@@ -35,7 +35,7 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `AUTH-DB-014::GLOBAL` | Implementar auditoría de dispositivos | `IN_PROGRESS` | ACTUAL — EJECUTAR_IMPLEMENTACION |
+| — | — | — | Sin instancia física pendiente conocida | — | — |
 
 ## Modos de trabajo y materialización
 

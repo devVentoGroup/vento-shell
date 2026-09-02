@@ -34,11 +34,11 @@
 | Siguiente tarea | **VISO-AUTH-016 — Mostrar conflictos de configuración** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
 | Progreso del bloque | **BLOQUES G Y G2: 14 de 26 aprobadas; VISO-AUTH-015 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_ACTIVE** |
-| Acción principal obligatoria | **EJECUTAR_IMPLEMENTACION — AUTH-DB-014::GLOBAL** |
+| Estado de implementación | **DOCUMENTATION_ONLY** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — VISO-AUTH-015** |
 | Carril documental | **ACTIVO — VISO-AUTH-015** |
-| Carril físico | **IN_PROGRESS — AUTH-DB-014::GLOBAL** |
-| Alcance físico autorizado | **AUTH-DB-014::GLOBAL** |
+| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
 
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 14 DE 26 APROBADAS — ACTUAL VISO-AUTH-015** |
-| Implementación física | **AUTH-DB-014::GLOBAL — IN_PROGRESS** |
+| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
 
