@@ -10775,7 +10775,954 @@ La identidad exacta de la futura unidad física se resolverá exclusivamente med
 `VISO-AUTH-014 — Crear simulador de permisos efectivos`
 
 
-### [ ] VISO-AUTH-014 — Crear simulador de permisos efectivos
+### ✅ VISO-AUTH-014 — Crear simulador de permisos efectivos
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno
+**Tarea siguiente:** VISO-AUTH-015 — Mostrar origen de cada permiso
+**Tipo de tarea:** documental; definición del simulador administrativo canónico de permisos efectivos que convierte una proyección contextual autorizada en un escenario hipotético separado, evalúa permisos exactos con los contratos de simulación vigentes y muestra el impacto esperado sin mutar autoridad, sesión, configuración ni datos reales
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a la topología `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el simulador administrativo con el que VISO deberá responder, antes de persistir un cambio de seguridad o de contexto, qué permisos efectivos tendría un sujeto bajo un escenario hipotético concreto.
+
+El simulador no crea una segunda política de autorización. Consume el mismo catálogo, contratos, reglas de alcance, precedencia de denegaciones y semántica de carriles que gobiernan la autorización real, pero encapsulados en `SimulationContextV1` y `SimulatedAuthorizationDecisionV1` para impedir que un resultado hipotético se convierta en autoridad operativa.
+
+La regla raíz queda:
+
+```text
+ACTOR REAL AUTORIZADO PARA SIMULAR
++
+PROYECCIÓN CONTEXTUAL DE VISO-AUTH-013
++
+ESCENARIO HIPOTÉTICO EXPLÍCITO
++
+CATÁLOGOS Y VERSIONES CANÓNICAS
++
+EVALUADOR DE SIMULACIÓN
+→
+RESULTADO HIPOTÉTICO POR PERMISO
+```
+
+Y nunca:
+
+```text
+RESULTADO SIMULADO
+→
+AUTORIDAD REAL
+```
+
+---
+
+#### 2. Base normativa y fuentes de autoridad
+
+Esta tarea consume, sin redefinir, las decisiones ya aprobadas que gobiernan contexto, autorización y simulación.
+
+Fuentes vinculantes:
+
+- `ADR-AUTH-001`;
+- `AUTH-CTX-001` — `AccessContext` canónico;
+- `AUTH-CTX-002` — `AuthorizationDecision` canónica;
+- `AUTH-CTX-003` — `SimulationContext` separado;
+- `AUTH-CTX-004` — versionado de contratos de respuesta;
+- `AUTH-CTX-027` — consumo centralizado por aplicaciones y separación entre interfaz real y simulada;
+- `AUTH-SIM-001` — elegibilidad del solicitante real;
+- `AUTH-SIM-002` — identidades de rol simulables;
+- `AUTH-SIM-003` — sede simulada;
+- `AUTH-SIM-004` — área simulada;
+- `AUTH-SIM-005` — turno simulado;
+- `AUTH-SIM-006` — prohibición de mezclar permisos reales y simulados;
+- `SHELL-CON-007` — contratos compartidos de contexto y simulación;
+- `VISO-AUTH-003` y `VISO-AUTH-004` — matrices administrativas de permisos por rol base y operativo;
+- `VISO-AUTH-005` y `VISO-AUTH-006` — disponibilidad de roles por sede y área;
+- `VISO-AUTH-007` a `VISO-AUTH-012` — perfiles, asignaciones y validaciones de contexto;
+- `VISO-AUTH-013` — proyección contextual previa que constituye el handoff inmediato.
+
+La familia contractual vigente consumida por esta tarea es `vento.authorization.response-contracts@1.0.0`.
+
+---
+
+#### 3. Resultado canónico
+
+VISO deberá disponer de un simulador que produzca una evaluación reconstruible por escenario y por permiso exacto.
+
+Cada simulación deberá mantener separadas, como mínimo, estas identidades:
+
+```text
+actor real que solicita
+sujeto simulado
+contexto real de referencia
+contexto hipotético
+aplicación objetivo
+permiso exacto
+recurso o escenario de recurso
+resultado simulado
+snapshot de versiones
+```
+
+La simulación deberá poder representar:
+
+- un sujeto real autorizado como referencia enmascarada o controlada;
+- una plantilla de rol base;
+- una plantilla de rol operativo;
+- un sujeto hipotético;
+- un escenario compuesto;
+- valores vigentes;
+- valores propuestos;
+- valores sintéticos cuando el contrato lo permita;
+- territorio y recurso hipotéticos cuando sean necesarios para evaluar el permiso.
+
+No existe una modalidad válida en la que la pantalla invente un permiso, rol, sede, área, turno, recurso o alcance que el contrato canónico no pueda representar.
+
+---
+
+#### 4. Frontera entre vista previa y simulación
+
+`VISO-AUTH-013` entrega contexto. `VISO-AUTH-014` evalúa el efecto hipotético sobre permisos.
+
+La frontera obligatoria es:
+
+```text
+VISO-AUTH-013
+→ describe trabajador + sede + área + turno + rol + binding
+
+VISO-AUTH-014
+→ transforma una selección autorizada en SimulationContextV1
+→ evalúa permisos exactos
+→ devuelve resultados hipotéticos
+```
+
+La vista previa no podrá producir resultados de autorización y el simulador no podrá reparar silenciosamente un contexto incompleto heredado.
+
+Si `VISO-AUTH-013` conserva una causa de incompletitud de `VISO-AUTH-011` o `VISO-AUTH-012`, el simulador deberá conservar esa causa y clasificar el resultado afectado como bloqueado o indeterminado según el contrato, nunca completar el dato mediante un fallback local.
+
+---
+
+#### 5. Handoff consumido desde VISO-AUTH-013
+
+El simulador acepta como base contextual únicamente una proyección reconstruible que conserve:
+
+```text
+trabajador exacto
++
+rol base factual
++
+sedes asignadas relevantes
++
+áreas habituales únicamente como dato administrativo
++
+turno exacto o propuesta exacta
++
+rol operativo explícito
++
+sede operativa explícita
++
+área operativa explícita o ausencia contractualmente clasificada
++
+estado del binding
++
+causas de incompletitud
++
+snapshot temporal
+```
+
+Ninguna de esas dimensiones concede un permiso por sí sola.
+
+La simulación deberá distinguir entre:
+
+- hecho real vigente;
+- referencia real enmascarada;
+- dato sintético;
+- plantilla canónica;
+- override propuesto;
+- asignación propuesta;
+- denegación propuesta;
+- selección explícita del escenario.
+
+La procedencia nunca podrá deducirse por el valor visible del campo.
+
+---
+
+#### 6. Autorización del simulador real
+
+La capacidad de simular se resuelve sobre el actor real y nunca sobre el sujeto o rol hipotético.
+
+El solicitante interactivo deberá satisfacer el contrato de `AUTH-SIM-001`, incluido como mínimo:
+
+```text
+actor humano efectivo
++
+sesión personal real válida
++
+viso.access efectivo
++
+viso.authorization.context_simulations.view efectivo
++
+carril base real válido
++
+alcance suficiente
++
+justificación válida
++
+reautenticación fuerte cuando aplique
++
+ausencia de denegaciones
+```
+
+El rol objetivo, el permiso hipotético, el dispositivo, la pantalla visible o el resultado de otra simulación no pueden aportar autoridad al solicitante.
+
+Una simulación iniciada desde un contexto simulado deberá denegarse.
+
+---
+
+#### 7. Contrato de sesión de simulación
+
+Cada sesión de simulación deberá representarse mediante `SimulationContextV1` y conservar:
+
+- `simulation_id` único;
+- estado de ciclo de vida;
+- propósito;
+- timestamps de creación, activación, expiración, finalización y revocación según apliquen;
+- actor real;
+- referencia al `AccessContext` real;
+- autorización real de simulación;
+- sujeto simulado;
+- contexto hipotético;
+- escenario de recurso cuando aplique;
+- evaluaciones realizadas;
+- referencias separadas de resultados favorables, denegados e indeterminados;
+- problemas estructurales;
+- contexto de auditoría.
+
+Los estados contractuales admitidos son:
+
+```text
+DRAFT
+ACTIVE
+COMPLETED
+EXPIRED
+REVOKED
+INVALID
+```
+
+VISO no podrá crear estados locales equivalentes con otra semántica.
+
+---
+
+#### 8. Propósito de la simulación
+
+El propósito deberá ser explícito y pertenecer al contrato vigente.
+
+Los propósitos reconocidos son:
+
+```text
+NAVIGATION_PREVIEW
+AUTHORIZATION_EXPLANATION
+ROLE_MATRIX_REVIEW
+TERRITORIAL_SCENARIO
+OPERATIONAL_CONTEXT_SCENARIO
+DEVICE_SCENARIO
+CHANGE_IMPACT_REVIEW
+SUPPORT_DIAGNOSTIC
+```
+
+Para el uso administrativo previo a guardar cambios, `CHANGE_IMPACT_REVIEW` es el propósito natural cuando corresponda al caso, pero la tarea no cambia la taxonomía contractual ni fuerza ese valor para escenarios cuyo propósito canónico sea otro.
+
+La justificación empresarial sigue siendo obligatoria cuando el contrato de elegibilidad la exige y nunca amplía autoridad.
+
+---
+
+#### 9. Sujeto simulado
+
+El sujeto deberá clasificarse con una identidad tipada del contrato vigente:
+
+```text
+EXISTING_EMPLOYEE_REFERENCE
+BASE_ROLE_TEMPLATE
+OPERATIONAL_ROLE_TEMPLATE
+HYPOTHETICAL_EMPLOYEE
+COMPOSITE_SCENARIO
+```
+
+Reglas:
+
+1. una referencia de empleado real no equivale al actor real que solicita;
+2. una plantilla de rol no representa una persona existente;
+3. un escenario compuesto no puede ocultar contradicciones entre sus dimensiones;
+4. `real_employee_id` solo se usa cuando el permiso real del solicitante y la finalidad autorizan la referencia;
+5. la simulación no crea ni modifica empleados;
+6. la etiqueta visible del sujeto no sustituye sus identificadores contractuales;
+7. un sujeto retirado, inválido o no resoluble falla cerrado.
+
+---
+
+#### 10. Dimensiones hipotéticas administrables
+
+El simulador podrá representar únicamente dimensiones contempladas por `HypotheticalAccessContext`:
+
+- identidad de dominio;
+- empleado;
+- rol base;
+- sedes asignadas;
+- áreas asignadas;
+- cobertura administrativa;
+- turno activo hipotético;
+- check-in hipotético cuando el escenario lo requiera;
+- rol operativo;
+- sede operativa;
+- área operativa;
+- contexto de dispositivo;
+- problemas estructurales del escenario.
+
+La presencia de una dimensión no autoriza a VISO a administrarla desde esta tarea.
+
+Por tanto:
+
+```text
+SIMULAR VALOR
+≠
+CREAR VALOR
+≠
+ASIGNAR VALOR
+≠
+PERSISTIR VALOR
+```
+
+---
+
+#### 11. Roles simulables
+
+La selección de rol deberá respetar íntegramente `AUTH-SIM-002` y los catálogos canónicos vigentes.
+
+VISO no podrá:
+
+- tratar cualquier string como rol;
+- convertir un rol legacy en identidad vigente;
+- confundir rol base con rol operativo;
+- asumir que un rol privilegiado es simulable para todo solicitante;
+- usar un nombre de cargo como código contractual;
+- inventar un rol temporal para completar el escenario;
+- usar el rol simulado para elevar la autoridad del actor real.
+
+Un rol válido como identidad contractual todavía puede quedar fuera del alcance autorizado del solicitante o requerir controles adicionales por sensibilidad.
+
+---
+
+#### 12. Sede y área simuladas
+
+La sede y el área hipotéticas deberán conservar las restricciones de `AUTH-SIM-003`, `AUTH-SIM-004`, `VISO-AUTH-005`, `VISO-AUTH-006` y las validaciones territoriales previas.
+
+Reglas mínimas:
+
+1. una sede simulada debe ser una identidad exacta y resoluble;
+2. un área simulada debe pertenecer a una sede exacta compatible;
+3. `null`, ausencia o desconocimiento no significan todas las sedes o áreas;
+4. sede primaria no sustituye sede operativa;
+5. tipo de área no sustituye identidad de área;
+6. múltiples sedes asignadas no equivalen a organización completa;
+7. el alcance solicitado por la simulación permanece dentro del alcance real autorizado del simulador;
+8. una combinación territorial inválida no se normaliza automáticamente.
+
+---
+
+#### 13. Turno y contexto operativo simulados
+
+El turno hipotético deberá respetar `AUTH-SIM-005` y las reglas de `VISO-AUTH-010` a `VISO-AUTH-013`.
+
+Un escenario operativo deberá distinguir:
+
+- existencia o ausencia de turno;
+- identidad exacta del turno cuando sea una referencia real autorizada;
+- rol operativo explícito;
+- sede operativa explícita;
+- área operativa explícita o ausencia permitida;
+- vigencia temporal;
+- estado del binding territorial;
+- check-in cuando sea un prerrequisito de la capacidad evaluada.
+
+No se podrá fabricar un turno válido a partir de:
+
+- perfil operativo;
+- área habitual;
+- sede primaria;
+- último turno;
+- primer rol permitido;
+- defaults de interfaz;
+- una combinación enviada por el cliente sin validación.
+
+---
+
+#### 14. Universo exacto de permisos evaluados
+
+Cada evaluación deberá identificar un `app_code` y un `permission_key` canónicos exactos.
+
+La interfaz podrá permitir revisar una colección de permisos, pero el servidor deberá expandirla a identidades concretas antes de evaluar.
+
+Reglas:
+
+```text
+permiso solicitado
+→ identidad exacta del catálogo
+→ modalidad y prerrequisitos vigentes
+→ evaluación simulada individual
+```
+
+No son válidos como sustituto:
+
+- wildcards implícitos;
+- prefijos de permiso tratados como autoridad;
+- labels visibles;
+- grupos de navegación;
+- nombres de pantalla;
+- roles;
+- arrays enviados por el cliente sin validación contra el catálogo.
+
+Para un conjunto seleccionado:
+
+```text
+permisos objetivo esperados
+=
+filas de evaluación materializadas
+
+duplicados
+=
+0
+
+faltantes silenciosos
+=
+0
+```
+
+Un permiso desconocido deberá bloquear esa evaluación y no desaparecer de la comparación.
+
+---
+
+#### 15. Escenario de recurso
+
+Cuando la capacidad dependa de un recurso, el simulador deberá proporcionar un `SimulationResourceScenario` compatible.
+
+El contrato distingue:
+
+```text
+SYNTHETIC_RESOURCE
+MASKED_REAL_RESOURCE
+AUTHORIZED_REAL_REFERENCE
+RESOURCE_DRAFT
+UNRESOLVED
+```
+
+El escenario deberá conservar, cuando aplique:
+
+- tipo de recurso;
+- referencia real autorizada o identificador sintético;
+- territorio;
+- estado;
+- ownership;
+- lados requeridos por el contrato;
+- indicador de presencia de campos sensibles.
+
+Un recurso no resoluble no se convierte en recurso global ni en recurso propio.
+
+La simulación tampoco concede al solicitante derecho a leer el contenido completo de un recurso real por el solo hecho de evaluarlo.
+
+---
+
+#### 16. Evaluación por carriles
+
+Cada `SimulatedAuthorizationDecisionV1` conserva de forma independiente el carril base y el carril operativo.
+
+La salida por carril distingue:
+
+```text
+required = false
+→ result = null
+```
+
+frente a:
+
+```text
+required = true
+→ WOULD_ALLOW | WOULD_DENY | INDETERMINATE
+```
+
+La ausencia de un carril no requerido no podrá interpretarse como `WOULD_ALLOW` ni como `WOULD_DENY`.
+
+Cuando ambos carriles participen, la decisión final deberá seguir la misma semántica contractual de autorización aplicable al permiso y nunca una regla simplificada creada por VISO.
+
+---
+
+#### 17. Resultado final por permiso
+
+La simulación solo puede producir estos resultados hipotéticos finales:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+INDETERMINATE
+```
+
+Nunca devolverá `ALLOW` o `DENY` como decisión real del escenario hipotético.
+
+Semántica:
+
+| Resultado | Interpretación |
+| --- | --- |
+| `WOULD_ALLOW` | Con el snapshot, versiones y escenario aportados, la evaluación hipotética satisface el contrato aplicable. |
+| `WOULD_DENY` | Con el snapshot, versiones y escenario aportados, existe una causa contractual suficiente para denegar hipotéticamente. |
+| `INDETERMINATE` | La evaluación no puede producir una conclusión contractual completa por entrada parcial, enmascarada, incompatible o no resoluble. |
+
+`INDETERMINATE` nunca se convertirá en `WOULD_ALLOW` por conveniencia de interfaz.
+
+---
+
+#### 18. Confianza del resultado
+
+La confianza deberá conservar los estados definidos por el contrato:
+
+```text
+CONTRACT_COMPLETE
+PARTIAL_INPUT
+MASKED_INPUT
+VERSION_MISMATCH
+```
+
+La interfaz deberá mostrar claramente cuándo un resultado no se apoya en una entrada contractual completa.
+
+`VERSION_MISMATCH` obliga a evitar que la simulación se presente como equivalente a la política vigente hasta reconciliar versiones.
+
+`MASKED_INPUT` no autoriza revelar datos ocultos únicamente para mejorar la confianza.
+
+---
+
+#### 19. Comparación entre estado real y estado propuesto
+
+Cuando VISO utilice el simulador para revisar un cambio antes de guardar, deberá mantener dos planos separados:
+
+```text
+PLANO REAL
+→ contexto y decisiones reales vigentes, obtenidos por contratos reales
+
+PLANO HIPOTÉTICO
+→ SimulationContextV1
+→ SimulatedAuthorizationDecisionV1
+```
+
+La interfaz podrá comparar visualmente ambos planos, pero no podrá normalizarlos como si fueran el mismo objeto o la misma autoridad.
+
+La comparación deberá permitir identificar, por permiso exacto:
+
+- sin cambio observable;
+- cambio desde resultado real permitido hacia `WOULD_DENY`;
+- cambio desde resultado real denegado hacia `WOULD_ALLOW`;
+- cambio hacia `INDETERMINATE`;
+- permiso nuevo dentro del conjunto objetivo;
+- permiso que deja de pertenecer al conjunto evaluable por cambio de contrato o versión.
+
+La representación visual no crea un nuevo enum contractual persistido.
+
+---
+
+#### 20. Precedencia y fallo cerrado
+
+La simulación reutiliza la precedencia canónica de autorización y las reglas especiales de `AUTH-SIM-*`.
+
+Como mínimo, deberá fallar cerrado ante:
+
+- actor real no elegible;
+- sesión real expirada, revocada o ambigua;
+- ausencia de `viso.access`;
+- ausencia de `viso.authorization.context_simulations.view`;
+- simulación anidada;
+- alcance solicitado superior al alcance real autorizado;
+- rol objetivo inválido o ambiguo;
+- sede o área no resolubles;
+- turno hipotético inconsistente;
+- permiso desconocido;
+- recurso obligatorio no resoluble;
+- versión incompatible;
+- dato requerido ausente;
+- denegación explícita aplicable;
+- reautenticación fuerte faltante cuando sea obligatoria.
+
+No existen fallbacks silenciosos desde UI, última selección, caché obsoleta, primera fila, nombre visible o valor único encontrado.
+
+---
+
+#### 21. Resultado agregado de la simulación
+
+El simulador podrá resumir una sesión mediante las colecciones contractuales:
+
+- `would_allow`;
+- `would_deny`;
+- `indeterminate`.
+
+Cada referencia deberá mantener la identidad de su decisión simulada, aplicación, permiso y recurso cuando corresponda.
+
+La suma de las tres colecciones deberá corresponder a las evaluaciones materializadas que formen parte del resultado reportado.
+
+Un resumen visual nunca podrá ocultar filas `INDETERMINATE` ni excluir silenciosamente denegaciones.
+
+---
+
+#### 22. Presentación administrativa mínima
+
+La superficie de VISO deberá hacer visible, como mínimo:
+
+```text
+SIMULACIÓN
+
+Sujeto: identidad simulada
+Propósito: propósito contractual
+Contexto: resumen de rol + sede + área + turno
+Snapshot: timestamp + versiones
+
+Permiso                         Real            Simulado
+----------------------------------------------------------------
+permiso exacto A                decisión real   WOULD_ALLOW
+permiso exacto B                decisión real   WOULD_DENY
+permiso exacto C                decisión real   INDETERMINATE
+```
+
+La columna real solo podrá mostrarse cuando exista una decisión real autorizada y comparable. Su ausencia no se rellena mediante el resultado hipotético.
+
+El estado simulado deberá llevar una señal visual inequívoca de que no es ejecutable ni persistido como autoridad.
+
+---
+
+#### 23. Origen de cada permiso reservado a VISO-AUTH-015
+
+`VISO-AUTH-014` determina el efecto hipotético, pero no desarrolla la experiencia completa de procedencia de cada permiso.
+
+El motor podrá conservar las referencias y matches exigidos por `SimulatedAuthorizationDecisionV1`, pero esta tarea no convierte esa evidencia en una explicación administrativa detallada del tipo:
+
+```text
+este permiso viene de rol base X
+este deny viene de fuente Y
+esta excepción viene de registro Z
+```
+
+La presentación canónica de origen pertenece a:
+
+```text
+VISO-AUTH-015 — Mostrar origen de cada permiso
+```
+
+Por tanto, esta tarea puede mostrar el resultado y razones seguras mínimas necesarias para comprender un bloqueo o un estado indeterminado, pero no absorbe la trazabilidad completa de procedencia.
+
+---
+
+#### 24. Conflictos reservados a VISO-AUTH-016
+
+La simulación debe conservar `structural_issues` y `blocked_reasons` porque forman parte del contrato evaluado.
+
+Eso no convierte esta tarea en el inventario transversal de conflictos de configuración.
+
+`VISO-AUTH-014` puede indicar que una evaluación está bloqueada o es indeterminada por una inconsistencia concreta del escenario.
+
+`VISO-AUTH-016` conserva la responsabilidad de identificar, agrupar, explicar y administrar la visibilidad transversal de conflictos entre configuraciones.
+
+---
+
+#### 25. Excepciones individuales reservadas a VISO-AUTH-017
+
+La simulación puede evaluar el efecto de un cambio hipotético que represente un override, asignación o denegación propuesta cuando esa procedencia sea válida dentro del contrato.
+
+No puede:
+
+- crear la excepción;
+- aprobarla;
+- persistirla;
+- revocarla;
+- cambiar su vigencia;
+- asignar un aprobador;
+- convertir un resultado favorable en una excepción real.
+
+La administración de excepciones individuales permanece en `VISO-AUTH-017`.
+
+---
+
+#### 26. Auditoría y reconstrucción
+
+Toda simulación deberá conservar contexto suficiente para demostrar posteriormente:
+
+- quién solicitó la simulación desde autoridad real;
+- qué propósito declaró;
+- qué sujeto simuló;
+- qué contexto real sirvió de referencia;
+- qué valores eran reales, enmascarados, sintéticos o propuestos;
+- qué permisos se evaluaron;
+- qué recurso o territorio participó;
+- qué resultados se obtuvieron;
+- qué problemas estructurales aparecieron;
+- qué versión de catálogo, datasets y simulador se usó;
+- cuándo se creó, expiró, completó o revocó la simulación.
+
+La auditoría deberá minimizar secretos y datos personales.
+
+La existencia de una simulación no sustituye la auditoría de la mutación real posterior.
+
+---
+
+#### 27. Frescura, expiración e invalidación
+
+Una simulación está ligada a su snapshot real y a sus versiones.
+
+Debe considerarse obsoleta para una decisión administrativa cuando cambie materialmente alguno de estos elementos antes del guardado real:
+
+- actor real o sesión;
+- permiso para simular;
+- sujeto de referencia;
+- rol base;
+- rol operativo;
+- asignación de sede;
+- área;
+- turno;
+- check-in relevante;
+- matriz o grant;
+- deny;
+- excepción;
+- catálogo de permisos;
+- reglas de alcance;
+- contrato de respuesta;
+- recurso evaluado;
+- versiones consumidas.
+
+Una simulación expirada, revocada, inválida o basada en fingerprint diferente no puede autorizar ni validar un guardado.
+
+---
+
+#### 28. Regla de guardado posterior
+
+La simulación es un control previo, no un token de autorización.
+
+La mutación real deberá ejecutar nuevamente en servidor:
+
+```text
+identidad real
++
+contexto real fresco
++
+autoridad de administración
++
+validaciones de la mutación
++
+reglas de segregación
++
+versión vigente
+→
+decisión real de guardar
+```
+
+No podrá aceptarse como sustituto:
+
+- `simulation_id`;
+- un `WOULD_ALLOW` anterior;
+- una captura de pantalla;
+- un resultado enviado por el cliente;
+- un hash sin revalidación de las fuentes reales;
+- la autorización del actor simulado.
+
+El guardado podrá exigir una nueva simulación si la política de la mutación así lo determina, pero esa exigencia no cambia la naturaleza no autoritativa del resultado.
+
+---
+
+#### 29. Privacidad y minimización
+
+El simulador deberá limitar la información visible al propósito y alcance autorizados del actor real.
+
+Reglas:
+
+1. una simulación de tercero no habilita acceso general a su expediente;
+2. un recurso sensible puede representarse de forma enmascarada;
+3. `contains_real_personal_data` deberá conservarse cuando corresponda;
+4. datos no necesarios para la decisión se omiten;
+5. la razón visible no deberá revelar grants, denies, controles, secretos o metadatos que el actor no puede consultar;
+6. la auditoría utiliza referencias cuando no sea necesario persistir payloads completos;
+7. una entrada enmascarada puede reducir la confianza sin obligar a revelar el dato.
+
+---
+
+#### 30. Reconciliación con la implementación compartida existente
+
+El repositorio compartido ya materializa la familia `vento.authorization.response-contracts@1.0.0`, incluidos `SimulationContextV1` y `SimulatedAuthorizationDecisionV1`.
+
+Esta tarea no crea un contrato TypeScript paralelo ni cambia esa versión.
+
+La futura unidad física de VISO deberá consumir el contrato compartido vigente y comprobar las dependencias reales de runtime antes de declarar paridad con la simulación canónica.
+
+Una interfaz local con objetos parecidos, un shape legacy o un estado de React no serán fuente de verdad contractual.
+
+---
+
+#### 31. Topología y materialización futura
+
+La tarea documental se define una sola vez dentro del plan, pero su materialización física se rige por:
+
+```text
+mode = PER_IMPLEMENTATION_UNIT
+execution_gate = POST_E5_PACKAGE
+```
+
+Por tanto:
+
+- este cierre documental no crea una instancia física;
+- no selecciona package;
+- no crea `implementation_unit_id`;
+- no autoriza código de VISO;
+- no autoriza cambios en Supabase;
+- no autoriza nuevas tablas, RPC, funciones, RLS, migraciones ni despliegues;
+- la identidad física solo podrá resolverse desde el package y gate aplicables.
+
+---
+
+#### 32. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La obligación de separar simulación de autoridad real, controlar al solicitante, respetar alcance, tipar roles y territorio, no mutar datos, auditar, invalidar contexto obsoleto y mostrar en VISO el efecto antes de guardar ya cuenta con cobertura vigente.
+
+Esta tarea no crea una nueva modalidad de autorización, un nuevo resultado de simulación, un nuevo purpose, un nuevo rol, una nueva identidad territorial ni una nueva transición empresarial.
+
+---
+
+#### 33. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-VISO-001` — VISO muestra antes de guardar el efecto resultante y mantiene coherencia con el resultado consumido por las aplicaciones;
+- `TREQ-AUTH-004` — evaluadores equivalentes producen decisiones coherentes para el mismo contexto;
+- `TREQ-AUTH-007` — la administración requiere capacidad explícita y alcance del actor;
+- `TREQ-AUTH-012` — la simulación permanece separada de autoridad real y no ejecuta mutaciones reales;
+- `TREQ-AUTH-013` — toda mutación protegida se revalida en servidor;
+- `TREQ-AUTH-014` — cambios relevantes invalidan contexto derivado;
+- `TREQ-AUTH-015` — la decisión conserva evidencia correlacionable;
+- `TREQ-AUTH-069` a `TREQ-AUTH-078` — elegibilidad del solicitante, grants, actor humano, alcance, reautenticación, sesión, no mutación y auditoría;
+- `TREQ-AUTH-079` a `TREQ-AUTH-087` — identidad tipada de roles simulables, colisiones, invalidez, completitud y sensibilidad;
+- `TREQ-AUTH-089` a `TREQ-AUTH-108` — sede y área simuladas, alcance, compatibilidad, aislamiento y auditoría.
+
+Estas referencias son trazabilidad heredada. No cambian contenido, estado, paquete, evidencia ni secuencia de ningún requisito.
+
+---
+
+#### 34. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea todavía no fue insertada ni validada en la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, protocolo, contrato de entrega, topología, políticas de tarea, `VISO-AUTH-013`, contratos `AUTH-CTX-*`, contratos `AUTH-SIM-*`, familia `vento.authorization.response-contracts@1.0.0`, `SimulationContextV1`, `SimulatedAuthorizationDecisionV1`, registro 04A aplicable y estado remoto de los repositorios propietarios consultados. |
+| OPERATIVA | NOT_APPLICABLE | No se ejecutaron simulaciones reales ni se modificaron trabajadores, roles, permisos, sedes, áreas, turnos, grants, denies, excepciones o recursos. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, contratos compartidos, migraciones, RPC, RLS, funciones, datos, packages ni despliegues. |
+
+---
+
+#### 35. Criterios de aceptación
+
+- [ ] El simulador consume el handoff contextual de `VISO-AUTH-013` sin convertirlo en autorización precomputada.
+- [ ] El actor real se autoriza antes de construir el escenario hipotético.
+- [ ] La autoridad para simular nunca procede del sujeto o rol simulado.
+- [ ] Se exigen `viso.access` y `viso.authorization.context_simulations.view` cuando corresponde al solicitante interactivo.
+- [ ] Se prohíbe simulación anidada.
+- [ ] El contexto hipotético usa `SimulationContextV1` y no un contrato paralelo de VISO.
+- [ ] Las decisiones hipotéticas usan `SimulatedAuthorizationDecisionV1`.
+- [ ] Los estados de sesión permanecen dentro de `DRAFT`, `ACTIVE`, `COMPLETED`, `EXPIRED`, `REVOKED` e `INVALID`.
+- [ ] El propósito pertenece a la taxonomía contractual vigente.
+- [ ] El sujeto simulado utiliza una identidad tipada.
+- [ ] Rol base y rol operativo permanecen separados.
+- [ ] Sede y área simuladas son identidades exactas y compatibles.
+- [ ] La sede primaria no sustituye la sede operativa.
+- [ ] Tipo de área no sustituye identidad de área.
+- [ ] Un turno hipotético no se completa desde defaults, perfiles o últimas selecciones.
+- [ ] Cada evaluación identifica `app_code` y `permission_key` exactos.
+- [ ] Una selección de permisos se expande a identidades concretas antes de evaluar.
+- [ ] No existen wildcards implícitos ni permisos omitidos silenciosamente.
+- [ ] Cuando el permiso depende de recurso, se conserva un escenario de recurso compatible.
+- [ ] Recurso no resoluble no significa recurso global ni propio.
+- [ ] Los carriles base y operativo se evalúan por separado.
+- [ ] Un carril no requerido conserva `result = null` y no se interpreta como permiso.
+- [ ] El resultado final solo usa `WOULD_ALLOW`, `WOULD_DENY` o `INDETERMINATE`.
+- [ ] `INDETERMINATE` nunca se promociona a resultado favorable.
+- [ ] Se conserva la confianza `CONTRACT_COMPLETE`, `PARTIAL_INPUT`, `MASKED_INPUT` o `VERSION_MISMATCH`.
+- [ ] La comparación entre plano real y plano hipotético no mezcla sus contratos.
+- [ ] Un `WOULD_ALLOW` no se presenta como autorización para ejecutar ni guardar.
+- [ ] Las denegaciones aplicables prevalecen.
+- [ ] Los problemas estructurales se conservan y no se reparan desde la interfaz.
+- [ ] Las colecciones `would_allow`, `would_deny` e `indeterminate` permanecen reconciliadas con las evaluaciones reportadas.
+- [ ] La interfaz marca inequívocamente el plano simulado.
+- [ ] El origen detallado de permisos permanece reservado a `VISO-AUTH-015`.
+- [ ] Los conflictos transversales permanecen reservados a `VISO-AUTH-016`.
+- [ ] La administración de excepciones permanece reservada a `VISO-AUTH-017`.
+- [ ] La auditoría conserva actor real, propósito, sujeto, escenario, permisos, resultados, versiones y tiempos con minimización.
+- [ ] Una simulación expirada, revocada, inválida u obsoleta no valida una mutación posterior.
+- [ ] El guardado real revalida en servidor identidad, contexto, autoridad y versión vigentes.
+- [ ] El simulador no modifica sesión, trabajador, roles, asignaciones, turnos, check-in, permisos, grants, denies, excepciones ni datos empresariales.
+- [ ] No se crea un contrato TypeScript paralelo a la familia compartida vigente.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`.
+
+---
+
+#### 36. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica Supabase;
+- crea migraciones;
+- crea tablas de simulación;
+- crea RPC;
+- crea funciones SQL;
+- crea RLS;
+- cambia grants de base de datos;
+- modifica `SimulationContextV1`;
+- modifica `SimulatedAuthorizationDecisionV1`;
+- cambia la versión de `vento.authorization.response-contracts`;
+- crea un catálogo nuevo de permisos;
+- crea roles;
+- modifica matrices de rol;
+- crea o modifica asignaciones de sede o área;
+- crea o modifica perfiles operativos;
+- crea o modifica turnos o check-ins;
+- crea grants individuales;
+- crea denies;
+- crea excepciones;
+- ejecuta acciones empresariales simuladas;
+- persiste `WOULD_ALLOW` como autoridad;
+- expone el origen detallado reservado a `VISO-AUTH-015`;
+- desarrolla el inventario transversal de conflictos de `VISO-AUTH-016`;
+- administra excepciones de `VISO-AUTH-017`;
+- implementa auditoría física de `VISO-AUTH-018`;
+- cambia quién administra seguridad de `VISO-AUTH-019`;
+- crea el exporte de `VISO-AUTH-020`;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+---
+
+#### 37. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-014 — Crear simulador de permisos efectivos`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-015 — Mostrar origen de cada permiso`
+
+
 ### [ ] VISO-AUTH-015 — Mostrar origen de cada permiso
 ### [ ] VISO-AUTH-016 — Mostrar conflictos de configuración
 ### [ ] VISO-AUTH-017 — Administrar excepciones individuales
