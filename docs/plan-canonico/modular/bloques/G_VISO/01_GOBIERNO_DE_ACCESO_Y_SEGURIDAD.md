@@ -3811,7 +3811,945 @@ La identidad exacta de la futura unidad física se resolverá exclusivamente med
 **SIGUIENTE TAREA RESERVADA**
 `VISO-AUTH-007 — Administrar perfiles operativos por trabajador`
 
-### [ ] VISO-AUTH-007 — Administrar perfiles operativos por trabajador
+### ✅ VISO-AUTH-007 — Administrar perfiles operativos por trabajador
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-006 — Administrar roles permitidos por área
+**Tarea siguiente:** VISO-AUTH-008 — Administrar sedes asignadas
+**Tipo de tarea:** documental; definición del contrato administrativo de perfiles operativos predeterminados por trabajador y sede, exclusivamente como configuración de planificación y sin convertir el perfil en asignación territorial, rol efectivo, permiso ni autorización
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo VISO deberá administrar la configuración operativa habitual de un trabajador en una sede, conservando el perfil como una ayuda de planificación y nunca como fuente de autoridad.
+
+La unidad lógica de perfil queda:
+
+```text
+employee_id
++
+site_id
+→
+máximo un perfil operativo
+```
+
+Cuando el perfil está activo y posee un rol predeterminado utilizable:
+
+```text
+EMPLEADO ACTIVO
++
+ASIGNACIÓN ACTIVA DEL EMPLEADO A LA SEDE
++
+SEDE OPERATIVA VÁLIDA
++
+ROL OPERATIVO CANÓNICO ACTIVO
++
+ROL PERMITIDO EN ESA SEDE
++
+PUNTOS DE MARCACIÓN COMPATIBLES CUANDO CORRESPONDAN
+→
+PERFIL OPERATIVO UTILIZABLE PARA PLANIFICACIÓN
+```
+
+Su efecto termina en:
+
+```text
+configuración habitual
+→ valor sugerido al crear o preparar un turno
+```
+
+y nunca continúa automáticamente hacia:
+
+```text
+perfil
+→ rol operativo efectivo
+→ permiso
+→ autorización
+```
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva y consume, sin reescribir:
+
+- `ADR-AUTH-001`;
+- `AUTH-AUD-008` — asignaciones laborales de sede y área;
+- `AUTH-AUD-009` — inventario de perfiles operativos por trabajador y sede;
+- `AUTH-MOD-001` — identidad laboral y actor efectivo;
+- `AUTH-MOD-002` — separación entre rol base y rol operativo;
+- `AUTH-MOD-005` — rol operativo y perfil predeterminado;
+- `AUTH-MOD-007` — sede asignada y sede activa;
+- `AUTH-MOD-008` — área asignada y área activa;
+- `AUTH-MOD-009` y `AUTH-MOD-010` — turno publicado y contexto operativo;
+- `AUTH-CTX-009` a `AUTH-CTX-013` — contexto territorial y laboral;
+- `AUTH-SRV-004` a `AUTH-SRV-009` — frontera de confianza, permiso, sede, área, turno y rol operativo en servidor;
+- `VISO-AUTH-002` — catálogo administrativo de doce roles operativos;
+- `VISO-AUTH-005` — matriz padre rol operativo × sede;
+- `VISO-AUTH-006` — compatibilidad rol operativo × área;
+- `SHELL-CON-005` — contrato compartido de roles operativos.
+
+La identidad del rol continúa gobernada por `OperationalRoleCode@1.0.0`.
+
+El perfil no redefine `employee_sites`, `employee_areas`, `site_operational_roles`, el turno ni el catálogo de roles.
+
+---
+
+#### 3. Semántica canónica del perfil
+
+La fuente aprobada ya establece:
+
+```text
+default_operational_role
+→ valor predeterminado de planificación
+
+active_shift.operational_role
+→ rol operativo efectivo
+```
+
+y la precedencia:
+
+```text
+turno válido
+>
+perfil operativo predeterminado
+```
+
+Por tanto, un perfil:
+
+- puede sugerir el rol al preparar un turno;
+- puede sugerir puntos físicos de entrada o salida cuando correspondan;
+- puede conservar una configuración habitual por sede;
+- no crea `active_shift`;
+- no completa silenciosamente un turno sin rol;
+- no reemplaza el rol publicado;
+- no elige la sede efectiva;
+- no elige el área efectiva;
+- no resuelve ambigüedad territorial;
+- no concede permisos;
+- no autoriza acciones empresariales.
+
+En ausencia de turno válido:
+
+```text
+active_operational_role = null
+```
+
+aunque exista un perfil activo.
+
+---
+
+#### 4. Identidad y cardinalidad
+
+La identidad lógica del perfil es:
+
+```text
+(employee_id, site_id)
+```
+
+Reglas:
+
+1. cada trabajador puede tener como máximo un perfil por sede;
+2. un trabajador puede tener perfiles distintos en varias sedes únicamente cuando tenga asignación laboral válida en cada una;
+3. el perfil no se identifica por `default_operational_role`;
+4. cambiar el rol predeterminado no crea un segundo perfil;
+5. cambiar puntos de marcación no crea un segundo perfil;
+6. la desactivación conserva la misma identidad histórica;
+7. no se permiten duplicados activos o inactivos para la misma pareja trabajador–sede como mecanismo de versionado paralelo.
+
+La restricción física actual `UNIQUE (employee_id, site_id)` es compatible con esta cardinalidad.
+
+---
+
+#### 5. Forma lógica administrada
+
+El shape físico observado contiene:
+
+```text
+id
+employee_id
+site_id
+default_operational_role
+default_checkin_site_id
+default_checkout_site_id
+is_active
+notes
+created_at
+updated_at
+created_by
+updated_by
+```
+
+La semántica administrativa de esta tarea queda:
+
+| Campo | Regla |
+| --- | --- |
+| `employee_id` | Trabajador objetivo; debe existir y estar laboralmente activo para que un perfil pueda activarse o utilizarse prospectivamente. |
+| `site_id` | Sede de la configuración habitual; debe existir, estar activa, ser operativamente elegible y estar asignada al trabajador. |
+| `default_operational_role` | Preferencia de planificación; para un perfil activo utilizable debe ser un `OperationalRoleCode` canónico, activo y permitido en `site_id`. |
+| `default_checkin_site_id` | Punto físico sugerido de entrada cuando el contrato del rol o del turno lo requiera; no es sede laboral ni territorio. |
+| `default_checkout_site_id` | Punto físico sugerido de salida cuando el contrato del rol o del turno lo requiera; no es sede laboral ni territorio. |
+| `is_active` | Determina si el perfil puede participar como configuración prospectiva de planificación. |
+| `notes` | Contexto administrativo no autoritativo; nunca reemplaza códigos, relaciones o reglas. |
+| `created_at`, `updated_at` | Evidencia temporal de configuración. |
+| `created_by`, `updated_by` | Actor administrativo atribuible mediante identidad laboral canónica; no deben derivarse de una identidad incompatible. |
+
+Los campos físicos son evidencia AS-IS. Esta tarea define su semántica, no obliga a conservar exactamente el mismo shape durante una futura materialización si el contrato físico requiere una representación más segura o versionada.
+
+---
+
+#### 6. Estado activo, inactivo e incompleto
+
+Un perfil activo solo puede considerarse utilizable para planificación cuando todas las referencias necesarias son válidas.
+
+Para un perfil activo:
+
+```text
+employee_id válido y activo
++
+site_id válido y asignado
++
+default_operational_role válido y permitido
++
+requisitos de marcación satisfechos
+→ perfil utilizable
+```
+
+Un perfil con `default_operational_role = null` no adquiere un rol por fallback.
+
+Si una fila histórica o física conserva:
+
+```text
+default_operational_role = null
+```
+
+su significado es exclusivamente:
+
+```text
+sin rol operativo predeterminado
+```
+
+No significa:
+
+- rol base del trabajador;
+- último rol usado;
+- único rol disponible;
+- rol default de la sede;
+- rol inferido del área;
+- rol de navegación.
+
+Una fila activa sin rol predeterminado no puede utilizarse para completar un turno. Antes de presentarla como perfil de planificación utilizable deberá quedar configurado un rol canónico explícito o permanecer como configuración incompleta sin sugerencia de rol.
+
+Un perfil inactivo permanece como evidencia histórica y no participa en nuevas sugerencias.
+
+---
+
+#### 7. Dependencia obligatoria de la asignación trabajador × sede
+
+El perfil no asigna una sede al trabajador.
+
+La relación obligatoria es:
+
+```text
+ASIGNACIÓN LABORAL ACTIVA
+employee_sites
+        ↓
+PERFIL
+employee_site_operational_profiles
+```
+
+Por tanto:
+
+```text
+perfil activo
++
+trabajador sin asignación activa a site_id
+→ configuración inválida
+```
+
+Crear un perfil no puede crear, reactivar ni inferir una fila de `employee_sites`.
+
+La administración de las sedes asignadas permanece reservada a `VISO-AUTH-008`.
+
+Si una asignación trabajador–sede se desactiva posteriormente, el perfil deja de ser utilizable prospectivamente hasta su reconciliación. La historia no se reescribe y la relación laboral no se restaura desde el perfil.
+
+---
+
+#### 8. Dependencia obligatoria del rol permitido por sede
+
+Cuando existe `default_operational_role`, deberá cumplirse:
+
+```text
+OperationalRoleCode canónico
++
+rol activo
++
+relación padre rol × sede activa de VISO-AUTH-005
+→ rol elegible como preferencia del perfil
+```
+
+No son válidos:
+
+- roles base;
+- `propietario_admin`;
+- oficios legacy;
+- aliases;
+- coincidencias parciales;
+- nombres visibles;
+- roles creados localmente por VISO;
+- roles admitidos solamente por una fila física legacy.
+
+El perfil no amplía la matriz de `VISO-AUTH-005`.
+
+---
+
+#### 9. Relación con la matriz de área
+
+El perfil actual es por trabajador y sede. No contiene `default_area_id` ni `default_area_kind`.
+
+Por tanto:
+
+```text
+perfil trabajador × sede
+≠ asignación trabajador × área
+≠ área predeterminada
+≠ área efectiva del turno
+```
+
+El perfil tampoco puede convertir:
+
+```text
+AREA_BINDING_UNRESOLVED
+→ EXACT_BINDING
+```
+
+El handoff recibido de `VISO-AUTH-006` se conserva:
+
+```text
+16 relaciones rol × sede
+=
+13 EXACT_BINDING
++
+3 AREA_BINDING_UNRESOLVED
++
+0 NO_AREA_NOT_REQUIRED
+```
+
+Un rol puede ser una preferencia de perfil a nivel de sede aun cuando su área siga no resuelta, pero cualquier turno o acción que requiera un área exacta deberá resolverla por su contrato propio.
+
+La administración de áreas asignadas al trabajador permanece reservada a `VISO-AUTH-009`.
+
+---
+
+#### 10. Prohibición de multiplicar perfiles por bindings de área
+
+La matriz territorial puede contener varias filas de área para una misma pareja:
+
+```text
+site_id
++
+operational_role_code
+```
+
+Eso no crea varios perfiles del trabajador para la misma sede.
+
+Una superficie de administración de perfiles deberá deduplicar el dominio padre y presentar la identidad lógica:
+
+```text
+site_id + operational_role_code
+```
+
+como candidato de preferencia, sin convertir cada binding de área en un perfil distinto.
+
+La unicidad del perfil continúa siendo:
+
+```text
+employee_id + site_id
+```
+
+---
+
+#### 11. Puntos físicos de entrada y salida
+
+`default_checkin_site_id` y `default_checkout_site_id` son preferencias de punto físico de marcación.
+
+No son:
+
+- sede laboral;
+- sede asignada;
+- sede operativa;
+- área;
+- alcance;
+- permiso;
+- recurso empresarial;
+- cobertura administrativa.
+
+Cuando el rol operativo exige marcación externa, el perfil utilizable deberá aportar el punto correspondiente:
+
+```text
+requires_external_checkin = true
+→ default_checkin_site_id requerido
+
+requires_external_checkout = true
+→ default_checkout_site_id requerido
+```
+
+Cada punto indicado deberá:
+
+1. existir;
+2. estar activo;
+3. ser una entidad válida para marcación según el catálogo aplicable;
+4. no convertirse en sede asignada del trabajador;
+5. no ampliar el territorio del rol;
+6. ser revalidado al construir el turno.
+
+Cuando el contrato del rol no exige punto externo, la ausencia del default correspondiente es válida y no debe impedir crear un perfil.
+
+La presencia opcional de un punto no convierte por sí sola una marcación externa en obligatoria; la obligación proviene del contrato del rol o del turno.
+
+---
+
+#### 12. Baseline físico read-only
+
+El corte remoto verificado contiene:
+
+```text
+perfiles totales = 1
+perfiles activos = 1
+trabajadores distintos con perfil = 1
+sedes distintas con perfil = 1
+trabajadores activos = 40
+trabajadores activos con perfil activo = 1
+trabajadores activos sin perfil activo = 39
+cobertura descriptiva = 2,5 %
+```
+
+El único perfil activo observado conserva, sin identificar a la persona:
+
+```text
+site_code = CENTRO_PROD
+default_operational_role = conductor_logistica
+default_checkin_site = pickup_camioneta_principal
+default_checkout_site = pickup_camioneta_principal
+employee_site_active = true
+role_allowed_at_site = true
+```
+
+`conductor_logistica` es el único `OperationalRoleCode` canónico que actualmente exige simultáneamente marcación externa de entrada y salida.
+
+El corte físico de `operational_roles` conserva trece filas activas porque todavía incluye el legacy `propietario_admin`; esta tarea administra exclusivamente los doce códigos canónicos y excluye esa fila.
+
+---
+
+#### 13. La cobertura de perfiles no es una cuota
+
+El baseline:
+
+```text
+1 de 40 trabajadores activos con perfil
+```
+
+no crea una meta de:
+
+```text
+40 de 40
+```
+
+El perfil es configuración habitual opcional y debe existir solo cuando haya una preferencia operativa administrada que aportar a planificación.
+
+Quedan prohibidos:
+
+- crear perfiles masivamente desde `employees.role`;
+- copiar el último turno;
+- inferir perfil desde la sede primaria;
+- inferir rol desde un único rol permitido en sede;
+- crear perfiles por cada trabajador únicamente para completar cobertura;
+- convertir ausencia de perfil en error de autorización.
+
+La ausencia de perfil significa:
+
+```text
+sin configuración operativa predeterminada para esa sede
+```
+
+y no:
+
+```text
+sin permiso
+```
+
+ni:
+
+```text
+trabajador inválido
+```
+
+---
+
+#### 14. Consumo por planificación de turnos
+
+El perfil solo puede participar en la fase de propuesta o preparación.
+
+Flujo permitido:
+
+```text
+trabajador
++
+sede elegida y válida
++
+perfil activo compatible
+→ sugerir rol y puntos
+→ usuario o proceso autorizado construye el turno
+→ validar explícitamente el turno
+→ persistir rol/contexto del turno
+```
+
+Flujo prohibido:
+
+```text
+turno persistido sin rol
++
+perfil
+→ completar silenciosamente el rol después
+```
+
+La regla aprobada es que el perfil no puede completar un turno sin rol ni reemplazar un rol publicado.
+
+La asignación y persistencia del rol operativo del turno permanece reservada a `VISO-AUTH-010`.
+
+La detección de un turno sin rol permanece reservada a `VISO-AUTH-011`.
+
+---
+
+#### 15. Cambios del perfil y turnos existentes
+
+Modificar o desactivar un perfil no reescribe silenciosamente:
+
+- turnos publicados;
+- turnos históricos;
+- asistencia;
+- check-ins;
+- check-outs;
+- sesiones de actor;
+- auditoría;
+- decisiones de autorización ya registradas.
+
+Un cambio de perfil afecta únicamente propuestas futuras desde su vigencia.
+
+Si existen turnos futuros, abiertos o todavía no ejecutados que queden incompatibles con la nueva configuración, deberán ser revalidados por las tareas propietarias de turno y conflicto.
+
+El perfil no es una herramienta de migración masiva de turnos.
+
+---
+
+#### 16. Ciclo de vida administrativo
+
+El perfil deberá admitir, como mínimo, estas transiciones conceptuales:
+
+| Operación | Regla |
+| --- | --- |
+| Crear | Requiere empleado activo, sede asignada válida, rol canónico permitido cuando se configure y puntos compatibles cuando correspondan. |
+| Actualizar | Revalida todas las referencias; cambiar rol o punto no altera turnos existentes por sí solo. |
+| Activar | Revalida trabajador, asignación de sede, sede, rol y requisitos de marcación antes de volverlo utilizable. |
+| Desactivar | Retira el perfil de nuevas sugerencias sin eliminar historia. |
+| Reconciliar | Resuelve referencias que quedaron incompatibles después de cambios en trabajador, sede, rol, matriz o puntos de marcación. |
+
+No se usa eliminación destructiva como mecanismo normal para representar inactividad.
+
+La baja o terminación laboral debe impedir uso futuro del perfil y conservar la evidencia exigida por el contrato de retiro.
+
+---
+
+#### 17. Validación administrativa de una mutación
+
+Toda mutación deberá comprobar, como mínimo:
+
+1. `employee_id` existe;
+2. el trabajador está activo para activar o utilizar prospectivamente el perfil;
+3. `site_id` existe;
+4. la sede está activa y es operativamente elegible;
+5. existe asignación activa trabajador × sede;
+6. no existe otro perfil para la misma pareja trabajador × sede;
+7. el rol predeterminado, cuando se configure, pertenece a los doce `OperationalRoleCode`;
+8. el rol está activo;
+9. existe relación activa rol × sede;
+10. no se utiliza `propietario_admin`, rol base u oficio legacy;
+11. los puntos indicados existen y están activos;
+12. los puntos indicados son válidos para marcación;
+13. si el rol exige punto externo de entrada, existe `default_checkin_site_id`;
+14. si exige punto externo de salida, existe `default_checkout_site_id`;
+15. un punto de marcación no crea una sede laboral;
+16. no se infiere área;
+17. el actor administrador posee capacidad explícita;
+18. el actor administrador posee territorio suficiente sobre la sede objetivo;
+19. el servidor revalida el payload;
+20. la mutación conserva atribución y auditoría;
+21. cualquier ambigüedad concluyente falla cerrada.
+
+---
+
+#### 18. Autoridad administrativa
+
+Administrar perfiles operativos es una mutación de configuración de seguridad y planificación.
+
+La condición TO-BE es:
+
+```text
+CAPACIDAD ADMINISTRATIVA EXPLÍCITA
++
+ACTOR ADMINISTRATIVO VÁLIDO
++
+TRABAJADOR OBJETIVO VÁLIDO
++
+SEDE OBJETIVO DENTRO DE COBERTURA
++
+VALIDACIÓN EN SERVIDOR
++
+AUDITORÍA
+→
+MUTACIÓN POSIBLE
+```
+
+El rol base `gerente` no concede administración global por nombre.
+
+El catálogo vigente no contiene una clave dedicada exclusivamente a “administrar perfiles operativos por trabajador”. Esta tarea no inventa una.
+
+La vinculación definitiva de estas mutaciones con la capacidad administrativa canónica y su segregación permanece reservada a:
+
+`VISO-AUTH-019 — Restringir quién administra seguridad`.
+
+Condición exacta de salida:
+
+```text
+ninguna escritura de perfiles se declara conforme
+hasta demostrar
+capacidad administrativa explícita
++
+territorio del actor
++
+validación server-side
++
+auditoría
+```
+
+---
+
+#### 19. Reconciliación AS-IS de `/operations/employee-profiles`
+
+La superficie física actual existe en:
+
+```text
+/operations/employee-profiles
+```
+
+y actualmente:
+
+- carga trabajadores;
+- carga sedes;
+- carga la matriz rol × sede;
+- carga puntos de marcación;
+- carga perfiles;
+- crea o actualiza perfiles;
+- permite activar y desactivar.
+
+La superficie es evidencia AS-IS y no se declara conforme por su sola existencia.
+
+Se observan estas diferencias frente al contrato TO-BE:
+
+1. la lista de trabajadores no demuestra filtrado por actividad antes de ofrecer una alta;
+2. el acceso general a VISO no demuestra la capacidad administrativa explícita requerida;
+3. la interfaz afirma que el perfil “define dónde trabaja la persona”, aunque la sede laboral pertenece a la asignación administrada por `VISO-AUTH-008`;
+4. exige punto físico de entrada y salida para todos los perfiles, aunque el contrato del rol determina cuándo son obligatorios;
+5. consume una vista que puede contener varias filas de área para la misma pareja sede–rol y debe evitar duplicar candidatos de perfil;
+6. no demuestra en la propia superficie que el trabajador esté asignado a la sede elegida;
+7. ante una firma RPC ausente conserva un fallback de `upsert` directo, que no constituye una segunda autoridad TO-BE válida para una mutación sensible.
+
+La futura materialización de esta tarea deberá eliminar esas divergencias sin invadir las responsabilidades de asignaciones, turnos ni autoridad administrativa.
+
+---
+
+#### 20. Reconciliación AS-IS de persistencia y trigger
+
+El trigger físico `validate_employee_site_operational_profile` actualmente valida:
+
+- sede activa;
+- `operational_visibility = operational`;
+- punto de entrada activo cuando se informa;
+- punto de salida activo cuando se informa.
+
+No demuestra todavía:
+
+- asignación activa del trabajador a la sede;
+- rol predeterminado activo;
+- rol predeterminado permitido en la sede;
+- pertenencia al catálogo canónico de doce roles;
+- exclusión de `propietario_admin`;
+- que el punto informado sea realmente un punto de marcación;
+- autoridad administrativa explícita;
+- límite territorial del administrador.
+
+Por tanto, la existencia del trigger no certifica cumplimiento TO-BE.
+
+La materialización futura deberá cerrar esas validaciones en la frontera autoritativa aplicable y no depender únicamente de filtros de interfaz.
+
+---
+
+#### 21. Reconciliación AS-IS de RPC y RLS
+
+La RPC física `upsert_employee_site_operational_profile` y la política RLS de administración observadas permiten actualmente mutación mediante condiciones nominales equivalentes a owner, global manager o manager.
+
+Eso no demuestra:
+
+```text
+capacidad administrativa explícita
++
+territorio autorizado
+```
+
+La RPC es `SECURITY DEFINER` y conserva ejecución para `authenticated`, por lo que su validación interna debe considerarse parte de la frontera crítica.
+
+Además, `created_by` y `updated_by` están vinculados físicamente a `employees(id)`, mientras la función observada obtiene el actor mediante `auth.uid()`. La futura materialización deberá demostrar una atribución compatible con la identidad laboral canónica antes de declarar auditoría correcta.
+
+Propietarios del cierre:
+
+- `VISO-AUTH-018` — auditoría de cambios de seguridad;
+- `VISO-AUTH-019` — autoridad para administrar seguridad;
+- tareas de servidor y base de datos aplicables — enforcement físico.
+
+Esta tarea no modifica RPC, RLS ni columnas.
+
+---
+
+#### 22. Drift AS-IS en aplicación del perfil al turno
+
+La función física `apply_operational_profile_to_shift` observada:
+
+1. obtiene un turno;
+2. busca un perfil activo por trabajador y sede;
+3. cuando el turno tiene valores nulos, completa `operational_role`, `checkin_site_id` y `checkout_site_id` mediante `coalesce` desde el perfil.
+
+Eso contradice la regla canónica cuando el mecanismo se utiliza para completar un turno persistido sin rol:
+
+```text
+perfil predeterminado
+≠ completar un turno sin rol
+```
+
+El perfil puede proponer valores antes de la persistencia del turno, pero no convertirse en fuente posterior de rol efectivo.
+
+Propietarios del cierre:
+
+- `VISO-AUTH-010` — asignación explícita del rol operativo al turno;
+- `VISO-AUTH-011` — validación de turnos sin rol operativo;
+- `VISO-AUTH-012` — validación de incompatibilidad de área;
+- tareas de servidor y base de datos aplicables — enforcement físico.
+
+Condición exacta de salida:
+
+```text
+ningún turno persistido obtiene autoridad o contexto efectivo
+desde el perfil por fallback;
+todo valor operativo queda explícitamente resuelto
+y validado en el contrato del turno
+```
+
+---
+
+#### 23. Fallo cerrado
+
+La administración deberá rechazar o bloquear:
+
+| Caso | Resultado |
+| --- | --- |
+| Trabajador inexistente | Rechazar |
+| Trabajador inactivo al activar o usar prospectivamente el perfil | Rechazar |
+| Sede inexistente, inactiva o no operativa | Rechazar |
+| Trabajador sin asignación activa a la sede | Rechazar |
+| Duplicado trabajador × sede | Rechazar |
+| Rol no canónico, inactivo o legacy | Rechazar |
+| `propietario_admin` | Rechazar |
+| Rol no permitido en la sede | Rechazar |
+| Punto físico inexistente o inactivo | Rechazar |
+| Punto informado que no es válido para marcación | Rechazar |
+| Rol que exige entrada externa sin punto de entrada | Rechazar |
+| Rol que exige salida externa sin punto de salida | Rechazar |
+| Perfil usado para inferir área | Rechazar inferencia |
+| Perfil usado como permiso | Rechazar |
+| Perfil usado como rol efectivo sin turno válido | Rechazar |
+| Perfil usado para completar silenciosamente un turno persistido sin rol | Rechazar |
+| Actor sin capacidad administrativa explícita | Rechazar |
+| Sede fuera del territorio administrativo del actor | Rechazar |
+| Fallback directo que elude la frontera autoritativa | Rechazar |
+| Auditoría no atribuible | No guardar |
+| Fuente contractual incompatible o ambigua | Rechazar |
+
+---
+
+#### 24. Handoff a sedes asignadas
+
+`VISO-AUTH-008` recibe de esta tarea la regla:
+
+```text
+PERFIL OPERATIVO
+→ consume una asignación trabajador × sede
+→ nunca la crea
+```
+
+La administración de sedes asignadas deberá conservar:
+
+1. la pareja `employee_id + site_id` como dependencia territorial del perfil;
+2. la posibilidad de un trabajador con perfiles en varias sedes solo cuando tenga asignaciones válidas;
+3. la desactivación de una sede como evento que vuelve inutilizable prospectivamente el perfil asociado;
+4. la prohibición de restaurar asignaciones desde perfiles residuales;
+5. la historia de perfiles sin convertirla en autoridad;
+6. la separación entre sede laboral y punto físico de marcación.
+
+La tarea siguiente no deberá reinterpretar un perfil como fuente de verdad de `employee_sites`.
+
+---
+
+#### 25. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La administración de perfiles operativos, su territorio, su separación respecto del rol efectivo, la invalidación ante cambios, la protección de mutaciones y la auditoría ya están cubiertas por requisitos canónicos vigentes.
+
+Esta tarea concreta su aplicación administrativa en VISO sin introducir una nueva identidad, modalidad de autorización, scope, transición de negocio o riesgo no registrado que exija ampliar el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 26. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, esta tarea reutiliza:
+
+- `TREQ-AUTH-001` — un rol o lista local no concede autorización;
+- `TREQ-AUTH-004` — los evaluadores deben producir decisiones coherentes para el mismo actor y contexto;
+- `TREQ-AUTH-007` — administrar perfiles exige capacidad administrativa explícita y territorio autorizado;
+- `TREQ-AUTH-008` — la operación exige turno, rol efectivo y compatibilidad territorial;
+- `TREQ-AUTH-009` — sede y área deben resolverse determinísticamente;
+- `TREQ-AUTH-013` — formularios, API, RPC y llamadas directas no pueden eludir la autorización de servidor;
+- `TREQ-AUTH-014` — cambios de turno, área, trabajador, rol o asignación invalidan contexto y decisiones derivadas;
+- `TREQ-AUTH-015` — decisiones y acciones protegidas conservan evidencia atribuible;
+- `TREQ-AUTH-016` — retiro o terminación revoca configuraciones operativas aplicables sin borrar la historia y un reingreso no restaura privilegios automáticamente;
+- `TREQ-SHELL-041` — el catálogo operativo conserva exactamente doce `OperationalRoleCode` y excluye `propietario_admin`;
+- `TREQ-VISO-001` — la configuración de perfiles en VISO debe ser coherente con el resultado consumido por aplicaciones operativas y conservar auditoría.
+
+Esta trazabilidad no altera contenido, estado, paquete, secuencia ni evidencia de ningún requisito.
+
+---
+
+#### 27. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea aún no fue insertada ni validada dentro de la rama documental local. |
+| REMOTA | PASS | Se contrastaron `main`, continuidad, topología, políticas, VISO-AUTH-006, contratos de perfil y turno, 04A vigente, `/operations/employee-profiles`, y el corte read-only de Supabase para perfiles, empleados, catálogo operativo, constraints, trigger, RPC, RLS y puntos de marcación. |
+| OPERATIVA | NOT_APPLICABLE | No se crean, modifican ni desactivan perfiles, trabajadores, asignaciones, turnos o marcaciones reales durante este cierre documental. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, tablas, funciones, triggers, RLS, contratos, migraciones ni datos. |
+
+---
+
+#### 28. Criterios de aceptación
+
+- [ ] La identidad del perfil es `employee_id + site_id`.
+- [ ] Existe como máximo un perfil por trabajador y sede.
+- [ ] Un trabajador puede tener varios perfiles únicamente sobre sedes laboralmente asignadas.
+- [ ] El perfil no crea ni reactiva `employee_sites`.
+- [ ] El perfil no crea ni administra áreas.
+- [ ] Un perfil activo utilizable exige trabajador activo y sede operativa válida.
+- [ ] Un rol predeterminado configurado pertenece exclusivamente a los doce `OperationalRoleCode` canónicos.
+- [ ] `propietario_admin`, roles base, oficios legacy y aliases quedan excluidos.
+- [ ] El rol predeterminado debe estar activo y permitido en la sede.
+- [ ] Un rol con `AREA_BINDING_UNRESOLVED` no obtiene área desde el perfil.
+- [ ] La matriz de área no multiplica perfiles ni candidatos equivalentes de sede–rol.
+- [ ] `default_operational_role` es preferencia de planificación y no rol efectivo.
+- [ ] Un perfil sin rol explícito no obtiene fallback.
+- [ ] El turno válido prevalece sobre el perfil.
+- [ ] El perfil no completa silenciosamente un turno persistido sin rol.
+- [ ] El perfil no concede permisos ni autorización.
+- [ ] Los puntos físicos de marcación no crean territorio laboral.
+- [ ] Un rol que exige marcación externa requiere el default correspondiente antes de utilizar el perfil para planificación.
+- [ ] Los roles que no exigen marcación externa no requieren obligatoriamente puntos separados para que exista un perfil.
+- [ ] El baseline remoto conserva 1 perfil activo sobre 40 trabajadores activos.
+- [ ] Los 39 trabajadores sin perfil no generan una obligación de creación masiva.
+- [ ] La ausencia de perfil significa ausencia de configuración predeterminada, no falta de permiso.
+- [ ] Cambiar o desactivar un perfil no reescribe turnos ni asistencia históricos.
+- [ ] La superficie `/operations/employee-profiles` no se declara conforme por su sola existencia.
+- [ ] El trigger AS-IS no se declara suficiente hasta validar asignación trabajador–sede, rol y puntos de marcación.
+- [ ] El fallback de `upsert` directo no constituye una autoridad TO-BE alternativa.
+- [ ] La RPC y RLS AS-IS basadas en nombres administrativos no sustituyen capacidad explícita y territorio.
+- [ ] `apply_operational_profile_to_shift` no puede conservar un fallback que convierta el perfil en rol efectivo de un turno persistido.
+- [ ] `VISO-AUTH-018` y `VISO-AUTH-019` conservan sus responsabilidades de auditoría y autoridad administrativa.
+- [ ] `VISO-AUTH-008` recibe la dependencia de sede sin reinterpretar el perfil como asignación.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 29. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica `/operations/employee-profiles`;
+- modifica programación semanal o mensual;
+- modifica `@vento/contracts`;
+- modifica `OperationalRoleCode`;
+- modifica `public.employees`;
+- modifica `public.employee_sites`;
+- modifica `public.employee_areas`;
+- modifica `public.employee_site_operational_profiles`;
+- modifica `public.site_operational_roles`;
+- modifica `public.operational_roles`;
+- modifica `public.employee_shifts`;
+- modifica puntos de marcación;
+- modifica `apply_operational_profile_to_shift`;
+- modifica `upsert_employee_site_operational_profile`;
+- modifica triggers, índices, constraints, RPC, RLS o grants PostgreSQL;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- crea perfiles reales;
+- completa perfiles faltantes por inferencia;
+- asigna sedes o áreas a trabajadores;
+- asigna rol operativo efectivo al turno;
+- corrige turnos sin rol;
+- corrige incompatibilidad de área;
+- crea permisos o scopes;
+- crea excepciones individuales;
+- ejecuta simulaciones;
+- define quién administra seguridad fuera de `VISO-AUTH-019`;
+- ejecuta auditoría física fuera de `VISO-AUTH-018`;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la futura unidad física se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 30. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-006 — Administrar roles permitidos por área`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-007 — Administrar perfiles operativos por trabajador`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-008 — Administrar sedes asignadas`
+
+
 ### [ ] VISO-AUTH-008 — Administrar sedes asignadas
 ### [ ] VISO-AUTH-009 — Administrar áreas asignadas
 ### [ ] VISO-AUTH-010 — Asignar rol operativo al turno
