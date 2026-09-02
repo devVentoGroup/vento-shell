@@ -106,7 +106,7 @@
     "AUTHORIZATION decision=APPROVED approved_by=VENTO_OWNER",
     "SOURCE_CONTRACT_SHA256 17823df588e49b5ac27dec4fa2b75e222d1797841818611629f306a9a34ee11c",
     "MATERIALIZATION migration=supabase/migrations/20260902212940_auth_db_014_authorization_device_audit.sql sha256=f8b4d2556403ee012e5b22550bb0349a2748b21d853a01ba99582a70a5a7d3ea",
-    "MATERIALIZATION test=supabase/tests/database/047_auth_db_014_authorization_device_audit.test.sql assertions=199 sha256=629e6b2b373f8001ec4ed5221bda9df8952e5af78ff6d908ae7116ff085f337e",
+    "MATERIALIZATION test=supabase/tests/database/047_auth_db_014_authorization_device_audit.test.sql assertions=199 sha256=df2fcec3d2c7639167eea10ffb902f485db099d0d51a983aa892d7690f16a625",
     "ARTIFACT_STATIC audit_tables=6 app_private_functions=11 privileged_security_definer=6 append_only_triggers=12 event_catalog=35",
     "MATERIALIZATION ratchet_022 governed=407 security_definer=222 vento_security_definer=217 direct_security_definer=188 trigger_security_definer=34",
     "MATERIALIZATION ratchet_026 direct_routines=279 direct_security_definer=183 trigger_functions=77 primary_classification=331",
@@ -126,10 +126,15 @@
     "QUALITY_REPAIR_RERUN NO",
     "PGTAP_REPAIR assertion_184=PGTAP_INTERNAL_SEARCH_PATH test_only=YES migration_change=NO acl_broadening=NO",
     "PGTAP_REPAIR poisoned_search_path=auth_db_014_shadow,public,extensions malicious_schema_precedence=PRESERVED",
-    "PGTAP_REPAIR assertion_98=TRUNCATE_CASCADE_REACH_APPEND_ONLY_TRIGGER test_change=YES",
+    "PGTAP_REPAIR assertion_98=TRUNCATE_CASCADE_PLUS_DEFERRED_FK_FLUSH test_change=YES",
     "PGTAP_REPAIR assertions_174_175=LEGACY_UNVERIFIABLE_NULL_DEVICE_CODE migration_change=YES",
     "PGTAP_REPAIR legacy_import_null_contract=CALLED_ON_NULL_INPUT strict=NO",
     "PGTAP_REPAIR legacy_unverifiable_outcome=NO_EFFECT affirmative_event=NO",
-    "PGTAP_REPAIR acl_broadening=NO security_definer_added=NO"
+    "PGTAP_REPAIR acl_broadening=NO security_definer_added=NO",
+    "PGTAP_DIAGNOSTIC assertions_98_174_175 exact_failures=CAPTURED",
+    "PGTAP_REPAIR assertion_98 pending_trigger_events=FLUSHED_WITH_SET_CONSTRAINTS_IMMEDIATE restored_deferred=YES",
+    "PGTAP_DIAGNOSTIC assertions_174_175 targeted_v3_used_stale_local_schema db_reset_before_targeted=NO",
+    "PGTAP_REPAIR assertions_174_175 migration_v3_called_on_null_input=PRESENT requires_clean_replay=YES",
+    "PGTAP_REPAIR migration_v4_change=NO acl_broadening=NO security_definer_added=NO"
   ]
 }
