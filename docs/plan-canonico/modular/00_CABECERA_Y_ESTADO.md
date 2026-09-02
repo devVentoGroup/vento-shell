@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1596** |
 | Tareas `AUTH` únicas | **319** |
-| Tareas aprobadas | **1103** |
+| Tareas aprobadas | **1104** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **493** |
+| Tareas no iniciadas | **492** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **69.11% (1103/1596)** |
+| Porcentaje de completamiento | **69.17% (1104/1596)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **VISO-AUTH-012 — Validar turnos con área incompatible** |
-| Tarea actual | **VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno** |
+| Última tarea aprobada | **VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno** |
+| Tarea actual | **VISO-AUTH-014 — Crear simulador de permisos efectivos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **VISO-AUTH-014 — Crear simulador de permisos efectivos** |
+| Siguiente tarea | **VISO-AUTH-015 — Mostrar origen de cada permiso** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
-| Progreso del bloque | **BLOQUES G Y G2: 12 de 26 aprobadas; VISO-AUTH-013 pendiente** |
+| Progreso del bloque | **BLOQUES G Y G2: 13 de 26 aprobadas; VISO-AUTH-014 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-014::GLOBAL** |
-| Carril documental | **ACTIVO — VISO-AUTH-013** |
+| Carril documental | **ACTIVO — VISO-AUTH-014** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-014::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `VISO-AUTH-012` — Validar turnos con área incompatible |
-| Tarea actual | `VISO-AUTH-013` — Crear vista previa trabajador × sede × área × turno — **NO INICIADA** |
-| Siguiente tarea | `VISO-AUTH-014` — Crear simulador de permisos efectivos |
+| Última aprobada | `VISO-AUTH-013` — Crear vista previa trabajador × sede × área × turno |
+| Tarea actual | `VISO-AUTH-014` — Crear simulador de permisos efectivos — **NO INICIADA** |
+| Siguiente tarea | `VISO-AUTH-015` — Mostrar origen de cada permiso |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 12 DE 26 APROBADAS — ACTUAL VISO-AUTH-013** |
+| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 13 DE 26 APROBADAS — ACTUAL VISO-AUTH-014** |
 | Implementación física | **AUTH-DB-014::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-VISO-AUTH-012 — Validar turnos con área incompatible
-        ↓
-TAREA ACTUAL
 VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 VISO-AUTH-014 — Crear simulador de permisos efectivos
         ↓
+SIGUIENTE TAREA RESERVADA
+VISO-AUTH-015 — Mostrar origen de cada permiso
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUES G Y G2 — 12 de 26 tareas aprobadas
+BLOQUES G Y G2 — 13 de 26 tareas aprobadas
 ```

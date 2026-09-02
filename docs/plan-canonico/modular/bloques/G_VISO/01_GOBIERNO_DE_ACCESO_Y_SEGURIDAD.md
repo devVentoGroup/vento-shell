@@ -9767,7 +9767,1014 @@ La identidad exacta de la futura unidad física se resolverá exclusivamente med
 `VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno`
 
 
-### [ ] VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno
+### ✅ VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-012 — Validar turnos con área incompatible
+**Tarea siguiente:** VISO-AUTH-014 — Crear simulador de permisos efectivos
+**Tipo de tarea:** documental; definición de la vista previa administrativa canónica que proyecta, sin mutar, el contexto actual y propuesto de un trabajador sobre sede, área y turno, preservando las validaciones de asignación, rol y binding ya aprobadas y separando estrictamente contexto previo de simulación de permisos, origen de permisos y gestión de conflictos
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura queda sujeta a `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir la vista previa administrativa que VISO deberá construir para que un administrador autorizado pueda observar, antes de guardar una configuración o al inspeccionar el estado vigente, cómo queda compuesto el contexto laboral de un trabajador respecto de:
+
+```text
+TRABAJADOR
+×
+SEDE
+×
+ÁREA
+×
+TURNO
+```
+
+La vista previa es una proyección explicativa y verificable del contexto. No es una decisión de autorización, no modifica datos y no sustituye la revalidación de servidor de la operación que finalmente guarde un cambio.
+
+La regla raíz queda:
+
+```text
+FUENTES CANÓNICAS VIGENTES
++
+CAMBIO PROPUESTO CUANDO EXISTA
++
+REGLAS VISO-AUTH-007..012
+→
+VISTA PREVIA DE CONTEXTO
+```
+
+y nunca:
+
+```text
+VISTA PREVIA
+→
+PERMISO EFECTIVO
+```
+
+---
+
+#### 2. Fuentes vinculantes
+
+Esta tarea conserva y consume, sin redefinirlas:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-002` — separación entre rol base y rol operativo;
+- `AUTH-MOD-007` y `AUTH-MOD-008` — sede y área asignadas, administrativas y operativas;
+- `AUTH-MOD-009` y `AUTH-MOD-010` — turno publicado y check-in;
+- `AUTH-CTX-009` a `AUTH-CTX-013` — resolución territorial y laboral;
+- `AUTH-CTX-029` — frescura e invalidación;
+- `VISO-AUTH-001` a `VISO-AUTH-006` — catálogos y matrices;
+- `VISO-AUTH-007` — perfil operativo por trabajador como preferencia de planificación;
+- `VISO-AUTH-008` — sedes asignadas;
+- `VISO-AUTH-009` — áreas asignadas como afiliación habitual opcional;
+- `VISO-AUTH-010` — rol operativo explícito del turno;
+- `VISO-AUTH-011` — turno laboral sin rol operativo;
+- `VISO-AUTH-012` — compatibilidad rol × sede × área;
+- el contrato `AccessContextV1` vigente como referencia de separación entre asignaciones y contexto operativo;
+- el contrato `SimulationContextV1` vigente únicamente como frontera con la tarea siguiente.
+
+La vista previa no crea un tercer modelo de identidad, territorio, rol o turno.
+
+---
+
+#### 3. Alcance exacto del símbolo ×
+
+El símbolo `×` del título representa dimensiones que deben conservarse juntas para explicar el contexto de una fila, no un producto cartesiano.
+
+Queda prohibido materializar automáticamente:
+
+```text
+todos los trabajadores
+×
+todas las sedes
+×
+todas las áreas
+×
+todos los turnos
+```
+
+La unidad de vista previa es una combinación concreta y justificable.
+
+Para un turno persistido:
+
+```text
+employee_id
++
+shift_id
++
+site_id
++
+area_id cuando corresponda
++
+operational_role cuando corresponda
+```
+
+Para una propuesta todavía no persistida, la fila deberá conservar una correlación inequívoca con la fila exacta de la solicitud administrativa sin inventar un `shift_id` canónico.
+
+---
+
+#### 4. Dos proyecciones obligatorias
+
+La vista previa deberá poder representar dos perspectivas independientes:
+
+##### Estado actual
+
+Se construye exclusivamente desde fuentes persistidas y vigentes.
+
+##### Estado propuesto
+
+Se construye aplicando en memoria el cambio solicitado sobre un snapshot fresco del estado actual.
+
+La relación es:
+
+```text
+ESTADO ACTUAL
++
+PATCH ADMINISTRATIVO EXPLÍCITO
+→
+ESTADO PROPUESTO
+→
+DELTA VISIBLE
+```
+
+El estado propuesto no se persiste por generar la vista previa.
+
+La ausencia de un campo en la propuesta significa “sin cambio sobre ese campo”. Un `null` explícito, cuando el contrato del campo lo admita, representa una propuesta de ausencia y no puede confundirse con “sin cambio”.
+
+---
+
+#### 5. Separación entre vista previa y guardado
+
+La vista previa no constituye autorización para guardar.
+
+Después de presentar el resultado, la mutación real deberá:
+
+1. releer las fuentes canónicas aplicables;
+2. revalidar al actor;
+3. revalidar el trabajador objetivo;
+4. revalidar el territorio;
+5. revalidar rol, sede, área y turno;
+6. detectar cambios ocurridos desde la vista previa;
+7. ejecutar únicamente la mutación explícitamente autorizada;
+8. conservar auditoría.
+
+Por tanto:
+
+```text
+PREVIEW PASS
+≠
+SAVE ALLOW
+```
+
+Un resultado visual antiguo no puede enviarse de vuelta al servidor como prueba de autoridad.
+
+---
+
+#### 6. Trabajador
+
+La dimensión trabajador deberá conservar, como mínimo:
+
+- `employee_id`;
+- estado activo o inactivo;
+- rol base vigente cuando exista;
+- sedes asignadas activas;
+- áreas asignadas activas como afiliaciones habituales;
+- perfiles operativos activos como preferencias de planificación.
+
+El trabajador objetivo se identifica por `employee_id`.
+
+El nombre visible, alias, cargo u oficio no sustituyen la identidad.
+
+Un trabajador inactivo puede aparecer en una consulta histórica autorizada, pero no se presenta como elegible para una nueva configuración operativa.
+
+---
+
+#### 7. Sede asignada
+
+La fuente laboral de sedes asignadas continúa siendo `employee_sites`.
+
+Para una configuración operativa prospectiva:
+
+```text
+employee_id
++
+site_id
++
+employee_sites activo
++
+site activo y programable
+→
+asignación de sede utilizable
+```
+
+Una sede primaria es una clasificación de la asignación, no la única sede permitida.
+
+Un trabajador con varias sedes asignadas deberá conservar cada relación por separado.
+
+La vista previa no deberá sustituir la sede del turno por la sede primaria.
+
+---
+
+#### 8. Área asignada
+
+`employee_areas` conserva la semántica aprobada en `VISO-AUTH-009`:
+
+```text
+employee_areas
+→ afiliación habitual
+```
+
+y no:
+
+```text
+employee_areas
+→ área operativa obligatoria
+```
+
+La vista previa puede mostrar la afiliación habitual como contexto explicativo, pero no puede usarla para rellenar `shift.area_id`.
+
+La ausencia de `employee_areas` no convierte por sí sola un turno en inválido.
+
+---
+
+#### 9. Perfil operativo
+
+`employee_site_operational_profiles` conserva su función de planificación.
+
+La vista previa podrá mostrar:
+
+- sede del perfil;
+- rol operativo predeterminado;
+- defaults de marcación cuando existan;
+- vigencia del perfil.
+
+Pero:
+
+```text
+perfil
+≠ turno
+≠ rol operativo efectivo
+≠ área operativa
+```
+
+Un perfil puede explicar qué valor fue sugerido durante la planificación, pero no sustituye el valor explícito del turno ni repara una ausencia.
+
+---
+
+#### 10. Turno
+
+La fuente autoritativa de un turno persistido continúa siendo `employee_shifts`.
+
+La vista previa deberá conservar, cuando existan:
+
+- identidad del turno;
+- fecha;
+- hora inicial;
+- hora final;
+- `shift_kind`;
+- estado;
+- estado de publicación;
+- `site_id`;
+- `area_id`;
+- `operational_role`;
+- puntos de marcación cuando formen parte de la configuración aplicable.
+
+Una fila de turno nunca se colapsa con otra fila del mismo trabajador.
+
+Dos bloques horarios del mismo día son dos contextos de turno distintos.
+
+---
+
+#### 11. Descanso
+
+Un descanso conserva:
+
+```text
+shift_kind = descanso
+operational_role = null
+```
+
+y el contexto operativo de rol y área es no aplicable.
+
+La vista previa deberá mostrar el descanso como descanso, no como:
+
+- turno laboral sin rol;
+- área faltante;
+- rol inválido;
+- contexto operativo concedido.
+
+No se añade un rol ni un área para hacer que la fila parezca completa.
+
+---
+
+#### 12. Rol operativo del turno
+
+Para un turno laboral, la vista previa consume exactamente `employee_shifts.operational_role` o el valor explícitamente propuesto para esa fila.
+
+No se obtiene autoridad desde:
+
+- `employees.role`;
+- `default_operational_role`;
+- último turno;
+- primera fila de matriz;
+- `is_default`;
+- única opción visible.
+
+La vista previa deberá reutilizar la clasificación de `VISO-AUTH-011` cuando el rol esté ausente.
+
+Un valor presente pero inválido se muestra como rol presente inválido y no como ausencia limpia.
+
+---
+
+#### 13. Área operativa del turno
+
+Para un turno laboral, el área operativa se obtiene de:
+
+```text
+employee_shifts.area_id
+```
+
+o del `area_id` explícitamente propuesto para esa fila.
+
+La vista previa no deberá inferirla desde:
+
+- `employee_areas`;
+- área primaria;
+- área seleccionada;
+- perfil;
+- dispositivo;
+- check-in;
+- nombre de rol;
+- `area_kind`;
+- única área de la sede;
+- `is_default`.
+
+`area_id = null` nunca significa wildcard.
+
+---
+
+#### 14. Binding rol × sede × área
+
+La vista previa deberá reutilizar exactamente los estados aprobados por `VISO-AUTH-006` y consumidos por `VISO-AUTH-012`:
+
+```text
+EXACT_BINDING
+AREA_BINDING_UNRESOLVED
+NO_AREA_NOT_REQUIRED
+```
+
+El baseline contractual permanece:
+
+```text
+EXACT_BINDING = 13
+AREA_BINDING_UNRESOLVED = 3
+NO_AREA_NOT_REQUIRED = 0
+```
+
+La vista previa no modifica esos estados.
+
+Un `AREA_BINDING_UNRESOLVED` debe mostrarse como contexto no resuelto, nunca como “General”, site-wide o todas las áreas.
+
+---
+
+#### 15. Validaciones contextuales que debe proyectar
+
+Sin crear un motor nuevo de conflictos, la vista previa deberá exponer el resultado de las validaciones ya propietarias de las tareas anteriores:
+
+| Dimensión | Pregunta proyectada | Propietario de la regla |
+| --- | --- | --- |
+| Trabajador | ¿Existe y está activo para una configuración prospectiva? | Contrato laboral vigente |
+| Sede | ¿Está asignada y utilizable para el trabajador? | `VISO-AUTH-008` |
+| Rol del turno | ¿Está presente cuando el turno es laboral? | `VISO-AUTH-011` |
+| Rol × sede | ¿El rol está habilitado en la sede? | `VISO-AUTH-005` / `VISO-AUTH-010` |
+| Área | ¿Existe, está activa y pertenece a la sede? | `VISO-AUTH-012` |
+| Rol × sede × área | ¿Existe binding exacto o una ausencia explícitamente permitida? | `VISO-AUTH-006` / `VISO-AUTH-012` |
+| Descanso | ¿La ausencia de rol y área es no aplicable? | `VISO-AUTH-010` / `VISO-AUTH-011` |
+
+La vista previa muestra esas conclusiones; no cambia sus criterios.
+
+---
+
+#### 16. Estado incompleto y causa preservada
+
+Una fila no válida para el handoff posterior debe conservar la causa exacta.
+
+Ejemplos:
+
+```text
+laboral + rol ausente
+→ conservar causa de VISO-AUTH-011
+```
+
+```text
+rol válido + área requerida ausente
+→ conservar causa de VISO-AUTH-012
+```
+
+```text
+rol + sede + área sin binding exacto
+→ conservar incompatibilidad territorial
+```
+
+```text
+AREA_BINDING_UNRESOLVED
+→ conservar estado no resuelto
+```
+
+La vista previa no transforma causas distintas en un único “Error”.
+
+La interfaz específica de conflictos y su experiencia completa permanecen reservadas a `VISO-AUTH-016` y `VISO-UX-015`.
+
+---
+
+#### 17. Contenido mínimo de una fila de vista previa
+
+Cada fila deberá permitir reconstruir, como mínimo:
+
+| Grupo | Información mínima |
+| --- | --- |
+| Trabajador | `employee_id`, vigencia, rol base factual |
+| Asignación territorial | sede objetivo, relación trabajador–sede, áreas habituales informativas |
+| Perfil | existencia y defaults únicamente como planificación |
+| Turno | referencia exacta de fila, fecha/hora, kind, estado y publicación |
+| Operación | `operational_role`, `site_id`, `area_id` |
+| Compatibilidad | validez rol × sede, validez de área, estado del binding |
+| Comparación | valor actual, valor propuesto y qué dimensión cambia |
+| Frescura | momento de resolución y referencias suficientes para revalidar las fuentes |
+| Resultado contextual | si la fila está completa para continuar a evaluación posterior o qué regla previa la bloquea |
+
+La vista previa no necesita contener una lista de permisos efectivos.
+
+---
+
+#### 18. Comparación actual contra propuesto
+
+Cuando existe una modificación pendiente, VISO deberá mostrar solo cambios reales.
+
+Ejemplo conceptual:
+
+```text
+ACTUAL:
+trabajador A
+sede S1
+área A1
+rol R1
+turno T1
+
+PROPUESTO:
+trabajador A
+sede S1
+área A2
+rol R1
+turno T1
+```
+
+El delta relevante es:
+
+```text
+area_id: A1 → A2
+```
+
+No se presenta como cambio el resto de dimensiones que permanecen iguales.
+
+Si la propuesta deja un campo obligatorio ausente, la vista previa debe mostrar la ausencia; no debe completar el dato para producir una salida aparentemente válida.
+
+---
+
+#### 19. Vista previa de múltiples sedes
+
+Un trabajador puede tener varias sedes activas.
+
+La vista previa deberá distinguir:
+
+```text
+sede primaria
+≠ única sede asignada
+```
+
+y:
+
+```text
+turno en sede secundaria asignada
+≠ conflicto por sí solo
+```
+
+Cada turno se valida contra la sede exacta persistida o propuesta.
+
+No se fusionan todas las sedes del trabajador en un territorio único.
+
+---
+
+#### 20. Vista previa sin turno aplicable
+
+La consulta administrativa de un trabajador puede no encontrar un turno aplicable al periodo inspeccionado.
+
+En ese caso la vista previa conserva:
+
+- identidad del trabajador;
+- sedes asignadas;
+- áreas habituales informativas;
+- perfiles de planificación;
+- ausencia explícita de turno.
+
+No inventa:
+
+- turno;
+- rol operativo;
+- sede operativa;
+- área operativa;
+- check-in.
+
+La ausencia de turno no impide mostrar la configuración administrativa factual, pero no produce contexto operativo.
+
+---
+
+#### 21. Estado actual, histórico y futuro
+
+La vista previa deberá distinguir el tiempo de la configuración.
+
+Un turno histórico:
+
+- se muestra como histórico;
+- no se reinterpreta con defaults actuales;
+- no se corrige por inferencia;
+- no obtiene autoridad presente.
+
+Un turno futuro:
+
+- utiliza las relaciones vigentes necesarias para validar la configuración prospectiva;
+- deberá revalidarse si la matriz cambia antes de guardar o publicar.
+
+Un turno vigente:
+
+- todavía necesita el resto del contrato operativo para participar en autorización real.
+
+---
+
+#### 22. Frescura y concurrencia
+
+La vista previa se construye desde un snapshot server-side suficientemente consistente.
+
+Si entre la vista previa y el guardado cambia cualquiera de estas fuentes:
+
+- trabajador;
+- `employee_sites`;
+- `employee_areas`;
+- perfil;
+- turno;
+- rol;
+- sede;
+- área;
+- binding rol × sede;
+- binding rol × sede × área;
+
+la operación de guardado deberá revalidar el estado nuevo.
+
+Cuando el cambio invalide materialmente la propuesta, el usuario deberá recibir una vista previa actualizada antes de confirmar una operación distinta.
+
+No se usa una respuesta cliente antigua para saltar la revalidación.
+
+---
+
+#### 23. Privacidad y territorio del administrador
+
+La vista previa solo podrá incluir trabajadores y territorios que el actor real esté autorizado a consultar.
+
+El acceso a una sede no concede lectura de todas las personas de la organización.
+
+La vista previa deberá minimizar datos personales: para explicar el contexto laboral no necesita exponer documentos, teléfonos, correos, credenciales, datos sensibles ni información ajena al propósito.
+
+La consulta del trabajador y del horario reutiliza los permisos canónicos vigentes de lectura y el alcance territorial correspondiente.
+
+Una vista previa de un cambio no concede la capacidad de ejecutar ese cambio.
+
+La restricción definitiva de quién administra seguridad permanece en `VISO-AUTH-019`.
+
+---
+
+#### 24. Separación frente a AccessContextV1
+
+`AccessContextV1` representa un contexto de acceso resuelto para un principal y actor reales.
+
+La vista previa de VISO puede representar:
+
+- un estado actual;
+- un cambio todavía no guardado;
+- un turno futuro;
+- una fila incompleta;
+- una configuración bloqueada.
+
+Por tanto:
+
+```text
+VISTA PREVIA ADMINISTRATIVA
+≠ AccessContextV1 AUTORITATIVO
+```
+
+La vista previa podrá reutilizar las mismas identidades y separaciones conceptuales, pero no podrá presentarse como un `AccessContextV1` real cuando sus fuentes sean propuestas o hipotéticas.
+
+---
+
+#### 25. Separación frente a SimulationContextV1
+
+`SimulationContextV1` es el contrato hipotético para evaluar permisos.
+
+`VISO-AUTH-013` termina antes de esa evaluación.
+
+Queda prohibido producir en esta tarea:
+
+```text
+ALLOW
+DENY
+WOULD_ALLOW
+WOULD_DENY
+INDETERMINATE de permiso
+```
+
+como resultado de autorización.
+
+La vista previa solo proyecta el contexto que podría alimentar una simulación posterior.
+
+`VISO-AUTH-014` es el propietario de la simulación de permisos efectivos.
+
+---
+
+#### 26. Separación frente al origen de permisos
+
+Esta tarea no calcula ni presenta la procedencia final de cada permiso.
+
+No atribuye un permiso a:
+
+- rol base;
+- rol operativo;
+- grant individual;
+- deny;
+- excepción;
+- dispositivo;
+- scope.
+
+Esa responsabilidad permanece en:
+
+```text
+VISO-AUTH-015 — Mostrar origen de cada permiso
+```
+
+La referencia a la fuente de un dato contextual, como `employee_shifts` o `employee_sites`, no equivale al origen de un permiso.
+
+---
+
+#### 27. Separación frente a conflictos
+
+La vista previa debe conservar y mostrar los bloqueos contextuales ya conocidos porque forman parte del resultado de las reglas 008–012.
+
+No desarrolla el inventario transversal de conflictos entre:
+
+- permisos;
+- grants;
+- denies;
+- excepciones;
+- legacy;
+- matrices completas;
+- ownership.
+
+Esa responsabilidad permanece en:
+
+```text
+VISO-AUTH-016 — Mostrar conflictos de configuración
+```
+
+---
+
+#### 28. Reconciliación AS-IS de VISO
+
+La superficie actual más cercana observada es la vista operacional mensual de programación.
+
+Actualmente:
+
+- lee `employee_shifts`;
+- lee `vento_site_operational_role_matrix_v1`;
+- expone etiquetas de rol y área;
+- intenta primero una fila exacta;
+- si no existe, puede tomar otra fila del mismo rol;
+- puede derivar una etiqueta de área desde señales del rol o de la fila física.
+
+Eso es una vista de planificación existente, no la vista previa canónica de esta tarea.
+
+La futura implementación deberá dejar de tratar una etiqueta inferida como sustituto de `site_id`, `area_id`, `operational_role` y estado del binding.
+
+---
+
+#### 29. Reconciliación AS-IS de las fuentes administrativas
+
+VISO ya consume por separado:
+
+- `employee_sites` en personal y programación;
+- `employee_site_operational_profiles` en programación y administración de perfiles;
+- `employee_shifts` en semana, mes y vista global;
+- `site_operational_roles` o su proyección para la matriz de rol;
+- `employee_area_purpose_assignments` en la ficha de trabajador.
+
+La existencia de esas lecturas separadas no constituye una vista previa canónica.
+
+En particular:
+
+```text
+employee_area_purpose_assignments
+≠ employee_areas
+≠ shift.area_id
+```
+
+y ninguna de esas fuentes puede sustituirse silenciosamente por otra.
+
+---
+
+#### 30. Baseline read-only del estado laboral vigente
+
+El corte read-only verificado sobre trabajadores activos contiene:
+
+```text
+trabajadores activos = 40
+relaciones employee_sites activas = 66
+trabajadores activos con sede asignada = 40
+relaciones de sede primaria activas = 40
+trabajadores con más de una sede activa = 14
+
+relaciones employee_areas activas = 1
+trabajadores activos con employee_area = 1
+
+perfiles operativos activos = 1
+trabajadores activos con perfil = 1
+```
+
+Este baseline demuestra que una vista previa no puede exigir universalmente un `employee_area` o un perfil para representar correctamente a un trabajador.
+
+---
+
+#### 31. Baseline read-only de turnos futuros
+
+Desde `2026-09-02`, para trabajadores activos y turnos laborales no cancelados:
+
+```text
+turnos = 119
+trabajadores distintos = 27
+
+con operational_role = 119
+sin operational_role = 0
+
+con area_id = 119
+sin area_id = 0
+
+employee_site válido = 119
+rol válido para sede = 119
+área válida para sede = 119
+EXACT_BINDING válido = 119
+```
+
+Distribución territorial:
+
+```text
+turnos en sede primaria = 111
+turnos en otra sede asignada activa = 8
+```
+
+La sede primaria no puede, por tanto, sustituir la sede exacta del turno.
+
+---
+
+#### 32. Independencia de afiliación habitual y perfil
+
+Sobre esos mismos `119` turnos laborales futuros:
+
+```text
+turnos cuyo trabajador tiene employee_area activa = 0
+turnos cuyo trabajador tiene employee_area igual al área del turno = 0
+
+turnos cuyo trabajador tiene perfil operativo activo = 0
+turnos cuyo perfil coincide con sede + rol del turno = 0
+```
+
+Y aun así los `119` turnos tienen sede asignada válida, rol válido, área válida y binding exacto.
+
+Por tanto queda demostrado en el corte actual:
+
+```text
+employee_area
+≠ prerrequisito universal del turno
+```
+
+y:
+
+```text
+perfil operativo
+≠ prerrequisito universal del turno
+```
+
+---
+
+#### 33. Estado de materialización de AccessContext
+
+El repositorio conserva `AUTH-DB-033::GLOBAL` como `VERIFIED` y materializa localmente el resolver canónico de `AccessContext`.
+
+Sin embargo, la consulta read-only al proyecto hospedado inspeccionado no encontró funciones con nombre `access_context` en los schemas `public`, `api` o `app_private`.
+
+La vista previa documental de esta tarea no puede asumir que el resolver canónico ya está desplegado en ese ambiente hospedado.
+
+La futura unidad física deberá comprobar sus dependencias reales del ambiente propietario antes de reutilizar un resolver remoto.
+
+Esta diferencia no bloquea la definición documental.
+
+---
+
+#### 34. Handoff a VISO-AUTH-014
+
+`VISO-AUTH-014` recibe una proyección contextual, no una decisión de permiso.
+
+El handoff mínimo conserva:
+
+```text
+trabajador exacto
++
+rol base factual
++
+sedes asignadas relevantes
++
+áreas habituales solo como dato administrativo
++
+turno exacto o propuesta exacta
++
+rol operativo explícito
++
+sede operativa explícita
++
+área operativa explícita o ausencia contractualmente clasificada
++
+estado del binding
++
+causas de incompletitud de VISO-AUTH-011/012
++
+snapshot temporal
+```
+
+La tarea siguiente podrá convertir una selección autorizada de esos datos en un escenario hipotético conforme a `SimulationContextV1`.
+
+No podrá asumir que una fila incompleta está resuelta solo porque la vista previa la mostró.
+
+---
+
+#### 35. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La obligación de mostrar el efecto antes de guardar, respetar territorio, mantener coherencia con aplicaciones operativas, fallar cerrado, proteger mutaciones, invalidar contexto obsoleto y conservar separación entre fuentes ya cuenta con cobertura vigente.
+
+La tarea no crea una nueva modalidad de autorización, permiso, reason code, estado empresarial, identidad territorial ni transición de datos.
+
+---
+
+#### 36. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-VISO-001` — VISO debe mostrar antes de guardar el efecto resultante sobre cada trabajador y producir el mismo resultado consumido por las aplicaciones operativas;
+- `TREQ-AUTH-004` — evaluadores equivalentes deben producir decisiones coherentes para el mismo contexto;
+- `TREQ-AUTH-007` — administración de roles, perfiles y territorio requiere capacidad administrativa explícita y alcance del actor;
+- `TREQ-AUTH-008` — el carril operativo exige turno, rol y contexto territorial válidos;
+- `TREQ-AUTH-009` — sede y área se resuelven de forma determinista;
+- `TREQ-AUTH-013` — las mutaciones se revalidan en servidor;
+- `TREQ-AUTH-014` — cambios de turno, rol, sede, área o asignación invalidan contexto derivado;
+- `TREQ-AUTH-015` — las decisiones y acciones protegidas conservan evidencia correlacionable;
+- `TREQ-AUTH-101`, `TREQ-AUTH-102`, `TREQ-AUTH-103`, `TREQ-AUTH-105` y `TREQ-AUTH-106` — identidad exacta de área, bindings, ausencia no wildcard y separación de fuentes territoriales.
+
+Estas referencias son trazabilidad heredada. No cambian contenido, estado, paquete, evidencia ni secuencia de ningún requisito.
+
+---
+
+#### 37. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout propietario. |
+| LOCAL | NOT_EXECUTED | La tarea todavía no fue insertada ni validada en la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, protocolo, contrato de entrega, topología, políticas, VISO-AUTH-012, contratos de contexto y simulación, 04A aplicable, código VISO actual y consultas read-only sobre trabajadores, sedes, áreas, perfiles, turnos y bindings. |
+| OPERATIVA | NOT_APPLICABLE | No se modificaron trabajadores, asignaciones, perfiles, turnos, roles, áreas, permisos ni configuraciones reales. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, migraciones, RPC, RLS, funciones, datos, packages ni despliegues. |
+
+---
+
+#### 38. Criterios de aceptación
+
+- [ ] La vista previa representa una combinación concreta y no un producto cartesiano.
+- [ ] Puede representar estado actual y estado propuesto sin persistir la propuesta.
+- [ ] Distingue campo omitido de ausencia explícitamente propuesta.
+- [ ] `PREVIEW PASS` no equivale a autorización de guardado.
+- [ ] La mutación real revalida fuentes y autoridad después de la vista previa.
+- [ ] El trabajador se identifica por `employee_id`.
+- [ ] Las sedes asignadas proceden de `employee_sites`.
+- [ ] La sede primaria no sustituye la sede exacta del turno.
+- [ ] `employee_areas` se muestra como afiliación habitual y no como área operativa obligatoria.
+- [ ] El perfil operativo se muestra como planificación y no como autoridad.
+- [ ] Cada turno conserva su identidad y no se colapsa con otros bloques.
+- [ ] Un descanso no se clasifica como turno laboral incompleto.
+- [ ] El rol operativo laboral procede del turno o de la propuesta explícita.
+- [ ] El área operativa laboral procede del turno o de la propuesta explícita.
+- [ ] Ningún default, perfil, última fila, área primaria o selección completa silenciosamente el turno.
+- [ ] Se conservan `EXACT_BINDING`, `AREA_BINDING_UNRESOLVED` y `NO_AREA_NOT_REQUIRED`.
+- [ ] Los tres bindings no resueltos no se convierten en site-wide.
+- [ ] La vista previa conserva las causas de VISO-AUTH-011 y VISO-AUTH-012.
+- [ ] La vista previa no crea un motor transversal de conflictos.
+- [ ] Cada fila expone trabajador, sede, área, turno, rol y estado de compatibilidad de forma reconstruible.
+- [ ] El delta actual → propuesto muestra solo dimensiones realmente modificadas.
+- [ ] Varias sedes asignadas permanecen separadas.
+- [ ] Un turno en sede secundaria asignada no es conflicto por sí solo.
+- [ ] La ausencia de turno se muestra sin inventar rol, sede o área operativos.
+- [ ] Histórico, vigente y futuro no se mezclan.
+- [ ] Un preview obsoleto no puede autorizar un save.
+- [ ] La lectura queda limitada por permiso y territorio del actor.
+- [ ] La vista previa minimiza datos personales.
+- [ ] La vista previa no se presenta falsamente como `AccessContextV1` autoritativo.
+- [ ] La vista previa no produce resultados de permiso reservados a `VISO-AUTH-014`.
+- [ ] No muestra origen de permisos reservado a `VISO-AUTH-015`.
+- [ ] No absorbe la gestión transversal de conflictos reservada a `VISO-AUTH-016`.
+- [ ] La vista operacional mensual AS-IS no se declara equivalente a esta vista previa.
+- [ ] `employee_area_purpose_assignments`, `employee_areas` y `shift.area_id` permanecen separados.
+- [ ] El baseline conserva 40 trabajadores activos y 66 relaciones activas de sede sobre ellos.
+- [ ] Los 40 trabajadores activos tienen al menos una sede asignada.
+- [ ] Existen 14 trabajadores activos con múltiples sedes.
+- [ ] Solo 1 trabajador activo tiene `employee_area` activa.
+- [ ] Solo 1 trabajador activo tiene perfil operativo activo.
+- [ ] Los 119 turnos laborales futuros observados tienen rol, área y binding exacto válidos.
+- [ ] Ocho de esos turnos operan sobre una sede asignada no primaria.
+- [ ] Ninguno de esos 119 turnos depende de `employee_area` o perfil operativo activo.
+- [ ] La diferencia entre materialización local de AccessContext y ambiente hospedado se conserva como dependencia física a verificar, no como hecho resuelto.
+- [ ] `VISO-AUTH-014` recibe contexto y no una autorización precomputada.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 39. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica Supabase;
+- modifica trabajadores;
+- modifica `employee_sites`;
+- modifica `employee_areas`;
+- modifica `employee_area_purpose_assignments`;
+- modifica perfiles operativos;
+- modifica turnos;
+- publica o corrige horarios;
+- modifica roles base u operativos;
+- modifica matrices rol × sede o rol × área;
+- modifica áreas o sedes;
+- crea una vista SQL;
+- crea RPC;
+- crea RLS;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- crea un nuevo contrato público de `@vento/contracts`;
+- modifica `AccessContextV1`;
+- modifica `SimulationContextV1`;
+- simula permisos efectivos;
+- produce `ALLOW`, `DENY`, `WOULD_ALLOW` o `WOULD_DENY`;
+- muestra el origen final de permisos;
+- administra conflictos transversales;
+- administra excepciones individuales;
+- modifica auditoría;
+- implementa la experiencia de `VISO-UX-016`;
+- despliega el resolver de AccessContext;
+- hace backfill histórico;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad exacta de la futura unidad física se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 40. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-012 — Validar turnos con área incompatible`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-014 — Crear simulador de permisos efectivos`
+
+
 ### [ ] VISO-AUTH-014 — Crear simulador de permisos efectivos
 ### [ ] VISO-AUTH-015 — Mostrar origen de cada permiso
 ### [ ] VISO-AUTH-016 — Mostrar conflictos de configuración
