@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1596** |
 | Tareas `AUTH` únicas | **319** |
-| Tareas aprobadas | **1101** |
+| Tareas aprobadas | **1102** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **495** |
+| Tareas no iniciadas | **494** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **68.98% (1101/1596)** |
+| Porcentaje de completamiento | **69.05% (1102/1596)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **VISO-AUTH-010 — Asignar rol operativo al turno** |
-| Tarea actual | **VISO-AUTH-011 — Validar turnos sin rol operativo** |
+| Última tarea aprobada | **VISO-AUTH-011 — Validar turnos sin rol operativo** |
+| Tarea actual | **VISO-AUTH-012 — Validar turnos con área incompatible** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **VISO-AUTH-012 — Validar turnos con área incompatible** |
+| Siguiente tarea | **VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
-| Progreso del bloque | **BLOQUES G Y G2: 10 de 26 aprobadas; VISO-AUTH-011 pendiente** |
+| Progreso del bloque | **BLOQUES G Y G2: 11 de 26 aprobadas; VISO-AUTH-012 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — AUTH-DB-013::GLOBAL** |
-| Carril documental | **ACTIVO — VISO-AUTH-011** |
+| Carril documental | **ACTIVO — VISO-AUTH-012** |
 | Carril físico | **PENDING_AUTHORIZATION — AUTH-DB-013::GLOBAL** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `VISO-AUTH-010` — Asignar rol operativo al turno |
-| Tarea actual | `VISO-AUTH-011` — Validar turnos sin rol operativo — **NO INICIADA** |
-| Siguiente tarea | `VISO-AUTH-012` — Validar turnos con área incompatible |
+| Última aprobada | `VISO-AUTH-011` — Validar turnos sin rol operativo |
+| Tarea actual | `VISO-AUTH-012` — Validar turnos con área incompatible — **NO INICIADA** |
+| Siguiente tarea | `VISO-AUTH-013` — Crear vista previa trabajador × sede × área × turno |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 10 DE 26 APROBADAS — ACTUAL VISO-AUTH-011** |
+| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 11 DE 26 APROBADAS — ACTUAL VISO-AUTH-012** |
 | Implementación física | **AUTH-DB-013::GLOBAL — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-VISO-AUTH-010 — Asignar rol operativo al turno
-        ↓
-TAREA ACTUAL
 VISO-AUTH-011 — Validar turnos sin rol operativo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 VISO-AUTH-012 — Validar turnos con área incompatible
         ↓
+SIGUIENTE TAREA RESERVADA
+VISO-AUTH-013 — Crear vista previa trabajador × sede × área × turno
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUES G Y G2 — 10 de 26 tareas aprobadas
+BLOQUES G Y G2 — 11 de 26 tareas aprobadas
 ```
