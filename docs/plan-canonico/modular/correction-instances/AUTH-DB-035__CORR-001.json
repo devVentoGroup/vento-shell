@@ -5,7 +5,7 @@
   "target_instance_id": "AUTH-DB-035::GLOBAL",
   "correction_type": "PHYSICAL",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "IN_PROGRESS",
   "blocking": true,
   "blocked_targets": [
     "AUTH-DB-032::GLOBAL"
@@ -17,12 +17,79 @@
     "target_instance_record_path": "docs/plan-canonico/modular/implementation-instances/AUTH-DB-035__GLOBAL.json",
     "target_instance_record_sha256": "94948ae42e3325e233c48562b7901cc7f9ccfa09e7dd4661b28143310df16863"
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
-  "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/migrations/20260902004242_auth_db_035_corr_001_context_freshness_concurrency.sql",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/tests/database/042_auth_db_035_context_freshness.test.sql",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "supabase/MIGRATION_MANIFEST.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/repair-working-copy.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/migration-manifest.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/supabase-db-harness.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/recovery-drill.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "EXECUTE_ONLY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/quality/lint-ratchet.mjs",
+      "change": "EXECUTE_ONLY"
+    }
+  ],
+  "validation_commands": [
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:test:clean",
+    "npm run supabase:recovery:local",
+    "node scripts/supabase/environment-drift.mjs local --strict",
+    "npm run quality:lint:ratchet",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [
+    "TREQ-AUTH-014",
+    "TREQ-AUTH-015"
+  ],
+  "zero_treq_reason": null,
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-01T19:48:40-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza AUTH-DB-035::CORR-001 exclusivamente para corregir el defecto físico de concurrencia y reentrancia de AUTH-DB-035 mediante una forward migration nueva y regresiones pgTAP, preservando la migración histórica, la instancia VERIFIED, la semántica de ContextFreshnessToken@1.0.0, L1 deshabilitada, cache mode REQUEST_ONLY y sin mutaciones directas sobre Supabase hosted.",
+    "source_contract_sha256": "2f2c3d1019a739e5f66900720e7559af077e100964f3cd12cc45e908823343f0"
+  },
   "evidence": [],
   "opened_at": "2026-09-02T00:33:33.731Z"
 }
