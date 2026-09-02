@@ -153,6 +153,7 @@ test('la plantilla compartida contiene solo reglas comunes y una ranura', () => 
   assert.match(template, /PREENTREGA OBLIGATORIA Y POWERSHELL SEGURO/u);
   assert.match(template, /LECTURA DE ARCHIVOS GRANDES Y RESPUESTAS TRUNCADAS/u);
   assert.match(template, /REGLA DE SALIDA COMPACTA DE BATERÍAS Y COMPROBACIONES/u);
+  assert.match(template, /Su contrato incluye regenerar los iniciadores locales documental, físico y de correcciones/u);
   assert.match(template, /REGLA DE SEGURIDAD DE TERMINAL INTERACTIVA/u);
   assert.match(template, /REGLA DE SALIDA ASCII SEGURA EN TERMINAL/u);
   assert.doesNotMatch(template, /FLUJO RÁPIDO DE IMPLEMENTACIÓN FÍSICA/u);
