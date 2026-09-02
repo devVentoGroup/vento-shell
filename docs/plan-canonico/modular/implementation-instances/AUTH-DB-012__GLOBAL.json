@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-012::GLOBAL",
   "task_id": "AUTH-DB-012",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -123,6 +123,14 @@
     "PGTAP_REPAIR test_045 owner_role_fixture=vento_authorization_owner append_only_mutation_probe_role=vento_authorization_owner acl_broadening=NO migration_change=NO",
     "QUALITY_REPAIR_RERUN NO",
     "MATERIALIZATION test=supabase/tests/database/045_auth_db_012_authorization_permission_audit.test.sql assertions=208 sha256=d112c87cd334b26589c9e566c0e256bffd63a7751e2620f9d43c51716c1dee74",
-    "PGTAP_REPAIR test_045 private_helper_execution_context=vento_authorization_owner tests=29-32 acl_broadening=NO migration_change=NO"
+    "PGTAP_REPAIR test_045 private_helper_execution_context=vento_authorization_owner tests=29-32 acl_broadening=NO migration_change=NO",
+    "VALIDATION #1 npm run supabase:migrations:manifest:check PASS",
+    "VALIDATION #2 npm run supabase:db:test:clean PASS",
+    "VALIDATION #3 npm run supabase:recovery:local PASS remote_targets_used=NO",
+    "VALIDATION_CHECKPOINT_COMMIT 111f48791584fd062d2f1617c73158b88d2ef130 candidate_clean=YES",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED unauthorized_drift=0 insufficient_evidence=0 remote_mutations=NO",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS"
   ]
 }
