@@ -11,7 +11,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `VISO-AUTH-013` — Crear vista previa trabajador × sede × área × turno | `VISO-AUTH-014` — Crear simulador de permisos efectivos | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `IN_PROGRESS` | `AUTH-DB-013::GLOBAL` — Implementar auditoría de simulación | `AUTH-DB-014::GLOBAL` | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `AUTH-DB-014::GLOBAL` — Implementar auditoría de dispositivos | SIN SIGUIENTE PROYECTADA | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -20,13 +20,13 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1102/1596 aprobadas** | **493** no aprobadas (1 propuesta, 0 rechazadas) | `VISO-AUTH-013` |
-| 🟧 **Implementación física conocida** | **94/96 VERIFIED** | **2** no terminales | `AUTH-DB-013::GLOBAL` |
+| 🟧 **Implementación física conocida** | **95/96 VERIFIED** | **1** no terminales | `AUTH-DB-014::GLOBAL` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-G-VISO-CORE` — VISO administrador del modelo y núcleo operativo
 - **Siguiente etapa documental:** `PHASE-04-H2-SHELL-APPLICATION`
-- **Acción física prioritaria:** `EJECUTAR_IMPLEMENTACION` — `AUTH-DB-013::GLOBAL`
-- **Instancias físicas en espera de predecesora:** **1**
+- **Acción física prioritaria:** `AUTORIZAR_IMPLEMENTACION` — `AUTH-DB-014::GLOBAL`
+- **Instancias físicas en espera de predecesora:** **0**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
 ### 🟧 Cola física visible
@@ -35,8 +35,7 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `AUTH-DB-013::GLOBAL` | Implementar auditoría de simulación | `IN_PROGRESS` | ACTUAL — EJECUTAR_IMPLEMENTACION |
-| 2 | PENDIENTE | `AUTH-DB-014::GLOBAL` | Implementar auditoría de dispositivos | `WAITING_FOR_PREVIOUS_INSTANCE` | Debe verificarse primero AUTH-DB-013::GLOBAL. |
+| 1 | **ACTUAL** | `AUTH-DB-014::GLOBAL` | Implementar auditoría de dispositivos | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
 
 ## Modos de trabajo y materialización
 

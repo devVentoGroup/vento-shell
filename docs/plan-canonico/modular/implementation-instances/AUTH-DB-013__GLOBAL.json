@@ -1,7 +1,7 @@
 {
   "instance_id": "AUTH-DB-013::GLOBAL",
   "task_id": "AUTH-DB-013",
-  "status": "IMPLEMENTED",
+  "status": "VERIFIED",
   "target_repositories": [
     "vento-group-sas/vento-shell"
   ],
@@ -128,6 +128,11 @@
     "PGTAP_REPAIR assertions_226_227=PENDING_DEFERRED_FK_TRIGGER_FLUSH test_only=YES migration_change=NO acl_broadening=NO",
     "VALIDATION #1 npm run supabase:migrations:manifest:check PASS",
     "VALIDATION #2 npm run supabase:db:test:clean PASS",
-    "VALIDATION #3 npm run supabase:recovery:local PASS remote_targets_used=NO"
+    "VALIDATION #3 npm run supabase:recovery:local PASS remote_targets_used=NO",
+    "VALIDATION_CHECKPOINT_COMMIT 53b7bb1e638885ef57ffd9bec77b676ad5fa463e candidate_clean=YES",
+    "VALIDATION #4 node scripts/supabase/environment-drift.mjs local --strict PASS certification=LOCAL_CERTIFIED unauthorized_drift=0 insufficient_evidence=0 remote_mutations=NO",
+    "VALIDATION #5 npm run quality:lint:ratchet PASS",
+    "VALIDATION #6 git --no-pager diff --check origin/main...HEAD PASS",
+    "FINAL_PHYSICAL_BATTERY 6/6 PASS"
   ]
 }
