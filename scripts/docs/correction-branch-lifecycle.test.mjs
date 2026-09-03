@@ -47,3 +47,22 @@ test('cierre conserva identidad exacta del HEAD y del merge commit en main', () 
     assert.match(source, /mergeCommitInMain/u);
     assert.match(source, /no quedó contenido en main/u);
 });
+test('lifecycle reconcilia proyecciones derivadas sin ocultar cambios reales', () => {
+    const lifecycleSource = fs.readFileSync('scripts/docs/correction-branch-lifecycle.mjs', 'utf8');
+    const controlSource = fs.readFileSync('scripts/docs/correction-control.mjs', 'utf8');
+
+    assert.match(
+        controlSource,
+        /export const DERIVED_CORRECTION_PROJECTIONS = new Set/u,
+    );
+    assert.match(lifecycleSource, /reconcileDerivedWorktree/u);
+    assert.match(lifecycleSource, /CORRECTION_PREPARE_POST_SYNC/u);
+    assert.match(
+        lifecycleSource,
+        /const allowedPaths = \[recordPath, \.\.\.DERIVED_CORRECTION_PROJECTIONS\]/u,
+    );
+    assert.match(
+        lifecycleSource,
+        /detectó cambios locales reales fuera del alcance/u,
+    );
+});
