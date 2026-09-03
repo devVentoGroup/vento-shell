@@ -8,7 +8,7 @@
 
 ## 🚦 QUÉ HACER AHORA — SIN INTERPRETAR NI ELEGIR
 
-> **Prioridad del checkout actual:** ejecutar `PREPARE_PACKAGE_GATE` sobre `GAP-PKG-001`.
+> **Prioridad del checkout actual:** ejecutar `AUTHORIZE_PHYSICAL_IMPLEMENTATION` sobre `SHELL-CI-020::GAP-PKG-001`.
 >
 > Las secciones siguientes son las únicas colas vigentes. Corrección, documentación, preparación de package e implementación física son estados distintos; una no autoriza silenciosamente a la otra.
 
@@ -19,13 +19,13 @@
 ### 2. Prepara el package que tiene el turno — `GAP-PKG-001`
 
 - **Posición:** **1/189**; ningún package posterior puede adelantarlo.
-- **Estado efectivo:** `COMPILED`
-- **Acción exacta:** `PREPARE_PACKAGE_GATE`
-- **Objetivo exacto:** `GAP-PKG-001`
-- **Comando exacto:** `npm run docs:package:start -- --package-id GAP-PKG-001`
-- **Expediente package-gate:** `docs/plan-canonico/modular/package-gate-instances/GAP-PKG-001.json` — `NOT_PREPARED`
-- **Gates:** **2/6 PASS**; faltan **4**.
-- **Por qué:** GAP-PKG-001 ocupa el turno lineal y todavía no tiene expediente package-gate.
+- **Estado efectivo:** `IMPLEMENTATION_READY`
+- **Acción exacta:** `AUTHORIZE_PHYSICAL_IMPLEMENTATION`
+- **Objetivo exacto:** `SHELL-CI-020::GAP-PKG-001`
+- **Comando exacto:** `npm run docs:implementation:status`
+- **Expediente package-gate:** `docs/plan-canonico/modular/package-gate-instances/GAP-PKG-001.json` — `APPROVED_FOR_IMPLEMENTATION`
+- **Gates:** **6/6 PASS**; faltan **0**.
+- **Por qué:** GAP-PKG-001 ya tiene handoff físico PENDING_AUTHORIZATION; falta autorización física humana.
 - **Regla:** preparar o aprobar el expediente no autoriza todavía código, migraciones, despliegues ni cambios remotos.
 
 ### 3. Continúa la documentación — `VISO-AUTH-019`
@@ -35,18 +35,19 @@
 - **Archivo propietario:** `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
 - **Regla:** si corre en paralelo con una corrección o un package, usar checkout independiente y serializar los cierres.
 
-### 4. Implementación física
+### 4. Ejecuta la instancia física autorizada — `SHELL-CI-020::GAP-PKG-001`
 
-- **Acción ahora:** `NO_INICIAR_IMPLEMENTACIÓN_FÍSICA`.
-- **Motivo:** no existe una instancia física no terminal registrada por `implementation-control`.
-- **Se desbloquea cuando:** el package actual complete su gate, materialice el handoff físico y el usuario apruebe explícitamente la instancia exacta.
+- **Estado:** `PENDING_AUTHORIZATION`
+- **Contrato:** Implementar y desplegar cada paquete aprobado por E5
+- **Acción exacta del control:** `AUTORIZAR_IMPLEMENTACIÓN`
+- **Registro:** `docs/plan-canonico/modular/implementation-instances/SHELL-CI-020__GAP-PKG-001.json`
 
 ## Panel de control — dos carriles
 
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `VISO-AUTH-019` — Restringir quién administra seguridad | `VISO-AUTH-020` — Crear exporte de matriz de acceso | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `SIN_INSTANCIA_ACTIVA` | — | SIN SIGUIENTE PROYECTADA | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-CI-020::GAP-PKG-001` — Implementar y desplegar cada paquete aprobado por E5 | SIN SIGUIENTE PROYECTADA | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -55,12 +56,12 @@
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
 | 🟦 **Documentación** | **1109/1596 aprobadas** | **487** no aprobadas (0 propuesta, 0 rechazadas) | `VISO-AUTH-019` |
-| 🟧 **Implementación física conocida** | **96/96 VERIFIED** | **0** no terminales | — |
+| 🟧 **Implementación física conocida** | **96/97 VERIFIED** | **1** no terminales | `SHELL-CI-020::GAP-PKG-001` |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-G-VISO-CORE` — VISO administrador del modelo y núcleo operativo
 - **Siguiente etapa documental:** `PHASE-04-H2-SHELL-APPLICATION`
-- **Acción primaria del control de instancias:** `DOCUMENTAR_TAREA` — `VISO-AUTH-019`
+- **Acción primaria del control de instancias:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-CI-020::GAP-PKG-001`
 - **Instancias físicas en espera de predecesora:** **0**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
@@ -70,7 +71,7 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| — | — | — | Sin instancia física pendiente conocida | — | — |
+| 1 | **ACTUAL** | `SHELL-CI-020::GAP-PKG-001` | Implementar y desplegar cada paquete aprobado por E5 | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
 
 ## Modos de trabajo y materialización
 

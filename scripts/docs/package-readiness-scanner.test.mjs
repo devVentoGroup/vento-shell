@@ -368,6 +368,7 @@ test('scanner de producción reconcilia los 207 GAP-PKG directamente desde E5', 
       activeSequence: { task_ids: ['NEXT-DOC-001'] },
       canonicalCatalogSource: canonicalCatalogSource(),
       gapRoutingSource: canonicalGapRoutingSource(),
+      packageGateRecords: new Map(),
       skipDerivedReports: true,
     },
   });
@@ -406,6 +407,7 @@ test('registry persistente conserva estado mínimo y el detalle completo queda s
       activeSequence: { task_ids: ['NEXT-DOC-001'] },
       canonicalCatalogSource: canonicalCatalogSource(),
       gapRoutingSource: canonicalGapRoutingSource(),
+      packageGateRecords: new Map(),
       skipDerivedReports: true,
     },
   });
@@ -500,6 +502,7 @@ test('el package muestra tareas aprobadas, pendientes y progreso exacto', () => 
       activeSequence: { task_ids: ['NEXT-DOC-001'] },
       canonicalCatalogSource: canonicalCatalogSource(),
       gapRoutingSource: canonicalGapRoutingSource(),
+      packageGateRecords: new Map(),
       skipDerivedReports: true,
     },
   });
@@ -534,6 +537,7 @@ test('nearest-to-ready queda como dato diagnóstico y no compite con el turno li
       activeSequence: { task_ids: ['NEXT-DOC-001'] },
       canonicalCatalogSource: canonicalCatalogSource(),
       gapRoutingSource: canonicalGapRoutingSource(),
+      packageGateRecords: new Map(),
       skipDerivedReports: true,
     },
   });
@@ -559,6 +563,7 @@ test('detalle por package lista tareas, gates y obligaciones restantes', () => {
       activeSequence: { task_ids: ['NEXT-DOC-001'] },
       canonicalCatalogSource: canonicalCatalogSource(),
       gapRoutingSource: canonicalGapRoutingSource(),
+      packageGateRecords: new Map(),
       skipDerivedReports: true,
     },
   });

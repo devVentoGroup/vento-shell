@@ -92,6 +92,52 @@ test('package lifecycle obliga turno, rama, publicación y handoff PENDING', () 
   assert.match(packageGateLifecycleSource, /docs:implementation:status/u);
 });
 
+test('package lifecycle sincroniza readiness persistente antes de checks dependientes del registry', () => {
+  const helper = packageGateLifecycleSource.indexOf('function synchronizePackageReadiness(root, trigger)');
+  const helperWrite = packageGateLifecycleSource.indexOf('write: true', helper);
+
+  const approveStart = packageGateLifecycleSource.indexOf('export function approvePackageGate({');
+  const approveSync = packageGateLifecycleSource.indexOf(
+    "synchronizePackageReadiness(root, 'package-gate-approve');",
+    approveStart,
+  );
+
+  const finishStart = packageGateLifecycleSource.indexOf('export function finishPackageGate({');
+  const finishSync = packageGateLifecycleSource.indexOf(
+    "synchronizePackageReadiness(root, 'package-finish-precheck');",
+    finishStart,
+  );
+  const finishHandoff = packageGateLifecycleSource.indexOf(
+    'materializePendingPhysicalHandoff(root, id, synchronized)',
+    finishStart,
+  );
+  const finishExecutionCheck = packageGateLifecycleSource.indexOf(
+    "npm(['run', 'docs:package:execution:check']",
+    finishStart,
+  );
+
+  const handoffStart = packageGateLifecycleSource.indexOf(
+    'export function handoffPackageImplementation({',
+  );
+  const handoffSync = packageGateLifecycleSource.indexOf(
+    "synchronizePackageReadiness(root, 'package-handoff-precheck');",
+    handoffStart,
+  );
+  const handoffExecutionCheck = packageGateLifecycleSource.indexOf(
+    "npm(['run', 'docs:package:execution:check']",
+    handoffStart,
+  );
+
+  assert.ok(helper >= 0);
+  assert.ok(helperWrite > helper);
+  assert.ok(approveSync > approveStart);
+  assert.ok(finishSync > finishStart);
+  assert.ok(finishHandoff > finishSync);
+  assert.ok(finishExecutionCheck > finishHandoff);
+  assert.ok(handoffSync > handoffStart);
+  assert.ok(handoffExecutionCheck > handoffSync);
+});
+
 test('scanner separa registry documental persistente de estado físico efectivo', () => {
   assert.match(scannerSource, /status_scope: 'DOCUMENTARY_READINESS'/u);
   assert.match(scannerSource, /export function applyPhysicalOverlay/u);

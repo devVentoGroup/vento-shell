@@ -34,10 +34,10 @@
 | Siguiente tarea | **VISO-AUTH-020 — Crear exporte de matriz de acceso** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
 | Progreso del bloque | **BLOQUES G Y G2: 18 de 26 aprobadas; VISO-AUTH-019 pendiente** |
-| Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — VISO-AUTH-019** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-020::GAP-PKG-001** |
 | Carril documental | **ACTIVO — VISO-AUTH-019** |
-| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-020::GAP-PKG-001** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 18 DE 26 APROBADAS — ACTUAL VISO-AUTH-019** |
-| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Implementación física | **SHELL-CI-020::GAP-PKG-001 — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 

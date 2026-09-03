@@ -1,0 +1,147 @@
+{
+  "schema_version": 1,
+  "package_id": "GAP-PKG-001",
+  "status": "APPROVED_FOR_IMPLEMENTATION",
+  "created_at": "2026-09-03T14:25:39.671Z",
+  "updated_at": "2026-09-03T15:34:55.790Z",
+  "canonical_snapshot": {
+    "repository_owner": "devVentoGroup/vento-shell",
+    "runtime_profile": "DATABASE_RPC_BOUNDARY",
+    "dominant_task_id": "AUTH-DB-003",
+    "task_ids": [
+      "AUTH-DB-003",
+      "AUTH-DB-005",
+      "SHELL-CON-014",
+      "SUPA-AUD-014",
+      "SUPA-AUD-015"
+    ],
+    "missing_task_ids": []
+  },
+  "physical_identity": {
+    "targets": [
+      {
+        "repository": "vento-group-sas/vento-shell",
+        "path": "supabase/functions/shift-runtime-processor/index.ts",
+        "symbol_or_surface": "Deno.serve authorization boundary using expectedCronSecret and x-cron-key",
+        "operation": "MODIFICAR"
+      },
+      {
+        "repository": "vento-group-sas/vento-shell",
+        "path": "supabase/tests/packages/GAP-PKG-001.sql",
+        "symbol_or_surface": "GAP-PKG-001 TP-DB-001 pgTAP package evidence",
+        "operation": "CREAR"
+      },
+      {
+        "repository": "vento-group-sas/vento-shell",
+        "path": "tests/packages/GAP-PKG-001/contract.test.ts",
+        "symbol_or_surface": "GAP-PKG-001 contractual test suite",
+        "operation": "CREAR"
+      },
+      {
+        "repository": "vento-group-sas/vento-shell",
+        "path": "tests/packages/GAP-PKG-001/integration.test.ts",
+        "symbol_or_surface": "GAP-PKG-001 integration test suite",
+        "operation": "CREAR"
+      },
+      {
+        "repository": "vento-group-sas/vento-shell",
+        "path": "tests/packages/GAP-PKG-001/security.test.ts",
+        "symbol_or_surface": "GAP-PKG-001 security test suite",
+        "operation": "CREAR"
+      },
+      {
+        "repository": "vento-group-sas/vento-shell",
+        "path": "tests/packages/GAP-PKG-001/e2e.test.ts",
+        "symbol_or_surface": "GAP-PKG-001 Edge Function end-to-end test suite",
+        "operation": "CREAR"
+      },
+      {
+        "repository": "vento-group-sas/vento-shell",
+        "path": "tests/packages/GAP-PKG-001/fixtures.json",
+        "symbol_or_surface": "Deterministic TP-DB-001 fixtures for the four TREQ linked to GAP-PKG-001",
+        "operation": "CREAR"
+      }
+    ]
+  },
+  "implementation_units": [
+    {
+      "unit_id": "shift-runtime-processor",
+      "repository": "vento-group-sas/vento-shell",
+      "change": "Harden the existing shift-runtime-processor cron authorization boundary so missing server-side secret configuration fails closed before business processing, while preserving valid-secret behavior and materializing the exact TP-DB-001 evidence reserved for GAP-PKG-001."
+    }
+  ],
+  "evidence_plan": {
+    "tests": [
+      {
+        "command": "npm run supabase:db:test:clean",
+        "expected_result": "PASS on the existing local Supabase database harness with no remote target usage."
+      },
+      {
+        "command": "npm exec -- supabase test db supabase/tests/packages/GAP-PKG-001.sql",
+        "expected_result": "PASS for the GAP-PKG-001 pgTAP assertions covering the database/RPC boundary required by TP-DB-001."
+      },
+      {
+        "command": "node --test tests/packages/GAP-PKG-001/contract.test.ts",
+        "expected_result": "PASS for the fail-closed contract and the four TREQ mapped to GAP-PKG-001."
+      },
+      {
+        "command": "node --test tests/packages/GAP-PKG-001/integration.test.ts",
+        "expected_result": "PASS for secret-source precedence, request authorization and integration with the existing cron invocation boundary."
+      },
+      {
+        "command": "node --test tests/packages/GAP-PKG-001/security.test.ts",
+        "expected_result": "PASS: missing server secret returns 503, invalid or missing x-cron-key returns 401 when a secret exists, and denied calls create zero business mutations."
+      },
+      {
+        "command": "node --test tests/packages/GAP-PKG-001/e2e.test.ts",
+        "expected_result": "PASS against a controlled local Edge Function runtime for missing-secret, wrong-secret and correct-secret scenarios."
+      },
+      {
+        "command": "npm test --silent",
+        "expected_result": "PASS for the canonical vento-shell repository test facade with zero required test failures."
+      }
+    ],
+    "observability": [
+      {
+        "signal": "[shift-runtime-processor] cron_secret_missing",
+        "expected_result": "Emitted only when no usable table or environment secret exists; contains no secret value and the request terminates with HTTP 503 before business processing."
+      },
+      {
+        "signal": "shift-runtime-processor HTTP authorization result",
+        "expected_result": "503 for absent server-side secret configuration; 401 for invalid or missing x-cron-key when a secret exists; normal success path only for the configured secret."
+      },
+      {
+        "signal": "shift_runtime_events and attendance_logs denied-request mutation delta",
+        "expected_result": "Exactly zero writes for every 503 or 401 authorization test case."
+      },
+      {
+        "signal": "anima_shift_runtime_processor_every_5m plus Edge Function execution logs",
+        "expected_result": "The existing five-minute cron remains active and configured-secret invocations continue successfully after deployment, with no secret material exposed in logs."
+      }
+    ],
+    "acceptance_criteria": [
+      "When internal_job_secrets has no usable shift_runtime_processor_cron secret and SHIFT_RUNTIME_CRON_SECRET is absent or empty, shift-runtime-processor must return HTTP 503 with a non-sensitive service_unavailable response before any business query or mutation.",
+      "If the internal_job_secrets lookup cannot provide a usable secret and no environment fallback exists, the function must fail closed with HTTP 503 rather than continue processing.",
+      "When a server-side secret exists, a missing or incorrect x-cron-key must return HTTP 401 and produce zero writes to shift_runtime_events and attendance_logs.",
+      "When x-cron-key matches the configured server-side secret, the existing shift processing behavior must remain functional without changing its business semantics.",
+      "The table secret keeps precedence over SHIFT_RUNTIME_CRON_SECRET and the environment value remains only a fallback when the table does not provide a usable secret.",
+      "No response, test fixture, console log or evidence artifact may expose the configured secret value.",
+      "TREQ-PROC-1490, TREQ-SUPABASE-005, TREQ-SUPABASE-006 and TREQ-SUPABASE-1760 must each have an explicit oracle and at least one reproducible PASS assertion in the GAP-PKG-001 evidence set.",
+      "The package must not modify database schema, RLS, grants, public.run_shift_runtime_processor(), the five-minute cron schedule, document-alerts, supabase/config.toml or unrelated Edge Functions.",
+      "All package-specific tests and the canonical npm test --silent regression facade must complete with zero required failures before the physical implementation can be considered verified."
+    ],
+    "rollback_steps": [
+      "Before deployment, capture the currently deployed shift-runtime-processor version and source identity and verify only the presence, never the value, of the configured cron secret.",
+      "If the new Edge Function deployment causes a functional regression, redeploy the previously captured source only while a non-empty cron secret is verified; if secret presence cannot be verified, keep the processor unavailable rather than restore fail-open execution.",
+      "After any rollback, verify the configured-secret cron invocation path, confirm denied requests still have zero business mutations whenever the hardened version is active, and preserve sanitized execution evidence.",
+      "No database rollback is required for GAP-PKG-001 because this package authorizes no schema, migration, RLS, grant or persistent data transformation."
+    ]
+  },
+  "authorization": {
+    "decision": "APROBADO",
+    "approved_by": "usuario",
+    "approved_at": "2026-09-03T15:34:55.790Z",
+    "approval_ref": "APROBADO",
+    "approval_statement": "APROBADO GAP-PKG-001."
+  }
+}

@@ -151,6 +151,15 @@ function scanPackageContext(root, packageId) {
   return { id, pkg, result };
 }
 
+function synchronizePackageReadiness(root, trigger) {
+  return scanPackageReadiness({
+    root,
+    write: true,
+    trigger,
+    supplied: { skipDerivedReports: true },
+  });
+}
+
 function assertPackageMutationScope(root, packageId, operation) {
   const context = scanPackageContext(root, packageId);
   assertPackageMutationAllowed({
@@ -372,6 +381,7 @@ export function approvePackageGate({ root = process.cwd(), packageId, approvedBy
     },
   };
   fs.writeFileSync(abs(root, current.relativePath), stableJson(record), 'utf8');
+  synchronizePackageReadiness(root, 'package-gate-approve');
   return { ...current, record, assessment: assessPackageGateRecord(record, { policy, relativePath: current.relativePath }) };
 }
 
@@ -415,7 +425,7 @@ export function finishPackageGate({
   const branch = assertPackageBranch(root, id, 'PACKAGE_FINISH');
 
   reconcileMainIntoPackageBranch(root);
-  const context = assertPackageMutationScope(root, id, 'PACKAGE_FINISH');
+  assertPackageMutationScope(root, id, 'PACKAGE_FINISH');
   const gate = inspectPackageGate({ root, packageId: id });
 
   if (!gate.assessment.valid) {
@@ -428,7 +438,8 @@ export function finishPackageGate({
     );
   }
 
-  const handoff = materializePendingPhysicalHandoff(root, id, context.result);
+  const synchronized = synchronizePackageReadiness(root, 'package-finish-precheck');
+  const handoff = materializePendingPhysicalHandoff(root, id, synchronized);
 
   npm(['run', 'docs:package:gate:check'], { cwd: root, inherit: true });
   npm(['run', 'docs:package:execution:check'], { cwd: root, inherit: true });
@@ -472,8 +483,9 @@ export function handoffPackageImplementation({
   }
 
   ensureMainSynchronized(root);
-  const context = assertPackageMutationScope(root, id, 'PACKAGE_HANDOFF');
-  const action = context.result.registry.package_execution?.current?.next_action ?? null;
+  assertPackageMutationScope(root, id, 'PACKAGE_HANDOFF');
+  const synchronized = synchronizePackageReadiness(root, 'package-handoff-precheck');
+  const action = synchronized.registry.package_execution?.current?.next_action ?? null;
 
   if (action?.type === 'AUTHORIZE_PHYSICAL_IMPLEMENTATION') {
     console.log(`PACKAGE_HANDOFF: ALREADY_MATERIALIZED ${action.target}`);
@@ -488,7 +500,7 @@ export function handoffPackageImplementation({
     );
   }
 
-  const handoff = materializePendingPhysicalHandoff(root, id, context.result);
+  const handoff = materializePendingPhysicalHandoff(root, id, synchronized);
   const refreshed = scanPackageReadiness({
     root,
     check: false,
