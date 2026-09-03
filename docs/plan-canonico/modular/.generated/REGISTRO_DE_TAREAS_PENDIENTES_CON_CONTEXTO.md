@@ -2,9 +2,44 @@
 
 > Archivo derivado. No editar manualmente.
 >
-> Vista humana de los dos carriles operativos: documentación canónica e implementación física. El detalle exhaustivo inferior conserva la autoridad estructural utilizada por los validadores.
+> Vista humana coordinada de correcciones, documentación canónica, preparación lineal de packages e implementación física. El detalle exhaustivo inferior conserva la autoridad estructural utilizada por los validadores.
 >
 > El marcador documental define contratos; las instancias físicas materializan únicamente lo autorizado. Ningún carril reabre ni sustituye silenciosamente al otro.
+
+## 🚦 QUÉ HACER AHORA — SIN INTERPRETAR NI ELEGIR
+
+> **Prioridad del checkout actual:** ejecutar `PREPARE_PACKAGE_GATE` sobre `GAP-PKG-001`.
+>
+> Las secciones siguientes son las únicas colas vigentes. Corrección, documentación, preparación de package e implementación física son estados distintos; una no autoriza silenciosamente a la otra.
+
+### 1. Correcciones canónicas
+
+- **Acción:** ninguna corrección abierta.
+
+### 2. Prepara el package que tiene el turno — `GAP-PKG-001`
+
+- **Posición:** **1/189**; ningún package posterior puede adelantarlo.
+- **Estado efectivo:** `COMPILED`
+- **Acción exacta:** `PREPARE_PACKAGE_GATE`
+- **Objetivo exacto:** `GAP-PKG-001`
+- **Comando exacto:** `npm run docs:package:start -- --package-id GAP-PKG-001`
+- **Expediente package-gate:** `docs/plan-canonico/modular/package-gate-instances/GAP-PKG-001.json` — `NOT_PREPARED`
+- **Gates:** **2/6 PASS**; faltan **4**.
+- **Por qué:** GAP-PKG-001 ocupa el turno lineal y todavía no tiene expediente package-gate.
+- **Regla:** preparar o aprobar el expediente no autoriza todavía código, migraciones, despliegues ni cambios remotos.
+
+### 3. Continúa la documentación — `VISO-AUTH-018`
+
+- **Tarea exacta:** `VISO-AUTH-018` — Auditar cambios de seguridad
+- **Haz ahora:** Audita cambios de seguridad, identifica brechas y decide cada hallazgo.
+- **Archivo propietario:** `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+- **Regla:** si corre en paralelo con una corrección o un package, usar checkout independiente y serializar los cierres.
+
+### 4. Implementación física
+
+- **Acción ahora:** `NO_INICIAR_IMPLEMENTACIÓN_FÍSICA`.
+- **Motivo:** no existe una instancia física no terminal registrada por `implementation-control`.
+- **Se desbloquea cuando:** el package actual complete su gate, materialice el handoff físico y el usuario apruebe explícitamente la instancia exacta.
 
 ## Panel de control — dos carriles
 
@@ -19,13 +54,13 @@
 
 | Carril | Completado | Pendiente / restante | Actual |
 | --- | ---: | ---: | --- |
-| 🟦 **Documentación** | **1107/1596 aprobadas** | **488** no aprobadas (1 propuesta, 0 rechazadas) | `VISO-AUTH-018` |
+| 🟦 **Documentación** | **1108/1596 aprobadas** | **488** no aprobadas (0 propuesta, 0 rechazadas) | `VISO-AUTH-018` |
 | 🟧 **Implementación física conocida** | **96/96 VERIFIED** | **0** no terminales | — |
 
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-G-VISO-CORE` — VISO administrador del modelo y núcleo operativo
 - **Siguiente etapa documental:** `PHASE-04-H2-SHELL-APPLICATION`
-- **Acción física prioritaria:** `DOCUMENTAR_TAREA` — `VISO-AUTH-018`
+- **Acción primaria del control de instancias:** `DOCUMENTAR_TAREA` — `VISO-AUTH-018`
 - **Instancias físicas en espera de predecesora:** **0**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
