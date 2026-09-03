@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 import {
+  assertCi020PhysicalPrerequisitesForFinish,
   assertImplementationPaths,
   assertInstanceCanFinish,
   assertInstanceCanStart,
@@ -353,27 +354,143 @@ test('package.json expone el lifecycle fisico protegido y docs:plan:test lo auto
     /scripts\/docs\/implementation-correction-guard\.test\.mjs/u,
   );
 });
-test('sync local de derivados protege watcher y no cambia el worktree versionado', () => {
-  const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+
+test('sync local converge derivados y preserva el worktree no derivado', () => {
+  const packageJson = JSON.parse(
+    fs.readFileSync('package.json', 'utf8'),
+  );
+
   assert.equal(
     packageJson.scripts['docs:plan:local-sync'],
     'node scripts/docs/sync-local-derived-artifacts.mjs',
   );
+
   assert.equal(
     packageJson.scripts['docs:plan:watch'],
     'node scripts/docs/sync-local-derived-artifacts.mjs && node scripts/docs/watch-plan-canonico.mjs',
   );
-  assert.match(
-    packageJson.scripts['docs:plan:check'],
-    /^node scripts\/docs\/sync-local-derived-artifacts\.mjs && /u,
+
+  assert.ok(
+    packageJson.scripts['docs:plan:check']
+      .startsWith(
+        'node scripts/docs/sync-local-derived-artifacts.mjs && ',
+      ),
   );
 
-  const source = fs.readFileSync('scripts/docs/sync-local-derived-artifacts.mjs', 'utf8');
-  assert.match(source, /git\(\s*\['check-ignore', '--quiet', '--', relativePath\]/u);
-  assert.match(source, /scanPackageReadiness\(\{/u);
-  assert.match(source, /writeReadinessChatgptWorkStarter\(\{/u);
-  assert.match(source, /readinessResult: readiness/u);
-  assert.match(source, /build-plan-canonico-core\.mjs', '--check'/u);
-  assert.match(source, /afterStatus !== beforeStatus/u);
-  assert.match(source, /VERSIONED_WORKTREE: UNCHANGED/u);
+  const source = fs.readFileSync(
+    'scripts/docs/sync-local-derived-artifacts.mjs',
+    'utf8',
+  );
+
+  assert.ok(
+    source.includes(
+      "['check-ignore', '--quiet', '--', relativePath]",
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'syncPlanContinuity({',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'writeImplementationControlArtifacts({',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      "trigger: 'local-derived-sync'",
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'write: true',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'syncPendingTaskContext({',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'readinessResult: readiness',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'writeReadinessChatgptWorkStarter({',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'writeCorrectionStarter({',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      "build-plan-canonico-core.mjs', '--check",
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'CI_DERIVED_PROJECTION_DRIFT',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'afterStatus !== reconciledStatus',
+    ),
+  );
+
+  assert.ok(
+    source.includes(
+      'NON_DERIVED_WORKTREE: PRESERVED',
+    ),
+  );
+});
+
+test('finish de SHELL-CI-020 falla cerrado ante fundación pendiente', () => {
+  const instance = { instance_id: 'SHELL-CI-020::GAP-PKG-001', task_id: 'SHELL-CI-020' };
+  const blocked = { registry: { packages: [{
+    package_id: 'GAP-PKG-001',
+    physical_dependencies: { status: 'UNKNOWN', evidence: [{ source: 'MRP015-000::TOOLCHAIN_READY', status: 'UNKNOWN', detail: 'Pendiente.' }] },
+  }] } };
+
+  assert.throws(
+    () => assertCi020PhysicalPrerequisitesForFinish({ instance, readiness: blocked }),
+    /MRP015-000::TOOLCHAIN_READY/u,
+  );
+
+  const ready = { registry: { packages: [{
+    package_id: 'GAP-PKG-001',
+    physical_dependencies: { status: 'PASS', evidence: [{ source: 'MRP015-000::TOOLCHAIN_READY', status: 'PASS', detail: 'PASS.' }] },
+  }] } };
+
+  assert.equal(assertCi020PhysicalPrerequisitesForFinish({ instance, readiness: ready }), true);
+});
+
+test('package registry persistente es proyección derivada física', () => {
+  const instance = {
+    instance_id: 'SHELL-CON-001::GLOBAL',
+    authorized_changes: [],
+  };
+  assert.equal(
+    classifyImplementationPath(
+      'scripts/docs/package-readiness/implementation-package-registry.json',
+      instance,
+    ),
+    'DERIVED_PROJECTION',
+  );
 });

@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 
+import { scanPackageReadiness } from './package-readiness-scanner.mjs';
+
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const buildSource = fs.readFileSync('scripts/docs/build-plan-canonico.mjs', 'utf8');
 const syncSource = fs.readFileSync('scripts/docs/sync-local-derived-artifacts.mjs', 'utf8');
@@ -23,17 +25,81 @@ test('build ejecuta scanner fail-closed antes de generar iniciadores readiness',
   assert.match(buildSource, /process\.exit\(1\)/u);
 });
 
-test('local sync verifica readiness sin modificar estado versionado', () => {
-  const before = syncSource.indexOf('const beforeStatus = repositoryStatus(repositoryRoot);');
-  const scan = syncSource.indexOf("trigger: 'local-derived-sync'");
-  const starter = syncSource.indexOf('writeReadinessChatgptWorkStarter({');
-  const after = syncSource.indexOf('const afterStatus = repositoryStatus(repositoryRoot);');
-  assert.ok(before >= 0);
-  assert.ok(scan > before);
-  assert.ok(starter > scan);
-  assert.ok(after > starter);
-  assert.match(syncSource, /check: true/u);
-  assert.match(syncSource, /VERSIONED_WORKTREE: UNCHANGED/u);
+
+test('local sync converge todas las proyecciones antes del postcheck', () => {
+  const initial = syncSource.indexOf(
+    'const initialStatus = repositoryStatus(repositoryRoot);',
+  );
+
+  const continuity = syncSource.indexOf(
+    'syncPlanContinuity({',
+  );
+
+  const implementation = syncSource.indexOf(
+    'const implementationControl = writeImplementationControlArtifacts({',
+  );
+
+  const readiness = syncSource.indexOf(
+    'const readiness = scanPackageReadiness({',
+  );
+
+  const readinessWrite = syncSource.indexOf(
+    'write: true',
+    readiness,
+  );
+
+  const pending = syncSource.indexOf(
+    'const pendingContext = syncPendingTaskContext({',
+  );
+
+  const compiled = syncSource.indexOf(
+    'const compiled = syncCompiledCache(repositoryRoot, manifest);',
+  );
+
+  const starter = syncSource.indexOf(
+    'const starter = writeReadinessChatgptWorkStarter({',
+  );
+
+  const correction = syncSource.indexOf(
+    'const correctionStarter = writeCorrectionStarter({',
+  );
+
+  const converged = syncSource.indexOf(
+    'const reconciledStatus = repositoryStatus(repositoryRoot);',
+  );
+
+  const postReadiness = syncSource.indexOf(
+    'const postReadiness = scanPackageReadiness({',
+  );
+
+  const after = syncSource.indexOf(
+    'const afterStatus = repositoryStatus(repositoryRoot);',
+  );
+
+  assert.ok(initial >= 0);
+  assert.ok(continuity > initial);
+  assert.ok(implementation > continuity);
+  assert.ok(readiness > implementation);
+  assert.ok(readinessWrite > readiness);
+  assert.ok(pending > readinessWrite);
+  assert.ok(compiled > pending);
+  assert.ok(starter > compiled);
+  assert.ok(correction > starter);
+  assert.ok(converged > correction);
+  assert.ok(postReadiness > converged);
+  assert.ok(after > postReadiness);
+
+  assert.ok(
+    syncSource.includes('CI_DERIVED_PROJECTION_DRIFT'),
+  );
+
+  assert.ok(
+    syncSource.includes('afterStatus !== reconciledStatus'),
+  );
+
+  assert.ok(
+    syncSource.includes('NON_DERIVED_WORKTREE: PRESERVED'),
+  );
 });
 
 test('package.json enruta starter, status, commit-scope y lifecycle por readiness con carril de correcciones separado', () => {
@@ -168,4 +234,175 @@ test('el índice inicial no inventa un catálogo masivo y solo siembra identidad
   assert.deepEqual(Object.keys(index.capabilities).sort(), ['NEXO_REMISSIONS', 'VISO_SCHEDULE_MONTHLY']);
   assert.equal(index.capabilities.NEXO_REMISSIONS.canonical_package_id, 'NEXO-REMISSIONS-001');
   assert.equal(index.capabilities.VISO_SCHEDULE_MONTHLY.canonical_package_id, 'VISO-SCHEDULE-MONTHLY-001');
+});
+
+test('la línea real proyecta la primera fundación Supabase no demostrada', () => {
+  const contract = JSON.parse(fs.readFileSync('scripts/docs/package-readiness/package-readiness-contract.json', 'utf8'));
+  const foundation = contract.physical_dependencies.supabase_pre_e5_foundation;
+  const remote = foundation.remote_environment_identity;
+  const remoteReady = ['STAGING', 'PRODUCTION'].every((role) => {
+    const binding = remote.bindings[role];
+    return binding.classification === role && String(binding.project_ref ?? "").trim() && String(binding.owner ?? "").trim();
+  }) && remote.bindings.STAGING.project_ref !== remote.bindings.PRODUCTION.project_ref;
+
+  const firstUnresolved = foundation.ordered_foundation_gates.find((gate) => {
+    if (!String(gate.evidence_ref ?? "").trim()) return true;
+    if (gate.foundation_id === 'MRP015-010' && !remoteReady) return true;
+    return false;
+  }) ?? null;
+
+  const result = scanPackageReadiness({ root: process.cwd(), check: true, trigger: 'corr-002-integration', supplied: { skipDerivedReports: true } });
+  const current = result.registry.package_execution.current;
+
+  if (firstUnresolved) {
+    assert.equal(current.package_id, 'GAP-PKG-001');
+    assert.equal(current.next_action.type, 'WAIT_FOR_FOUNDATION_PREREQUISITE');
+    assert.equal(result.registry.package_execution.current_work.id, firstUnresolved.foundation_id);
+    assert.equal(result.registry.package_execution.current_work.consumer_package_id, current.package_id);
+  } else {
+    assert.notEqual(current?.next_action?.type, 'WAIT_FOR_FOUNDATION_PREREQUISITE');
+  }
+});
+
+test('integración exige CURRENT_EXECUTABLE_WORK en scanner starter y guard', () => {
+  const executionSource = fs.readFileSync('scripts/docs/package-execution-control.mjs', 'utf8');
+  const pendingSource = fs.readFileSync('scripts/docs/sync-pending-task-context.mjs', 'utf8');
+  const guardSource = fs.readFileSync('scripts/docs/implementation-correction-guard.mjs', 'utf8');
+  assert.match(scannerSource, /MRP015-000/u);
+  assert.match(executionSource, /CURRENT_EXECUTABLE_WORK/u);
+  assert.match(starterSource, /CURRENT_EXECUTABLE_WORK/u);
+  assert.match(pendingSource, /CURRENT_EXECUTABLE_WORK/u);
+  assert.match(guardSource, /IMPLEMENTATION_START_NOT_READY/u);
+});
+
+
+test('docs:plan:check converge todas sus proyecciones antes de comprobarlas', () => {
+  const pendingSource = fs.readFileSync(
+    'scripts/docs/sync-pending-task-context.mjs',
+    'utf8',
+  );
+
+  const implementationSource = fs.readFileSync(
+    'scripts/docs/implementation-control.mjs',
+    'utf8',
+  );
+
+  const planCheck =
+    packageJson.scripts['docs:plan:check'];
+
+  assert.ok(
+    planCheck.includes(
+      'sync-local-derived-artifacts.mjs',
+    ),
+  );
+
+  assert.ok(
+    planCheck.includes(
+      'sync-pending-task-context.mjs --check',
+    ),
+  );
+
+  assert.ok(
+    planCheck.includes(
+      'implementation-control.mjs --check',
+    ),
+  );
+
+  assert.ok(
+    planCheck.includes(
+      'chatgpt-work-starter-readiness.mjs --check',
+    ),
+  );
+
+  assert.ok(
+    planCheck.includes(
+      'correction-starter.mjs --check',
+    ),
+  );
+
+  const continuity = syncSource.indexOf(
+    'syncPlanContinuity({',
+  );
+
+  const implementation = syncSource.indexOf(
+    'writeImplementationControlArtifacts({',
+  );
+
+  const readiness = syncSource.indexOf(
+    'const readiness = scanPackageReadiness({',
+  );
+
+  const readinessWrite = syncSource.indexOf(
+    'write: true',
+    readiness,
+  );
+
+  const pending = syncSource.indexOf(
+    'const pendingContext = syncPendingTaskContext({',
+  );
+
+  const starter = syncSource.indexOf(
+    'const starter = writeReadinessChatgptWorkStarter({',
+  );
+
+  const correction = syncSource.indexOf(
+    'const correctionStarter = writeCorrectionStarter({',
+  );
+
+  const convergence = syncSource.indexOf(
+    'const reconciledStatus = repositoryStatus(repositoryRoot);',
+  );
+
+  assert.ok(continuity >= 0);
+  assert.ok(implementation > continuity);
+  assert.ok(readiness > implementation);
+  assert.ok(readinessWrite > readiness);
+  assert.ok(pending > readinessWrite);
+  assert.ok(starter > pending);
+  assert.ok(correction > starter);
+  assert.ok(convergence > correction);
+
+  assert.ok(
+    pendingSource.includes(
+      'readinessResult ?? scanPackageReadiness',
+    ),
+  );
+
+  assert.ok(
+    implementationSource.includes(
+      'materializePendingRecord = true',
+    ),
+  );
+
+  assert.ok(
+    syncSource.includes(
+      'materializePendingRecord: false',
+    ),
+  );
+
+  const correctionPostcheck =
+    syncSource.indexOf(
+      'writeCorrectionStarter({',
+      convergence,
+    );
+
+  const correctionPostcheckFlag =
+    syncSource.indexOf(
+      'check: true',
+      correctionPostcheck,
+    );
+
+  assert.ok(
+    correctionPostcheck > convergence,
+  );
+
+  assert.ok(
+    correctionPostcheckFlag > correctionPostcheck,
+  );
+
+  assert.ok(
+    syncSource.includes(
+      'CI_DERIVED_PROJECTION_DRIFT',
+    ),
+  );
 });

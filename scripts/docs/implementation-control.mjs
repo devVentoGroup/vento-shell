@@ -561,9 +561,16 @@ export function ensurePendingImplementationRecord({ root, control, check = false
   return true;
 }
 
-export function writeImplementationControlArtifacts({ root = process.cwd(), check = false } = {}) {
+export function writeImplementationControlArtifacts({
+  root = process.cwd(),
+  check = false,
+  materializePendingRecord = true,
+} = {}) {
   let control = deriveImplementationControl({ root });
-  if (ensurePendingImplementationRecord({ root, control, check })) {
+  if (
+    materializePendingRecord
+    && ensurePendingImplementationRecord({ root, control, check })
+  ) {
     control = deriveImplementationControl({ root });
   }
   const markdown = renderCurrentWorkDirective(control);
