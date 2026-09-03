@@ -764,19 +764,26 @@ histórico `NEXO-REMISSIONS-001` no reserva ejecución. Cada paquete se definir�
 cuando corresponda mediante `DELIV-PKG-001..025::<package_id>` después de
 completar el flujo canónico integral aplicable.
 
-La selección del primer package y de cada package posterior pertenece a
-`OWN-OPS`; `OWN-TEC` valida factibilidad y `OWN-SEG` conserva veto por riesgo de
-seguridad. Una cola `IMPLEMENTATION_READY`, un expediente existente o un orden
-alfabético no constituyen selección. Mientras no exista al menos un package
-elegible, el estado obligatorio es `PACKAGE_SELECTION: NOT_DUE` y
-`PACKAGE_SELECTED: NONE`. Cuando exista una cola elegible, la decisión se
-registra con:
+El orden de maduración e implementación de los `GAP-PKG-*` es único y
+automático. La fuente canónica es la matriz de dependencias y capas de
+`DELIV-PKG-015`; el control aplica, en este orden, aristas explícitas entre
+packages, capa de implementación y `package_id` como desempate estable. No
+existe selección humana de package.
 
-```text
-npm run docs:package:select -- --package-id <id> --owner OWN-OPS --validated-by OWN-TEC --approval APROBADO --evidence <referencia>
-```
+El primer package no `CLOSED` conserva el turno aunque esté bloqueado y aunque
+otro posterior alcance `IMPLEMENTATION_READY`. Una cola `IMPLEMENTATION_READY`,
+un expediente existente, un orden alfabético o una decisión de `OWN-OPS`,
+`OWN-TEC` u `OWN-SEG` no reordenan la línea. Los packages `NO_EJECUTABLE` sin
+orden físico canónico permanecen diferidos fuera de la línea activa hasta que
+su fuente propietaria materialice un orden válido.
 
-Sin ese registro no se crea un candidato físico `SHELL-CI-020::<package_id>`.
+`OWN-OPS`, `OWN-TEC` y `OWN-SEG` conservan sus responsabilidades empresariales,
+técnicas y de seguridad dentro de los gates aplicables, pero no seleccionan el
+package siguiente. El package actual se obtiene mediante
+`docs:package:execution:status`; solo cuando ese package supera
+`E5-GATE-008::<package_id>` y sus dependencias aplicables puede exponerse
+`SHELL-CI-020::<package_id>` para autorización física separada.
+`docs:package:select` no forma parte del flujo vigente.
 
 33. Consumir la matriz E1 y auditar implementación real de NEXO
 34. Aprobar alcance de catálogo, inventario, LOC, LPN, activos, reutilizables, repuestos, flota y logística
