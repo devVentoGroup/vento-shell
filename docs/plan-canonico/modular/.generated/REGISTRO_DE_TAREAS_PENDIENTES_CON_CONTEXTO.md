@@ -8,34 +8,25 @@
 
 ## 🚦 QUÉ HACER AHORA — SIN INTERPRETAR NI ELEGIR
 
-> **Prioridad del checkout actual:** terminar `DELIV-PKG-015::CORR-002`; este checkout ya pertenece a esa corrección.
+> **Prioridad del checkout actual:** ejecutar `WAIT_FOR_FOUNDATION_PREREQUISITE` sobre `MRP015-000`.
 >
 > Las secciones siguientes son las únicas colas vigentes. Corrección, documentación, preparación de package e implementación física son estados distintos; una no autoriza silenciosamente a la otra.
 
-### 1. Decide la corrección propuesta — `DELIV-PKG-015::CORR-002`
+### 1. Correcciones canónicas
 
-- **Estado:** `PENDING_AUTHORIZATION`
-- **Acción exacta:** `DECIDIR_AUTORIZACIÓN_DE_CORRECCIÓN`
-- **Haz ahora:** Revisar el alcance propuesto y aprobarlo o rechazarlo explícitamente; todavía no editar.
-- **Contrato autorizado:** PENDIENTE_DE_APROBACIÓN
-- **Edita solamente:**
-  - Ningún cambio autorizado todavía.
-- **Valida, en este orden:**
-  1. Ninguna validación autorizada todavía.
-- **Comando de lifecycle:** `NINGUNO_HASTA_APROBADO`
-- **Regla:** no mezclar esta corrección con documentación nueva, preparación de packages ni código físico en el mismo checkout.
+- **Acción:** ninguna corrección abierta.
 
-### 2. Prepara el package que tiene el turno — `GAP-PKG-001`
+### 2. Resuelve la fundación que tiene precedencia — `MRP015-000`
 
-- **Posición:** **1/189**; ningún package posterior puede adelantarlo.
-- **Estado efectivo:** `IMPLEMENTATION_READY`
-- **Acción exacta:** `AUTHORIZE_PHYSICAL_IMPLEMENTATION`
-- **Objetivo exacto:** `SHELL-CI-020::GAP-PKG-001`
-- **Comando exacto:** `npm run docs:implementation:status`
-- **Expediente package-gate:** `docs/plan-canonico/modular/package-gate-instances/GAP-PKG-001.json` — `APPROVED_FOR_IMPLEMENTATION`
-- **Gates:** **6/6 PASS**; faltan **0**.
-- **Por qué:** GAP-PKG-001 ya tiene handoff físico PENDING_AUTHORIZATION; falta autorización física humana.
-- **Regla:** preparar o aprobar el expediente no autoriza todavía código, migraciones, despliegues ni cambios remotos.
+- **CURRENT_EXECUTABLE_WORK:** `MRP015-000`
+- **Gate:** `TOOLCHAIN_READY`
+- **Owner canónico:** `SUPA-TRANS-015`
+- **Estado:** `UNKNOWN`
+- **Package consumidor bloqueado:** `GAP-PKG-001` — posición **1/189**.
+- **Acción exacta:** `WAIT_FOR_FOUNDATION_PREREQUISITE`
+- **Comando de comprobación:** `npm run docs:package:readiness:check -- --package GAP-PKG-001`
+- **Por qué:** GAP-PKG-001 conserva el turno como package consumidor, pero el trabajo requerido actual es MRP015-000 / TOOLCHAIN_READY, propiedad de SUPA-TRANS-015. El comando solo reevalúa el gate; no autoriza el package.
+- **Regla:** no autorizar, iniciar, desplegar ni cerrar el package consumidor hasta que esta fundación y las anteriores queden satisfechas.
 
 ### 3. Continúa la documentación — `VISO-CORE-002`
 
