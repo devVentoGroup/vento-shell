@@ -24,6 +24,8 @@ const CORRECTION_ID_PATTERN = /^([A-Z0-9]+(?:-[A-Z0-9]+)*-[0-9]{3,4})::CORR-([0-
 const HASH_PATTERN = /^[0-9a-f]{64}$/u;
 const COMMIT_PATTERN = /^[0-9a-f]{40}$/u;
 const TREQ_PATTERN = /^TREQ-[A-Z0-9]+(?:-[A-Z0-9]+)*-[0-9]{3}$/u;
+const GIT_MAX_BUFFER_BYTES = 64 * 1024 * 1024;
+const GIT_FAILURE_DIAGNOSTIC_LIMIT = 4000;
 const DERIVED_CORRECTION_PROJECTIONS = new Set([
     CORRECTION_STARTER_PROJECTION,
     'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md',
@@ -61,17 +63,47 @@ function normalizePath(value) {
     return String(value ?? '').replaceAll('\\', '/').replace(/^\.\//u, '').trim();
 }
 
+function truncateGitDiagnostic(value) {
+    const text = String(value ?? '').trimEnd();
+    if (text.length <= GIT_FAILURE_DIAGNOSTIC_LIMIT) return text;
+    return `${text.slice(0, GIT_FAILURE_DIAGNOSTIC_LIMIT)}
+[DIAGNOSTICO_GIT_TRUNCADO]`;
+}
+
 function git(root, args, { allowFailure = false } = {}) {
     const result = spawnSync('git', args, {
         cwd: root,
         encoding: 'utf8',
         windowsHide: true,
         stdio: ['ignore', 'pipe', 'pipe'],
+        maxBuffer: GIT_MAX_BUFFER_BYTES,
     });
-    const status = Number.isInteger(result.status) ? result.status : 1;
+
     const stdout = String(result.stdout ?? '').trimEnd();
     const stderr = String(result.stderr ?? '').trimEnd();
-    if (status !== 0 && !allowFailure) fail(stderr || stdout || `git ${args.join(' ')} falló.`);
+
+    if (result.error) {
+        const diagnostic = `git ${args.join(' ')} no pudo ejecutarse: ${result.error.message}`;
+
+        if (!allowFailure) fail(diagnostic);
+
+        return {
+            status: 1,
+            stdout: truncateGitDiagnostic(stdout),
+            stderr: diagnostic,
+        };
+    }
+
+    const status = Number.isInteger(result.status) ? result.status : 1;
+
+    if (status !== 0 && !allowFailure) {
+        const diagnostic =
+            truncateGitDiagnostic(stderr)
+            || truncateGitDiagnostic(stdout);
+
+        fail(diagnostic || `git ${args.join(' ')} falló.`);
+    }
+
     return { status, stdout, stderr };
 }
 
