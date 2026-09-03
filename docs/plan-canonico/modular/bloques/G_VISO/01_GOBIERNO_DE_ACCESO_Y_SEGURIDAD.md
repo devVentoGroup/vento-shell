@@ -12962,7 +12962,1204 @@ La identidad exacta de la futura unidad física se resolverá exclusivamente med
 `VISO-AUTH-016 — Mostrar conflictos de configuración`
 
 
-### [ ] VISO-AUTH-016 — Mostrar conflictos de configuración
+### ✅ VISO-AUTH-016 — Mostrar conflictos de configuración
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-015 — Mostrar origen de cada permiso
+**Tarea siguiente:** VISO-AUTH-017 — Administrar excepciones individuales
+**Tipo de tarea:** documental; definición del contrato administrativo canónico para detectar, clasificar y mostrar configuraciones de autorización incompatibles o legacy todavía no reconciliadas antes de guardar, publicar, reutilizar o presentar como vigente una configuración, sin convertir denegaciones válidas, múltiples fuentes compatibles ni deuda histórica inactiva en falsos conflictos
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura permanece sujeta a `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única qué debe considerar VISO un **conflicto de configuración** dentro del gobierno de acceso y seguridad, qué evidencia debe conservar, cuándo debe bloquear una mutación y cuándo únicamente debe advertir deuda legacy o redundancia sin impedir cambios no relacionados.
+
+La tarea recibe de `VISO-AUTH-015` una procedencia ya separada por fuente, carril, scope, resultado, bloqueo, versión y plano real o simulado.
+
+A partir de esa evidencia y de las fuentes canónicas de configuración, VISO deberá distinguir:
+
+```text
+CONFIGURACIÓN VÁLIDA
+CONFIGURACIÓN INCOMPATIBLE
+DEUDA LEGACY NO RECONCILIADA
+REDUNDANCIA SIN CONFLICTO SEMÁNTICO
+DENEGACIÓN VÁLIDA
+```
+
+La regla raíz queda:
+
+```text
+HECHOS DE CONFIGURACIÓN
++
+CONTRATOS CANÓNICOS
++
+VIGENCIA
++
+CARRILES
++
+TERRITORIO
++
+VERSIONES
+→
+CLASIFICACIÓN DE CONFLICTO
+```
+
+y nunca:
+
+```text
+RESULTADO DENY
+→
+CONFLICTO
+```
+
+---
+
+#### 2. Base normativa y fuentes de autoridad
+
+Esta tarea consume y conserva, sin redefinir:
+
+- `ADR-AUTH-001`;
+- `AUTH-MOD-018` — precedencia entre carriles;
+- `AUTH-MOD-019` — denegaciones explícitas;
+- `AUTH-RBAC-020` a `AUTH-RBAC-023` — concesiones, denegaciones, excepciones y dispositivo;
+- `AUTH-RBAC-027` y `AUTH-RBAC-028` — validaciones de matrices;
+- `AUTH-CAT-020` a `AUTH-CAT-024` — brechas contractuales, legacy y catálogo;
+- `AUTH-CTX-002` y `AUTH-CTX-003` — decisión real y simulación separada;
+- `VISO-AUTH-003` a `VISO-AUTH-012` — matrices, territorio, perfiles, asignaciones y turnos;
+- `VISO-AUTH-013` — vista previa;
+- `VISO-AUTH-014` — simulación;
+- `VISO-AUTH-015` — origen de permisos;
+- catálogos y datasets versionados vigentes;
+- fuentes físicas cuya reconciliación permanezca pendiente.
+
+La autoridad para declarar incompatibilidad procede de los contratos canónicos y no de una comparación visual inventada por VISO.
+
+---
+
+#### 3. Resultado canónico
+
+Para cada hallazgo VISO deberá poder responder:
+
+1. qué configuración está afectada;
+2. qué identidades participan;
+3. qué regla canónica impide que coexistan;
+4. qué carril o condición estructural interviene;
+5. qué permiso exacto participa, cuando aplique;
+6. qué sede, área, turno, perfil, scope o recurso interviene;
+7. qué fuentes y versiones originaron el hallazgo;
+8. si el hallazgo está vigente, propuesto, histórico o legacy;
+9. si la mutación propuesta crea, mantiene, agrava, reduce o resuelve el conflicto;
+10. si debe bloquearse el guardado o únicamente abrirse revisión;
+11. qué tarea o dominio es propietario de su corrección;
+12. qué evidencia permite comprobar su resolución.
+
+La vista de conflictos no será una segunda fuente de autorización.
+
+---
+
+#### 4. Definición de conflicto
+
+Existe conflicto cuando dos o más hechos configurados, o un hecho configurado y un contrato canónico, no pueden coexistir válidamente dentro del mismo snapshot aplicable sin violar modalidad, carril, identidad, scope, territorio, vigencia, versión o determinismo.
+
+También existe conflicto cuando una configuración exige una inferencia que el modelo prohíbe.
+
+```text
+CONFIGURACIÓN A
++
+CONFIGURACIÓN B O CONTRATO CANÓNICO
++
+MISMO SNAPSHOT APLICABLE
++
+INCOMPATIBILIDAD DEMOSTRABLE
+=
+CONFLICTO
+```
+
+No basta que dos filas sean diferentes ni que una decisión final sea negativa.
+
+---
+
+#### 5. Estados que NO son conflicto por sí solos
+
+No se clasificarán como conflicto únicamente por existir:
+
+- dos grants positivos compatibles;
+- dos denies compatibles;
+- grant base y grant operativo sobre un permiso cuya modalidad admite ambos;
+- deny base y allow operativo bajo `BASE_OR_OPERATIONAL`;
+- allow base y deny operativo bajo `BASE_OR_OPERATIONAL`;
+- varios scopes positivos cuya unión sea válida;
+- default deny;
+- ausencia de un permiso en un rol;
+- turno fuera de vigencia;
+- sesión cerrada correctamente;
+- área no aplicable cuando el contrato no la exige;
+- perfil que sugiere un rol distinto del turno válido;
+- varias sedes o áreas laborales activas;
+- una decisión histórica diferente de la actual;
+- una fuente `PROPUESTA` o `SINTÉTICA` mientras permanezca dentro de simulación.
+
+La tarea debe evitar falsos positivos.
+
+---
+
+#### 6. Deny válido no equivale a conflicto
+
+Una denegación aplicable puede ser completamente válida:
+
+```text
+ALLOW global
++
+DENY en una sede
+→
+DENY en esa sede
+```
+
+Eso cumple la precedencia aprobada.
+
+No existe conflicto mientras la denegación tenga sujeto, carril, scope, vigencia y permiso compatibles y no forme una contradicción exacta sobre la misma asignación lógica.
+
+VISO deberá mostrar el deny mediante la procedencia de `VISO-AUTH-015`, no convertirlo automáticamente en conflicto.
+
+---
+
+#### 7. Default deny no equivale a conflicto
+
+```text
+SIN ALLOW APLICABLE
+→
+DEFAULT DENY
+```
+
+No constituye conflicto.
+
+Puede revelar una configuración incompleta solo cuando un contrato propietario exige expresamente una concesión o clasificación que todavía no puede resolverse.
+
+---
+
+#### 8. Contradicción exacta de efecto
+
+La contradicción explícita canónica ocurre cuando coinciden:
+
+```text
+mismo sujeto
++
+mismo permiso
++
+mismo carril
++
+mismo alcance
++
+periodo solapado
++
+ALLOW
++
+DENY
+```
+
+Resultado runtime:
+
+```text
+DENY
+```
+
+Resultado administrativo:
+
+```text
+permission_assignment_conflict
+```
+
+Este conflicto es bloqueante mientras ambas reglas sean simultáneamente aplicables.
+
+Agregar otro allow no lo resuelve.
+
+---
+
+#### 9. Vigencia y solapamiento temporal
+
+Dos reglas opuestas que nunca están activas en el mismo intervalo no constituyen contradicción simultánea.
+
+La detección deberá respetar:
+
+- inicio;
+- fin;
+- activación;
+- revocación;
+- snapshot evaluado.
+
+Una regla expirada puede conservarse como evidencia histórica sin bloquear una configuración actual.
+
+---
+
+#### 10. Carril incompatible con la modalidad
+
+Una asignación es inválida cuando pretende participar en un carril que el permiso no admite.
+
+```text
+BASE_ONLY + fuente operativa
+→ CONFIGURACIÓN INVÁLIDA
+```
+
+```text
+OPERATIONAL_ONLY + fuente base
+→ CONFIGURACIÓN INVÁLIDA
+```
+
+También deberán detectarse denies con carril o sujeto incompatibles.
+
+La ubicación física de una fila no cambia `authorization_requirement`.
+
+---
+
+#### 11. Modalidad ausente
+
+Cuando un permiso no tenga modalidad resoluble:
+
+```text
+authorization_requirement = null
+→ DENY
+```
+
+Si una matriz intenta configurarlo como autorizable, la combinación no puede presentarse como válida.
+
+VISO no elegirá una modalidad permisiva por defecto.
+
+---
+
+#### 12. Incompatibilidad de sujeto
+
+Se deberá detectar cuando una configuración utilice como sujeto una identidad que no corresponde a su contrato, por ejemplo:
+
+- rol base como sujeto operativo;
+- rol operativo como sujeto base;
+- dispositivo como beneficiario humano;
+- sede o área como rol;
+- identidad legacy como identidad canónica;
+- alias visual como identidad contractual.
+
+La coincidencia textual no establece equivalencia.
+
+---
+
+#### 13. Conflictos de catálogo de rol
+
+Se clasificará como conflicto o deuda legacy, según vigencia y consumo, una configuración que utilice:
+
+- rol desconocido;
+- rol retirado;
+- rol deprecado;
+- rol inactivo donde se exige actividad;
+- oficio legacy donde se exige rol base canónico;
+- código base como operativo;
+- código operativo como base;
+- alias no versionado;
+- versión de rol incompatible con la matriz.
+
+La vista deberá distinguir un registro activo y consumido de un registro histórico sin efecto vigente.
+
+---
+
+#### 14. Asignaciones legacy de oficio base
+
+La auditoría histórica encontró permisos permanentes asociados a oficios antiguos como:
+
+`cocinero`, `barista`, `cajero`, `mesero`, `panadero`, `pastelero`, `repostero`, `bodeguero` y `conductor`.
+
+Esas identidades no sustituyen automáticamente a los roles operativos canónicos.
+
+```text
+OFICIO LEGACY CON GRANT BASE
+≠
+ROL OPERATIVO CANÓNICO
+```
+
+La existencia histórica se presenta como deuda de reconciliación; solo se eleva a conflicto activo cuando continúa influyendo, se reactiva, se copia o compite con configuración vigente.
+
+---
+
+#### 15. Permiso fuera de catálogo
+
+Una asignación que referencia un permiso inexistente, inactivo, retirado, legacy bloqueado o de una versión incompatible no podrá presentarse como configuración vigente.
+
+No se corregirá por similitud textual, prefijo o nombre de pantalla.
+
+---
+
+#### 16. Scope inválido o no resuelto
+
+Un scope es incompatible cuando su combinación física no satisface el contrato de su tipo.
+
+Casos mínimos:
+
+- sede exacta sin sede requerida;
+- área exacta sin área requerida;
+- área perteneciente a otra sede;
+- tipo de área sin alcance superior resoluble;
+- dimensiones territoriales mutuamente incompatibles;
+- scope que el contrato del permiso no admite.
+
+Los reason codes existentes como `deny_scope_invalid` y `deny_scope_unresolved` se reutilizan cuando correspondan.
+
+---
+
+#### 17. Null nunca crea wildcard
+
+```text
+null
+≠
+GLOBAL
+```
+
+Un valor nulo puede significar no aplicable, no resuelto, configuración incompleta o compatibilidad legacy definida expresamente por contrato.
+
+VISO no ampliará cobertura para hacer funcional una fila incompleta.
+
+---
+
+#### 18. Conflicto rol × sede
+
+Cuando el rol operativo no está habilitado para la sede aplicable, la causa conserva:
+
+```text
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE
+```
+
+VISO mostrará sede y rol implicados y no escogerá otro rol disponible.
+
+---
+
+#### 19. Conflicto rol × área
+
+Cuando existe área exacta, esta debe existir, estar activa, pertenecer a la sede y admitir el rol mediante el binding exigido.
+
+Rol inválido para área:
+
+```text
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+```
+
+Área requerida ausente:
+
+```text
+AUTH_ACTIVE_AREA_REQUIRED
+```
+
+No se completará desde área primaria, seleccionada, de perfil, default, única área ni dispositivo.
+
+---
+
+#### 20. AREA_BINDING_UNRESOLVED
+
+`AREA_BINDING_UNRESOLVED` es una condición canónica no resuelta.
+
+No significa:
+
+- site-wide;
+- cualquier área;
+- área no requerida;
+- compatibilidad automática.
+
+Si una acción requiere área exacta, no puede declararse configuración completa mientras el binding permanezca no resuelto.
+
+---
+
+#### 21. Deuda territorial histórica conocida
+
+`VISO-AUTH-012` dejó documentadas:
+
+```text
+152
+```
+
+filas laborales con rol y área nula sobre combinaciones `AREA_BINDING_UNRESOLVED` de:
+
+- `VENTO_GROUP / gerencia_operativa`;
+- `MOLKA_PRINCIPAL / operador_integral_satelite`;
+- `CENTRO_PROD / conductor_logistica`.
+
+También dejó exactamente:
+
+```text
+2
+```
+
+filas históricas `SAUDO / cocinero_satelite` con área nula pese a existir binding exacto para `COCINA_BARRA`.
+
+No se autoriza backfill ni inferencia.
+
+---
+
+#### 22. Operación reciente versus deuda histórica
+
+La detección deberá distinguir:
+
+```text
+CONFLICTO ACTIVO
+```
+
+de:
+
+```text
+DEUDA HISTÓRICA
+```
+
+El corte posterior de `VISO-AUTH-012` registró desde `2026-09-02`:
+
+```text
+119 turnos laborales no cancelados con rol
+0 missing required area
+0 area present without exact binding
+```
+
+Por tanto, la deuda histórica conocida no se presentará como una regresión reciente.
+
+Si una fila histórica se copia, republica, reactiva o usa para construir autoridad actual, vuelve a someterse a validación y puede convertirse en conflicto bloqueante.
+
+---
+
+#### 23. Turno laboral sin rol
+
+Un turno laboral aplicable sin rol operativo conserva la causa:
+
+```text
+AUTH_OPERATIONAL_ROLE_REQUIRED
+```
+
+No se resolverá desde rol base, perfil, default, área, último turno ni único rol disponible.
+
+Un descanso con rol nulo no es conflicto.
+
+---
+
+#### 24. Ambigüedad de turno
+
+Cuando varios turnos publicados aplicables impiden resolver de forma inequívoca el contexto operativo:
+
+```text
+AMBIGÜEDAD
+→
+DENY
+```
+
+VISO deberá mostrar las filas que causan la ambigüedad y no elegir la primera por orden de consulta.
+
+---
+
+#### 25. Perfil no sustituye turno
+
+La diferencia entre perfil y turno no es conflicto por sí sola.
+
+```text
+PERFIL → SUGIERE
+TURNO VÁLIDO → DEFINE ROL OPERATIVO EFECTIVO
+```
+
+Solo existe conflicto si el turno final viola identidad, sede, área, rol, vigencia, binding o publicación.
+
+---
+
+#### 26. Múltiples asignaciones válidas
+
+No son conflictos por sí mismas:
+
+- varias sedes activas;
+- varias áreas administrativas;
+- varios perfiles habilitados;
+- varios scopes positivos;
+- ejercer roles distintos en turnos distintos.
+
+La evaluación se realiza sobre el contexto exacto aplicable.
+
+---
+
+#### 27. Duplicado exacto del mismo efecto
+
+Dos filas físicamente idénticas y semánticamente equivalentes representan:
+
+```text
+REDUNDANCIA
+```
+
+No necesariamente conflicto de autorización.
+
+La auditoría histórica encontró ocho filas redundantes en `role_permissions`.
+
+VISO podrá mostrarlas como deuda de integridad o limpieza sin afirmar que cambian la decisión efectiva.
+
+---
+
+#### 28. Duplicado incompatible
+
+Existe conflicto cuando dos filas que pretenden representar la misma identidad lógica difieren de forma irreconciliable, por ejemplo:
+
+- efectos opuestos;
+- scopes incompatibles no distinguibles;
+- versiones incompatibles;
+- sujetos de carril incompatibles;
+- identidades duplicadas que producen dos interpretaciones mutuamente excluyentes.
+
+---
+
+#### 29. Solapamiento de scopes
+
+Dos grants positivos con scopes solapados no son conflictivos por sí solos.
+
+La unión positiva permitida por el modelo puede hacer que un scope amplio cubra el estrecho.
+
+La detección no aplicará una regla ficticia de “más específico gana”.
+
+---
+
+#### 30. Allow y deny entre carriles
+
+Para `BASE_OR_OPERATIONAL`:
+
+```text
+BASE_DENY + OPERATIONAL_ALLOW
+```
+
+puede permitir por operación.
+
+Y:
+
+```text
+BASE_ALLOW + OPERATIONAL_DENY
+```
+
+puede permitir por base.
+
+No se clasifican automáticamente como conflicto.
+
+Para `BASE_AND_OPERATIONAL`, que un carril falle produce DENY final, pero tampoco implica por sí solo conflicto de configuración.
+
+---
+
+#### 31. Restricción de dispositivo
+
+El dispositivo puede reducir autoridad y nunca ampliarla.
+
+Será conflictiva una configuración que pretenda:
+
+- usar el dispositivo como fuente humana de permiso;
+- transferir privilegios del principal técnico al trabajador;
+- ignorar el techo de capacidades;
+- usar sesión de actor inválida;
+- mezclar contexto territorial incompatible.
+
+La mera restricción del dispositivo no es conflicto.
+
+---
+
+#### 32. Plano simulado
+
+Los conflictos detectados durante simulación permanecen simulados.
+
+Una fuente `PROPUESTA` o `SINTÉTICA` puede generar un conflicto hipotético y bloquear la propuesta, pero no demuestra que la configuración real ya esté en conflicto.
+
+Persistir una fuente simulada como real constituye una incompatibilidad estructural.
+
+---
+
+#### 33. Conflicto de versión
+
+No se combinarán silenciosamente catálogo, matrices, roles, datasets o contratos de decisión pertenecientes a versiones incompatibles.
+
+```text
+VERSION MISMATCH
+→
+NO PRESENTAR CONFIGURACIÓN COMO VIGENTE
+```
+
+La UI no ejecutará una migración conceptual para reconciliarlas.
+
+---
+
+#### 34. Conflicto sistémico de matriz
+
+Una matriz produce conflicto sistémico cuando su propia configuración viola una regla aplicable a todos sus consumidores.
+
+Ejemplos:
+
+- `BASE_ONLY` dentro de matriz operativa;
+- `OPERATIONAL_ONLY` dentro de matriz base legacy;
+- clave fuera de catálogo;
+- rol no canónico como plantilla vigente;
+- scope estructuralmente inválido;
+- dataset incompatible por versión.
+
+No debe “arreglarse” creando excepciones para cada trabajador.
+
+---
+
+#### 35. Matrices contractuales actuales versus legacy
+
+La validación contractual posterior aprobó:
+
+```text
+499 concesiones lógicas base
+240 concesiones lógicas operativas
+12 roles operativos canónicos
+0 BASE_ONLY en matriz operativa
+0 null usado como global
+0 wildcards
+0 claves legacy bloqueadas en matriz operativa
+0 incumplimientos bloqueantes
+```
+
+Por tanto, esta tarea no declara conflictivos los datasets contractuales vigentes.
+
+Los hallazgos físicos históricos son evidencia de transición y reconciliación, no sustitutos del dataset canónico.
+
+---
+
+#### 36. Snapshot histórico de role_permissions
+
+La auditoría física histórica registró:
+
+```text
+613 filas físicas
+605 asignaciones lógicas únicas
+8 filas redundantes
+503 scopes global
+14 scopes site con scope_site_id nulo
+```
+
+También registró permisos permanentes en oficios legacy.
+
+Estas cifras son un snapshot histórico y deberán recalcularse en una futura materialización antes de afirmar que siguen activas.
+
+---
+
+#### 37. Reconciliación AS-IS de VISO
+
+La superficie actual `roles-permissions`:
+
+- lista roles activos;
+- lista permisos configurables;
+- lee `role_permissions`;
+- permite `is_allowed`;
+- maneja scopes `global`, `site`, `site_type`, `area` y `area_kind`;
+- valida la dimensión requerida por el scope seleccionado;
+- elimina una fila equivalente del mismo rol, permiso y scope antes de insertar la nueva;
+- protege la escritura mediante una acción de servidor.
+
+Ese camino reduce duplicados exactos creados desde esa superficie.
+
+No constituye un motor transversal de conflictos porque no cruza completamente matriz base, matriz operativa, overrides, denies, modalidad, perfiles, turnos, bindings, legacy, versiones y simulación.
+
+---
+
+#### 38. Detección prospectiva antes de guardar
+
+Toda mutación administrativa de seguridad que pueda alterar el resultado deberá evaluar:
+
+```text
+SNAPSHOT VIGENTE
++
+CAMBIO PROPUESTO
+→
+SNAPSHOT PROSPECTIVO
+→
+VALIDAR CONTRATOS
+→
+DETECTAR CONFLICTOS
+→
+SIMULAR EFECTO CUANDO CORRESPONDA
+→
+DECIDIR SAVE
+```
+
+La evaluación se hace sobre el estado prospectivo, no solo sobre la fila editada.
+
+---
+
+#### 39. Regla de bloqueo
+
+Se bloquea un guardado cuando el cambio:
+
+- crea un conflicto bloqueante;
+- agrava un conflicto bloqueante de su alcance;
+- reactiva legacy incompatible;
+- pretende persistir configuración no determinista;
+- depende de inferencia prohibida;
+- mezcla versiones incompatibles;
+- mezcla simulación con autoridad real;
+- intenta neutralizar un deny mediante más allows.
+
+El bloqueo ocurre antes de la mutación autoritativa.
+
+---
+
+#### 40. Conflictos previos no relacionados
+
+Una deuda o conflicto en otra sede, trabajador, permiso o configuración no tocada no bloqueará automáticamente toda administración.
+
+Debe distinguirse:
+
+```text
+CONFLICTO EN ALCANCE AFECTADO
+```
+
+de:
+
+```text
+DEUDA PREEXISTENTE FUERA DEL ALCANCE
+```
+
+La segunda requiere trazabilidad y propietario, no un freeze global.
+
+---
+
+#### 41. No empeorar deuda existente
+
+Aunque una deuda no relacionada no bloquee, se impedirá una operación que:
+
+- la copie;
+- la propague;
+- aumente su cobertura;
+- prolongue su vigencia;
+- dependa de ella;
+- la reactive;
+- la publique como vigente.
+
+```text
+LEGACY PREEXISTENTE + PROPAGACIÓN
+→ BLOQUEAR
+```
+
+---
+
+#### 42. No reparación automática
+
+Detectar un conflicto no autoriza a:
+
+- escoger rol;
+- escoger área;
+- escoger sede;
+- cambiar scope;
+- eliminar deny;
+- crear allow;
+- crear excepción;
+- hacer backfill;
+- cambiar versión;
+- convertir rol legacy;
+- eliminar duplicados.
+
+La corrección pertenece al flujo propietario de cada dato.
+
+---
+
+#### 43. Propiedad de resolución
+
+| Familia | Propietario |
+| --- | --- |
+| Matriz base | `VISO-AUTH-003` |
+| Matriz operativa | `VISO-AUTH-004` |
+| Rol por sede | `VISO-AUTH-005` |
+| Rol por área | `VISO-AUTH-006` |
+| Perfil trabajador | `VISO-AUTH-007` |
+| Sede asignada | `VISO-AUTH-008` |
+| Área asignada | `VISO-AUTH-009` |
+| Rol del turno | `VISO-AUTH-010` |
+| Turno sin rol | `VISO-AUTH-011` |
+| Área o binding | `VISO-AUTH-012` |
+| Procedencia | `VISO-AUTH-015` |
+| Excepción individual | `VISO-AUTH-017` |
+| Auditoría | `VISO-AUTH-018` |
+| Autoridad administrativa | `VISO-AUTH-019` |
+
+No se inventará una tarea nueva para un hallazgo con propietario existente.
+
+---
+
+#### 44. Tratamiento administrativo
+
+La futura proyección deberá distinguir al menos:
+
+```text
+BLOQUEANTE
+```
+
+cuando la configuración no pueda interpretarse válidamente dentro del alcance afectado;
+
+y:
+
+```text
+REVISIÓN
+```
+
+cuando exista deuda, redundancia o historia que merece reconciliación sin alterar el resultado vigente o la mutación actual.
+
+Estas etiquetas son clasificación administrativa interna y no crean reason codes ni estados públicos de autorización.
+
+---
+
+#### 45. Identidad y evidencia del hallazgo
+
+Una proyección conceptual podrá conservar:
+
+```text
+conflict_reference
+snapshot_reference
+detected_at
+affected_subjects
+app_code
+permission_key
+lanes
+scopes
+source_references
+source_versions
+canonical_rule
+existing_reason_codes
+blocking_effect
+resolution_owner
+```
+
+Esta forma es documental y no crea un contrato público de `@vento/contracts`.
+
+---
+
+#### 46. Determinismo, autorización y minimización
+
+La misma combinación de fuentes, versiones, vigencias, propuesta, sujeto, carril, permiso y territorio debe producir la misma clasificación.
+
+La lectura de conflictos se autoriza en servidor y respeta:
+
+- acceso a VISO;
+- permiso administrativo exacto;
+- territorio;
+- sujeto;
+- sensibilidad;
+- necesidad de detalle.
+
+La vista minimizará motivos sensibles, datos personales, secretos, tokens y logs completos sin ocultar la existencia de un bloqueo aplicable.
+
+---
+
+#### 47. Concurrencia y frescura
+
+Si cambia la configuración después del análisis:
+
+```text
+SNAPSHOT CAMBIA
+→
+ANÁLISIS OBSOLETO
+→
+REVALIDAR ANTES DE GUARDAR
+```
+
+La UI no podrá marcar un análisis stale como suficiente para mutar.
+
+---
+
+#### 48. Separación frente a VISO-AUTH-017
+
+Una excepción individual puede participar en un conflicto y esta tarea puede identificar su permiso, carril, scope, efecto y vigencia.
+
+No puede crearla, editarla, aprobarla, revocarla ni extenderla.
+
+Además:
+
+```text
+MATRIZ SISTÉMICAMENTE INVÁLIDA
+≠
+PROBLEMA A RESOLVER CON EXCEPCIONES INDIVIDUALES
+```
+
+---
+
+#### 49. Handoff recibido de VISO-AUTH-015
+
+La entrada reutilizable incluye:
+
+- fuentes positivas;
+- fuentes negativas;
+- carril;
+- scope;
+- resultado;
+- bloqueos;
+- versiones;
+- plano real o simulado;
+- timestamp del snapshot.
+
+`VISO-AUTH-016` usa esa procedencia como evidencia y no la reinventa.
+
+---
+
+#### 50. Handoff a VISO-AUTH-017
+
+`VISO-AUTH-017` recibe únicamente los conflictos cuya resolución pertenece a una excepción individual.
+
+Cuando aplique, el handoff conserva:
+
+```text
+conflict_reference
+employee_reference
+permission_key
+lane
+scope
+source_reference
+effect
+validity
+reason
+```
+
+No se asume que todo conflicto deba resolverse creando una excepción.
+
+---
+
+#### 51. Separación frente a UX y auditoría
+
+`VISO-UX-015 — Mostrar conflictos antes de guardar` conserva la presentación comprensible, jerarquía visual, microcopy, agrupación y accesibilidad.
+
+`VISO-AUTH-018` conserva la auditoría administrativa.
+
+`VISO-AUTH-019` conserva quién puede administrar seguridad.
+
+Ninguna de esas tareas puede redefinir silenciosamente la semántica de conflicto fijada aquí.
+
+---
+
+#### 52. Casos mínimos obligatorios
+
+| Caso | Clasificación |
+| --- | --- |
+| ALLOW y DENY exactos sobre misma asignación lógica y periodo | conflicto bloqueante |
+| BASE_ONLY en fuente operativa | conflicto bloqueante |
+| OPERATIONAL_ONLY en fuente base | conflicto bloqueante |
+| modalidad ausente y matriz intentando conceder | conflicto bloqueante |
+| deny con carril o sujeto incompatible | conflicto bloqueante |
+| scope exacto sin dimensión requerida | conflicto bloqueante |
+| área de otra sede | conflicto bloqueante |
+| rol inválido para sede | conflicto bloqueante |
+| rol inválido para área | conflicto bloqueante |
+| turno laboral aplicable sin rol | conflicto bloqueante |
+| varios turnos efectivos ambiguos | conflicto bloqueante |
+| AREA_BINDING_UNRESOLVED usado como site-wide | conflicto bloqueante |
+| rol legacy reactivado como canónico | conflicto bloqueante |
+| fuente simulada persistida como real | conflicto bloqueante |
+| versiones contractuales incompatibles | conflicto bloqueante |
+| dos allows compatibles | no conflicto |
+| dos denies compatibles | no conflicto |
+| deny en un carril + allow válido en otro bajo BASE_OR_OPERATIONAL | no conflicto por sí solo |
+| default deny | no conflicto por sí solo |
+| perfil distinto del rol del turno | no conflicto por sí solo |
+| varias sedes asignadas | no conflicto por sí solo |
+| duplicado exacto mismo efecto | redundancia / revisión |
+| deuda histórica fuera de vigencia | revisión |
+| legacy copiado a nueva vigencia | conflicto bloqueante |
+| conflicto ajeno al alcance del cambio | revisión; no bloqueo global |
+
+---
+
+#### 53. Invariantes
+
+1. Conflicto y denegación son conceptos distintos.
+2. Default deny no es conflicto.
+3. Un deny válido no es conflicto.
+4. Varias fuentes compatibles no son conflicto.
+5. La contradicción exacta conserva `permission_assignment_conflict`.
+6. La modalidad prevalece sobre la tabla donde apareció la fila.
+7. Una asignación en carril incompatible es inválida.
+8. BASE y OPERATIONAL permanecen separados.
+9. Scope no define precedencia de efecto.
+10. Null nunca amplía cobertura.
+11. Rol, sede y área conservan identidad exacta.
+12. `AREA_BINDING_UNRESOLVED` nunca es site-wide.
+13. Perfil sugiere; turno válido define contexto operativo.
+14. Legacy histórico no equivale automáticamente a conflicto activo.
+15. Legacy propagado debe revalidarse.
+16. Duplicado idéntico no equivale automáticamente a contradicción.
+17. Duplicado incompatible sí exige conflicto.
+18. Fuente simulada nunca se vuelve real por guardado.
+19. Versiones incompatibles fallan cerrado.
+20. Conflicto sistémico no se repara con excepciones individuales.
+21. La detección prospectiva ocurre antes del save.
+22. El servidor revalida antes de mutar.
+23. Snapshot stale no autoriza guardado.
+24. Conflictos no relacionados no bloquean universalmente.
+25. Ninguna reparación es automática.
+26. Cada hallazgo conserva propietario.
+27. La vista minimiza datos sensibles.
+28. La detección es determinista.
+29. El dataset contractual validado no se declara conflictivo por deuda histórica.
+30. La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 54. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La detección de conflictos antes de guardar, la coherencia entre evaluadores, la separación de carriles, la resolución territorial, la segregación de funciones, la revalidación server-side y la trazabilidad ya están protegidas por el registro vigente.
+
+Esta tarea desarrolla la taxonomía administrativa y las reglas de clasificación de esa cobertura existente sin crear una nueva capacidad empresarial, permiso, modalidad de autorización, clase de deny, estado de turno ni transición.
+
+---
+
+#### 55. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-VISO-001` — VISO debe detectar conflictos antes de guardar, indicar origen, respetar territorio y producir el mismo resultado consumido por las aplicaciones;
+- `TREQ-AUTH-001` — ninguna lista local de roles concede autoridad final;
+- `TREQ-AUTH-004` — evaluadores equivalentes producen la misma decisión y razones equivalentes;
+- `TREQ-AUTH-007` — la administración de seguridad exige capacidad explícita y territorio;
+- `TREQ-AUTH-008` — base y operación conservan sus requisitos;
+- `TREQ-AUTH-009` — sede y área se resuelven determinísticamente;
+- `TREQ-AUTH-010` — las matrices preservan segregación de funciones;
+- `TREQ-AUTH-013` — las mutaciones protegidas revalidan autoridad en servidor;
+- `TREQ-AUTH-014` — cambios de contexto invalidan decisiones derivadas;
+- `TREQ-AUTH-015` — las decisiones y acciones protegidas conservan evidencia correlacionable;
+- `TREQ-AUTH-101` — un área exacta pertenece a la sede aceptada y está activa;
+- `TREQ-AUTH-102` — bindings exactos y no resueltos permanecen diferenciados;
+- `TREQ-AUTH-103` — agregados o nombres genéricos no actúan como wildcard;
+- `TREQ-AUTH-105` — la ausencia de área solo es válida cuando el contrato no la exige;
+- `TREQ-AUTH-106` — área de rol, turno, recurso, dispositivo y selección permanecen separadas.
+
+Estas referencias son trazabilidad heredada. No cambian contenido, estado, paquete, evidencia ni secuencia.
+
+---
+
+#### 56. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó el build del checkout local propietario. |
+| LOCAL | NOT_EXECUTED | La tarea todavía no fue insertada, normalizada ni validada en la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, protocolo, contrato de entrega, manifest, topología, políticas de tarea, `VISO-AUTH-015`, precedencia, denegaciones, ADR, matrices contractuales, deuda territorial de `VISO-AUTH-011/012`, 04A aplicable, preflight y la superficie AS-IS `roles-permissions` de VISO. |
+| OPERATIVA | NOT_APPLICABLE | No se modificaron trabajadores, roles, permisos, grants, denies, sedes, áreas, perfiles, turnos, bindings, simulaciones ni configuraciones reales. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, contratos físicos, migraciones, funciones, RPC, RLS, datos, packages ni despliegues. |
+
+---
+
+#### 57. Criterios de aceptación
+
+- [ ] Un deny válido no se clasifica automáticamente como conflicto.
+- [ ] Default deny no se clasifica automáticamente como conflicto.
+- [ ] Varias fuentes positivas o negativas compatibles no son conflicto.
+- [ ] La contradicción exacta conserva `permission_assignment_conflict`.
+- [ ] La contradicción exacta exige sujeto, permiso, carril, scope y periodo coincidentes.
+- [ ] Periodos no solapados no son contradicción simultánea.
+- [ ] BASE_ONLY en fuente operativa se bloquea.
+- [ ] OPERATIONAL_ONLY en fuente base se bloquea.
+- [ ] Modalidad ausente no recibe fallback.
+- [ ] Deny de carril o sujeto incompatible se detecta.
+- [ ] Roles base y operativos no se reconcilian por nombre.
+- [ ] Roles legacy no se convierten automáticamente.
+- [ ] Permisos retirados o desconocidos no se presentan como vigentes.
+- [ ] Scope inválido o no resuelto se detecta antes de guardar.
+- [ ] `null` nunca equivale a wildcard.
+- [ ] Rol inválido para sede conserva su causa.
+- [ ] Rol inválido para área conserva su causa.
+- [ ] Área requerida ausente conserva su causa.
+- [ ] `AREA_BINDING_UNRESOLVED` nunca se trata como site-wide.
+- [ ] Los 152 casos históricos no reciben área inferida.
+- [ ] Los 2 defectos históricos de SAUDO no reciben backfill automático.
+- [ ] Deuda histórica no se declara regresión reciente.
+- [ ] Un legacy reactivado o copiado vuelve a validarse.
+- [ ] Turno laboral aplicable sin rol se bloquea.
+- [ ] Descanso con rol nulo no se marca como conflicto.
+- [ ] Ambigüedad entre turnos efectivos falla cerrado.
+- [ ] Perfil no sustituye turno.
+- [ ] Diferencia perfil–turno no es conflicto por sí sola.
+- [ ] Varias sedes o áreas asignadas no son conflicto por sí solas.
+- [ ] Duplicado exacto mismo efecto se distingue de contradicción.
+- [ ] Duplicado incompatible se detecta.
+- [ ] Solapamientos positivos válidos no crean precedencia ficticia.
+- [ ] Exclusión territorial válida por deny no se marca automáticamente como conflicto.
+- [ ] Estados cruzados válidos en BASE_OR_OPERATIONAL no se marcan automáticamente como conflicto.
+- [ ] Un DENY final en BASE_AND_OPERATIONAL no implica por sí solo conflicto.
+- [ ] Dispositivo restringe pero no crea autoridad.
+- [ ] Conflictos simulados permanecen simulados.
+- [ ] Fuentes `PROPUESTA` o `SINTÉTICA` no se persisten como autoridad real.
+- [ ] Versiones incompatibles fallan cerrado.
+- [ ] Fuente histórica sin efecto vigente puede conservarse como revisión.
+- [ ] Fuente obsoleta que vuelve a participar se revalida.
+- [ ] Matriz sistémicamente inválida no se corrige con excepciones.
+- [ ] Dataset contractual vigente no se declara conflictivo por auditoría histórica.
+- [ ] Snapshot histórico de `role_permissions` se identifica como histórico.
+- [ ] Superficie AS-IS de VISO no se declara motor transversal de conflictos.
+- [ ] Snapshot prospectivo se calcula antes de guardar.
+- [ ] Cambio que crea o agrava conflicto bloqueante no se guarda.
+- [ ] Conflicto previo fuera del alcance no bloquea automáticamente toda administración.
+- [ ] Mutación no puede propagar deuda preexistente.
+- [ ] Detección no repara automáticamente configuraciones.
+- [ ] Cada conflicto conserva propietario.
+- [ ] Bloqueante se mantiene separado de revisión.
+- [ ] No se crea enum público de conflicto.
+- [ ] Cada conflicto conserva fuentes y versiones correlacionables.
+- [ ] La detección es determinista.
+- [ ] La lectura respeta territorio y sensibilidad.
+- [ ] La minimización no oculta la existencia del bloqueo.
+- [ ] El servidor revalida antes de mutar.
+- [ ] Un análisis stale no autoriza el save.
+- [ ] Una excepción individual puede identificarse sin administrarla.
+- [ ] `VISO-AUTH-017` recibe solo los conflictos cuya resolución pertenece a excepciones.
+- [ ] `VISO-UX-015` conserva la presentación comprensible.
+- [ ] `VISO-AUTH-018` conserva la auditoría.
+- [ ] `VISO-AUTH-019` conserva quién administra seguridad.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 58. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica Supabase;
+- modifica `role_permissions`, `operational_role_permissions` ni `employee_permissions`;
+- crea o elimina grants, denies o excepciones;
+- elimina duplicados;
+- corrige roles legacy;
+- hace backfill;
+- modifica o publica turnos;
+- modifica perfiles, sedes, áreas o bindings;
+- cambia catálogos o datasets;
+- crea clases de deny, modalidades o reason codes;
+- crea estados de autorización;
+- crea contrato público;
+- modifica contratos de decisión o simulación;
+- ejecuta simulaciones;
+- define la UX final;
+- administra excepciones;
+- implementa auditoría;
+- define quién administra seguridad;
+- crea exportes;
+- crea RPC, RLS, funciones o migraciones;
+- ejecuta SQL de escritura;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza ni ejecuta implementación física.
+
+La identidad de cualquier unidad física futura se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 59. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-015 — Mostrar origen de cada permiso`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-016 — Mostrar conflictos de configuración`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-017 — Administrar excepciones individuales`
+
+
 ### [ ] VISO-AUTH-017 — Administrar excepciones individuales
 ### [ ] VISO-AUTH-018 — Auditar cambios de seguridad
 ### [ ] VISO-AUTH-019 — Restringir quién administra seguridad
