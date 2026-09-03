@@ -5,10 +5,12 @@ import {
   describePendingTask,
   describeTaskScope,
   orderPendingTasksByRoute,
+  operationalActionSummary,
   parseTaskScopeContracts,
   pendingTaskExecutionContext,
   physicalLaneSummary,
   renderDualLaneOverview,
+  renderOperationalActionCenter,
   validationProfileForTask,
 } from './sync-pending-task-context.mjs';
 
@@ -221,6 +223,84 @@ test('resume el carril fisico sin mezclar instancias terminales con la cola pend
     'SHELL-CON-008::GLOBAL',
     'SHELL-CON-009::GLOBAL',
   ]);
+});
+
+test('prioriza una corrección activa y publica el turno lineal de package sin inventar autorización física', () => {
+  const documentaryTasks = [
+    {
+      ...task('VISO-AUTH-018'),
+      title: 'Auditar cambios de seguridad',
+      relativePath: 'bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md',
+    },
+  ];
+  const implementationControl = {
+    documentary: { state: 'ACTIVO', taskId: 'VISO-AUTH-018' },
+    physical: { active: null, instances: [] },
+  };
+  const correctionControl = {
+    records: [{
+      record: {
+        correction_id: 'GAP-CTRL-006::CORR-001',
+        status: 'IN_PROGRESS',
+        opened_at: '2026-09-03T01:50:28.755Z',
+        authorized_changes: [{
+          change: 'MODIFY',
+          path: 'docs/plan-canonico/modular/bloques/E1/07_REGISTRO.md',
+        }],
+        validation_commands: ['npm run docs:plan:check'],
+        authorization: { approval_statement: 'Corregir el enrutamiento aprobado sin inventar identidades físicas.' },
+      },
+    }],
+  };
+  const readiness = {
+    registry: {
+      package_execution: {
+        sequence: [{ package_id: 'GAP-PKG-001' }],
+        current: {
+          package_id: 'GAP-PKG-001',
+          position: 1,
+          status: 'COMPILED',
+          next_action: {
+            type: 'PREPARE_PACKAGE_GATE',
+            target: 'GAP-PKG-001',
+            command: 'npm run docs:package:start -- --package-id GAP-PKG-001',
+            reason: 'El package actual todavía no tiene expediente package-gate.',
+          },
+        },
+      },
+      packages: [{
+        package_id: 'GAP-PKG-001',
+        source_kind: 'CANONICAL_GAP_PACKAGE',
+        status: 'COMPILED',
+        package_gate: { status: 'NOT_PREPARED', relative_path: 'package-gate/GAP-PKG-001.json' },
+        readiness_progress: { gates: { passed: 2, total: 6, remaining: 4 } },
+      }],
+    },
+  };
+
+  const summary = operationalActionSummary({
+    tasks: documentaryTasks,
+    implementationControl,
+    correctionControl,
+    readiness,
+  });
+  assert.equal(summary.correction.correction_id, 'GAP-CTRL-006::CORR-001');
+  assert.equal(summary.packageCurrent.package_id, 'GAP-PKG-001');
+  assert.equal(summary.documentary.id, 'VISO-AUTH-018');
+  assert.equal(summary.physical, null);
+
+  const source = renderOperationalActionCenter(
+    documentaryTasks,
+    implementationControl,
+    correctionControl,
+    readiness,
+  ).join('\n');
+  assert.match(source, /QUÉ HACER AHORA — SIN INTERPRETAR NI ELEGIR/u);
+  assert.match(source, /Termina la corrección abierta — `GAP-CTRL-006::CORR-001`/u);
+  assert.match(source, /Prepara el package que tiene el turno — `GAP-PKG-001`/u);
+  assert.match(source, /npm run docs:package:start -- --package-id GAP-PKG-001/u);
+  assert.match(source, /Continúa la documentación — `VISO-AUTH-018`/u);
+  assert.match(source, /`NO_INICIAR_IMPLEMENTACIÓN_FÍSICA`/u);
 });
 
 test('renderiza un tablero dual legible sin perder la identidad documental ni fisica', () => {

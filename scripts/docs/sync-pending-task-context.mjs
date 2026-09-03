@@ -5,6 +5,11 @@ import { fileURLToPath } from 'node:url';
 import { parseTaskBlocks } from './format-canonical-task.mjs';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 import { deriveImplementationControl } from './implementation-control.mjs';
+import {
+  loadValidatedCorrectionControl,
+  openCorrections,
+} from './correction-control.mjs';
+import { scanPackageReadiness } from './package-readiness-scanner.mjs';
 
 const TASK_ID_PATTERN = '[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\\d{3}';
 const TASK_REFERENCE = new RegExp(`\\b${TASK_ID_PATTERN}(?!\\d)`, 'gu');
@@ -468,19 +473,239 @@ function laneCell(value) {
   return String(value ?? '—').replaceAll('|', '\\|').replaceAll('\n', ' ');
 }
 
+const CORRECTION_STATUS_PRIORITY = new Map([
+  ['IN_PROGRESS', 0],
+  ['IMPLEMENTED', 1],
+  ['AUTHORIZED', 2],
+  ['BLOCKED', 3],
+  ['PENDING_AUTHORIZATION', 4],
+  ['DEFERRED', 5],
+]);
+
+function correctionAction(record) {
+  const command = `npm run docs:correction:start -- --correction-id ${record.correction_id}`;
+  const finishCommand = `npm run docs:correction:finish -- --correction-id ${record.correction_id}`;
+  if (record.status === 'PENDING_AUTHORIZATION') {
+    return {
+      heading: 'Decide la corrección propuesta',
+      action: 'DECIDIR_AUTORIZACIÓN_DE_CORRECCIÓN',
+      instruction: 'Revisar el alcance propuesto y aprobarlo o rechazarlo explícitamente; todavía no editar.',
+      command: 'NINGUNO_HASTA_APROBADO',
+    };
+  }
+  if (record.status === 'AUTHORIZED') {
+    return {
+      heading: 'Inicia la corrección autorizada',
+      action: 'INICIAR_CORRECCIÓN',
+      instruction: 'Abrir la rama gobernada de corrección antes de materializar cualquier cambio.',
+      command,
+    };
+  }
+  if (record.status === 'IN_PROGRESS') {
+    return {
+      heading: 'Termina la corrección abierta',
+      action: 'CONTINUAR_CORRECCIÓN',
+      instruction: 'Materializar únicamente los cambios autorizados, ejecutar las validaciones en orden y cerrar el lifecycle.',
+      command: finishCommand,
+    };
+  }
+  if (record.status === 'IMPLEMENTED') {
+    return {
+      heading: 'Valida y cierra la corrección implementada',
+      action: 'VALIDAR_Y_CERRAR_CORRECCIÓN',
+      instruction: 'Ejecutar las validaciones declaradas en orden fail-fast y cerrar solo si todas pasan.',
+      command: finishCommand,
+    };
+  }
+  if (record.status === 'BLOCKED') {
+    return {
+      heading: 'Resuelve la corrección bloqueada',
+      action: 'RESOLVER_BLOQUEO_DE_CORRECCIÓN',
+      instruction: 'Resolver el bloqueo registrado sin ampliar el alcance autorizado.',
+      command: 'SEGÚN_BLOQUEO_REGISTRADO',
+    };
+  }
+  return {
+    heading: 'Conserva diferida la corrección',
+    action: 'CORRECCIÓN_DIFERIDA',
+    instruction: 'No ejecutar hasta que una decisión explícita reactive la corrección.',
+    command: 'NINGUNO',
+  };
+}
+
+export function operationalActionSummary({
+  tasks,
+  implementationControl,
+  correctionControl,
+  readiness,
+}) {
+  const corrections = openCorrections(correctionControl)
+    .sort((left, right) => (
+      (CORRECTION_STATUS_PRIORITY.get(left.status) ?? Number.MAX_SAFE_INTEGER)
+      - (CORRECTION_STATUS_PRIORITY.get(right.status) ?? Number.MAX_SAFE_INTEGER)
+      || String(left.opened_at ?? '').localeCompare(String(right.opened_at ?? ''), 'en')
+      || left.correction_id.localeCompare(right.correction_id, 'en')
+    ));
+  const correction = corrections[0] ?? null;
+  const documentary = documentaryLaneSummary(tasks, implementationControl).current;
+  const packageExecution = readiness?.registry?.package_execution ?? null;
+  const packageCurrent = packageExecution?.current ?? null;
+  const packageRecord = packageCurrent
+    ? readiness.registry.packages.find(({ package_id: packageId }) => packageId === packageCurrent.package_id) ?? null
+    : null;
+  return {
+    correction: correction ? { ...correction, ...correctionAction(correction) } : null,
+    openCorrectionCount: corrections.length,
+    documentary,
+    packageExecution,
+    packageCurrent,
+    packageRecord,
+    physical: physicalLaneSummary(implementationControl).current,
+  };
+}
+
+function renderCorrectionAction(action) {
+  if (!action.correction) {
+    return [
+      '### 1. Correcciones canónicas',
+      '',
+      '- **Acción:** ninguna corrección abierta.',
+    ];
+  }
+  const correction = action.correction;
+  const authorizedPaths = correction.authorized_changes.length > 0
+    ? correction.authorized_changes.map(({ path: authorizedPath, change }) => `  - \`${change}\` \`${authorizedPath}\``)
+    : ['  - Ningún cambio autorizado todavía.'];
+  const validations = correction.validation_commands.length > 0
+    ? correction.validation_commands.map((command) => `  ${correction.validation_commands.indexOf(command) + 1}. \`${command}\``)
+    : ['  1. Ninguna validación autorizada todavía.'];
+  return [
+    `### 1. ${correction.heading} — \`${correction.correction_id}\``,
+    '',
+    `- **Estado:** \`${correction.status}\``,
+    `- **Acción exacta:** \`${correction.action}\``,
+    `- **Haz ahora:** ${correction.instruction}`,
+    `- **Contrato autorizado:** ${laneCell(correction.authorization?.approval_statement ?? 'PENDIENTE_DE_APROBACIÓN')}`,
+    '- **Edita solamente:**',
+    ...authorizedPaths,
+    '- **Valida, en este orden:**',
+    ...validations,
+    `- **Comando de lifecycle:** \`${correction.command}\``,
+    '- **Regla:** no mezclar esta corrección con documentación nueva, preparación de packages ni código físico en el mismo checkout.',
+  ];
+}
+
+function renderPackageAction(action) {
+  const current = action.packageCurrent;
+  if (!current) {
+    return [
+      '### 2. Preparación de implementación por package',
+      '',
+      '- **Acción:** la línea de packages está completa o no tiene turno materializado.',
+    ];
+  }
+  const record = action.packageRecord;
+  const gates = record?.readiness_progress?.gates ?? null;
+  const gateStatus = record?.package_gate?.status
+    ?? (record?.source_kind === 'CANONICAL_GAP_PACKAGE' ? 'NOT_PREPARED' : 'N/A');
+  return [
+    `### 2. Prepara el package que tiene el turno — \`${current.package_id}\``,
+    '',
+    `- **Posición:** **${current.position}/${action.packageExecution.sequence.length}**; ningún package posterior puede adelantarlo.`,
+    `- **Estado efectivo:** \`${record?.status ?? current.status ?? 'UNKNOWN'}\``,
+    `- **Acción exacta:** \`${current.next_action.type}\``,
+    `- **Objetivo exacto:** \`${current.next_action.target}\``,
+    `- **Comando exacto:** \`${current.next_action.command}\``,
+    `- **Expediente package-gate:** \`${record?.package_gate?.relative_path ?? `docs/plan-canonico/modular/package-gate-instances/${current.package_id}.json`}\` — \`${gateStatus}\``,
+    `- **Gates:** **${gates?.passed ?? 0}/${gates?.total ?? 0} PASS**; faltan **${gates?.remaining ?? 0}**.`,
+    `- **Por qué:** ${laneCell(current.next_action.reason)}`,
+    '- **Regla:** preparar o aprobar el expediente no autoriza todavía código, migraciones, despliegues ni cambios remotos.',
+  ];
+}
+
+function renderDocumentaryAction(action) {
+  const documentary = action.documentary;
+  if (!documentary) {
+    return [
+      '### 3. Continúa la documentación canónica',
+      '',
+      '- **Acción:** la ruta documental está completa.',
+    ];
+  }
+  return [
+    `### 3. Continúa la documentación — \`${documentary.id}\``,
+    '',
+    `- **Tarea exacta:** \`${documentary.id}\` — ${laneCell(documentary.title)}`,
+    `- **Haz ahora:** ${laneCell(describeTaskScope(documentary))}`,
+    `- **Archivo propietario:** \`${documentary.relativePath}\``,
+    '- **Regla:** si corre en paralelo con una corrección o un package, usar checkout independiente y serializar los cierres.',
+  ];
+}
+
+function renderPhysicalAction(action) {
+  if (!action.physical) {
+    return [
+      '### 4. Implementación física',
+      '',
+      '- **Acción ahora:** `NO_INICIAR_IMPLEMENTACIÓN_FÍSICA`.',
+      '- **Motivo:** no existe una instancia física no terminal registrada por `implementation-control`.',
+      '- **Se desbloquea cuando:** el package actual complete su gate, materialice el handoff físico y el usuario apruebe explícitamente la instancia exacta.',
+    ];
+  }
+  return [
+    `### 4. Ejecuta la instancia física autorizada — \`${action.physical.instanceId}\``,
+    '',
+    `- **Estado:** \`${action.physical.status}\``,
+    `- **Contrato:** ${laneCell(action.physical.taskTitle)}`,
+    `- **Acción exacta del control:** \`${implementationActionLabel(action.physical.status)}\``,
+    `- **Registro:** \`${action.physical.recordPath}\``,
+  ];
+}
+
+function implementationActionLabel(status) {
+  if (status === 'PENDING_AUTHORIZATION' || status === 'READY_FOR_AUTHORIZATION') return 'AUTORIZAR_IMPLEMENTACIÓN';
+  if (status === 'BLOCKED' || status === 'WAITING_FOR_PREVIOUS_INSTANCE') return 'RESOLVER_BLOQUEO';
+  return 'EJECUTAR_IMPLEMENTACIÓN';
+}
+
+export function renderOperationalActionCenter(tasks, implementationControl, correctionControl, readiness) {
+  const action = operationalActionSummary({
+    tasks,
+    implementationControl,
+    correctionControl,
+    readiness,
+  });
+  const checkoutPriority = action.correction
+    ? `terminar \`${action.correction.correction_id}\`; este checkout ya pertenece a esa corrección.`
+    : action.packageCurrent
+      ? `ejecutar \`${action.packageCurrent.next_action.type}\` sobre \`${action.packageCurrent.next_action.target}\`.`
+      : action.documentary
+        ? `desarrollar \`${action.documentary.id}\`.`
+        : 'no existe trabajo pendiente materializado.';
+  return [
+    '## 🚦 QUÉ HACER AHORA — SIN INTERPRETAR NI ELEGIR',
+    '',
+    `> **Prioridad del checkout actual:** ${checkoutPriority}`,
+    '>',
+    '> Las secciones siguientes son las únicas colas vigentes. Corrección, documentación, preparación de package e implementación física son estados distintos; una no autoriza silenciosamente a la otra.',
+    '',
+    ...renderCorrectionAction(action),
+    '',
+    ...renderPackageAction(action),
+    '',
+    ...renderDocumentaryAction(action),
+    '',
+    ...renderPhysicalAction(action),
+  ];
+}
+
 export function renderDualLaneOverview(tasks, route, active, workTopology, implementationControl) {
   const documentary = documentaryLaneSummary(tasks, implementationControl);
   const physical = physicalLaneSummary(implementationControl);
   const totalTasks = Array.isArray(workTopology?.ordered) ? workTopology.ordered.length : tasks.length;
-  const approvedTasks = Array.isArray(workTopology?.ordered)
-    ? workTopology.ordered.filter(({ marker }) => stateFromMarker(marker) === 'APROBADA').length
-    : Math.max(0, totalTasks - tasks.length);
-  const proposedTasks = Array.isArray(workTopology?.ordered)
-    ? workTopology.ordered.filter(({ marker }) => stateFromMarker(marker) === 'PROPUESTA PARA APROBACIÓN').length
-    : 0;
-  const rejectedTasks = Array.isArray(workTopology?.ordered)
-    ? workTopology.ordered.filter(({ marker }) => stateFromMarker(marker) === 'RECHAZADA').length
-    : 0;
+  const approvedTasks = Math.max(0, totalTasks - tasks.length);
+  const proposedTasks = tasks.filter(({ state }) => state === 'PROPUESTA PARA APROBACIÓN').length;
+  const rejectedTasks = tasks.filter(({ state }) => state === 'RECHAZADA').length;
   const activeTaskId = active.segments?.[0]
     ? `${active.segments[0].prefix}-${String(active.segments[0].from).padStart(3, '0')}`
     : implementationControl?.documentary?.taskId ?? 'NINGUNA';
@@ -520,7 +745,7 @@ export function renderDualLaneOverview(tasks, route, active, workTopology, imple
     `- **Ruta documental activa:** \`${laneCell(active.route_id)}\``,
     `- **Etapa documental:** \`${laneCell(active.sequence_id)}\` — ${laneCell(active.block_title)}`,
     `- **Siguiente etapa documental:** \`${laneCell(active.handoff_sequence_id ?? 'NINGUNA')}\``,
-    `- **Acción física prioritaria:** \`${laneCell(implementationControl.primaryAction.type)}\` — \`${laneCell(implementationControl.primaryAction.target)}\``,
+    `- **Acción primaria del control de instancias:** \`${laneCell(implementationControl.primaryAction.type)}\` — \`${laneCell(implementationControl.primaryAction.target)}\``,
     `- **Instancias físicas en espera de predecesora:** **${physical.waiting}**`,
     `- **Cobertura documental de la ruta:** **${route.coverage_policy === 'ALL_CANONICAL_TASKS_EXACTLY_ONCE' ? 'todas las tareas, exactamente una vez' : laneCell(route.coverage_policy)}**`,
     '',
@@ -534,7 +759,7 @@ export function renderDualLaneOverview(tasks, route, active, workTopology, imple
   ];
 }
 
-function render(tasks, route, active, workTopology, implementationControl) {
+function render(tasks, route, active, workTopology, implementationControl, correctionControl, readiness) {
   const stageIds = new Set();
   const stages = tasks.filter((task) => {
     if (stageIds.has(task.sequenceId)) return false;
@@ -553,9 +778,11 @@ function render(tasks, route, active, workTopology, implementationControl) {
     '',
     '> Archivo derivado. No editar manualmente.',
     '>',
-    '> Vista humana de los dos carriles operativos: documentación canónica e implementación física. El detalle exhaustivo inferior conserva la autoridad estructural utilizada por los validadores.',
+    '> Vista humana coordinada de correcciones, documentación canónica, preparación lineal de packages e implementación física. El detalle exhaustivo inferior conserva la autoridad estructural utilizada por los validadores.',
     '>',
     '> El marcador documental define contratos; las instancias físicas materializan únicamente lo autorizado. Ningún carril reabre ni sustituye silenciosamente al otro.',
+    '',
+    ...renderOperationalActionCenter(tasks, implementationControl, correctionControl, readiness),
     '',
     ...renderDualLaneOverview(tasks, route, active, workTopology, implementationControl),
     '',
@@ -668,7 +895,22 @@ export function syncPendingTaskContext({ root = process.cwd(), check = false } =
   const tasks = orderPendingTasksByRoute(readCanonicalTasks(baseDir), route);
   const workTopology = resolveTaskWorkTopology({ root });
   const implementationControl = deriveImplementationControl({ root, workTopology });
-  const expected = render(tasks, route, active, workTopology, implementationControl);
+  const correctionControl = loadValidatedCorrectionControl({ root });
+  const readiness = scanPackageReadiness({
+    root,
+    check,
+    trigger: check ? 'pending-task-context-check' : 'pending-task-context',
+    supplied: { skipDerivedReports: true },
+  });
+  const expected = render(
+    tasks,
+    route,
+    active,
+    workTopology,
+    implementationControl,
+    correctionControl,
+    readiness,
+  );
   const current = fs.existsSync(outputPath) ? fs.readFileSync(outputPath, 'utf8') : '';
   if (current === expected) return { changed: false };
   if (check) throw new Error('El registro de tareas pendientes con contexto está desactualizado.');
