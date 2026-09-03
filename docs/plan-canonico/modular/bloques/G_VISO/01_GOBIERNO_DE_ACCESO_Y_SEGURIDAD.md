@@ -21032,7 +21032,1119 @@ La identidad exacta de cualquier unidad física futura se resolverá exclusivame
 `VISO-AUTH-020 — Crear exporte de matriz de acceso`
 
 
-### [ ] VISO-AUTH-020 — Crear exporte de matriz de acceso
+### ✅ VISO-AUTH-020 — Crear exporte de matriz de acceso
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-019 — Restringir quién administra seguridad
+**Tarea siguiente:** VISO-CORE-001 — Definir núcleo mínimo de VISO
+**Tipo de tarea:** documental; definición del contrato canónico del exporte de matriz de acceso de VISO como snapshot real, verificable, filtrado, clasificado y auditable de autoridad efectiva y procedencia, separado de auditoría histórica, simulación, administración y reimportación, sin inventar una capacidad de exportación ausente del catálogo activo
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental del exporte definido; materialización física diferida por unidad de implementación y bloqueada hasta disponer de una capacidad canónica exacta de exportación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura permanece sujeta a `PER_IMPLEMENTATION_UNIT`, al gate `POST_E5_PACKAGE`, a autorización server-side y a una `PermissionKey` activa y exacta para exportar
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el exporte canónico con el que VISO podrá materializar, para revisión administrativa controlada, una fotografía consistente de la matriz real de acceso de Vento OS.
+
+El exporte deberá responder:
+
+```text
+QUIÉN
++
+PUEDE O NO PUEDE
++
+HACER QUÉ
++
+BAJO QUÉ CARRIL
++
+EN QUÉ ALCANCE
++
+CON QUÉ CONTEXTO REAL
++
+POR QUÉ FUENTE
++
+BAJO QUÉ VERSIONES
++
+EN QUÉ MOMENTO
+```
+
+sin convertir el archivo generado en autoridad ejecutable.
+
+---
+
+#### 2. Regla raíz
+
+```text
+MATRIZ REAL AUTORIZATIVA
++
+SNAPSHOT CONSISTENTE
++
+FILTROS AUTORIZADOS
++
+PROCEDENCIA CANÓNICA
++
+CLASIFICACIÓN DE INFORMACIÓN
++
+FINALIDAD DECLARADA
++
+ACTOR GENERADOR
++
+EVIDENCIA DE EXPORTACIÓN
+→
+EXPORTE DE MATRIZ DE ACCESO
+```
+
+Nunca:
+
+```text
+PANTALLA VISIBLE
++
+LECTURA GENÉRICA
+→
+EXPORTACIÓN MASIVA
+```
+
+---
+
+#### 3. Naturaleza del exporte
+
+El exporte es un artefacto de consulta administrativa.
+
+No es:
+
+- un archivo de configuración;
+- un mecanismo de importación;
+- una copia de seguridad;
+- una migración;
+- una sesión;
+- una simulación;
+- un catálogo paralelo;
+- una matriz editable;
+- una fuente de permisos;
+- un historial de auditoría;
+- una autorización reusable.
+
+---
+
+#### 4. Handoff de VISO-AUTH-019
+
+`VISO-AUTH-019` deja una frontera explícita:
+
+```text
+CONSULTAR GRANTS O DENIES
+≠
+EXPORTAR MASIVAMENTE
+```
+
+Las capacidades de administración de concesiones y denegaciones no conceden exportación por implicación.
+
+---
+
+#### 5. Handoff de VISO-AUTH-018
+
+```text
+EXPORTE DE MATRIZ DE ACCESO
+≠
+EXPORTE DEL HISTORIAL DE AUDITORÍA
+```
+
+Esta tarea no crea ni presupone una capacidad de exportación de logs.
+
+---
+
+#### 6. Handoff de VISO-AUTH-015
+
+La procedencia de cada permiso conserva las fuentes positivas y negativas ya definidas.
+
+El exporte consume esa procedencia.
+
+No crea una taxonomía local nueva para explicar grants o denies.
+
+---
+
+#### 7. Handoff de VISO-AUTH-014
+
+La simulación permanece separada de la autoridad real.
+
+El exporte canónico de matriz de acceso se construye sobre el plano real.
+
+Un escenario hipotético no aparece como autoridad efectiva.
+
+---
+
+#### 8. Handoff de VISO-AUTH-013
+
+La vista previa trabajador × sede × área × turno puede aportar dimensiones reales compatibles con la proyección administrativa.
+
+No transforma una vista previa en una decisión persistida ni en permiso.
+
+---
+
+#### 9. Experiencia administrativa heredada
+
+El exporte es una capacidad independiente.
+
+Debe conservar como mínimo:
+
+- filtros;
+- actor;
+- fecha;
+- finalidad;
+- clasificación de información.
+
+El hecho de ser de solo lectura no elimina su sensibilidad.
+
+---
+
+#### 10. Objeto lógico
+
+El objeto exportado es:
+
+```text
+MATRIZ REAL DE ACCESO
+```
+
+La matriz representa relaciones evaluables entre:
+
+- sujeto laboral;
+- permiso canónico exacto;
+- carril requerido;
+- contexto real aplicable;
+- alcance;
+- decisión efectiva;
+- procedencia;
+- restricciones;
+- versiones.
+
+---
+
+#### 11. Snapshot point-in-time
+
+Todo exporte pertenece a un instante de corte explícito.
+
+Ese instante determina qué trabajadores, roles, asignaciones, perfiles, turnos, grants, denies, permisos, contratos y versiones son considerados.
+
+---
+
+#### 12. Consistencia temporal
+
+No se permite mezclar en un mismo exporte:
+
+```text
+CATÁLOGO DE T0
++
+MATRIZ DE T1
++
+GRANTS DE T2
++
+DENIES DE T3
+```
+
+como si fueran un único estado coherente.
+
+La materialización física deberá obtener una vista consistente o fallar cerrada.
+
+---
+
+#### 13. Real, histórico y futuro
+
+Por defecto, el exporte representa autoridad real vigente en el snapshot.
+
+No reconstruye automáticamente historia.
+
+Una concesión programada para el futuro no se presenta como autoridad vigente antes de su efectividad.
+
+La reconstrucción histórica pertenece a auditoría.
+
+---
+
+#### 14. Plano real versus simulado
+
+`SimulationContextV1` y `SimulatedAuthorizationDecisionV1` no forman parte de la matriz real exportada.
+
+```text
+SIMULATED
+≠
+REAL
+```
+
+---
+
+#### 15. Tres planos lógicos
+
+El contrato del exporte se organiza en:
+
+1. manifest del exporte;
+2. filas de matriz de acceso;
+3. procedencia y razones asociadas.
+
+La serialización física puede presentarlos de forma tabular o estructurada sin cambiar su semántica.
+
+---
+
+#### 16. Manifest del exporte
+
+El manifest conserva como mínimo:
+
+- actor humano efectivo;
+- instante de snapshot;
+- zona horaria aplicable;
+- finalidad declarada;
+- clasificación de información;
+- filtros solicitados;
+- filtros efectivos;
+- cobertura autorizada;
+- versiones de catálogo y contratos;
+- cardinalidad materializada;
+- resultado de generación.
+
+---
+
+#### 17. Finalidad
+
+Todo exporte declara una finalidad administrativa reconocible.
+
+Una finalidad ausente no se convierte en justificación implícita para extracción sensible.
+
+---
+
+#### 18. Clasificación
+
+La matriz de acceso es información sensible de seguridad.
+
+Puede revelar capacidades, roles, scopes, excepciones, denies, distribución de privilegios y estructura organizacional.
+
+No se trata como reporte público.
+
+---
+
+#### 19. Actor y principal
+
+El manifest identifica al actor humano efectivo.
+
+Un principal técnico que participe en transporte o generación permanece separado:
+
+```text
+PRINCIPAL TÉCNICO
+≠
+ACTOR EMPRESARIAL
+```
+
+---
+
+#### 20. Operación de autorización
+
+La generación del exporte es una operación:
+
+```text
+EXPORT
+```
+
+No debe registrarse como simple `READ` cuando produce una extracción masiva.
+
+---
+
+#### 21. Capacidad exacta requerida
+
+Exportar es una capacidad independiente.
+
+La futura materialización deberá evaluar una `PermissionKey` activa, exacta y propietaria de la operación de exportación de esta matriz.
+
+Esta tarea no inventa su nombre.
+
+---
+
+#### 22. Estado actual del catálogo
+
+El catálogo físico activo consultado no contiene una `PermissionKey` de exportación dentro de la familia vigente de `viso.authorization`.
+
+Esto bloquea la materialización.
+
+No autoriza a escoger una clave parecida.
+
+---
+
+#### 23. Fail closed
+
+Mientras la capacidad exacta no exista:
+
+```text
+EXPORTAR MATRIZ DE ACCESO
+→
+BLOQUEADO
+```
+
+incluso para:
+
+- `propietario`;
+- `gerente_general`;
+- administrador de seguridad;
+- auditor funcional;
+- principal técnico privilegiado.
+
+---
+
+#### 24. Capacidades que no sustituyen el exporte
+
+No conceden exportación por implicación:
+
+```text
+viso.access
+viso.authorization.audit_logs.view
+viso.authorization.context_simulations.view
+```
+
+Tampoco ninguna capacidad de:
+
+```text
+base_grants
+operational_grants
+denials
+```
+
+---
+
+#### 25. No bypass por rol
+
+No es válido:
+
+```text
+role = propietario
+→
+EXPORT
+```
+
+ni:
+
+```text
+role = gerente_general
+→
+EXPORT
+```
+
+sin capacidad exacta.
+
+---
+
+#### 26. Condición de materialización
+
+El exporte físico solo podrá habilitarse después de:
+
+```text
+CAPACIDAD DE EXPORTACIÓN PUBLICADA
++
+IDENTIDAD CENTRALIZADA EN PermissionKey
++
+CONTRATO DE RECURSO Y ALCANCE
++
+MATRICES O GRANTS REVISADOS EXPLÍCITAMENTE
++
+CONSUMIDOR VISO ADOPTADO
++
+AUTORIZACIÓN SERVER-SIDE
++
+EVIDENCIA
++
+GATE FÍSICO APLICABLE
+```
+
+La evolución seguirá el mecanismo canónico vigente y no reabrirá por inferencia una fundación global verificada.
+
+---
+
+#### 27. Universo de permisos
+
+El exporte no fija una cantidad eterna de permisos.
+
+El universo se obtiene del catálogo canónico activo del snapshot.
+
+Una clave retirada no se presenta como activa por compatibilidad local.
+
+---
+
+#### 28. Identidad del permiso
+
+La identidad se conserva mediante:
+
+```text
+permission_key
+```
+
+exacta.
+
+La etiqueta humana es descriptiva y no sustituye la identidad contractual.
+
+---
+
+#### 29. Modalidad
+
+La matriz conserva la modalidad contractual del permiso:
+
+- `BASE_ONLY`;
+- `OPERATIONAL_ONLY`;
+- `BASE_OR_OPERATIONAL`;
+- `BASE_AND_OPERATIONAL`.
+
+No se aplana a un booleano genérico.
+
+---
+
+#### 30. Carriles
+
+BASE y OPERATIONAL permanecen separados.
+
+En `BASE_AND_OPERATIONAL`, ambos deben satisfacer el contrato.
+
+En `BASE_OR_OPERATIONAL`, se conserva qué carril justificó el resultado.
+
+---
+
+#### 31. Alcance y territorio
+
+La matriz conserva el alcance efectivo aplicable.
+
+`null` no significa global.
+
+Cuando el permiso es territorial, se preservan únicamente las dimensiones reales necesarias de organización, sede, área y recurso.
+
+Capacidades no territoriales no fabrican sede o área.
+
+---
+
+#### 32. Sujeto y contexto
+
+Cada fila identifica al sujeto laboral canónico.
+
+El rol base puede aparecer como contexto explicativo, no como decisión.
+
+El rol operativo, turno, check-in y dispositivo aparecen solo cuando el contrato real los requiere.
+
+---
+
+#### 33. Decisión efectiva
+
+La matriz distingue:
+
+```text
+ALLOW
+DENY
+```
+
+sin convertir conflictos o fallos técnicos en decisiones empresariales falsas.
+
+Cuando el contrato de respuesta exponga ejecutabilidad, se conserva separada de la decisión.
+
+---
+
+#### 34. Default deny y denegaciones explícitas
+
+La ausencia de grant puede terminar en default deny.
+
+No se etiqueta como deny explícito.
+
+Se distinguen:
+
+- restricción estructural;
+- actor-wide deny;
+- base-lane deny;
+- operational-lane deny;
+- default deny.
+
+---
+
+#### 35. Conflictos y fallos técnicos
+
+Un conflicto de configuración no es un deny.
+
+Un fallo técnico no es ALLOW ni DENY.
+
+Si el estado real no puede determinarse de forma confiable, el exporte no fabrica una fila favorable.
+
+---
+
+#### 36. Procedencia positiva
+
+La procedencia positiva reutiliza:
+
+```text
+BASE_ROLE
+OPERATIONAL_ROLE
+INDIVIDUAL_BASE
+INDIVIDUAL_OPERATIONAL
+```
+
+Cuando el contrato lo exponga, conserva:
+
+- referencia de grant;
+- carril;
+- `source_kind`;
+- sujeto fuente;
+- `permission_key`;
+- efecto;
+- `scope_code`;
+- territorio coincidente.
+
+---
+
+#### 37. Procedencia negativa
+
+La procedencia negativa conserva las clases y referencias canónicas disponibles, incluyendo:
+
+- deny;
+- carril;
+- permiso;
+- fuente;
+- actor coincidente;
+- recurso;
+- territorio;
+- vigencia;
+- `reason_code`.
+
+El texto humano puede acompañar, no sustituir la razón estructurada.
+
+---
+
+#### 38. Grant superado por deny
+
+Si existe una concesión candidata superada por una denegación aplicable, la procedencia puede mostrar ambas dimensiones.
+
+La concesión no se presenta como autoridad efectiva.
+
+---
+
+#### 39. Matriz normalizada
+
+La salida no colapsa múltiples fuentes en una celda opaca.
+
+Cada relación debe permitir rastrear:
+
+- sujeto;
+- permiso;
+- contexto;
+- decisión;
+- fuente o fuentes;
+- restricciones.
+
+---
+
+#### 40. Identidad lógica de fila
+
+La implementación física definirá una identidad determinista a partir de dimensiones canónicas del snapshot.
+
+No usará el orden visual como identidad ni inventará una identidad empresarial si las dimensiones existentes bastan.
+
+---
+
+#### 41. Duplicados, omisiones y cardinalidad
+
+No se permiten duplicados por paginación, join, retry o serialización.
+
+Una fila requerida por los filtros efectivos no puede omitirse silenciosamente.
+
+El manifest conserva filas materializadas y, cuando sea autoritativamente calculable, filas esperadas.
+
+Una discrepancia impide declarar el exporte completo.
+
+---
+
+#### 42. Orden determinista
+
+La serialización aplica un orden estable basado en identidades canónicas.
+
+El orden no altera prioridad, permiso o decisión.
+
+---
+
+#### 43. Filtros
+
+El exporte podrá restringirse por dimensiones autorizadas como:
+
+- sujeto;
+- permiso;
+- aplicación;
+- sede;
+- área;
+- decisión;
+- carril;
+- procedencia.
+
+Los filtros solo reducen.
+
+No crean autoridad.
+
+---
+
+#### 44. Requested versus effective filters
+
+Cuando la autorización reduzca la solicitud, el manifest distingue:
+
+```text
+FILTROS SOLICITADOS
+```
+
+de:
+
+```text
+FILTROS EFECTIVOS
+```
+
+La cobertura materializada cumple:
+
+```text
+SOLICITUD
+∩
+AUTORIDAD DEL EXPORTADOR
+∩
+CLASIFICACIÓN
+∩
+RESTRICCIONES DEL RECURSO
+```
+
+---
+
+#### 45. Terceros
+
+La exportación de terceros exige cobertura explícita suficiente.
+
+`OWN` no se interpreta como visibilidad de terceros.
+
+Un selector UI no concede cobertura.
+
+---
+
+#### 46. Minimización
+
+El exporte contiene solo información necesaria para interpretar la matriz.
+
+No expone por defecto:
+
+- documento de identidad;
+- teléfono;
+- correo personal;
+- datos médicos;
+- credenciales;
+- tokens;
+- secretos;
+- cookies;
+- stack traces;
+- material de reautenticación.
+
+---
+
+#### 47. Secretos
+
+Nunca se exportan `service_role`, secretos de aplicación, tokens, hashes de credenciales, material de reautenticación o claves privadas.
+
+---
+
+#### 48. Server-side obligatorio
+
+URL directa, Route Handler, Server Action, RPC o cliente alternativo deben producir la misma decisión.
+
+La autorización se resuelve antes de entregar contenido.
+
+Un admin client o `service_role` no sustituyen la capacidad empresarial.
+
+---
+
+#### 49. Caché, offline y frescura
+
+Un snapshot sensible no se reutiliza entre actores o finalidades incompatibles.
+
+La exportación no se autoriza offline mediante un allow almacenado.
+
+Una solicitud diferida se reautoriza con estado fresco.
+
+Cambios de grants, denies, rol, asignación, turno, área, dispositivo, catálogo o contrato pueden invalidar un snapshot anterior.
+
+---
+
+#### 50. Concurrencia
+
+Si la materialización no puede garantizar una vista consistente mientras cambian las fuentes, debe fallar o reiniciar bajo un nuevo snapshot.
+
+La generación por lotes conserva el mismo snapshot lógico.
+
+No mezcla estados de dos momentos.
+
+---
+
+#### 51. Retries y archivos parciales
+
+Un retry no duplica ni mezcla ejecuciones.
+
+Un archivo parcial no se presenta como completo.
+
+Un error de autorización, snapshot o fuente obligatoria bloquea la entrega del artefacto.
+
+---
+
+#### 52. Auditoría del acto de exportar
+
+El acto de exportar es auditable.
+
+La evidencia conserva, según los contratos vigentes:
+
+- actor;
+- principal;
+- permiso de exportación;
+- `operation_kind = EXPORT`;
+- snapshot;
+- finalidad;
+- filtros;
+- cobertura;
+- clasificación;
+- cardinalidad;
+- resultado;
+- timestamp;
+- versiones.
+
+Intentos denegados y fallos técnicos también conservan evidencia con su categoría correcta.
+
+---
+
+#### 53. Correlación
+
+La evidencia del exporte se vincula con la decisión de autorización que permitió o bloqueó la operación.
+
+La evidencia del acto de exportar no implica incluir el historial de auditoría dentro del archivo.
+
+---
+
+#### 54. Transporte físico
+
+Esta tarea no fija XLSX, CSV, JSON u otro formato como única serialización canónica.
+
+La futura implementación escogerá una representación compatible con semántica, volumen, experiencia, clasificación y controles.
+
+---
+
+#### 55. AS-IS XLSX de VISO
+
+VISO ya contiene generación XLSX para otros reportes.
+
+Eso demuestra capacidad técnica de transporte.
+
+No demuestra autorización para este exporte y no convierte allowlists locales por rol en patrón canónico.
+
+---
+
+#### 56. Serializaciones futuras
+
+Si se utiliza:
+
+- CSV: no puede perder dimensiones obligatorias ni volver opaca la procedencia;
+- XLSX: las hojas no se convierten en fuentes de verdad independientes;
+- JSON: no se publica un schema paralelo por inferencia.
+
+El nombre físico del archivo no define la identidad contractual.
+
+---
+
+#### 57. Reimportación prohibida
+
+El exporte es salida de consulta.
+
+No puede cargarse de vuelta para conceder permisos, crear denies, editar roles, cambiar asignaciones, crear perfiles o ejecutar migraciones.
+
+Editar localmente el archivo no cambia la matriz real.
+
+---
+
+#### 58. Identidades humanas y localización
+
+Etiquetas humanas pueden acompañar códigos.
+
+No reemplazan `permission_key`, rol canónico, scope, fuente o razón estructurada.
+
+Traducir una etiqueta no cambia identidad.
+
+---
+
+#### 59. Comparación de snapshots
+
+Dos exportes pueden compararse externamente si cada uno conserva snapshot y versiones.
+
+Esta tarea no se convierte por ello en motor de auditoría histórica.
+
+---
+
+#### 60. Privilegio mínimo por actor funcional
+
+“Dirección”, “auditor” y “seguridad” son actores funcionales de la experiencia administrativa.
+
+No constituyen roles base ni grants automáticos.
+
+Un gerente territorial no obtiene exportación organizacional por nombre.
+
+Un administrador de seguridad tampoco hereda exportación.
+
+---
+
+#### 61. Casos de cero filas y filtros inválidos
+
+Un exporte de cero filas puede ser válido si autorización, filtros y snapshot son válidos.
+
+Un filtro inválido, identidad inexistente o valor vacío no se convierte en wildcard.
+
+No se rellena con datos fuera de alcance.
+
+---
+
+#### 62. Identidades inactivas, retiradas y legacy
+
+Una identidad inactiva conserva su estado real si está dentro de una selección autorizada.
+
+Un permiso retirado no aparece como activo.
+
+Un alias legacy no sustituye `PermissionKey`.
+
+Una tabla legacy no se convierte en autoridad por ser fácil de exportar.
+
+---
+
+#### 63. Dump de tablas
+
+```text
+DUMP DE TABLAS
+≠
+MATRIZ DE ACCESO
+```
+
+La matriz debe reflejar el resultado del modelo canónico y conservar la misma semántica consumida por las aplicaciones.
+
+---
+
+#### 64. Equivalencia
+
+Para el mismo sujeto, permiso y contexto real, la interfaz, el exporte y los consumidores operativos deben coincidir en decisión y razones equivalentes.
+
+El exporte no implementa un evaluador paralelo.
+
+RLS sigue siendo defensa de datos y no sustituye la autorización empresarial del exporte.
+
+---
+
+#### 65. Efectos prohibidos
+
+El exporte no:
+
+- modifica catálogo;
+- crea, aprueba, suspende o revoca grants;
+- crea, aprueba o revoca denies;
+- modifica perfiles;
+- modifica sedes o áreas;
+- modifica turnos;
+- modifica dispositivos;
+- ejecuta recuperación;
+- cambia quién administra seguridad.
+
+---
+
+#### 66. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea desarrolla el contrato del exporte dentro de reglas de autorización, consistencia, territorio, simulación, trazabilidad y VISO ya protegidas por el registro vigente.
+
+La ausencia actual de una capacidad de exportación es un bloqueo de materialización y no una autorización para crear un requisito o identificador nuevo por inferencia.
+
+---
+
+#### 67. Cobertura de prueba vigente reutilizada
+
+Sin modificar el Registro Canónico de Requisitos de Prueba, esta tarea reutiliza:
+
+- `TREQ-AUTH-001` — toda capacidad protegida se resuelve mediante permisos, contexto y alcance canónicos;
+- `TREQ-AUTH-002` — toda `PermissionKey` consumida debe existir en el catálogo vigente;
+- `TREQ-AUTH-004` — evaluadores equivalentes deben producir decisiones y razones equivalentes;
+- `TREQ-AUTH-007` — la administración sensible exige capacidad explícita y territorio autorizado;
+- `TREQ-AUTH-008` — capacidades administrativas y operativas conservan sus prerrequisitos correctos;
+- `TREQ-AUTH-009` — sede y área se resuelven determinísticamente;
+- `TREQ-AUTH-012` — simulación permanece separada de autoridad real;
+- `TREQ-AUTH-013` — URL, formulario, API o RPC no pueden eludir autorización server-side;
+- `TREQ-AUTH-014` — cambios de contexto invalidan decisiones obsoletas;
+- `TREQ-AUTH-015` — toda decisión y acción protegida conserva evidencia correlacionable;
+- `TREQ-VISO-001` — VISO conserva efecto, conflicto, origen, territorio, auditoría y equivalencia con aplicaciones operativas.
+
+Estas referencias son trazabilidad y no cambian filas, estados, paquetes, evidencias, relaciones ni secuencias del registro.
+
+---
+
+#### 68. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó la batería documental sobre un checkout local de la rama de `VISO-AUTH-020`. |
+| LOCAL | NOT_EXECUTED | La tarea todavía no fue insertada, normalizada ni validada en la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, cierre de `VISO-AUTH-019`, continuidad, protocolo, contrato de entrega, manifest, topología, políticas de tarea, archivo propietario, handoffs de `VISO-AUTH-013` a `VISO-AUTH-019`, experiencia administrativa `ADM-TASK-024`, catálogo físico activo de `PermissionKey`, operación `EXPORT` en persistencia de decisiones, registro 04A AUTH/VISO, `package.json`, preflight vigente y el AS-IS de exportación XLSX existente en VISO. |
+| OPERATIVA | NOT_APPLICABLE | No se generó un exporte real de seguridad, no se consultaron datos empresariales sensibles y no se modificó autoridad de ningún actor. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, contratos compartidos, catálogo, datasets, migraciones, RPC, RLS, Route Handlers, grants, archivos exportados ni despliegues. |
+
+---
+
+#### 69. Criterios de aceptación
+
+- [ ] El exporte representa autoridad real, no simulada.
+- [ ] El exporte usa un snapshot consistente.
+- [ ] No mezcla estados temporales incompatibles.
+- [ ] No exporta historial de auditoría.
+- [ ] Consume procedencia canónica.
+- [ ] Conserva manifest, matriz y procedencia como planos distinguibles.
+- [ ] El manifest conserva actor, snapshot, finalidad, clasificación, filtros, cobertura, versiones, cardinalidad y resultado.
+- [ ] La operación se modela como `EXPORT`.
+- [ ] Exportar requiere capacidad independiente.
+- [ ] No se inventa una `PermissionKey`.
+- [ ] La ausencia actual de esa capacidad bloquea materialización.
+- [ ] `viso.access` no concede exportación.
+- [ ] `audit_logs.view` no concede exportación.
+- [ ] `context_simulations.view` no concede exportación.
+- [ ] Las capacidades de grants y denials no conceden exportación.
+- [ ] Ningún rol crea bypass.
+- [ ] La evolución futura debe publicar una capacidad exacta.
+- [ ] El universo se deriva del catálogo activo.
+- [ ] `permission_key` permanece identidad.
+- [ ] La modalidad se conserva.
+- [ ] BASE y OPERATIONAL permanecen separados.
+- [ ] Scope y territorio se conservan sin fabricar contexto.
+- [ ] El sujeto laboral mantiene identidad canónica.
+- [ ] Rol, turno, check-in y dispositivo no se convierten en autoridad por sí solos.
+- [ ] ALLOW y DENY se distinguen.
+- [ ] Default deny se distingue de deny explícito.
+- [ ] Denegaciones estructurales, actor-wide y por carril permanecen diferenciadas.
+- [ ] Conflicto no se convierte en deny.
+- [ ] Fallo técnico no se convierte en deny.
+- [ ] La procedencia positiva conserva las cuatro clases canónicas.
+- [ ] La procedencia negativa conserva referencias y razones estructuradas.
+- [ ] Grants superados por deny no se presentan como autoridad efectiva.
+- [ ] La matriz no colapsa fuentes en texto opaco.
+- [ ] La identidad lógica de fila es determinista.
+- [ ] No existen duplicados u omisiones silenciosas.
+- [ ] Cardinalidad y filas materializadas reconcilian.
+- [ ] El orden es determinista.
+- [ ] Los filtros solo reducen.
+- [ ] Se distinguen filtros solicitados y efectivos.
+- [ ] La cobertura final es una intersección restrictiva.
+- [ ] Terceros requieren cobertura explícita.
+- [ ] Se aplica minimización.
+- [ ] No se exportan secretos o credenciales.
+- [ ] URL directa, Route Handler, Server Action y RPC no eluden autorización.
+- [ ] Admin client y `service_role` no sustituyen autorización.
+- [ ] Caché y offline no conservan autoridad obsoleta.
+- [ ] La generación larga conserva un mismo snapshot lógico.
+- [ ] Retries no duplican contenido.
+- [ ] Archivos parciales no se presentan como completos.
+- [ ] El acto de exportar queda auditado y correlacionado.
+- [ ] El exporte no incorpora el historial de auditoría.
+- [ ] La tarea no fija XLSX, CSV o JSON como única serialización.
+- [ ] El XLSX existente no sirve como precedente de autorización.
+- [ ] No se copian allowlists locales por rol.
+- [ ] El archivo no puede reimportarse como configuración.
+- [ ] Etiquetas humanas no sustituyen identidades.
+- [ ] Actores funcionales no constituyen grants.
+- [ ] Filtros inválidos o identidades inexistentes no se convierten en wildcard.
+- [ ] Legacy no se convierte en autoridad.
+- [ ] Un dump de tablas no equivale a matriz de acceso.
+- [ ] Exporte y consumidores producen decisión equivalente.
+- [ ] El exporte no muta ninguna fuente de autorización.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+- [ ] VISO-CORE-001 recibe el mini-bloque documentalmente cerrado.
+
+---
+
+#### 70. Límites
+
+Esta tarea no:
+
+- modifica VISO;
+- modifica Supabase;
+- crea Route Handlers;
+- crea Server Actions;
+- crea RPC;
+- crea RLS;
+- crea funciones;
+- crea tablas;
+- crea vistas;
+- crea migraciones;
+- genera reportes reales;
+- fija un formato físico único;
+- crea una `PermissionKey`;
+- nombra una capacidad inexistente;
+- modifica el catálogo;
+- modifica contratos compartidos;
+- reabre instancias globales verificadas;
+- modifica matrices, grants, denies, perfiles, asignaciones, turnos o dispositivos;
+- exporta historial de auditoría;
+- ejecuta simulaciones;
+- exporta resultados simulados;
+- cambia quién administra seguridad;
+- concede autoridad;
+- crea roles, scopes o aliases;
+- reactiva legacy;
+- ejecuta reautenticación;
+- accede a secretos;
+- define la UX final;
+- ejecuta pruebas con administradores reales;
+- modifica 04A;
+- crea requisitos de prueba;
+- selecciona package;
+- prepara o aprueba package gate;
+- autoriza o ejecuta implementación física.
+
+La identidad exacta de cualquier unidad física futura se resolverá exclusivamente mediante los packages, implementation units y gates aplicables.
+
+---
+
+#### 71. Cierre del mini-bloque G
+
+Con esta tarea queda definido documentalmente el ciclo administrativo de:
+
+- catálogos de roles base y operativos;
+- matrices base y operativas;
+- elegibilidad territorial;
+- perfiles y asignaciones;
+- rol operativo efectivo;
+- validaciones de turno y área;
+- vista previa;
+- simulación;
+- procedencia;
+- conflictos;
+- excepciones;
+- auditoría;
+- autoridad administrativa;
+- exporte de matriz de acceso.
+
+El cierre documental no equivale a materialización física.
+
+---
+
+#### 72. Handoff a VISO-CORE-001
+
+`VISO-CORE-001` recibe el mini-bloque de acceso y seguridad completamente definido.
+
+Recibe además este bloqueo explícito:
+
+```text
+EXPORTE DE MATRIZ
+CONTRATO DOCUMENTAL = DEFINIDO
+
+CAPACIDAD CANÓNICA EXACTA DE EXPORTACIÓN
+= AUSENTE EN EL CATÁLOGO ACTIVO CONSULTADO
+
+MATERIALIZACIÓN
+= BLOQUEADA HASTA EVOLUCIÓN CANÓNICA
+```
+
+`VISO-CORE-001` no debe inventar una clave para resolverlo.
 
 SUBBLOQUE G2 — VISO Core
 
@@ -21062,3 +22174,16 @@ auditoría.
 
 Las tareas VISO-CORE controlan únicamente el corte mínimo,
 la priorización y la aprobación del habilitador.
+
+---
+
+#### 73. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-019 — Restringir quién administra seguridad`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-020 — Crear exporte de matriz de acceso`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-CORE-001 — Definir núcleo mínimo de VISO`
