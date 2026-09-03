@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1111** |
+| Aprobadas | **1112** |
 | En propuesta | **0** |
-| No iniciadas | **485** |
+| No iniciadas | **484** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **69.61% (1111/1596)** |
+| Porcentaje de completamiento | **69.67% (1112/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-AUTH-020` — Crear exporte de matriz de acceso | ✅ APROBADA |
-| Tarea actual | `VISO-CORE-001` — Definir núcleo mínimo de VISO | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-CORE-002` — Vincular núcleo con capacidades empresariales | ⬜ NO INICIADA |
+| Última aprobada | `VISO-CORE-001` — Definir núcleo mínimo de VISO | ✅ APROBADA |
+| Tarea actual | `VISO-CORE-002` — Vincular núcleo con capacidades empresariales | ⬜ NO INICIADA |
+| Siguiente reservada | `VISO-CORE-003` — Implementar dependencias administrativas mínimas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -662,7 +662,7 @@
 | ⬜ NO INICIADA | `VISO-SCH-006` | Definir conflictos, integridad, concurrencia y recuperación | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
 | ⬜ NO INICIADA | `VISO-SCH-007` | Definir autorización, auditoría, eventos y notificaciones | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
 | ⬜ NO INICIADA | `VISO-SCH-008` | Aprobar contrato de programación antes de E5 | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
-| ⬜ NO INICIADA | `VISO-CORE-001` | Definir núcleo mínimo de VISO | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ✅ APROBADA | `VISO-CORE-001` | Definir núcleo mínimo de VISO | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-CORE-002` | Vincular núcleo con capacidades empresariales | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-CORE-003` | Implementar dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-CORE-004` | Implementar autorización real del núcleo | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
