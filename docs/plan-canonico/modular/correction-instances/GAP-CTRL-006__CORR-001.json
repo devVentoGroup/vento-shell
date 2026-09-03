@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "DOCUMENTARY_CONTRADICTION",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": false,
   "blocked_targets": [],
   "baseline": {
@@ -15,12 +15,57 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run docs:package:readiness:check",
+    "npm run docs:package:execution:check",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "zero_treq_reason": "La correccion no crea ni modifica requisitos TREQ ni el registro 04A; corrige exclusivamente el enrutamiento documental de brechas y las proyecciones E5 que consumen GAP-PKG. Las referencias a TREQ existentes solo podran conservarse o reconciliarse contra evidencia ya aprobada, sin alterar su definicion.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-02T21:25:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza GAP-CTRL-006::CORR-001 exclusivamente para corregir de forma estructural el enrutamiento ya aprobado de brechas hacia tareas y GAP-PKG y reconciliar sus proyecciones documentales dependientes en E5, preservando los identificadores GAP-PKG estables, sin crear capacidades nuevas, sin modificar requisitos TREQ del registro 04A, sin inventar tareas, repositorios, rutas, dependencias o identidades fisicas, y sin modificar scripts, scanner, package-execution-policy.json ni codigo fisico.",
+    "source_contract_sha256": "5832c6ba52bdb2d6bd56ade77a58204dca558413fcc65ffb29287f53f11bd1e6"
+  },
+  "evidence": [
+    "IMPLEMENTED GAP-CTRL-006::CORR-001: 59 etiquetas históricas de tareas sincronizadas contra sus títulos canónicos vigentes sin cambiar task_id.",
+    "IMPLEMENTED enrutamiento semántico corregido para H-CAP-SCOPE-019-005, H-CODE-010-010 y H-CODE-011-007 hacia GAP-CTRL-007; GAP-PKG-040, GAP-PKG-094 y GAP-PKG-121 reconciliados sin renumerar ni mover brechas.",
+    "IMPLEMENTED proyección DELIV-PKG-024 para H-CAP-SCOPE-019-005 reconciliada como R6_CONTROL_CANONICO sin crear ni modificar TREQ.",
+    "PASS auditoría estructural posterior: 814 membresías, 201 packages, 0 diferencias de tareas, 0 mezclas de clasificación, familia, propietario o fecha y 0 títulos divergentes.",
+    "PASS npm run quality:repair: FILES_BEFORE=3, FILES_AFTER=3, NORMALIZED=0, GENERATORS=0, ESLINT_FIX_TARGETS=0, REMAINING_ESLINT=0, READY_FOR_VALIDATION=SI.",
+    "VERIFIED npm run docs:correction:check PASS: correction-control válido; 9 registros.",
+    "VERIFIED npm run docs:correction:test PASS: 20/20 pruebas.",
+    "VERIFIED npm run docs:plan:check PASS después de sincronizar la proyección local del iniciador de correcciones; 1596 tareas, 1108 aprobadas y continuidad VISO-AUTH-018.",
+    "VERIFIED npm run docs:plan:test PASS: 345/345 pruebas.",
+    "VERIFIED npm run docs:treq:check PASS: 7066 requisitos, 19 dominios, 21 fragmentos, 0 duplicados y 0 relaciones no resolubles.",
+    "VERIFIED npm run docs:treq:test PASS: 56/56 pruebas.",
+    "VERIFIED npm run docs:package:readiness:check PASS: catálogo 207/207, 209 packages evaluados y GAP-PKG-001 reteniendo el turno lineal PREPARE_PACKAGE_GATE.",
+    "VERIFIED npm run docs:package:execution:check PASS: DETERMINISTIC_LINEAR_TOPOLOGICAL, GAP-PKG-001 en posición 1/189, 20 packages diferidos sin adelantamiento.",
+    "VERIFIED git --no-pager diff --check PASS."
+  ],
   "opened_at": "2026-09-03T01:50:28.755Z"
 }
