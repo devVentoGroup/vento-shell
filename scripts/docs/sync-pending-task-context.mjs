@@ -597,6 +597,7 @@ function renderCorrectionAction(action) {
 
 function renderPackageAction(action) {
   const current = action.packageCurrent;
+
   if (!current) {
     return [
       '### 2. Preparación de implementación por package',
@@ -604,13 +605,50 @@ function renderPackageAction(action) {
       '- **Acción:** la línea de packages está completa o no tiene turno materializado.',
     ];
   }
+
   const record = action.packageRecord;
   const gates = record?.readiness_progress?.gates ?? null;
   const gateStatus = record?.package_gate?.status
     ?? (record?.source_kind === 'CANONICAL_GAP_PACKAGE' ? 'NOT_PREPARED' : 'N/A');
+  const work = current.current_work ?? {
+    kind: 'PACKAGE',
+    id: current.package_id,
+    consumer_package_id: current.package_id,
+  };
+
+  if (work.kind === 'FOUNDATION_GATE') {
+    return [
+      `### 2. Resuelve la fundación que tiene precedencia — \`${work.id}\``,
+      '',
+      `- **CURRENT_EXECUTABLE_WORK:** \`${work.id}\``,
+      `- **Gate:** \`${work.gate_id ?? 'UNKNOWN'}\``,
+      `- **Owner canónico:** \`${work.owner_task ?? 'UNKNOWN'}\``,
+      `- **Estado:** \`${work.status ?? 'UNKNOWN'}\``,
+      `- **Package consumidor bloqueado:** \`${current.package_id}\` — posición **${current.position}/${action.packageExecution.sequence.length}**.`,
+      `- **Acción exacta:** \`${current.next_action.type}\``,
+      `- **Comando de comprobación:** \`${current.next_action.command}\``,
+      `- **Por qué:** ${laneCell(current.next_action.reason)}`,
+      '- **Regla:** no autorizar, iniciar, desplegar ni cerrar el package consumidor hasta que esta fundación y las anteriores queden satisfechas.',
+    ];
+  }
+
+  if (work.kind === 'PHYSICAL_PREREQUISITE') {
+    return [
+      `### 2. Resuelve el prerrequisito físico que tiene precedencia — \`${work.id}\``,
+      '',
+      `- **CURRENT_EXECUTABLE_WORK:** \`${work.id}\``,
+      `- **Estado:** \`${work.status ?? 'UNKNOWN'}\``,
+      `- **Package consumidor bloqueado:** \`${current.package_id}\`.`,
+      `- **Acción exacta:** \`${current.next_action.type}\``,
+      `- **Comando exacto:** \`${current.next_action.command}\``,
+      `- **Por qué:** ${laneCell(current.next_action.reason)}`,
+    ];
+  }
+
   return [
     `### 2. Prepara el package que tiene el turno — \`${current.package_id}\``,
     '',
+    `- **CURRENT_EXECUTABLE_WORK:** \`${work.id}\``,
     `- **Posición:** **${current.position}/${action.packageExecution.sequence.length}**; ningún package posterior puede adelantarlo.`,
     `- **Estado efectivo:** \`${record?.status ?? current.status ?? 'UNKNOWN'}\``,
     `- **Acción exacta:** \`${current.next_action.type}\``,
@@ -887,7 +925,11 @@ function render(tasks, route, active, workTopology, implementationControl, corre
   return lines.join('\n');
 }
 
-export function syncPendingTaskContext({ root = process.cwd(), check = false } = {}) {
+export function syncPendingTaskContext({
+  root = process.cwd(),
+  check = false,
+  readinessResult = null,
+} = {}) {
   const baseDir = path.join(root, 'docs/plan-canonico/modular');
   const outputPath = path.join(baseDir, OUTPUT);
   const route = JSON.parse(fs.readFileSync(path.join(baseDir, 'continuity-route.json'), 'utf8'));
@@ -896,7 +938,7 @@ export function syncPendingTaskContext({ root = process.cwd(), check = false } =
   const workTopology = resolveTaskWorkTopology({ root });
   const implementationControl = deriveImplementationControl({ root, workTopology });
   const correctionControl = loadValidatedCorrectionControl({ root });
-  const readiness = scanPackageReadiness({
+  const readiness = readinessResult ?? scanPackageReadiness({
     root,
     check,
     trigger: check ? 'pending-task-context-check' : 'pending-task-context',

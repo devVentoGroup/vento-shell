@@ -1317,3 +1317,19 @@ gh pr status
 ```
 
 Si recuerdas estos diez comandos, puedes resolver la mayoría del trabajo diario sin memorizar el resto.
+
+<!-- CURRENT-EXECUTABLE-WORK-CORR-002:START -->
+## Implementación lineal: package consumidor y trabajo ejecutable
+
+Antes de autorizar o continuar una implementación por package, consultar el scanner y distinguir:
+
+```text
+CURRENT_PACKAGE
+≠ necesariamente
+CURRENT_EXECUTABLE_WORK
+```
+
+Cuando `CURRENT_EXECUTABLE_WORK` sea una fundación o un prerrequisito físico, se resuelve primero esa identidad. El package conserva el turno como consumidor bloqueado y no se inicia, despliega ni cierra por inferencia.
+
+Para Supabase, la secuencia global previa al package es R0 → `MRP015-000` → `MRP015-010` → `MRP015-020` → `MRP015-030` → `MRP015-040`. El candidato `MRP015-050` pertenece al ciclo del package y precede al despliegue remoto.
+<!-- CURRENT-EXECUTABLE-WORK-CORR-002:END -->

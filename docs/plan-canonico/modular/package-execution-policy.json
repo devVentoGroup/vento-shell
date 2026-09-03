@@ -22,5 +22,8 @@
   ],
   "stop_on_blocked_current": true,
   "physical_authorization_required": true,
-  "defer_without_canonical_order": true
+  "defer_without_canonical_order": true,
+  "current_package_semantics": "TOPOLOGICAL_TURN_HOLDER",
+  "current_executable_work_semantics": "FIRST_UNMET_PREREQUISITE_ELSE_CURRENT_PACKAGE",
+  "foundation_prerequisites_precede_consumer": true
 }

@@ -32,6 +32,7 @@ export const DERIVED_CORRECTION_PROJECTIONS = new Set([
     'docs/plan-canonico/modular/active-sequence.json',
     'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md',
     'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
+    'scripts/docs/package-readiness/implementation-package-registry.json',
 ]);
 const OPEN_STATUSES = new Set([
     'PENDING_AUTHORIZATION',

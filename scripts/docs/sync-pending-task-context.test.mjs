@@ -354,3 +354,26 @@ test('renderiza un tablero dual legible sin perder la identidad documental ni fi
   assert.match(source, /CONTROLLED_DUAL_LANE/u);
   assert.match(source, /Cola física visible/u);
 });
+
+test('registro de pendientes prioriza la fundación sobre el package consumidor', () => {
+  const readiness = { registry: {
+    package_execution: {
+      sequence: [{ package_id: 'GAP-PKG-001' }],
+      current: {
+        package_id: 'GAP-PKG-001',
+        position: 1,
+        status: 'READY_FOR_GATE',
+        current_work: { kind: 'FOUNDATION_GATE', id: 'MRP015-000', gate_id: 'TOOLCHAIN_READY', owner_task: 'SUPA-TRANS-015', status: 'UNKNOWN', consumer_package_id: 'GAP-PKG-001' },
+        next_action: { type: 'WAIT_FOR_FOUNDATION_PREREQUISITE', target: 'MRP015-000', command: 'npm run docs:package:readiness:check -- --package GAP-PKG-001', reason: 'Toolchain pendiente.' },
+      },
+    },
+    packages: [{ package_id: 'GAP-PKG-001', source_kind: 'CANONICAL_GAP_PACKAGE', status: 'READY_FOR_GATE', package_gate: { status: 'APPROVED_FOR_IMPLEMENTATION' }, readiness_progress: { gates: { passed: 5, total: 6, remaining: 1 } } }],
+  } };
+
+  const tasks = [{ ...task('TEST-A-001'), title: 'Tarea documental' }];
+  const implementationControl = { documentary: { taskId: 'TEST-A-001' }, physical: { active: null, instances: [] } };
+  const source = renderOperationalActionCenter(tasks, implementationControl, { records: [] }, readiness).join("\n");
+  assert.match(source, /Resuelve la fundación que tiene precedencia — `MRP015-000`/u);
+  assert.match(source, /Package consumidor bloqueado:.*`GAP-PKG-001`/u);
+  assert.doesNotMatch(source, /Prepara el package que tiene el turno — `GAP-PKG-001`/u);
+});

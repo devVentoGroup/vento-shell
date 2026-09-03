@@ -3,7 +3,9 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 import {
+  derivePackageExecutionRequirements,
   evaluateCapability,
+  evaluatePhysicalDependencies,
   parseCanonicalPackageCatalogFromSource,
   parsePackageExecutionProjection,
   parsePackageTaskRouting,
@@ -597,4 +599,33 @@ test('la cola diagnóstica de ready es estable y no decide el turno por carril n
     { package_id: 'SPECIAL-001', ready_for_gate_at: '2026-08-29T12:00:00Z' },
   ], { lanes: [{ lane_id: 'SPECIAL-001', active: true, status: 'ACTIVE' }] });
   assert.deepEqual(queue.map(({ package_id: packageId }) => packageId), ['GAP-PKG-001', 'GAP-PKG-002', 'SPECIAL-001']);
+});
+
+test('Supabase remoto exige R0 y fundaciones MRP015 antes del package', () => {
+  const gate = { physical_identity: { targets: [{ path: 'supabase/functions/example/index.ts' }] } };
+  const requirements = derivePackageExecutionRequirements({ contract, packageGate: gate });
+  assert.equal(requirements.supabase_mutation_required, true);
+  assert.deepEqual(requirements.pre_entry_foundation_gates.map(({ foundation_id: id }) => id), ['MRP015-000', 'MRP015-010', 'MRP015-020', 'MRP015-030', 'MRP015-040']);
+
+  const instances = verifiedPhysicalDependencies();
+  for (const instanceId of contract.physical_dependencies.supabase_pre_e5_foundation.required_verified_instances) {
+    instances.set(instanceId, { instance_id: instanceId, status: 'VERIFIED' });
+  }
+
+  const unresolved = evaluatePhysicalDependencies({ contract, instances, executionRequirements: requirements });
+  const firstFoundation = unresolved.evidence.find(({ kind, status }) => kind === 'FOUNDATION_GATE' && status !== 'PASS');
+  assert.equal(firstFoundation.source, 'MRP015-000::TOOLCHAIN_READY');
+  assert.equal(unresolved.available, false);
+
+  const resolved = structuredClone(contract);
+  for (const foundation of resolved.physical_dependencies.supabase_pre_e5_foundation.ordered_foundation_gates) {
+    foundation.evidence_ref = `fixture:${foundation.foundation_id}`;
+  }
+  resolved.physical_dependencies.supabase_pre_e5_foundation.remote_environment_identity.bindings.STAGING = { classification: 'STAGING', project_ref: 'staging-fixture-ref', owner: 'fixture-owner' };
+  resolved.physical_dependencies.supabase_pre_e5_foundation.remote_environment_identity.bindings.PRODUCTION = { classification: 'PRODUCTION', project_ref: 'production-fixture-ref', owner: 'fixture-owner' };
+
+  const resolvedRequirements = derivePackageExecutionRequirements({ contract: resolved, packageGate: gate });
+  const resolvedDependencies = evaluatePhysicalDependencies({ contract: resolved, instances, executionRequirements: resolvedRequirements });
+  assert.equal(resolvedDependencies.status, 'PASS');
+  assert.equal(resolvedDependencies.available, true);
 });

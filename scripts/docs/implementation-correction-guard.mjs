@@ -2,6 +2,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { startImplementation } from './implementation-branch-lifecycle.mjs';
+import { scanPackageReadiness } from './package-readiness-scanner.mjs';
 import { loadImplementationControl } from './implementation-control.mjs';
 import {
     assertTargetNotBlocked,
@@ -27,6 +28,41 @@ export function assertImplementationTargetsNotBlocked(corrections, instance) {
     return true;
 }
 
+export function assertImplementationPackageReadiness({ instance, readiness } = {}) {
+  if (!instance || typeof instance !== 'object') fail('instancia de implementación inválida.');
+
+  if (instance.task_id !== 'SHELL-CI-020') return true;
+
+  const match = /^SHELL-CI-020::(GAP-PKG-\d{3})$/u.exec(String(instance.instance_id ?? ''));
+  if (!match) return true;
+
+  const packageId = match[1];
+  const execution = readiness?.registry?.package_execution ?? null;
+  const current = execution?.current ?? null;
+
+  if (!current || current.package_id !== packageId) {
+    fail(
+      `IMPLEMENTATION_START_NOT_READY: ${instance.instance_id} no coincide con el package actual `
+      + `${current?.package_id ?? 'NONE'}.`,
+    );
+  }
+
+  const action = current.next_action;
+  if (
+    action?.type !== 'AUTHORIZE_PHYSICAL_IMPLEMENTATION'
+    || action?.target !== instance.instance_id
+  ) {
+    const work = execution.current_work ?? current.current_work ?? null;
+    fail(
+      `IMPLEMENTATION_START_NOT_READY: ${instance.instance_id}; `
+      + `CURRENT_EXECUTABLE_WORK=${work?.id ?? action?.target ?? 'UNKNOWN'}; `
+      + `ACTION=${action?.type ?? 'NONE'}.`,
+    );
+  }
+
+  return true;
+}
+
 export function assertImplementationStartNotBlocked({ root = process.cwd(), instanceId } = {}) {
     const id = String(instanceId ?? '').trim();
     if (!id) fail('instanceId es obligatorio.');
@@ -35,6 +71,20 @@ export function assertImplementationStartNotBlocked({ root = process.cwd(), inst
     if (!instance) fail(`${id} no existe en implementation-instances.`);
     const corrections = loadValidatedCorrectionControl({ root });
     assertImplementationTargetsNotBlocked(corrections, instance);
+
+    if (
+        instance.task_id === 'SHELL-CI-020'
+        && /^SHELL-CI-020::GAP-PKG-\d{3}$/u.test(instance.instance_id)
+    ) {
+        const readiness = scanPackageReadiness({
+            root,
+            check: true,
+            trigger: 'implementation-start-guard',
+            supplied: { skipDerivedReports: true },
+        });
+        assertImplementationPackageReadiness({ instance, readiness });
+    }
+
     return instance;
 }
 

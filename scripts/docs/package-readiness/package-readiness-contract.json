@@ -303,7 +303,93 @@
         "from": 1,
         "to": 19
       }
-    ]
+    ],
+    "supabase_pre_e5_foundation": {
+      "owner_task": "SUPA-TRANS-015",
+      "source_tasks": [
+        "SUPA-ARC-024",
+        "SUPA-TRANS-013",
+        "SUPA-TRANS-015"
+      ],
+      "applies_to_target_path_prefixes": [
+        "supabase/functions/",
+        "supabase/migrations/"
+      ],
+      "applies_to_exact_target_paths": [
+        "supabase/config.toml"
+      ],
+      "excluded_target_path_prefixes": [
+        "supabase/tests/"
+      ],
+      "required_verified_instances": [
+        "AUTH-DB-015::GLOBAL",
+        "AUTH-DB-027::GLOBAL",
+        "AUTH-DB-028::GLOBAL",
+        "AUTH-DB-029::GLOBAL",
+        "AUTH-DB-001::GLOBAL",
+        "AUTH-DB-002::GLOBAL",
+        "AUTH-DB-003::GLOBAL",
+        "AUTH-DB-004::GLOBAL",
+        "AUTH-DB-005::GLOBAL"
+      ],
+      "ordered_foundation_gates": [
+        {
+          "foundation_id": "MRP015-000",
+          "gate_id": "TOOLCHAIN_READY",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": null
+        },
+        {
+          "foundation_id": "MRP015-010",
+          "gate_id": "ENVIRONMENT_READY",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": null
+        },
+        {
+          "foundation_id": "MRP015-020",
+          "gate_id": "HISTORY_PASS",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": null
+        },
+        {
+          "foundation_id": "MRP015-030",
+          "gate_id": "CLEAN_REPLAY_PASS",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": null
+        },
+        {
+          "foundation_id": "MRP015-040",
+          "gate_id": "RESOURCE_MANIFEST_PASS",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": null
+        }
+      ],
+      "remote_environment_identity": {
+        "do_not_infer_from_project_name": true,
+        "required_environment_roles": [
+          "STAGING",
+          "PRODUCTION"
+        ],
+        "bindings": {
+          "STAGING": {
+            "classification": "UNRESOLVED_BLOCKING",
+            "project_ref": null,
+            "owner": null
+          },
+          "PRODUCTION": {
+            "classification": "UNRESOLVED_BLOCKING",
+            "project_ref": null,
+            "owner": null
+          }
+        }
+      },
+      "in_package_candidate_gate": {
+        "foundation_id": "MRP015-050",
+        "gate_id": "CANDIDATE_READY",
+        "owner_task": "SUPA-TRANS-015",
+        "phase": "AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY"
+      }
+    }
   },
   "persistent_package_statuses": [
     "DISCOVERED",

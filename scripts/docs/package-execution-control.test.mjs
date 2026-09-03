@@ -21,6 +21,9 @@ const policy = {
   stop_on_blocked_current: true,
   physical_authorization_required: true,
   defer_without_canonical_order: true,
+  current_package_semantics: 'TOPOLOGICAL_TURN_HOLDER',
+  current_executable_work_semantics: 'FIRST_UNMET_PREREQUISITE_ELSE_CURRENT_PACKAGE',
+  foundation_prerequisites_precede_consumer: true,
 };
 
 function pkg(packageId, layer, status = 'COMPILED', dependencies = []) {
@@ -197,4 +200,32 @@ test('rechaza ciclos y dependencias que contradicen las capas', () => {
     ] }, policy),
     /contradice el orden de capas/u,
   );
+});
+
+test('una fundación incumplida se convierte en CURRENT_EXECUTABLE_WORK sin perder el package consumidor', () => {
+  const waiting = {
+    ...pkg('GAP-PKG-001', 1),
+    package_gate: { status: 'APPROVED_FOR_IMPLEMENTATION' },
+    blockers: ['PHYSICAL_DEPENDENCIES:UNKNOWN'],
+    physical_dependencies: {
+      status: 'UNKNOWN',
+      evidence: [{
+        source: 'MRP015-000::TOOLCHAIN_READY',
+        kind: 'FOUNDATION_GATE',
+        foundation_id: 'MRP015-000',
+        gate_id: 'TOOLCHAIN_READY',
+        owner_task: 'SUPA-TRANS-015',
+        status: 'UNKNOWN',
+        detail: 'Sin evidencia.',
+      }],
+    },
+  };
+
+  const result = deriveLinearPackageExecution({ packages: [waiting] }, policy);
+  assert.equal(result.current.package_id, 'GAP-PKG-001');
+  assert.equal(result.current.next_action.type, 'WAIT_FOR_FOUNDATION_PREREQUISITE');
+  assert.equal(result.current.next_action.target, 'MRP015-000');
+  assert.equal(result.current_work.kind, 'FOUNDATION_GATE');
+  assert.equal(result.current_work.id, 'MRP015-000');
+  assert.equal(result.current_work.consumer_package_id, 'GAP-PKG-001');
 });

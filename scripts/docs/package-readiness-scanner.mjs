@@ -358,6 +358,106 @@ export function evaluateCapability({ capabilityId, capability, contract, invento
   };
 }
 
+function validateSupabasePreE5Foundation(contract, errors) {
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation;
+  const expectedR0 = [
+    'AUTH-DB-015::GLOBAL',
+    'AUTH-DB-027::GLOBAL',
+    'AUTH-DB-028::GLOBAL',
+    'AUTH-DB-029::GLOBAL',
+    'AUTH-DB-001::GLOBAL',
+    'AUTH-DB-002::GLOBAL',
+    'AUTH-DB-003::GLOBAL',
+    'AUTH-DB-004::GLOBAL',
+    'AUTH-DB-005::GLOBAL',
+  ];
+  const expectedPreEntry = [
+    ['MRP015-000', 'TOOLCHAIN_READY'],
+    ['MRP015-010', 'ENVIRONMENT_READY'],
+    ['MRP015-020', 'HISTORY_PASS'],
+    ['MRP015-030', 'CLEAN_REPLAY_PASS'],
+    ['MRP015-040', 'RESOURCE_MANIFEST_PASS'],
+  ];
+
+  if (!foundation || typeof foundation !== 'object' || Array.isArray(foundation)) {
+    errors.push('physical_dependencies.supabase_pre_e5_foundation es obligatorio.');
+    return;
+  }
+
+  if (foundation.owner_task !== 'SUPA-TRANS-015') {
+    errors.push('supabase_pre_e5_foundation.owner_task debe ser SUPA-TRANS-015.');
+  }
+
+  if (JSON.stringify(foundation.required_verified_instances) !== JSON.stringify(expectedR0)) {
+    errors.push('supabase_pre_e5_foundation.required_verified_instances debe conservar R0 completo y ordenado.');
+  }
+
+  const actualPreEntry = (foundation.ordered_foundation_gates ?? [])
+    .map((entry) => [entry.foundation_id, entry.gate_id]);
+
+  if (JSON.stringify(actualPreEntry) !== JSON.stringify(expectedPreEntry)) {
+    errors.push('supabase_pre_e5_foundation.ordered_foundation_gates debe conservar MRP015-000/010/020/030/040 en orden.');
+  }
+
+  for (const gate of foundation.ordered_foundation_gates ?? []) {
+    if (gate.owner_task !== 'SUPA-TRANS-015') {
+      errors.push(`${gate.foundation_id}: owner_task debe ser SUPA-TRANS-015.`);
+    }
+    if (gate.evidence_ref !== null && !String(gate.evidence_ref ?? '').trim()) {
+      errors.push(`${gate.foundation_id}: evidence_ref debe ser null o una referencia no vacía.`);
+    }
+  }
+
+  const candidate = foundation.in_package_candidate_gate;
+  if (
+    candidate?.foundation_id !== 'MRP015-050'
+    || candidate?.gate_id !== 'CANDIDATE_READY'
+    || candidate?.owner_task !== 'SUPA-TRANS-015'
+  ) {
+    errors.push('supabase_pre_e5_foundation.in_package_candidate_gate debe ser MRP015-050/CANDIDATE_READY de SUPA-TRANS-015.');
+  }
+
+  const remote = foundation.remote_environment_identity;
+  if (remote?.do_not_infer_from_project_name !== true) {
+    errors.push('remote_environment_identity.do_not_infer_from_project_name debe ser true.');
+  }
+
+  if (JSON.stringify(remote?.required_environment_roles) !== JSON.stringify(['STAGING', 'PRODUCTION'])) {
+    errors.push('remote_environment_identity.required_environment_roles debe ser [STAGING,PRODUCTION].');
+  }
+
+  for (const role of ['STAGING', 'PRODUCTION']) {
+    const binding = remote?.bindings?.[role];
+
+    if (!binding || typeof binding !== 'object' || Array.isArray(binding)) {
+      errors.push(`remote_environment_identity.bindings.${role} es obligatorio.`);
+      continue;
+    }
+
+    const classification = String(binding.classification ?? '').trim();
+
+    if (!['UNRESOLVED_BLOCKING', role].includes(classification)) {
+      errors.push(`${role}: classification solo admite UNRESOLVED_BLOCKING o ${role}.`);
+      continue;
+    }
+
+    if (classification === 'UNRESOLVED_BLOCKING') {
+      if (binding.project_ref !== null || binding.owner !== null) {
+        errors.push(`${role}: UNRESOLVED_BLOCKING exige project_ref=null y owner=null.`);
+      }
+      continue;
+    }
+
+    if (!String(binding.project_ref ?? '').trim()) {
+      errors.push(`${role}: clasificación resuelta exige project_ref.`);
+    }
+
+    if (!String(binding.owner ?? '').trim()) {
+      errors.push(`${role}: clasificación resuelta exige owner.`);
+    }
+  }
+}
+
 function validateContract(contract) {
   const errors = [];
   if (contract?.schema_version !== 1) errors.push('schema_version debe ser 1.');
@@ -402,6 +502,8 @@ function validateContract(contract) {
   if (queuePolicy?.linear_execution_source !== 'DELIV-PKG-015') {
     errors.push('queue_policy.linear_execution_source debe ser DELIV-PKG-015.');
   }
+
+  validateSupabasePreE5Foundation(contract, errors);
 
   if (errors.length) fail(`package-readiness-contract.json inválido:\n- ${errors.join('\n- ')}`);
   return contract;
@@ -1211,11 +1313,72 @@ function readImplementationInstances(root) {
   return instances;
 }
 
-function physicalDependencyInstanceIds(contract, capability) {
+function normalizedTargetPath(value) {
+  return String(value ?? '')
+    .replaceAll('\\', '/')
+    .replace(/^\.\/+/u, '')
+    .trim();
+}
+
+function targetRequiresSupabaseFoundation(relativePath, foundation) {
+  const normalized = normalizedTargetPath(relativePath);
+  if (!normalized) return false;
+
+  const excluded = foundation?.excluded_target_path_prefixes ?? [];
+  if (excluded.some((prefix) => normalized.startsWith(String(prefix)))) return false;
+
+  const exact = foundation?.applies_to_exact_target_paths ?? [];
+  if (exact.includes(normalized)) return true;
+
+  return (foundation?.applies_to_target_path_prefixes ?? [])
+    .some((prefix) => normalized.startsWith(String(prefix)));
+}
+
+export function derivePackageExecutionRequirements({ contract, packageGate = null } = {}) {
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation ?? null;
+  const targets = Array.isArray(packageGate?.physical_identity?.targets)
+    ? packageGate.physical_identity.targets
+    : [];
+
+  const targetPaths = targets
+    .map((target) => normalizedTargetPath(target?.path))
+    .filter(Boolean);
+
+  const supabaseMutationRequired = Boolean(foundation)
+    && targetPaths.some((relativePath) => targetRequiresSupabaseFoundation(relativePath, foundation));
+
+  if (!supabaseMutationRequired) {
+    return {
+      supabase_mutation_required: false,
+      target_paths: targetPaths,
+      required_verified_instance_refs: [],
+      pre_entry_foundation_gates: [],
+      remote_environment_identity: null,
+      in_package_candidate_gate: null,
+    };
+  }
+
+  return {
+    supabase_mutation_required: true,
+    target_paths: targetPaths,
+    required_verified_instance_refs: [...(foundation.required_verified_instances ?? [])],
+    pre_entry_foundation_gates: (foundation.ordered_foundation_gates ?? []).map((gate) => ({ ...gate })),
+    remote_environment_identity: foundation.remote_environment_identity
+      ? structuredClone(foundation.remote_environment_identity)
+      : null,
+    in_package_candidate_gate: foundation.in_package_candidate_gate
+      ? { ...foundation.in_package_candidate_gate }
+      : null,
+  };
+}
+
+function physicalDependencyInstanceIds(contract, capability, executionRequirements = null) {
   const ids = [];
+
   for (const range of contract.physical_dependencies?.global_verified_ranges ?? []) {
     ids.push(...rangeTaskIds(range).map((taskId) => `${taskId}::GLOBAL`));
   }
+
   for (const selector of capability?.physical_dependencies ?? []) {
     if (Array.isArray(selector.global_task_refs)) {
       ids.push(...selector.global_task_refs.map((taskId) => `${taskId}::GLOBAL`));
@@ -1225,27 +1388,164 @@ function physicalDependencyInstanceIds(contract, capability) {
     }
     if (Array.isArray(selector.instance_refs)) ids.push(...selector.instance_refs);
   }
+
+  ids.push(...(executionRequirements?.required_verified_instance_refs ?? []));
+
   return [...new Set(ids)];
 }
 
-export function evaluatePhysicalDependencies({ contract, instances, capability = null }) {
-  const evidence = [];
-  for (const instanceId of physicalDependencyInstanceIds(contract, capability)) {
-    const record = instances.get(instanceId);
-    if (!record) {
-      evidence.push({ source: instanceId, status: 'UNKNOWN', detail: 'Instancia física requerida no encontrada.' });
-    } else if (record.status === 'VERIFIED') {
-      evidence.push({ source: instanceId, status: 'PASS', detail: 'VERIFIED.' });
-    } else {
-      evidence.push({ source: instanceId, status: 'FAIL', detail: `Estado ${record.status ?? 'DESCONOCIDO'}; se requiere VERIFIED.` });
+function remoteEnvironmentProblems(identity) {
+  if (!identity) return ['remote_environment_identity ausente.'];
+
+  const roles = identity.required_environment_roles ?? [];
+  const problems = [];
+  const refs = [];
+
+  for (const role of roles) {
+    const binding = identity.bindings?.[role] ?? null;
+
+    if (!binding) {
+      problems.push(`${role}=BINDING_MISSING`);
+      continue;
+    }
+
+    const classification = String(binding.classification ?? '').trim();
+
+    if (classification === 'UNRESOLVED_BLOCKING') {
+      problems.push(`${role}=UNRESOLVED_BLOCKING`);
+      continue;
+    }
+
+    if (classification !== role) {
+      problems.push(`${role}=CLASSIFICATION_${classification || 'MISSING'}`);
+      continue;
+    }
+
+    const projectRef = String(binding.project_ref ?? '').trim();
+    const owner = String(binding.owner ?? '').trim();
+
+    if (!projectRef) problems.push(`${role}=PROJECT_REF_MISSING`);
+    if (!owner) problems.push(`${role}=OWNER_MISSING`);
+
+    if (projectRef) refs.push(projectRef);
+  }
+
+  if (refs.length !== new Set(refs).size) {
+    problems.push('STAGING_PRODUCTION_PROJECT_REF_NOT_DISTINCT');
+  }
+
+  return problems;
+}
+
+function evaluateFoundationGate(gate, executionRequirements) {
+  const evidenceRef = String(gate?.evidence_ref ?? '').trim();
+  let status = evidenceRef ? 'PASS' : 'UNKNOWN';
+  let detail = evidenceRef
+    ? `Gate ${gate.gate_id} conserva evidencia explícita: ${evidenceRef}.`
+    : `Gate ${gate.gate_id} no conserva evidence_ref materializada.`;
+
+  if (gate?.foundation_id === 'MRP015-010') {
+    const problems = remoteEnvironmentProblems(executionRequirements?.remote_environment_identity);
+
+    if (evidenceRef && problems.length > 0) {
+      status = 'FAIL';
+      detail = `ENVIRONMENT_READY contradice el binding explícito: ${problems.join(', ')}.`;
+    } else if (!evidenceRef && problems.length > 0) {
+      detail = `ENVIRONMENT_READY pendiente; ${problems.join(', ')}.`;
     }
   }
+
+  return {
+    source: `${gate.foundation_id}::${gate.gate_id}`,
+    kind: 'FOUNDATION_GATE',
+    foundation_id: gate.foundation_id,
+    gate_id: gate.gate_id,
+    owner_task: gate.owner_task,
+    status,
+    detail,
+  };
+}
+
+export function evaluatePhysicalDependencies({
+  contract,
+  instances,
+  capability = null,
+  executionRequirements = null,
+}) {
+  const evidence = [];
+
+  for (const instanceId of physicalDependencyInstanceIds(
+    contract,
+    capability,
+    executionRequirements,
+  )) {
+    const record = instances.get(instanceId);
+
+    if (!record) {
+      evidence.push({
+        source: instanceId,
+        kind: 'IMPLEMENTATION_INSTANCE',
+        status: 'UNKNOWN',
+        detail: 'Instancia física requerida no encontrada.',
+      });
+    } else if (record.status === 'VERIFIED') {
+      evidence.push({
+        source: instanceId,
+        kind: 'IMPLEMENTATION_INSTANCE',
+        status: 'PASS',
+        detail: 'VERIFIED.',
+      });
+    } else {
+      evidence.push({
+        source: instanceId,
+        kind: 'IMPLEMENTATION_INSTANCE',
+        status: 'FAIL',
+        detail: `Estado ${record.status ?? 'DESCONOCIDO'}; se requiere VERIFIED.`,
+      });
+    }
+  }
+
+  for (const gate of executionRequirements?.pre_entry_foundation_gates ?? []) {
+    evidence.push(evaluateFoundationGate(gate, executionRequirements));
+  }
+
   return {
     status: aggregateEvidence(evidence),
     available: evidence.length > 0 && evidence.every(({ status }) => status === 'PASS'),
     evidence,
   };
 }
+
+export function assertPackagePhysicalDependenciesReady({
+  registry,
+  packageId,
+  operation = 'PACKAGE_PHYSICAL_OPERATION',
+} = {}) {
+  const normalized = String(packageId ?? '').trim().toUpperCase();
+  const pkg = registry?.packages?.find(({ package_id: id }) => id === normalized) ?? null;
+
+  if (!pkg) {
+    throw new Error(`${operation}: package inexistente ${normalized || 'EMPTY'}.`);
+  }
+
+  const blocker = (pkg.physical_dependencies?.evidence ?? [])
+    .find(({ status }) => status !== 'PASS') ?? null;
+
+  if (blocker) {
+    throw new Error(
+      `${operation}: ${normalized} bloqueado por ${blocker.source} `
+      + `(${blocker.status}); ${blocker.detail}`,
+    );
+  }
+
+  if (pkg.physical_dependencies?.status !== 'PASS') {
+    throw new Error(`${operation}: ${normalized} no conserva physical_dependencies=PASS.`);
+  }
+
+  return true;
+}
+
+
 
 function blockersStatus(blockers) {
   if (blockers.length === 0) return 'PASS';
@@ -1439,6 +1739,7 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
         relativePath: packageGateRecordRelativePath(entry.package_id, packageGatePolicy),
       })
       : null;
+    const executionRequirements = derivePackageExecutionRequirements({ contract, packageGate: gateRecord });
     const canonicalBlockers = canonicalPackageBlockers(entry, contract, packageGate);
     const taskBlockers = taskPrerequisiteBlockers(taskPrerequisites);
     const blockers = [...new Set([...canonicalBlockers, ...taskBlockers])];
@@ -1457,6 +1758,7 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
       repository_owner: entry.repository_owner ?? null,
       runtime_profile: entry.runtime_profile ?? null,
       execution: entry.execution,
+      execution_requirements: executionRequirements,
       status,
       status_scope: 'DOCUMENTARY_READINESS',
       capability_status: 'CANONICAL_E5_PACKAGE',
@@ -1587,7 +1889,12 @@ export function applyPhysicalOverlay({ registry, contract, instances, capability
     const capability = persisted.source_kind === 'SPECIAL_CAPABILITY'
       ? capabilityIndex.capabilities[persisted.capability_id] ?? null
       : null;
-    const physicalDependencies = evaluatePhysicalDependencies({ contract, instances, capability });
+    const physicalDependencies = evaluatePhysicalDependencies({
+      contract,
+      instances,
+      capability,
+      executionRequirements: persisted.execution_requirements ?? null,
+    });
     const effectiveGate = evaluateEffectiveGate(persisted.gate_documentary, physicalDependencies);
     const physical = physicalLifecycleStatus(persisted.package_id, instances, contract);
     const physicalEntryInstance = instances.get(
@@ -1847,6 +2154,7 @@ export function renderReadinessMarkdown(result) {
     : '- ✅ Sin advertencias estructurales.';
   const execution = result.registry.package_execution ?? null;
   const current = execution?.current ?? null;
+  const currentWork = execution?.current_work ?? current?.current_work ?? null;
   const currentPackage = current
     ? packages.find(({ package_id: packageId }) => packageId === current.package_id) ?? null
     : null;
@@ -1902,6 +2210,8 @@ export function renderReadinessMarkdown(result) {
 | Selección humana de package | **${execution?.human_package_selection === false ? 'NO' : 'NO EVALUADO'}** |
 | Estado de la línea | **${execution?.state ?? 'NOT_EVALUATED'}** |
 | Package actual | **${current?.package_id ?? 'NONE'}** |
+| CURRENT_EXECUTABLE_WORK | **${currentWork ? `${currentWork.kind}:${currentWork.id}` : 'NONE'}** |
+| Package consumidor bloqueado | **${currentWork?.kind && currentWork.kind !== 'PACKAGE' ? current?.package_id ?? 'NONE' : 'NONE'}** |
 | Posición actual | **${current ? `${current.position}/${execution.sequence.length}` : `0/${execution?.sequence.length ?? 0}`}** |
 | Acción exacta | **${current?.next_action.type ?? 'NONE'}** |
 | Objetivo | ${markdownCell(current?.next_action.target ?? 'NONE')} |
@@ -1925,7 +2235,12 @@ PACKAGE_ID COMO DESEMPATE ESTABLE
      v
 PRIMER PACKAGE NO CERRADO = TURNO ACTUAL
      |
-     +--> BLOQUEADO --------> CONSERVA EL TURNO
+     v
+PRIMER PRERREQUISITO / FUNDACION INCUMPLIDO = CURRENT_EXECUTABLE_WORK
+     |
+     +--> EXISTE -----------> BLOQUEA AL PACKAGE CONSUMIDOR
+     |
+     +--> NO EXISTE --------> PACKAGE PUEDE CONTINUAR
      |
      +--> GATE COMPLETO ----> IMPLEMENTATION_READY
                                   |
@@ -1946,14 +2261,15 @@ PRIMER PACKAGE NO CERRADO = TURNO ACTUAL
 3. **La capa de implementación ordena después de las dependencias.** Las capas válidas son 0 a 4.
 4. **\`package_id\` solo desempata de forma estable.** No crea prioridad empresarial nueva.
 5. **El primer package no \`CLOSED\` conserva el turno aunque esté bloqueado.** Ningún package posterior puede adelantarlo.
-6. **\`IMPLEMENTATION_READY\` no equivale a \`AUTHORIZED\`.** La autorización física humana sigue siendo obligatoria.
+6. **\`CURRENT_EXECUTABLE_WORK\` es el primer prerrequisito o fundación incumplida; el package actual queda como consumidor bloqueado hasta cerrarlo.**
+7. **\`IMPLEMENTATION_READY\` no equivale a \`AUTHORIZED\`.** La autorización física humana sigue siendo obligatoria.
 7. **Los packages sin orden físico canónico quedan diferidos fuera de la línea activa.** No bloquean la secuencia hasta que su fuente propietaria materialice un orden válido.
 
 ## Package actual
 
 ${readyMessage}
 
-${current ? `| Campo | Valor |\n| --- | --- |\n| Package | ${packageLink(current.package_id)} |\n| Posición | **${current.position}/${execution.sequence.length}** |\n| Capa | **${current.layer}** |\n| Estado efectivo | ${statusIcon(current.status)} **${current.status}** |\n| Dependencias explícitas | ${markdownCell(current.depends_on_package_ids.join(', ') || 'ninguna')} |\n| Tareas prerrequisito | ${currentTasks ? `**${currentTasks.approved}/${currentTasks.total}**` : 'N/A'} |\n| Gates de readiness | ${currentGates ? `**${currentGates.passed}/${currentGates.total}**` : 'N/A'} |\n| Package gate | **${markdownCell(currentPackageGate)}** |\n| Acción exacta | **${markdownCell(current.next_action.type)}** |\n| Objetivo | ${markdownCell(current.next_action.target)} |\n| Comando | \`${current.next_action.command}\` |\n| Autorización física | **REQUERIDA; este reporte no la concede** |\n\n**Por qué conserva el turno:** ${markdownCell(current.next_action.reason)}` : '✅ No existe un package actual pendiente.'}
+${current ? `| Campo | Valor |\n| --- | --- |\n| Package | ${packageLink(current.package_id)} |\n| Posición | **${current.position}/${execution.sequence.length}** |\n| Capa | **${current.layer}** |\n| Estado efectivo | ${statusIcon(current.status)} **${current.status}** |\n| Dependencias explícitas | ${markdownCell(current.depends_on_package_ids.join(', ') || 'ninguna')} |\n| Tareas prerrequisito | ${currentTasks ? `**${currentTasks.approved}/${currentTasks.total}**` : 'N/A'} |\n| Gates de readiness | ${currentGates ? `**${currentGates.passed}/${currentGates.total}**` : 'N/A'} |\n| Package gate | **${markdownCell(currentPackageGate)}** |\n| CURRENT_EXECUTABLE_WORK | **${markdownCell(currentWork ? `${currentWork.kind}:${currentWork.id}` : current.package_id)}** |\n| Gate de fundación | ${markdownCell(currentWork?.gate_id ?? "N/A")} |\n| Owner de fundación | ${markdownCell(currentWork?.owner_task ?? "N/A")} |\n| Acción exacta | **${markdownCell(current.next_action.type)}** |\n| Objetivo | ${markdownCell(current.next_action.target)} |\n| Comando | \`${current.next_action.command}\` |\n| Autorización física | **REQUERIDA; este reporte no la concede** |\n\n**Por qué conserva el turno:** ${markdownCell(current.next_action.reason)}` : '✅ No existe un package actual pendiente.'}
 
 ## Progreso por capa
 

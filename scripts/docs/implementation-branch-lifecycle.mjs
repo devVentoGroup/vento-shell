@@ -18,6 +18,10 @@ import {
 } from './implementation-control.mjs';
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
 import { syncLocalDerivedArtifacts } from './sync-local-derived-artifacts.mjs';
+import {
+  assertPackagePhysicalDependenciesReady,
+  scanPackageReadiness,
+} from './package-readiness-scanner.mjs';
 
 const DEFAULT_BRANCH = 'main';
 const IMPLEMENTATION_PREFIX = 'implementation/';
@@ -33,6 +37,7 @@ const DERIVED_IMPLEMENTATION_PROJECTIONS = new Set([
   'docs/plan-canonico/modular/active-sequence.json',
   'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md',
   'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
+  'scripts/docs/package-readiness/implementation-package-registry.json',
 ]);
 
 function fail(message, code = 1) {
@@ -268,6 +273,23 @@ export function assertInstanceCanFinish(instance) {
   if (!Array.isArray(instance.evidence) || instance.evidence.length === 0) {
     fail(`${instance.instance_id} no puede cerrarse sin evidence consolidada.`);
   }
+  return true;
+}
+
+export function assertCi020PhysicalPrerequisitesForFinish({ instance, readiness } = {}) {
+  if (!instance || typeof instance !== 'object') {
+    throw new Error('instancia física inválida para validar prerrequisitos de cierre.');
+  }
+
+  const match = /^SHELL-CI-020::(GAP-PKG-\d{3})$/u.exec(String(instance.instance_id ?? ''));
+  if (instance.task_id !== 'SHELL-CI-020' || !match) return true;
+
+  assertPackagePhysicalDependenciesReady({
+    registry: readiness?.registry,
+    packageId: match[1],
+    operation: 'IMPLEMENTATION_FINISH_PREREQUISITES',
+  });
+
   return true;
 }
 
@@ -871,6 +893,19 @@ function cleanupBranch(root, branch) {
 export async function finishImplementation({ instanceId, root = ensureRepositoryRoot() }) {
   const { id, instance } = resolveInstance(root, instanceId);
   assertInstanceCanFinish(instance);
+
+  if (
+    instance.task_id === 'SHELL-CI-020'
+    && /^SHELL-CI-020::GAP-PKG-\d{3}$/u.test(id)
+  ) {
+    const readiness = scanPackageReadiness({
+      root,
+      check: true,
+      trigger: 'implementation-finish-prerequisites',
+      supplied: { skipDerivedReports: true },
+    });
+    assertCi020PhysicalPrerequisitesForFinish({ instance, readiness });
+  }
 
   const branch = implementationBranchName(id);
 

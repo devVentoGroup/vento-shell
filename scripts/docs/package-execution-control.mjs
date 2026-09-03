@@ -126,6 +126,15 @@ export function readPackageExecutionPolicy(root = process.cwd()) {
   if (policy?.stop_on_blocked_current !== true) errors.push('stop_on_blocked_current debe ser true.');
   if (policy?.physical_authorization_required !== true) errors.push('physical_authorization_required debe ser true.');
   if (policy?.defer_without_canonical_order !== true) errors.push('defer_without_canonical_order debe ser true.');
+  if (policy?.current_package_semantics !== 'TOPOLOGICAL_TURN_HOLDER') {
+    errors.push('current_package_semantics debe ser TOPOLOGICAL_TURN_HOLDER.');
+  }
+  if (policy?.current_executable_work_semantics !== 'FIRST_UNMET_PREREQUISITE_ELSE_CURRENT_PACKAGE') {
+    errors.push('current_executable_work_semantics debe ser FIRST_UNMET_PREREQUISITE_ELSE_CURRENT_PACKAGE.');
+  }
+  if (policy?.foundation_prerequisites_precede_consumer !== true) {
+    errors.push('foundation_prerequisites_precede_consumer debe ser true.');
+  }
   if (errors.length > 0) fail(`Política de ejecución lineal inválida:\n- ${errors.join('\n- ')}`);
   return Object.freeze(policy);
 }
@@ -136,8 +145,44 @@ function comparePackage(left, right, layerRank) {
   return leftLayer - rightLayer || left.package_id.localeCompare(right.package_id, 'en');
 }
 
+function unmetPhysicalDependency(pkg) {
+  return (pkg.physical_dependencies?.evidence ?? [])
+    .find(({ status }) => status !== 'PASS') ?? null;
+}
+
+function prerequisiteAction(pkg) {
+  const dependency = unmetPhysicalDependency(pkg);
+  if (!dependency) return null;
+
+  if (dependency.kind === 'FOUNDATION_GATE') {
+    return {
+      type: 'WAIT_FOR_FOUNDATION_PREREQUISITE',
+      target: dependency.foundation_id ?? dependency.source,
+      gate_id: dependency.gate_id ?? null,
+      owner_task: dependency.owner_task ?? null,
+      command: `npm run docs:package:readiness:check -- --package ${pkg.package_id}`,
+      reason:
+        `${pkg.package_id} conserva el turno como package consumidor, `
+        + `pero el trabajo requerido actual es ${dependency.foundation_id ?? dependency.source}`
+        + `${dependency.gate_id ? ` / ${dependency.gate_id}` : ''}`
+        + `${dependency.owner_task ? `, propiedad de ${dependency.owner_task}` : ''}. `
+        + 'El comando solo reevalúa el gate; no autoriza el package.',
+    };
+  }
+
+  return {
+    type: 'WAIT_FOR_PHYSICAL_PREREQUISITE',
+    target: dependency.source,
+    command: 'npm run docs:implementation:status',
+    reason: `${pkg.package_id} conserva el turno hasta que ${dependency.source} quede VERIFIED.`,
+  };
+}
+
 function nextAction(pkg) {
   if (pkg.status === 'IMPLEMENTATION_READY') {
+    const prerequisite = prerequisiteAction(pkg);
+    if (prerequisite) return prerequisite;
+
     if (!pkg.physical_entry_instance) {
       return {
         type: 'MATERIALIZE_PHYSICAL_HANDOFF',
@@ -146,6 +191,7 @@ function nextAction(pkg) {
         reason: `${pkg.package_id} completó dossier, gate y dependencias; falta materializar su registro físico PENDING_AUTHORIZATION.`,
       };
     }
+
     return {
       type: 'AUTHORIZE_PHYSICAL_IMPLEMENTATION',
       target: pkg.physical_entry_instance.instance_id,
@@ -153,7 +199,11 @@ function nextAction(pkg) {
       reason: `${pkg.package_id} ya tiene handoff físico PENDING_AUTHORIZATION; falta autorización física humana.`,
     };
   }
+
   if (['IMPLEMENTING', 'DEPLOYED'].includes(pkg.status)) {
+    const prerequisite = prerequisiteAction(pkg);
+    if (prerequisite) return prerequisite;
+
     return {
       type: 'CONTINUE_PHYSICAL_LIFECYCLE',
       target: pkg.next_execution ?? pkg.package_id,
@@ -161,6 +211,7 @@ function nextAction(pkg) {
       reason: `${pkg.package_id} ya inició su lifecycle físico y debe cerrarse antes de avanzar.`,
     };
   }
+
   if (pkg.source_kind === 'CANONICAL_GAP_PACKAGE' && !pkg.package_gate) {
     return {
       type: 'PREPARE_PACKAGE_GATE',
@@ -169,8 +220,10 @@ function nextAction(pkg) {
       reason: `${pkg.package_id} ocupa el turno lineal y todavía no tiene expediente package-gate.`,
     };
   }
+
   if (pkg.source_kind === 'CANONICAL_GAP_PACKAGE') {
     const missingTask = pkg.task_prerequisites?.missing_task_ids?.[0] ?? null;
+
     if (missingTask) {
       return {
         type: 'WAIT_FOR_DOCUMENTARY_PREREQUISITE',
@@ -179,6 +232,7 @@ function nextAction(pkg) {
         reason: `${pkg.package_id} conserva el turno; debe cerrarse primero ${missingTask}.`,
       };
     }
+
     if (pkg.package_gate.status !== 'APPROVED_FOR_IMPLEMENTATION') {
       return {
         type: 'MATURE_PACKAGE_GATE',
@@ -187,16 +241,12 @@ function nextAction(pkg) {
         reason: `${pkg.package_id} conserva el turno hasta completar su identidad, unidades, evidencia y aprobación de gate.`,
       };
     }
-    const physicalDependency = pkg.physical_dependencies?.evidence?.find(({ status }) => status !== 'PASS') ?? null;
-    if (physicalDependency) {
-      return {
-        type: 'WAIT_FOR_PHYSICAL_PREREQUISITE',
-        target: physicalDependency.source,
-        command: 'npm run docs:implementation:status',
-        reason: `${pkg.package_id} conserva el turno hasta que ${physicalDependency.source} quede VERIFIED.`,
-      };
-    }
+
+    const prerequisite = prerequisiteAction(pkg);
+    if (prerequisite) return prerequisite;
+
     const gateBlocker = pkg.gate?.checks?.find(({ status }) => status !== 'PASS') ?? null;
+
     return {
       type: 'RESOLVE_PACKAGE_BLOCKER',
       target: gateBlocker?.id ?? pkg.blockers?.[0] ?? pkg.package_id,
@@ -204,6 +254,7 @@ function nextAction(pkg) {
       reason: `${pkg.package_id} conserva el turno hasta resolver su primer bloqueo efectivo.`,
     };
   }
+
   return {
     type: 'WAIT_FOR_SPECIAL_PACKAGE_READINESS',
     target: pkg.package_id,
@@ -211,6 +262,50 @@ function nextAction(pkg) {
     reason: `${pkg.package_id} conserva el turno hasta cerrar sus condiciones documentales explícitas.`,
   };
 }
+
+function deriveCurrentWork(pkg, action) {
+  if (!action) return null;
+
+  if (action.type === 'WAIT_FOR_FOUNDATION_PREREQUISITE') {
+    const dependency = unmetPhysicalDependency(pkg);
+
+    return {
+      kind: 'FOUNDATION_GATE',
+      id: action.target,
+      gate_id: action.gate_id ?? dependency?.gate_id ?? null,
+      owner_task: action.owner_task ?? dependency?.owner_task ?? null,
+      status: dependency?.status ?? 'UNKNOWN',
+      consumer_package_id: pkg.package_id,
+      action_type: action.type,
+    };
+  }
+
+  if (action.type === 'WAIT_FOR_PHYSICAL_PREREQUISITE') {
+    const dependency = unmetPhysicalDependency(pkg);
+
+    return {
+      kind: 'PHYSICAL_PREREQUISITE',
+      id: action.target,
+      gate_id: null,
+      owner_task: null,
+      status: dependency?.status ?? 'UNKNOWN',
+      consumer_package_id: pkg.package_id,
+      action_type: action.type,
+    };
+  }
+
+  return {
+    kind: 'PACKAGE',
+    id: pkg.package_id,
+    gate_id: null,
+    owner_task: null,
+    status: pkg.status,
+    consumer_package_id: pkg.package_id,
+    action_type: action.type,
+  };
+}
+
+
 
 export function deriveLinearPackageExecution(registry, policy) {
   const packages = registry?.packages ?? [];
@@ -280,10 +375,13 @@ export function deriveLinearPackageExecution(registry, policy) {
     status: pkg.status,
     current: pkg.package_id === currentPackage?.package_id,
   }));
+  const currentAction = currentPackage ? nextAction(currentPackage) : null;
+  const currentWork = currentPackage ? deriveCurrentWork(currentPackage, currentAction) : null;
   const current = currentPackage
     ? {
       ...entries.find(({ package_id: packageId }) => packageId === currentPackage.package_id),
-      next_action: nextAction(currentPackage),
+      next_action: currentAction,
+      current_work: currentWork,
       blockers: [...(currentPackage.blockers ?? [])],
     }
     : null;
@@ -301,6 +399,7 @@ export function deriveLinearPackageExecution(registry, policy) {
           : 'BLOCKED_ON_CURRENT'
       : 'COMPLETE',
     current,
+    current_work: currentWork,
     sequence: entries,
     deferred: deferred.sort((left, right) => left.package_id.localeCompare(right.package_id, 'en')),
   });
@@ -311,6 +410,8 @@ function printExecution(execution) {
   console.log(`MODE: ${execution.mode}`);
   console.log('HUMAN_PACKAGE_SELECTION: FALSE');
   console.log(`CURRENT_PACKAGE: ${execution.current?.package_id ?? 'NONE'}`);
+  console.log(`CURRENT_EXECUTABLE_WORK: ${execution.current_work?.id ?? 'NONE'}`);
+  console.log(`CURRENT_EXECUTABLE_WORK_KIND: ${execution.current_work?.kind ?? 'NONE'}`);
   console.log(`CURRENT_POSITION: ${execution.current?.position ?? 'NONE'}/${execution.sequence.length}`);
   console.log(`ACTION: ${execution.current?.next_action.type ?? 'NONE'}`);
   console.log(`TARGET: ${execution.current?.next_action.target ?? 'NONE'}`);

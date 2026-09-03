@@ -5,6 +5,10 @@ import { spawnSync } from 'node:child_process';
 
 import { scanPackageReadiness } from './package-readiness-scanner.mjs';
 import { writeReadinessChatgptWorkStarter } from './chatgpt-work-starter-readiness.mjs';
+import { writeImplementationControlArtifacts } from './implementation-control.mjs';
+import { writeCorrectionStarter } from './correction-starter.mjs';
+import { syncPlanContinuity } from './plan-continuity-final-newline.mjs';
+import { syncPendingTaskContext } from './sync-pending-task-context.mjs';
 
 const MANIFEST_RELATIVE_PATH = 'docs/plan-canonico/modular/manifest.json';
 const STARTER_RELATIVE_PATH = 'INICIADOR_VENTO_ACTUAL.txt';
@@ -138,48 +142,126 @@ export function syncLocalDerivedArtifacts({
   quiet = false,
 } = {}) {
   const repositoryRoot = path.resolve(root);
-  const beforeStatus = repositoryStatus(repositoryRoot);
-  const manifest = loadManifest(repositoryRoot);
 
-  ensureIgnored(repositoryRoot, STARTER_RELATIVE_PATH);
-  const compiled = syncCompiledCache(repositoryRoot, manifest);
+  const localProjectionPaths = [
+    STARTER_RELATIVE_PATH,
+    '.delivery/INICIADOR_VENTO_DOCUMENTACION.txt',
+    '.delivery/INICIADOR_VENTO_IMPLEMENTACION.txt',
+    '.delivery/INICIADOR_VENTO_CORRECCION.txt',
+    '.delivery/current-work-directive.md',
+    '.delivery/implementation-control-status.json',
+  ];
+
+  for (const relativePath of localProjectionPaths) {
+    ensureIgnored(repositoryRoot, relativePath);
+  }
+
+  const initialStatus = repositoryStatus(repositoryRoot);
+
+  const continuity = syncPlanContinuity({
+    root: repositoryRoot,
+    checkOnly: false,
+  });
+
+  const implementationControl = writeImplementationControlArtifacts({
+    root: repositoryRoot,
+    check: false,
+    materializePendingRecord: false,
+  });
+
   const readiness = scanPackageReadiness({
     root: repositoryRoot,
-    check: true,
+    write: true,
+    check: false,
     trigger: 'local-derived-sync',
   });
+
+  const pendingContext = syncPendingTaskContext({
+    root: repositoryRoot,
+    check: false,
+    readinessResult: readiness,
+  });
+
+  const manifest = loadManifest(repositoryRoot);
+  const compiled = syncCompiledCache(repositoryRoot, manifest);
+
   const starter = writeReadinessChatgptWorkStarter({
     root: repositoryRoot,
     readinessResult: readiness,
   });
 
+  const correctionStarter = writeCorrectionStarter({
+    root: repositoryRoot,
+  });
+
+  const reconciledStatus = repositoryStatus(repositoryRoot);
+
+  if (
+    process.env.CI === 'true'
+    && reconciledStatus !== initialStatus
+  ) {
+    fail(
+      'CI_DERIVED_PROJECTION_DRIFT: una o más proyecciones versionadas '
+      + 'requirieron regeneración durante docs:plan:check; deben quedar '
+      + 'comprometidas en el PR antes del merge.',
+    );
+  }
+
   verifyCanonicalState(repositoryRoot);
-  scanPackageReadiness({
+
+  const postReadiness = scanPackageReadiness({
     root: repositoryRoot,
     check: true,
     trigger: 'local-derived-sync-postcheck',
+    supplied: { skipDerivedReports: true },
   });
+
+  syncPendingTaskContext({
+    root: repositoryRoot,
+    check: true,
+    readinessResult: postReadiness,
+  });
+
+  writeImplementationControlArtifacts({
+    root: repositoryRoot,
+    check: true,
+    materializePendingRecord: false,
+  });
+
   writeReadinessChatgptWorkStarter({
     root: repositoryRoot,
     check: true,
-    readinessResult: readiness,
+    readinessResult: postReadiness,
+  });
+
+  writeCorrectionStarter({
+    root: repositoryRoot,
+    check: true,
   });
 
   const afterStatus = repositoryStatus(repositoryRoot);
-  if (afterStatus !== beforeStatus) {
+
+  if (afterStatus !== reconciledStatus) {
     fail(
-      'LOCAL_DERIVED_SYNC modifico el estado versionado o no ignorado del worktree; cierre bloqueado.',
+      'LOCAL_DERIVED_SYNC detectó una mutación posterior a la convergencia; '
+      + 'algún generador no es idempotente o modificó una ruta no derivada.',
     );
   }
 
   const result = {
+    trackedContinuityChanged: continuity.changed,
+    implementationControlChanged: implementationControl.changed,
+    packageRegistryChanged: readiness.registryChanged,
+    pendingTaskContextChanged: pendingContext.changed,
     compiled: compiled.relativePath,
     compiledChanged: compiled.changed,
     starter: STARTER_RELATIVE_PATH,
     starterChanged: starter.changed,
+    correctionStarterChanged: correctionStarter.changed,
     packageReadiness: 'PASS',
-    implementationReadyCount: readiness.registry.implementation_ready_queue.length,
-    worktreePreserved: true,
+    implementationReadyCount:
+      readiness.registry.implementation_ready_queue.length,
+    worktreePreservedAfterConvergence: true,
   };
 
   if (!quiet) {
@@ -187,17 +269,37 @@ export function syncLocalDerivedArtifacts({
     console.log(RESULT_START);
     console.log('ESTADO: PASS');
     console.log('OPERACION: LOCAL_DERIVED_SYNC');
-    console.log(`COMPILED_CACHE: ${compiled.changed ? 'REFRESHED' : 'FRESH'}`);
-    console.log(`CHATGPT_STARTER: ${starter.changed ? 'REFRESHED' : 'FRESH'}`);
+    console.log(
+      `TRACKED_PLAN_CONTINUITY: ${continuity.changed ? 'REFRESHED' : 'FRESH'}`,
+    );
+    console.log(
+      `PACKAGE_REGISTRY: ${readiness.registryChanged ? 'REFRESHED' : 'FRESH'}`,
+    );
+    console.log(
+      `PENDING_TASK_CONTEXT: ${pendingContext.changed ? 'REFRESHED' : 'FRESH'}`,
+    );
+    console.log(
+      `IMPLEMENTATION_CONTROL: ${implementationControl.changed ? 'REFRESHED' : 'FRESH'}`,
+    );
+    console.log(
+      `CHATGPT_STARTERS: ${starter.changed ? 'REFRESHED' : 'FRESH'}`,
+    );
+    console.log(
+      `CORRECTION_STARTER: ${correctionStarter.changed ? 'REFRESHED' : 'FRESH'}`,
+    );
+    console.log(
+      `COMPILED_CACHE: ${compiled.changed ? 'REFRESHED' : 'FRESH'}`,
+    );
     console.log('PACKAGE_READINESS: PASS');
-    console.log(`IMPLEMENTATION_READY_QUEUE: ${readiness.registry.implementation_ready_queue.length}`);
-    console.log('VERSIONED_WORKTREE: UNCHANGED');
+    console.log(
+      `IMPLEMENTATION_READY_QUEUE: ${readiness.registry.implementation_ready_queue.length}`,
+    );
+    console.log('NON_DERIVED_WORKTREE: PRESERVED');
     console.log(RESULT_END);
   }
 
   return result;
 }
-
 function main() {
   syncLocalDerivedArtifacts();
 }
@@ -216,7 +318,7 @@ if (isCli) {
     console.log('ESTADO: FAIL');
     console.log('OPERACION: LOCAL_DERIVED_SYNC');
     console.log(`ERROR: ${message.replace(/\s+/gu, ' ').trim()}`);
-    console.log('VERSIONED_WORKTREE: PRESERVED_OR_BLOCKED');
+    console.log('NON_DERIVED_WORKTREE: PRESERVED_OR_BLOCKED');
     console.log(RESULT_END);
     process.exitCode = code;
   }

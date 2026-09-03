@@ -928,3 +928,16 @@ las acciones estén protegidas;
 las integraciones sean idempotentes;
 la trazabilidad sea completa;
 el piloto operativo haya sido aprobado.
+
+<!-- CURRENT-EXECUTABLE-WORK-CORR-002:START -->
+### Invariante de turno y trabajo ejecutable
+
+La linealidad de `DELIV-PKG-015` distingue dos identidades:
+
+- `CURRENT_PACKAGE`: package no cerrado que conserva el turno topológico;
+- `CURRENT_EXECUTABLE_WORK`: primer prerrequisito físico o fundación incumplida del package actual.
+
+Si ambas identidades difieren, el package queda como consumidor bloqueado. El registro de pendientes, los iniciadores y los controles de implementación deben mostrar primero `CURRENT_EXECUTABLE_WORK` y prohibir el avance a packages posteriores.
+
+Para mutaciones Supabase, después de R0 se consumen en orden `MRP015-000`, `MRP015-010`, `MRP015-020`, `MRP015-030` y `MRP015-040`; `MRP015-050` se certifica dentro del ciclo del candidato antes del despliegue remoto.
+<!-- CURRENT-EXECUTABLE-WORK-CORR-002:END -->
