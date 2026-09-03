@@ -425,7 +425,7 @@ export function finishPackageGate({
   const branch = assertPackageBranch(root, id, 'PACKAGE_FINISH');
 
   reconcileMainIntoPackageBranch(root);
-  const context = assertPackageMutationScope(root, id, 'PACKAGE_FINISH');
+  assertPackageMutationScope(root, id, 'PACKAGE_FINISH');
   const gate = inspectPackageGate({ root, packageId: id });
 
   if (!gate.assessment.valid) {
