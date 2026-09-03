@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1109** |
+| Aprobadas | **1110** |
 | En propuesta | **0** |
-| No iniciadas | **487** |
+| No iniciadas | **486** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **69.49% (1109/1596)** |
+| Porcentaje de completamiento | **69.55% (1110/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-AUTH-018` — Auditar cambios de seguridad | ✅ APROBADA |
-| Tarea actual | `VISO-AUTH-019` — Restringir quién administra seguridad | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-AUTH-020` — Crear exporte de matriz de acceso | ⬜ NO INICIADA |
+| Última aprobada | `VISO-AUTH-019` — Restringir quién administra seguridad | ✅ APROBADA |
+| Tarea actual | `VISO-AUTH-020` — Crear exporte de matriz de acceso | ⬜ NO INICIADA |
+| Siguiente reservada | `VISO-CORE-001` — Definir núcleo mínimo de VISO | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -652,7 +652,7 @@
 | ✅ APROBADA | `VISO-AUTH-016` | Mostrar conflictos de configuración | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-017` | Administrar excepciones individuales | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ✅ APROBADA | `VISO-AUTH-018` | Auditar cambios de seguridad | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
-| ⬜ NO INICIADA | `VISO-AUTH-019` | Restringir quién administra seguridad | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
+| ✅ APROBADA | `VISO-AUTH-019` | Restringir quién administra seguridad | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-020` | Crear exporte de matriz de acceso | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-SCH-001` | Definir contrato funcional de programación laboral | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
 | ⬜ NO INICIADA | `VISO-SCH-002` | Definir horizontes semanal y mensual | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |

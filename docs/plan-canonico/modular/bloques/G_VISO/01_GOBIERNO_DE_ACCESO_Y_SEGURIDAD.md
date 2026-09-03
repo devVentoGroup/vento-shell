@@ -18445,7 +18445,2593 @@ La identidad exacta de cualquier unidad física futura se resolverá exclusivame
 `VISO-AUTH-019 — Restringir quién administra seguridad`
 
 
-### [ ] VISO-AUTH-019 — Restringir quién administra seguridad
+### ✅ VISO-AUTH-019 — Restringir quién administra seguridad
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-018 — Auditar cambios de seguridad
+**Tarea siguiente:** VISO-AUTH-020 — Crear exporte de matriz de acceso
+**Tipo de tarea:** documental; definición del contrato administrativo canónico que determina qué actores pueden consultar, proponer, aprobar, suspender o revocar concesiones y denegaciones de autorización, bajo qué capacidad exacta, alcance, segregación, reautenticación, recuperación, auditoría y protección contra autoafectación, y qué mutaciones de matrices o contexto deben permanecer bloqueadas cuando el catálogo vigente no contiene una capacidad administrativa atómica que las proteja
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura permanece sujeta a `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única **quién puede administrar seguridad** en VISO y cómo debe demostrarse esa autoridad.
+
+La decisión central es:
+
+```text
+ROL O CARGO
+≠
+AUTORIDAD DE SEGURIDAD
+```
+
+La autoridad administrativa de seguridad debe resultar de:
+
+```text
+ACTOR HUMANO REAL
++
+SESIÓN ADMINISTRATIVA VÁLIDA
++
+CAPACIDAD EXACTA
++
+CONCESIÓN VIGENTE
++
+ALCANCE ADMINISTRATIVO SUFICIENTE
++
+RECURSO OBJETIVO RESUELTO
++
+REAUTENTICACIÓN FUERTE
++
+SEGREGACIÓN DE FUNCIONES
++
+AUSENCIA DE DENEGACIÓN BLOQUEANTE
++
+FRESCURA Y VERSIÓN COMPATIBLES
++
+AUDITORÍA
+```
+
+Si falta una condición obligatoria, la mutación no se ejecuta.
+
+---
+
+#### 2. Resultado contractual
+
+VISO debe impedir que la administración de seguridad dependa de:
+
+- nombres de rol;
+- jerarquía organizacional;
+- visibilidad de una pantalla;
+- `viso.access`;
+- una sesión de administrador técnico;
+- `service_role`;
+- un cliente administrativo;
+- una sede seleccionada;
+- una matriz legacy;
+- un permiso legacy amplio;
+- un prefijo de permiso;
+- un wildcard;
+- una inferencia desde una tarea anterior;
+- una lista local de administradores.
+
+Toda acción se protege con una capacidad canónica exacta o permanece bloqueada.
+
+---
+
+#### 3. Entrada recibida de VISO-AUTH-017
+
+`VISO-AUTH-017` ya definió los ciclos de vida de:
+
+- concesiones individuales base;
+- concesiones individuales operativas;
+- denegaciones individuales;
+- denegaciones por carril;
+- denegaciones actor-wide;
+- propuesta;
+- aprobación;
+- activación;
+- suspensión cuando aplica;
+- revocación;
+- expiración;
+- trazabilidad.
+
+También dejó fijada la separación:
+
+```text
+CREATE
+≠
+APPROVE
+```
+
+y:
+
+```text
+APPROVE
+≠
+EJECUTAR CUALQUIER OTRA MUTACIÓN
+```
+
+Esta tarea determina quién puede ejecutar cada capacidad.
+
+---
+
+#### 4. Entrada recibida de VISO-AUTH-018
+
+`VISO-AUTH-018` entrega estas fronteras:
+
+```text
+AUDITAR SEGURIDAD
+≠
+ADMINISTRAR SEGURIDAD
+```
+
+y:
+
+```text
+PODER ADMINISTRAR
+≠
+PODER VER TODA AUDITORÍA
+```
+
+La autoridad de mutación y la autoridad de auditoría permanecen separadas.
+
+---
+
+#### 5. Familia canónica de administración de concesiones base
+
+Las capacidades exactas son:
+
+```text
+viso.authorization.base_grants.view
+viso.authorization.base_grants.create
+viso.authorization.base_grants.approve
+viso.authorization.base_grants.suspend
+viso.authorization.base_grants.revoke
+```
+
+No existe una capacidad genérica que sustituya estas cinco acciones.
+
+---
+
+#### 6. Familia canónica de administración de concesiones operativas
+
+Las capacidades exactas son:
+
+```text
+viso.authorization.operational_grants.view
+viso.authorization.operational_grants.create
+viso.authorization.operational_grants.approve
+viso.authorization.operational_grants.suspend
+viso.authorization.operational_grants.revoke
+```
+
+Una capacidad de esta familia no concede una capacidad equivalente de la familia base.
+
+---
+
+#### 7. Familia canónica de administración de denegaciones
+
+Las capacidades exactas son:
+
+```text
+viso.authorization.denials.view
+viso.authorization.denials.create
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+No existe:
+
+```text
+viso.authorization.denials.suspend
+```
+
+La tarea no crea esa capacidad.
+
+---
+
+#### 8. Universo administrativo atómico
+
+El universo de gobierno de concesiones y denegaciones de esta tarea contiene exactamente:
+
+```text
+5 capacidades base
++
+5 capacidades operativas
++
+4 capacidades de denegación
+=
+14 capacidades
+```
+
+Estas 14 capacidades son distintas entre sí.
+
+---
+
+#### 9. No existe un nuevo `manage`
+
+Queda prohibido resolver las 14 capacidades mediante:
+
+```text
+viso.authorization.manage
+```
+
+o mediante cualquier otro permiso genérico inventado.
+
+El permiso legacy:
+
+```text
+viso.staff.permissions.manage
+```
+
+no sustituye esta familia.
+
+No tiene alias uno-a-muchos hacia las 14 capacidades.
+
+---
+
+#### 10. Clasificación contractual común
+
+Las 14 capacidades son:
+
+```text
+authorization_requirement = BASE_ONLY
+is_configuration = true
+sensitivity = AUTHORIZATION_SECURITY
+base context = N
+area requirement = NOT_APPLICABLE
+shared device mode = STRONG_REAUTH_REQUIRED
+simulation mode = DECISION_ONLY
+```
+
+No dependen de turno ni check-in.
+
+Eso no las vuelve públicas ni irrestrictas.
+
+---
+
+#### 11. Reautenticación fuerte
+
+Las 14 capacidades exigen reautenticación fuerte.
+
+La reautenticación debe pertenecer al actor humano efectivo.
+
+No puede reutilizarse como prueba de otro actor.
+
+No puede reemplazarse por:
+
+- presencia de cookie;
+- PIN ligero de estación;
+- rol;
+- dispositivo;
+- `service_role`;
+- sesión de otro administrador;
+- autenticación previa sin vigencia suficiente.
+
+---
+
+#### 12. Sesión administrativa
+
+La sesión que administra seguridad es administrativa.
+
+No requiere un turno operativo para validar estas 14 capacidades.
+
+El turno tampoco puede ampliar la autoridad administrativa.
+
+```text
+TURNO
+≠
+GRANT ADMINISTRATIVO
+```
+
+---
+
+#### 13. Actor humano efectivo
+
+Toda mutación interactiva de seguridad requiere un actor humano efectivo atribuible.
+
+El actor se conserva separado de:
+
+- principal de autenticación;
+- principal técnico;
+- dispositivo;
+- sesión;
+- beneficiario;
+- solicitante;
+- aprobador.
+
+No se atribuye una mutación a un principal técnico cuando existe un humano real.
+
+---
+
+#### 14. Matriz canónica por rol base
+
+La matriz vigente para las 14 capacidades queda preservada así:
+
+| Capacidad | `propietario` | `gerente_general` | `gerente` | `supervisor` | Otros roles base |
+| --- | --- | --- | --- | --- | --- |
+| `viso.authorization.base_grants.view` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.base_grants.create` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.base_grants.approve` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.base_grants.suspend` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.base_grants.revoke` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.operational_grants.view` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.operational_grants.create` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.operational_grants.approve` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.operational_grants.suspend` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.operational_grants.revoke` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.denials.view` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.denials.create` | CONCEDER | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.denials.approve` | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+| `viso.authorization.denials.revoke` | CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER | NO CONCEDER POR MATRIZ |
+
+Esta matriz no crea bypass por rol.
+
+Cada `CONCEDER` representa una concesión explícita del dataset canónico.
+
+---
+
+#### 15. Propietario
+
+`propietario` recibe por matriz las 14 capacidades.
+
+La razón es gobierno global explícito.
+
+No es válida la regla:
+
+```text
+role = propietario
+→
+ALLOW
+```
+
+La decisión correcta continúa siendo:
+
+```text
+permiso exacto
++
+concesión efectiva
++
+resto de precondiciones
+```
+
+---
+
+#### 16. Propietario sin bypass
+
+Ser `propietario` no permite:
+
+- ignorar denegaciones;
+- ignorar reautenticación;
+- ignorar segregación;
+- aprobar el mismo registro que creó;
+- autoafectarse;
+- usar permisos inexistentes;
+- usar wildcards;
+- modificar un recurso no resuelto;
+- administrar fuera de la organización permitida;
+- desactivar auditoría;
+- usar simulación como autoridad ejecutable.
+
+---
+
+#### 17. Gerente general
+
+`gerente_general` recibe por matriz:
+
+- consulta, creación, aprobación, suspensión y revocación de concesiones base;
+- consulta, creación, aprobación, suspensión y revocación de concesiones operativas;
+- consulta de denegaciones;
+- creación de propuestas de denegación.
+
+No recibe por matriz:
+
+```text
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+---
+
+#### 18. Motivo de la reserva sobre denegaciones
+
+Aprobar o revocar una denegación puede bloquear o restaurar autoridad a través de carriles completos.
+
+Por ello, las dos capacidades:
+
+```text
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+quedan reservadas por matriz a `propietario`.
+
+La reserva por matriz no impide una delegación individual exacta conforme al contrato.
+
+---
+
+#### 19. Autoridad de seguridad designada
+
+Una persona distinta de `propietario` puede recibir una responsabilidad de seguridad únicamente mediante una concesión individual base exacta cuando el contrato lo permita.
+
+Esto aplica también a:
+
+```text
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+La persona pasa a ser autoridad designada solo para las capacidades exactas concedidas.
+
+No se convierte en `propietario`.
+
+---
+
+#### 20. Delegación individual exacta
+
+Toda delegación de autoridad de seguridad debe contener como mínimo:
+
+- actor beneficiario exacto;
+- capacidad exacta;
+- alcance explícito;
+- vigencia;
+- motivo;
+- fuente;
+- solicitante;
+- aprobador distinto cuando corresponda;
+- reautenticación fuerte;
+- auditoría;
+- versión;
+- estado.
+
+No existe delegación por:
+
+- prefijo;
+- módulo;
+- familia;
+- etiqueta;
+- similitud de rol;
+- jerarquía;
+- nombre de cargo.
+
+---
+
+#### 21. Otros roles base
+
+Por matriz permanecen sin capacidades de gobierno de autorización:
+
+```text
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+trabajador_operativo
+roles base legacy
+```
+
+El hecho de administrar una sede, finanzas, personal o contenido no crea autoridad para administrar seguridad.
+
+---
+
+#### 22. Gerente territorial
+
+`gerente` puede tener responsabilidades administrativas territoriales en otros dominios.
+
+Eso no lo convierte en administrador de seguridad.
+
+Solo podrá ejercer una capacidad de las 14 si existe una concesión individual base exacta, válida y autorizada.
+
+---
+
+#### 23. Supervisor
+
+`supervisor` tampoco recibe estas capacidades por matriz.
+
+Una responsabilidad delegada requiere el mismo contrato individual exacto.
+
+No se deriva autoridad de:
+
+- supervisar personal;
+- cubrir una sede;
+- tener un turno;
+- operar una estación;
+- aparecer como responsable.
+
+---
+
+#### 24. Delegación no cambia el rol
+
+Una concesión individual de seguridad:
+
+```text
+NO
+```
+
+modifica:
+
+- rol base;
+- rol operativo;
+- cargo;
+- jerarquía;
+- identidad;
+- cobertura laboral.
+
+Solo agrega la capacidad exacta bajo sus propias restricciones.
+
+---
+
+#### 25. Autoridad acumulada
+
+La autoridad efectiva para seguridad es la unión de concesiones válidas, reducida por:
+
+- modalidad;
+- alcance;
+- recurso;
+- vigencia;
+- reautenticación;
+- dispositivo;
+- segregación;
+- denegaciones;
+- frescura;
+- restricciones estructurales.
+
+No se calcula por el rango más alto del actor.
+
+---
+
+#### 26. Alcance máximo de las 14 capacidades
+
+Las 14 capacidades tienen alcance máximo:
+
+```text
+ORG
+```
+
+y resuelven un recurso de gobierno de autorización dentro de la organización.
+
+`ORG` no significa:
+
+- cualquier ambiente;
+- cualquier tenant;
+- cualquier dominio aislado;
+- APP-REVIEW;
+- demo;
+- pruebas;
+- secretos;
+- recursos sin vínculo organizacional.
+
+---
+
+#### 27. Cobertura administrativa delegada
+
+Una concesión individual puede restringir la responsabilidad del actor a una cobertura explícita.
+
+La restricción no cambia la definición del permiso.
+
+La autorización debe comprobar que el registro objetivo y el alcance del permiso que se administra quedan dentro de la cobertura autorizada del administrador.
+
+---
+
+#### 28. Target permission scope
+
+Las operaciones de gobierno requieren resolver:
+
+```text
+ORGANIZATION
+TARGET_SUBJECT
+TARGET_PERMISSION_SCOPE
+```
+
+No basta seleccionar a un trabajador.
+
+Tampoco basta seleccionar una sede.
+
+El servidor debe resolver la capacidad objetivo y el alcance que quedaría concedido o denegado.
+
+---
+
+#### 29. Techo de delegación
+
+Un administrador no puede conceder una autoridad que él mismo no puede gobernar.
+
+Regla:
+
+```text
+AUTORIDAD PROPUESTA
+⊆
+AUTORIDAD DE GOBIERNO DEL ADMINISTRADOR
+```
+
+Esto se valida por capacidad, alcance, sujeto, recurso, vigencia y restricciones.
+
+---
+
+#### 30. No escalamiento por aprobación
+
+Tener:
+
+```text
+*.approve
+```
+
+no permite aprobar cualquier permiso.
+
+La propuesta debe ser válida y estar dentro de la autoridad de gobierno del aprobador.
+
+Un aprobador no puede usar `approve` para crear por sí mismo una capacidad que el resto del contrato prohíbe.
+
+---
+
+#### 31. Crear es proponer
+
+Las capacidades:
+
+```text
+*.create
+```
+
+crean una propuesta no activa cuando el flujo requiere aprobación.
+
+No deben convertir el registro en autoridad efectiva antes de completar el lifecycle aplicable.
+
+---
+
+#### 32. Aprobar es una capacidad independiente
+
+Las capacidades:
+
+```text
+*.approve
+```
+
+son independientes de `create`.
+
+El hecho de poder crear no implica poder aprobar.
+
+El hecho de poder aprobar no implica poder crear.
+
+---
+
+#### 33. Autoaprobación prohibida
+
+Ningún actor puede crear y aprobar el mismo registro como consecuencia de poseer ambas capacidades.
+
+Esto aplica también a:
+
+```text
+propietario
+gerente_general
+autoridad de seguridad designada
+```
+
+No existe excepción jerárquica.
+
+---
+
+#### 34. Beneficiario y aprobador
+
+Cuando una propuesta aumenta la autoridad de una persona, el beneficiario no puede ser su propio aprobador.
+
+La aprobación debe provenir de otro actor autorizado y compatible con la segregación de funciones.
+
+---
+
+#### 35. Autoafectación prohibida
+
+Las mutaciones sensibles de esta familia no permiten que el actor use su autoridad para modificar directamente su propia autoridad.
+
+Esto incluye, según el tipo de registro:
+
+- concederse una capacidad;
+- aprobarse una capacidad;
+- suspender su propia capacidad;
+- revocar su propia capacidad;
+- crear una denegación contra sí mismo;
+- aprobar una denegación que lo afecta;
+- revocar una denegación que lo afecta.
+
+La recuperación se realiza mediante otro actor autorizado o el mecanismo de recuperación gobernado.
+
+---
+
+#### 36. No confundir autoafectación con renuncia informal
+
+Que una persona quiera perder una capacidad no autoriza una mutación directa sobre su propio registro.
+
+La seguridad debe conservar:
+
+- trazabilidad;
+- segregación;
+- recuperación;
+- revisión de efectos;
+- consistencia transaccional.
+
+---
+
+#### 37. Suspensión
+
+Las concesiones base y operativas disponen de capacidad de suspensión separada.
+
+La suspensión:
+
+- conserva el registro;
+- conserva historial;
+- exige motivo;
+- no borra la concesión;
+- no se convierte en revocación;
+- debe invalidar autoridad derivada cuando corresponda.
+
+---
+
+#### 38. Revocación
+
+La revocación termina una concesión de forma auditable.
+
+No elimina el historial.
+
+No elimina al trabajador.
+
+No cambia el rol base.
+
+No revoca otras capacidades por inferencia.
+
+---
+
+#### 39. Revocación de denegación
+
+Revocar una denegación:
+
+```text
+NO
+```
+
+concede automáticamente un permiso.
+
+Después de la revocación vuelve a evaluarse la autoridad completa.
+
+La ausencia de deny puede seguir produciendo deny por falta de allow u otra regla.
+
+---
+
+#### 40. Denegación explícita
+
+Crear una propuesta de denegación no equivale a activarla.
+
+Aprobarla requiere:
+
+```text
+viso.authorization.denials.approve
+```
+
+y las reglas de segregación.
+
+---
+
+#### 41. Denegaciones actor-wide
+
+Una denegación de amplitud actor-wide exige especial verificación de:
+
+- sujeto;
+- carriles afectados;
+- recuperación;
+- alcance;
+- vigencia;
+- efecto prospectivo;
+- conflictos;
+- auditoría.
+
+No se deduce desde una denegación de una clave concreta.
+
+---
+
+#### 42. Recuperación obligatoria
+
+Toda mutación sensible debe preservar al menos un principal válido de recuperación cuando el contrato lo exige.
+
+No se permite dejar el sistema sin una autoridad capaz de recuperar la configuración.
+
+---
+
+#### 43. Recovery principal no es un rol nuevo
+
+`recovery principal` es una condición derivada.
+
+No crea:
+
+- un rol;
+- un permiso;
+- un bypass;
+- una cuenta compartida.
+
+Debe existir un actor o mecanismo autorizado capaz de ejecutar las capacidades exactas necesarias para recuperar la configuración.
+
+---
+
+#### 44. Comprobación prospectiva de recuperación
+
+Antes de una mutación que pueda reducir autoridad de seguridad, el servidor calcula el estado prospectivo.
+
+Debe bloquear si el resultado elimina el último principal válido requerido.
+
+Ejemplos:
+
+- revocar la última capacidad de recuperación;
+- aprobar una denegación que bloquee a todos los recuperadores;
+- suspender la única autoridad restante;
+- retirar una delegación necesaria sin sustitución válida.
+
+---
+
+#### 45. Recuperación no ignora auditoría
+
+Un proceso de recuperación conserva:
+
+- actor o principal responsable;
+- fuente;
+- motivo;
+- autorización;
+- cambios;
+- timestamps;
+- correlación;
+- resultado.
+
+No existe recuperación silenciosa.
+
+---
+
+#### 46. Reautenticación en recuperación
+
+Una operación de recuperación humana sensible sigue exigiendo reautenticación conforme al contrato.
+
+La urgencia no convierte una sesión antigua en prueba fuerte.
+
+---
+
+#### 47. Simulación
+
+Las 14 capacidades usan:
+
+```text
+DECISION_ONLY
+```
+
+Una simulación puede explicar qué ocurriría.
+
+No puede:
+
+- crear;
+- aprobar;
+- suspender;
+- revocar;
+- activar;
+- bloquear;
+- restaurar autoridad real.
+
+---
+
+#### 48. Dispositivo compartido
+
+Las 14 capacidades exigen:
+
+```text
+STRONG_REAUTH_REQUIRED
+```
+
+en dispositivo compartido.
+
+La estación limita.
+
+No concede.
+
+El cambio de actor debe limpiar la autoridad administrativa anterior.
+
+---
+
+#### 49. Principal técnico
+
+Un principal técnico puede participar en una operación gobernada de:
+
+- job;
+- migración;
+- recovery;
+- infraestructura.
+
+No recibe por ello una capacidad empresarial humana de VISO.
+
+`service_role` no se convierte en administrador de seguridad.
+
+---
+
+#### 50. Admin client
+
+La existencia de un cliente administrativo con privilegios técnicos no reemplaza la evaluación empresarial.
+
+Regla:
+
+```text
+CLIENTE ADMINISTRATIVO
+≠
+AUTORIZACIÓN EMPRESARIAL
+```
+
+La futura implementación debe evaluar capacidad y actor antes de usar cualquier superficie técnica privilegiada.
+
+---
+
+#### 51. Server-side obligatorio
+
+Toda mutación de las 14 capacidades debe quedar protegida del lado servidor.
+
+Una validación en UI no es suficiente.
+
+La misma decisión debe aplicar frente a:
+
+- formulario normal;
+- URL directa;
+- Server Action;
+- Route Handler;
+- RPC;
+- llamada manipulada;
+- replay;
+- cliente alternativo.
+
+---
+
+#### 52. Permission binding exacto
+
+Cada acción queda vinculada a una única capacidad exacta.
+
+Ejemplo:
+
+```text
+crear propuesta base
+→
+viso.authorization.base_grants.create
+```
+
+No:
+
+```text
+crear propuesta base
+→
+viso.access
+```
+
+ni:
+
+```text
+crear propuesta base
+→
+staff.permissions.manage
+```
+
+---
+
+#### 53. No herencia por prefijo
+
+Poseer:
+
+```text
+viso.authorization.base_grants.view
+```
+
+no concede:
+
+```text
+viso.authorization.base_grants.*
+```
+
+Poseer una clave de `base_grants` tampoco concede otra de `operational_grants`.
+
+---
+
+#### 54. No wildcard
+
+No se permite:
+
+```text
+viso.authorization.*
+```
+
+como capacidad efectiva.
+
+La evaluación usa la clave completa registrada.
+
+---
+
+#### 55. No reparación con rol
+
+Si falta una capacidad exacta:
+
+```text
+propietario
+```
+
+o:
+
+```text
+gerente_general
+```
+
+no pueden reparar la ausencia mediante nombre de rol.
+
+La operación permanece bloqueada.
+
+---
+
+#### 56. Catálogo vigente versus legacy
+
+La familia activa de 14 capacidades sustituye el ámbito de concesiones y denegaciones individuales que antes se concentraba en:
+
+```text
+viso.staff.permissions.manage
+```
+
+El legacy no tiene alias uno-a-muchos.
+
+No debe usarse como fallback.
+
+---
+
+#### 57. Matrices de roles quedan fuera de las 14 capacidades
+
+Las 14 capacidades:
+
+```text
+NO
+```
+
+conceden administración de matrices de roles.
+
+Esto incluye mutaciones directas sobre una matriz base u operativa.
+
+La tarea no reinterpreta `base_grants.*` como administración de rol base.
+
+---
+
+#### 58. Matriz base de permisos por rol
+
+Una mutación directa de una matriz de permisos por rol base necesita una capacidad administrativa atómica propia.
+
+La familia actual de 14 no la contiene.
+
+Por tanto, una implementación no puede autorizar esa escritura usando:
+
+- `base_grants.create`;
+- `base_grants.approve`;
+- `viso.access`;
+- rol `propietario`;
+- rol `gerente_general`;
+- `staff.permissions.manage` legacy.
+
+Mientras no exista binding canónico exacto, la escritura permanece bloqueada.
+
+---
+
+#### 59. Matriz operativa de permisos por rol
+
+Una mutación directa de permisos por rol operativo tampoco equivale a una concesión individual operativa.
+
+La familia:
+
+```text
+operational_grants.*
+```
+
+administra grants individuales operativos.
+
+No administra la matriz del rol operativo.
+
+Si no existe capacidad atómica activa para la matriz, la escritura permanece bloqueada.
+
+---
+
+#### 60. Roles operativos permitidos por sede
+
+La administración de:
+
+```text
+site_operational_roles
+```
+
+afecta el contexto de autorización.
+
+El catálogo vigente no contiene una capacidad atómica activa dedicada a esa mutación.
+
+La implementación física no puede habilitarla hasta que cada escritura tenga:
+
+```text
+CAPACIDAD ADMINISTRATIVA EXPLÍCITA
++
+TERRITORIO DEL ACTOR VALIDADO
++
+AUTORIZACIÓN DE SERVIDOR
++
+AUDITORÍA
+```
+
+---
+
+#### 61. Roles operativos permitidos por área
+
+La misma regla aplica a la elegibilidad rol operativo × área.
+
+No se usa:
+
+- `viso.access`;
+- rol de gerente;
+- `operational_grants.*`;
+- un admin client;
+
+como sustituto de una capacidad atómica propia.
+
+---
+
+#### 62. Perfiles operativos por trabajador
+
+Modificar perfiles operativos puede alterar los inputs futuros de autorización.
+
+El permiso legacy:
+
+```text
+viso.employee_operational_profiles.manage
+```
+
+permanece bloqueado y sin descomposición activa suficiente para autorizar la escritura.
+
+La operación debe permanecer fail-closed hasta que exista una capacidad administrativa canónica exacta y vigente.
+
+---
+
+#### 63. Puntos operativos
+
+La misma prohibición aplica a una mutación cuya única protección dependa del legacy:
+
+```text
+viso.operational_points.manage
+```
+
+Esta tarea no crea su reemplazo.
+
+---
+
+#### 64. Ausencia de capacidad no es permiso propietario
+
+Cuando una mutación administrativa carece de capacidad activa:
+
+```text
+AUSENCIA DE CAPACIDAD
+→
+BLOQUEO
+```
+
+No:
+
+```text
+AUSENCIA DE CAPACIDAD
++
+PROPIETARIO
+→
+ALLOW
+```
+
+---
+
+#### 65. Carryover resuelto de VISO-AUTH-005
+
+El carryover sobre roles permitidos por sede queda resuelto así:
+
+```text
+SIN CAPACIDAD ATÓMICA ACTIVA
+→
+NO MATERIALIZAR MUTACIÓN
+```
+
+La condición de salida física exige que la evolución canónica del catálogo publique una capacidad válida y que el consumidor la adopte.
+
+Esta tarea no inventa esa clave.
+
+---
+
+#### 66. Carryover resuelto de VISO-AUTH-006
+
+El carryover sobre roles permitidos por área recibe la misma decisión fail-closed.
+
+No se autoriza por analogía con la sede.
+
+No se autoriza por pertenecer a VISO.
+
+---
+
+#### 67. Carryover resuelto de VISO-AUTH-007
+
+La administración de perfiles operativos por trabajador tampoco puede quedar protegida solo por acceso a VISO o un RPC privilegiado.
+
+La escritura futura requiere su binding atómico propio.
+
+---
+
+#### 68. Roles y perfiles no se vuelven grants individuales
+
+No se resolverá la ausencia contractual transformando:
+
+```text
+ROLE_MATRIX_CHANGE
+```
+
+o:
+
+```text
+EMPLOYEE_OPERATIONAL_PROFILE_CHANGE
+```
+
+en un `INDIVIDUAL_BASE_GRANT` ficticio.
+
+Cada tipo de recurso conserva su ownership y contrato.
+
+---
+
+#### 69. Evolución del catálogo
+
+Una futura capacidad faltante debe ingresar por el proceso canónico de evolución del catálogo.
+
+No puede nacer:
+
+- en frontend;
+- dentro de VISO;
+- en una RPC;
+- como string local;
+- por migración silenciosa;
+- en esta tarea.
+
+Hasta su publicación, aplica denegación por defecto.
+
+---
+
+#### 70. Auditoría de administración
+
+Toda acción de las 14 capacidades debe producir evidencia compatible con `VISO-AUTH-018`.
+
+La auditoría conserva, según aplique:
+
+- actor;
+- beneficiario;
+- solicitante;
+- aprobador;
+- capacidad;
+- alcance;
+- before;
+- after;
+- motivo;
+- decisión;
+- correlación;
+- versión;
+- timestamp;
+- resultado.
+
+---
+
+#### 71. Auditoría no concede mutación
+
+Poseer:
+
+```text
+viso.authorization.audit_logs.view
+```
+
+no concede ninguna de las 14 capacidades.
+
+Las dos superficies permanecen separadas.
+
+---
+
+#### 72. Administración no concede auditoría completa
+
+Poseer una capacidad de mutación tampoco concede automáticamente:
+
+```text
+viso.authorization.audit_logs.view
+```
+
+El acceso a evidencia histórica se evalúa por su propio contrato.
+
+---
+
+#### 73. Simulación separada
+
+Poseer:
+
+```text
+viso.authorization.context_simulations.view
+```
+
+no concede administración de seguridad.
+
+Poseer una capacidad administrativa tampoco concede simulación si falta la capacidad correspondiente.
+
+---
+
+#### 74. Territorio del administrador
+
+La autoridad para gobernar un registro debe comprobarse contra:
+
+- organización;
+- cobertura administrativa;
+- sujeto objetivo;
+- alcance del permiso objetivo;
+- recurso;
+- restricciones de la concesión administrativa.
+
+No se usa la sede seleccionada como fuente de autoridad.
+
+---
+
+#### 75. Gerente de sede
+
+Un gerente puede administrar otros dominios dentro de sus sedes.
+
+Eso no permite administrar grants, denies o matrices de seguridad sin capacidad exacta.
+
+La cobertura territorial limita una capacidad existente.
+
+Nunca crea la capacidad.
+
+---
+
+#### 76. `null` no es global
+
+Un alcance administrativo no resuelto no se interpreta como cobertura total.
+
+```text
+null
+≠
+ORG
+```
+
+La ausencia de dimensión obligatoria produce bloqueo.
+
+---
+
+#### 77. Organización ordinaria y dominios aislados
+
+La cobertura organizacional ordinaria excluye dominios aislados o no concedidos.
+
+Una capacidad ORG no debe saltar por defecto a:
+
+- APP-REVIEW;
+- demo;
+- pruebas;
+- secretos;
+- otro tenant;
+- otro dominio separado.
+
+---
+
+#### 78. Recursos de terceros
+
+Las capacidades administrativas actúan sobre terceros únicamente dentro del contrato explícito.
+
+La posibilidad de administrar a un tercero no crea autoridad sobre cualquier tercero.
+
+---
+
+#### 79. Estado del actor
+
+El actor administrativo debe permanecer activo y elegible.
+
+Una persona retirada, suspendida o cuya relación invalide la autoridad no puede continuar administrando con un contexto anterior.
+
+---
+
+#### 80. Frescura
+
+Cambios de:
+
+- rol;
+- grant;
+- deny;
+- cobertura;
+- sesión;
+- dispositivo;
+- relación laboral;
+- vigencia;
+
+deben invalidar autoridad derivada conforme al modelo de frescura.
+
+Una pestaña abierta no conserva autoridad obsoleta.
+
+---
+
+#### 81. Revalidación antes de mutar
+
+La autorización debe revalidarse inmediatamente antes de producir la mutación o dentro de una frontera transaccional equivalente.
+
+No se acepta:
+
+```text
+ALLOW ANTIGUO
++
+ESTADO CAMBIADO
++
+WRITE NUEVO
+```
+
+---
+
+#### 82. Concurrencia
+
+Una aprobación, suspensión o revocación debe verificar la versión o estado esperado.
+
+Una acción sobre un registro ya modificado no usa silenciosamente el snapshot anterior.
+
+---
+
+#### 83. Idempotencia
+
+Las acciones repetibles deben usar el mecanismo de idempotencia aplicable.
+
+Un reintento no puede:
+
+- duplicar grants;
+- duplicar denies;
+- aprobar dos veces;
+- revocar dos veces con efectos distintos;
+- ejecutar después de una respuesta fallida sin nueva validación.
+
+---
+
+#### 84. Conflictos antes de guardar
+
+Las mutaciones relevantes deben consumir la clasificación de `VISO-AUTH-016`.
+
+Si el cambio prospectivo crea una configuración bloqueante, no se guarda.
+
+No se corrige el conflicto concediendo autoridad adicional por la misma operación.
+
+---
+
+#### 85. Deny prevalece
+
+Una denegación aplicable conserva la precedencia canónica.
+
+Un administrador con capacidad de crear grants no puede neutralizar un deny mediante un allow paralelo.
+
+La resolución correcta usa el contrato de precedencia.
+
+---
+
+#### 86. No administrar restricciones estructurales desde VISO
+
+Una restricción estructural no se elimina mediante una concesión individual.
+
+La interfaz no debe ofrecer un botón de “forzar” para saltar una regla estructural.
+
+---
+
+#### 87. Segregación de funciones
+
+La segregación se evalúa por registro y acción.
+
+Como mínimo:
+
+```text
+CREADOR DEL REGISTRO
+≠
+APROBADOR DEL MISMO REGISTRO
+```
+
+cuando el flujo exige aprobación.
+
+También se valida que el beneficiario no sea su propio aprobador.
+
+---
+
+#### 88. Aprobación sensible
+
+Una aprobación sensible requiere:
+
+- actor distinto;
+- capacidad `approve`;
+- alcance suficiente;
+- reautenticación fuerte;
+- estado aprobable;
+- recurso fresco;
+- recuperación preservada;
+- ausencia de conflicto bloqueante;
+- auditoría.
+
+---
+
+#### 89. Suspensión sensible
+
+Suspender una concesión requiere:
+
+- capacidad `suspend` de la familia correcta;
+- concesión objetivo activa;
+- cobertura suficiente;
+- no autoafectación;
+- recuperación preservada;
+- motivo;
+- auditoría.
+
+---
+
+#### 90. Revocación sensible
+
+Revocar requiere:
+
+- capacidad `revoke` exacta;
+- recurso objetivo resoluble;
+- lifecycle compatible;
+- no autoafectación;
+- recuperación preservada;
+- motivo;
+- auditoría;
+- invalidación correspondiente.
+
+---
+
+#### 91. Denial approve
+
+La acción:
+
+```text
+viso.authorization.denials.approve
+```
+
+no está concedida por matriz a `gerente_general`.
+
+Un `gerente_general` solo podrá ejecutarla si recibe una concesión individual base exacta, válida y aprobada conforme al contrato.
+
+---
+
+#### 92. Denial revoke
+
+La misma regla aplica a:
+
+```text
+viso.authorization.denials.revoke
+```
+
+No se deduce de:
+
+```text
+denials.create
+```
+
+ni de autoridad jerárquica.
+
+---
+
+#### 93. Designación parcial
+
+Una autoridad designada para:
+
+```text
+denials.revoke
+```
+
+no recibe automáticamente:
+
+```text
+denials.approve
+```
+
+Cada capacidad requiere su concesión exacta.
+
+---
+
+#### 94. Delegación de administración sobre administración
+
+Conceder una de las 14 capacidades a otra persona es en sí una mutación de autorización.
+
+Por tanto, el administrador que la promueve debe disponer de las capacidades exactas para crear y, cuando corresponda, otro actor debe disponer de la capacidad exacta para aprobar.
+
+La delegación nunca se autopropaga.
+
+---
+
+#### 95. No clonación de autoridad
+
+No existe acción:
+
+```text
+COPIAR MIS PERMISOS DE SEGURIDAD
+```
+
+Una delegación se construye capacidad por capacidad y alcance por alcance.
+
+---
+
+#### 96. No herencia hacia subordinados
+
+La autoridad de un gerente general no se transmite a:
+
+- gerentes;
+- supervisores;
+- auxiliares;
+- equipo de soporte;
+- subordinados;
+- reemplazos temporales.
+
+Toda delegación es explícita.
+
+---
+
+#### 97. Reemplazo temporal
+
+Una suplencia o reemplazo laboral no transfiere automáticamente las 14 capacidades.
+
+Si la operación exige delegación temporal, debe utilizar grants individuales con vigencia explícita.
+
+Al vencer, la autoridad desaparece conforme al lifecycle.
+
+---
+
+#### 98. Vacaciones y ausencia
+
+La ausencia temporal de un administrador no justifica:
+
+- compartir cuenta;
+- compartir sesión;
+- compartir reautenticación;
+- usar `service_role`;
+- ampliar una matriz.
+
+La continuidad se resuelve mediante delegación gobernada y recuperable.
+
+---
+
+#### 99. Cuenta compartida prohibida como administrador humano
+
+Una cuenta compartida no puede representar la identidad humana que aprueba o muta seguridad.
+
+La evidencia debe identificar al actor real.
+
+---
+
+#### 100. Dispositivo no es aprobador
+
+Un terminal administrativo no puede aparecer como aprobador.
+
+El dispositivo puede formar parte de la evidencia.
+
+No sustituye a la persona.
+
+---
+
+#### 101. Navegación no es autoridad
+
+Mostrar una opción de seguridad en navegación:
+
+```text
+NO
+```
+
+autoriza la acción.
+
+La UI puede ocultar acciones no disponibles.
+
+El servidor continúa siendo la frontera autoritativa.
+
+---
+
+#### 102. Progressive disclosure
+
+La interfaz puede mostrar solo las capacidades que el actor puede ejercer.
+
+No debe revelar acciones reservadas como forma de enumerar permisos internos a quien no tiene acceso.
+
+La ocultación no sustituye el deny server-side.
+
+---
+
+#### 103. Mensaje seguro
+
+Un actor no autorizado recibe un mensaje seguro.
+
+No se revelan:
+
+- grants de terceros;
+- nombres de recuperadores;
+- reason codes internos;
+- capacidades candidatas;
+- arquitectura;
+- tablas;
+- hashes;
+- configuración sensible.
+
+---
+
+#### 104. Acceso directo
+
+Una URL directa a una superficie de administración debe revalidar la capacidad exacta aplicable.
+
+No basta haber navegado desde una pantalla autorizada.
+
+---
+
+#### 105. Formulario manipulado
+
+Cambiar en cliente:
+
+- actor objetivo;
+- permiso;
+- carril;
+- alcance;
+- vigencia;
+- acción;
+- estado;
+- aprobador;
+
+no amplía autoridad.
+
+El servidor resuelve el recurso canónico.
+
+---
+
+#### 106. Acción no autorizada no produce efecto parcial
+
+Una operación bloqueada debe conservar:
+
+```text
+effects_committed = false
+```
+
+cuando no comenzó una mutación.
+
+Si existe incertidumbre post-efecto, se conserva la evidencia técnica correspondiente y no se afirma rollback perfecto por inferencia.
+
+---
+
+#### 107. AS-IS de `/roles-permissions`
+
+La superficie física actual:
+
+```text
+/roles-permissions
+```
+
+utiliza el permiso legacy:
+
+```text
+staff.permissions.manage
+```
+
+para proteger mutaciones de `role_permissions`.
+
+También utiliza un cliente administrativo para escribir.
+
+Esta implementación no constituye el binding canónico de esta tarea.
+
+---
+
+#### 108. Brecha física de `/roles-permissions`
+
+El permiso legacy:
+
+```text
+viso.staff.permissions.manage
+```
+
+ya no es una clave activa y no tiene alias uno-a-muchos hacia la familia nueva.
+
+Además, las 14 capacidades nuevas no administran matrices de roles.
+
+Resultado:
+
+```text
+MUTACIÓN DIRECTA DE role_permissions
+→
+NO CERTIFICADA POR EL CONTRATO ACTUAL
+```
+
+---
+
+#### 109. AS-IS de roles por sede
+
+La superficie física actual de roles operativos por sede realiza mutaciones después de validar acceso general a VISO.
+
+Eso no satisface la condición de:
+
+```text
+CAPACIDAD ADMINISTRATIVA EXPLÍCITA
+```
+
+La existencia física de la operación no la vuelve canónica.
+
+---
+
+#### 110. AS-IS de perfiles operativos
+
+La superficie física actual de perfiles operativos por trabajador también realiza mutaciones después de acceso general a VISO y conserva un fallback de escritura directa cuando no está disponible la RPC esperada.
+
+Eso no constituye autorización canónica para modificar inputs de seguridad.
+
+---
+
+#### 111. `createAdminClient` no cura la brecha
+
+Usar un cliente de servidor privilegiado puede ser necesario para una implementación técnica.
+
+No resuelve:
+
+- quién está autorizado;
+- qué capacidad posee;
+- qué territorio administra;
+- qué recurso puede cambiar;
+- quién debe aprobar;
+- qué deny aplica.
+
+El gate empresarial debe ocurrir antes de la escritura.
+
+---
+
+#### 112. Brecha física versus contrato
+
+La tarea no declara que el AS-IS sea correcto.
+
+Tampoco modifica el AS-IS.
+
+La futura unidad de implementación debe:
+
+1. mapear cada acción contratada a capacidad exacta;
+2. bloquear las acciones sin capacidad activa;
+3. retirar fallbacks legacy;
+4. aplicar reautenticación;
+5. aplicar segregación;
+6. aplicar territorio;
+7. aplicar auditoría;
+8. aplicar frescura;
+9. demostrar equivalencia server-side.
+
+---
+
+#### 113. Contratos legacy pendientes de descomposición
+
+Permisos legacy como:
+
+```text
+viso.site_operational_roles.manage
+viso.employee_operational_profiles.manage
+viso.operational_points.manage
+```
+
+no pueden resucitarse para cerrar rápidamente la implementación.
+
+La evolución debe seguir el catálogo canónico.
+
+---
+
+#### 114. No crear permisos desde VISO
+
+VISO consume el catálogo.
+
+No lo redefine desde la UI.
+
+Un string creado en un componente o Server Action no se convierte en una capacidad canónica.
+
+---
+
+#### 115. No crear grants implícitos al publicar catálogo
+
+Publicar una nueva capacidad en el futuro no la concede automáticamente a:
+
+- propietario;
+- gerente general;
+- gerente;
+- supervisor;
+- otros actores.
+
+Toda nueva capacidad requiere revisión de matrices y delegaciones conforme al proceso canónico.
+
+---
+
+#### 116. Restricción administrativa versus ownership técnico
+
+`vento-shell` conserva la autoría contractual y física del modelo de autorización.
+
+VISO es consumidor y superficie administrativa.
+
+El hecho de que la UI esté en `vento-viso` no convierte ese repositorio en fuente de verdad del permiso.
+
+---
+
+#### 117. Restricción frente a Supabase
+
+Las tablas, funciones, grants o `service_role` de Supabase no definen la autoridad empresarial por sí mismos.
+
+La materialización futura debe mantener:
+
+```text
+AUTORIZACIÓN EMPRESARIAL
+→
+EFECTO TÉCNICO
+```
+
+No al contrario.
+
+---
+
+#### 118. Acción de lectura
+
+Las capacidades `.view` permiten consultar únicamente sus recursos correspondientes.
+
+No permiten:
+
+- create;
+- approve;
+- suspend;
+- revoke;
+- exportar;
+- administrar matrices.
+
+---
+
+#### 119. Acción de creación
+
+`.create` no concede:
+
+- approve;
+- suspend;
+- revoke.
+
+La propuesta creada queda sujeta al lifecycle.
+
+---
+
+#### 120. Acción de aprobación
+
+`.approve` no concede:
+
+- create;
+- suspend;
+- revoke;
+
+salvo que el actor posea además esas capacidades por otra concesión válida.
+
+---
+
+#### 121. Acción de suspensión
+
+`.suspend` no concede revocación.
+
+Tampoco permite suspender una denegación, porque esa capacidad no existe en la familia de denegaciones.
+
+---
+
+#### 122. Acción de revocación
+
+`.revoke` no concede create ni approve.
+
+La revocación es una transición terminal o de cierre conforme al contrato del registro.
+
+---
+
+#### 123. Sensibilidad de vistas administrativas
+
+Incluso las capacidades `.view` de la familia de seguridad son sensibles.
+
+La lectura puede revelar:
+
+- autoridad;
+- beneficiarios;
+- vigencia;
+- restricciones;
+- motivos;
+- estructura de grants y denies.
+
+Por ello también exigen reautenticación fuerte conforme al contrato vigente.
+
+---
+
+#### 124. Auditoría de lecturas sensibles
+
+Las consultas administrativas sensibles deben quedar auditables conforme a la política del recurso.
+
+La tarea no permite un inventario invisible de grants o denies.
+
+---
+
+#### 125. No exportación implícita
+
+Poder consultar grants o denies no concede exportación masiva.
+
+La siguiente tarea de exporte de matriz de acceso no hereda automáticamente las 14 capacidades como permiso de exportar.
+
+---
+
+#### 126. No impresión implícita
+
+Tampoco existe impresión por implicación.
+
+La tarea no crea permisos de impresión.
+
+---
+
+#### 127. No API diagnóstica autoritativa
+
+Una vista previa o consulta diagnóstica puede ayudar a comprender una decisión.
+
+Su resultado no se reutiliza como token para ejecutar una mutación.
+
+La mutación se autoriza de nuevo con contexto fresco.
+
+---
+
+#### 128. Resultado de conflicto
+
+Cuando una propuesta genera conflicto:
+
+```text
+CONFLICT
+```
+
+no se convierte en allow porque el actor tenga un rol global.
+
+La corrección debe resolver la fuente del conflicto o modificar la propuesta de forma válida.
+
+---
+
+#### 129. Configuración inconsistente
+
+Una fuente administrativa contradictoria no debe seleccionar silenciosamente la fila “más favorable”.
+
+La operación se bloquea conforme al contrato de configuración inconsistente.
+
+---
+
+#### 130. Permiso no registrado
+
+Si la operación exige una clave que no existe en el catálogo activo:
+
+```text
+PERMISSION NOT REGISTERED
+```
+
+es un defecto contractual o de implementación.
+
+No se presenta al usuario como “usted no tiene permiso” si la causa real es una capacidad inexistente.
+
+---
+
+#### 131. Fallo técnico
+
+Un fallo técnico tampoco se convierte en deny empresarial.
+
+La administración no debe reintentar automáticamente una mutación después de responder sin certeza.
+
+---
+
+#### 132. Contexto fresco después de cambios
+
+Después de aplicar una mutación de seguridad deben invalidarse las decisiones derivadas según corresponda.
+
+El mismo actor o beneficiario no puede continuar usando una decisión anterior incompatible con el cambio.
+
+---
+
+#### 133. Operación offline
+
+Una mutación administrativa de seguridad no puede quedar autorizada offline por un allow almacenado.
+
+Al sincronizar debe reautorizarse con fuentes frescas.
+
+---
+
+#### 134. Recuperación tras revocación
+
+Si se revoca una capacidad administrativa, cualquier sesión o contexto derivado debe dejar de poder ejecutarla.
+
+La UI no conserva botones funcionales con autoridad stale.
+
+---
+
+#### 135. Acceso de soporte
+
+Soporte técnico no recibe autoridad de seguridad por estar atendiendo un incidente.
+
+Si necesita una capacidad empresarial, debe tener una concesión exacta y auditable o actuar mediante un procedimiento técnico propietario que no falsifique al actor empresarial.
+
+---
+
+#### 136. Acceso de desarrollo
+
+Desarrollador, operador de infraestructura o acceso SQL tampoco equivale a administrador empresarial.
+
+La operación productiva o controlada debe respetar los contratos de identidad técnica y auditoría correspondientes.
+
+---
+
+#### 137. Cambio de actor en estación administrativa
+
+Cuando una estación cambia de actor:
+
+- termina la autoridad administrativa anterior;
+- se limpia evidencia de reautenticación reutilizable;
+- se reevalúa la nueva persona;
+- no se heredan capacidades.
+
+---
+
+#### 138. Capacidad versus pantalla
+
+La misma capacidad puede consumirse desde más de una superficie legítima.
+
+La pantalla no define la capacidad.
+
+La capacidad tampoco autoriza otras acciones presentes en la misma pantalla.
+
+---
+
+#### 139. Actor con capacidades parciales
+
+Un actor puede, por ejemplo:
+
+```text
+base_grants.view
++
+base_grants.create
+```
+
+sin:
+
+```text
+base_grants.approve
+```
+
+La UI y el servidor deben respetar esa combinación.
+
+No se fuerza un perfil “todo o nada”.
+
+---
+
+#### 140. Autoridad designada para denegaciones
+
+Un actor puede recibir únicamente:
+
+```text
+denials.approve
+```
+
+o únicamente:
+
+```text
+denials.revoke
+```
+
+si el contrato y la concesión lo permiten.
+
+La designación no exige otorgarle las demás 12 capacidades.
+
+---
+
+#### 141. Separación entre governance y operación
+
+Administrar grants operativos no convierte al administrador en actor operativo.
+
+Un administrador puede gobernar un permiso operacional sin adquirir:
+
+- turno;
+- rol operativo;
+- check-in;
+- capacidad empresarial operativa.
+
+---
+
+#### 142. Separación entre governance y recurso empresarial
+
+Aprobar un grant para `nexo`, `fogo` o `pulso` no concede al administrador el permiso objetivo.
+
+La administración actúa sobre el registro de autorización, no sobre el recurso empresarial del permiso concedido.
+
+---
+
+#### 143. Permiso objetivo sensible
+
+Si el permiso que se pretende conceder tiene restricciones adicionales, la propuesta debe respetarlas.
+
+El administrador no puede convertir mediante grant individual un permiso:
+
+- incompatible con su modalidad;
+- prohibido para el sujeto;
+- fuera del catálogo;
+- retirado;
+- estructuralmente bloqueado;
+- fuera del alcance permitido.
+
+---
+
+#### 144. Permiso owner-reserved
+
+Una capacidad reservada no se amplía por jerarquía.
+
+Solo se delega cuando el contrato específico permita una concesión individual exacta.
+
+No se convierte una reserva de propietario en grant general para todo `gerente_general`.
+
+---
+
+#### 145. Cobertura del gerente general
+
+La matriz vigente de `gerente_general` es el techo por defecto de ese rol.
+
+La existencia de delegaciones individuales adicionales debe ser visible como procedencia distinta.
+
+No se reescribe la matriz del rol para representar una excepción personal.
+
+---
+
+#### 146. Procedencia visible
+
+VISO debe poder distinguir si la autoridad administrativa proviene de:
+
+```text
+BASE_ROLE_GRANT
+```
+
+o:
+
+```text
+INDIVIDUAL_GRANT
+```
+
+La procedencia no cambia la capacidad exacta.
+
+Sí cambia su fuente, vigencia y restricciones.
+
+---
+
+#### 147. Deny del propio administrador
+
+Una denegación aplicable al administrador puede bloquear una capacidad que su matriz normalmente concede.
+
+El nombre de rol no repara el deny.
+
+---
+
+#### 148. Expiración de delegación
+
+Una delegación temporal expirada deja de autorizar.
+
+No se requiere que un operador “la quite” manualmente para que deje de ser efectiva.
+
+El historial permanece.
+
+---
+
+#### 149. Propuesta futura
+
+Una propuesta con vigencia futura no concede autoridad antes de `effective_from`.
+
+La aprobación tampoco adelanta la vigencia.
+
+---
+
+#### 150. Estado no activo
+
+Un grant:
+
+- propuesto;
+- rechazado;
+- suspendido;
+- revocado;
+- expirado;
+
+no autoriza una acción como si fuera activo.
+
+---
+
+#### 151. Evidencia de autorización
+
+La mutación de seguridad debe poder vincularse con una decisión de autorización conforme a la infraestructura canónica.
+
+Una escritura sin evidencia obligatoria no se certifica.
+
+---
+
+#### 152. Handoff a VISO-AUTH-020
+
+`VISO-AUTH-020` recibe una matriz de autoridad administrativa ya cerrada.
+
+Debe preservar:
+
+```text
+EXPORTAR MATRIZ
+≠
+ADMINISTRAR MATRIZ
+```
+
+y:
+
+```text
+EXPORTAR
+≠
+ADQUIRIR CAPACIDAD
+```
+
+El exporte no puede crear, aprobar, suspender o revocar seguridad.
+
+---
+
+#### 153. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La restricción de administración de seguridad ya está cubierta por requisitos vigentes de autorización explícita, territorio, segregación, servidor, auditoría y coherencia de VISO.
+
+Esta tarea desarrolla la matriz y las fronteras exactas sin alterar el registro.
+
+---
+
+#### 154. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-AUTH-001` — ninguna lista local de roles puede conceder por sí sola autorización final;
+- `TREQ-AUTH-004` — todas las capas deben producir decisión equivalente sin excepciones locales;
+- `TREQ-AUTH-007` — toda administración de roles operativos, perfiles, permisos y disponibilidad por sede o área exige capacidad administrativa explícita y territorio autorizado; `gerente` no concede administración global;
+- `TREQ-AUTH-008` — las capacidades administrativas BASE_ONLY no requieren turno ni check-in cuando el contrato así lo permite;
+- `TREQ-AUTH-009` — sede y área se resuelven de forma determinista y los cruces territoriales se deniegan;
+- `TREQ-AUTH-010` — las matrices preservan segregación de funciones y las concesiones individuales no neutralizan denegaciones prohibidas;
+- `TREQ-AUTH-011` — dispositivo compartido y actor humano permanecen separados;
+- `TREQ-AUTH-013` — ninguna URL directa, formulario, API o RPC manipulada puede eludir autorización server-side;
+- `TREQ-AUTH-014` — cambios de rol, asignación, turno, área, trabajador o dispositivo invalidan autoridad derivada;
+- `TREQ-AUTH-015` — toda decisión y acción protegida conserva evidencia correlacionable y las operaciones administrativas no omiten auditoría;
+- `TREQ-AUTH-016` — la revocación coordinada no deja autoridad residual;
+- `TREQ-VISO-001` — la administración de roles, permisos, sedes, áreas, perfiles y excepciones conserva efecto previo, conflicto, procedencia, territorio, auditoría y equivalencia con aplicaciones operativas.
+
+Estas referencias son trazabilidad vigente.
+
+No cambian contenido, estado, paquete, evidencia ni secuencia del registro.
+
+---
+
+#### 155. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó la batería documental sobre un checkout local de la rama de `VISO-AUTH-019`. |
+| LOCAL | NOT_EXECUTED | La tarea todavía no fue insertada, normalizada ni validada en la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, cierre de `VISO-AUTH-018`, continuidad, protocolo, contrato de entrega, manifest, topología, políticas de tarea, archivo propietario, handoffs de `VISO-AUTH-017` y `VISO-AUTH-018`, clasificación contractual de las 14 capacidades, matriz de `AUTH-CAT-023`, catálogo físico activo, 04A AUTH/VISO, `package.json`, preflight vigente y el AS-IS actual de `vento-viso`. |
+| OPERATIVA | NOT_APPLICABLE | No se otorgaron, aprobaron, suspendieron, revocaron ni modificaron permisos, roles, perfiles, sedes, áreas, dispositivos o denegaciones reales. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, contratos, datasets, tablas, RPC, RLS, migraciones, consumers, grants ni despliegues. |
+
+---
+
+#### 156. Criterios de aceptación
+
+- [ ] La autoridad de seguridad depende de capacidades exactas y no de nombres de rol.
+- [ ] Se preservan exactamente 14 capacidades atómicas de gobierno de grants y denies.
+- [ ] Las 14 capacidades permanecen `BASE_ONLY`.
+- [ ] Las 14 capacidades permanecen sensibles `AUTHORIZATION_SECURITY`.
+- [ ] Las 14 exigen reautenticación fuerte.
+- [ ] Ninguna de las 14 depende de turno o check-in.
+- [ ] No se crea un nuevo permiso `manage`.
+- [ ] `viso.staff.permissions.manage` no se usa como fallback.
+- [ ] No existen aliases uno-a-muchos hacia las 14 capacidades.
+- [ ] `propietario` recibe las 14 mediante grants explícitos.
+- [ ] `propietario` no obtiene bypass por nombre de rol.
+- [ ] `gerente_general` recibe el ciclo completo base.
+- [ ] `gerente_general` recibe el ciclo completo operativo.
+- [ ] `gerente_general` recibe `denials.view`.
+- [ ] `gerente_general` recibe `denials.create`.
+- [ ] `gerente_general` no recibe por matriz `denials.approve`.
+- [ ] `gerente_general` no recibe por matriz `denials.revoke`.
+- [ ] `gerente`, `supervisor` y demás roles no reciben gobierno de autorización por matriz.
+- [ ] La delegación se representa mediante grant individual base exacto.
+- [ ] Una autoridad designada no se convierte en propietario.
+- [ ] Cada capacidad delegada conserva alcance y vigencia.
+- [ ] Una delegación exige motivo y auditoría.
+- [ ] Una delegación sensible conserva segregación.
+- [ ] No existe delegación por prefijo, wildcard o jerarquía.
+- [ ] `ORG` no equivale a cualquier ambiente o dominio aislado.
+- [ ] El target se resuelve por organización, sujeto y alcance del permiso objetivo.
+- [ ] La autoridad propuesta no excede el techo del administrador.
+- [ ] `create` no equivale a `approve`.
+- [ ] `approve` no equivale a `create`.
+- [ ] Tener ambas capacidades no habilita autoaprobación.
+- [ ] Beneficiario y aprobador permanecen separados cuando corresponde.
+- [ ] Ningún actor modifica directamente su propia autoridad.
+- [ ] La autoafectación no se convierte en renuncia informal.
+- [ ] Suspensión conserva historial.
+- [ ] Revocación conserva historial.
+- [ ] Revocar un deny no concede un allow.
+- [ ] Aprobar un deny exige capacidad exacta.
+- [ ] Las denegaciones actor-wide verifican recuperación.
+- [ ] Se conserva al menos un principal válido de recuperación cuando corresponda.
+- [ ] Recovery principal no crea rol ni bypass.
+- [ ] El estado prospectivo bloquea la pérdida del último recuperador.
+- [ ] Recuperación permanece auditada.
+- [ ] Simulación permanece `DECISION_ONLY`.
+- [ ] Dispositivo compartido no concede autoridad.
+- [ ] `service_role` no se convierte en administrador empresarial.
+- [ ] `createAdminClient` no sustituye autorización empresarial.
+- [ ] Cada mutación se protege server-side.
+- [ ] Cada acción usa una clave exacta.
+- [ ] No existe herencia por prefijo.
+- [ ] No existe wildcard.
+- [ ] El rol propietario no repara una capacidad inexistente.
+- [ ] Las 14 capacidades no administran matrices de roles.
+- [ ] `base_grants.*` no administra la matriz base.
+- [ ] `operational_grants.*` no administra la matriz operativa.
+- [ ] Mutaciones de `site_operational_roles` permanecen bloqueadas sin capacidad atómica activa.
+- [ ] Mutaciones rol × área permanecen bloqueadas sin capacidad atómica activa.
+- [ ] Perfiles operativos permanecen bloqueados sin capacidad atómica activa.
+- [ ] `viso.operational_points.manage` legacy no se reactiva.
+- [ ] Ausencia de capacidad produce fail closed incluso para propietario.
+- [ ] Los carryovers de VISO-AUTH-005, 006 y 007 quedan cerrados mediante bloqueo hasta capacidad canónica.
+- [ ] Roles o perfiles no se falsifican como individual grants.
+- [ ] Nuevas capacidades deben ingresar por evolución canónica del catálogo.
+- [ ] Auditoría de administración conserva actor y evidencia.
+- [ ] `audit_logs.view` no concede mutación.
+- [ ] Administración no concede auditoría completa.
+- [ ] Simulación permanece separada.
+- [ ] Cobertura territorial limita pero no crea capacidad.
+- [ ] `gerente` no obtiene seguridad por administrar una sede.
+- [ ] `null` no se interpreta como global.
+- [ ] Dominios aislados no se incorporan por `ORG`.
+- [ ] Actor retirado o inactivo no conserva autoridad stale.
+- [ ] Cambios de seguridad invalidan autoridad derivada.
+- [ ] Autorización se revalida antes de escribir.
+- [ ] Concurrencia verifica estado o versión esperada.
+- [ ] Idempotencia impide duplicación.
+- [ ] Conflictos se verifican antes de guardar.
+- [ ] Un allow paralelo no neutraliza un deny aplicable.
+- [ ] Restricciones estructurales no se fuerzan desde VISO.
+- [ ] Creador y aprobador del mismo registro permanecen separados.
+- [ ] Approval verifica recuperación y estado.
+- [ ] Suspend verifica recuperación y estado.
+- [ ] Revoke verifica recuperación e invalidación.
+- [ ] `denials.approve` puede delegarse solo por grant individual exacto.
+- [ ] `denials.revoke` puede delegarse solo por grant individual exacto.
+- [ ] Designación parcial no concede otras capacidades.
+- [ ] Delegar autoridad es en sí una mutación gobernada.
+- [ ] No existe clonación de autoridad.
+- [ ] Subordinados no heredan seguridad.
+- [ ] Suplencias requieren grants temporales explícitos.
+- [ ] Ausencia temporal no justifica compartir cuentas.
+- [ ] Cuenta compartida no administra seguridad humana.
+- [ ] Dispositivo no se presenta como aprobador.
+- [ ] Navegación no es autoridad.
+- [ ] Ocultar botones no sustituye el gate server-side.
+- [ ] Los mensajes no enumeran configuración sensible.
+- [ ] URL directa revalida la capacidad exacta.
+- [ ] Formularios manipulados no amplían autoridad.
+- [ ] Operación bloqueada no produce efecto parcial.
+- [ ] `/roles-permissions` AS-IS no se declara binding canónico.
+- [ ] `role_permissions` AS-IS no se certifica con legacy manage.
+- [ ] `/operations/site-roles` AS-IS no se declara autorizado por `viso.access`.
+- [ ] `/operations/employee-profiles` AS-IS no se declara autorizado por `viso.access`.
+- [ ] El admin client no cura esas brechas.
+- [ ] La futura unidad física bloquea operaciones sin capacidad activa.
+- [ ] Los legacy pendientes no se resucitan.
+- [ ] VISO no crea strings de permiso locales.
+- [ ] Publicar una futura capacidad no crea grants implícitos.
+- [ ] `vento-shell` conserva ownership contractual del modelo.
+- [ ] Supabase no redefine autoridad empresarial.
+- [ ] `.view` no concede mutación.
+- [ ] `.create` no concede approve, suspend o revoke.
+- [ ] `.approve` no concede create, suspend o revoke.
+- [ ] `.suspend` no concede revoke.
+- [ ] `.revoke` no concede otras acciones.
+- [ ] Las vistas administrativas sensibles conservan protección reforzada.
+- [ ] Leer no implica exportar.
+- [ ] Leer no implica imprimir.
+- [ ] Preview no se reutiliza como autoridad ejecutable.
+- [ ] Conflicto no se repara con jerarquía.
+- [ ] Configuración inconsistente no elige una fila favorable.
+- [ ] Permiso no registrado no se confunde con falta de grant personal.
+- [ ] Fallo técnico no se convierte en deny empresarial.
+- [ ] Cambios invalidan contexto stale.
+- [ ] Seguridad no se autoriza offline con allow almacenado.
+- [ ] Revocación elimina autoridad derivada.
+- [ ] Soporte no hereda autoridad.
+- [ ] Desarrollo o acceso SQL no equivale a seguridad empresarial.
+- [ ] Cambio de actor limpia autoridad anterior.
+- [ ] Pantalla y capacidad permanecen separadas.
+- [ ] Se admiten combinaciones parciales de capacidades.
+- [ ] Una autoridad designada puede recibir una sola capacidad exacta.
+- [ ] Gobierno operativo no convierte al administrador en trabajador operativo.
+- [ ] Administrar un grant no concede el permiso objetivo.
+- [ ] El permiso objetivo debe ser compatible con catálogo y contrato.
+- [ ] Capacidad reservada no se amplía por jerarquía.
+- [ ] La matriz de gerente general permanece techo por defecto, no excepción individual.
+- [ ] La procedencia base-role versus individual queda distinguible.
+- [ ] Un deny puede bloquear al propio administrador.
+- [ ] Delegaciones temporales expiran.
+- [ ] Propuestas futuras no conceden antes de vigencia.
+- [ ] Estados no activos no autorizan.
+- [ ] La mutación se vincula con evidencia de autorización.
+- [ ] VISO-AUTH-020 recibe exporte separado de administración.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 157. Límites
+
+Esta tarea no:
+
+- modifica VISO;
+- modifica Supabase;
+- modifica contratos físicos;
+- modifica datasets;
+- modifica matrices;
+- modifica grants;
+- modifica denegaciones;
+- modifica perfiles;
+- modifica sedes;
+- modifica áreas;
+- modifica turnos;
+- modifica dispositivos;
+- modifica RLS;
+- modifica RPC;
+- modifica funciones;
+- modifica tablas;
+- crea migraciones;
+- crea permisos;
+- crea roles;
+- crea aliases;
+- reactiva permisos legacy;
+- crea un permiso `manage`;
+- concede autoridad real;
+- designa físicamente una autoridad de seguridad;
+- aprueba grants reales;
+- suspende grants reales;
+- revoca grants reales;
+- crea denies reales;
+- aprueba denies reales;
+- revoca denies reales;
+- ejecuta recuperación;
+- ejecuta reautenticación;
+- crea sesiones;
+- cambia `role_permissions`;
+- cambia `operational_role_permissions`;
+- cambia `site_operational_roles`;
+- cambia perfiles operativos;
+- cambia puntos operativos;
+- corrige el AS-IS de `vento-viso`;
+- modifica `AUTH-CAT-023`;
+- modifica el catálogo activo;
+- modifica 04A;
+- crea requisitos de prueba;
+- autoriza exportaciones;
+- autoriza impresión;
+- ejecuta simulaciones;
+- ejecuta implementación física;
+- selecciona package;
+- prepara package gate;
+- aprueba package gate;
+- autoriza una instancia física.
+
+La identidad exacta de cualquier unidad física futura se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 158. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-018 — Auditar cambios de seguridad`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-019 — Restringir quién administra seguridad`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-020 — Crear exporte de matriz de acceso`
+
+
 ### [ ] VISO-AUTH-020 — Crear exporte de matriz de acceso
 
 SUBBLOQUE G2 — VISO Core
