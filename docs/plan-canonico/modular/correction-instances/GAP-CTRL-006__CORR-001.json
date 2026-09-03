@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "correction_id": "GAP-CTRL-006::CORR-001",
+  "task_id": "GAP-CTRL-006",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "DOCUMENTARY_CONTRADICTION",
+  "status": "PENDING_AUTHORIZATION",
+  "blocking": false,
+  "blocked_targets": [],
+  "baseline": {
+    "main_commit": "e78f0a3f37fd4791c32479e73ff3b543bfd1c394",
+    "target_task_path": "docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/07_REGISTRO_CANONICO_DE_BRECHAS.md",
+    "target_task_sha256": "5832c6ba52bdb2d6bd56ade77a58204dca558413fcc65ffb29287f53f11bd1e6",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [],
+  "authorized_changes": [],
+  "validation_commands": [],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
+  "authorization": null,
+  "evidence": [],
+  "opened_at": "2026-09-03T01:50:28.755Z"
+}
