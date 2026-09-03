@@ -8,6 +8,7 @@ import {
     assertCorrectionPaths,
     blockingCorrectionsForTarget,
     checkCorrectionScope,
+    computeBaselineAtRef,
     correctionBranchName,
     correctionIdFromHeadRef,
     correctionRecordRelativePath,
@@ -87,6 +88,22 @@ test('scope de corrección es deny-by-default', () => {
         () => assertCorrectionPaths(['docs/plan-canonico/modular/implementation-instances/AUTH-DB-033__GLOBAL.json'], record, { root: process.cwd(), baseRef: 'HEAD' }),
         /implementation-instances históricos/u,
     );
+});
+
+test('baseline documental soporta archivo propietario mayor al buffer por defecto', () => {
+    const baseline = computeBaselineAtRef({
+        root: process.cwd(),
+        ref: 'HEAD',
+        taskId: 'DELIV-PKG-015',
+    });
+
+    assert.equal(
+        baseline.target_task_path,
+        'docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md',
+    );
+    assert.match(baseline.target_task_sha256, /^[0-9a-f]{64}$/u);
+    assert.equal(baseline.target_instance_record_path, null);
+    assert.equal(baseline.target_instance_record_sha256, null);
 });
 
 test('tooling declara inmutabilidad de migraciones Supabase históricas', () => {
