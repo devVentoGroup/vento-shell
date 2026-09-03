@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1596** |
 | Tareas `AUTH` únicas | **319** |
-| Tareas aprobadas | **1107** |
+| Tareas aprobadas | **1108** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **489** |
+| Tareas no iniciadas | **488** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **69.36% (1107/1596)** |
+| Porcentaje de completamiento | **69.42% (1108/1596)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **VISO-AUTH-016 — Mostrar conflictos de configuración** |
-| Tarea actual | **VISO-AUTH-017 — Administrar excepciones individuales** |
+| Última tarea aprobada | **VISO-AUTH-017 — Administrar excepciones individuales** |
+| Tarea actual | **VISO-AUTH-018 — Auditar cambios de seguridad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **VISO-AUTH-018 — Auditar cambios de seguridad** |
+| Siguiente tarea | **VISO-AUTH-019 — Restringir quién administra seguridad** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
-| Progreso del bloque | **BLOQUES G Y G2: 16 de 26 aprobadas; VISO-AUTH-017 pendiente** |
+| Progreso del bloque | **BLOQUES G Y G2: 17 de 26 aprobadas; VISO-AUTH-018 pendiente** |
 | Estado de implementación | **DOCUMENTATION_ONLY** |
-| Acción principal obligatoria | **DOCUMENTAR_TAREA — VISO-AUTH-017** |
-| Carril documental | **ACTIVO — VISO-AUTH-017** |
+| Acción principal obligatoria | **DOCUMENTAR_TAREA — VISO-AUTH-018** |
+| Carril documental | **ACTIVO — VISO-AUTH-018** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `VISO-AUTH-016` — Mostrar conflictos de configuración |
-| Tarea actual | `VISO-AUTH-017` — Administrar excepciones individuales — **NO INICIADA** |
-| Siguiente tarea | `VISO-AUTH-018` — Auditar cambios de seguridad |
+| Última aprobada | `VISO-AUTH-017` — Administrar excepciones individuales |
+| Tarea actual | `VISO-AUTH-018` — Auditar cambios de seguridad — **NO INICIADA** |
+| Siguiente tarea | `VISO-AUTH-019` — Restringir quién administra seguridad |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 16 DE 26 APROBADAS — ACTUAL VISO-AUTH-017** |
+| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 17 DE 26 APROBADAS — ACTUAL VISO-AUTH-018** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-VISO-AUTH-016 — Mostrar conflictos de configuración
-        ↓
-TAREA ACTUAL
 VISO-AUTH-017 — Administrar excepciones individuales
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 VISO-AUTH-018 — Auditar cambios de seguridad
         ↓
+SIGUIENTE TAREA RESERVADA
+VISO-AUTH-019 — Restringir quién administra seguridad
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUES G Y G2 — 16 de 26 tareas aprobadas
+BLOQUES G Y G2 — 17 de 26 tareas aprobadas
 ```
