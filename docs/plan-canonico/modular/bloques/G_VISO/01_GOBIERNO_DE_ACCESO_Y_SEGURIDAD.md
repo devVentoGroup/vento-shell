@@ -14160,7 +14160,1889 @@ La identidad de cualquier unidad física futura se resolverá exclusivamente med
 `VISO-AUTH-017 — Administrar excepciones individuales`
 
 
-### [ ] VISO-AUTH-017 — Administrar excepciones individuales
+### ✅ VISO-AUTH-017 — Administrar excepciones individuales
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-AUTH-016 — Mostrar conflictos de configuración
+**Tarea siguiente:** VISO-AUTH-018 — Auditar cambios de seguridad
+**Tipo de tarea:** documental; definición del contrato administrativo canónico para consultar, solicitar, crear, aprobar, programar, suspender cuando corresponda, revocar y gobernar overrides individuales de autorización, separando concesiones base, concesiones operativas y denegaciones individuales por carril o transversales, sin convertir la excepción en un segundo rol, sin evadir denegaciones, contexto, segregación, territorio, vigencia o autoridad administrativa
+**Bloque:** `G_VISO — GOBIERNO DE ACCESO Y SEGURIDAD`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md`
+**Estado físico resultante:** contrato documental definido; materialización física diferida por unidad de implementación
+**Cambios físicos autorizados:** ninguno durante el cierre documental; la materialización futura permanece sujeta a `PER_IMPLEMENTATION_UNIT` y al gate `POST_E5_PACKAGE`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir de forma única cómo VISO administra excepciones individuales de autorización para trabajadores concretos sin reconstruir roles mediante permisos sueltos, sin usar la excepción como bypass, sin convertir una denegación en una concesión y sin permitir que la interfaz se convierta en fuente de autoridad.
+
+La unidad administrativa de esta tarea es el **override individual canónico**.
+
+Un override individual puede representar:
+
+```text
+CONCESIÓN INDIVIDUAL BASE
+CONCESIÓN INDIVIDUAL OPERATIVA
+DENEGACIÓN INDIVIDUAL BASE
+DENEGACIÓN INDIVIDUAL OPERATIVA
+BLOQUEO INDIVIDUAL TRANSVERSAL
+```
+
+La administración debe preservar:
+
+```text
+TRABAJADOR HUMANO
++
+PERMISO EXACTO
++
+TIPO DE OVERRIDE
++
+CARRIL
++
+ALCANCE
++
+RECURSO
++
+VIGENCIA
++
+MOTIVO
++
+SOLICITANTE
++
+APROBADOR
++
+VERSIÓN
++
+CONFLICTOS
++
+RESULTADO EFECTIVO
++
+AUDITORÍA
+```
+
+---
+
+#### 2. Handoff recibido de VISO-AUTH-016
+
+`VISO-AUTH-016` entrega conflictos ya clasificados.
+
+Esta tarea solo puede recibir un conflicto cuando su propietario real de resolución sea una excepción individual.
+
+El handoff puede conservar, cuando aplique:
+
+```text
+conflict_reference
+employee_reference
+permission_key
+lane
+scope
+source_reference
+effect
+validity
+reason
+```
+
+Reglas:
+
+1. un conflicto sistémico de matriz no se resuelve creando overrides por trabajador;
+2. un rol incorrecto no se corrige copiando los permisos del rol correcto;
+3. un área o sede incompatible no se corrige ampliando la excepción;
+4. una denegación aplicable no se neutraliza con un nuevo allow;
+5. una clave inexistente no se inventa como excepción;
+6. una configuración legacy sin intención verificable no se activa;
+7. un conflicto cuyo propietario es otra tarea permanece en esa tarea.
+
+---
+
+#### 3. Fuente contractual de la excepción
+
+La fuente documental común es:
+
+```text
+vento.authorization.individual-overrides@1.0.0
+```
+
+El seed canónico inicial contiene:
+
+```text
+0 concesiones individuales base
+0 concesiones individuales operativas
+0 denegaciones individuales base
+0 denegaciones individuales operativas
+0 bloqueos individuales transversales
+```
+
+Esta ausencia es una decisión normativa.
+
+No significa que la funcionalidad esté incompleta.
+
+Significa:
+
+```text
+SIN DECISIÓN EMPRESARIAL APROBADA
+→
+SIN OVERRIDE CANÓNICO INICIAL
+```
+
+Los registros posteriores son decisiones transaccionales de runtime y no reescriben retrospectivamente el seed inicial.
+
+---
+
+#### 4. Familias canónicas administrables
+
+El contrato reconoce dos familias:
+
+```text
+INDIVIDUAL_GRANT
+EXPLICIT_DENY
+```
+
+`INDIVIDUAL_GRANT` contiene:
+
+```text
+INDIVIDUAL_BASE_GRANT
+INDIVIDUAL_OPERATIONAL_GRANT
+```
+
+con:
+
+```text
+effect = ALLOW
+```
+
+`EXPLICIT_DENY` contiene:
+
+```text
+BASE_LANE_DENY
+OPERATIONAL_LANE_DENY
+ACTOR_WIDE_DENY
+```
+
+con:
+
+```text
+effect = DENY
+```
+
+`STRUCTURAL_DENY` no es administrable mediante overrides individuales.
+
+---
+
+#### 5. Qué constituye una excepción individual
+
+Una excepción individual existe para una necesidad particular de un trabajador humano concreto.
+
+Debe ser:
+
+- específica;
+- justificable;
+- auditable;
+- limitada por permiso;
+- limitada por carril;
+- limitada por scope;
+- limitada por recurso cuando corresponda;
+- temporal o revisable;
+- compatible con segregación de funciones;
+- evaluable mediante la misma decisión canónica del resto del sistema.
+
+Regla:
+
+```text
+NECESIDAD PARTICULAR
+→
+OVERRIDE INDIVIDUAL POSIBLE
+```
+
+No:
+
+```text
+NECESIDAD GENERAL DEL ROL
+→
+OVERRIDES MASIVOS
+```
+
+---
+
+#### 6. Qué NO constituye una excepción válida
+
+No se utilizarán overrides para:
+
+- reconstruir una matriz base incompleta;
+- reconstruir una matriz operativa incompleta;
+- asignar un oficio completo mediante permisos individuales;
+- convertir un rol base en rol operativo;
+- crear turno;
+- crear check-in;
+- crear sede activa;
+- crear área activa;
+- convertir sede seleccionada en autoridad;
+- convertir área seleccionada en autoridad;
+- crear permisos futuros no aprobados;
+- crear wildcard;
+- reutilizar un permiso amplio como alias;
+- conceder autoridad a un dispositivo;
+- convertir `service_role` en autorización empresarial;
+- ignorar un deny;
+- sustituir una condición estructural;
+- corregir un recurso inválido;
+- omitir una aprobación requerida;
+- permitir autoaprobación;
+- expandir una fila legacy uno-a-muchos.
+
+---
+
+#### 7. Sujeto obligatorio
+
+Todo override individual tiene como beneficiario o sujeto afectado un:
+
+```text
+employee_id
+```
+
+que representa un trabajador humano inequívoco.
+
+No se admitirá como sujeto:
+
+- nombre;
+- correo;
+- alias visual;
+- rol base;
+- rol operativo;
+- sede;
+- área;
+- dispositivo;
+- usuario técnico;
+- cliente;
+- servicio del sistema;
+- `service_role`.
+
+Un trabajador inactivo puede conservar historial, pero no utilizar una concesión vigente.
+
+---
+
+#### 8. Permiso exacto obligatorio
+
+Todo override debe vincularse a una `permission_key` exacta, activa y perteneciente a la versión de catálogo utilizada por la decisión.
+
+No se admiten:
+
+```text
+wildcards
+prefijos
+aliases implícitos
+nombres de pantalla
+nombres de módulo
+nombres de rol
+claves retiradas
+claves legacy bloqueadas
+```
+
+Una responsabilidad que no tenga permiso canónico activo permanece en default deny hasta que el catálogo la incorpore mediante su proceso propietario.
+
+---
+
+#### 9. Sobre común del registro
+
+Toda materialización futura deberá conservar la semántica de:
+
+```text
+override_id
+record_kind
+record_subtype
+employee_id
+permission_key
+authorization_lane
+effect
+scope_type
+scope_mode
+organization_id
+site_id
+site_type
+area_id
+area_kind
+resource_type
+resource_id
+relation_type
+resource_constraint
+effective_from
+effective_until
+timezone
+status
+reason_code
+justification
+evidence_reference
+source_reference
+requested_by
+approved_by
+created_by
+created_at
+updated_by
+updated_at
+reviewed_at
+revoked_by
+revoked_at
+revocation_reason
+version
+source_task
+```
+
+La estructura física podrá normalizarse en más de una tabla.
+
+No podrá perder ninguna dimensión que resulte necesaria para reproducir la decisión.
+
+---
+
+#### 10. Carriles permitidos
+
+Los carriles se preservan de forma explícita.
+
+```text
+INDIVIDUAL_BASE_GRANT
+→ BASE
+
+INDIVIDUAL_OPERATIONAL_GRANT
+→ OPERATIONAL
+
+BASE_LANE_DENY
+→ BASE
+
+OPERATIONAL_LANE_DENY
+→ OPERATIONAL
+
+ACTOR_WIDE_DENY
+→ ALL_COMPATIBLE
+```
+
+La UI no deduce el carril desde la tabla, pantalla, permiso seleccionado o rol visible.
+
+---
+
+#### 11. Concesión individual base
+
+Una concesión base:
+
+```text
+record_kind = INDIVIDUAL_GRANT
+record_subtype = INDIVIDUAL_BASE_GRANT
+authorization_lane = BASE
+effect = ALLOW
+```
+
+Puede representar:
+
+```text
+DIRECT_ALLOW
+BASE_COMPONENT
+```
+
+`DIRECT_ALLOW` puede satisfacer completamente el carril base cuando el permiso lo permita.
+
+`BASE_COMPONENT` aporta únicamente el componente base de una autorización de doble condición.
+
+---
+
+#### 12. Compatibilidad de concesión base
+
+| Modalidad | Resultado |
+| --- | --- |
+| `BASE_ONLY` | admite concesión base completa |
+| `BASE_OR_OPERATIONAL` | admite concesión base completa |
+| `BASE_AND_OPERATIONAL` | admite únicamente componente base |
+| `OPERATIONAL_ONLY` | configuración inválida |
+
+Una concesión base nunca completa el componente operativo.
+
+Una fila base para un permiso `OPERATIONAL_ONLY` debe rechazarse antes de activarse.
+
+---
+
+#### 13. Motivos de concesión base
+
+Los motivos estructurados admitidos son:
+
+```text
+TEMPORARY_ADMINISTRATIVE_COVERAGE
+SPECIALIZED_RESPONSIBILITY
+TERRITORIAL_RESPONSIBILITY_EXTENSION
+PROJECT_ASSIGNMENT
+CONTROLLED_READ_ACCESS
+DOUBLE_CONDITION_BASE_COMPONENT
+BUSINESS_CONTINUITY
+OTHER_APPROVED
+```
+
+`OTHER_APPROVED` requiere justificación reforzada.
+
+El motivo no cambia la modalidad ni el alcance máximo del permiso.
+
+---
+
+#### 14. Concesión individual operativa
+
+Una concesión operativa:
+
+```text
+record_kind = INDIVIDUAL_GRANT
+record_subtype = INDIVIDUAL_OPERATIONAL_GRANT
+authorization_lane = OPERATIONAL
+effect = ALLOW
+```
+
+Puede representar:
+
+```text
+DIRECT_ALLOW
+OPERATIONAL_COMPONENT
+```
+
+No constituye un segundo rol operativo.
+
+No modifica el rol efectivo del turno.
+
+---
+
+#### 15. Compatibilidad de concesión operativa
+
+| Modalidad | Resultado |
+| --- | --- |
+| `OPERATIONAL_ONLY` | admite concesión operativa completa |
+| `BASE_OR_OPERATIONAL` | admite concesión operativa completa |
+| `BASE_AND_OPERATIONAL` | admite únicamente componente operativo |
+| `BASE_ONLY` | configuración inválida |
+
+Toda concesión operativa exige:
+
+```text
+turno publicado y vigente
+```
+
+Además exige check-in y área cuando el contrato exacto del permiso los requiera.
+
+---
+
+#### 16. Roles operativos compatibles
+
+Una concesión operativa debe declarar una lista no vacía de roles operativos compatibles.
+
+El rol efectivo del turno debe coincidir con esa restricción.
+
+Ejemplos:
+
+```text
+excepción compatible con bodeguero
++
+turno de conductor_logistica
+→
+NO PARTICIPA
+```
+
+```text
+excepción compatible con cajero_satelite
++
+turno de cajero_satelite
++
+contexto válido
+→
+PUEDE PARTICIPAR
+```
+
+La ausencia de restricción no significa cualquier rol.
+
+---
+
+#### 17. Motivos de concesión operativa
+
+Los motivos estructurados admitidos son:
+
+```text
+TEMPORARY_OPERATIONAL_COVERAGE
+SPECIALIZED_OPERATIONAL_RESPONSIBILITY
+SUPERVISED_TRAINING
+PROJECT_OR_PILOT_ASSIGNMENT
+CONTROLLED_OPERATIONAL_READ_ACCESS
+DOUBLE_CONDITION_OPERATIONAL_COMPONENT
+BUSINESS_CONTINUITY
+OTHER_APPROVED
+```
+
+Una cobertura que reproduzca prácticamente todo otro oficio debe corregirse asignando el rol operativo correcto en el turno.
+
+---
+
+#### 18. Denegaciones individuales administrables
+
+La administración de excepciones incluye denegaciones individuales porque pertenecen al mismo contrato de overrides.
+
+Los subtipos son:
+
+```text
+BASE_LANE_DENY
+OPERATIONAL_LANE_DENY
+ACTOR_WIDE_DENY
+```
+
+No son grants negativos.
+
+Son decisiones explícitas que prevalecen conforme al evaluador canónico.
+
+---
+
+#### 19. Compatibilidad de denegaciones
+
+| Modalidad | Base deny | Operational deny | Actor-wide deny |
+| --- | ---: | ---: | ---: |
+| `BASE_ONLY` | Sí | No | Sí |
+| `OPERATIONAL_ONLY` | No | Sí | Sí |
+| `BASE_OR_OPERATIONAL` | Sí | Sí | Sí |
+| `BASE_AND_OPERATIONAL` | Sí | Sí | Sí |
+
+Un deny en carril incompatible:
+
+```text
+NO SE ACTIVA
++
+CONFIGURACIÓN INVÁLIDA
+```
+
+No amplía el efecto del deny.
+
+---
+
+#### 20. Precedencia
+
+La precedencia permanece:
+
+```text
+STRUCTURAL_DENY
+>
+ACTOR_WIDE_DENY
+>
+LANE_DENY
+>
+ALLOW
+>
+DEFAULT_DENY
+```
+
+Consecuencias:
+
+1. un allow individual no vence un deny aplicable;
+2. un allow posterior no neutraliza un deny;
+3. un allow más específico no vence un deny que coincida;
+4. revocar un deny no crea un allow;
+5. si no queda ningún allow aplicable después de revocar un deny, el resultado es default deny.
+
+---
+
+#### 21. Motivos de denegación
+
+Las categorías estructuradas admitidas son:
+
+```text
+SEGREGATION_OF_DUTIES
+TEMPORARY_RESPONSIBILITY_RESTRICTION
+TRAINING_OR_CERTIFICATION_REQUIRED
+SECURITY_INCIDENT
+CREDENTIAL_OR_IDENTITY_RISK
+INVESTIGATION_HOLD
+DATA_PROTECTION_RESTRICTION
+FINANCIAL_CONTROL_RESTRICTION
+OPERATIONAL_SAFETY_RESTRICTION
+CONTRACTUAL_RESTRICTION
+OTHER_APPROVED
+```
+
+La explicación humana debe ser suficiente para la decisión administrativa y minimizar datos confidenciales.
+
+---
+
+#### 22. Scope del override
+
+El scope nunca se deriva del contexto visual.
+
+El registro puede utilizar únicamente un alcance que el contrato exacto del permiso admita.
+
+Las dimensiones conceptuales incluyen, cuando corresponda:
+
+```text
+ORGANIZATION
+ASSIGNED_SITES
+SPECIFIC_SITE
+SITE_TYPE_EXPLICIT
+ASSIGNED_AREAS
+SPECIFIC_AREA
+AREA_KIND_EXPLICIT
+OWN_RESOURCE
+RELATED_RESOURCE_SET
+SPECIFIC_RESOURCE
+GLOBAL_PERMISSION
+```
+
+`GLOBAL_PERMISSION` es excepcional y requiere que la semántica del permiso lo permita.
+
+---
+
+#### 23. Regla de null
+
+```text
+null
+≠
+GLOBAL
+```
+
+Un campo territorial nulo debe ser coherente con `scope_type`.
+
+No se usará ausencia de sede, área, modo o recurso para ampliar cobertura.
+
+---
+
+#### 24. Territorio y recurso
+
+El servidor debe resolver el recurso real y su territorio.
+
+Una excepción no puede confiar únicamente en:
+
+- `site_id` enviado por cliente;
+- `area_id` enviado por cliente;
+- sede seleccionada;
+- área seleccionada;
+- sede primaria;
+- área primaria;
+- texto de un formulario.
+
+Cuando un recurso sea multiterritorial se aplicará su contrato exacto de origen, destino y relaciones.
+
+---
+
+#### 25. Vigencia de concesiones
+
+Las concesiones individuales base y operativas admiten:
+
+```text
+DRAFT
+PENDING_APPROVAL
+SCHEDULED
+ACTIVE
+SUSPENDED
+REVOKED
+EXPIRED
+REJECTED
+```
+
+Reglas:
+
+1. `DRAFT` no concede;
+2. `PENDING_APPROVAL` no concede;
+3. `SCHEDULED` no concede antes de `effective_from`;
+4. `ACTIVE` puede participar únicamente si todos los demás requisitos son válidos;
+5. `SUSPENDED` no participa;
+6. `REVOKED` no participa;
+7. `EXPIRED` no participa;
+8. `REJECTED` nunca participa;
+9. una vigencia futura no se adelanta;
+10. una vigencia vencida no depende de que un cron haya limpiado la fila.
+
+---
+
+#### 26. Vigencia de denegaciones
+
+Las denegaciones admiten:
+
+```text
+DRAFT
+SCHEDULED
+ACTIVE
+REVOKED
+EXPIRED
+REJECTED
+```
+
+Las denegaciones no utilizan:
+
+```text
+SUSPENDED
+```
+
+Un deny programado empieza a bloquear únicamente cuando entra en vigencia.
+
+Un deny revocado deja de participar en nuevas decisiones, pero conserva historial.
+
+---
+
+#### 27. Aprobación separada de creación
+
+Crear un registro no lo hace autoritativo.
+
+Regla:
+
+```text
+CREATE
+≠
+APPROVE
+≠
+ACTIVE
+```
+
+Toda decisión que requiera aprobación debe conservar un actor aprobador autorizado diferente del beneficiario y compatible con las reglas de segregación.
+
+Una concesión sensible, global o de doble condición puede exigir controles reforzados antes de activarse.
+
+---
+
+#### 28. Autoaprobación prohibida
+
+Para concesiones:
+
+- el beneficiario no aprueba su propia concesión;
+- el solicitante no se autoaprueba cuando el contrato exige separación;
+- el operador técnico no obtiene autoridad empresarial por mantener el registro.
+
+Para denegaciones:
+
+- el trabajador afectado no crea, aprueba, modifica, revoca ni neutraliza su propia denegación;
+- las restricciones sensibles o transversales exigen gobierno reforzado.
+
+---
+
+#### 29. Flujo de una concesión base
+
+El flujo administrativo es:
+
+```text
+NECESIDAD PARTICULAR
+→
+VALIDAR TRABAJADOR
+→
+VALIDAR PERMISO Y MODALIDAD
+→
+VALIDAR MATRIZ BASE Y REDUNDANCIA
+→
+VALIDAR SCOPE Y RECURSO
+→
+VALIDAR SENSIBILIDAD Y SEGREGACIÓN
+→
+VALIDAR CONFLICTOS
+→
+SOLICITAR
+→
+APROBAR O RECHAZAR
+→
+PROGRAMAR O ACTIVAR
+→
+REVISAR
+→
+SUSPENDER O REVOCAR O EXPIRAR
+```
+
+La aprobación debe evaluar el resultado efectivo prospectivo, no únicamente la fila nueva.
+
+---
+
+#### 30. Flujo de una concesión operativa
+
+El flujo administrativo es:
+
+```text
+NECESIDAD PARTICULAR
+→
+VALIDAR TRABAJADOR
+→
+VALIDAR PERMISO Y MODALIDAD
+→
+VALIDAR MATRIZ OPERATIVA Y REDUNDANCIA
+→
+DEFINIR ROLES OPERATIVOS COMPATIBLES
+→
+VALIDAR SCOPE Y RECURSO
+→
+VALIDAR TURNO, CHECK-IN Y ÁREA EXIGIDOS
+→
+VALIDAR SENSIBILIDAD Y SEGREGACIÓN
+→
+VALIDAR CONFLICTOS
+→
+SOLICITAR
+→
+APROBAR O RECHAZAR
+→
+PROGRAMAR O ACTIVAR
+→
+REVISAR
+→
+SUSPENDER O REVOCAR O EXPIRAR
+```
+
+La concesión puede estar administrativamente vigente y no autorizar una acción si falta el contexto operativo.
+
+---
+
+#### 31. Flujo de una denegación
+
+El flujo administrativo es:
+
+```text
+NECESIDAD DE RESTRICCIÓN
+→
+VALIDAR TRABAJADOR
+→
+VALIDAR PERMISO EXACTO
+→
+VALIDAR CLASE Y CARRIL
+→
+VALIDAR SCOPE Y RECURSO
+→
+VALIDAR VIGENCIA Y MOTIVO
+→
+VALIDAR SEGREGACIÓN
+→
+VALIDAR CONFLICTOS
+→
+VALIDAR RECUPERACIÓN DE SEGURIDAD CUANDO APLIQUE
+→
+CREAR
+→
+APROBAR O RECHAZAR
+→
+PROGRAMAR O ACTIVAR
+→
+REVOCAR O EXPIRAR
+```
+
+No existe suspensión de denegaciones.
+
+---
+
+#### 32. Prevención de redundancia
+
+Antes de crear una concesión se debe evaluar si ya existe cobertura suficiente.
+
+Se rechazará como redundante cuando:
+
+- la matriz de rol ya concede el mismo permiso con alcance suficiente;
+- otra concesión individual activa ya cubre completamente la necesidad;
+- una fila legacy se normaliza a una concesión ya existente;
+- el cambio no añade ninguna capacidad verificable.
+
+Regla:
+
+```text
+RESPONSABILIDAD ESTRUCTURAL
+→
+MATRIZ
+
+RESPONSABILIDAD PARTICULAR
+→
+OVERRIDE
+```
+
+---
+
+#### 33. Redundancia no restringe
+
+Una concesión positiva más específica no reduce una concesión positiva más amplia.
+
+Ejemplo:
+
+```text
+ROL
+→ ALLOW GLOBAL
+
+OVERRIDE POSITIVO
+→ MISMO PERMISO EN UNA SEDE
+```
+
+Resultado:
+
+```text
+EL ALLOW GLOBAL SIGUE VIGENTE
+```
+
+Para restringir una parte del alcance se requiere un deny aplicable, no un grant más estrecho.
+
+---
+
+#### 34. Conflictos antes de guardar
+
+Toda creación, aprobación, programación, activación, suspensión o revocación deberá consumir la clasificación de `VISO-AUTH-016`.
+
+Regla:
+
+```text
+SNAPSHOT VIGENTE
++
+CAMBIO DE OVERRIDE
+→
+SNAPSHOT PROSPECTIVO
+→
+DETECTAR CONFLICTOS
+→
+CALCULAR EFECTO
+→
+DECIDIR MUTACIÓN
+```
+
+Un conflicto bloqueante dentro del alcance afectado impide la mutación.
+
+Una deuda legacy no relacionada no congela toda la administración.
+
+---
+
+#### 35. Deny existente frente a nueva concesión
+
+Si un deny aplicable prevalece sobre la concesión propuesta:
+
+```text
+GRANT PROPUESTO
++
+DENY APLICABLE
+→
+EL GRANT NO PRODUCE AUTORIDAD
+```
+
+Si además la combinación constituye un conflicto bloqueante según `VISO-AUTH-016`, la mutación se rechaza.
+
+Si los periodos o scopes no coinciden y no existe conflicto, la concesión puede conservarse como decisión futura o separada sin falsificar su efecto.
+
+---
+
+#### 36. Concesión existente frente a nuevo deny
+
+Un deny aprobado puede restringir una concesión existente sin eliminarla.
+
+La procedencia deberá conservar:
+
+- concesión coincidente;
+- deny aplicable;
+- carril;
+- scope;
+- vigencia;
+- resultado final.
+
+La UI no eliminará el grant para representar el efecto del deny.
+
+---
+
+#### 37. Componentes BASE_AND_OPERATIONAL
+
+Para una concesión base:
+
+```text
+BASE_COMPONENT
+```
+
+no autoriza por sí sola.
+
+Para una concesión operativa:
+
+```text
+OPERATIONAL_COMPONENT
+```
+
+no autoriza por sí sola.
+
+La decisión final requiere:
+
+```text
+BASE ALLOW VÁLIDO
++
+OPERATIONAL ALLOW VÁLIDO
++
+MISMO ACTOR
++
+MISMO PERMISO
++
+MISMO RECURSO
++
+MISMA SOLICITUD
++
+CONTEXTO VÁLIDO
++
+SIN DENY
+```
+
+No se combinan componentes de personas distintas.
+
+---
+
+#### 38. Segregación de funciones
+
+Una excepción no reduce controles de segregación.
+
+No se utilizará para permitir que una misma persona:
+
+- capture y apruebe la misma diferencia cuando se exigen actores distintos;
+- prepare, transporte y reciba una operación cuando el contrato lo separa;
+- cree y apruebe su propia excepción;
+- genere y valide su propia evidencia sensible;
+- obtenga ambos componentes de una doble condición mediante autoaprobación.
+
+Una necesidad excepcional de negocio no elimina la separación contractual.
+
+---
+
+#### 39. Recuperación de seguridad
+
+Antes de activar una denegación que afecte capacidades de seguridad o recuperación debe demostrarse:
+
+```text
+AL MENOS UN PRINCIPAL DE RECUPERACIÓN VÁLIDO
+```
+
+No se permitirá dejar la organización sin capacidad para:
+
+- administrar propietarios;
+- recuperar acceso de seguridad;
+- revocar bloqueos críticos;
+- restaurar la administración del catálogo;
+- ejecutar la recuperación autorizada.
+
+---
+
+#### 40. Exactitud de capacidades administrativas
+
+El catálogo vigente separa exactamente las capacidades de administración.
+
+Concesiones base:
+
+```text
+viso.authorization.base_grants.view
+viso.authorization.base_grants.create
+viso.authorization.base_grants.approve
+viso.authorization.base_grants.suspend
+viso.authorization.base_grants.revoke
+```
+
+Concesiones operativas:
+
+```text
+viso.authorization.operational_grants.view
+viso.authorization.operational_grants.create
+viso.authorization.operational_grants.approve
+viso.authorization.operational_grants.suspend
+viso.authorization.operational_grants.revoke
+```
+
+Denegaciones:
+
+```text
+viso.authorization.denials.view
+viso.authorization.denials.create
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+No existe una capacidad única que permita administrar todo el universo de overrides.
+
+---
+
+#### 41. Permiso de lectura no concede mutación
+
+Las capacidades:
+
+```text
+base_grants.view
+operational_grants.view
+denials.view
+```
+
+permiten consultar la familia correspondiente dentro del alcance autorizado.
+
+No conceden:
+
+- crear;
+- aprobar;
+- suspender;
+- revocar;
+- ampliar territorio;
+- administrar otra familia.
+
+La presencia de un botón en la interfaz tampoco concede la acción.
+
+---
+
+#### 42. Permiso create no concede approve
+
+Las capacidades `.create` permiten iniciar la creación de la familia exacta.
+
+No implican:
+
+```text
+.approve
+.suspend
+.revoke
+```
+
+Una solicitud creada por un actor sin capacidad de aprobar debe permanecer no autoritativa hasta que intervenga un aprobador válido.
+
+---
+
+#### 43. Permiso approve
+
+Las capacidades `.approve` autorizan únicamente la decisión de aprobación de su familia exacta, sujeta a:
+
+- actor efectivo;
+- territorio;
+- estado actual;
+- snapshot;
+- conflictos;
+- segregación;
+- sensibilidad;
+- vigencia;
+- efecto prospectivo;
+- reglas de recuperación cuando aplique.
+
+Aprobar no permite modificar silenciosamente los datos de la solicitud para hacerla aprobable.
+
+---
+
+#### 44. Suspensión exclusiva de grants
+
+El catálogo contiene:
+
+```text
+base_grants.suspend
+operational_grants.suspend
+```
+
+No contiene:
+
+```text
+denials.suspend
+```
+
+Por tanto:
+
+- las concesiones pueden entrar en `SUSPENDED`;
+- las denegaciones no pueden entrar en `SUSPENDED`;
+- una denegación se mantiene, expira, es rechazada o se revoca según su contrato.
+
+---
+
+#### 45. Revocación
+
+La revocación es una mutación protegida y no equivale a borrado físico.
+
+Revocar un grant:
+
+```text
+EL GRANT DEJA DE PARTICIPAR
+```
+
+Revocar un deny:
+
+```text
+EL DENY DEJA DE PARTICIPAR
+→
+REEVALUAR ALLOWS
+```
+
+No:
+
+```text
+REVOKE DENY
+→
+ALLOW AUTOMÁTICO
+```
+
+---
+
+#### 46. No inventar update ni reactivate
+
+El catálogo vigente de esta familia no contiene capacidades independientes:
+
+```text
+base_grants.update
+base_grants.reactivate
+operational_grants.update
+operational_grants.reactivate
+denials.update
+denials.reactivate
+```
+
+Por tanto, esta tarea no inventa esas acciones.
+
+La existencia contractual de eventos como `updated` o `reactivated` no autoriza por sí sola una acción de interfaz.
+
+Una modificación material de una decisión ya aprobada deberá:
+
+- conservar versión;
+- volver a validar el resultado;
+- utilizar una acción exacta ya autorizada por contrato cuando exista;
+- o resolverse mediante nueva decisión, suspensión o revocación según corresponda.
+
+La materialización física no podrá mapear una mutación nueva a un permiso parecido por conveniencia.
+
+---
+
+#### 47. Concurrencia optimista
+
+Todo registro conserva:
+
+```text
+version
+updated_at
+```
+
+La mutación debe partir de la versión que el actor revisó.
+
+Si el registro cambia:
+
+```text
+VERSION CAMBIA
+→
+SNAPSHOT OBSOLETO
+→
+REVALIDAR
+```
+
+No se permite sobrescritura silenciosa de una aprobación, revocación o suspensión concurrente.
+
+---
+
+#### 48. Expiración
+
+La expiración se evalúa durante autorización.
+
+No depende exclusivamente de un proceso programado.
+
+Una concesión o deny vencido:
+
+- permanece en historial;
+- no participa en una decisión nueva;
+- no se elimina para limpiar la interfaz;
+- conserva su fuente y versión.
+
+---
+
+#### 49. Invalidación de caché y autoridad derivada
+
+Activar, suspender, revocar o expirar un override debe invalidar cualquier autoridad derivada afectada.
+
+No se permitirá que:
+
+- una sesión conserve un grant suspendido;
+- un dispositivo conserve una capacidad revocada;
+- una aplicación use indefinidamente permisos cargados al iniciar sesión;
+- una cola offline ejecute con autoridad anterior;
+- un deny revocado permanezca bloqueando por caché obsoleta.
+
+La estrategia física de invalidación se materializa posteriormente.
+
+---
+
+#### 50. Simulación
+
+La simulación puede evaluar un override propuesto sin activarlo.
+
+Debe permanecer separado:
+
+```text
+PROPUESTA
+≠
+AUTORIDAD REAL
+```
+
+Una simulación puede mostrar:
+
+- efecto del grant;
+- efecto del deny;
+- conflicto;
+- redundancia;
+- falta de contexto;
+- resultado esperado.
+
+No puede:
+
+- crear el override real;
+- aprobarlo;
+- revocarlo;
+- suspenderlo;
+- firmar como el trabajador simulado.
+
+---
+
+#### 51. Origen y explicación
+
+Cuando un override participe en una decisión, `VISO-AUTH-015` debe poder explicarlo.
+
+Concesiones individuales preservan:
+
+```text
+INDIVIDUAL_BASE
+INDIVIDUAL_OPERATIONAL
+```
+
+Las denegaciones preservan su clase, carril, scope y reason code.
+
+La administración no puede ocultar el origen individual bajo el nombre del rol.
+
+---
+
+#### 52. Legacy: 17 filas conocidas
+
+El contrato conserva un universo histórico esperado de:
+
+```text
+17 filas legacy de employee_permissions
+```
+
+con:
+
+```text
+0 concesiones funcionales canónicas confirmadas
+0 denegaciones funcionales canónicas confirmadas
+0 migraciones automáticas autorizadas
+```
+
+La mera existencia física de una fila legacy no la convierte en override canónico.
+
+---
+
+#### 53. Clasificación legacy
+
+Cada fila legacy debe clasificarse exactamente en una categoría de transición como:
+
+```text
+LEGACY_REDUNDANT_WITH_BASE_MATRIX
+LEGACY_REDUNDANT_WITH_OPERATIONAL_MATRIX
+LEGACY_DUPLICATE
+LEGACY_INACTIVE_EMPLOYEE
+LEGACY_TECHNICAL_OR_DEVICE_IDENTITY
+LEGACY_PERMISSION_RETIRED
+LEGACY_PERMISSION_REPLACED
+LEGACY_GRANT_UNRESOLVED
+LEGACY_DENY_UNRESOLVED
+MIGRATION_CANDIDATE_PENDING_APPROVAL
+MIGRATED_TO_CANONICAL_OVERRIDE
+RETIRED_AFTER_RECONCILIATION
+```
+
+La clasificación de transición no concede autoridad.
+
+---
+
+#### 54. Legacy no se administra como runtime normal
+
+Mientras una fila legacy no haya sido reconciliada:
+
+- no se trata como grant canónico;
+- no se trata como deny canónico;
+- no se amplía;
+- no se renueva;
+- no se copia a otro trabajador;
+- no se convierte en paquete de permisos;
+- no se utiliza como plantilla.
+
+La migración física, backfill y retiro pertenecen al BLOQUE R y al package correspondiente.
+
+---
+
+#### 55. Reconciliación AS-IS de VISO
+
+El VISO físico actual contiene una superficie de trabajador con “Permisos puntuales” que:
+
+- lee `employee_permissions`;
+- permite escoger un permiso;
+- permite alcance `global` o `site`;
+- permite escoger `Permitir` o `Denegar`;
+- inserta y elimina filas de `employee_permissions`;
+- protege esas acciones con el permiso legacy amplio `viso.staff.permissions.manage`.
+
+Esa superficie no implementa todavía el contrato canónico completo de esta tarea.
+
+---
+
+#### 56. Brechas AS-IS del panel actual
+
+El panel observado no representa de forma explícita:
+
+- `record_kind`;
+- `record_subtype`;
+- carril;
+- modalidad del permiso;
+- roles operativos compatibles;
+- lifecycle de grants;
+- lifecycle de denies;
+- `effective_from`;
+- `effective_until`;
+- timezone;
+- reason code;
+- justificación;
+- solicitante;
+- aprobador;
+- evidencia;
+- revisión;
+- versión;
+- segregación;
+- redundancia;
+- resultado prospectivo;
+- conflicto canónico;
+- principal de recuperación;
+- separación de las catorce capacidades administrativas.
+
+Por tanto:
+
+```text
+employee_permissions AS-IS
+≠
+individual-overrides canónico
+```
+
+---
+
+#### 57. Clave legacy amplia del AS-IS
+
+El permiso:
+
+```text
+viso.staff.permissions.manage
+```
+
+pertenece al conjunto legacy bloqueado por el catálogo canónico.
+
+No puede conservarse como autorización final de la futura administración de overrides.
+
+La futura materialización deberá utilizar las capacidades atómicas de `viso.authorization.*`.
+
+Esta tarea no cambia físicamente el consumidor actual.
+
+---
+
+#### 58. Cliente administrativo no sustituye autorización
+
+El uso de un cliente administrativo en servidor no concede autoridad empresarial.
+
+La mutación futura debe validar antes de escribir:
+
+```text
+PRINCIPAL
++
+ACTOR EFECTIVO
++
+PERMISO ADMINISTRATIVO EXACTO
++
+TERRITORIO
++
+SUJETO OBJETIVO
++
+OVERRIDE OBJETIVO
++
+ESTADO ACTUAL
++
+VERSIÓN
++
+CONFLICTOS
++
+EFECTO PROSPECTIVO
+→
+MUTACIÓN POSIBLE
+```
+
+La credencial técnica se utiliza para ejecutar la operación autorizada, no para decidir quién puede realizarla.
+
+---
+
+#### 59. Frontera frente a VISO-AUTH-018
+
+Esta tarea exige que toda mutación sea auditable y conserva los eventos contractuales existentes.
+
+No define la experiencia completa de auditoría.
+
+`VISO-AUTH-018` es responsable de:
+
+- consultar cambios de seguridad;
+- reconstruir antes y después;
+- correlacionar actor, decisión y evidencia;
+- presentar historial administrativo;
+- definir filtros y cobertura de auditoría de seguridad.
+
+Esta tarea solo entrega a la siguiente la identidad suficiente del override y de su transición.
+
+---
+
+#### 60. Handoff a VISO-AUTH-018
+
+Cada transición administrativa debe dejar reconstruibles, cuando apliquen:
+
+```text
+override_id
+record_kind
+record_subtype
+employee_id
+permission_key
+authorization_lane
+effect
+scope
+validity
+status_before
+status_after
+version_before
+version_after
+requested_by
+approved_by
+mutated_by
+reason_code
+source_reference
+conflict_reference
+decision_reference
+occurred_at
+```
+
+`VISO-AUTH-018` administra la auditoría de estos cambios.
+
+No reinterpreta la autorización.
+
+---
+
+#### 61. Frontera frente a VISO-AUTH-019
+
+Esta tarea define **qué permiso exacto protege cada clase de acción**.
+
+No decide qué rol, trabajador o administrador recibe esas capacidades.
+
+`VISO-AUTH-019` permanece responsable de:
+
+- quién puede administrar seguridad;
+- qué territorio puede administrar;
+- qué capacidades de recuperación existen;
+- qué actores pueden aprobar operaciones sensibles;
+- qué restricciones adicionales aplican a administradores.
+
+La existencia de una capacidad en el catálogo no concede la capacidad a nadie.
+
+---
+
+#### 62. Casos mínimos de concesión base
+
+| Caso | Resultado |
+| --- | --- |
+| permiso `BASE_ONLY`, necesidad individual real, scope válido | candidato válido |
+| permiso `BASE_OR_OPERATIONAL`, carril base | candidato válido |
+| permiso `BASE_AND_OPERATIONAL`, carril base | solo `BASE_COMPONENT` |
+| permiso `OPERATIONAL_ONLY` | configuración inválida |
+| matriz base ya cubre completamente el scope | redundante |
+| deny aplicable | el deny prevalece |
+| trabajador inactivo | no autoriza |
+| permiso inactivo | no autoriza |
+| identidad técnica | inválido |
+| wildcard | inválido |
+
+---
+
+#### 63. Casos mínimos de concesión operativa
+
+| Caso | Resultado |
+| --- | --- |
+| permiso `OPERATIONAL_ONLY`, rol compatible, contexto válido | candidato válido |
+| permiso `BASE_OR_OPERATIONAL`, carril operativo | candidato válido |
+| permiso `BASE_AND_OPERATIONAL`, carril operativo | solo `OPERATIONAL_COMPONENT` |
+| permiso `BASE_ONLY` | configuración inválida |
+| turno ausente | no autoriza |
+| check-in requerido ausente | no autoriza |
+| área requerida ausente | no autoriza |
+| rol efectivo incompatible | no participa |
+| paquete que reproduce otro oficio | inválido; corregir rol del turno |
+| deny aplicable | el deny prevalece |
+
+---
+
+#### 64. Casos mínimos de denegación
+
+| Caso | Resultado |
+| --- | --- |
+| `BASE_LANE_DENY` sobre `BASE_ONLY` | compatible |
+| `OPERATIONAL_LANE_DENY` sobre `BASE_ONLY` | inválido |
+| `OPERATIONAL_LANE_DENY` sobre `OPERATIONAL_ONLY` | compatible |
+| `BASE_LANE_DENY` sobre `OPERATIONAL_ONLY` | inválido |
+| lane deny en `BASE_OR_OPERATIONAL` | bloquea solo ese carril |
+| lane deny en `BASE_AND_OPERATIONAL` | bloquea resultado final |
+| `ACTOR_WIDE_DENY` | bloquea todos los carriles compatibles |
+| deny sin motivo | no activar |
+| deny wildcard | inválido |
+| deny sobre dispositivo | inválido |
+| deny que elimina todo principal de recuperación | no activar |
+
+---
+
+#### 65. Eventos contractuales de grants base
+
+Se preservan:
+
+```text
+individual_base_grant_requested
+individual_base_grant_approved
+individual_base_grant_rejected
+individual_base_grant_scheduled
+individual_base_grant_activated
+individual_base_grant_updated
+individual_base_grant_suspended
+individual_base_grant_reactivated
+individual_base_grant_revoked
+individual_base_grant_expired
+individual_base_grant_redundancy_detected
+individual_base_grant_conflict_detected
+```
+
+Un nombre de evento no crea por sí mismo una capacidad administrativa.
+
+---
+
+#### 66. Eventos contractuales de grants operativos
+
+Se preservan:
+
+```text
+individual_operational_grant_requested
+individual_operational_grant_approved
+individual_operational_grant_rejected
+individual_operational_grant_scheduled
+individual_operational_grant_activated
+individual_operational_grant_used
+individual_operational_grant_blocked
+individual_operational_grant_updated
+individual_operational_grant_suspended
+individual_operational_grant_reactivated
+individual_operational_grant_revoked
+individual_operational_grant_expired
+individual_operational_grant_redundancy_detected
+individual_operational_grant_conflict_detected
+```
+
+---
+
+#### 67. Eventos contractuales de denies
+
+Se preservan:
+
+```text
+deny_created
+deny_scheduled
+deny_approved
+deny_activated
+deny_updated
+deny_revoked
+deny_expired
+deny_rejected
+deny_conflict_detected
+deny_recovery_risk_detected
+```
+
+No existe `deny_suspended` dentro del contrato canónico.
+
+---
+
+#### 68. Eventos de transición legacy
+
+La reconciliación posterior conserva:
+
+```text
+legacy_override_discovered
+legacy_override_classified
+legacy_override_blocked
+legacy_override_migration_proposed
+legacy_override_migrated
+legacy_override_retired
+legacy_override_reconciliation_failed
+```
+
+Estos eventos de migración no convierten por sí mismos una fila legacy en fuente de autoridad.
+
+---
+
+#### 69. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La administración de excepciones, su efecto prospectivo, los conflictos, el territorio, la separación de carriles, la segregación, la revocación, la auditoría y la coherencia entre evaluadores ya están cubiertos por requisitos vigentes.
+
+Esta tarea desarrolla la semántica administrativa de esos contratos existentes sin crear un nuevo permiso empresarial, una nueva modalidad de autorización, una nueva clase de override, un nuevo tipo de deny, un nuevo estado laboral ni una nueva transición de negocio.
+
+---
+
+#### 70. Cobertura de prueba vigente reutilizada
+
+Sin modificar el registro, se reutiliza:
+
+- `TREQ-VISO-001` — VISO administra excepciones mostrando efecto antes de guardar, detectando conflictos, indicando origen, respetando territorio y conservando auditoría;
+- `TREQ-AUTH-001` — toda capacidad protegida se resuelve mediante permisos, contexto y alcance canónicos;
+- `TREQ-AUTH-004` — evaluadores equivalentes deben producir la misma decisión y no incorporar excepciones locales no declaradas;
+- `TREQ-AUTH-007` — la administración de permisos y disponibilidad requiere capacidad administrativa explícita y territorio autorizado;
+- `TREQ-AUTH-008` — capacidades base y operativas conservan sus requisitos propios;
+- `TREQ-AUTH-009` — sede y área efectivas se resuelven determinísticamente;
+- `TREQ-AUTH-010` — las matrices preservan segregación de funciones y las concesiones individuales no neutralizan denegaciones transversales;
+- `TREQ-AUTH-011` — el dispositivo compartido limita la autoridad del trabajador y no la amplía;
+- `TREQ-AUTH-012` — simulación y autoridad real permanecen separadas;
+- `TREQ-AUTH-013` — toda mutación protegida revalida autoridad, contexto y recurso en servidor;
+- `TREQ-AUTH-014` — cambios de actor, turno, área, dispositivo, rol o asignación invalidan decisiones derivadas;
+- `TREQ-AUTH-015` — toda decisión y acción protegida conserva evidencia correlacionable;
+- `TREQ-AUTH-016` — revocaciones y cambios de vínculo eliminan autoridad residual y fuerzan invalidación coordinada;
+- `TREQ-AUTH-165` — simulación, override de rol, dispositivo, nombre privilegiado o `service_role` no sustituyen un permiso empresarial real.
+
+Estas referencias son trazabilidad heredada. No cambian contenido, estado, paquete, evidencia ni secuencia.
+
+---
+
+#### 71. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La definición documental no ejecutó build del checkout local propietario. |
+| LOCAL | NOT_EXECUTED | La tarea todavía no fue insertada, normalizada ni validada en la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, cierre de `VISO-AUTH-016`, continuidad, protocolo, contrato de entrega, manifest, topología, políticas de tarea, contratos de concesiones base y operativas, denegaciones, dataset individual, catálogo físico vigente, 04A aplicable, validadores documentales, código AS-IS de VISO y panel actual de permisos puntuales. |
+| OPERATIVA | NOT_APPLICABLE | No se crearon, aprobaron, suspendieron, revocaron, migraron ni modificaron overrides reales, trabajadores, roles, permisos, turnos o denegaciones. |
+| FÍSICA | NOT_EXECUTED | No se modificaron VISO, Supabase, tablas, datasets físicos, RPC, RLS, migraciones, código, packages ni despliegues. |
+
+---
+
+#### 72. Criterios de aceptación
+
+- [ ] El universo administrado distingue `INDIVIDUAL_GRANT` de `EXPLICIT_DENY`.
+- [ ] Se preservan `INDIVIDUAL_BASE_GRANT` e `INDIVIDUAL_OPERATIONAL_GRANT`.
+- [ ] Se preservan `BASE_LANE_DENY`, `OPERATIONAL_LANE_DENY` y `ACTOR_WIDE_DENY`.
+- [ ] `STRUCTURAL_DENY` queda fuera de la administración de overrides.
+- [ ] El seed individual inicial conserva cero registros canónicos.
+- [ ] Las 17 filas legacy no se activan automáticamente.
+- [ ] Cada override pertenece a un trabajador humano exacto.
+- [ ] Dispositivos y `service_role` no pueden ser beneficiarios.
+- [ ] Cada override utiliza `permission_key` exacta y activa.
+- [ ] No existen wildcards ni aliases implícitos.
+- [ ] El carril se declara explícitamente.
+- [ ] Una concesión base `OPERATIONAL_ONLY` se rechaza.
+- [ ] Una concesión operativa `BASE_ONLY` se rechaza.
+- [ ] `BASE_AND_OPERATIONAL` conserva componentes separados.
+- [ ] Los componentes no se combinan entre personas.
+- [ ] Una concesión operativa exige turno vigente.
+- [ ] Check-in se exige cuando el permiso lo declara.
+- [ ] Área activa se exige cuando el permiso lo declara.
+- [ ] La concesión operativa declara roles operativos compatibles.
+- [ ] El rol efectivo del turno debe ser compatible.
+- [ ] Una excepción no reconstruye otro oficio.
+- [ ] Una necesidad estructural del rol se devuelve a la matriz propietaria.
+- [ ] Una concesión redundante se rechaza.
+- [ ] Una concesión positiva más específica no restringe un allow más amplio.
+- [ ] Un deny aplicable prevalece sobre cualquier allow individual.
+- [ ] Revocar un deny no crea un allow.
+- [ ] Los tres subtipos de deny respetan la modalidad del permiso.
+- [ ] Un deny incompatible no se activa.
+- [ ] Todo deny usa permiso exacto.
+- [ ] Todo deny usa sujeto `employee_id`.
+- [ ] Todo deny activo conserva motivo.
+- [ ] `ACTOR_WIDE_DENY` nunca se crea por rol.
+- [ ] `null` nunca significa global.
+- [ ] Scope y recurso son compatibles con el contrato del permiso.
+- [ ] El recurso real se resuelve en servidor.
+- [ ] La sede seleccionada no amplía un override.
+- [ ] El área seleccionada no amplía un override.
+- [ ] Los grants conservan ocho estados contractuales.
+- [ ] Los denies conservan seis estados contractuales.
+- [ ] Los denies no admiten `SUSPENDED`.
+- [ ] DRAFT y PENDING_APPROVAL no conceden.
+- [ ] SCHEDULED no participa antes de `effective_from`.
+- [ ] EXPIRED y REVOKED no participan.
+- [ ] Crear no equivale a aprobar.
+- [ ] Aprobar no equivale automáticamente a mutar datos de la solicitud.
+- [ ] Beneficiario y aprobador respetan segregación.
+- [ ] El trabajador afectado no administra su propio deny.
+- [ ] Denies sensibles preservan al menos un principal de recuperación válido.
+- [ ] `VISO-AUTH-016` se consulta antes de mutaciones relevantes.
+- [ ] Un conflicto bloqueante impide el cambio.
+- [ ] Un conflicto no relacionado no congela toda la administración.
+- [ ] Un deny existente no se neutraliza agregando un grant.
+- [ ] Un grant existente no se elimina para representar un deny.
+- [ ] Las catorce capacidades `viso.authorization.*` permanecen separadas.
+- [ ] Las capacidades `.view` no conceden mutaciones.
+- [ ] `.create` no implica `.approve`.
+- [ ] `.approve` no implica `.revoke`.
+- [ ] Solo grants tienen capacidad `.suspend`.
+- [ ] No se inventan capacidades `.update` o `.reactivate`.
+- [ ] Los eventos `updated` o `reactivated` no se convierten en permisos implícitos.
+- [ ] Toda mutación conserva versión y revalida snapshot stale.
+- [ ] Expiración se evalúa durante autorización.
+- [ ] Activación, suspensión, revocación y expiración invalidan autoridad derivada.
+- [ ] La simulación no crea ni administra overrides reales.
+- [ ] `VISO-AUTH-015` puede explicar el origen individual.
+- [ ] Las 17 filas legacy conservan clasificación de transición.
+- [ ] El registro legacy no se convierte en fuente de autorización.
+- [ ] La migración legacy permanece fuera de esta tarea.
+- [ ] El panel AS-IS de `employee_permissions` no se declara equivalente al contrato canónico.
+- [ ] `viso.staff.permissions.manage` no se conserva como autoridad final del modelo nuevo.
+- [ ] Un cliente administrativo no sustituye autorización empresarial.
+- [ ] `VISO-AUTH-018` conserva la administración de auditoría.
+- [ ] `VISO-AUTH-019` conserva quién puede administrar seguridad.
+- [ ] Se conservan cero cambios al Registro Canónico de Requisitos de Prueba.
+- [ ] La materialización física permanece detrás de `POST_E5_PACKAGE`.
+
+---
+
+#### 73. Límites
+
+Esta tarea no:
+
+- modifica código de VISO;
+- modifica Supabase;
+- modifica `employee_permissions`;
+- crea una nueva tabla de overrides;
+- inserta overrides;
+- crea grants reales;
+- crea denies reales;
+- migra las 17 filas legacy;
+- clasifica físicamente cada fila legacy;
+- ejecuta backfill;
+- elimina datos legacy;
+- modifica matrices base;
+- modifica matrices operativas;
+- modifica roles;
+- modifica trabajadores;
+- modifica turnos;
+- modifica check-ins;
+- modifica sedes;
+- modifica áreas;
+- modifica dispositivos;
+- cambia el catálogo;
+- crea permisos;
+- crea wildcards;
+- crea nuevas clases de deny;
+- crea nuevas modalidades;
+- inventa capacidades `.update` o `.reactivate`;
+- implementa el motor de decisión;
+- implementa caché;
+- invalida sesiones reales;
+- ejecuta simulaciones;
+- crea RPC;
+- crea RLS;
+- crea funciones SQL;
+- crea migraciones;
+- ejecuta SQL de escritura;
+- implementa la interfaz física de auditoría;
+- decide qué roles reciben administración de seguridad;
+- selecciona package;
+- prepara package gate;
+- aprueba package gate;
+- autoriza implementación física;
+- ejecuta implementación física.
+
+La identidad exacta de cualquier unidad física futura se resolverá exclusivamente mediante el package y gate aplicables.
+
+---
+
+#### 74. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-AUTH-016 — Mostrar conflictos de configuración`
+
+**TAREA ACTUAL APROBADA**
+`VISO-AUTH-017 — Administrar excepciones individuales`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-AUTH-018 — Auditar cambios de seguridad`
+
+
 ### [ ] VISO-AUTH-018 — Auditar cambios de seguridad
 ### [ ] VISO-AUTH-019 — Restringir quién administra seguridad
 ### [ ] VISO-AUTH-020 — Crear exporte de matriz de acceso
