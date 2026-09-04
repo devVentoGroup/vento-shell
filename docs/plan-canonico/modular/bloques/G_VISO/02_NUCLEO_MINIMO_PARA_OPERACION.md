@@ -1168,7 +1168,1271 @@ Esta tarea no:
 `VISO-CORE-002 — Vincular núcleo con capacidades empresariales`
 
 
-### [ ] VISO-CORE-002 — Vincular núcleo con capacidades empresariales
+### ✅ VISO-CORE-002 — Vincular núcleo con capacidades empresariales
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-CORE-001 — Definir núcleo mínimo de VISO
+**Tarea siguiente:** VISO-CORE-003 — Implementar dependencias administrativas mínimas
+**Tipo de tarea:** documental; vinculación única del núcleo mínimo de VISO con las capacidades empresariales canónicas que justifican cada dominio, preservando propietarios, fuentes de verdad, custodios, consumidores y dependencias condicionadas sin convertir a VISO en dueño universal ni autorizar materialización física
+**Bloque:** `G_VISO — NÚCLEO MÍNIMO PARA OPERACIÓN`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md`
+**Estado físico resultante:** vínculo funcional núcleo-capacidades definido una sola vez; sin instancia física propia
+**Cambios físicos autorizados:** ninguno; `VISO-CORE-002` es `DEFINE_ONCE` con `NO_PHYSICAL_INSTANCE` y toda materialización continúa reservada a `VISO-CORE-003`, `VISO-CORE-004` y `VISO-CORE-005`
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Vincular los seis dominios del núcleo mínimo aprobados en `VISO-CORE-001` con las capacidades empresariales canónicas que explican por qué ese núcleo debe existir, qué parte administra VISO, qué hechos pertenecen a otra fuente y qué aplicaciones los consumen.
+
+La tarea responde:
+
+```text
+¿QUÉ CAPACIDADES EMPRESARIALES
+JUSTIFICAN CADA DOMINIO DEL NÚCLEO MÍNIMO DE VISO
+Y CUÁL ES LA FRONTERA DE PROPIEDAD
+ENTRE VISO Y EL RESTO DEL ECOSISTEMA?
+```
+
+La respuesta no modifica la taxonomía empresarial.
+
+No crea una taxonomía específica de VISO.
+
+---
+
+#### 2. Entrada obligatoria de VISO-CORE-001
+
+El núcleo recibido contiene exactamente seis dominios:
+
+1. persona laboral;
+2. organización y territorio;
+3. roles, perfiles y asignaciones;
+4. permisos y matrices;
+5. contexto efectivo;
+6. control y explicabilidad.
+
+`VISO-CORE-002` no puede agregar un séptimo dominio ni eliminar uno de los seis.
+
+---
+
+#### 3. Fuente empresarial de la vinculación
+
+La vinculación usa la taxonomía empresarial canónica `CAP-*`.
+
+Una capacidad empresarial representa un resultado estable que la organización necesita producir.
+
+Una subcapacidad representa una parte específica y separable de ese resultado.
+
+El núcleo de VISO no reemplaza esas identidades.
+
+---
+
+#### 4. Regla de identidad de capacidades
+
+Toda referencia empresarial de esta tarea conserva el identificador canónico existente.
+
+La relación es:
+
+```text
+CAPACIDAD CANÓNICA
+→ PROPÓSITO EMPRESARIAL
+
+DOMINIO DEL NÚCLEO
+→ SOPORTE ADMINISTRATIVO NECESARIO
+
+VÍNCULO
+→ TRAZABILIDAD ENTRE AMBOS
+```
+
+No:
+
+```text
+DOMINIO VISO
+→ NUEVA CAPACIDAD EMPRESARIAL
+```
+
+---
+
+#### 5. Regla de propiedad
+
+La presencia de una capacidad dentro de VISO no convierte a VISO en dueño universal del resultado.
+
+Deben distinguirse:
+
+- dueño accountable del resultado empresarial;
+- propietario funcional o de proceso;
+- propietario del dato o registro;
+- steward;
+- custodio técnico;
+- operador;
+- aplicación administradora;
+- aplicación consumidora.
+
+Una misma interfaz no puede colapsar esos roles.
+
+---
+
+#### 6. Regla de fuente única
+
+Para un mismo hecho, etapa y atributo debe existir una fuente propietaria reconocible.
+
+VISO puede administrar una proyección sin convertirse en una fuente paralela.
+
+La regla es:
+
+```text
+FUENTE PROPIETARIA
+→ CONTRATO CANÓNICO
+→ ADMINISTRACIÓN VISO CUANDO APLIQUE
+→ CONSUMIDORES
+```
+
+---
+
+#### 7. Regla contra ownership por interfaz
+
+No se permite inferir propiedad porque una pantalla exista en `vento-viso`.
+
+Tampoco se permite inferir propiedad porque:
+
+- VISO pueda editar el dato;
+- VISO pueda consultarlo;
+- VISO tenga una tabla administrativa;
+- VISO participe en el proceso;
+- VISO muestre auditoría.
+
+---
+
+#### 8. Regla contra ownership por persistencia
+
+Supabase, Storage, un repositorio o una tabla pueden ser custodios técnicos.
+
+Su existencia no determina por sí sola el propietario empresarial del hecho.
+
+---
+
+#### 9. Naturaleza de los vínculos
+
+Esta tarea distingue tres usos de una capacidad empresarial:
+
+| Uso | Significado |
+| --- | --- |
+| Primario | La capacidad explica directamente por qué el dominio debe existir dentro del núcleo mínimo. |
+| De soporte | La capacidad necesita o gobierna parte del dominio, pero no define por sí sola toda su frontera. |
+| Condicionado | El dominio consume el resultado solo cuando una acción o contexto concreto lo requiere. |
+
+Estas categorías describen trazabilidad documental.
+
+No crean estados técnicos.
+
+---
+
+#### 10. Universo materialmente vinculado
+
+El núcleo mínimo queda vinculado de forma material con quince subcapacidades empresariales únicas:
+
+- seis de `CAP-01`;
+- seis de `CAP-02`;
+- una de `CAP-15`;
+- dos de `CAP-16`.
+
+No se vinculan las 217 subcapacidades empresariales indiscriminadamente.
+
+---
+
+#### 11. Subcapacidades de CAP-01 vinculadas
+
+El vínculo con dirección y gobierno se limita a:
+
+1. `CAP-01.03` — Gobernar empresas, marcas y establecimientos;
+2. `CAP-01.04` — Gobernar sedes, oficinas y áreas;
+3. `CAP-01.05` — Definir responsabilidades y límites de decisión;
+4. `CAP-01.06` — Gestionar políticas y reglas internas;
+5. `CAP-01.08` — Coordinar operación entre negocios y sedes;
+6. `CAP-01.10` — Verificar cumplimiento de decisiones.
+
+No se incorpora al núcleo toda la familia `CAP-01`.
+
+---
+
+#### 12. Subcapacidades de CAP-02 vinculadas
+
+El vínculo con personas y trabajo se limita a:
+
+1. `CAP-02.03` — Vincular e incorporar trabajadores;
+2. `CAP-02.04` — Mantener información laboral;
+3. `CAP-02.05` — Asignar sedes, áreas y funciones;
+4. `CAP-02.06` — Programar turnos;
+5. `CAP-02.07` — Registrar asistencia y tiempo trabajado;
+6. `CAP-02.13` — Gestionar retiro y cierre de accesos.
+
+La selección conserva las fronteras ya aprobadas entre TALENTO, VISO, ANIMA y SHELL.
+
+---
+
+#### 13. Subcapacidad de CAP-15 vinculada
+
+El núcleo usa:
+
+`CAP-15.01` — Gestionar cuentas y accesos.
+
+Este vínculo no transfiere a VISO la fuente de decisión de autorización.
+
+SHELL y el modelo canónico de autorización conservan esa responsabilidad.
+
+---
+
+#### 14. Subcapacidades de CAP-16 vinculadas
+
+El plano de control usa:
+
+- `CAP-16.07` — Conservar registros y evidencia;
+- `CAP-16.11` — Investigar accesos o cambios indebidos.
+
+Estas capacidades justifican trazabilidad, conservación e investigación.
+
+No convierten el núcleo en sistema integral de gobierno de información.
+
+---
+
+#### 15. Matriz consolidada de vínculo
+
+| Dominio del núcleo | Vínculos primarios | Vínculos de soporte o condicionados | Frontera |
+| --- | --- | --- | --- |
+| Persona laboral | `CAP-02.03`, `CAP-02.04`, `CAP-02.13` | `CAP-02.05` | VISO administra el episodio laboral y sus relaciones administrativas; TALENTO conserva el pre-vínculo, ANIMA la experiencia del trabajador y SHELL identidad/acceso. |
+| Organización y territorio | `CAP-01.03`, `CAP-01.04` | `CAP-01.08`, `CAP-02.05` | VISO administra la proyección organizacional y territorial necesaria; no sustituye hechos jurídicos ni propietarios de otras capacidades. |
+| Roles, perfiles y asignaciones | `CAP-01.05`, `CAP-02.05` | `CAP-02.06` | VISO administra configuración; el turno puede determinar rol efectivo cuando el contrato lo exige. |
+| Permisos y matrices | `CAP-15.01`, `CAP-01.05` | `CAP-01.06` | SHELL/modelo de autorización decide; VISO administra la proyección y configuración permitida. |
+| Contexto efectivo | `CAP-02.05`, `CAP-15.01` | `CAP-01.04`, `CAP-02.06`, `CAP-02.07` | El contexto se compone con hechos de varias fuentes; VISO no inventa turno, check-in ni territorio. |
+| Control y explicabilidad | `CAP-01.10`, `CAP-16.07`, `CAP-16.11` | `CAP-01.06`, `CAP-15.01` | VISO presenta y administra controles dentro de su alcance; evidencia, autorización e investigación conservan sus propietarios y custodios canónicos. |
+
+---
+
+#### 16. Cobertura de la matriz
+
+La matriz cubre:
+
+```text
+DOMINIOS DEL NÚCLEO ESPERADOS = 6
+DOMINIOS VINCULADOS = 6
+DOMINIOS SIN VÍNCULO = 0
+
+SUBCAPACIDADES ÚNICAS VINCULADAS = 15
+SUBCAPACIDADES EMPRESARIALES RECLASIFICADAS = 0
+NUEVAS SUBCAPACIDADES CREADAS = 0
+```
+
+---
+
+#### 17. Persona laboral y CAP-02.03
+
+`CAP-02.03` justifica la incorporación de una persona al estado laboral necesario para administrar Vento OS.
+
+El núcleo requiere conocer la identidad laboral y el vínculo habilitante.
+
+No requiere absorber candidatura ni selección.
+
+---
+
+#### 18. Frontera TALENTO hacia persona laboral
+
+TALENTO conserva el dominio prelaboral.
+
+La entrega hacia VISO puede proyectar el resultado aprobado necesario para iniciar el episodio laboral.
+
+El núcleo no convierte:
+
+- candidato;
+- postulación;
+- evaluación;
+- oferta;
+
+en entidades administrativas equivalentes a trabajador activo.
+
+---
+
+#### 19. Persona laboral y CAP-02.04
+
+`CAP-02.04` justifica mantener la información laboral necesaria para administrar el vínculo.
+
+El núcleo consume únicamente atributos necesarios para:
+
+- asignación;
+- contexto;
+- autorización;
+- trazabilidad.
+
+No convierte todo expediente laboral en dato del core.
+
+---
+
+#### 20. Minimización de información laboral
+
+La condición de formar parte del vínculo laboral no autoriza exposición total.
+
+Cada consumidor debe recibir el mínimo necesario.
+
+El core no usa conveniencia administrativa como fundamento para ampliar datos personales.
+
+---
+
+#### 21. Persona laboral y CAP-02.13
+
+`CAP-02.13` justifica que el cierre de un episodio laboral tenga efecto coordinado sobre autoridad.
+
+VISO puede orquestar el cierre administrativo.
+
+Los servicios propietarios ejecutan las revocaciones que les corresponden.
+
+---
+
+#### 22. Retiro no destructivo
+
+El retiro no elimina la persona ni la historia necesaria.
+
+Debe permitir diferenciar:
+
+- persona;
+- episodio laboral terminado;
+- nuevo episodio laboral posterior.
+
+Un reingreso no reactiva automáticamente autoridad anterior.
+
+---
+
+#### 23. Persona laboral y CAP-02.05
+
+`CAP-02.05` vincula a la persona con sedes, áreas y funciones.
+
+Dentro del dominio persona laboral es un vínculo de soporte.
+
+Su contenido principal se desarrolla en roles, perfiles y asignaciones.
+
+---
+
+#### 24. Organización y CAP-01.03
+
+`CAP-01.03` aporta la identidad organizacional necesaria para ubicar la operación dentro de la estructura empresarial.
+
+El núcleo toma solo la proyección administrativa requerida para relacionar territorio, trabajador y autoridad.
+
+No absorbe gestión societaria, registral, tributaria o contractual.
+
+---
+
+#### 25. Organización y CAP-01.04
+
+`CAP-01.04` es el vínculo principal para sedes, oficinas y áreas.
+
+El núcleo necesita identidades territoriales estables para:
+
+- asignaciones;
+- elegibilidad;
+- contexto;
+- autorización;
+- auditoría.
+
+---
+
+#### 26. Sede como capacidad administrativa
+
+La sede puede participar en múltiples capacidades empresariales.
+
+Dentro del núcleo, su finalidad es delimitar territorio administrativo y operativo.
+
+No se usa el nombre de sede como permiso.
+
+---
+
+#### 27. Área como capacidad administrativa
+
+El área permite delimitar función y territorio cuando el contrato lo exige.
+
+No se confunde con:
+
+- rol;
+- grupo;
+- permiso;
+- capacidad;
+- aplicación.
+
+---
+
+#### 28. CAP-01.08 como soporte territorial
+
+`CAP-01.08` justifica coordinación entre negocios y sedes.
+
+Su vínculo con el núcleo es de soporte.
+
+El núcleo provee identidades y contexto.
+
+No ejecuta la operación coordinada de NEXO, FOGO, ORIGO, PULSO u otras aplicaciones.
+
+---
+
+#### 29. CAP-02.05 como vínculo laboral-territorial
+
+`CAP-02.05` une el dominio persona con el dominio territorio.
+
+La asignación laboral no cambia la identidad de la sede.
+
+La sede no cambia la identidad del trabajador.
+
+La relación tiene vigencia propia.
+
+---
+
+#### 30. Roles y CAP-01.05
+
+`CAP-01.05` justifica definir responsabilidades y límites de decisión.
+
+Dentro del núcleo esto se expresa mediante:
+
+- roles base;
+- roles operativos;
+- límites administrativos;
+- segregación de responsabilidades.
+
+El nombre de un rol no constituye una decisión final de autorización.
+
+---
+
+#### 31. Roles y CAP-02.05
+
+`CAP-02.05` justifica asignar funciones a trabajadores dentro de sedes y áreas.
+
+El núcleo administra esa configuración sin fusionar:
+
+```text
+ROL
++
+SEDE
++
+ÁREA
++
+TRABAJADOR
+```
+
+en una identidad única.
+
+---
+
+#### 32. Perfil operativo
+
+El perfil operativo es una configuración administrativa útil para planificar y proponer contexto.
+
+Su vínculo empresarial deriva de asignar funciones.
+
+No reemplaza el rol efectivo cuando la operación requiere un turno válido.
+
+---
+
+#### 33. Elegibilidad territorial
+
+La elegibilidad de un rol por sede o área expresa dónde una función puede resultar válida.
+
+No asigna el rol a una persona.
+
+No concede permiso.
+
+No crea contexto efectivo por sí sola.
+
+---
+
+#### 34. Asignación laboral
+
+Una asignación trabajador × sede o trabajador × área expresa una relación laboral vigente.
+
+No autoriza cualquier acción en ese territorio.
+
+La autorización sigue necesitando permiso y contexto aplicable.
+
+---
+
+#### 35. CAP-02.06 como vínculo condicionado
+
+`CAP-02.06` participa cuando la capacidad evaluada requiere un turno.
+
+El turno puede aportar:
+
+- vigencia temporal;
+- sede;
+- área;
+- rol operativo efectivo.
+
+No toda administración del núcleo requiere turno.
+
+---
+
+#### 36. Frontera del bloque VISO-SCH
+
+La vinculación con `CAP-02.06` no activa `VISO-SCH-001` a `VISO-SCH-008`.
+
+La programación laboral conserva su contrato y gate propios.
+
+`VISO-CORE-003` podrá consumir `VISO-SCH-008` únicamente cuando la materialización aplicable lo requiera y la dependencia esté cerrada.
+
+---
+
+#### 37. Permisos y CAP-15.01
+
+`CAP-15.01` justifica el gobierno de cuentas y accesos.
+
+Dentro del núcleo se refleja en:
+
+- catálogo de permisos consumido;
+- matrices;
+- grants;
+- denies;
+- restricciones administrativas;
+- cierre de autoridad.
+
+---
+
+#### 38. Fuente de decisión para CAP-15.01
+
+SHELL y el modelo canónico de autorización conservan la fuente de decisión.
+
+VISO no decide mediante una lista local quién tiene acceso.
+
+VISO administra la configuración autorizada y muestra su resultado.
+
+---
+
+#### 39. CAP-01.05 y límites de decisión
+
+La matriz de permisos también implementa límites organizacionales de decisión.
+
+Por eso `CAP-01.05` participa junto a `CAP-15.01`.
+
+El límite empresarial no sustituye el permiso técnico.
+
+El permiso técnico no sustituye la responsabilidad empresarial.
+
+---
+
+#### 40. CAP-01.06 y políticas internas
+
+`CAP-01.06` funciona como soporte para reglas administrativas que condicionan la configuración.
+
+No autoriza crear políticas ad hoc dentro de VISO.
+
+Las reglas deben provenir de contratos canónicos vigentes.
+
+---
+
+#### 41. Matriz base
+
+La matriz de rol base × permiso base pertenece al plano administrativo del núcleo.
+
+Su propósito empresarial es expresar responsabilidad permanente permitida.
+
+No expresa operación efectiva de una jornada.
+
+---
+
+#### 42. Matriz operativa
+
+La matriz de rol operativo × permiso operativo expresa capacidades asociadas al rol operacional.
+
+Permanece separada de la matriz base.
+
+No se deriva de una etiqueta de oficio.
+
+---
+
+#### 43. Grants y denies
+
+Las concesiones y denegaciones individuales forman parte del gobierno de acceso.
+
+No constituyen una taxonomía empresarial nueva.
+
+Su efecto está subordinado al modelo de autorización.
+
+---
+
+#### 44. Contexto efectivo como composición
+
+El contexto efectivo no corresponde a una sola capacidad empresarial.
+
+Se compone con hechos provenientes de varias capacidades y propietarios.
+
+Su finalidad es producir una entrada consistente para autorización y operación.
+
+---
+
+#### 45. Contexto y CAP-02.05
+
+Las asignaciones de sede, área y función son entradas estructurales del contexto.
+
+Si una dimensión requerida no está asignada válidamente, el núcleo no debe inventarla.
+
+---
+
+#### 46. Contexto y CAP-01.04
+
+La estructura territorial define cuáles sedes y áreas existen y cómo se relacionan.
+
+Eso no determina automáticamente cuáles están asignadas a cada trabajador.
+
+---
+
+#### 47. Contexto y CAP-02.06
+
+Cuando una operación exige turno, la revisión vigente del turno participa en el contexto.
+
+Una programación borrador no equivale a turno operativo efectivo.
+
+---
+
+#### 48. Contexto y CAP-02.07
+
+`CAP-02.07` aporta hechos de asistencia y tiempo trabajado cuando el contrato exige check-in u otro estado operativo.
+
+ANIMA conserva la captura y experiencia de asistencia.
+
+VISO no se convierte en capturador primario por consumir ese hecho.
+
+---
+
+#### 49. Contexto y CAP-15.01
+
+La autorización usa el contexto para resolver acceso.
+
+El contexto no concede por sí mismo un permiso.
+
+La ausencia de permiso exacto no se corrige con una sede, área o turno válidos.
+
+---
+
+#### 50. Contexto administrativo
+
+Una capacidad administrativa puede resolverse sin turno ni check-in cuando su contrato así lo define.
+
+El núcleo debe permitir ese carril.
+
+No se fabrica contexto operativo para completar una evaluación administrativa.
+
+---
+
+#### 51. Contexto operativo
+
+Una capacidad operativa conserva sus prerrequisitos.
+
+Cuando el contrato exige turno, check-in, rol operativo o territorio compatible, ninguno puede omitirse por conveniencia de VISO.
+
+---
+
+#### 52. Consumidores del contexto
+
+SHELL y las aplicaciones operativas pueden consumir contexto efectivo.
+
+Cada consumidor debe recibir el mismo significado para las mismas entradas reales.
+
+No se permiten reglas locales que amplíen alcance.
+
+---
+
+#### 53. Control y CAP-01.10
+
+`CAP-01.10` justifica verificar que las decisiones administrativas produzcan el efecto esperado.
+
+En el núcleo esto exige capacidad de:
+
+- revisar configuración;
+- identificar conflicto;
+- comprobar procedencia;
+- reconstruir cambios.
+
+---
+
+#### 54. CAP-01.10 no crea analítica general
+
+Verificar una decisión no convierte el núcleo en plataforma de BI.
+
+Los indicadores y análisis empresariales amplios conservan sus dominios y propietarios.
+
+El core solo necesita evidencia suficiente para verificar su propia configuración y autoridad.
+
+---
+
+#### 55. Control y CAP-16.07
+
+`CAP-16.07` justifica conservar la evidencia necesaria para reconstruir hechos administrativos sensibles.
+
+La evidencia debe permanecer asociada a su propietario funcional y custodia aprobada.
+
+VISO puede consultarla o administrarla dentro de su alcance.
+
+---
+
+#### 56. Control y CAP-16.11
+
+`CAP-16.11` justifica investigar accesos o cambios indebidos.
+
+La investigación puede requerir:
+
+- actor;
+- principal;
+- recurso;
+- permiso;
+- territorio;
+- fecha;
+- cambio;
+- evidencia;
+- decisión.
+
+No concede a VISO autoridad para alterar la evidencia investigada.
+
+---
+
+#### 57. Frontera de gobierno de información
+
+`CAP-16.07` y `CAP-16.11` no incorporan toda `CAP-16` al núcleo mínimo.
+
+Solicitudes de titulares, retención general, legal holds, firmas y demás capacidades de información conservan sus bloques y owners correspondientes.
+
+---
+
+#### 58. Procedencia
+
+La procedencia de una decisión de acceso pertenece al plano de control.
+
+Debe permitir distinguir, cuando corresponda:
+
+- rol base;
+- rol operativo;
+- grant;
+- deny;
+- asignación;
+- territorio;
+- turno;
+- check-in;
+- dispositivo;
+- excepción.
+
+La procedencia explica.
+
+No autoriza.
+
+---
+
+#### 59. Preview
+
+La vista previa administrativa permite inspeccionar el efecto prospectivo de una configuración.
+
+Su vínculo empresarial es de verificación y control.
+
+No reemplaza la decisión real de autorización.
+
+---
+
+#### 60. Simulación
+
+La simulación permanece fuera del piso obligatorio de disponibilidad básica definido en `VISO-CORE-001`.
+
+Cuando exista, su resultado es explicativo.
+
+Nunca se trata como autoridad real.
+
+---
+
+#### 61. Conflictos
+
+Los conflictos de configuración forman parte del plano mínimo de control.
+
+Esta tarea solo vincula su propósito con gobierno, reglas y verificación empresarial.
+
+La detección material se reserva a `VISO-CORE-005`.
+
+---
+
+#### 62. Excepciones
+
+Las excepciones individuales aprobadas en el bloque de acceso siguen formando parte del plano administrativo.
+
+No constituyen una nueva capacidad empresarial.
+
+Se subordinan a los límites, políticas y denies canónicos.
+
+---
+
+#### 63. Auditoría
+
+La auditoría de cambios del núcleo se vincula con:
+
+- verificación de decisiones;
+- conservación de evidencia;
+- investigación de cambios indebidos.
+
+La implementación se reserva a `VISO-CORE-005`.
+
+---
+
+#### 64. Exporte de matriz
+
+El contrato documental del exporte continúa dentro del plano de control.
+
+La falta de capacidad canónica exacta de exportación sigue bloqueando su materialización.
+
+`VISO-CORE-002` no agrega una capacidad empresarial ni una `PermissionKey` para resolverlo.
+
+---
+
+#### 65. Propiedad de CAP-01
+
+Dentro de `CAP-01`, VISO participa como superficie administrativa de estructura, decisiones y gobierno aplicable.
+
+La responsabilidad accountable permanece en dirección, gerencia general u owner empresarial definido por cada proceso.
+
+VISO no sustituye esa responsabilidad.
+
+---
+
+#### 66. Propiedad de CAP-02
+
+Dentro de `CAP-02` se conserva la frontera:
+
+```text
+TALENTO
+→ PREVÍNCULO
+
+VISO
+→ VÍNCULO LABORAL + ASIGNACIONES + PROGRAMACIÓN ADMINISTRATIVA
+
+ANIMA
+→ EXPERIENCIA DEL TRABAJADOR + ASISTENCIA
+
+SHELL
+→ IDENTIDAD + ACCESO + CONTEXTO COMPARTIDO
+```
+
+---
+
+#### 67. Propiedad de CAP-15.01
+
+Para cuentas y accesos:
+
+```text
+SHELL / MODELO DE AUTORIZACIÓN
+→ DECISIÓN
+
+VISO
+→ ADMINISTRACIÓN DE CONFIGURACIÓN PERMITIDA
+
+TI
+→ EJECUCIÓN TÉCNICA CUANDO CORRESPONDA
+```
+
+La ejecución técnica no concede autoridad para decidir acceso.
+
+---
+
+#### 68. Propiedad de CAP-16.07
+
+Cada dominio conserva propiedad sobre sus registros funcionales.
+
+La infraestructura de evidencia conserva su papel transversal.
+
+VISO no duplica el registro fuente para obtener trazabilidad.
+
+---
+
+#### 69. Propiedad de CAP-16.11
+
+La investigación de accesos o cambios indebidos requiere coordinación entre VISO, SHELL y gobierno de información.
+
+Ningún participante puede convertir investigación en autorización retrospectiva.
+
+---
+
+#### 70. Aplicaciones operativas como consumidoras
+
+NEXO, FOGO, ORIGO, PULSO y demás aplicaciones operativas pueden consumir:
+
+- trabajador;
+- territorio;
+- rol;
+- permiso;
+- contexto.
+
+Ese consumo no convierte sus procesos en parte de VISO.
+
+---
+
+#### 71. Propiedad operativa preservada
+
+El núcleo no adquiere propiedad sobre:
+
+- inventario;
+- producción;
+- compras;
+- POS;
+- contabilidad;
+- fidelización;
+- contenido;
+- marketing;
+- mantenimiento;
+- operación logística.
+
+Cada dominio conserva su owner canónico.
+
+---
+
+#### 72. Familias empresariales no incorporadas
+
+No se incorporan al núcleo mínimo por esta tarea:
+
+- `CAP-03` a `CAP-14`;
+- la parte de `CAP-15` distinta de `CAP-15.01`;
+- la parte de `CAP-16` distinta de `CAP-16.07` y `CAP-16.11`;
+- `CAP-17`;
+- `CAP-18`.
+
+Pueden existir dependencias o consumos transversales.
+
+Eso no las convierte en core.
+
+---
+
+#### 73. CAP-17 fuera del core mínimo
+
+Medición, análisis y mejora permanecen fuera del núcleo mínimo salvo la evidencia estrictamente necesaria para verificar configuración y autoridad.
+
+No se incorpora un dashboard ejecutivo o analítica amplia mediante esta tarea.
+
+---
+
+#### 74. CAP-18 fuera del core mínimo
+
+Continuidad y recuperación son transversales.
+
+El núcleo deberá respetar sus contratos cuando se materialice.
+
+`VISO-CORE-002` no convierte continuidad empresarial en una capacidad propia del core.
+
+---
+
+#### 75. Reglas de consistencia entre dominios
+
+La vinculación debe preservar:
+
+```text
+PERSONA
+≠ ORGANIZACIÓN
+≠ SEDE
+≠ ÁREA
+≠ ROL
+≠ PERFIL
+≠ PERMISO
+≠ CONTEXTO
+≠ EVIDENCIA
+```
+
+Un vínculo empresarial no fusiona entidades.
+
+---
+
+#### 76. Cardinalidad del vínculo
+
+Una subcapacidad puede justificar más de un dominio del núcleo.
+
+Eso no crea duplicados de la subcapacidad.
+
+Por ejemplo:
+
+- `CAP-02.05` participa en persona, territorio, asignaciones y contexto;
+- `CAP-15.01` participa en permisos, contexto y control.
+
+La identidad canónica permanece única.
+
+---
+
+#### 77. Dependencias disponibles
+
+Las capacidades empresariales ya clasificadas proporcionan el propósito documental necesario para el vínculo.
+
+Su existencia no significa que todas las superficies físicas del core estén disponibles.
+
+La disponibilidad técnica se analiza en `VISO-CORE-003`.
+
+---
+
+#### 78. Dependencias condicionadas
+
+Quedan explícitamente condicionadas:
+
+- programación laboral cuando una materialización requiera el contrato de `VISO-SCH-008`;
+- hechos de asistencia cuando una capacidad requiera check-in o estado operativo;
+- exporte de matriz mientras falte su capacidad canónica exacta.
+
+---
+
+#### 79. Dependencias ajenas
+
+Una dependencia puede ser necesaria sin ser propiedad de VISO.
+
+Ejemplos:
+
+- identidad y autorización compartida de SHELL;
+- captura de asistencia de ANIMA;
+- pre-vínculo de TALENTO;
+- evidencia transversal;
+- almacenamiento canónico de Supabase.
+
+`VISO-CORE-003` deberá respetar esa propiedad.
+
+---
+
+#### 80. No materialización por inferencia
+
+Que una capacidad quede vinculada no autoriza:
+
+- crear tabla;
+- crear RPC;
+- crear permiso;
+- crear página;
+- migrar datos;
+- cambiar RLS;
+- desplegar VISO;
+- activar un package.
+
+La materialización conserva su gate propio.
+
+---
+
+#### 81. Handoff a VISO-CORE-003
+
+`VISO-CORE-003` recibe:
+
+1. los seis dominios mínimos;
+2. las quince subcapacidades empresariales vinculadas;
+3. la matriz de propiedad y consumo;
+4. las dependencias disponibles;
+5. las dependencias condicionadas;
+6. las dependencias pertenecientes a otros propietarios.
+
+Su responsabilidad será materializar únicamente las dependencias administrativas mínimas que estén habilitadas por su topología y gate.
+
+---
+
+#### 82. Handoff a VISO-CORE-004
+
+La matriz deja establecido que autorización real no pertenece a una lista local de VISO.
+
+`VISO-CORE-004` deberá consumir la fuente canónica de decisión y proteger cada lectura o mutación aplicable.
+
+---
+
+#### 83. Handoff a VISO-CORE-005
+
+La matriz deja establecido que conflicto, evidencia, verificación e investigación forman parte del plano de control.
+
+`VISO-CORE-005` deberá materializar esos controles sin crear registros competidores ni alterar ownership.
+
+---
+
+#### 84. Handoff a VISO-CORE-006
+
+El cierre del núcleo deberá demostrar que:
+
+- cada dominio mínimo mantiene vínculo empresarial válido;
+- ninguna capacidad ajena fue absorbida;
+- las dependencias condicionadas fueron tratadas según su gate;
+- los propietarios y fuentes permanecen intactos;
+- la autorización y el control producen resultados coherentes.
+
+---
+
+#### 85. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea establece trazabilidad documental entre un núcleo ya aprobado y capacidades empresariales ya clasificadas. No introduce una nueva regla física, cálculo, transición, permiso, integración ni comportamiento ejecutable.
+
+---
+
+#### 86. Cobertura de prueba vigente reutilizada
+
+Sin modificar el Registro Canónico de Requisitos de Prueba, la vinculación reutiliza la cobertura existente de:
+
+- `TREQ-AUTH-001` — autorización mediante permisos, contexto y alcance canónicos;
+- `TREQ-AUTH-004` — equivalencia entre evaluadores de autorización;
+- `TREQ-AUTH-007` — administración explícita y territorial;
+- `TREQ-AUTH-008` — separación entre prerrequisitos administrativos y operativos;
+- `TREQ-AUTH-009` — resolución territorial determinista;
+- `TREQ-AUTH-015` — trazabilidad correlacionable;
+- `TREQ-VISO-001` — coherencia de la administración VISO con el resultado consumido por aplicaciones operativas;
+- `TREQ-INTEGRATION-007` — contrato compartido entre programación y asistencia;
+- `TREQ-SUPABASE-011` — estructura organizacional y territorial canónica.
+
+Las referencias anteriores son trazabilidad.
+
+No cambian el registro.
+
+---
+
+#### 87. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | No se ejecutó la batería documental sobre el checkout local de la rama de `VISO-CORE-002`. |
+| LOCAL | NOT_EXECUTED | El bloque todavía no fue insertado, normalizado ni validado dentro de la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, continuidad, topología, contrato de entrega, archivo propietario, handoff de `VISO-CORE-001`, taxonomía empresarial, decisiones de `CAP-SCOPE-001`, `CAP-SCOPE-002`, `CAP-SCOPE-015`, `CAP-SCOPE-016`, cierre transversal de `CAP-SCOPE-019`, Registro Canónico aplicable, comandos y validadores vigentes. |
+| OPERATIVA | NOT_APPLICABLE | La tarea vincula contratos documentales y no ejecuta procesos de negocio, asignaciones, turnos, asistencia, accesos ni investigaciones reales. |
+| FÍSICA | NOT_APPLICABLE | `VISO-CORE-002` es `DEFINE_ONCE`, no tiene instancia física propia y no autoriza cambios en aplicaciones, Supabase, contratos, datos, infraestructura o despliegues. |
+
+---
+
+#### 88. Criterios de aceptación
+
+- [ ] Se conservan exactamente seis dominios del núcleo.
+- [ ] Los seis dominios tienen al menos un vínculo empresarial material.
+- [ ] Se usan únicamente subcapacidades canónicas existentes.
+- [ ] No se crea una nueva taxonomía de VISO.
+- [ ] Se distinguen vínculos primarios, de soporte y condicionados.
+- [ ] La matriz contiene quince subcapacidades únicas.
+- [ ] No se reclasifica ninguna subcapacidad empresarial.
+- [ ] Persona laboral vincula `CAP-02.03`.
+- [ ] Persona laboral vincula `CAP-02.04`.
+- [ ] Persona laboral vincula `CAP-02.13`.
+- [ ] `CAP-02.05` se conserva como soporte laboral-territorial.
+- [ ] TALENTO conserva el pre-vínculo.
+- [ ] VISO conserva administración del episodio laboral aplicable.
+- [ ] ANIMA conserva experiencia del trabajador y captura de asistencia.
+- [ ] SHELL conserva identidad, autorización y contexto compartido.
+- [ ] Organización y territorio vinculan `CAP-01.03`.
+- [ ] Organización y territorio vinculan `CAP-01.04`.
+- [ ] `CAP-01.08` permanece como soporte y no como transferencia de operación.
+- [ ] Roles, perfiles y asignaciones vinculan `CAP-01.05`.
+- [ ] Roles, perfiles y asignaciones vinculan `CAP-02.05`.
+- [ ] `CAP-02.06` permanece condicionado al contrato de turno.
+- [ ] La vinculación con programación no activa `VISO-SCH`.
+- [ ] Permisos y matrices vinculan `CAP-15.01`.
+- [ ] Permisos y matrices conservan `CAP-01.05` y `CAP-01.06` como soporte de límites y reglas.
+- [ ] SHELL/modelo de autorización sigue siendo fuente de decisión.
+- [ ] VISO no autoriza mediante lista local de roles.
+- [ ] Contexto efectivo vincula asignaciones, territorio, turno, asistencia y autorización sin fusionarlos.
+- [ ] `CAP-02.07` se consume solo cuando el contrato operativo lo exige.
+- [ ] Capacidades administrativas no fabrican turno o check-in.
+- [ ] Capacidades operativas no omiten sus prerrequisitos.
+- [ ] Control y explicabilidad vinculan `CAP-01.10`.
+- [ ] Control y explicabilidad vinculan `CAP-16.07`.
+- [ ] Control y explicabilidad vinculan `CAP-16.11`.
+- [ ] Verificación no se transforma en BI general.
+- [ ] Evidencia no se duplica para crear una fuente VISO competidora.
+- [ ] Investigación no concede autorización retrospectiva.
+- [ ] Procedencia explica sin autorizar.
+- [ ] Preview permanece prospectivo.
+- [ ] Simulación permanece separada de autoridad real.
+- [ ] Conflictos se reservan a `VISO-CORE-005`.
+- [ ] Auditoría se reserva a `VISO-CORE-005`.
+- [ ] El bloqueo físico del exporte se conserva.
+- [ ] `CAP-03` a `CAP-14` no se absorben.
+- [ ] El resto de `CAP-15` no se absorbe.
+- [ ] El resto de `CAP-16` no se absorbe.
+- [ ] `CAP-17` no se incorpora como analítica del núcleo.
+- [ ] `CAP-18` no se incorpora como propiedad del núcleo.
+- [ ] Ninguna aplicación operativa cede su proceso propietario a VISO.
+- [ ] VISO no se declara dueño universal.
+- [ ] Persistencia técnica no se interpreta como ownership empresarial.
+- [ ] Interfaz administrativa no se interpreta como ownership empresarial.
+- [ ] Una subcapacidad repetida en varios dominios conserva una sola identidad.
+- [ ] Se identifican dependencias disponibles.
+- [ ] Se identifican dependencias condicionadas.
+- [ ] Se identifican dependencias ajenas.
+- [ ] `VISO-CORE-003` recibe un handoff de dependencias sin materialización anticipada.
+- [ ] `VISO-CORE-004` conserva responsabilidad de autorización real.
+- [ ] `VISO-CORE-005` conserva responsabilidad de conflicto y auditoría.
+- [ ] `VISO-CORE-006` conserva la aprobación final.
+- [ ] No se crean requisitos de prueba.
+- [ ] No se modifican requisitos de prueba.
+- [ ] No se modifica el Registro Canónico de Requisitos de Prueba.
+- [ ] La tarea conserva `DEFINE_ONCE`.
+- [ ] La tarea conserva `NO_PHYSICAL_INSTANCE`.
+- [ ] No existe implementación física propia de `VISO-CORE-002`.
+
+---
+
+#### 89. Límites
+
+Esta tarea no:
+
+- modifica la taxonomía `CAP-*`;
+- crea nuevas capacidades;
+- cambia owners empresariales;
+- cambia owners funcionales;
+- cambia custodios técnicos;
+- cambia consumidores;
+- modifica VISO;
+- modifica SHELL;
+- modifica ANIMA;
+- modifica TALENTO;
+- modifica aplicaciones operativas;
+- modifica Supabase;
+- crea tablas;
+- crea vistas;
+- crea migraciones;
+- crea RLS;
+- crea RPC;
+- crea funciones;
+- crea triggers;
+- crea Edge Functions;
+- crea Storage;
+- crea Realtime;
+- crea colas;
+- crea cron;
+- modifica datos;
+- crea roles;
+- crea permisos;
+- crea `PermissionKey`;
+- crea scopes;
+- crea grants;
+- crea denies;
+- crea asignaciones;
+- crea perfiles;
+- crea turnos;
+- registra asistencia;
+- publica horarios;
+- modifica `employee_shifts`;
+- activa `VISO-SCH-001` a `VISO-SCH-008`;
+- materializa `VISO-CORE-003`;
+- materializa `VISO-CORE-004`;
+- materializa `VISO-CORE-005`;
+- aprueba `VISO-CORE-006`;
+- diseña UX final;
+- crea páginas;
+- crea endpoints;
+- crea Server Actions;
+- crea exportes físicos;
+- elimina legacy;
+- selecciona package;
+- autoriza package;
+- autoriza implementación física;
+- ejecuta implementación física;
+- crea requisitos de prueba;
+- modifica requisitos de prueba;
+- modifica el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 90. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-CORE-001 — Definir núcleo mínimo de VISO`
+
+**TAREA ACTUAL APROBADA**
+`VISO-CORE-002 — Vincular núcleo con capacidades empresariales`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-CORE-003 — Implementar dependencias administrativas mínimas`
+
+
 ### [ ] VISO-CORE-003 — Implementar dependencias administrativas mínimas
 ### [ ] VISO-CORE-004 — Implementar autorización real del núcleo
 ### [ ] VISO-CORE-005 — Implementar validación de conflictos y auditoría
