@@ -5543,7 +5543,1392 @@ Esta tarea no:
 `VISO-CORE-005 — Implementar validación de conflictos y auditoría`
 
 
-### [ ] VISO-CORE-005 — Implementar validación de conflictos y auditoría
+### ✅ VISO-CORE-005 — Implementar validación de conflictos y auditoría
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-CORE-004 — Implementar autorización real del núcleo
+**Tarea siguiente:** VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance
+**Tipo de tarea:** contrato documental de implementación física por unidad; define cómo cada unidad válida del núcleo de VISO materializa validación prospectiva de conflictos, límites administrativos, concurrencia, corrección y evidencia auditable, reutilizando la autorización real y los contratos canónicos de configuración inconsistente y auditoría sin crear motores paralelos ni ejecutar ahora una instancia física
+**Bloque:** `G_VISO — NÚCLEO MÍNIMO PARA OPERACIÓN`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md`
+**Estado físico resultante:** contrato de conflictos, concurrencia y auditoría por `implementation_unit_id` definido; ninguna instancia física de `VISO-CORE-005` se crea, autoriza, ejecuta ni certifica por la aprobación documental de esta tarea
+**Cambios físicos autorizados:** únicamente dentro de una futura instancia válida `VISO-CORE-005::implementation_unit_id` habilitada por `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`: materializar o adaptar validadores prospectivos, bindings de evidencia y auditoría, controles de concurrencia y corrección, proyecciones seguras y pruebas previstas por el package y los contratos propietarios; ningún cambio físico queda autorizado fuera de esa unidad y su alcance aprobado
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el contrato reutilizable que debe cumplir cada unidad física del núcleo de VISO para impedir que una configuración administrativa contradictoria, obsoleta, no reproducible o concurrentemente desactualizada se convierta en autoridad vigente, y para conservar evidencia suficiente de cada cambio, intento, rechazo, corrección y rollback aplicable.
+
+La tarea no crea una segunda semántica de autorización ni una segunda semántica de auditoría.
+
+---
+
+#### 2. Regla raíz
+
+```text
+ESTADO ACTUAL
++
+CAMBIO PROPUESTO
++
+CONTRATOS VIGENTES
++
+AUTORIZACIÓN REAL
++
+ALCANCE
+→
+SNAPSHOT PROSPECTIVO
+→
+CONFLICTOS Y LÍMITES
+→
+CONCURRENCIA
+→
+EFECTO O CERO EFECTOS
+→
+EVIDENCIA APPEND-ONLY
+```
+
+Nunca se guarda primero para validar después.
+
+---
+
+#### 3. Topología
+
+`VISO-CORE-005` conserva:
+
+```text
+PER_IMPLEMENTATION_UNIT
+POST_E5_PACKAGE
+```
+
+No existe implementación global previa ni instancia física única de todo VISO.
+
+---
+
+#### 4. Identidad futura
+
+Cada materialización física deriva de:
+
+```text
+VISO-CORE-005
++
+implementation_unit_id canónico
+```
+
+El `implementation_unit_id` procede del package E5 aplicable. No se inventa desde una pantalla, tabla, dominio o repositorio.
+
+---
+
+#### 5. Gate temporal
+
+La materialización requiere package aplicable, unidad canónica, handoffs físicos, autorización real disponible, gate `POST_E5_PACKAGE`, alcance físico autorizado y lifecycle de implementación habilitado.
+
+La aprobación documental no satisface esos gates.
+
+---
+
+#### 6. Handoff recibido de VISO-CORE-003
+
+Cada unidad recibe:
+
+- dependencias administrativas materializadas;
+- bindings físicos;
+- contratos y versiones;
+- territorio y asignaciones aplicables;
+- catálogos y matrices;
+- dependencias condicionadas;
+- referencias necesarias para auditoría;
+- puntos de incompatibilidad conocidos.
+
+Una dependencia ausente no se fabrica.
+
+---
+
+#### 7. Handoff recibido de VISO-CORE-004
+
+Cada unidad recibe:
+
+- identidad exacta;
+- inventario operación–permiso–recurso;
+- entrypoints canónicos;
+- evidencia de decisión;
+- consumidores legacy restantes;
+- razones de bloqueo;
+- puntos de conflicto;
+- puntos de auditoría;
+- contratos y versiones;
+- evidencia de frescura;
+- pruebas de bypass y territorio.
+
+No recibe una declaración genérica de “autorizado”.
+
+---
+
+#### 8. Tres planos distintos
+
+Debe conservarse:
+
+```text
+CONFLICTO PROSPECTIVO
+≠
+INCONSISTENCIA ESTRUCTURAL DE RUNTIME
+≠
+HISTORIAL AUDITABLE
+```
+
+Los tres pueden correlacionarse, pero no colapsarse.
+
+---
+
+#### 9. Conflicto prospectivo
+
+Es la contradicción detectada sobre el estado que resultaría si una mutación administrativa propuesta se aplicara.
+
+Se evalúa antes del efecto y puede bloquear sin alterar el estado vigente.
+
+---
+
+#### 10. Inconsistencia estructural de runtime
+
+Es una contradicción concluyente dentro de configuración requerida por autorización.
+
+Cuando corresponde al contrato transversal, conserva la identidad pública aprobada por `AUTH-ERR-017`.
+
+---
+
+#### 11. Historial auditable
+
+Es evidencia histórica de cambios, intentos, rechazos, conflictos, correcciones, fallos técnicos, rollbacks y relaciones causales.
+
+No es el estado vigente.
+
+---
+
+#### 12. Fuentes normativas
+
+La unidad reutiliza:
+
+- `VISO-AUTH-016` para conflictos de configuración;
+- `VISO-AUTH-018` para auditoría de cambios de seguridad;
+- `AUTH-ERR-017` para inconsistencia administrativa concluyente;
+- `VISO-CORE-004` para autorización real;
+- `AUTH-DB-012` cuando el cambio corresponda a auditoría de permisos;
+- `AUTH-DB-020` cuando la adopción física de writers u objetos dependa de su transición.
+
+No reabre esos contratos.
+
+---
+
+#### 13. Identidad pública de inconsistencia
+
+Cuando aplica exactamente `AUTH-ERR-017`, permanece:
+
+```text
+reason_code = AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT
+state = ADMINISTRATIVE_CONFIGURATION_INCONSISTENT
+category = CONFIGURATION_CONFLICT
+http = 409
+executable = false
+```
+
+La sesión se preserva y los efectos empresariales permanecen en cero.
+
+---
+
+#### 14. Conflicto prospectivo no equivale a error runtime
+
+Una propuesta administrativa puede ser rechazada antes de persistirse. Esa detección prospectiva se explica dentro de la superficie autorizada sin fingir que ya existe una configuración runtime inconsistente.
+
+---
+
+#### 15. DENY coherente
+
+```text
+CONFIGURACIÓN COHERENTE + DENY
+≠
+CONFIGURACIÓN INCONSISTENTE
+```
+
+Carecer de un grant válido no es, por sí solo, conflicto.
+
+---
+
+#### 16. Ausencia ordinaria
+
+La ausencia normal de asignación, turno, check-in, grant o contexto opcional conserva su razón propietaria.
+
+No se convierte automáticamente en `StructuralIssue`.
+
+---
+
+#### 17. Permiso no registrado
+
+Una búsqueda concluyente de una capacidad exacta inexistente conserva `AUTH-ERR-018`.
+
+No se clasifica como `AUTH-ERR-017` para ocultar una brecha de catálogo.
+
+---
+
+#### 18. Indisponibilidad técnica
+
+Una fuente obligatoria no disponible conserva `AUTH-ERR-019`.
+
+No se declara conflicto sin lectura concluyente.
+
+---
+
+#### 19. Precedencia causal
+
+```text
+CONFLICTO CONCLUYENTE
+→ AUTH-ERR-017 cuando aplique
+
+PERMISO EXACTO NO REGISTRADO
+→ AUTH-ERR-018
+
+FUENTE O EVALUADOR NO DISPONIBLE
+→ AUTH-ERR-019
+```
+
+No existe fallback local que cambie esta precedencia.
+
+---
+
+#### 20. Severidades estructurales
+
+La unidad conserva exclusivamente las severidades canónicas:
+
+```text
+BLOCKING_ALL
+BLOCKING_BASE
+BLOCKING_OPERATIONAL
+```
+
+---
+
+#### 21. Efecto de severidad
+
+| Severidad | Efecto |
+| --- | --- |
+| `BLOCKING_ALL` | invalida base y operacional |
+| `BLOCKING_BASE` | invalida solo base |
+| `BLOCKING_OPERATIONAL` | invalida solo operacional |
+
+Un warning o una observación no se convierten en bloqueo ni en `ALLOW` por inferencia.
+
+---
+
+#### 22. Modalidad
+
+| Modalidad | Regla |
+| --- | --- |
+| `BASE_ONLY` | el carril base requerido debe ser válido |
+| `OPERATIONAL_ONLY` | el carril operacional requerido debe ser válido |
+| `BASE_OR_OPERATIONAL` | un carril completo independiente puede autorizar aunque el otro sea inválido |
+| `BASE_AND_OPERATIONAL` | ambos carriles deben ser válidos |
+
+No se mezclan fragmentos incompletos para fabricar autoridad.
+
+---
+
+#### 23. Snapshot actual
+
+Antes de evaluar una mutación, el estado actual se resuelve desde fuentes canónicas y versiones compatibles.
+
+No se acepta como estado actual una copia de UI, estado React, `localStorage`, selección previa o caché sin fingerprint vigente.
+
+---
+
+#### 24. Snapshot prospectivo
+
+La unidad representa el estado resultante antes de persistir.
+
+El snapshot prospectivo no es autoridad vigente.
+
+---
+
+#### 25. Orden de seguridad
+
+```text
+RESOLVER ESTADO ACTUAL
+→
+VALIDAR INPUT
+→
+CALCULAR SNAPSHOT PROSPECTIVO
+→
+VALIDAR CONFLICTOS
+→
+VALIDAR LÍMITES
+→
+REVALIDAR AUTORIZACIÓN
+→
+VALIDAR CONCURRENCIA
+→
+PERSISTIR O BLOQUEAR
+→
+REGISTRAR EVIDENCIA
+```
+
+---
+
+#### 26. Conflicto bloqueante
+
+Si el cambio crea o agrava un conflicto bloqueante dentro de su alcance, la mutación no se ejecuta.
+
+No existe guardado parcial silencioso.
+
+---
+
+#### 27. Conflicto ajeno
+
+Un conflicto preexistente fuera del alcance del cambio no congela automáticamente toda la administración.
+
+Permanece como deuda o revisión con owner y condición de salida.
+
+---
+
+#### 28. No propagación de legacy
+
+La deuda legacy histórica no habilita copiar, reactivar o extender una configuración incompatible a nueva vigencia.
+
+---
+
+#### 29. No reparación automática
+
+La detección de conflicto no puede reparar mediante:
+
+- agregar grants;
+- retirar denies;
+- escoger primera fila;
+- cambiar rol por inferencia;
+- convertir `null` en global;
+- eliminar silenciosamente territorio;
+- ocultar la fuente contradictoria.
+
+La corrección requiere una mutación explícita autorizada.
+
+---
+
+#### 30. Matriz de casos de conflicto
+
+| Caso | Clasificación |
+| --- | --- |
+| ALLOW + DENY exactos y simultáneamente aplicables | bloqueante |
+| regla `BASE_ONLY` usada como operacional | bloqueante |
+| regla `OPERATIONAL_ONLY` usada como base | bloqueante |
+| modalidad faltante usada para conceder | bloqueante |
+| deny con carril o sujeto incompatible | bloqueante |
+| scope exacto sin dimensión obligatoria | bloqueante |
+| área incompatible con sede | bloqueante |
+| rol inválido para sede | bloqueante |
+| rol inválido para área | bloqueante |
+| turno laboral que requiere rol y no puede resolverlo | bloqueante |
+| varios turnos efectivos incompatibles | bloqueante |
+| binding de área no resuelto usado site-wide | bloqueante |
+| identidad legacy reactivada como canónica | bloqueante |
+| fuente simulada persistida como real | bloqueante |
+| contratos o snapshots incompatibles | bloqueante |
+| dos allows compatibles | no conflicto |
+| dos denies compatibles | no conflicto |
+| default deny | no conflicto por sí solo |
+| perfil distinto del rol efectivo | no conflicto por sí solo |
+| varias sedes asignadas válidas | no conflicto por sí solo |
+| duplicado exacto del mismo efecto | redundancia o revisión |
+| deuda antigua fuera de vigencia | revisión |
+| conflicto fuera del alcance del cambio | revisión; no bloqueo global |
+
+---
+
+#### 31. Scope y territorio
+
+Una dimensión territorial obligatoria no se fabrica desde la UI.
+
+Sede y área deben pertenecer al contrato y al alcance autorizado del actor.
+
+---
+
+#### 32. Roles y turnos
+
+Un perfil no sustituye el rol operativo efectivo.
+
+Un turno ambiguo o incompatible no se resuelve escogiendo la primera fila.
+
+---
+
+#### 33. Versionado
+
+La unidad no mezcla versiones contractuales o snapshots incompatibles.
+
+Una incompatibilidad material bloquea hasta obtener una resolución reproducible.
+
+---
+
+#### 34. StructuralIssue
+
+La unidad no crea un catálogo local.
+
+Cuando consuma `StructuralIssue`, conserva código, severidad, sujeto, fuente, metadata autorizada, versión y procedencia.
+
+---
+
+#### 35. Disponibilidad no estructural
+
+Códigos de ausencia ordinaria o disponibilidad no se reclasifican como `StructuralIssue` solo para reutilizar un flujo de errores.
+
+---
+
+#### 36. Determinismo
+
+Las mismas fuentes, versiones y propuesta deben producir la misma clasificación.
+
+El orden de retorno de filas no puede cambiar la conclusión.
+
+---
+
+#### 37. Owner de conflicto
+
+Cada conflicto material debe conservar un propietario de resolución.
+
+Un owner desconocido bloquea la certificación de la unidad.
+
+---
+
+#### 38. Evidencia mínima de conflicto
+
+Sin imponer una tabla nueva, la unidad debe poder conservar o reconstruir:
+
+- código o tipo;
+- severidad;
+- sujeto o recurso;
+- fuentes;
+- dimensión conflictiva;
+- alcance;
+- versiones;
+- fingerprints;
+- momento de detección;
+- owner;
+- resultado;
+- referencia de corrección.
+
+---
+
+#### 39. Proyección segura de conflicto
+
+La superficie administrativa recibe solo la información necesaria para comprender y corregir dentro del alcance autorizado.
+
+No expone secretos, grants ajenos, PII innecesaria ni infraestructura interna.
+
+---
+
+#### 40. UX final
+
+La tarea puede exigir una proyección estructurada de conflictos.
+
+No define navegación, composición visual ni experiencia final de VISO.
+
+---
+
+#### 41. Límites administrativos
+
+Los límites proceden de contratos canónicos de territorio, cardinalidad, lifecycle, modalidad, sensibilidad, segregación, versión, recurso, vigencia y concurrencia.
+
+No son cuotas inventadas por una pantalla.
+
+---
+
+#### 42. Cardinalidad y lifecycle
+
+Cuando existe unicidad o cardinalidad máxima, se valida el estado prospectivo completo.
+
+Una transición imposible desde el estado actual se bloquea.
+
+---
+
+#### 43. Segregación
+
+Crear, aprobar, suspender y revocar permanecen separados cuando el catálogo los separa.
+
+Tener varias capacidades no elimina restricciones de autoaprobación o autoafectación.
+
+---
+
+#### 44. Sensibilidad
+
+Una operación sensible conserva reautenticación, motivo, aprobación y controles adicionales cuando su contrato los exige.
+
+---
+
+#### 45. Concurrencia
+
+Una configuración mutable crítica debe impedir sobrescritura silenciosa de un estado más reciente.
+
+La estrategia física pertenece al owner del recurso y al package.
+
+---
+
+#### 46. No imponer locking universal
+
+Esta tarea no obliga a usar un mecanismo específico como `updated_at`, número de versión, ETag, lock o fingerprint.
+
+La unidad debe demostrar que evita lost update según su contrato.
+
+---
+
+#### 47. Escritura stale
+
+Si la precondición de concurrencia falla:
+
+- no se sobrescribe;
+- no se reintenta como éxito;
+- se conserva evidencia cuando aplica;
+- se exige resolución fresca.
+
+---
+
+#### 48. Carrera validación–persistencia
+
+Una validación de conflicto sobre snapshot obsoleto no habilita la escritura.
+
+La implementación controla la carrera mediante la frontera transaccional o de revalidación aprobada.
+
+---
+
+#### 49. Carrera autorización–persistencia
+
+Si cambia una condición material de recurso, contexto o alcance después de autorizar, la operación debe reautorizarse o bloquearse.
+
+---
+
+#### 50. Idempotencia y reintento
+
+Un reintento no duplica efectos ni reutiliza automáticamente un `ALLOW`, snapshot, conflicto o fingerprint obsoleto.
+
+La solicitud vuelve a resolver el estado requerido.
+
+---
+
+#### 51. Corrección
+
+Una corrección administrativa es una mutación nueva.
+
+No reescribe silenciosamente la evidencia original.
+
+---
+
+#### 52. Corrección semántica
+
+Si cambia autoridad, territorio, rol, scope o vigencia, la corrección vuelve a pasar autorización, conflictos, límites y concurrencia.
+
+---
+
+#### 53. Rollback
+
+Un rollback conserva referencia al cambio original y motivo.
+
+No borra la historia ni restaura una fuente insegura fuera de un gate aprobado.
+
+---
+
+#### 54. Borrado de borradores
+
+Solo aplica a objetos que su contrato propietario considere borradores eliminables.
+
+Eliminar un borrador no autoriza borrar evidencia obligatoria de creación, edición, rechazo o conflicto.
+
+---
+
+#### 55. Notificación
+
+La unidad solo notifica cuando una regla propietaria lo exige.
+
+No notifica éxito antes del commit ni convierte un rechazo por conflicto en una publicación exitosa.
+
+---
+
+#### 56. Fallo de notificación
+
+Si una notificación obligatoria falla después de un cambio ya comprometido, el estado del negocio no se reescribe como si nunca hubiera ocurrido.
+
+Se conserva evidencia e incidente o retry según el owner.
+
+---
+
+#### 57. Auditoría como condición del núcleo
+
+Cada unidad identifica qué mutaciones requieren evidencia auditable.
+
+No puede cerrar con “auditoría pendiente” sin owner y condición de salida.
+
+---
+
+#### 58. Historial versus estado
+
+La auditoría describe lo ocurrido.
+
+No se reconstruye sustituyendo valores históricos por el estado vigente.
+
+---
+
+#### 59. Append-only
+
+La evidencia relevante es append-only.
+
+Una corrección crea evidencia nueva y vinculada.
+
+---
+
+#### 60. Before/after
+
+Cuando el contrato lo exige, la evidencia permite reconstruir el estado anterior y posterior o fingerprints/referencias equivalentes.
+
+---
+
+#### 61. Intentos
+
+La auditoría puede conservar, según el contrato:
+
+- exitosos;
+- denegados;
+- inválidos;
+- conflictivos;
+- fallos técnicos;
+- no-cambio;
+- rollback.
+
+No se limita a escrituras exitosas.
+
+---
+
+#### 62. Correlación y causalidad
+
+La evidencia puede enlazar solicitud, decisión, cambio, aprobación, conflicto, corrección, incidente y rollback.
+
+Una acción compensatoria conserva su antecedente.
+
+---
+
+#### 63. Identidad histórica
+
+La evidencia distingue principal, actor efectivo, principal técnico, sesión y dispositivo cuando aplican.
+
+No atribuye toda la acción al usuario técnico de la transacción.
+
+---
+
+#### 64. Territorio histórico
+
+Una reasignación futura no reescribe el territorio del evento histórico.
+
+---
+
+#### 65. Permiso, recurso y versiones
+
+La evidencia debe poder identificar permiso, recurso, versiones y fingerprints necesarios para explicar el cambio.
+
+No se recalcula una huella histórica con estado actual.
+
+---
+
+#### 66. Sensibilidad y retención
+
+La proyección de auditoría respeta sensibilidad y la clase de retención de su contrato.
+
+No existe un plazo único inventado para todo VISO.
+
+---
+
+#### 67. Preservación
+
+Cuando el owner o contrato exija preservación, limpieza, corrección o rollback no pueden destruir la evidencia retenida.
+
+---
+
+#### 68. Fundación AUTH-DB-012
+
+La infraestructura append-only de `AUTH-DB-012` es la fundación canónica específica para cambios de permisos.
+
+`VISO-CORE-005` la reutiliza cuando la unidad afecte ese dominio.
+
+---
+
+#### 69. Forma de AUTH-DB-012
+
+La fundación separa:
+
+- change sets;
+- changes;
+- attempts;
+- links.
+
+La unidad no crea una segunda familia equivalente solo para VISO.
+
+---
+
+#### 70. Fuentes y cambios de permisos
+
+La fundación de permisos reconoce fuentes canónicas como release de catálogo, grant base, grant operacional, override individual y deny explícito.
+
+Distingue creación, activación, scope, vigencia, suspensión, revocación, expiración, rechazo, supersesión, migración y corrección de metadata.
+
+La unidad no colapsa todo en “update”.
+
+---
+
+#### 71. Writer adoption
+
+La existencia de la fundación no demuestra que todos los writers concretos registren evidencia.
+
+Cada unidad debe verificar los writers de su alcance antes de declararse completa.
+
+---
+
+#### 72. Frontera AUTH-DB-020
+
+Cuando adopción o compatibilidad temporal de writers dependa de `AUTH-DB-020`, la unidad consume ese resultado dentro del package aplicable.
+
+No reimplementa esa transición global.
+
+---
+
+#### 73. Cambios no-permiso
+
+Los cambios del núcleo que no sean cambios de permisos no se fuerzan dentro de las tablas específicas de auditoría de permisos.
+
+Se usa el contrato de evidencia del owner correspondiente.
+
+---
+
+#### 74. Ausencia de fundación
+
+Si una mutación obligatoria requiere auditoría y no existe representación física conforme ni owner de salida:
+
+```text
+UNIDAD
+→ BLOQUEADA
+```
+
+Un `console.log` no es sustituto.
+
+---
+
+#### 75. AuthorizationDecision no sustituye Change Audit
+
+La persistencia recibida de `VISO-CORE-004` explica por qué una operación se autorizó o denegó.
+
+No sustituye el historial de lo que la mutación cambió.
+
+---
+
+#### 76. Vínculo decisión–cambio
+
+Cuando aplica, la evidencia de cambio se correlaciona con la decisión de autorización utilizada.
+
+No se reevalúa históricamente con el estado actual.
+
+---
+
+#### 77. Lectura de auditoría de seguridad
+
+La capacidad exacta aprobada permanece:
+
+```text
+viso.authorization.audit_logs.view
+```
+
+y el recurso protegido:
+
+```text
+AUDIT_EVENT
+```
+
+La capacidad no concede mutación ni exportación.
+
+---
+
+#### 78. Scope de lectura
+
+Una consulta directa de auditoría reautoriza actor, permiso, recurso, territorio o alcance y sensibilidad.
+
+Los filtros reducen el conjunto visible; nunca lo amplían.
+
+---
+
+#### 79. Paginación estable
+
+El historial append-only puede crecer durante la consulta.
+
+La unidad usa cursor estable o mecanismo equivalente y orden determinista para evitar saltos, duplicados o mezcla temporal engañosa.
+
+---
+
+#### 80. Proyección mínima de auditoría
+
+Ver un evento no autoriza ver secretos, credenciales, payloads internos completos o PII innecesaria.
+
+---
+
+#### 81. Exportación de auditoría
+
+Una capacidad de lectura no implica exportación masiva.
+
+Sin permiso exacto, la exportación se bloquea.
+
+---
+
+#### 82. Evidencia de rechazo
+
+Un intento rechazado por conflicto conserva, cuando aplica, actor, operación, objetivo, clasificación, alcance, versiones, correlación y cero efectos sin persistir la configuración inválida.
+
+---
+
+#### 83. Concurrencia no es conflicto estructural
+
+Un rechazo stale se distingue de una contradicción administrativa.
+
+La causa real permanece trazable.
+
+---
+
+#### 84. Fallo técnico no es DENY
+
+Un fallo técnico no se registra como denegación empresarial ni como conflicto si no hubo lectura concluyente.
+
+---
+
+#### 85. Rollback y corrección
+
+Rollback y corrección generan evidencia nueva y links a su antecedente.
+
+No sustituyen el registro previo.
+
+---
+
+#### 86. Inmutabilidad
+
+Roles cliente no reciben capacidad para editar evidencia append-only por conveniencia administrativa.
+
+---
+
+#### 87. Credenciales privilegiadas
+
+`service_role` y funciones `SECURITY DEFINER` no sustituyen actor, autorización, conflictos, concurrencia ni evidencia.
+
+Los grants permanecen mínimos y la frontera server-side conserva su owner seguro.
+
+---
+
+#### 88. RLS y capas
+
+RLS protege acceso a filas, pero no sustituye validación de conflicto ni historial de auditoría.
+
+Server Actions, Route Handlers, RPC, jobs y procesos asíncronos deben aplicar los controles que correspondan antes del efecto.
+
+---
+
+#### 89. Offline y Realtime
+
+Una mutación encolada revalida al sincronizar cuando el contrato lo exige.
+
+Realtime puede invalidar o refrescar una superficie, pero no sustituye la validación server-side de escritura.
+
+---
+
+#### 90. Eventos invalidantes
+
+Cambios de catálogo, asignación, rol, perfil, turno, grant, deny, dispositivo o contrato pueden invalidar snapshots prospectivos.
+
+Solo las dependencias aplicables a la unidad producen invalidación.
+
+---
+
+#### 91. Inventario de writers
+
+Cada unidad identifica los writers físicos que modifican su configuración.
+
+No basta inventariar páginas.
+
+---
+
+#### 92. Clasificación de writers
+
+Cada writer aplicable queda en uno de estos estados:
+
+```text
+ADOPTADO_CON_EVIDENCIA_CANÓNICA
+COMPATIBILIDAD_CONTROLADA
+BLOQUEADO
+FUERA_DEL_ALCANCE_DE_LA_UNIDAD
+```
+
+No queda sin decisión.
+
+---
+
+#### 93. Compatibilidad controlada
+
+Un writer legacy solo permanece si no evita los controles, tiene owner de transición, condición de retiro, evidencia suficiente y cobertura del package.
+
+---
+
+#### 94. No retiro global
+
+Una unidad no elimina globalmente un writer porque ya no lo utilice localmente.
+
+El retiro exige comprobar consumidores y alcance.
+
+---
+
+#### 95. AS-IS de conflictos
+
+Comprobaciones físicas de solapamiento en programación o `upsert` con `onConflict` pueden resolver reglas locales o unicidad técnica.
+
+No equivalen por sí solas al motor transversal de conflictos definido aquí.
+
+---
+
+#### 96. No segunda fuente VISO
+
+VISO puede presentar proyecciones seguras, pero no crea una copia editable de la auditoría canónica.
+
+Logs, Git y métricas tampoco sustituyen runtime evidence contractual.
+
+---
+
+#### 97. Cero efectos
+
+Un bloqueo pre-commit debe demostrar cero efectos empresariales.
+
+Si un fallo ocurre después de iniciar una operación cuya atomicidad no está demostrada, no se afirma rollback completo sin evidencia.
+
+---
+
+#### 98. Frontera de atomicidad
+
+Cada unidad documenta qué mecanismo mantiene consistentes validación, concurrencia, efecto y evidencia obligatoria.
+
+No se impone una única transacción cuando el proceso legítimamente cruza sistemas.
+
+---
+
+#### 99. Efectos externos
+
+Notificaciones, integraciones u otros efectos externos se distinguen del commit interno.
+
+Su fallo no reescribe el evento interno ya confirmado.
+
+---
+
+#### 100. Pendientes con owner
+
+Toda deuda no bloqueante conserva:
+
+- qué falta;
+- por qué no bloquea;
+- owner;
+- condición exacta de salida.
+
+Un conflicto material sin owner bloquea.
+
+---
+
+#### 101. Bloqueadores de cierre por unidad
+
+Bloquean el cierre:
+
+- evidencia insuficiente;
+- writer capaz de bypass;
+- concurrencia crítica ausente;
+- conflicto no reproducible;
+- mutación obligatoria sin audit trail;
+- proyección de auditoría insegura;
+- rollback destructivo;
+- dependencia física obligatoria ausente;
+- package sin cobertura del cambio.
+
+---
+
+#### 102. Evidencia física mínima futura
+
+Cada instancia física deberá conservar, como mínimo:
+
+1. package propietario;
+2. `implementation_unit_id`;
+3. repositorios y ambientes;
+4. handoffs recibidos;
+5. configuración mutable incluida;
+6. matriz de conflictos aplicables;
+7. límites aplicables;
+8. writers inventariados;
+9. mecanismo de concurrencia;
+10. fundación de auditoría;
+11. adopción de writers;
+12. proyecciones seguras;
+13. pruebas positivas;
+14. pruebas negativas;
+15. pruebas de concurrencia;
+16. pruebas append-only;
+17. pruebas territoriales;
+18. rollback;
+19. deudas no bloqueantes;
+20. bloqueadores;
+21. versiones;
+22. fingerprints.
+
+---
+
+#### 103. Pruebas de conflicto
+
+La suite física de una unidad cubre los casos bloqueantes aplicables y también casos válidos para evitar falsos positivos.
+
+Debe demostrar, cuando corresponda:
+
+- ALLOW + DENY exactos;
+- severidad por carril;
+- versión incompatible;
+- legacy reactivado;
+- simulación persistida;
+- conflicto ajeno que no congela globalmente;
+- ausencia de reparación automática.
+
+---
+
+#### 104. Pruebas de concurrencia
+
+Debe existir un escenario donde una lectura A queda obsoleta por una escritura B y la escritura posterior basada en A se rechaza sin perder B.
+
+Si el cambio altera autorización, la decisión anterior no habilita el efecto.
+
+---
+
+#### 105. Pruebas de auditoría
+
+La unidad demuestra, según aplique:
+
+- append-only;
+- before/after o fingerprints;
+- intento rechazado con cero efecto;
+- corrección vinculada;
+- rollback vinculado;
+- alcance territorial;
+- mínimo privilegio;
+- paginación estable;
+- privacidad;
+- causalidad;
+- writer adoption.
+
+---
+
+#### 106. Prueba de bypass de writers
+
+Ningún writer dentro del alcance puede modificar configuración protegida evitando autorización, conflictos, límites, concurrencia o evidencia cuando correspondan.
+
+---
+
+#### 107. Criterio de completitud
+
+Una unidad es conforme únicamente cuando:
+
+- conflictos aplicables están materializados;
+- ningún writer puede persistir conflicto bloqueante;
+- límites obligatorios están aplicados;
+- concurrencia crítica está controlada;
+- autorización real sigue siendo la de `VISO-CORE-004`;
+- evidencia obligatoria se registra;
+- readers respetan permiso y alcance;
+- corrección y rollback preservan historia;
+- writers legacy tienen decisión;
+- pruebas aplicables pasan;
+- deudas restantes son no bloqueantes y tienen owner.
+
+---
+
+#### 108. No equivalencia tarea–instancia
+
+```text
+VISO-CORE-005 DOCUMENTAL APROBADA
+≠
+VISO-CORE-005::implementation_unit_id IMPLEMENTADA
+```
+
+La tarea define el contrato. La instancia física demuestra cumplimiento.
+
+---
+
+#### 109. Fronteras de responsabilidad
+
+| Fuente o tarea | Responsabilidad preservada |
+| --- | --- |
+| `VISO-CORE-004` | autorización real y evidencia de decisión |
+| `VISO-AUTH-016` | semántica de conflictos administrativos |
+| `VISO-AUTH-018` | contrato de auditoría de cambios de seguridad |
+| `AUTH-ERR-017` | inconsistencia administrativa transversal |
+| `AUTH-DB-012` | fundación física de auditoría de cambios de permisos |
+| `AUTH-DB-020` | transición física de objetos y writers cuando aplique |
+| VISO-UX | experiencia final |
+| `VISO-CORE-006` | aprobación final del núcleo |
+
+---
+
+#### 110. Supabase
+
+Toda modificación VENTO de Supabase que una futura unidad requiera se crea, versiona, valida y ejecuta desde `vento-group-sas/vento-shell`.
+
+Esta tarea documental no modifica un entorno Supabase.
+
+---
+
+#### 111. vento-viso
+
+Una futura unidad puede requerir cambios en `vento-viso` si el package los autoriza.
+
+El AS-IS no amplía el alcance físico por sí solo.
+
+---
+
+#### 112. Programación laboral y otros dominios
+
+Esta tarea no activa el delta mensual de programación ni absorbe conflictos propios de inventario, producción, POS, logística u otros procesos.
+
+Cada owner conserva su contrato.
+
+---
+
+#### 113. Resultado permitido sin migración
+
+Una unidad puede completar el contrato sin crear tablas o migraciones nuevas si la fundación existente, los writers adoptados, la concurrencia y las pruebas ya son conformes.
+
+No se exige cambio artificial.
+
+---
+
+#### 114. Handoff físico a VISO-CORE-006
+
+Por cada unidad materializada, `VISO-CORE-006` recibe:
+
+- identidad exacta;
+- package;
+- alcance implementado;
+- dependencias verificadas;
+- autorización real verificada;
+- inventario de conflictos;
+- resultado de conflictos bloqueantes;
+- deudas de revisión;
+- límites;
+- concurrencia;
+- writers y adopción;
+- fundación de auditoría;
+- bindings de evidencia;
+- readers y alcance;
+- correcciones y rollback;
+- pruebas;
+- versiones;
+- fingerprints;
+- bloqueadores;
+- evidencia de cero bypass.
+
+No recibe una declaración genérica de “conflictos y auditoría listos”.
+
+---
+
+#### 115. Handoff documental a VISO-CORE-006
+
+La siguiente tarea deberá decidir si el núcleo mínimo completo puede aprobarse antes de ampliar alcance.
+
+Consumirá evidencia de `VISO-CORE-001` a `VISO-CORE-005` y no reabrirá decisiones correctas sin contradicción verificable.
+
+---
+
+#### 116. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Los contratos vigentes ya protegen detección de conflictos, consistencia de configuración, alcance territorial, evidencia, invalidación, auditoría y equivalencia entre VISO y consumidores. Esta tarea asigna su materialización por unidad sin crear una regla protegida independiente.
+
+---
+
+#### 117. Cobertura de prueba vigente reutilizada
+
+Sin modificar el Registro Canónico de Requisitos de Prueba, esta tarea reutiliza:
+
+- `TREQ-VISO-001` — efecto prospectivo, conflictos, procedencia, territorio, auditoría y equivalencia;
+- `TREQ-AUTH-007` — administración explícita y territorial;
+- `TREQ-AUTH-009` — territorio determinista;
+- `TREQ-AUTH-013` — mutaciones server-side;
+- `TREQ-AUTH-014` — invalidación y frescura;
+- `TREQ-AUTH-015` — evidencia correlacionable;
+- `TREQ-AUTH-016` — revocación sin destruir historia;
+- `TREQ-AUTH-289` a `TREQ-AUTH-298` — configuración inconsistente, carriles, precedencia causal, equivalencia multicanal, experiencia segura y reconciliación física.
+
+Estas referencias son trazabilidad heredada. No actualizan el registro.
+
+---
+
+#### 118. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería documental no se ha ejecutado todavía sobre el checkout local de la rama de `VISO-CORE-005`. |
+| LOCAL | NOT_EXECUTED | El bloque todavía no ha sido insertado, normalizado ni validado dentro de la rama documental local. |
+| REMOTA | PASS | Se verificaron el `main` vigente después del cierre de `VISO-CORE-004`, continuidad, owner, topología, gate, políticas documentales, handoffs de `VISO-CORE-003` y `VISO-CORE-004`, contratos `VISO-AUTH-016`, `VISO-AUTH-018` y `AUTH-ERR-017`, Registro 04A de VISO y AUTH, fundación física de `AUTH-DB-012`, migración de auditoría de permisos, scripts documentales y AS-IS relevante de conflictos en `vento-viso`. |
+| OPERATIVA | NOT_APPLICABLE | La entrega documental no cambia configuración real, permisos, asignaciones, turnos, auditoría runtime, datos productivos ni comportamiento operativo. |
+| FÍSICA | NOT_EXECUTED | La tarea define un contrato `PER_IMPLEMENTATION_UNIT`; ninguna instancia física de `VISO-CORE-005` se crea ni ejecuta mediante esta aprobación documental. |
+
+---
+
+#### 119. Criterios de aceptación
+
+- [ ] Se conserva `PER_IMPLEMENTATION_UNIT`.
+- [ ] Se conserva `POST_E5_PACKAGE`.
+- [ ] No existe instancia global.
+- [ ] No se inventa un `implementation_unit_id`.
+- [ ] Se reciben los handoffs reales de `VISO-CORE-003` y `VISO-CORE-004`.
+- [ ] Conflicto prospectivo, inconsistencia runtime y auditoría permanecen separados.
+- [ ] `VISO-AUTH-016` sigue siendo fuente de conflictos administrativos.
+- [ ] `AUTH-ERR-017` sigue siendo fuente de inconsistencia transversal.
+- [ ] No se crea otro reason code público equivalente.
+- [ ] DENY coherente no se convierte en conflicto.
+- [ ] Ausencia ordinaria no se convierte en StructuralIssue.
+- [ ] `AUTH-ERR-018` permanece para permiso no registrado.
+- [ ] `AUTH-ERR-019` permanece para indisponibilidad.
+- [ ] Se conservan las tres severidades estructurales.
+- [ ] La composición por modalidad respeta carriles.
+- [ ] El snapshot prospectivo se calcula antes de guardar.
+- [ ] Conflicto bloqueante impide efecto.
+- [ ] Conflicto ajeno no congela globalmente.
+- [ ] Legacy no se propaga.
+- [ ] No existe reparación automática.
+- [ ] La matriz de casos bloqueantes y no bloqueantes se preserva.
+- [ ] Scope, sede, área, rol y turno no se infieren.
+- [ ] Versiones incompatibles bloquean.
+- [ ] Detección es determinista.
+- [ ] Cada conflicto tiene owner.
+- [ ] La proyección de conflicto minimiza información.
+- [ ] Límites provienen de contratos.
+- [ ] Segregación, autoaprobación y autoafectación se preservan.
+- [ ] Sensibilidad no se degrada.
+- [ ] Concurrencia evita lost update.
+- [ ] Escrituras stale se rechazan.
+- [ ] Carreras relevantes se controlan.
+- [ ] Idempotencia no duplica efectos.
+- [ ] Reintentos usan estado fresco.
+- [ ] Correcciones crean nueva evidencia.
+- [ ] Rollback conserva historia.
+- [ ] Borrado de borrador no borra evidencia obligatoria.
+- [ ] Notificaciones solo se emiten cuando corresponden.
+- [ ] Historial y estado actual permanecen separados.
+- [ ] Evidencia es append-only.
+- [ ] Before/after o fingerprints son reconstruibles cuando aplica.
+- [ ] Intentos rechazados se conservan cuando corresponde.
+- [ ] Se conserva correlación y causalidad.
+- [ ] Principal, actor y principal técnico permanecen separados.
+- [ ] Territorio histórico no se reescribe.
+- [ ] Versiones y fingerprints históricos se preservan.
+- [ ] Sensibilidad y retención se respetan.
+- [ ] `AUTH-DB-012` se reutiliza para cambios de permisos.
+- [ ] No se duplica la fundación de auditoría de permisos.
+- [ ] Writer adoption se verifica y no se presume.
+- [ ] `AUTH-DB-020` conserva su transición física.
+- [ ] Cambios no-permiso usan su owner de evidencia.
+- [ ] Ausencia de audit trail obligatorio bloquea.
+- [ ] AuthorizationDecision no sustituye Change Audit.
+- [ ] `viso.authorization.audit_logs.view` permanece capacidad exacta de lectura de auditoría de seguridad.
+- [ ] `AUDIT_EVENT` permanece recurso de esa lectura.
+- [ ] Filtros no amplían scope.
+- [ ] Paginación y orden son estables.
+- [ ] Proyección de auditoría es mínima.
+- [ ] Lectura no implica exportación.
+- [ ] Rechazos conservan cero efecto.
+- [ ] Concurrencia stale se distingue de conflicto.
+- [ ] Fallo técnico no se registra como DENY.
+- [ ] Rollback y corrección quedan vinculados.
+- [ ] Roles cliente no editan evidencia append-only.
+- [ ] `service_role` y `SECURITY DEFINER` no son bypass.
+- [ ] RLS no sustituye conflicto ni auditoría.
+- [ ] Todos los writers aplicables están inventariados.
+- [ ] Cada writer tiene clasificación de transición.
+- [ ] Compatibilidad legacy no crea bypass.
+- [ ] No se retiran writers globalmente por inferencia.
+- [ ] Conflictos AS-IS locales no se confunden con motor transversal.
+- [ ] `onConflict` técnico no se confunde con conflicto empresarial.
+- [ ] Logs, Git y métricas no sustituyen runtime evidence.
+- [ ] Bloqueos pre-commit demuestran cero efectos.
+- [ ] Fallos post-efecto no afirman rollback sin evidencia.
+- [ ] La frontera de atomicidad queda documentada.
+- [ ] Todo pendiente tiene owner y condición de salida.
+- [ ] Bypass, concurrencia ausente, audit gap o proyección insegura bloquean.
+- [ ] Se ejecutan pruebas de conflicto y no-conflicto.
+- [ ] Se ejecutan pruebas de concurrencia.
+- [ ] Se ejecutan pruebas append-only, corrección y rollback.
+- [ ] Se ejecutan pruebas territoriales y de privacidad.
+- [ ] Se ejecuta prueba de writer adoption.
+- [ ] Ningún writer evita los controles.
+- [ ] `VISO-CORE-004` conserva autorización real.
+- [ ] VISO-UX conserva experiencia final.
+- [ ] Toda modificación VENTO de Supabase permanece en `vento-shell`.
+- [ ] `vento-viso` solo cambia dentro de package y unidad autorizados.
+- [ ] El delta mensual no se activa por esta tarea.
+- [ ] No se absorben conflictos de otros procesos.
+- [ ] No se exige migración artificial.
+- [ ] `VISO-CORE-006` recibe handoff verificable.
+- [ ] No se crean requisitos de prueba.
+- [ ] No se modifican requisitos de prueba.
+- [ ] No se modifica el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 120. Límites
+
+Esta tarea no:
+
+- crea o selecciona packages;
+- cambia la línea de packages;
+- crea manualmente una unidad;
+- crea una instancia global;
+- autoriza o ejecuta implementación física;
+- modifica Supabase ni datos reales;
+- crea migraciones, tablas, RPC, RLS, grants, funciones, triggers, Storage, Realtime, Edge Functions, cron o colas;
+- cambia secretos o Auth;
+- cambia código de `vento-viso` o de otra aplicación;
+- crea otro evaluador de autorización;
+- crea un catálogo local de StructuralIssue;
+- crea reason codes alternativos a `AUTH-ERR-017`;
+- reabre `AUTH-ERR-018` o `AUTH-ERR-019`;
+- redefine modalidades, precedencia, recursos o matrices;
+- crea un motor transversal nuevo de auditoría;
+- duplica `AUTH-DB-012`;
+- presume writer adoption;
+- fuerza cambios no-permiso en tablas de auditoría de permisos;
+- inventa una estrategia universal de locking;
+- crea hard delete universal;
+- borra evidencia histórica;
+- define un plazo único de retención para todo VISO;
+- define UX final;
+- activa el delta mensual;
+- absorbe conflictos operativos ajenos;
+- certifica el núcleo completo;
+- desarrolla `VISO-CORE-006`;
+- modifica o crea requisitos de prueba;
+- modifica el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 121. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-CORE-004 — Implementar autorización real del núcleo`
+
+**TAREA ACTUAL APROBADA**
+`VISO-CORE-005 — Implementar validación de conflictos y auditoría`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance`
+
+
 ### [ ] VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance
 
 ### Dependencias del delta mensual
