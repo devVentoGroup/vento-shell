@@ -34,10 +34,10 @@
 | Siguiente tarea | **VISO-CORE-004 — Implementar autorización real del núcleo** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
 | Progreso del bloque | **BLOQUES G Y G2: 22 de 26 aprobadas; VISO-CORE-003 pendiente** |
-| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
-| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-020::GAP-PKG-001** |
+| Estado de implementación | **IMPLEMENTATION_BLOCKED** |
+| Acción principal obligatoria | **WAIT_FOR_FOUNDATION_PREREQUISITE — MRP015-000** |
 | Carril documental | **ACTIVO — VISO-CORE-003** |
-| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-020::GAP-PKG-001** |
+| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 22 DE 26 APROBADAS — ACTUAL VISO-CORE-003** |
-| Implementación física | **SHELL-CI-020::GAP-PKG-001 — PENDING_AUTHORIZATION** |
+| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
 

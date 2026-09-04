@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "SHELL-CI-020::GAP-PKG-001"
@@ -17,12 +17,138 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "package.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/01_PROTOCOLO.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness/package-readiness-contract.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-integration.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-readiness-coordinator.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-readiness-coordinator.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-control.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-control.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/chatgpt-work-starter-readiness.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/chatgpt-work-starter-readiness.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/sync-pending-task-context.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/sync-pending-task-context.test.mjs",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:package:execution:check",
+    "npm run docs:implementation:check",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:db:harness:test",
+    "npm run supabase:drift:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "zero_treq_reason": "La correccion restaura exclusivamente el mecanismo documental y tooling de evidencia PRE_E5 y la precedencia de la proyeccion fisica; no crea ni modifica requisitos TREQ ni el registro 04A.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-03T21:29:46-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO DELIV-PKG-015::CORR-003: autoriza exclusivamente corregir el mecanismo de fundaciones PRE_E5 para que MRP015-000..040 solo pasen con evidencia real, durable y validada contra SUPA-TRANS-015, reutilizando el tooling Supabase vigente, y corregir la precedencia de proyecciones para que SHELL-CI-020::GAP-PKG-001 en PENDING_AUTHORIZATION no opaque CURRENT_EXECUTABLE_WORK cuando exista una foundation pendiente. No autoriza capacidad funcional nueva, cambios TREQ o 04A, datos, secretos, migraciones Supabase, mutaciones Supabase remotas ni cambios sobre implementation-instances. GAP-PKG-001 permanece bloqueado hasta que la correccion quede VERIFIED y sus fundaciones satisfagan evidencia real.",
+    "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
+  },
+  "evidence": [
+    "IMPLEMENTED CORR-003 materialization PASS; FOUNDATION_EVIDENCE=STRUCTURED_SHA256_FAIL_CLOSED.",
+    "IMPLEMENTED free-form or corrupt PRE_E5 evidence_ref is rejected fail-closed.",
+    "IMPLEMENTED docs:package:foundation:record as the durable validated producer for PRE_E5 foundation evidence.",
+    "IMPLEMENTED foundation prerequisite precedence before SHELL-CI-020::GAP-PKG-001 PENDING_AUTHORIZATION.",
+    "VERIFIED npm run docs:correction:check PASS.",
+    "VERIFIED npm run docs:correction:test PASS.",
+    "VERIFIED npm run docs:package:readiness:check -- --package GAP-PKG-001 PASS.",
+    "VERIFIED npm run docs:package:execution:check PASS.",
+    "VERIFIED npm run docs:implementation:check PASS.",
+    "VERIFIED npm run docs:plan:build PASS.",
+    "VERIFIED npm run docs:plan:check PASS.",
+    "VERIFIED npm run docs:plan:test PASS.",
+    "VERIFIED npm run docs:treq:check PASS.",
+    "VERIFIED npm run docs:treq:test PASS.",
+    "VERIFIED npm run supabase:migrations:manifest:check PASS.",
+    "VERIFIED npm run supabase:db:harness:test PASS.",
+    "VERIFIED npm run supabase:drift:test PASS.",
+    "VERIFIED npm test --silent PASS.",
+    "VERIFIED git --no-pager diff --check PASS after EOF repair.",
+    "VERIFIED CURRENT_PACKAGE=GAP-PKG-001; CURRENT_EXECUTABLE_WORK=MRP015-000; GATE=TOOLCHAIN_READY; OWNER=SUPA-TRANS-015.",
+    "VERIFIED implementation-control PRIMARY_ACTION=WAIT_FOR_FOUNDATION_PREREQUISITE; PRIMARY_TARGET=MRP015-000.",
+    "VERIFIED SHELL-CI-020::GAP-PKG-001 remains PENDING_AUTHORIZATION.",
+    "VERIFIED MRP015-000 remains UNKNOWN with evidence_ref=null; CORR-003 does not manufacture foundation PASS.",
+    "VERIFIED zero TREQ changes and zero 04A changes."
+  ],
   "opened_at": "2026-09-04T02:14:23.720Z"
 }
