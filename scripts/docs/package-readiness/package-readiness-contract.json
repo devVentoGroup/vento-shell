@@ -337,7 +337,102 @@
           "foundation_id": "MRP015-000",
           "gate_id": "TOOLCHAIN_READY",
           "owner_task": "SUPA-TRANS-015",
-          "evidence_ref": null
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-000",
+            "gate_id": "TOOLCHAIN_READY",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-04T03:54:21.779Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "SUPABASE_LOCK_PROVENANCE",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "a6ca77103e1a18a2638611793df47f2f9ffae8c15deb93131ef529217a92bff1",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_CLI_VERSION",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "c84a29ed303c437cdf00af319b36c5f3cf84a97332b842842c66d8842b2127a0",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_CLI_HELP",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "796cc863a01c16ac0dfbe150b63886b0f44538c7dc6b6f56ae86a1ed2e097f09",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_FUNCTIONS_HELP",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "9c6489d83315dc98c966b8f63fe6508bf8d2859ddf6b2f50cdde6c41514b2252",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_DB_HELP",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "5c0bd3df148416e72685bf91ac775df01013880612c3e7f4a9e9fab9434bffe6",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_DB_LINT_HELP",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "9abc25beae34cfd318eb03a6974251d99ed5ee5a0a012fce9756a6f3517a7a62",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "DOCKER_SERVER",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "aaa3c9962de64c23cb8de5e57eb229d404b0c35bf1efa3565b1f1e77933b25ef",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_DB_HARNESS_TEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "373338662510247262f4f1d0385d6fb0d966034ecddfcf36db1558ee9d582a61",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_DRIFT_TEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "11cd676350ba58f4aeac4b409e388b5df16d00b4aadc34ec989fa33e957661d9",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_CLEAN_REPLAY",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "d6531265af5c785008be4bf460e774694c8316ac16132bcbaa10b6d90d080416",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "CHANGELOG_REVIEW_ATTESTATION",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "44fbf126fc1ed67cf19a1385b86165c890d9de44d02a1d7c119ec685a94c8dd1",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "TOOLCHAIN_FREEZE_ATTESTATION",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "a914f41fb09513d7bae53f4c7d9012200a23ec5446bec50c832993303b6bfef5",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "c39f885f5d485e112418fe1ddb9b09716204f5160f30583da0014e7be952f593"
+          }
         },
         {
           "foundation_id": "MRP015-010",

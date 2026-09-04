@@ -610,17 +610,23 @@ test('Supabase remoto exige R0 y fundaciones MRP015 antes del package', () => {
   assert.equal(requirements.supabase_mutation_required, true);
   assert.deepEqual(requirements.pre_entry_foundation_gates.map(({ foundation_id: id }) => id), ['MRP015-000', 'MRP015-010', 'MRP015-020', 'MRP015-030', 'MRP015-040']);
 
+  const unresolvedContract = structuredClone(contract);
+  for (const foundation of unresolvedContract.physical_dependencies.supabase_pre_e5_foundation.ordered_foundation_gates) {
+    foundation.evidence_ref = null;
+  }
+
   const instances = verifiedPhysicalDependencies();
-  for (const instanceId of contract.physical_dependencies.supabase_pre_e5_foundation.required_verified_instances) {
+  for (const instanceId of unresolvedContract.physical_dependencies.supabase_pre_e5_foundation.required_verified_instances) {
     instances.set(instanceId, { instance_id: instanceId, status: 'VERIFIED' });
   }
 
-  const unresolved = evaluatePhysicalDependencies({ contract, instances, executionRequirements: requirements });
+  const unresolvedRequirements = derivePackageExecutionRequirements({ contract: unresolvedContract, packageGate: gate });
+  const unresolved = evaluatePhysicalDependencies({ contract: unresolvedContract, instances, executionRequirements: unresolvedRequirements });
   const firstFoundation = unresolved.evidence.find(({ kind, status }) => kind === 'FOUNDATION_GATE' && status !== 'PASS');
   assert.equal(firstFoundation.source, 'MRP015-000::TOOLCHAIN_READY');
   assert.equal(unresolved.available, false);
 
-  const resolved = structuredClone(contract);
+  const resolved = structuredClone(unresolvedContract);
   for (const foundation of resolved.physical_dependencies.supabase_pre_e5_foundation.ordered_foundation_gates) {
     const checks = requiredFoundationCheckIds(foundation.foundation_id).map((id) => ({
       id,
