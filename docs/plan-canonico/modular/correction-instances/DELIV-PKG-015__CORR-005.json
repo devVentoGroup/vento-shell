@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "IN_PROGRESS",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "SHELL-CI-020::GAP-PKG-001"
@@ -64,6 +64,20 @@
     "approval_statement": "APROBADO CORRECCION MRP015-010: autoriza DELIV-PKG-015::CORR-005 exclusivamente para actualizar la identidad de la persistent branch staging, resolverla de forma read-only sin persistir credenciales sensibles y reanudar ENVIRONMENT_READY sin capacidad funcional nueva, TREQ, 04A, migraciones, datos, secretos ni mutaciones Supabase remotas.",
     "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
   },
-  "evidence": [],
+  "evidence": [
+    "IMPLEMENTED STAGING binding rcrxixmqhrndcervbllp replacing retired branch juaqdqdnuwtbpbpushsd; PRODUCTION remains clzdpinthhtknkmefsxx.",
+    "IMPLEMENTED read-only hosted identity resolution with project-first and persistent-branch fallback.",
+    "IMPLEMENTED branch normalization that retains only safe identity and PostgreSQL metadata; db_pass, jwt_secret and raw branch credentials are not persisted in observation evidence.",
+    "VERIFIED Management API allowlist admits GET /v1/branches/{ref} and still rejects branch mutations.",
+    "VERIFIED project staging architecture remains supported without invoking branch fallback.",
+    "VERIFIED node --check scripts/supabase/environment-drift.mjs PASS.",
+    "VERIFIED environment-drift regression suite PASS.",
+    "VERIFIED live STAGING environment drift PASS for rcrxixmqhrndcervbllp.",
+    "VERIFIED live PRODUCTION environment drift PASS for clzdpinthhtknkmefsxx.",
+    "VERIFIED correction, package-readiness, package-execution, implementation, plan and TREQ validators PASS.",
+    "VERIFIED npm test --silent PASS.",
+    "VERIFIED git diff --check PASS.",
+    "VERIFIED zero TREQ changes, zero 04A changes and zero Supabase remote mutations by the correction helper."
+  ],
   "opened_at": "2026-09-04T17:18:57.018Z"
 }
