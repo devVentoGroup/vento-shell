@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "SHELL-CI-020::GAP-PKG-001"
@@ -17,12 +17,67 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness/package-readiness-contract.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.test.mjs",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/supabase/environment-drift.mjs",
+    "node --test scripts/supabase/environment-drift.test.mjs",
+    "npm run supabase:drift:test",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:package:execution:check",
+    "npm run docs:implementation:check",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "zero_treq_reason": "La correccion restaura la identidad hospedada de staging y evita conservar credenciales sensibles en el tooling PRE_E5 de MRP015-010; no crea ni modifica requisitos TREQ ni el registro 04A.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-04T12:25:10.000-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO CORRECCION MRP015-010: autoriza DELIV-PKG-015::CORR-005 exclusivamente para actualizar la identidad de la persistent branch staging, resolverla de forma read-only sin persistir credenciales sensibles y reanudar ENVIRONMENT_READY sin capacidad funcional nueva, TREQ, 04A, migraciones, datos, secretos ni mutaciones Supabase remotas.",
+    "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
+  },
+  "evidence": [
+    "IMPLEMENTED STAGING binding rcrxixmqhrndcervbllp replacing retired branch juaqdqdnuwtbpbpushsd; PRODUCTION remains clzdpinthhtknkmefsxx.",
+    "IMPLEMENTED read-only hosted identity resolution with project-first and persistent-branch fallback.",
+    "IMPLEMENTED branch normalization that retains only safe identity and PostgreSQL metadata; db_pass, jwt_secret and raw branch credentials are not persisted in observation evidence.",
+    "VERIFIED Management API allowlist admits GET /v1/branches/{ref} and still rejects branch mutations.",
+    "VERIFIED project staging architecture remains supported without invoking branch fallback.",
+    "VERIFIED node --check scripts/supabase/environment-drift.mjs PASS.",
+    "VERIFIED environment-drift regression suite PASS.",
+    "VERIFIED live STAGING environment drift PASS for rcrxixmqhrndcervbllp.",
+    "VERIFIED live PRODUCTION environment drift PASS for clzdpinthhtknkmefsxx.",
+    "VERIFIED correction, package-readiness, package-execution, implementation, plan and TREQ validators PASS.",
+    "VERIFIED npm test --silent PASS.",
+    "VERIFIED git diff --check PASS.",
+    "VERIFIED zero TREQ changes, zero 04A changes and zero Supabase remote mutations by the correction helper."
+  ],
   "opened_at": "2026-09-04T17:18:57.018Z"
 }
