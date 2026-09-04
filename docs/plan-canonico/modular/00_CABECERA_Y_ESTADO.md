@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1596** |
 | Tareas `AUTH` únicas | **319** |
-| Tareas aprobadas | **1115** |
+| Tareas aprobadas | **1116** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **481** |
+| Tareas no iniciadas | **480** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **69.86% (1115/1596)** |
+| Porcentaje de completamiento | **69.92% (1116/1596)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **VISO-CORE-004 — Implementar autorización real del núcleo** |
-| Tarea actual | **VISO-CORE-005 — Implementar validación de conflictos y auditoría** |
+| Última tarea aprobada | **VISO-CORE-005 — Implementar validación de conflictos y auditoría** |
+| Tarea actual | **VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance** |
+| Siguiente tarea | **SHELL-APP-001 — Inventariar la experiencia actual del hub** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
-| Progreso del bloque | **BLOQUES G Y G2: 24 de 26 aprobadas; VISO-CORE-005 pendiente** |
+| Progreso del bloque | **BLOQUES G Y G2: 25 de 26 aprobadas; VISO-CORE-006 pendiente** |
 | Estado de implementación | **IMPLEMENTATION_BLOCKED** |
 | Acción principal obligatoria | **WAIT_FOR_FOUNDATION_PREREQUISITE — MRP015-020** |
-| Carril documental | **ACTIVO — VISO-CORE-005** |
+| Carril documental | **ACTIVO — VISO-CORE-006** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `VISO-CORE-004` — Implementar autorización real del núcleo |
-| Tarea actual | `VISO-CORE-005` — Implementar validación de conflictos y auditoría — **NO INICIADA** |
-| Siguiente tarea | `VISO-CORE-006` — Aprobar núcleo antes de ampliar alcance |
+| Última aprobada | `VISO-CORE-005` — Implementar validación de conflictos y auditoría |
+| Tarea actual | `VISO-CORE-006` — Aprobar núcleo antes de ampliar alcance — **NO INICIADA** |
+| Siguiente tarea | `SHELL-APP-001` — Inventariar la experiencia actual del hub |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 24 DE 26 APROBADAS — ACTUAL VISO-CORE-005** |
+| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 25 DE 26 APROBADAS — ACTUAL VISO-CORE-006** |
 | Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-VISO-CORE-004 — Implementar autorización real del núcleo
-        ↓
-TAREA ACTUAL
 VISO-CORE-005 — Implementar validación de conflictos y auditoría
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-APP-001 — Inventariar la experiencia actual del hub
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUES G Y G2 — 24 de 26 tareas aprobadas
+BLOQUES G Y G2 — 25 de 26 tareas aprobadas
 ```
