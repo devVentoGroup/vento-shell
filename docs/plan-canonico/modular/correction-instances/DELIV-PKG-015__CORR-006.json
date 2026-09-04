@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "SHELL-CI-020::GAP-PKG-001"
@@ -17,12 +17,75 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "package.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/hosted-replay-precondition.mjs",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/hosted-replay-precondition.test.mjs",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/supabase/hosted-replay-precondition.mjs",
+    "npm run supabase:hosted-replay:precondition:test",
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:drift:test",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:package:execution:check",
+    "npm run docs:implementation:check",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "zero_treq_reason": "La correccion corrige exclusivamente tooling y procedimiento de preparacion reproducible del entorno hosted antes del replay; no crea ni modifica requisitos TREQ, capacidades de producto, semantica canonica de base de datos ni el registro 04A.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-04",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO DELIV-PKG-015::CORR-006",
+    "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
+  },
+  "evidence": [
+    "IMPLEMENTED hosted replay precondition tooling for explicit STAGING identity rcrxixmqhrndcervbllp and owner SUPA-TRANS-015; PRODUCTION remains forbidden.",
+    "IMPLEMENTED package.json entry points supabase:hosted-replay:precondition and supabase:hosted-replay:precondition:test.",
+    "IMPLEMENTED operational guide ordering controlled fresh STAGING reset -> inspect -> apply -> baseline -> canonical forward replay.",
+    "VERIFIED live STAGING read-only inspect PASS with IDENTITY_KIND=BRANCH, POSTGRES_PUBLIC_ANON_DEFAULT_GRANTS=12, PUBLIC_RELATIONS_WITH_ANON_DML=246, MIGRATION_HISTORY_COUNT=5, MANAGED_DEFAULTS_COMPATIBLE=SI, APPLY_ALLOWED=NO and READY_FOR_REPLAY=NO.",
+    "VERIFIED live hosted inspection executed no mutation and exposed no secret values: MUTATION_EXECUTED=NO; SECRET_VALUES_IN_OUTPUT=NO.",
+    "VERIFIED current contaminated STAGING is fail-closed and cannot apply; no ad hoc relation GRANT/REVOKE, no migration repair and no manual AUTH-DB-005 were executed.",
+    "VERIFIED node --check scripts/supabase/hosted-replay-precondition.mjs PASS.",
+    "VERIFIED npm run supabase:hosted-replay:precondition:test PASS.",
+    "VERIFIED npm run supabase:migrations:manifest:check PASS.",
+    "VERIFIED npm run supabase:drift:test PASS.",
+    "VERIFIED correction, package-readiness, package-execution and implementation validators PASS.",
+    "VERIFIED docs plan build/check/test and TREQ check/test PASS.",
+    "VERIFIED npm test --silent PASS.",
+    "VERIFIED git --no-pager diff --check PASS.",
+    "VERIFIED zero TREQ changes, zero 04A changes, zero migration changes and zero PRODUCTION mutations."
+  ],
   "opened_at": "2026-09-04T20:15:56.399Z"
 }
