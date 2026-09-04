@@ -438,7 +438,39 @@
           "foundation_id": "MRP015-010",
           "gate_id": "ENVIRONMENT_READY",
           "owner_task": "SUPA-TRANS-015",
-          "evidence_ref": null
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-010",
+            "gate_id": "ENVIRONMENT_READY",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-04T18:17:43.609Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "ENVIRONMENT_BINDINGS",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "f128fd6c0653ce09ea0f2469f87b4cc63993307fa13e626599a6a65446d7e5f6",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "STAGING_REMOTE_DRIFT",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "24318bc124ad5bd6feb7a5a534705adca85a44a682262ae19c420273c8b822fa",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "PRODUCTION_REMOTE_DRIFT",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "cad9497b2bf2b0bbd5586536c7a8e614b35fe84b243e2a66089b41cb3d828b43",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "c4b09fb8b59f72d29e6d85ec3cc4755735a365b3f533f33dd55a10ede23d77e5"
+          }
         },
         {
           "foundation_id": "MRP015-020",
