@@ -3924,7 +3924,1625 @@ Esta tarea no:
 `VISO-CORE-004 — Implementar autorización real del núcleo`
 
 
-### [ ] VISO-CORE-004 — Implementar autorización real del núcleo
+### ✅ VISO-CORE-004 — Implementar autorización real del núcleo
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-CORE-003 — Implementar dependencias administrativas mínimas
+**Tarea siguiente:** VISO-CORE-005 — Implementar validación de conflictos y auditoría
+**Tipo de tarea:** contrato documental de autorización real por unidad de implementación; define cómo cada unidad física válida del núcleo de VISO debe consumir la fundación canónica compartida de contexto, evaluación, frescura y persistencia para proteger lecturas y mutaciones con permiso exacto, actor efectivo, territorio, recurso y contexto real, cerrando evaluadores locales y bypasses dentro del alcance de la unidad sin ejecutar ahora ninguna instancia física
+**Bloque:** `G_VISO — NÚCLEO MÍNIMO PARA OPERACIÓN`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md`
+**Estado físico resultante:** contrato de autorización real por `implementation_unit_id` definido; ninguna instancia física de `VISO-CORE-004` se crea, autoriza, ejecuta ni certifica por la aprobación documental de esta tarea
+**Cambios físicos autorizados:** únicamente dentro de una futura instancia válida `VISO-CORE-004::implementation_unit_id` habilitada por `PER_IMPLEMENTATION_UNIT` y `POST_E5_PACKAGE`: enlazar consumidores aplicables con la fundación canónica de autorización, retirar o bloquear evaluadores locales como autoridad final dentro del alcance aprobado, proteger lecturas y mutaciones en servidor y añadir las pruebas y adaptaciones estrictamente previstas por el package; ningún cambio físico se autoriza fuera de la unidad, package, repositorios y gates que la creen
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo una unidad física válida del núcleo de VISO debe producir autorización real y fail-closed utilizando exclusivamente las fuentes, contratos y evaluadores canónicos compartidos.
+
+La tarea no crea un nuevo modelo de autorización ni un evaluador propio de VISO.
+
+Su resultado es el contrato reutilizable que gobierna cada futura materialización física de `VISO-CORE-004`.
+
+---
+
+#### 2. Regla raíz
+
+La autorización real del núcleo se resuelve así:
+
+```text
+OPERACIÓN PROTEGIDA
++
+PERMISO CANÓNICO EXACTO
++
+PRINCIPAL REAL
++
+ACTOR EFECTIVO REAL
++
+RECURSO RESUELTO
++
+TERRITORIO EFECTIVO
++
+CONTEXTO EXIGIDO POR EL CONTRATO
++
+CONTRATO Y DATASETS VIGENTES
++
+FRESCURA VÁLIDA
+→
+EVALUADOR CANÓNICO COMPARTIDO
+→
+ALLOW O DENY
+```
+
+Nunca:
+
+```text
+ROL VISIBLE
++
+PANTALLA VISIBLE
++
+COOKIE
++
+HELPER LOCAL
+→
+AUTORIZACIÓN REAL
+```
+
+---
+
+#### 3. Entrada obligatoria de VISO-CORE-003
+
+Cada futura unidad recibe de `VISO-CORE-003`:
+
+- identidad exacta de la unidad;
+- dependencias administrativas materializadas;
+- versiones de contratos;
+- bindings físicos;
+- territorio y asignaciones disponibles;
+- catálogo y matrices disponibles;
+- dependencias condicionadas aplicables;
+- evidencia de compatibilidad.
+
+Una unidad de autorización no puede inventar una dependencia faltante para continuar.
+
+---
+
+#### 4. Continuidad física por unidad
+
+La autorización debe corresponder al mismo `implementation_unit_id` que gobierna las dependencias administrativas aplicables.
+
+La autorización no puede trasladarse a otra unidad por conveniencia técnica.
+
+Si varias unidades consumen una fundación compartida, cada una demuestra su binding y cobertura sin duplicar la fundación.
+
+---
+
+#### 5. Topología obligatoria
+
+`VISO-CORE-004` usa:
+
+```text
+PER_IMPLEMENTATION_UNIT
+POST_E5_PACKAGE
+```
+
+No existe instancia física global ni ejecución previa a E5.
+
+---
+
+#### 6. Identidad de instancia
+
+Una futura instancia válida deriva su identidad de:
+
+```text
+VISO-CORE-004
++
+implementation_unit_id canónico
+```
+
+El `implementation_unit_id` proviene del package E5 aplicable y no se crea manualmente desde esta tarea.
+
+---
+
+#### 7. Gate temporal
+
+La materialización física requiere:
+
+- package aplicable existente;
+- unidad definida canónicamente;
+- dependencias físicas disponibles;
+- gate `POST_E5_PACKAGE` satisfecho;
+- lifecycle físico autorizado para la instancia exacta.
+
+La aprobación documental no satisface esos gates.
+
+---
+
+#### 8. Fundación compartida obligatoria
+
+La autorización real debe reutilizar la fundación transversal ya materializada por el modelo de autorización.
+
+La unidad no crea:
+
+- otro `AccessContext`;
+- otro evaluador final;
+- otra taxonomía de decisión;
+- otra política de frescura;
+- otra persistencia de decisión;
+- otra fuente de catálogo.
+
+---
+
+#### 9. Resolver canónico de contexto
+
+La unidad consume el resolver canónico de contexto o la proyección segura aprobada que corresponda.
+
+No reconstruye manualmente un contexto equivalente desde tablas sueltas para decidir autoridad.
+
+---
+
+#### 10. Evaluador canónico
+
+La decisión final procede del evaluador canónico compartido o del entrypoint seguro vigente que lo encapsule.
+
+La unidad no implementa evaluadores paralelos en:
+
+- React;
+- Server Components;
+- Server Actions;
+- Route Handlers;
+- middleware;
+- helpers locales;
+- RPC ad hoc;
+- políticas improvisadas;
+- código cliente.
+
+---
+
+#### 11. Persistencia de decisión
+
+Cuando el contrato vigente exige persistencia, la unidad utiliza el coordinador y la persistencia canónicos ya materializados.
+
+No crea un log alterno de decisiones para sustituir esa evidencia.
+
+---
+
+#### 12. Frescura de contexto
+
+La unidad consume el mecanismo compartido de frescura e invalidación.
+
+Un `ALLOW` anterior no sobrevive como autoridad cuando cambia un hecho invalidante.
+
+---
+
+#### 13. Contrato activo, no cardinalidad histórica
+
+La unidad consume la versión activa del contrato y su evidencia de release.
+
+No codifica como verdad eterna:
+
+- una cantidad fija de permisos;
+- una cantidad fija de recursos;
+- una versión histórica concreta;
+- un hash histórico concreto.
+
+Versiones y huellas observadas se registran como evidencia de ejecución.
+
+---
+
+#### 14. Catálogo exacto
+
+Toda acción protegida se vincula a una capacidad existente en el catálogo canónico activo.
+
+No se permite:
+
+- inventar claves;
+- usar wildcards;
+- aceptar aliases no aprobados;
+- derivar permisos desde rutas;
+- derivar permisos desde nombres de componentes;
+- derivar permisos desde nombres de roles;
+- elegir un permiso más débil desde el cliente.
+
+---
+
+#### 15. Identidad de aplicación
+
+Las capacidades del núcleo utilizan la aplicación canónica:
+
+```text
+viso
+```
+
+La existencia de la aplicación no concede acceso.
+
+---
+
+#### 16. Acceso a VISO
+
+`viso.access` representa acceso a la aplicación cuando el contrato lo exige.
+
+No sustituye el permiso de una acción administrativa.
+
+---
+
+#### 17. Permiso por acción
+
+Cada operación protegida declara exactamente qué permiso exige.
+
+La relación queda trazable como:
+
+```text
+OPERACIÓN
+→ PERMISO EXACTO
+→ RECURSO
+→ REQUISITO DE AUTORIZACIÓN
+→ DECISIÓN
+```
+
+Una pantalla con varias mutaciones puede exigir permisos distintos.
+
+---
+
+#### 18. Permiso común
+
+Un permiso común solo puede proteger varias acciones cuando el contrato canónico vigente define expresamente que comparten la misma capacidad sin ampliar autoridad.
+
+La conveniencia técnica no justifica un permiso común.
+
+---
+
+#### 19. Registro de bindings por unidad
+
+Cada unidad debe conservar una fila por operación protegida con:
+
+| Campo | Contenido obligatorio |
+| --- | --- |
+| operación | identidad estable de la acción o lectura |
+| canal | página, Server Action, Route Handler, RPC, Data API u otro canal aplicable |
+| permiso | clave canónica exacta |
+| recurso | contrato de recurso aplicable |
+| carril | requisito de autorización vigente |
+| territorio | fuente y regla de alcance |
+| mutación | sí o no |
+| binding actual | entrypoint de autorización utilizado |
+| resultado de migración | canónico, bloqueado o fuera de alcance |
+| evidencia | prueba positiva y negativa aplicable |
+
+No se cierra la unidad con operaciones protegidas sin decisión explícita.
+
+---
+
+#### 20. Concesiones base
+
+La administración de concesiones base conserva exactamente:
+
+```text
+viso.authorization.base_grants.view
+viso.authorization.base_grants.create
+viso.authorization.base_grants.approve
+viso.authorization.base_grants.suspend
+viso.authorization.base_grants.revoke
+```
+
+No se fusionan bajo un permiso genérico.
+
+---
+
+#### 21. Concesiones operativas
+
+La administración de concesiones operativas conserva:
+
+```text
+viso.authorization.operational_grants.view
+viso.authorization.operational_grants.create
+viso.authorization.operational_grants.approve
+viso.authorization.operational_grants.suspend
+viso.authorization.operational_grants.revoke
+```
+
+Una capacidad base no sustituye su equivalente operacional.
+
+---
+
+#### 22. Denegaciones
+
+La administración de denegaciones conserva:
+
+```text
+viso.authorization.denials.view
+viso.authorization.denials.create
+viso.authorization.denials.approve
+viso.authorization.denials.revoke
+```
+
+No existe una capacidad de suspensión de denegaciones y la unidad no puede crearla.
+
+---
+
+#### 23. Prohibición de manage genérico
+
+La unidad no sustituye las catorce capacidades anteriores por:
+
+```text
+viso.authorization.manage
+```
+
+ni por otro permiso genérico local.
+
+---
+
+#### 24. Lectura de auditoría
+
+Cuando una unidad consulte historial de seguridad conforme al contrato aprobado, la capacidad exacta de lectura permanece:
+
+```text
+viso.authorization.audit_logs.view
+```
+
+No concede mutaciones.
+
+---
+
+#### 25. Simulación
+
+La simulación conserva su permiso y contrato separados de la autoridad real.
+
+Una decisión simulada nunca autoriza una mutación empresarial.
+
+---
+
+#### 26. Exportación de matriz
+
+La exportación de matriz continúa bloqueada físicamente mientras no exista la capacidad canónica exacta aprobada para exportar.
+
+La unidad no reutiliza auditoría, simulación, `viso.access` ni lectura de grants como permiso de exportación.
+
+---
+
+#### 27. Otras operaciones del núcleo
+
+Para personas, sedes, áreas, perfiles, asignaciones, catálogos u otras operaciones no enumeradas aquí, la unidad resuelve la clave exacta desde el catálogo activo y el package aplicable.
+
+Si no existe capacidad exacta suficiente:
+
+```text
+OPERACIÓN FÍSICA
+→ BLOQUEADA
+```
+
+No se inventa una clave desde una pantalla o tabla.
+
+---
+
+#### 28. Principal real
+
+El principal procede de autenticación real y contexto canónico.
+
+No se acepta como autoridad un principal enviado en body, query string, formulario o cookie de conveniencia.
+
+---
+
+#### 29. Actor efectivo
+
+El actor efectivo se resuelve desde el contexto canónico.
+
+Un `employee_id` enviado por cliente no sustituye la resolución de actor.
+
+---
+
+#### 30. Separación principal y actor
+
+Cuando principal y actor sean distintos, ambos se conservan.
+
+El principal técnico o administrativo no transfiere su autoridad al actor operativo.
+
+---
+
+#### 31. Sesión válida no equivale a autorización
+
+Una sesión válida demuestra autenticación.
+
+No demuestra relación laboral vigente, permiso, territorio, rol operativo, turno, check-in ni autorización final.
+
+---
+
+#### 32. Estado laboral
+
+Cuando el contrato exige vínculo laboral válido, una relación finalizada, suspendida o incompatible falla cerrado.
+
+Un reingreso no reutiliza automáticamente autoridad del episodio anterior.
+
+---
+
+#### 33. Rol base
+
+El rol base es contexto y fuente potencial de grants explícitos.
+
+No es condición suficiente de `ALLOW`.
+
+---
+
+#### 34. Rol operativo
+
+El rol operativo efectivo participa solo cuando el requisito lo exige.
+
+Un perfil predeterminado no sustituye el rol operativo efectivo.
+
+---
+
+#### 35. Perfil operativo
+
+El perfil puede facilitar planificación o selección administrativa.
+
+No puede fabricar autoridad efectiva.
+
+---
+
+#### 36. Territorio
+
+Toda operación territorial resuelve sede y área desde fuentes canónicas y desde el recurso cuando corresponda.
+
+Una selección visual no constituye territorio autorizado.
+
+---
+
+#### 37. Sede solicitada
+
+Una sede enviada por interfaz expresa un objetivo de solicitud.
+
+No se convierte en sede efectiva hasta ser validada por el contrato de contexto y recurso.
+
+---
+
+#### 38. Área solicitada
+
+Un área enviada por interfaz expresa un objetivo de solicitud.
+
+No amplía cobertura ni corrige una asignación ausente.
+
+---
+
+#### 39. Capacidades no territoriales
+
+Si una capacidad administrativa es no territorial, la unidad no fabrica sede o área para completar la evaluación.
+
+---
+
+#### 40. Capacidades territoriales
+
+Si el contrato exige territorio, ausencia, incompatibilidad o inactividad de sede o área bloquea la operación.
+
+No existe fallback a la última sede usada.
+
+---
+
+#### 41. Cobertura administrativa
+
+Las asignaciones de sede y área delimitan cobertura.
+
+No conceden por sí mismas el permiso solicitado.
+
+---
+
+#### 42. Recurso
+
+Toda operación sobre recurso utiliza el contrato de recurso canónico.
+
+El identificador recibido del cliente es candidato de resolución, no evidencia de acceso.
+
+---
+
+#### 43. Estado actual del recurso
+
+Una mutación revalida el estado actual del recurso inmediatamente antes del efecto cuando ese estado condicione la operación.
+
+Un estado mostrado previamente en UI no es suficiente.
+
+---
+
+#### 44. Columnas permitidas
+
+Una mutación restringe en servidor las columnas modificables conforme al contrato.
+
+Un formulario alterado no amplía el conjunto autorizado.
+
+---
+
+#### 45. Colecciones
+
+Una autorización sobre colección no implica acceso irrestricto a cada fila si el contrato conserva alcance por elemento.
+
+La unidad impide filtraciones por consultas amplias.
+
+---
+
+#### 46. Operaciones multirrecurso
+
+Cuando una operación exige varios recursos o territorios, todos los elementos obligatorios deben resolverse y autorizarse según su contrato.
+
+Una autorización parcial no oculta un extremo denegado.
+
+---
+
+#### 47. Carril base
+
+Una capacidad administrativa de carril base se resuelve por el carril definido por el contrato.
+
+No exige turno ni check-in por costumbre de la aplicación.
+
+---
+
+#### 48. Carril operativo
+
+Una capacidad operacional cumple todos los prerrequisitos declarados.
+
+No se degrada a carril base para evitar turno, check-in o rol operativo.
+
+---
+
+#### 49. Turno condicionado
+
+El turno se incorpora solo cuando el requisito de autorización lo exige y debe provenir de la fuente canónica vigente.
+
+---
+
+#### 50. Programación laboral
+
+`VISO-CORE-004` no activa el delta de programación laboral.
+
+Una unidad que dependa de programación afectada por ese delta solo la consume cuando package y contrato aplicable lo permitan.
+
+---
+
+#### 51. Check-in condicionado
+
+El check-in se exige solo cuando el contrato lo requiere.
+
+No se infiere desde presencia visual, último evento o selección del trabajador.
+
+---
+
+#### 52. Dispositivo condicionado
+
+El dispositivo participa cuando el contrato lo exige.
+
+La identidad de dispositivo no sustituye al actor humano.
+
+---
+
+#### 53. Dispositivo compartido
+
+En dispositivo compartido, la autoridad efectiva respeta simultáneamente actor, límites del dispositivo, aplicaciones efectivas, territorio, permiso, contexto y denegaciones.
+
+La identidad técnica nunca concede el carril del trabajador.
+
+---
+
+#### 54. service_role
+
+`service_role` es credencial técnica, no autorización de negocio.
+
+Un backend privilegiado resuelve y autoriza actor, recurso, territorio y permiso antes de efectuar una operación protegida.
+
+---
+
+#### 55. SECURITY DEFINER
+
+Una función `SECURITY DEFINER` no puede convertirse en bypass.
+
+La unidad solo utiliza funciones aprobadas bajo el gobierno de owners, grants, `search_path` y validación interna vigente.
+
+---
+
+#### 56. RLS
+
+RLS es barrera de datos y no sustituye la autorización de negocio cuando la operación exige permiso, contexto y recurso.
+
+La unidad demuestra equivalencia entre capas aplicables.
+
+---
+
+#### 57. Server Actions
+
+Toda Server Action protegida reautoriza en servidor.
+
+Una comprobación previa en el componente no sustituye esa evaluación.
+
+---
+
+#### 58. Route Handlers
+
+Todo Route Handler protegido valida sesión, actor, permiso, recurso y contexto en servidor según el contrato.
+
+Una URL secreta no es control de acceso.
+
+---
+
+#### 59. RPC
+
+Una RPC protegida no confía en que la UI ya autorizó.
+
+Debe quedar dentro del grafo autorizado o detrás del binding servidor que garantice evaluación real.
+
+---
+
+#### 60. Data API
+
+Una operación por Data API no puede ampliar lo permitido por el evaluador canónico.
+
+Policies y grants permanecen consistentes con el alcance de la unidad.
+
+---
+
+#### 61. Realtime
+
+Una suscripción no expone filas que una lectura equivalente no podría autorizar.
+
+La invalidación impide continuidad con autoridad obsoleta.
+
+---
+
+#### 62. Cliente
+
+El cliente puede solicitar una acción.
+
+No decide principal, actor efectivo, permiso exigido, carril, scope final ni resultado.
+
+---
+
+#### 63. UI
+
+Ocultar o deshabilitar una acción mejora experiencia, pero no protege backend.
+
+La operación debe fallar de forma segura al invocarse directamente.
+
+---
+
+#### 64. Middleware
+
+El middleware puede proteger navegación y sesión.
+
+No sustituye autorización de una mutación o lectura sensible.
+
+---
+
+#### 65. Acceso directo
+
+Una URL directa produce la misma decisión contractual que la navegación normal.
+
+No crea un carril alterno.
+
+---
+
+#### 66. Formulario manipulado
+
+Agregar campos o cambiar identificadores no amplía autoridad.
+
+El servidor conserva el contrato de recurso y columnas.
+
+---
+
+#### 67. API manipulada
+
+Una llamada manual a API o RPC produce la misma decisión que la UI para el mismo actor, permiso, recurso y contexto.
+
+---
+
+#### 68. Resultado final
+
+La autoridad real se representa mediante:
+
+```text
+ALLOW
+o
+DENY
+```
+
+Solo `ALLOW` vigente habilita el efecto protegido.
+
+---
+
+#### 69. Fail closed
+
+Toda condición obligatoria ausente, inválida, conflictiva, no resoluble, incompatible o técnicamente no evaluable bloquea el efecto.
+
+No se convierte en `ALLOW` por fallback.
+
+---
+
+#### 70. Deny y error técnico
+
+Una denegación de negocio y un fallo técnico permanecen distinguibles en razones y observabilidad.
+
+Ambos impiden el efecto cuando no existe decisión positiva válida.
+
+---
+
+#### 71. Razones canónicas
+
+La unidad consume las razones estructuradas de la fundación compartida.
+
+No crea una taxonomía local alternativa para cambiar semántica de autorización.
+
+---
+
+#### 72. Evidencia de decisión
+
+Cada autorización conserva, conforme al contrato, evidencia correlacionable suficiente de principal, actor efectivo, aplicación, permiso, recurso, territorio, carril, decisión, razones, versiones y timestamp.
+
+---
+
+#### 73. Fingerprints
+
+La unidad conserva o propaga las huellas emitidas por la fundación compartida cuando formen parte de la decisión.
+
+No fabrica fingerprints incompatibles para aparentar equivalencia.
+
+---
+
+#### 74. Catálogo y datasets
+
+La evidencia identifica qué versión contractual y datasets participaron.
+
+La unidad no decide con un snapshot local no gobernado.
+
+---
+
+#### 75. Frescura antes del efecto
+
+Una mutación comprueba que decisión y contexto siguen vigentes inmediatamente antes del efecto cuando el contrato lo exige.
+
+Un `ALLOW` obtenido al cargar una página no autoriza indefinidamente una escritura posterior.
+
+---
+
+#### 76. Eventos invalidantes
+
+Cambios en estado laboral, sede, área, rol, perfil, turno, grant, deny, dispositivo o catálogo pueden invalidar autoridad.
+
+La unidad respeta el mecanismo canónico de invalidación.
+
+---
+
+#### 77. Caché
+
+Una caché de autorización no sobrevive a invalidación contractual.
+
+La unidad no crea una caché local de `ALLOW` fuera del mecanismo aprobado.
+
+---
+
+#### 78. Offline
+
+Una operación encolada no conserva automáticamente autoridad del momento de creación.
+
+Debe reautorizarse al sincronizar cuando el contrato lo exige.
+
+---
+
+#### 79. Reintentos
+
+Un reintento no salta la evaluación porque una solicitud anterior fue permitida.
+
+Respeta estado actual, frescura e idempotencia.
+
+---
+
+#### 80. Concurrencia
+
+La autorización real no sustituye el control de concurrencia del recurso.
+
+La unidad revalida autoridad sin absorber los conflictos de edición del propietario o de `VISO-CORE-005`.
+
+---
+
+#### 81. Segregación de funciones
+
+La unidad respeta matrices canónicas y restricciones de segregación.
+
+Una concesión individual no neutraliza una denegación estructural prohibida.
+
+---
+
+#### 82. Autoaprobación
+
+Tener capacidad para crear y aprobar no permite autoaprobar cuando el contrato exige separación entre proponente, beneficiario y aprobador.
+
+---
+
+#### 83. Autoafectación
+
+Ningún actor modifica directamente su propia autoridad mediante una ruta administrativa ordinaria cuando el contrato lo prohíbe.
+
+La recuperación permanece gobernada.
+
+---
+
+#### 84. Suspensión
+
+Suspender una concesión exige el permiso exacto de suspensión de la familia correspondiente y las condiciones contractuales aplicables.
+
+No se representa borrando la concesión.
+
+---
+
+#### 85. Revocación
+
+Revocar exige capacidad exacta, recurso resoluble, estado compatible, territorio y condiciones de seguridad aplicables.
+
+La revocación conserva historia.
+
+---
+
+#### 86. Revocar un deny
+
+Revocar una denegación elimina esa denegación según su lifecycle.
+
+No crea un `ALLOW`.
+
+---
+
+#### 87. Reingreso
+
+Un nuevo episodio laboral se autoriza desde su estado actual.
+
+No recupera automáticamente grants, excepciones, sesiones, dispositivos, contexto ni decisiones del episodio anterior.
+
+---
+
+#### 88. Propietario
+
+`propietario` no es wildcard.
+
+Su autoridad deriva de grants y contratos exactos.
+
+---
+
+#### 89. Gerente general
+
+`gerente_general` tampoco constituye bypass.
+
+La matriz puede conceder capacidades concretas, pero siguen siendo explícitas.
+
+---
+
+#### 90. Gerente
+
+El nombre `gerente` no concede administración global.
+
+Toda capacidad local respeta territorio y permiso exacto.
+
+---
+
+#### 91. Role override AS-IS
+
+El `role override` observado en VISO no puede actuar como autoridad real dentro de una unidad certificada por `VISO-CORE-004`.
+
+Una cookie que seleccione otro rol no puede producir `ALLOW` real.
+
+---
+
+#### 92. Destino permitido del role override
+
+Si una experiencia de override se conserva, queda separada de autoridad real, sujeta al contrato de simulación cuando corresponda e incapaz de ejecutar mutaciones o alterar actor efectivo.
+
+Si no puede cumplir esas condiciones, la unidad la bloquea o retira dentro de su alcance autorizado.
+
+---
+
+#### 93. has_permission AS-IS
+
+El helper o RPC legacy `has_permission` puede existir mientras una transición gobernada lo requiera.
+
+No puede ser evaluador final de una operación perteneciente a una unidad cerrada de `VISO-CORE-004`.
+
+---
+
+#### 94. has_operational_role_permission AS-IS
+
+La comprobación de permiso por rol operativo aislado no equivale a autorización real.
+
+Una unidad aplicable migra, encapsula de forma canónica o bloquea ese consumidor conforme al package.
+
+---
+
+#### 95. Lectura directa de role_permissions
+
+Consultar `role_permissions` puede ser válido para administración, explicación o compatibilidad.
+
+No sustituye la decisión final para un actor real.
+
+---
+
+#### 96. Lectura directa de app_permissions
+
+Consultar catálogo puede ser válido para presentar opciones.
+
+La presencia de una fila no demuestra autorización.
+
+---
+
+#### 97. Inventario de consumidores legacy
+
+Antes de cerrar una unidad se identifica todo consumidor aplicable que todavía decida autoridad mediante:
+
+- `has_permission`;
+- `has_operational_role_permission`;
+- lectura directa de matrices;
+- comparación de nombres de rol;
+- role override;
+- permiso hardcoded fuera del catálogo vigente;
+- guard exclusivamente de cliente.
+
+Cada consumidor recibe una decisión de transición.
+
+---
+
+#### 98. Clasificación de consumidores
+
+Cada consumidor aplicable queda en uno de estos estados conceptuales:
+
+```text
+MIGRADO_A_AUTORIZACIÓN_CANÓNICA
+COMPATIBILIDAD_CONTROLADA_SIN_AUTORIDAD_FINAL
+BLOQUEADO
+FUERA_DEL_ALCANCE_DE_LA_UNIDAD
+```
+
+No queda como pendiente narrativo sin propietario.
+
+---
+
+#### 99. Compatibilidad controlada
+
+Un helper legacy puede permanecer cuando tenga consumidores fuera del alcance, no conceda autoridad final a la unidad cerrada, exista propietario de transición y condición de retiro.
+
+---
+
+#### 100. No retiro global por inferencia
+
+`VISO-CORE-004` no autoriza borrar globalmente helpers legacy solo porque una unidad dejó de usarlos.
+
+El retiro espera consumidores y gates correspondientes.
+
+---
+
+#### 101. Superficies fuera del núcleo
+
+El uso legacy de autorización en productos, menús, CMS u otro dominio excluido no amplía automáticamente el alcance.
+
+Solo se migra si esa superficie pertenece al package y unidad aplicable.
+
+---
+
+#### 102. Binding de lectura
+
+Toda lectura sensible del núcleo queda protegida por permiso y alcance contractual.
+
+La autorización no se limita a escrituras.
+
+---
+
+#### 103. Binding de mutación
+
+Toda mutación del núcleo debe:
+
+1. autenticar;
+2. resolver principal y actor;
+3. identificar permiso exacto;
+4. resolver recurso;
+5. resolver contexto y territorio;
+6. evaluar autorización;
+7. verificar frescura y estado requerido;
+8. ejecutar solo con `ALLOW`;
+9. conservar evidencia.
+
+---
+
+#### 104. Orden de seguridad
+
+La unidad no efectúa una mutación empresarial antes de obtener una decisión válida.
+
+Una escritura parcial seguida de denegación no es correcta.
+
+---
+
+#### 105. Atomicidad de autorización y efecto
+
+Cuando exista riesgo material de carrera entre decisión y escritura, la implementación física usa el mecanismo transaccional o de revalidación definido por package y propietario técnico.
+
+Esta tarea no inventa una transacción genérica ajena al recurso.
+
+---
+
+#### 106. Respuesta segura
+
+Las denegaciones conservan la razón canónica necesaria sin revelar grants ajenos, sedes no autorizadas, permisos ocultos, datos sensibles, secretos ni detalles internos innecesarios.
+
+---
+
+#### 107. Idempotencia
+
+Reintentar una operación autorizada no debe duplicar efectos.
+
+La autorización no elimina la obligación de idempotencia del proceso propietario.
+
+---
+
+#### 108. Mínimo privilegio
+
+Los bindings físicos exponen solo entrypoints necesarios.
+
+No se concede acceso directo de roles cliente al grafo privado de autorización.
+
+---
+
+#### 109. Proyección segura
+
+Cuando una UI necesite conocer el resultado, consume la proyección segura autorizada.
+
+No recibe datasets privados completos para reevaluar en cliente.
+
+---
+
+#### 110. Fallo del evaluador
+
+Si la fundación canónica no está disponible y la operación exige evaluación:
+
+```text
+EFECTO PROTEGIDO
+→ NO EJECUTAR
+```
+
+No existe fallback a `has_permission`, rol, cookie o matriz local.
+
+---
+
+#### 111. Incompatibilidad contractual
+
+Una versión contractual desconocida o incompatible bloquea el binding.
+
+No se interpreta como compatibilidad por defecto.
+
+---
+
+#### 112. Versionado del consumidor
+
+Cuando el package cambie contratos o tipos consumidos por VISO, la unidad actualiza consumidores afectados y demuestra compatibilidad con la versión activa.
+
+No se permite drift silencioso.
+
+---
+
+#### 113. Tests positivos
+
+Cada binding protegido incluye el caso positivo necesario para demostrar que un actor autorizado completa la operación dentro de su alcance.
+
+---
+
+#### 114. Tests negativos
+
+Cada unidad cubre, según aplique:
+
+- sesión ausente;
+- actor inválido;
+- permiso ausente;
+- permiso distinto;
+- recurso ajeno;
+- sede ajena;
+- área ajena;
+- contexto requerido ausente;
+- turno inválido;
+- check-in ausente;
+- dispositivo incompatible;
+- deny vigente;
+- contexto stale;
+- llamada directa;
+- payload manipulado;
+- helper legacy;
+- role override;
+- fallo del evaluador.
+
+---
+
+#### 115. Prueba de equivalencia
+
+Para el mismo actor, permiso, recurso, territorio y contexto, los canales aplicables producen resultado equivalente.
+
+Una UI que deniega y una RPC que permite constituye fallo.
+
+---
+
+#### 116. Prueba de mínimo privilegio
+
+La unidad demuestra que lectura no obtiene mutación y que creación no implica aprobación, suspensión o revocación cuando el catálogo las separa.
+
+---
+
+#### 117. Prueba territorial
+
+Existe al menos un caso de denegación fuera del territorio autorizado cuando la operación es territorial.
+
+No se fabrica territorio para probar una capacidad no territorial.
+
+---
+
+#### 118. Prueba de role override
+
+Si el role override permanece dentro del alcance, debe demostrarse que no produce mutación real ni `ALLOW` alternativo.
+
+---
+
+#### 119. Prueba de legado
+
+Si permanece un helper legacy, se demuestra que ninguna operación migrada puede alcanzarlo como autoridad final.
+
+---
+
+#### 120. Prueba de frescura
+
+Cuando cambia un hecho relevante, una decisión anterior no continúa habilitando la operación.
+
+La prueba usa invalidación canónica.
+
+---
+
+#### 121. Prueba de acceso directo
+
+La operación protegida deniega de forma equivalente al invocarse fuera del flujo visual normal.
+
+---
+
+#### 122. Prueba de columnas
+
+Una mutación con campos fuera del contrato permitido impide el efecto conforme al contrato de servidor.
+
+---
+
+#### 123. Prueba de service_role
+
+Cuando exista backend privilegiado, se demuestra que la credencial técnica no sustituye la evaluación del actor de negocio.
+
+---
+
+#### 124. Prueba de decisión persistida
+
+Cuando el contrato exige persistencia, se demuestra que decisión y correlación se conservan mediante la fundación compartida.
+
+No se crea un log VISO alterno.
+
+---
+
+#### 125. Evidencia por unidad
+
+El expediente físico futuro conserva como mínimo:
+
+1. `implementation_unit_id`;
+2. package propietario;
+3. repositorios afectados;
+4. commit o candidato validado;
+5. operaciones protegidas;
+6. permisos exactos;
+7. contratos de recurso;
+8. requisito de autorización;
+9. entrypoint canónico utilizado;
+10. consumidores legacy clasificados;
+11. pruebas positivas;
+12. pruebas negativas;
+13. versiones y fingerprints;
+14. rollback;
+15. bloqueadores restantes.
+
+---
+
+#### 126. Rollback
+
+El rollback de una unidad no restaura silenciosamente un bypass inseguro.
+
+Si requiere volver temporalmente a un consumidor legacy, debe existir gate explícito que preserve fail-closed y trazabilidad.
+
+---
+
+#### 127. Frontera con VISO-CORE-005
+
+`VISO-CORE-004` produce autorización real y evidencia de decisión.
+
+`VISO-CORE-005` conserva la responsabilidad de materializar y certificar conflictos de configuración, límites administrativos, concurrencia de configuración, auditoría de cambios del núcleo, corrección y notificación aplicable.
+
+---
+
+#### 128. Persistencia de decisión versus auditoría de cambios
+
+Usar persistencia canónica de `AuthorizationDecision` no absorbe la auditoría de cambios de `VISO-CORE-005`.
+
+```text
+EVIDENCIA DE POR QUÉ SE AUTORIZÓ O DENEGÓ UNA OPERACIÓN
+≠
+HISTORIAL COMPLETO DE CAMBIOS ADMINISTRATIVOS DEL NÚCLEO
+```
+
+---
+
+#### 129. Conflictos
+
+La autorización puede recibir una condición de configuración inconsistente y fallar cerrado.
+
+La detección, clasificación, UX y lifecycle completo de conflictos permanecen en `VISO-CORE-005`.
+
+---
+
+#### 130. Frontera con VISO-CORE-006
+
+`VISO-CORE-006` no puede aprobar el núcleo basándose únicamente en este contrato.
+
+Debe existir evidencia física de unidades aplicables y controles posteriores.
+
+---
+
+#### 131. Frontera con VISO-AUTH
+
+`VISO-AUTH-001` a `VISO-AUTH-020` conservan los contratos administrativos definidos.
+
+`VISO-CORE-004` los materializa solo cuando una unidad y package lo requieren, sin reabrir matrices ni inventar capacidades.
+
+---
+
+#### 132. Frontera con SHELL
+
+La fundación compartida de identidad, contexto y autorización permanece transversal.
+
+VISO es consumidor y administrador de hechos autorizados, no propietario de un motor paralelo.
+
+---
+
+#### 133. Frontera con Supabase
+
+Toda modificación VENTO de Supabase que una futura unidad requiera pertenece a `vento-group-sas/vento-shell`.
+
+No se realizan cambios manuales directos en remoto desde esta tarea documental.
+
+---
+
+#### 134. Frontera con vento-viso
+
+`vento-viso` puede requerir adaptaciones de consumidores cuando package y unidad lo incluyan.
+
+La existencia de código AS-IS no autoriza modificación global fuera de ese alcance.
+
+---
+
+#### 135. Frontera con aplicaciones operativas
+
+NEXO, FOGO, ORIGO, PULSO y demás aplicaciones conservan sus bindings de autorización.
+
+Esta tarea no los migra salvo que el package de la unidad lo declare expresamente.
+
+---
+
+#### 136. Resultado permitido sin nuevo esquema
+
+Una unidad puede completar binding sin crear migración si toda la fundación ya existe y solo debe adaptar consumidores.
+
+No se exige cambio de base de datos artificial.
+
+---
+
+#### 137. Resultado permitido con cambio físico
+
+Si el package demuestra una brecha real, la unidad introduce solo el cambio autorizado con compatibilidad, rollback, pruebas y owner.
+
+---
+
+#### 138. Resultado bloqueado
+
+La unidad permanece bloqueada cuando:
+
+- falta capacidad exacta;
+- falta contrato de recurso;
+- el contexto no puede resolverse;
+- la dependencia de `VISO-CORE-003` no está disponible;
+- el package no cubre el cambio;
+- existe evaluador local capaz de conceder autoridad alternativa;
+- no hay rollback seguro;
+- no pueden ejecutarse pruebas negativas;
+- el gate temporal no está satisfecho.
+
+---
+
+#### 139. No equivalencia entre tarea e implementación
+
+Debe conservarse:
+
+```text
+VISO-CORE-004 DOCUMENTAL APROBADA
+≠
+VISO-CORE-004::implementation_unit_id IMPLEMENTADA
+```
+
+El marcador canónico define el contrato.
+
+La instancia física demuestra materialización.
+
+---
+
+#### 140. Handoff a VISO-CORE-005
+
+Por cada unidad materializada, `VISO-CORE-005` recibe:
+
+- identidad exacta de la unidad;
+- inventario operación-permiso-recurso;
+- entrypoints canónicos utilizados;
+- evidencia de decisión;
+- consumidores legacy restantes;
+- razones de bloqueo relevantes;
+- puntos donde existen conflictos de configuración;
+- puntos donde deben auditarse cambios;
+- contratos y versiones;
+- evidencia de frescura;
+- pruebas de bypass y territorio.
+
+No recibe una declaración genérica de “autorizado”.
+
+---
+
+#### 141. Handoff documental a VISO-CORE-005
+
+El siguiente contrato desarrollará validación de conflictos y auditoría sobre un núcleo cuya autorización real ya está definida aquí.
+
+No deberá crear otro evaluador ni reabrir la matriz de permisos.
+
+---
+
+#### 142. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+Las obligaciones de autorización real, equivalencia entre capas, territorio, mutaciones server-side, frescura, revocación y trazabilidad ya están protegidas por requisitos vigentes. Esta tarea asigna su materialización al núcleo de VISO por unidad sin crear una regla protegida independiente.
+
+---
+
+#### 143. Cobertura de prueba vigente reutilizada
+
+Sin modificar el Registro Canónico de Requisitos de Prueba, esta tarea reutiliza la cobertura existente de:
+
+- `TREQ-AUTH-001` — autorización mediante permisos, contexto y alcance canónicos;
+- `TREQ-AUTH-004` — equivalencia entre evaluadores y ausencia de excepciones locales;
+- `TREQ-AUTH-007` — administración de seguridad con capacidad explícita y territorio;
+- `TREQ-AUTH-008` — separación entre carril administrativo y operacional;
+- `TREQ-AUTH-009` — resolución territorial determinista;
+- `TREQ-AUTH-013` — protección server-side de mutaciones, recurso y columnas;
+- `TREQ-AUTH-014` — invalidación de contexto y decisiones stale;
+- `TREQ-AUTH-015` — evidencia correlacionable de decisiones y acciones;
+- `TREQ-AUTH-016` — revocación coordinada ante retiro, suspensión o finalización;
+- `TREQ-VISO-001` — coherencia entre configuración administrativa VISO y resultado consumido por aplicaciones.
+
+Estas referencias constituyen trazabilidad heredada y no actualizan el registro.
+
+---
+
+#### 144. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería documental no se ha ejecutado todavía sobre el checkout local de la rama de `VISO-CORE-004`. |
+| LOCAL | NOT_EXECUTED | El bloque aún no ha sido insertado, normalizado ni validado dentro de la rama documental local. |
+| REMOTA | PASS | Se verificaron `main`, cierre de `VISO-CORE-003`, continuidad, owner, topología, gate, políticas documentales, handoffs de `VISO-CORE-001..003`, contratos de `VISO-AUTH`, Registro 04A, fundaciones `AUTH-DB-032..035`, migraciones del evaluador, scripts documentales vigentes y el AS-IS de autorización de `vento-viso`. |
+| OPERATIVA | NOT_APPLICABLE | La entrega documental no cambia autoridad, grants, denegaciones, sesiones, trabajadores, territorios, dispositivos ni datos reales. |
+| FÍSICA | NOT_EXECUTED | La tarea define un contrato `PER_IMPLEMENTATION_UNIT`; no existe materialización física de `VISO-CORE-004` mediante esta aprobación documental. |
+
+---
+
+#### 145. Criterios de aceptación
+
+- [ ] La tarea permanece `PER_IMPLEMENTATION_UNIT`.
+- [ ] El gate permanece `POST_E5_PACKAGE`.
+- [ ] No se crea una instancia global.
+- [ ] No se inventa un `implementation_unit_id`.
+- [ ] La unidad recibe dependencias reales de `VISO-CORE-003`.
+- [ ] No se redefine la estructura administrativa mínima.
+- [ ] Se reutiliza el resolver canónico de contexto.
+- [ ] Se reutiliza el evaluador canónico compartido.
+- [ ] Se reutiliza persistencia de decisión cuando aplica.
+- [ ] Se reutiliza frescura canónica.
+- [ ] No se crea motor de autorización local VISO.
+- [ ] Cada operación protegida tiene permiso exacto.
+- [ ] Un permiso común exige justificación contractual sin exceso.
+- [ ] `viso.access` no sustituye permisos de acción.
+- [ ] Las cinco capacidades de grants base permanecen separadas.
+- [ ] Las cinco capacidades de grants operativos permanecen separadas.
+- [ ] Las cuatro capacidades de denegaciones permanecen separadas.
+- [ ] No se inventa `viso.authorization.manage`.
+- [ ] No se inventa capacidad de suspensión de denegaciones.
+- [ ] `viso.authorization.audit_logs.view` no concede mutaciones.
+- [ ] Simulación permanece separada de autoridad real.
+- [ ] Exportación permanece bloqueada sin permiso canónico exacto.
+- [ ] Otras operaciones resuelven permisos desde catálogo activo.
+- [ ] Una capacidad ausente bloquea en vez de crear una clave.
+- [ ] Principal procede de autenticación real.
+- [ ] Actor efectivo procede del contexto canónico.
+- [ ] Principal y actor permanecen separados cuando corresponde.
+- [ ] Sesión válida no equivale a autorización.
+- [ ] Estado laboral incompatible falla cerrado cuando aplica.
+- [ ] Rol base no es `ALLOW`.
+- [ ] Rol operativo no se fabrica desde perfil.
+- [ ] Perfil operativo no es autoridad.
+- [ ] Sede solicitada no es territorio autorizado.
+- [ ] Área solicitada no amplía cobertura.
+- [ ] Capacidades no territoriales no fabrican sede.
+- [ ] Capacidades territoriales fallan cerrado sin territorio válido.
+- [ ] Cobertura no concede permiso.
+- [ ] Recurso se resuelve mediante contrato canónico.
+- [ ] Estado actual del recurso se revalida cuando aplica.
+- [ ] Columnas permitidas se restringen en servidor.
+- [ ] Lecturas de colección no filtran información fuera de alcance.
+- [ ] Operaciones multirrecurso no ocultan denegaciones parciales.
+- [ ] Carril administrativo no exige turno por defecto.
+- [ ] Carril operacional no omite prerrequisitos.
+- [ ] Turno solo se exige cuando el contrato lo exige.
+- [ ] `VISO-CORE-004` no activa el delta de programación.
+- [ ] Check-in solo se exige cuando corresponde.
+- [ ] Dispositivo solo participa cuando corresponde.
+- [ ] Dispositivo compartido no transfiere autoridad técnica.
+- [ ] `service_role` no actúa como autorización de negocio.
+- [ ] `SECURITY DEFINER` no es bypass.
+- [ ] RLS no sustituye decisión de negocio.
+- [ ] Server Actions reautorizan en servidor.
+- [ ] Route Handlers reautorizan en servidor.
+- [ ] RPC no confía en autorización previa de UI.
+- [ ] Data API no amplía alcance.
+- [ ] Realtime no expone filas fuera de alcance.
+- [ ] Cliente no elige permiso, actor ni resultado.
+- [ ] UI no es barrera suficiente.
+- [ ] Middleware no sustituye autorización de acción.
+- [ ] URL directa produce decisión equivalente.
+- [ ] Formulario manipulado no amplía columnas ni recurso.
+- [ ] API directa produce decisión equivalente.
+- [ ] Solo `ALLOW` vigente habilita efecto.
+- [ ] Toda condición obligatoria ausente falla cerrado.
+- [ ] Deny y error técnico permanecen distinguibles.
+- [ ] Reasons canónicos no se reemplazan por taxonomía local.
+- [ ] Evidencia conserva correlación suficiente.
+- [ ] Versiones y fingerprints se preservan.
+- [ ] No se hardcodea cardinalidad histórica como eterna.
+- [ ] Una mutación revalida frescura antes del efecto.
+- [ ] Eventos invalidantes invalidan autoridad.
+- [ ] No existe caché local de `ALLOW` fuera del contrato.
+- [ ] Operación offline se reautoriza cuando corresponde.
+- [ ] Reintentos no omiten autorización.
+- [ ] Autorización no sustituye concurrencia del recurso.
+- [ ] Segregación de funciones permanece vigente.
+- [ ] Tener create y approve no habilita autoaprobación.
+- [ ] Autoafectación prohibida permanece bloqueada.
+- [ ] Suspensión usa capacidad exacta.
+- [ ] Revocación usa capacidad exacta y conserva historia.
+- [ ] Revocar un deny no crea un allow.
+- [ ] Reingreso no recupera autoridad anterior.
+- [ ] `propietario` no es wildcard.
+- [ ] `gerente_general` no es bypass.
+- [ ] `gerente` no es administrador global por nombre.
+- [ ] Role override no produce autoridad real.
+- [ ] `has_permission` no es autoridad final de una unidad cerrada.
+- [ ] `has_operational_role_permission` no es autoridad final.
+- [ ] Lectura directa de `role_permissions` no decide actor real.
+- [ ] Lectura directa de `app_permissions` no concede permiso.
+- [ ] Todos los consumidores legacy aplicables están inventariados.
+- [ ] Cada consumidor legacy tiene clasificación de transición.
+- [ ] Compatibilidad legacy no crea autoridad paralela.
+- [ ] No se retiran helpers globalmente por inferencia.
+- [ ] Superficies fuera del núcleo no amplían alcance.
+- [ ] Lecturas sensibles quedan protegidas.
+- [ ] Mutaciones siguen el orden de seguridad definido.
+- [ ] Ningún efecto protegido ocurre antes del `ALLOW`.
+- [ ] Mínimo privilegio se conserva.
+- [ ] Grafo privado no se expone a roles cliente.
+- [ ] UI recibe solo proyección segura.
+- [ ] Caída del evaluador falla cerrado.
+- [ ] Versión incompatible bloquea.
+- [ ] Consumidores se sincronizan con contrato vigente.
+- [ ] Cada binding tiene prueba positiva.
+- [ ] Cada binding tiene pruebas negativas proporcionales.
+- [ ] Existe prueba de equivalencia entre canales aplicables.
+- [ ] Existe prueba de mínimo privilegio.
+- [ ] Existe prueba territorial cuando aplica.
+- [ ] Role override tiene prueba negativa cuando permanece.
+- [ ] Helper legacy tiene prueba de no autoridad final cuando permanece.
+- [ ] Existe prueba de frescura cuando aplica.
+- [ ] Existe prueba de acceso directo.
+- [ ] Existe prueba de columnas cuando aplica.
+- [ ] Backend privilegiado prueba que `service_role` no sustituye actor.
+- [ ] Persistencia de decisión usa fundación compartida.
+- [ ] Cada unidad conserva evidencia física mínima.
+- [ ] Rollback no restaura bypass inseguro.
+- [ ] `VISO-CORE-005` conserva conflictos y auditoría de cambios.
+- [ ] Persistencia de decisión no se confunde con auditoría completa del núcleo.
+- [ ] `VISO-CORE-006` conserva certificación final.
+- [ ] `VISO-AUTH-001..020` no se reabren.
+- [ ] Supabase de VENTO permanece gobernado desde `vento-shell`.
+- [ ] `vento-viso` solo se modifica cuando una unidad y package lo incluyan.
+- [ ] No se exige migración artificial cuando basta adaptar consumidores.
+- [ ] Una brecha real solo se materializa dentro del alcance autorizado.
+- [ ] Una unidad bloqueada no usa fallback permisivo.
+- [ ] Aprobación documental no equivale a instancia implementada.
+- [ ] `VISO-CORE-005` recibe handoff físico verificable.
+- [ ] No se crean requisitos de prueba.
+- [ ] No se modifican requisitos de prueba.
+- [ ] No se modifica el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 146. Límites
+
+Esta tarea no:
+
+- crea un package;
+- selecciona un package;
+- modifica la línea de packages;
+- crea un `implementation_unit_id`;
+- crea una instancia global;
+- autoriza una instancia física;
+- ejecuta una instancia física;
+- modifica `implementation-control.json` por inferencia;
+- cambia Supabase;
+- cambia Supabase remoto;
+- crea migraciones;
+- crea RPC;
+- crea RLS;
+- crea grants;
+- crea funciones;
+- crea triggers;
+- crea Storage;
+- crea Realtime;
+- crea Edge Functions;
+- crea cron;
+- crea colas;
+- cambia secretos;
+- cambia Auth;
+- cambia datos productivos;
+- cambia código de `vento-viso`;
+- cambia código de otra aplicación;
+- crea nuevo `AccessContext`;
+- crea nuevo evaluador de autorización;
+- crea nueva taxonomía de decisión;
+- crea nuevo catálogo de permisos;
+- inventa `PermissionKey`;
+- inventa `viso.authorization.manage`;
+- inventa permiso de exportación;
+- materializa exportación de matriz;
+- activa simulación como autoridad real;
+- activa el delta de programación laboral;
+- completa `VISO-SCH-001..008`;
+- implementa ciclo de dispositivos compartidos;
+- implementa conflictos de configuración;
+- implementa auditoría completa de cambios del núcleo;
+- implementa notificaciones de seguridad;
+- implementa UX final;
+- retira helpers legacy fuera del package;
+- absorbe autorización de otras aplicaciones;
+- modifica requisitos de prueba;
+- crea requisitos de prueba;
+- modifica el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 147. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-CORE-003 — Implementar dependencias administrativas mínimas`
+
+**TAREA ACTUAL APROBADA**
+`VISO-CORE-004 — Implementar autorización real del núcleo`
+
+**SIGUIENTE TAREA RESERVADA**
+`VISO-CORE-005 — Implementar validación de conflictos y auditoría`
+
+
 ### [ ] VISO-CORE-005 — Implementar validación de conflictos y auditoría
 ### [ ] VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance
 
