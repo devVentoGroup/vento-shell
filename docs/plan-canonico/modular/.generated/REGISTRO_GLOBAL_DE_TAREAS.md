@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1113** |
+| Aprobadas | **1114** |
 | En propuesta | **0** |
-| No iniciadas | **483** |
+| No iniciadas | **482** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **69.74% (1113/1596)** |
+| Porcentaje de completamiento | **69.80% (1114/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-CORE-002` — Vincular núcleo con capacidades empresariales | ✅ APROBADA |
-| Tarea actual | `VISO-CORE-003` — Implementar dependencias administrativas mínimas | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-CORE-004` — Implementar autorización real del núcleo | ⬜ NO INICIADA |
+| Última aprobada | `VISO-CORE-003` — Implementar dependencias administrativas mínimas | ✅ APROBADA |
+| Tarea actual | `VISO-CORE-004` — Implementar autorización real del núcleo | ⬜ NO INICIADA |
+| Siguiente reservada | `VISO-CORE-005` — Implementar validación de conflictos y auditoría | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -664,7 +664,7 @@
 | ⬜ NO INICIADA | `VISO-SCH-008` | Aprobar contrato de programación antes de E5 | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
 | ✅ APROBADA | `VISO-CORE-001` | Definir núcleo mínimo de VISO | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ✅ APROBADA | `VISO-CORE-002` | Vincular núcleo con capacidades empresariales | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-003` | Implementar dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ✅ APROBADA | `VISO-CORE-003` | Implementar dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-CORE-004` | Implementar autorización real del núcleo | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-CORE-005` | Implementar validación de conflictos y auditoría | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-CORE-006` | Aprobar núcleo antes de ampliar alcance | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
