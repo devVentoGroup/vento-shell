@@ -682,6 +682,7 @@ export function assertManagementRequest(method, pathname) {
   const normalizedMethod = String(method ?? '').toUpperCase();
   const normalizedPath = String(pathname ?? '');
   const allowedGet = [
+    /^\/v1\/branches\/[A-Za-z0-9_-]+$/u,
     /^\/v1\/projects\/[A-Za-z0-9_-]+$/u,
     /^\/v1\/projects\/[A-Za-z0-9_-]+\/database\/migrations$/u,
     /^\/v1\/projects\/[A-Za-z0-9_-]+\/functions$/u,
@@ -726,6 +727,47 @@ function normalizeProject(payload) {
       release_channel: payload?.database?.release_channel ?? null,
     },
   };
+}
+
+function normalizeBranchProject(payload) {
+  return {
+    ref: payload?.ref ?? null,
+    name: payload?.name ?? null,
+    region: payload?.region ?? null,
+    status: payload?.status ?? null,
+    hosted_identity_kind: 'branch',
+    database: {
+      version: payload?.postgres_version ?? null,
+      postgres_engine: payload?.postgres_engine ?? null,
+      release_channel: payload?.release_channel ?? null,
+    },
+  };
+}
+
+async function resolveHostedProjectIdentity(ref, token, fetchImpl) {
+  let projectError = null;
+  try {
+    return normalizeProject(await managementRequest({
+      token,
+      pathname: `/v1/projects/${ref}`,
+      fetchImpl,
+    }));
+  } catch (error) {
+    projectError = error;
+  }
+
+  try {
+    return normalizeBranchProject(await managementRequest({
+      token,
+      pathname: `/v1/branches/${ref}`,
+      fetchImpl,
+    }));
+  } catch (branchError) {
+    fail(
+      'REMOTE_HOSTED_IDENTITY_UNRESOLVED',
+      `project=${safeAscii(projectError?.message ?? String(projectError))};branch=${safeAscii(branchError?.message ?? String(branchError))}`,
+    );
+  }
 }
 
 function normalizeMigrationHistory(payload) {
@@ -869,9 +911,11 @@ export async function observeRemoteEnvironment({
   }
 
   const surfaces = [];
-  const project = await captureSurface('project', async () => normalizeProject(await managementRequest({
-    token, pathname: `/v1/projects/${ref}`, fetchImpl,
-  })));
+  const project = await captureSurface('project', async () => resolveHostedProjectIdentity(
+    ref,
+    token,
+    fetchImpl,
+  ));
   surfaces.push(project);
 
   if (remoteScope === 'history' || remoteScope === 'full') {

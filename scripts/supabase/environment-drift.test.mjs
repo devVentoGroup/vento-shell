@@ -15,6 +15,7 @@ import {
   extractSqlScalar,
   inventoryEdgeFunctions,
   normalizeRemoteFunctionBody,
+  observeRemoteEnvironment,
   parseToml,
   sha256,
   stableStringify,
@@ -88,6 +89,7 @@ test('normaliza cuerpo remoto de Edge Function al mismo modelo de archivos', () 
 
 test('Management API queda cerrada a GET y SQL read-only', () => {
   assert.equal(assertManagementRequest('GET', '/v1/projects/abc123'), true);
+  assert.equal(assertManagementRequest('GET', '/v1/branches/abc123'), true);
   assert.equal(assertManagementRequest('GET', '/v1/projects/abc123/database/migrations'), true);
   assert.equal(assertManagementRequest('POST', '/v1/projects/abc123/database/query/read-only'), true);
   assert.throws(
@@ -99,9 +101,121 @@ test('Management API queda cerrada a GET y SQL read-only', () => {
     /MANAGEMENT_API_OPERATION_FORBIDDEN/u,
   );
   assert.throws(
+    () => assertManagementRequest('PATCH', '/v1/branches/abc123'),
+    /MANAGEMENT_API_OPERATION_FORBIDDEN/u,
+  );
+  assert.throws(
     () => assertManagementRequest('DELETE', '/v1/projects/abc123/database/migrations'),
     /MANAGEMENT_API_OPERATION_FORBIDDEN/u,
   );
+});
+
+test('staging persistent branch se normaliza sin conservar credenciales sensibles', async () => {
+  const requests = [];
+  const fakeDbPass = 'FAKE_DB_PASS_SHOULD_NEVER_APPEAR';
+  const fakeJwtSecret = 'FAKE_JWT_SECRET_SHOULD_NEVER_APPEAR';
+  const response = (status, payload) => ({
+    ok: status >= 200 && status < 300,
+    status,
+    async json() { return payload; },
+  });
+  const fetchImpl = async (url) => {
+    const pathname = new URL(url).pathname;
+    requests.push(pathname);
+    if (pathname === '/v1/projects/staging-ref') {
+      return response(400, { message: 'Project not found' });
+    }
+    if (pathname === '/v1/branches/staging-ref') {
+      return response(200, {
+        ref: 'staging-ref',
+        postgres_version: 'supabase-postgres-17.6.1.166',
+        postgres_engine: '17',
+        release_channel: 'ga',
+        status: 'ACTIVE_HEALTHY',
+        db_host: 'db.staging-ref.supabase.co',
+        db_user: 'postgres',
+        db_pass: fakeDbPass,
+        jwt_secret: fakeJwtSecret,
+      });
+    }
+    throw new Error(`UNEXPECTED_REQUEST:${pathname}`);
+  };
+
+  const observed = await observeRemoteEnvironment({
+    projectRef: 'staging-ref',
+    environmentRole: 'staging',
+    owner: 'SUPA-TRANS-015',
+    scope: 'environment',
+    token: 'mock-management-token',
+    fetchImpl,
+  });
+
+  assert.equal(observed.identity_status, 'PASS');
+  assert.equal(observed.identity.project_ref, 'staging-ref');
+  assert.deepEqual(requests, ['/v1/projects/staging-ref', '/v1/branches/staging-ref']);
+  const project = observed.surfaces.find((entry) => entry.name === 'project');
+  assert.equal(project.status, 'PASS');
+  assert.equal(project.value.ref, 'staging-ref');
+  assert.equal(project.value.hosted_identity_kind, 'branch');
+  assert.equal(project.value.database.postgres_engine, '17');
+  const serialized = JSON.stringify(observed);
+  assert.equal(serialized.includes(fakeDbPass), false);
+  assert.equal(serialized.includes(fakeJwtSecret), false);
+  assert.equal(serialized.includes('db_pass'), false);
+  assert.equal(serialized.includes('jwt_secret'), false);
+
+  const result = compareRemote({
+    scope: 'environment',
+    expected: {
+      candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
+      expected_digest: 'expected',
+      config: { contract: { postgres_major: 17 } },
+    },
+    remoteObserved: observed,
+  });
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('staging separado como proyecto conserva el endpoint de proyecto sin fallback a branch', async () => {
+  const requests = [];
+  const response = (status, payload) => ({
+    ok: status >= 200 && status < 300,
+    status,
+    async json() { return payload; },
+  });
+  const fetchImpl = async (url) => {
+    const pathname = new URL(url).pathname;
+    requests.push(pathname);
+    if (pathname === '/v1/projects/staging-project-ref') {
+      return response(200, {
+        id: 'staging-project-ref',
+        ref: 'staging-project-ref',
+        name: 'staging-project',
+        region: 'us-east-2',
+        status: 'ACTIVE_HEALTHY',
+        database: {
+          version: '17.6.1.054',
+          postgres_engine: '17',
+          release_channel: 'ga',
+        },
+      });
+    }
+    throw new Error(`UNEXPECTED_REQUEST:${pathname}`);
+  };
+
+  const observed = await observeRemoteEnvironment({
+    projectRef: 'staging-project-ref',
+    environmentRole: 'staging',
+    owner: 'SUPA-TRANS-015',
+    scope: 'environment',
+    token: 'mock-management-token',
+    fetchImpl,
+  });
+  assert.deepEqual(requests, ['/v1/projects/staging-project-ref']);
+  assert.equal(observed.surfaces[0].status, 'PASS');
+  assert.equal(observed.surfaces[0].value.ref, 'staging-project-ref');
+  assert.equal(observed.surfaces[0].value.database.postgres_engine, '17');
 });
 
 test('extrae resultado escalar de respuestas SQL compatibles', () => {
