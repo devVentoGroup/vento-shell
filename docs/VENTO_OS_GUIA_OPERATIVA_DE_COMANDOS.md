@@ -1335,3 +1335,58 @@ Cuando `CURRENT_EXECUTABLE_WORK` sea una fundación o un prerrequisito físico, 
 
 Para Supabase, la secuencia global previa al package es R0 → `MRP015-000` → `MRP015-010` → `MRP015-020` → `MRP015-030` → `MRP015-040`. El candidato `MRP015-050` pertenece al ciclo del package y precede al despliegue remoto.
 <!-- CURRENT-EXECUTABLE-WORK-CORR-002:END -->
+
+---
+
+## Precondición de replay hosted en STAGING
+
+Antes de cualquier replay hosted sobre STAGING, ejecutar primero la precondición versionada. El helper autentica la Management API únicamente mediante `SUPABASE_ACCESS_TOKEN` cargado de forma temporal en la sesión; el token no se versiona ni debe imprimirse.
+
+En PowerShell, después de copiar el Personal Access Token al portapapeles:
+
+```powershell
+$env:SUPABASE_ACCESS_TOKEN = (Get-Clipboard -Raw).Trim()
+if ([string]::IsNullOrWhiteSpace($env:SUPABASE_ACCESS_TOKEN)) { throw 'SUPABASE_ACCESS_TOKEN_NOT_SET' }
+```
+
+La inspección es de solo lectura y debe apuntar explícitamente al binding canónico de STAGING:
+
+```powershell
+npm run supabase:hosted-replay:precondition -- inspect --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015
+```
+
+Si `APPLY_ALLOWED: NO`, el flujo se detiene. `apply` solo puede ejecutarse después de un reset destructivo de STAGING previamente autorizado que deje el historial de migraciones vacío, cero relaciones `public` con DML de `anon` y los defaults administrados de `supabase_admin` compatibles. El helper se ejecuta antes del baseline y antes de cualquier migración forward.
+
+Cuando STAGING ya cumpla esas precondiciones, la única mutación permitida por este helper es:
+
+```powershell
+npm run supabase:hosted-replay:precondition -- apply --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015 --acknowledge-mutation DELIV-PKG-015::CORR-006
+```
+
+Orden obligatorio:
+
+```text
+reset destructivo autorizado de STAGING
+-> inspect
+-> apply
+-> baseline
+-> migraciones forward en orden canónico
+```
+
+Durante `MRP015-020`, el STAGING parcialmente reproducido no es elegible para `apply`. El helper no remedia objetos ya recreados; ese estado requiere un rebuild controlado antes de volver a ejecutar la precondición.
+
+Reglas invariables:
+
+- PRODUCTION está prohibido para este helper.
+- No usar `migration repair` para fabricar historial.
+- No ejecutar `AUTH-DB-005` manualmente fuera de la cadena de replay.
+- No ejecutar `GRANT`/`REVOKE` ad hoc sobre relaciones existentes para acomodar el precondition.
+- No usar `apply` sobre un STAGING parcialmente reproducido.
+- Después de `apply`, el replay comienza en baseline y continúa por la cadena canónica.
+
+Al terminar la inspección o la mutación autorizada, limpiar el token de la sesión y del portapapeles:
+
+```powershell
+Remove-Item Env:SUPABASE_ACCESS_TOKEN -ErrorAction SilentlyContinue
+Set-Clipboard -Value ''
+```
