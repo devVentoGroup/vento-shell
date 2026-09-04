@@ -35,7 +35,7 @@
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
 | Progreso del bloque | **BLOQUES G Y G2: 24 de 26 aprobadas; VISO-CORE-005 pendiente** |
 | Estado de implementación | **IMPLEMENTATION_BLOCKED** |
-| Acción principal obligatoria | **WAIT_FOR_FOUNDATION_PREREQUISITE — MRP015-010** |
+| Acción principal obligatoria | **WAIT_FOR_FOUNDATION_PREREQUISITE — MRP015-020** |
 | Carril documental | **ACTIVO — VISO-CORE-005** |
 | Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
 | Alcance físico autorizado | **NINGUNO** |
