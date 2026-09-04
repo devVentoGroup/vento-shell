@@ -467,14 +467,14 @@
         ],
         "bindings": {
           "STAGING": {
-            "classification": "UNRESOLVED_BLOCKING",
-            "project_ref": null,
-            "owner": null
+            "classification": "STAGING",
+            "project_ref": "juaqdqdnuwtbpbpushsd",
+            "owner": "SUPA-TRANS-015"
           },
           "PRODUCTION": {
-            "classification": "UNRESOLVED_BLOCKING",
-            "project_ref": null,
-            "owner": null
+            "classification": "PRODUCTION",
+            "project_ref": "clzdpinthhtknkmefsxx",
+            "owner": "SUPA-TRANS-015"
           }
         }
       },
