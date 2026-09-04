@@ -8,7 +8,7 @@
 
 ## 🚦 QUÉ HACER AHORA — SIN INTERPRETAR NI ELEGIR
 
-> **Prioridad del checkout actual:** ejecutar `WAIT_FOR_FOUNDATION_PREREQUISITE` sobre `MRP015-000`.
+> **Prioridad del checkout actual:** ejecutar `WAIT_FOR_FOUNDATION_PREREQUISITE` sobre `MRP015-010`.
 >
 > Las secciones siguientes son las únicas colas vigentes. Corrección, documentación, preparación de package e implementación física son estados distintos; una no autoriza silenciosamente a la otra.
 
@@ -16,16 +16,16 @@
 
 - **Acción:** ninguna corrección abierta.
 
-### 2. Resuelve la fundación que tiene precedencia — `MRP015-000`
+### 2. Resuelve la fundación que tiene precedencia — `MRP015-010`
 
-- **CURRENT_EXECUTABLE_WORK:** `MRP015-000`
-- **Gate:** `TOOLCHAIN_READY`
+- **CURRENT_EXECUTABLE_WORK:** `MRP015-010`
+- **Gate:** `ENVIRONMENT_READY`
 - **Owner canónico:** `SUPA-TRANS-015`
 - **Estado:** `UNKNOWN`
 - **Package consumidor bloqueado:** `GAP-PKG-001` — posición **1/189**.
 - **Acción exacta:** `WAIT_FOR_FOUNDATION_PREREQUISITE`
 - **Comando de comprobación:** `npm run docs:package:readiness:check -- --package GAP-PKG-001`
-- **Por qué:** GAP-PKG-001 conserva el turno como package consumidor, pero el trabajo requerido actual es MRP015-000 / TOOLCHAIN_READY, propiedad de SUPA-TRANS-015. El comando solo reevalúa el gate; no autoriza el package.
+- **Por qué:** GAP-PKG-001 conserva el turno como package consumidor, pero el trabajo requerido actual es MRP015-010 / ENVIRONMENT_READY, propiedad de SUPA-TRANS-015. El comando solo reevalúa el gate; no autoriza el package.
 - **Regla:** no autorizar, iniciar, desplegar ni cerrar el package consumidor hasta que esta fundación y las anteriores queden satisfechas.
 
 ### 3. Continúa la documentación — `VISO-CORE-004`
@@ -61,7 +61,7 @@
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-G-VISO-CORE` — VISO administrador del modelo y núcleo operativo
 - **Siguiente etapa documental:** `PHASE-04-H2-SHELL-APPLICATION`
-- **Acción primaria del control de instancias:** `WAIT_FOR_FOUNDATION_PREREQUISITE` — `MRP015-000`
+- **Acción primaria del control de instancias:** `WAIT_FOR_FOUNDATION_PREREQUISITE` — `MRP015-010`
 - **Instancias físicas en espera de predecesora:** **0**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
