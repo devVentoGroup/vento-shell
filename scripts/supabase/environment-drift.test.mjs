@@ -244,6 +244,83 @@ test('remote sin identidad explicita termina en INSUFFICIENT_EVIDENCE', () => {
   assert.equal(result.drifts[0].surface, 'environment.identity');
 });
 
+test('scope environment certifica identidad remota sin consumir history ni recursos', () => {
+  const result = compareRemote({
+    scope: 'environment',
+    expected: {
+      candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
+      expected_digest: 'expected',
+      config: { contract: { postgres_major: 17 } },
+    },
+    remoteObserved: {
+      environment_role: 'staging',
+      remote_scope: 'environment',
+      identity: { project_ref: 'staging-ref' },
+      identity_status: 'PASS',
+      observed_digest: 'observed',
+      surfaces: [{
+        name: 'project',
+        status: 'PASS',
+        value: { ref: 'staging-ref', database: { postgres_engine: '17' } },
+      }],
+    },
+  });
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.equal(result.remote_scope, 'environment');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('scope history detecta exclusivamente drift del universo de migraciones', () => {
+  const result = compareRemote({
+    scope: 'history',
+    expected: {
+      candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
+      expected_digest: 'expected',
+      config: { contract: { postgres_major: 17 } },
+      migration_manifest: { rows: [{ version: '00000000000000' }, { version: '20260901000000' }] },
+    },
+    remoteObserved: {
+      environment_role: 'production',
+      remote_scope: 'history',
+      identity: { project_ref: 'production-ref' },
+      identity_status: 'PASS',
+      observed_digest: 'observed',
+      surfaces: [
+        { name: 'project', status: 'PASS', value: { ref: 'production-ref', database: { postgres_engine: '17' } } },
+        { name: 'migrations', status: 'PASS', value: [{ version: '00000000000000', name: 'baseline' }] },
+      ],
+    },
+  });
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.equal(result.remote_scope, 'history');
+  assert.deepEqual(result.drifts.map((entry) => entry.surface), ['migration_history.versions']);
+});
+
+test('scope environment conserva fail closed para candidate sucio', () => {
+  const result = compareRemote({
+    scope: 'environment',
+    expected: {
+      candidate: { clean: false, commit_sha: 'abc', dirty_path_count: 1 },
+      expected_digest: 'expected',
+      config: { contract: { postgres_major: 17 } },
+    },
+    remoteObserved: {
+      environment_role: 'staging',
+      remote_scope: 'environment',
+      identity: { project_ref: 'staging-ref' },
+      identity_status: 'PASS',
+      observed_digest: 'observed',
+      surfaces: [{
+        name: 'project',
+        status: 'PASS',
+        value: { ref: 'staging-ref', database: { postgres_engine: '17' } },
+      }],
+    },
+  });
+  assert.equal(result.certification, 'INSUFFICIENT_EVIDENCE');
+  assert.equal(result.drifts[0].surface, 'candidate.git_tree');
+});
+
 test('SQL de fingerprint excluye VITAL y no contiene operaciones de mutacion', () => {
   const sql = __test.FINGERPRINT_SQL.toLowerCase();
   assert.match(sql, /'vital'/u);

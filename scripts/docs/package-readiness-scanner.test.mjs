@@ -8,6 +8,7 @@ import {
   evaluateCapability,
   evaluatePhysicalDependencies,
   requiredFoundationCheckIds,
+  remoteDriftArgs,
   validateFoundationEvidenceRef,
   parseCanonicalPackageCatalogFromSource,
   parsePackageExecutionProjection,
@@ -22,6 +23,27 @@ const contract = JSON.parse(fs.readFileSync(
   new URL('./package-readiness/package-readiness-contract.json', import.meta.url),
   'utf8',
 ));
+
+
+test('remote drift args separan ENVIRONMENT_READY de HISTORY_PASS', () => {
+  const binding = { project_ref: 'abc123', owner: 'SUPA-TRANS-015' };
+  assert.deepEqual(remoteDriftArgs(binding, 'STAGING', 'environment'), [
+    'run', '--silent', 'supabase:drift:remote', '--',
+    '--environment-role', 'staging',
+    '--project-ref', 'abc123',
+    '--owner', 'SUPA-TRANS-015',
+    '--scope', 'environment',
+    '--strict',
+  ]);
+  assert.deepEqual(remoteDriftArgs(binding, 'PRODUCTION', 'history'), [
+    'run', '--silent', 'supabase:drift:remote', '--',
+    '--environment-role', 'production',
+    '--project-ref', 'abc123',
+    '--owner', 'SUPA-TRANS-015',
+    '--scope', 'history',
+    '--strict',
+  ]);
+});
 
 function approvedTask(id, title = id) {
   return {

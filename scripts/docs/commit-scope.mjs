@@ -112,6 +112,7 @@ export function classifyCommitPath(filePath) {
     || normalized === 'package-lock.json'
     || normalized.startsWith('scripts/docs/')
     || normalized.startsWith('scripts/quality/')
+    || normalized.startsWith('scripts/supabase/')
     || normalized.startsWith('quality/')
     || normalized.startsWith('.github/')
     || normalized.startsWith('.vscode/')

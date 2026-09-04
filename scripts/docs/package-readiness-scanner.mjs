@@ -243,14 +243,23 @@ function resolvedEnvironmentBindings(foundation) {
   return { pass: Boolean(pass), staging, production };
 }
 
-function runRemoteDrift(id, binding, role, root) {
-  return runNpmEvidence(id, [
+export function remoteDriftArgs(binding, role, scope) {
+  const normalizedScope = String(scope ?? '').trim().toLowerCase();
+  if (!['environment', 'history', 'full'].includes(normalizedScope)) {
+    fail(`Remote drift scope invalido: ${scope ?? 'EMPTY'}.`);
+  }
+  return [
     'run', '--silent', 'supabase:drift:remote', '--',
-    '--environment-role', role.toLowerCase(),
+    '--environment-role', String(role).toLowerCase(),
     '--project-ref', String(binding.project_ref),
     '--owner', String(binding.owner),
+    '--scope', normalizedScope,
     '--strict',
-  ], { root });
+  ];
+}
+
+function runRemoteDrift(id, binding, role, scope, root) {
+  return runNpmEvidence(id, remoteDriftArgs(binding, role, scope), { root });
 }
 
 function foundationChecks(root, foundation, gate, options) {
@@ -279,16 +288,16 @@ function foundationChecks(root, foundation, gate, options) {
   if (id === 'MRP015-010') {
     checks.push(staticEvidence('ENVIRONMENT_BINDINGS', bindings.pass, bindings.pass ? 'STAGING_AND_PRODUCTION_BOUND' : 'UNRESOLVED_BINDINGS'));
     if (bindings.pass) {
-      checks.push(runRemoteDrift('STAGING_REMOTE_DRIFT', bindings.staging, 'STAGING', root));
-      checks.push(runRemoteDrift('PRODUCTION_REMOTE_DRIFT', bindings.production, 'PRODUCTION', root));
+      checks.push(runRemoteDrift('STAGING_REMOTE_DRIFT', bindings.staging, 'STAGING', 'environment', root));
+      checks.push(runRemoteDrift('PRODUCTION_REMOTE_DRIFT', bindings.production, 'PRODUCTION', 'environment', root));
     }
     return checks;
   }
   if (id === 'MRP015-020') {
     checks.push(runNpmEvidence('MIGRATION_MANIFEST', ['run', '--silent', 'supabase:migrations:manifest:check'], { root }));
     if (bindings.pass) {
-      checks.push(runRemoteDrift('STAGING_HISTORY_DRIFT', bindings.staging, 'STAGING', root));
-      checks.push(runRemoteDrift('PRODUCTION_HISTORY_DRIFT', bindings.production, 'PRODUCTION', root));
+      checks.push(runRemoteDrift('STAGING_HISTORY_DRIFT', bindings.staging, 'STAGING', 'history', root));
+      checks.push(runRemoteDrift('PRODUCTION_HISTORY_DRIFT', bindings.production, 'PRODUCTION', 'history', root));
     }
     return checks;
   }
