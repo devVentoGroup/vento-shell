@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
+import { scanPackageReadiness } from './package-readiness-scanner.mjs';
 
 const CONTROL_PATH = 'docs/plan-canonico/modular/implementation-control.json';
 const INSTANCE_RECORDS_DIRECTORY = 'docs/plan-canonico/modular/implementation-instances';
@@ -274,12 +275,22 @@ export function deriveImplementationControl({
   control: suppliedControl = null,
   workTopology: suppliedTopology = null,
   preflight: suppliedPreflight = null,
+  packageExecution: suppliedPackageExecution = undefined,
 } = {}) {
   const workTopology = suppliedTopology ?? resolveTaskWorkTopology({ root });
   const control = validateImplementationControl(
     suppliedControl ?? loadImplementationControl({ root }),
     workTopology,
   );
+  const packageExecution = suppliedPackageExecution !== undefined
+    ? suppliedPackageExecution
+    : suppliedControl
+      ? null
+      : scanPackageReadiness({
+        root,
+        trigger: 'implementation-control',
+        supplied: { skipDerivedReports: true },
+      }).registry.package_execution;
   const operatorPolicy = control.execution_operator_policy;
   const currentTask = workTopology.inventory.get(workTopology.currentId);
   if (!suppliedPreflight && !currentTask) {
@@ -340,6 +351,43 @@ export function deriveImplementationControl({
       };
     });
   const instances = [...globalCandidates, ...explicitOther];
+  const currentPackageWork = packageExecution?.current_work ?? packageExecution?.current?.current_work ?? null;
+  let packagePrerequisiteAction = null;
+
+  if (['FOUNDATION_GATE', 'PHYSICAL_PREREQUISITE'].includes(currentPackageWork?.kind)) {
+    const consumerPackageId = String(currentPackageWork.consumer_package_id ?? '').trim();
+    const consumerInstanceId = consumerPackageId ? `SHELL-CI-020::${consumerPackageId}` : null;
+    const consumerInstance = consumerInstanceId
+      ? instances.find(({ instanceId }) => instanceId === consumerInstanceId) ?? null
+      : null;
+
+    if (consumerInstance && ['AUTHORIZED', 'IN_PROGRESS', 'IMPLEMENTED'].includes(consumerInstance.status)) {
+      fail([`${consumerInstanceId} no puede estar ${consumerInstance.status} mientras ${currentPackageWork.id} sigue pendiente.`]);
+    }
+
+    if (consumerInstance && ['PENDING_AUTHORIZATION', 'READY_FOR_AUTHORIZATION'].includes(consumerInstance.status)) {
+      consumerInstance.status = currentPackageWork.kind === 'FOUNDATION_GATE'
+        ? 'WAITING_FOR_FOUNDATION_PREREQUISITE'
+        : 'WAITING_FOR_PHYSICAL_PREREQUISITE';
+      consumerInstance.blocker = `${consumerPackageId} debe cerrar primero ${currentPackageWork.id}${currentPackageWork.gate_id ? ` / ${currentPackageWork.gate_id}` : ''}.`;
+    }
+
+    const packageAction = packageExecution?.current?.next_action ?? null;
+    packagePrerequisiteAction = {
+      type: currentPackageWork.kind === 'FOUNDATION_GATE'
+        ? 'WAIT_FOR_FOUNDATION_PREREQUISITE'
+        : 'WAIT_FOR_PHYSICAL_PREREQUISITE',
+      target: currentPackageWork.id,
+      title: currentPackageWork.gate_id
+        ? `${currentPackageWork.gate_id} — ${currentPackageWork.owner_task ?? currentPackageWork.id}`
+        : currentPackageWork.id,
+      instruction: packageAction?.command
+        ? `Resolver ${currentPackageWork.id} antes de autorizar ${consumerInstanceId ?? consumerPackageId}; comprobar con ${packageAction.command}.`
+        : `Resolver ${currentPackageWork.id} antes de autorizar ${consumerInstanceId ?? consumerPackageId}.`,
+      why: packageAction?.reason
+        ?? `${consumerPackageId || 'El package consumidor'} conserva el turno, pero su primer prerrequisito físico no está PASS.`,
+    };
+  }
 
   let unfinishedGlobal = null;
   for (const instance of globalCandidates) {
@@ -390,7 +438,7 @@ export function deriveImplementationControl({
     parallelWithPhysical: Boolean(selected),
     owner: preflight.task.owner,
   };
-  const primaryAction = selected ? {
+  const primaryAction = packagePrerequisiteAction ?? (selected ? {
     type: actionType,
     target: selected.instanceId,
     title: selected.taskTitle,
@@ -406,7 +454,7 @@ export function deriveImplementationControl({
     title: documentary.taskTitle,
     instruction: `Desarrollar únicamente el contrato documental de ${documentary.taskId}; no iniciar su instancia física por inferencia.`,
     why: 'No existe una instancia física autorizada, activa, pendiente de validación o lista para autorización.',
-  };
+  });
 
   const modeByStatus = {
     IN_PROGRESS: 'GLOBAL_IMPLEMENTATION_ACTIVE',
@@ -414,7 +462,9 @@ export function deriveImplementationControl({
     IMPLEMENTED: 'GLOBAL_VALIDATION_REQUIRED',
     BLOCKED: 'IMPLEMENTATION_BLOCKED',
   };
-  const mode = selected ? modeByStatus[selected.status] ?? 'GLOBAL_IMPLEMENTATION_READY' : 'DOCUMENTATION_ONLY';
+  const mode = packagePrerequisiteAction
+    ? 'IMPLEMENTATION_BLOCKED'
+    : selected ? modeByStatus[selected.status] ?? 'GLOBAL_IMPLEMENTATION_READY' : 'DOCUMENTATION_ONLY';
   const authorized = instances.filter(({ status }) => (
     ['AUTHORIZED', 'IN_PROGRESS', 'IMPLEMENTED'].includes(status)
   ));
@@ -458,7 +508,10 @@ export function deriveImplementationControl({
       authorized,
       readyCount: instances.filter(({ status }) => status === 'READY_FOR_AUTHORIZATION').length,
       blockedCount: instances.filter(({ status }) => (
-        status === 'BLOCKED' || status === 'WAITING_FOR_PREVIOUS_INSTANCE'
+        status === 'BLOCKED'
+        || status === 'WAITING_FOR_PREVIOUS_INSTANCE'
+        || status === 'WAITING_FOR_FOUNDATION_PREREQUISITE'
+        || status === 'WAITING_FOR_PHYSICAL_PREREQUISITE'
       )).length,
     },
   };

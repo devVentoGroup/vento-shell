@@ -388,6 +388,14 @@
         "gate_id": "CANDIDATE_READY",
         "owner_task": "SUPA-TRANS-015",
         "phase": "AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY"
+      },
+      "evidence_contract": {
+        "schema_version": 1,
+        "producer": "docs:package:foundation:record",
+        "status_required": "PASS",
+        "integrity": "SHA256_CANONICAL_JSON_V1",
+        "fail_closed": true,
+        "secret_values_forbidden": true
       }
     }
   },

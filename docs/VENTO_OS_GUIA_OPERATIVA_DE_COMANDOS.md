@@ -272,8 +272,10 @@ La autoridad para estas reglas está en el código, los tests, los workflows y l
 2. `docs:implementation:finish` es idempotente y reanudable. Ante interrupción, consulta estado real y vuelve a ejecutar el mismo lifecycle; no reconstruyas manualmente commit, push, PR o merge.
 3. Nunca uses force-push para conseguir que pase un cierre físico.
 4. Nunca sustituyas un fallo de gate por un workaround manual. Si el gate está equivocado, se corrige como infraestructura y se agrega regresión.
-5. Para llamadas npm desde Node, usa `resolveNpmInvocation`. Para ejecutar un `.mjs` conocido directamente, usa `process.execPath`.
-6. Antes de nombrar un script npm, lee `package.json`. El nombre exacto de sincronización local es `docs:plan:local-sync`.
+5. Las fundaciones PRE_E5 de SUPA-TRANS-015 solo pueden quedar PASS mediante `docs:package:foundation:record`; escribir manualmente `evidence_ref` o usar una cadena libre no constituye evidencia. El productor ejecuta los checks del gate, guarda solo metadatos/digests seguros y materializa evidencia estructurada con integridad SHA-256.
+6. Si `CURRENT_EXECUTABLE_WORK` es una foundation o prerrequisito físico, esa acción prevalece sobre cualquier instancia consumidora `PENDING_AUTHORIZATION`; no se autoriza la instancia hasta que el prerrequisito quede PASS.
+7. Para llamadas npm desde Node, usa `resolveNpmInvocation`. Para ejecutar un `.mjs` conocido directamente, usa `process.execPath`.
+8. Antes de nombrar un script npm, lee `package.json`. El nombre exacto de sincronización local es `docs:plan:local-sync`.
 7. El workflow no asume que `github.event.before` siga alcanzable después de reescrituras de historia; debe tener fallback seguro.
 8. HTTP 499 y errores de red transitorios se reintentan; un check en FAILURE no se reintenta como si fuera un problema de transporte.
 9. CRLF/LF no puede cambiar la identidad persistida de una migración ni exigir habilitar una carpeta nueva en la política EOL.

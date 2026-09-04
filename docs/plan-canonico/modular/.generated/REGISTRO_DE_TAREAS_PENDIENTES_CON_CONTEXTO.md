@@ -8,22 +8,13 @@
 
 ## 🚦 QUÉ HACER AHORA — SIN INTERPRETAR NI ELEGIR
 
-> **Prioridad del checkout actual:** terminar `DELIV-PKG-015::CORR-003`; este checkout ya pertenece a esa corrección.
+> **Prioridad del checkout actual:** ejecutar `WAIT_FOR_FOUNDATION_PREREQUISITE` sobre `MRP015-000`.
 >
 > Las secciones siguientes son las únicas colas vigentes. Corrección, documentación, preparación de package e implementación física son estados distintos; una no autoriza silenciosamente a la otra.
 
-### 1. Decide la corrección propuesta — `DELIV-PKG-015::CORR-003`
+### 1. Correcciones canónicas
 
-- **Estado:** `PENDING_AUTHORIZATION`
-- **Acción exacta:** `DECIDIR_AUTORIZACIÓN_DE_CORRECCIÓN`
-- **Haz ahora:** Revisar el alcance propuesto y aprobarlo o rechazarlo explícitamente; todavía no editar.
-- **Contrato autorizado:** PENDIENTE_DE_APROBACIÓN
-- **Edita solamente:**
-  - Ningún cambio autorizado todavía.
-- **Valida, en este orden:**
-  1. Ninguna validación autorizada todavía.
-- **Comando de lifecycle:** `NINGUNO_HASTA_APROBADO`
-- **Regla:** no mezclar esta corrección con documentación nueva, preparación de packages ni código físico en el mismo checkout.
+- **Acción:** ninguna corrección abierta.
 
 ### 2. Resuelve la fundación que tiene precedencia — `MRP015-000`
 
@@ -46,9 +37,9 @@
 
 ### 4. Ejecuta la instancia física autorizada — `SHELL-CI-020::GAP-PKG-001`
 
-- **Estado:** `PENDING_AUTHORIZATION`
+- **Estado:** `WAITING_FOR_FOUNDATION_PREREQUISITE`
 - **Contrato:** Implementar y desplegar cada paquete aprobado por E5
-- **Acción exacta del control:** `AUTORIZAR_IMPLEMENTACIÓN`
+- **Acción exacta del control:** `EJECUTAR_IMPLEMENTACIÓN`
 - **Registro:** `docs/plan-canonico/modular/implementation-instances/SHELL-CI-020__GAP-PKG-001.json`
 
 ## Panel de control — dos carriles
@@ -56,7 +47,7 @@
 | Carril | Estado | Trabajo actual | Siguiente | Regla |
 | --- | --- | --- | --- | --- |
 | 🟦 **DOCUMENTACIÓN** | `ACTIVO` | `VISO-CORE-003` — Implementar dependencias administrativas mínimas | `VISO-CORE-004` — Implementar autorización real del núcleo | Una tarea documental activa |
-| 🟧 **IMPLEMENTACIÓN FÍSICA** | `PENDING_AUTHORIZATION` | `SHELL-CI-020::GAP-PKG-001` — Implementar y desplegar cada paquete aprobado por E5 | SIN SIGUIENTE PROYECTADA | Una instancia física activa |
+| 🟧 **IMPLEMENTACIÓN FÍSICA** | `WAITING_FOR_FOUNDATION_PREREQUISITE` | `SHELL-CI-020::GAP-PKG-001` — Implementar y desplegar cada paquete aprobado por E5 | SIN SIGUIENTE PROYECTADA | Una instancia física activa |
 
 > Coordinación: `CONTROLLED_DUAL_LANE`. Los carriles pueden avanzar en paralelo en checkouts independientes; los cierres se serializan y el segundo carril reconcilia el `main` más reciente antes de cerrar.
 
@@ -70,7 +61,7 @@
 - **Ruta documental activa:** `NORMAL-CANONICAL-FLOW-001`
 - **Etapa documental:** `PHASE-04-G-VISO-CORE` — VISO administrador del modelo y núcleo operativo
 - **Siguiente etapa documental:** `PHASE-04-H2-SHELL-APPLICATION`
-- **Acción primaria del control de instancias:** `AUTORIZAR_IMPLEMENTACION` — `SHELL-CI-020::GAP-PKG-001`
+- **Acción primaria del control de instancias:** `WAIT_FOR_FOUNDATION_PREREQUISITE` — `MRP015-000`
 - **Instancias físicas en espera de predecesora:** **0**
 - **Cobertura documental de la ruta:** **todas las tareas, exactamente una vez**
 
@@ -80,7 +71,7 @@
 
 | # | Posición | Instancia | Contrato | Estado | Condición |
 | ---: | --- | --- | --- | --- | --- |
-| 1 | **ACTUAL** | `SHELL-CI-020::GAP-PKG-001` | Implementar y desplegar cada paquete aprobado por E5 | `PENDING_AUTHORIZATION` | ACTUAL — AUTORIZAR_IMPLEMENTACION |
+| 1 | **ACTUAL** | `SHELL-CI-020::GAP-PKG-001` | Implementar y desplegar cada paquete aprobado por E5 | `WAITING_FOR_FOUNDATION_PREREQUISITE` | ACTUAL — WAIT_FOR_FOUNDATION_PREREQUISITE |
 
 ## Modos de trabajo y materialización
 
