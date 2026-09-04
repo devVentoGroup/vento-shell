@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 
-import { scanPackageReadiness } from './package-readiness-scanner.mjs';
+import { scanPackageReadiness, validateFoundationEvidenceRef } from './package-readiness-scanner.mjs';
 
 const packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 const buildSource = fs.readFileSync('scripts/docs/build-plan-canonico.mjs', 'utf8');
@@ -127,6 +127,8 @@ test('package.json enruta starter, status, commit-scope y lifecycle por readines
   assert.equal(packageJson.scripts['docs:package:handoff'], 'node scripts/docs/package-gate-lifecycle.mjs handoff');
   assert.equal(packageJson.scripts['docs:package:execution:status'], 'node scripts/docs/package-execution-control.mjs status');
   assert.equal(packageJson.scripts['docs:package:execution:check'], 'node scripts/docs/package-execution-control.mjs check');
+  assert.equal(packageJson.scripts['docs:package:foundation:record'], 'node scripts/docs/package-readiness-scanner.mjs --record-foundation');
+  assert.equal(packageJson.scripts['docs:package:foundation:status'], 'node scripts/docs/package-readiness-scanner.mjs --foundation-status');
   assert.equal(packageJson.scripts['docs:package:select'], undefined);
   assert.match(packageJson.scripts['docs:plan:check'], /package-gate-lifecycle\.mjs check/u);
   assert.match(packageJson.scripts['docs:plan:check'], /package-execution-control\.mjs check/u);
@@ -246,7 +248,7 @@ test('la línea real proyecta la primera fundación Supabase no demostrada', () 
   }) && remote.bindings.STAGING.project_ref !== remote.bindings.PRODUCTION.project_ref;
 
   const firstUnresolved = foundation.ordered_foundation_gates.find((gate) => {
-    if (!String(gate.evidence_ref ?? "").trim()) return true;
+    if (validateFoundationEvidenceRef(gate, gate.evidence_ref).status !== 'PASS') return true;
     if (gate.foundation_id === 'MRP015-010' && !remoteReady) return true;
     return false;
   }) ?? null;

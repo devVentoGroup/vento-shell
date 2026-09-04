@@ -311,3 +311,59 @@ test('una instancia por unidad no puede autorizarse sin evidencia de sus gates',
     workTopology,
   }), /debe declarar prerequisite_evidence/u);
 });
+
+test('foundation pendiente prevalece sobre PENDING_AUTHORIZATION de SHELL-CI-020', () => {
+  const task = { id: 'SHELL-CI-020', title: 'Implementar package', marker: '✅', relativePath: 'ci.md' };
+  const workTopology = {
+    ordered: [task],
+    inventory: new Map([[task.id, task]]),
+    topology: new Map([[task.id, {
+      taskId: task.id,
+      mode: 'PER_IMPLEMENTATION_UNIT',
+      instancePattern: '<task_id>::<implementation_unit_id>',
+    }]]),
+    currentId: task.id,
+  };
+  const pending = {
+    instance_id: 'SHELL-CI-020::GAP-PKG-001',
+    task_id: 'SHELL-CI-020',
+    status: 'PENDING_AUTHORIZATION',
+    target_repositories: [],
+    authorized_changes: [],
+    validation_commands: [],
+    authorization: null,
+    evidence: [],
+  };
+  const packageExecution = {
+    current_work: {
+      kind: 'FOUNDATION_GATE',
+      id: 'MRP015-000',
+      gate_id: 'TOOLCHAIN_READY',
+      owner_task: 'SUPA-TRANS-015',
+      consumer_package_id: 'GAP-PKG-001',
+      status: 'UNKNOWN',
+    },
+    current: {
+      next_action: {
+        type: 'WAIT_FOR_FOUNDATION_PREREQUISITE',
+        target: 'MRP015-000',
+        command: 'npm run docs:package:readiness:check -- --package GAP-PKG-001',
+        reason: 'GAP-PKG-001 conserva el turno hasta cerrar TOOLCHAIN_READY.',
+      },
+    },
+  };
+
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [pending] },
+    workTopology,
+    packageExecution,
+  });
+
+  assert.equal(result.primaryAction.type, 'WAIT_FOR_FOUNDATION_PREREQUISITE');
+  assert.equal(result.primaryAction.target, 'MRP015-000');
+  assert.equal(result.physical.active, null);
+  const projected = result.physical.instances.find(({ instanceId }) => instanceId === pending.instance_id);
+  assert.equal(projected.status, 'WAITING_FOR_FOUNDATION_PREREQUISITE');
+  assert.equal(projected.record.status, 'PENDING_AUTHORIZATION');
+  assert.equal(result.physical.blockedCount, 1);
+});

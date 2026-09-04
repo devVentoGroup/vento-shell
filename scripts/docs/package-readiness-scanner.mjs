@@ -1,5 +1,7 @@
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 import { readCanonicalTaskInventory } from './task-semantic-contract.mjs';
@@ -14,6 +16,7 @@ import {
   deriveLinearPackageExecution,
   readPackageExecutionPolicy,
 } from './package-execution-control.mjs';
+import { resolveNpmInvocation } from './task-branch-lifecycle.mjs';
 
 export const READINESS_PATHS = Object.freeze({
   contract: 'scripts/docs/package-readiness/package-readiness-contract.json',
@@ -39,6 +42,35 @@ const PHYSICAL_ACTIVE = new Set(['AUTHORIZED', 'IN_PROGRESS', 'IMPLEMENTED']);
 const BLOCKING_LANE_STATES = new Set(['SUSPENDED', 'BLOCKED', 'RETIRED']);
 const PASS_WORDS = new Set(['PASS', 'APROBADO', 'APROBADA', 'READY', 'IMPLEMENTATION_READY']);
 const TASK_ID_PATTERN = /\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{3,4}\b/gu;
+const FOUNDATION_EVIDENCE_PRODUCER = 'docs:package:foundation:record';
+const FOUNDATION_REQUIRED_CHECKS = Object.freeze({
+  'MRP015-000': [
+    'SUPABASE_LOCK_PROVENANCE',
+    'SUPABASE_CLI_VERSION',
+    'SUPABASE_CLI_HELP',
+    'SUPABASE_FUNCTIONS_HELP',
+    'SUPABASE_DB_HELP',
+    'SUPABASE_DB_LINT_HELP',
+    'DOCKER_SERVER',
+    'SUPABASE_DB_HARNESS_TEST',
+    'SUPABASE_DRIFT_TEST',
+    'SUPABASE_CLEAN_REPLAY',
+    'CHANGELOG_REVIEW_ATTESTATION',
+    'TOOLCHAIN_FREEZE_ATTESTATION',
+  ],
+  'MRP015-010': [
+    'ENVIRONMENT_BINDINGS',
+    'STAGING_REMOTE_DRIFT',
+    'PRODUCTION_REMOTE_DRIFT',
+  ],
+  'MRP015-020': [
+    'MIGRATION_MANIFEST',
+    'STAGING_HISTORY_DRIFT',
+    'PRODUCTION_HISTORY_DRIFT',
+  ],
+  'MRP015-030': ['CLEAN_REPLAY'],
+  'MRP015-040': ['MIGRATION_MANIFEST', 'EXPECTED_RESOURCE_MANIFEST'],
+});
 
 function fail(message) {
   throw new Error(message);
@@ -59,6 +91,251 @@ function readJson(root, relativePath, { optional = false, fallback = null } = {}
   } catch (error) {
     fail(`${relativePath} no contiene JSON valido: ${error instanceof Error ? error.message : String(error)}`);
   }
+}
+
+function sha256(value) {
+  return crypto.createHash('sha256').update(String(value), 'utf8').digest('hex');
+}
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map((entry) => canonicalJson(entry)).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+export function requiredFoundationCheckIds(foundationId) {
+  return [...(FOUNDATION_REQUIRED_CHECKS[String(foundationId ?? '').trim()] ?? [])];
+}
+
+export function buildFoundationEvidenceRef({ gate, checks, recordedAt = new Date().toISOString() } = {}) {
+  const required = requiredFoundationCheckIds(gate?.foundation_id);
+  if (required.length === 0) fail(`Foundation desconocida: ${gate?.foundation_id ?? 'EMPTY'}.`);
+  const byId = new Map((checks ?? []).map((check) => [check.id, check]));
+  const missing = required.filter((id) => !byId.has(id));
+  if (missing.length > 0) fail(`${gate.foundation_id}: faltan checks ${missing.join(', ')}.`);
+  const normalizedChecks = required.map((id) => byId.get(id));
+  if (normalizedChecks.some((check) => check.status !== 'PASS' || check.exit_code !== 0)) {
+    fail(`${gate.foundation_id}: no puede materializar evidencia con checks no PASS.`);
+  }
+  const payload = {
+    schema_version: 1,
+    foundation_id: gate.foundation_id,
+    gate_id: gate.gate_id,
+    owner_task: gate.owner_task,
+    producer: FOUNDATION_EVIDENCE_PRODUCER,
+    recorded_at: recordedAt,
+    status: 'PASS',
+    checks: normalizedChecks,
+  };
+  return { ...payload, payload_sha256: sha256(canonicalJson(payload)) };
+}
+
+export function validateFoundationEvidenceRef(gate, evidenceRef) {
+  if (evidenceRef === null || evidenceRef === undefined) {
+    return { status: 'UNKNOWN', detail: `Gate ${gate.gate_id} no conserva evidence_ref materializada.` };
+  }
+  if (!evidenceRef || typeof evidenceRef !== 'object' || Array.isArray(evidenceRef)) {
+    return { status: 'FAIL', detail: `Gate ${gate.gate_id} rechaza evidence_ref libre; se requiere evidencia estructurada del productor canónico.` };
+  }
+  const expectedIdentity = {
+    schema_version: 1,
+    foundation_id: gate.foundation_id,
+    gate_id: gate.gate_id,
+    owner_task: gate.owner_task,
+    producer: FOUNDATION_EVIDENCE_PRODUCER,
+    status: 'PASS',
+  };
+  for (const [key, value] of Object.entries(expectedIdentity)) {
+    if (evidenceRef[key] !== value) {
+      return { status: 'FAIL', detail: `Gate ${gate.gate_id} conserva evidencia con ${key} inválido.` };
+    }
+  }
+  if (!/^\d{4}-\d{2}-\d{2}T/u.test(String(evidenceRef.recorded_at ?? ''))) {
+    return { status: 'FAIL', detail: `Gate ${gate.gate_id} no conserva recorded_at ISO.` };
+  }
+  const required = requiredFoundationCheckIds(gate.foundation_id);
+  const checks = Array.isArray(evidenceRef.checks) ? evidenceRef.checks : [];
+  const byId = new Map(checks.map((check) => [check?.id, check]));
+  for (const id of required) {
+    const check = byId.get(id);
+    if (!check || check.status !== 'PASS' || check.exit_code !== 0) {
+      return { status: 'FAIL', detail: `Gate ${gate.gate_id} no conserva check PASS obligatorio ${id}.` };
+    }
+    if (!/^[a-f0-9]{64}$/u.test(String(check.stdout_sha256 ?? '')) || !/^[a-f0-9]{64}$/u.test(String(check.stderr_sha256 ?? ''))) {
+      return { status: 'FAIL', detail: `Gate ${gate.gate_id} conserva digest inválido en ${id}.` };
+    }
+  }
+  const { payload_sha256: digest, ...payload } = evidenceRef;
+  if (!/^[a-f0-9]{64}$/u.test(String(digest ?? '')) || sha256(canonicalJson(payload)) !== digest) {
+    return { status: 'FAIL', detail: `Gate ${gate.gate_id} conserva evidencia con integridad SHA-256 inválida.` };
+  }
+  return { status: 'PASS', detail: `Gate ${gate.gate_id} conserva evidencia estructurada e íntegra de ${FOUNDATION_EVIDENCE_PRODUCER}.` };
+}
+
+function processEvidence(id, result) {
+  const stdout = String(result.stdout ?? '');
+  const stderr = String(result.stderr ?? '');
+  return {
+    id,
+    status: result.status === 0 ? 'PASS' : 'FAIL',
+    exit_code: result.status,
+    stdout_sha256: sha256(stdout),
+    stderr_sha256: sha256(stderr),
+  };
+}
+
+function runEvidenceCommand(id, command, args, { root = process.cwd(), env = process.env } = {}) {
+  const result = spawnSync(command, args, {
+    cwd: root,
+    encoding: 'utf8',
+    windowsHide: true,
+    env,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  if (result.error) {
+    return processEvidence(id, { status: 1, stdout: '', stderr: result.error.message });
+  }
+  return processEvidence(id, {
+    status: Number.isInteger(result.status) ? result.status : 1,
+    stdout: result.stdout,
+    stderr: result.stderr,
+  });
+}
+
+function runNpmEvidence(id, args, options = {}) {
+  const invocation = resolveNpmInvocation();
+  return runEvidenceCommand(id, invocation.command, [...invocation.prefixArgs, ...args], options);
+}
+
+function staticEvidence(id, pass, detail) {
+  const text = String(detail ?? '');
+  return {
+    id,
+    status: pass ? 'PASS' : 'FAIL',
+    exit_code: pass ? 0 : 1,
+    stdout_sha256: sha256(text),
+    stderr_sha256: sha256(pass ? '' : text),
+  };
+}
+
+function supabaseLockProvenance(root) {
+  const lock = readJson(root, 'package-lock.json');
+  const entry = lock?.packages?.['node_modules/supabase'];
+  const version = String(entry?.version ?? '').trim();
+  const integrity = String(entry?.integrity ?? '').trim();
+  const pass = /^\d+\.\d+\.\d+$/u.test(version) && /^sha512-/u.test(integrity);
+  return { pass, version, integrity };
+}
+
+function resolvedEnvironmentBindings(foundation) {
+  const bindings = foundation?.remote_environment_identity?.bindings ?? {};
+  const staging = bindings.STAGING ?? {};
+  const production = bindings.PRODUCTION ?? {};
+  const pass = staging.classification === 'STAGING'
+    && production.classification === 'PRODUCTION'
+    && String(staging.project_ref ?? '').trim()
+    && String(production.project_ref ?? '').trim()
+    && String(staging.owner ?? '').trim()
+    && String(production.owner ?? '').trim()
+    && staging.project_ref !== production.project_ref;
+  return { pass: Boolean(pass), staging, production };
+}
+
+function runRemoteDrift(id, binding, role, root) {
+  return runNpmEvidence(id, [
+    'run', '--silent', 'supabase:drift:remote', '--',
+    '--environment-role', role.toLowerCase(),
+    '--project-ref', String(binding.project_ref),
+    '--owner', String(binding.owner),
+    '--strict',
+  ], { root });
+}
+
+function foundationChecks(root, foundation, gate, options) {
+  const checks = [];
+  const id = gate.foundation_id;
+  if (id === 'MRP015-000') {
+    const provenance = supabaseLockProvenance(root);
+    checks.push(staticEvidence('SUPABASE_LOCK_PROVENANCE', provenance.pass, `version=${provenance.version};integrity=${provenance.integrity}`));
+    const versionCheck = runNpmEvidence('SUPABASE_CLI_VERSION', ['exec', '--', 'supabase', '--version'], { root });
+    checks.push(versionCheck);
+    const cliHelp = runNpmEvidence('SUPABASE_CLI_HELP', ['exec', '--', 'supabase', '--help'], { root });
+    checks.push(cliHelp);
+    checks.push(runNpmEvidence('SUPABASE_FUNCTIONS_HELP', ['exec', '--', 'supabase', 'functions', '--help'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_DB_HELP', ['exec', '--', 'supabase', 'db', '--help'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_DB_LINT_HELP', ['exec', '--', 'supabase', 'db', 'lint', '--help'], { root }));
+    checks.push(runEvidenceCommand('DOCKER_SERVER', 'docker', ['version', '--format', '{{.Server.Version}}'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_DB_HARNESS_TEST', ['run', '--silent', 'supabase:db:harness:test'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_DRIFT_TEST', ['run', '--silent', 'supabase:drift:test'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_CLEAN_REPLAY', ['run', '--silent', 'supabase:db:test:clean'], { root }));
+    checks.push(staticEvidence('CHANGELOG_REVIEW_ATTESTATION', Boolean(options.changelogRef), options.changelogRef || 'MISSING_CHANGELOG_REF'));
+    checks.push(staticEvidence('TOOLCHAIN_FREEZE_ATTESTATION', Boolean(options.toolchainFreezeRef), options.toolchainFreezeRef || 'MISSING_TOOLCHAIN_FREEZE_REF'));
+    return checks;
+  }
+
+  const bindings = resolvedEnvironmentBindings(foundation);
+  if (id === 'MRP015-010') {
+    checks.push(staticEvidence('ENVIRONMENT_BINDINGS', bindings.pass, bindings.pass ? 'STAGING_AND_PRODUCTION_BOUND' : 'UNRESOLVED_BINDINGS'));
+    if (bindings.pass) {
+      checks.push(runRemoteDrift('STAGING_REMOTE_DRIFT', bindings.staging, 'STAGING', root));
+      checks.push(runRemoteDrift('PRODUCTION_REMOTE_DRIFT', bindings.production, 'PRODUCTION', root));
+    }
+    return checks;
+  }
+  if (id === 'MRP015-020') {
+    checks.push(runNpmEvidence('MIGRATION_MANIFEST', ['run', '--silent', 'supabase:migrations:manifest:check'], { root }));
+    if (bindings.pass) {
+      checks.push(runRemoteDrift('STAGING_HISTORY_DRIFT', bindings.staging, 'STAGING', root));
+      checks.push(runRemoteDrift('PRODUCTION_HISTORY_DRIFT', bindings.production, 'PRODUCTION', root));
+    }
+    return checks;
+  }
+  if (id === 'MRP015-030') {
+    checks.push(runNpmEvidence('CLEAN_REPLAY', ['run', '--silent', 'supabase:db:test:clean'], { root }));
+    return checks;
+  }
+  if (id === 'MRP015-040') {
+    checks.push(runNpmEvidence('MIGRATION_MANIFEST', ['run', '--silent', 'supabase:migrations:manifest:check'], { root }));
+    checks.push(runNpmEvidence('EXPECTED_RESOURCE_MANIFEST', ['run', '--silent', 'supabase:drift:expected', '--', '--strict'], { root }));
+    return checks;
+  }
+  fail(`Foundation desconocida: ${id}.`);
+}
+
+export function recordSupabaseFoundationEvidence({
+  root = process.cwd(),
+  foundationId,
+  changelogRef = null,
+  toolchainFreezeRef = null,
+} = {}) {
+  const contract = readJson(root, READINESS_PATHS.contract);
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation;
+  const gates = foundation?.ordered_foundation_gates ?? [];
+  const index = gates.findIndex((gate) => gate.foundation_id === foundationId);
+  if (index < 0) fail(`Foundation no encontrada: ${foundationId ?? 'EMPTY'}.`);
+
+  for (const previous of gates.slice(0, index)) {
+    const validated = validateFoundationEvidenceRef(previous, previous.evidence_ref);
+    if (validated.status !== 'PASS') {
+      fail(`${foundationId} no puede ejecutarse antes de ${previous.foundation_id}; estado ${validated.status}.`);
+    }
+  }
+
+  const gate = gates[index];
+  const checks = foundationChecks(root, foundation, gate, { changelogRef, toolchainFreezeRef });
+  const required = requiredFoundationCheckIds(foundationId);
+  const byId = new Map(checks.map((check) => [check.id, check]));
+  const failed = required.filter((id) => byId.get(id)?.status !== 'PASS');
+  if (failed.length > 0) {
+    return { status: 'FAIL', foundationId, failed, checks, evidence: null };
+  }
+
+  const evidence = buildFoundationEvidenceRef({ gate, checks });
+  gate.evidence_ref = evidence;
+  fs.writeFileSync(rel(root, READINESS_PATHS.contract), stableJson(contract), 'utf8');
+  return { status: 'PASS', foundationId, failed: [], checks, evidence };
 }
 
 function stableJson(value) {
@@ -399,12 +676,24 @@ function validateSupabasePreE5Foundation(contract, errors) {
     errors.push('supabase_pre_e5_foundation.ordered_foundation_gates debe conservar MRP015-000/010/020/030/040 en orden.');
   }
 
+  const evidenceContract = foundation.evidence_contract;
+  if (
+    evidenceContract?.schema_version !== 1
+    || evidenceContract?.producer !== FOUNDATION_EVIDENCE_PRODUCER
+    || evidenceContract?.status_required !== 'PASS'
+    || evidenceContract?.integrity !== 'SHA256_CANONICAL_JSON_V1'
+    || evidenceContract?.fail_closed !== true
+    || evidenceContract?.secret_values_forbidden !== true
+  ) {
+    errors.push('supabase_pre_e5_foundation.evidence_contract no coincide con el contrato estructurado fail-closed.');
+  }
+
   for (const gate of foundation.ordered_foundation_gates ?? []) {
     if (gate.owner_task !== 'SUPA-TRANS-015') {
       errors.push(`${gate.foundation_id}: owner_task debe ser SUPA-TRANS-015.`);
     }
-    if (gate.evidence_ref !== null && !String(gate.evidence_ref ?? '').trim()) {
-      errors.push(`${gate.foundation_id}: evidence_ref debe ser null o una referencia no vacía.`);
+    if (gate.evidence_ref !== null && (!gate.evidence_ref || typeof gate.evidence_ref !== 'object' || Array.isArray(gate.evidence_ref))) {
+      errors.push(`${gate.foundation_id}: evidence_ref debe ser null o evidencia estructurada; referencias libres están prohibidas.`);
     }
   }
 
@@ -1438,20 +1727,14 @@ function remoteEnvironmentProblems(identity) {
 }
 
 function evaluateFoundationGate(gate, executionRequirements) {
-  const evidenceRef = String(gate?.evidence_ref ?? '').trim();
-  let status = evidenceRef ? 'PASS' : 'UNKNOWN';
-  let detail = evidenceRef
-    ? `Gate ${gate.gate_id} conserva evidencia explícita: ${evidenceRef}.`
-    : `Gate ${gate.gate_id} no conserva evidence_ref materializada.`;
+  const validated = validateFoundationEvidenceRef(gate, gate?.evidence_ref);
+  let { status, detail } = validated;
 
   if (gate?.foundation_id === 'MRP015-010') {
     const problems = remoteEnvironmentProblems(executionRequirements?.remote_environment_identity);
-
-    if (evidenceRef && problems.length > 0) {
-      status = 'FAIL';
-      detail = `ENVIRONMENT_READY contradice el binding explícito: ${problems.join(', ')}.`;
-    } else if (!evidenceRef && problems.length > 0) {
-      detail = `ENVIRONMENT_READY pendiente; ${problems.join(', ')}.`;
+    if (problems.length > 0) {
+      status = gate?.evidence_ref ? 'FAIL' : 'UNKNOWN';
+      detail = `ENVIRONMENT_READY pendiente o contradictorio; ${problems.join(', ')}.`;
     }
   }
 
@@ -2566,13 +2849,36 @@ export function scanPackageReadiness({
 }
 
 function parseArgs(argv) {
-  const args = { write: false, check: false, trigger: 'manual', json: false, packageId: null };
+  const args = {
+    write: false,
+    check: false,
+    trigger: 'manual',
+    json: false,
+    packageId: null,
+    recordFoundationId: null,
+    foundationStatus: false,
+    changelogRef: null,
+    toolchainFreezeRef: null,
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--write') args.write = true;
     else if (token === '--check') args.check = true;
     else if (token === '--json') args.json = true;
-    else if (token === '--package') {
+    else if (token === '--foundation-status') args.foundationStatus = true;
+    else if (token === '--record-foundation') {
+      args.recordFoundationId = argv[index + 1];
+      if (!args.recordFoundationId) fail('Falta foundation_id después de --record-foundation.');
+      index += 1;
+    } else if (token === '--changelog-ref') {
+      args.changelogRef = argv[index + 1];
+      if (!args.changelogRef) fail('Falta valor de --changelog-ref.');
+      index += 1;
+    } else if (token === '--toolchain-freeze-ref') {
+      args.toolchainFreezeRef = argv[index + 1];
+      if (!args.toolchainFreezeRef) fail('Falta valor de --toolchain-freeze-ref.');
+      index += 1;
+    } else if (token === '--package') {
       args.packageId = argv[index + 1];
       if (!args.packageId) fail('Falta valor de --package.');
       index += 1;
@@ -2583,6 +2889,9 @@ function parseArgs(argv) {
     } else fail(`Argumento desconocido: ${token}.`);
   }
   if (args.write && args.check) fail('--write y --check son mutuamente excluyentes.');
+  if (args.recordFoundationId && (args.write || args.check || args.foundationStatus || args.packageId || args.json)) {
+    fail('--record-foundation no puede combinarse con modos de scan/status.');
+  }
   return args;
 }
 
@@ -2642,8 +2951,43 @@ function printCliResult(result, { json = false, packageId = null } = {}) {
   }
 }
 
+function printFoundationStatus(root) {
+  const contract = readJson(root, READINESS_PATHS.contract);
+  const foundation = contract.physical_dependencies.supabase_pre_e5_foundation;
+  console.log('=== RESULTADO PARA CHATGPT ===');
+  console.log('ESTADO: PASS');
+  console.log('OPERACION: FOUNDATION_STATUS');
+  for (const gate of foundation.ordered_foundation_gates) {
+    const result = validateFoundationEvidenceRef(gate, gate.evidence_ref);
+    console.log(`${gate.foundation_id}: ${result.status} | ${gate.gate_id}`);
+  }
+  console.log('=== FIN RESULTADO PARA CHATGPT ===');
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.recordFoundationId) {
+    const result = recordSupabaseFoundationEvidence({
+      root: process.cwd(),
+      foundationId: args.recordFoundationId,
+      changelogRef: args.changelogRef,
+      toolchainFreezeRef: args.toolchainFreezeRef,
+    });
+    console.log('=== RESULTADO PARA CHATGPT ===');
+    console.log(`ESTADO: ${result.status}`);
+    console.log('OPERACION: FOUNDATION_RECORD');
+    console.log(`FOUNDATION_ID: ${result.foundationId}`);
+    console.log(`FAILED_CHECKS: ${result.failed.join(',') || 'NONE'}`);
+    console.log(`EVIDENCE_WRITTEN: ${result.status === 'PASS' ? 'SI' : 'NO'}`);
+    console.log('SECRET_VALUES_IN_EVIDENCE: NO');
+    console.log('=== FIN RESULTADO PARA CHATGPT ===');
+    if (result.status !== 'PASS') process.exitCode = 1;
+    return;
+  }
+  if (args.foundationStatus) {
+    printFoundationStatus(process.cwd());
+    return;
+  }
   const result = scanPackageReadiness(args);
   printCliResult(result, args);
 }

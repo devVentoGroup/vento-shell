@@ -3,9 +3,12 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 import {
+  buildFoundationEvidenceRef,
   derivePackageExecutionRequirements,
   evaluateCapability,
   evaluatePhysicalDependencies,
+  requiredFoundationCheckIds,
+  validateFoundationEvidenceRef,
   parseCanonicalPackageCatalogFromSource,
   parsePackageExecutionProjection,
   parsePackageTaskRouting,
@@ -619,7 +622,18 @@ test('Supabase remoto exige R0 y fundaciones MRP015 antes del package', () => {
 
   const resolved = structuredClone(contract);
   for (const foundation of resolved.physical_dependencies.supabase_pre_e5_foundation.ordered_foundation_gates) {
-    foundation.evidence_ref = `fixture:${foundation.foundation_id}`;
+    const checks = requiredFoundationCheckIds(foundation.foundation_id).map((id) => ({
+      id,
+      status: 'PASS',
+      exit_code: 0,
+      stdout_sha256: 'a'.repeat(64),
+      stderr_sha256: 'b'.repeat(64),
+    }));
+    foundation.evidence_ref = buildFoundationEvidenceRef({
+      gate: foundation,
+      checks,
+      recordedAt: '2026-09-03T21:29:46-05:00',
+    });
   }
   resolved.physical_dependencies.supabase_pre_e5_foundation.remote_environment_identity.bindings.STAGING = { classification: 'STAGING', project_ref: 'staging-fixture-ref', owner: 'fixture-owner' };
   resolved.physical_dependencies.supabase_pre_e5_foundation.remote_environment_identity.bindings.PRODUCTION = { classification: 'PRODUCTION', project_ref: 'production-fixture-ref', owner: 'fixture-owner' };
@@ -628,4 +642,19 @@ test('Supabase remoto exige R0 y fundaciones MRP015 antes del package', () => {
   const resolvedDependencies = evaluatePhysicalDependencies({ contract: resolved, instances, executionRequirements: resolvedRequirements });
   assert.equal(resolvedDependencies.status, 'PASS');
   assert.equal(resolvedDependencies.available, true);
+});
+
+test('evidence_ref libre o corrupta nunca cierra una foundation PRE_E5', () => {
+  const gate = structuredClone(contract.physical_dependencies.supabase_pre_e5_foundation.ordered_foundation_gates[0]);
+  assert.equal(validateFoundationEvidenceRef(gate, 'fixture:MRP015-000').status, 'FAIL');
+
+  const checks = requiredFoundationCheckIds(gate.foundation_id).map((id) => ({
+    id, status: 'PASS', exit_code: 0, stdout_sha256: 'a'.repeat(64), stderr_sha256: 'b'.repeat(64),
+  }));
+  const valid = buildFoundationEvidenceRef({ gate, checks, recordedAt: '2026-09-03T21:29:46-05:00' });
+  assert.equal(validateFoundationEvidenceRef(gate, valid).status, 'PASS');
+
+  const corrupt = structuredClone(valid);
+  corrupt.payload_sha256 = '0'.repeat(64);
+  assert.equal(validateFoundationEvidenceRef(gate, corrupt).status, 'FAIL');
 });
