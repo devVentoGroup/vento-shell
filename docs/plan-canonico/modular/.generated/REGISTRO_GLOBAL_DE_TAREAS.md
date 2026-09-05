@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1118** |
+| Aprobadas | **1119** |
 | En propuesta | **0** |
-| No iniciadas | **478** |
+| No iniciadas | **477** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **70.05% (1118/1596)** |
+| Porcentaje de completamiento | **70.11% (1119/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-APP-001` — Inventariar la experiencia actual del hub | ✅ APROBADA |
-| Tarea actual | `SHELL-APP-002` — Definir aplicaciones visibles por actor | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-APP-003` — Definir aplicaciones visibles por contexto | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-APP-002` — Definir aplicaciones visibles por actor | ✅ APROBADA |
+| Tarea actual | `SHELL-APP-003` — Definir aplicaciones visibles por contexto | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-APP-004` — Mostrar turno activo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -788,7 +788,7 @@
 | ✅ APROBADA | `SHELL-CTX-005` | Implementar razones seguras de bloqueo contextual | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CTX-006` | Implementar caché compartida, single-flight y validación de frescura | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-APP-001` | Inventariar la experiencia actual del hub | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
-| ⬜ NO INICIADA | `SHELL-APP-002` | Definir aplicaciones visibles por actor | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
+| ✅ APROBADA | `SHELL-APP-002` | Definir aplicaciones visibles por actor | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `SHELL-APP-003` | Definir aplicaciones visibles por contexto | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `SHELL-APP-004` | Mostrar turno activo | `bloques/H2_SHELL_APP/02_CONTEXTO_Y_TRABAJO_PENDIENTE.md` |
 | ⬜ NO INICIADA | `SHELL-APP-005` | Mostrar sede activa | `bloques/H2_SHELL_APP/02_CONTEXTO_Y_TRABAJO_PENDIENTE.md` |
