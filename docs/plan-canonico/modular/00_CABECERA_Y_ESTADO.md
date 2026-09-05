@@ -34,10 +34,10 @@
 | Siguiente tarea | **SHELL-APP-001 — Inventariar la experiencia actual del hub** |
 | Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
 | Progreso del bloque | **BLOQUES G Y G2: 25 de 26 aprobadas; VISO-CORE-006 pendiente** |
-| Estado de implementación | **IMPLEMENTATION_BLOCKED** |
-| Acción principal obligatoria | **WAIT_FOR_FOUNDATION_PREREQUISITE — MRP015-040** |
+| Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
+| Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-020::GAP-PKG-001** |
 | Carril documental | **ACTIVO — VISO-CORE-006** |
-| Carril físico | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-020::GAP-PKG-001** |
 | Alcance físico autorizado | **NINGUNO** |
 
 ### Continuidad inmediata
@@ -60,7 +60,7 @@
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
 | CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 25 DE 26 APROBADAS — ACTUAL VISO-CORE-006** |
-| Implementación física | **SIN INSTANCIA FÍSICA ACTIVA** |
+| Implementación física | **SHELL-CI-020::GAP-PKG-001 — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
 
