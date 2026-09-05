@@ -28,6 +28,40 @@ export function assertImplementationTargetsNotBlocked(corrections, instance) {
     return true;
 }
 
+function normalizedDeploymentTargets(values) {
+  return (Array.isArray(values) ? values : [])
+    .map((target) => ({
+      environment_role: String(target?.environment_role ?? '').trim().toUpperCase(),
+      target_type: String(target?.target_type ?? '').trim().toUpperCase(),
+      target_id: String(target?.target_id ?? '').trim(),
+      owner: String(target?.owner ?? '').trim(),
+    }))
+    .sort((left, right) => JSON.stringify(left).localeCompare(JSON.stringify(right), 'en'));
+}
+
+export function assertImplementationDeploymentEnvironment({ instance, pkg } = {}) {
+  const deployment = pkg?.deployment_environment ?? null;
+  if (deployment?.status !== 'PASS') {
+    fail(`IMPLEMENTATION_ENVIRONMENT_NOT_READY: ${instance?.instance_id ?? 'UNKNOWN'}; ${deployment?.detail ?? 'PACKAGE_ENVIRONMENT_UNRESOLVED'}.`);
+  }
+  const packageEnvironment = pkg?.package_gate?.deployment_environment ?? null;
+  const expected = normalizedDeploymentTargets(packageEnvironment?.targets);
+  const actual = normalizedDeploymentTargets(instance?.target_environments);
+  if (expected.length === 0) {
+    fail(`IMPLEMENTATION_ENVIRONMENT_NOT_READY: ${instance.instance_id}; package-gate sin targets de despliegue.`);
+  }
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    fail(`IMPLEMENTATION_ENVIRONMENT_MISMATCH: ${instance.instance_id}; target_environments no coincide con GAP-PKG.`);
+  }
+  if (
+    packageEnvironment?.production_authorized === false
+    && actual.some((target) => target.environment_role === 'PRODUCTION')
+  ) {
+    fail(`IMPLEMENTATION_ENVIRONMENT_MISMATCH: ${instance.instance_id}; PRODUCTION no está autorizada.`);
+  }
+  return true;
+}
+
 export function assertImplementationPackageReadiness({ instance, readiness } = {}) {
   if (!instance || typeof instance !== 'object') fail('instancia de implementación inválida.');
 
@@ -59,6 +93,10 @@ export function assertImplementationPackageReadiness({ instance, readiness } = {
       + `ACTION=${action?.type ?? 'NONE'}.`,
     );
   }
+
+  const pkg = readiness?.registry?.packages?.find(({ package_id: id }) => id === packageId) ?? null;
+  if (!pkg) fail(`IMPLEMENTATION_ENVIRONMENT_NOT_READY: ${instance.instance_id}; package ${packageId} no encontrado.`);
+  assertImplementationDeploymentEnvironment({ instance, pkg });
 
   return true;
 }
