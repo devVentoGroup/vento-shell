@@ -1362,6 +1362,8 @@ La reconciliación usa `scripts/supabase/staging-acl-reconciliation.mjs` en modo
 
 Después de reconciliar y verificar el estado `83 / 10`, continuar con `supabase db push --dry-run`; el dry-run debe mostrar únicamente las migraciones todavía pendientes. Solo después de esa comprobación se reanuda el `db push` de STAGING y se exige `STAGING_HISTORY_DRIFT` en `scope=history`.
 
+En `MRP015-020 / HISTORY_PASS`, `STAGING_HISTORY_DRIFT` exige paridad exacta entre el historial aplicado y el universo versionado del manifiesto. `PRODUCTION_HISTORY_DRIFT`, únicamente cuando se ejecuta en `scope=history`, exige que el historial aplicado de PRODUCTION sea un prefijo canónico no vacío del mismo universo: cada versión remota debe coincidir con las primeras N versiones canónicas. Este check es estrictamente read-only y no autoriza `db push`, `migration repair`, `reset` ni ninguna promoción a PRODUCTION. Todo `scope=full` conserva la exigencia de paridad completa.
+
 No usar `reset`, `migration repair`, edición de migraciones históricas ni mutación de PRODUCTION como mecanismo de recuperación de este caso.
 
 El helper `supabase:hosted-replay:precondition` queda reservado para escenarios de pre-replay limpio sobre STAGING. No ejecuta reset, no modifica el historial y no sustituye `MRP015-020 / HISTORY_PASS`.
