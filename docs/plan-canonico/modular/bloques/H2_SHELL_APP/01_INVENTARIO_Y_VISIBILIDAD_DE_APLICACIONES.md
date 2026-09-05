@@ -2704,4 +2704,1707 @@ Esta tarea no:
 `SHELL-APP-003 — Definir aplicaciones visibles por contexto`
 
 
-### [ ] SHELL-APP-003 — Definir aplicaciones visibles por contexto
+### ✅ SHELL-APP-003 — Definir aplicaciones visibles por contexto
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-APP-002 — Definir aplicaciones visibles por actor
+**Tarea siguiente:** SHELL-APP-004 — Mostrar turno activo
+**Tipo de tarea:** definición técnico-documental de la política contextual de visibilidad del Hub; el marcador canónico define una sola vez el contrato y su futura materialización conserva topología `PER_IMPLEMENTATION_UNIT`, sin crear ni autorizar una instancia física en esta tarea
+**Bloque:** BLOQUE H2 — SHELL como aplicación
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md`
+**Estado físico resultante:** política documental de visibilidad contextual definida sobre `AccessContext`, decisiones de autorización y matrices vigentes, sin modificar el runtime del Hub
+**Cambios físicos autorizados:** ninguno; no se modifican código, navegación runtime, permisos, matrices, Supabase, datos, dominios, despliegues ni configuración
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo el Hub Vento OS decide la visibilidad de aplicaciones cuando un actor laboral puede adquirir capacidades por contexto operativo.
+
+La tarea consume la política por actor aprobada en `SHELL-APP-002` y resuelve exactamente el efecto de:
+
+- turno;
+- sede operativa;
+- área operativa;
+- rol operativo;
+- check-in cuando aplique;
+- contexto ausente;
+- contexto inválido;
+- contexto ambiguo;
+- contexto expirado;
+- concesiones o denegaciones operativas aplicables.
+
+La decisión deberá preservar la independencia entre carril base y carril operativo.
+
+La regla general queda:
+
+```text
+VISIBILIDAD POR ACTOR
++
+ACCESS CONTEXT CANÓNICO
++
+DECISIÓN EFECTIVA DE app.access
++
+CICLO DE VIDA DE LA APLICACIÓN
+→
+VISIBILIDAD CONTEXTUAL FINAL
+```
+
+Esta tarea decide qué aplicaciones puede presentar SHELL por contexto.
+
+No diseña todavía la representación visual del turno, sede, área o rol operativo.
+
+---
+
+#### 2. Entradas heredadas de `SHELL-APP-002`
+
+Se consumen sin reabrir las siguientes decisiones:
+
+```text
+ACTOR_TYPES = 4
+BASE_ROLES = 8
+CANONICAL_APPS = 10
+PRIMARY_BASE_VISIBILITY_EDGES = 39
+OPERATIONAL_ROLES = 12
+
+OP_CANDIDATE_NEXO = 12
+OP_CANDIDATE_PULSO = 7
+OP_CANDIDATE_FOGO = 4
+OP_CANDIDATE_ORIGO = 2
+```
+
+También se conserva:
+
+- `shell` como `HUB_SELF`;
+- AURA como `DEFERRED_RESERVED`;
+- PASS como `ADJACENT_RESERVED`;
+- ANIMA, VISO y NUMERA como aplicaciones de entrada exclusivamente base;
+- NEXO, FOGO y ORIGO como aplicaciones con carril base u operativo;
+- PULSO como aplicación de entrada exclusivamente operativa;
+- la prohibición de tratar la matriz documental como fuente de autorización;
+- la prohibición de mezclar fragmentos incompletos de los carriles.
+
+---
+
+#### 3. Decisión principal
+
+SHELL no calculará visibilidad contextual mediante una lista local de:
+
+```text
+rol → aplicaciones
+```
+
+La autoridad será la decisión canónica del permiso de entrada de cada aplicación.
+
+Flujo:
+
+```text
+ACTOR EMPLOYEE VÁLIDO
+        ↓
+ACCESS CONTEXT RESUELTO EN SERVIDOR
+        ↓
+PERMISO EXACTO DE ENTRADA
+        ↓
+MODALIDAD DEL PERMISO
+        ↓
+CARRIL BASE Y/O OPERATIVO
+        ↓
+GRANTS + DENIES + CONTEXTO
+        ↓
+AUTHORIZATION DECISION
+        ↓
+POLÍTICA DE PRESENTACIÓN DE SHELL
+```
+
+La tabla rol operativo → aplicación se conserva únicamente como baseline y control de reconciliación.
+
+No sustituye la evaluación efectiva del actor.
+
+---
+
+#### 4. Fuente canónica del contexto
+
+La fuente conceptual de contexto es `AccessContext`.
+
+SHELL deberá tratarlo como:
+
+```text
+SNAPSHOT INMUTABLE
++
+RESUELTO EN SERVIDOR
++
+VERSIONADO
++
+ATRIBUIBLE
+```
+
+El contexto contiene hechos de:
+
+- actor efectivo;
+- empleado;
+- rol base;
+- asignaciones;
+- cobertura administrativa;
+- turno;
+- check-in;
+- rol operativo;
+- sede operativa;
+- área operativa;
+- dispositivo;
+- readiness por carril;
+- problemas estructurales.
+
+El contexto no contiene la decisión final de autorización.
+
+Por tanto:
+
+```text
+AccessContext
+≠
+AuthorizationDecision
+```
+
+---
+
+#### 5. Precondición de actor
+
+La expansión contextual del Hub solo aplica cuando:
+
+```text
+actor_effective.actor_type = EMPLOYEE
+```
+
+y el empleado es válido y activo.
+
+Los demás tipos conservan la decisión anterior:
+
+```text
+CUSTOMER
+→ sin grid laboral
+
+SYSTEM
+→ sin Hub interactivo humano
+
+UNRESOLVED
+→ fail closed
+→ sin grid laboral
+```
+
+El contexto operativo no convierte una identidad no laboral en empleado.
+
+---
+
+#### 6. Entrada al propio Hub
+
+Antes de evaluar tarjetas:
+
+```text
+shell.access
+```
+
+debe producir una autorización laboral válida por su carril `BASE_ONLY`.
+
+Un rol operativo no puede conceder `shell.access`.
+
+Por tanto:
+
+```text
+SIN shell.access EFECTIVO
+→ NO HUB LABORAL
+→ NO EVALUACIÓN DE TARJETAS COMO FUENTE DE ACCESO
+```
+
+SHELL continúa siendo `HUB_SELF` y no se representa como tarjeta de sí mismo.
+
+---
+
+#### 7. Independencia del carril base
+
+La existencia, ausencia o fallo ordinario del contexto operativo no elimina por sí solo una autorización base válida.
+
+Para aplicaciones `BASE_OR_OPERATIONAL`:
+
+```text
+BASE_ALLOW COMPLETO
+OR
+OPERATIONAL_ALLOW COMPLETO
+→
+PUEDE PRODUCIR ENTRADA
+```
+
+Los carriles son independientes.
+
+Ejemplo:
+
+```text
+NEXO base = ALLOW
+operativo = UNAVAILABLE
+→ NEXO continúa visible por base
+```
+
+No se permite:
+
+```text
+permiso desde base
++
+sede desde operativo
+→ ALLOW
+```
+
+ni:
+
+```text
+permiso desde operativo
++
+alcance administrativo desde base
+→ ALLOW
+```
+
+Cada carril debe ser completo por sí mismo.
+
+---
+
+#### 8. Bloqueos estructurales transversales
+
+Un problema `BLOCKING_ALL` invalida toda visibilidad laboral.
+
+Ejemplos conceptuales:
+
+- empleado inactivo;
+- actor laboral no resoluble;
+- sesión técnica inválida cuando sea obligatoria;
+- identidad laboral incompatible;
+- contrato de contexto inválido.
+
+Resultado:
+
+```text
+BLOCKING_ALL
+→ NO BASE
+→ NO OPERATIVO
+→ NO GRID LABORAL AUTORIZADO
+```
+
+Una tarjeta previamente visible no conserva autoridad mediante caché o estado cliente.
+
+---
+
+#### 9. Aplicaciones que pueden adquirir visibilidad por contexto
+
+Solo cuatro aplicaciones del catálogo vigente admiten entrada por carril operativo:
+
+| Aplicación | Permiso de entrada | Modalidad | Prerrequisito operativo |
+| --- | --- | --- | --- |
+| NEXO | `nexo.access` | `BASE_OR_OPERATIONAL` | `T` |
+| FOGO | `fogo.access` | `BASE_OR_OPERATIONAL` | `T` |
+| ORIGO | `origo.access` | `BASE_OR_OPERATIONAL` | `T` |
+| PULSO | `pulso.access` | `OPERATIONAL_ONLY` | `T` |
+
+Ninguna otra aplicación puede volverse visible únicamente por turno, sede, área, rol operativo o check-in.
+
+---
+
+#### 10. Aplicaciones no expandibles por contexto operativo
+
+No reciben entrada operativa:
+
+```text
+ANIMA
+VISO
+NUMERA
+AURA
+PASS
+SHELL
+```
+
+Reglas:
+
+- ANIMA conserva `BASE_ONLY`;
+- VISO conserva `BASE_ONLY`;
+- NUMERA conserva `BASE_ONLY`;
+- AURA conserva `BASE_ONLY` y además permanece diferida;
+- PASS conserva `BASE_ONLY` dentro de su frontera laboral-administrativa adyacente;
+- SHELL conserva `BASE_ONLY` y función `HUB_SELF`.
+
+Un turno no completa un permiso faltante de estas aplicaciones.
+
+---
+
+#### 11. Significado de prerrequisito `T`
+
+Para los cuatro permisos de entrada operativos:
+
+```text
+T
+=
+TURNO PUBLICADO Y VIGENTE REQUERIDO
++
+CHECK-IN ACTIVO NO REQUERIDO
+```
+
+Por tanto:
+
+```text
+TURNO VIGENTE
++
+ROL OPERATIVO VÁLIDO
++
+CONTEXTO TERRITORIAL VÁLIDO
++
+app.access OPERATIVO = ALLOW
++
+SIN CHECK-IN
+→
+LA APLICACIÓN PUEDE SER NAVEGABLE
+```
+
+El Hub no exigirá check-in para mostrar o abrir una aplicación cuyo permiso de entrada sea `T`.
+
+---
+
+#### 12. Turno publicado no equivale a turno vigente
+
+Un turno publicado futuro no habilita visibilidad contextual antes de su ventana.
+
+Se conserva:
+
+```text
+PUBLICADO
+≠
+VIGENTE
+```
+
+La entrada operativa exige que el turno:
+
+- pertenezca al actor efectivo;
+- corresponda a una revisión publicada;
+- sea laboral;
+- no esté cancelado;
+- no esté retirado;
+- esté dentro de la ventana temporal autorizada;
+- posea sede válida;
+- posea rol operativo válido;
+- no sea ambiguo frente a otro turno elegible.
+
+La confirmación del trabajador no participa en esta decisión.
+
+---
+
+#### 13. Turno vigente no equivale a turno activo
+
+Se conserva la semántica canónica:
+
+```text
+TURNO ACTIVO
+=
+TURNO VIGENTE
++
+CHECK-IN ACTIVO
+```
+
+Sin embargo, la visibilidad contextual de las cuatro aplicaciones utiliza permisos `T`.
+
+Por tanto:
+
+```text
+TURNO VIGENTE SIN CHECK-IN
+→ puede habilitar app.access
+
+TURNO ACTIVO
+→ puede habilitar además capacidades internas T+C
+```
+
+Esta tarea no redefine el término “turno activo”.
+
+---
+
+#### 14. Efecto del check-in ausente
+
+Cuando existe turno vigente compatible y no existe check-in activo:
+
+```text
+nexo.access
+fogo.access
+origo.access
+pulso.access
+```
+
+pueden autorizarse por el carril operativo si las demás condiciones se cumplen.
+
+El check-in ausente no debe:
+
+- ocultar automáticamente la aplicación;
+- convertirla en no navegable;
+- crear un deny artificial para `app.access`;
+- sustituir la evaluación de permisos internos.
+
+La aplicación destino deberá bloquear las capacidades `T+C` hasta que exista check-in activo.
+
+---
+
+#### 15. Efecto de un check-in activo compatible
+
+Un check-in activo y compatible:
+
+- no concede una aplicación por sí mismo;
+- no crea permisos;
+- no cambia el rol operativo;
+- no cambia la sede del turno;
+- no amplía el área;
+- no transforma una ausencia de grant en ALLOW.
+
+Su función es permitir satisfacer prerrequisitos `T+C` dentro de la aplicación.
+
+Para visibilidad:
+
+```text
+APP_ACCESS T
++
+CHECK-IN COMPATIBLE
+→
+MISMA ELEGIBILIDAD DE ENTRADA
+```
+
+El cambio principal ocurre en las capacidades internas de la aplicación, no en el permiso de entrada.
+
+---
+
+#### 16. Efecto de un check-in incompatible
+
+Aunque `app.access` use `T`, un check-in activo incompatible constituye conflicto estructural del carril operativo.
+
+Ejemplos:
+
+- check-in de otro turno;
+- check-in de otra sede;
+- check-in de otro actor;
+- múltiples check-ins activos;
+- sesión activa inválida;
+- revisión retirada.
+
+Resultado:
+
+```text
+CHECK-IN INCOMPATIBLE
+→ BLOCKING_OPERATIONAL
+→ EL CARRIL OPERATIVO NO AUTORIZA app.access
+```
+
+Una autorización base independiente de NEXO, FOGO u ORIGO puede seguir siendo válida si el problema no es `BLOCKING_ALL`.
+
+PULSO no dispone de esa vía base.
+
+---
+
+#### 17. Check-in cerrado, expirado u offline pendiente
+
+Un check-in:
+
+```text
+cerrado
+expirado
+solo pendiente en cliente
+solo pendiente offline
+```
+
+no se considera activo.
+
+Si no constituye una inconsistencia estructural y el turno continúa vigente:
+
+```text
+app.access T
+→ puede continuar evaluándose
+```
+
+Las capacidades `T+C` permanecen bloqueadas.
+
+Una intención de check-in no puede convertirse en autoridad.
+
+---
+
+#### 18. Fuente de la sede operativa
+
+La sede operativa procede exclusivamente del turno válido.
+
+```text
+operational_site
+=
+active_shift.site
+```
+
+No se utilizará como sustituto:
+
+- sede seleccionada;
+- sede primaria;
+- `employees.site_id` legacy;
+- última sede usada;
+- sede propuesta por cliente;
+- sede del dispositivo sin reconciliación;
+- geocerca;
+- IP;
+- GPS.
+
+La sede seleccionada continúa siendo navegación administrativa, no autoridad.
+
+---
+
+#### 19. Validación de sede para visibilidad contextual
+
+Para que el carril operativo pueda autorizar una aplicación:
+
+- la sede del turno debe existir;
+- debe estar activa;
+- debe ser operativamente admisible;
+- debe ser compatible con el rol operativo;
+- debe ser compatible con el grant exacto;
+- no debe existir conflicto territorial aplicable.
+
+Resultado:
+
+```text
+SEDE OPERATIVA INVÁLIDA
+→ CARRIL OPERATIVO INVALID
+→ app.access OPERATIVO NO AUTORIZA
+```
+
+No se aplica fallback a sede primaria.
+
+---
+
+#### 20. Fuente del área operativa
+
+Cuando corresponda:
+
+```text
+operational_area
+=
+active_shift.area
+```
+
+No se obtiene de:
+
+- `employee_areas` como autoridad operativa;
+- área seleccionada;
+- área primaria;
+- nombre del rol;
+- producto;
+- recurso;
+- dispositivo;
+- última área utilizada;
+- estado de interfaz.
+
+`employee_areas` conserva afiliación habitual.
+
+El turno conserva la asignación operativa.
+
+---
+
+#### 21. Entrada `SITE_SUFFICIENT` y restricciones del rol
+
+Los cuatro permisos de entrada:
+
+```text
+nexo.access
+fogo.access
+origo.access
+pulso.access
+```
+
+están clasificados como `SITE_SUFFICIENT` para el requisito general de área.
+
+Esto significa que el permiso de entrada no impone universalmente un área a todos los roles.
+
+No significa:
+
+```text
+AREA IGNORADA
+```
+
+La concesión concreta del rol puede exigir un área exacta o un tipo de área.
+
+Ejemplo:
+
+```text
+cajero_satelite
++
+nexo.access
+→ exige área operativa compatible con cashier
+```
+
+Por tanto, SHELL evalúa el permiso completo y su scope.
+
+No simplifica la regla a la clasificación `SITE_SUFFICIENT`.
+
+---
+
+#### 22. Roles que exigen área concreta
+
+Las matrices operativas vigentes exigen área concreta para funciones localizadas como:
+
+- caja satélite;
+- barra satélite;
+- cocina satélite;
+- servicio de salón;
+- mostrador;
+- producción de Cocina Caliente;
+- producción de Galletería y Panadería;
+- producción de Repostería;
+- bodega.
+
+La ausencia o incompatibilidad de área en esos contextos impide que la concesión operativa de entrada sea completa.
+
+Un rol legítimamente site-wide puede conservar área nula cuando su contrato lo permite.
+
+---
+
+#### 23. Rol operativo efectivo
+
+El rol operativo procede exclusivamente del turno válido.
+
+```text
+operational_role
+=
+active_shift.operational_role
+```
+
+No puede provenir de:
+
+- rol base;
+- `navigation_role`;
+- oficio legacy;
+- rol predeterminado;
+- dispositivo;
+- área;
+- selector cliente;
+- cookie;
+- último turno;
+- simulación.
+
+Un rol operativo no válido o no habilitado para la sede y área aplicables bloquea el carril operativo.
+
+---
+
+#### 24. Matriz baseline de candidatos operativos
+
+Se conserva exactamente el handoff de `SHELL-APP-002`:
+
+| Rol operativo | NEXO | FOGO | ORIGO | PULSO |
+| --- | --- | --- | --- | --- |
+| `cajero_satelite` | candidato | — | — | candidato |
+| `barista_satelite` | candidato | — | — | candidato |
+| `cocinero_satelite` | candidato | — | — | candidato |
+| `servicio_salon` | candidato | — | — | candidato |
+| `mostrador_satelite` | candidato | — | — | candidato |
+| `operador_integral_satelite` | candidato | — | — | candidato |
+| `produccion_cocina` | candidato | candidato | — | — |
+| `produccion_panaderia` | candidato | candidato | — | — |
+| `produccion_reposteria` | candidato | candidato | — | — |
+| `bodeguero` | candidato | — | candidato | — |
+| `conductor_logistica` | candidato | — | — | — |
+| `gerencia_operativa` | candidato | candidato | candidato | candidato |
+
+Esta tabla continúa siendo una baseline.
+
+No es una allowlist de frontend.
+
+---
+
+#### 25. Conteos baseline del contexto
+
+| Aplicación | Roles operativos con grant baseline de entrada |
+| --- | ---: |
+| NEXO | **12** |
+| PULSO | **7** |
+| FOGO | **4** |
+| ORIGO | **2** |
+
+Total:
+
+```text
+OPERATIONAL_BASELINE_VISIBILITY_EDGES = 25
+```
+
+La cifra valida la reconciliación documental.
+
+No representa el número de usuarios autorizados.
+
+---
+
+#### 26. Perfil contextual por rol operativo
+
+| Rol operativo | Aplicaciones baseline | Contexto mínimo adicional a validar |
+| --- | --- | --- |
+| `cajero_satelite` | NEXO, PULSO | turno vigente, sede satélite habilitada, área `cashier` compatible |
+| `barista_satelite` | NEXO, PULSO | turno vigente, sede satélite habilitada, área `bar` compatible |
+| `cocinero_satelite` | NEXO, PULSO | turno vigente, sede satélite habilitada, área `kitchen` compatible |
+| `servicio_salon` | NEXO, PULSO | turno vigente, sede satélite habilitada, área `service` compatible |
+| `mostrador_satelite` | NEXO, PULSO | turno vigente, sede satélite habilitada, área de Mostrador compatible |
+| `operador_integral_satelite` | NEXO, PULSO | turno vigente, sede habilitada para formato integrado y área exacta cuando la configuración la exija |
+| `produccion_cocina` | NEXO, FOGO | turno vigente, Centro de Producción y Cocina Caliente |
+| `produccion_panaderia` | NEXO, FOGO | turno vigente, Centro de Producción y Galletería y Panadería |
+| `produccion_reposteria` | NEXO, FOGO | turno vigente, Centro de Producción y Repostería |
+| `bodeguero` | NEXO, ORIGO | turno vigente, sede autorizada y área `warehouse` compatible |
+| `conductor_logistica` | NEXO | turno vigente, sede logística y contexto válido de asignación, ruta o vehículo según el grant |
+| `gerencia_operativa` | NEXO, FOGO, ORIGO, PULSO | turno vigente, sede activa y territorio compatible con la capacidad evaluada |
+
+El check-in no forma parte del mínimo de entrada porque estos permisos usan `T`.
+
+---
+
+#### 27. Excepciones individuales operativas
+
+La baseline del rol no es la única fuente posible de allow operativo.
+
+El carril operativo también puede recibir una concesión individual válida y compatible.
+
+Por tanto:
+
+```text
+OPERATIONAL_ROLE_ALLOW
+OR
+EMPLOYEE_OPERATIONAL_ALLOW
+→
+PUEDE PRODUCIR OPERATIONAL_ALLOW
+```
+
+antes de aplicar denegaciones y contexto.
+
+Consecuencia:
+
+un empleado puede adquirir visibilidad contextual de una de las cuatro aplicaciones aunque su rol operativo no tenga ese grant en la baseline, únicamente si existe una concesión individual operativa válida, compatible con la modalidad, scope, vigencia y recurso de entrada.
+
+SHELL no hardcodeará el resultado de la baseline como límite absoluto.
+
+---
+
+#### 28. Denegaciones operativas
+
+Una denegación aplicable del carril operativo prevalece sobre los allows operativos aplicables.
+
+Resultado:
+
+```text
+ALLOW DE ROL
+OR ALLOW INDIVIDUAL
++
+DENY OPERATIVO APLICABLE
+→
+OPERATIVE DECISION = DENY
+```
+
+La presentación no expondrá:
+
+- nombre del grant;
+- nombre del deny;
+- tabla de origen;
+- detalles internos de matrices;
+- evidencia sensible.
+
+La explicación pública se resolverá mediante los contratos de mensajes correspondientes.
+
+---
+
+#### 29. Estado `CONTEXT_VISIBLE`
+
+Se define:
+
+```text
+CONTEXT_VISIBLE
+```
+
+cuando:
+
+1. el actor laboral es válido;
+2. la aplicación admite carril operativo;
+3. el catálogo permite presentarla;
+4. el contexto aplicable es resoluble;
+5. la decisión efectiva de `app.access` autoriza por el carril operativo.
+
+Resultado:
+
+```text
+CONTEXT_VISIBLE
+→ tarjeta presentable
+→ destino navegable
+```
+
+La navegación no concede capacidades internas.
+
+---
+
+#### 30. Estado `CONTEXT_BLOCKED`
+
+Se define:
+
+```text
+CONTEXT_BLOCKED
+```
+
+cuando la aplicación es contextualmente relevante para el actor, pero la decisión efectiva de entrada no produce ALLOW por una condición contextual o una denegación aplicable.
+
+Ejemplos:
+
+- área requerida por el grant ausente;
+- área incompatible;
+- sede incompatible;
+- check-in activo incompatible;
+- rol operativo no habilitado en el territorio;
+- deny operativo aplicable;
+- aplicación temporalmente no navegable por una condición gobernada.
+
+Resultado:
+
+```text
+CONTEXT_BLOCKED
+→ puede presentarse como bloqueada
+→ no tiene navegación habilitada
+```
+
+La tarjeta bloqueada nunca sustituye la razón pública gobernada ni el guard del destino.
+
+---
+
+#### 31. Estado `CONTEXT_HIDDEN`
+
+Se define:
+
+```text
+CONTEXT_HIDDEN
+```
+
+cuando no existe elegibilidad contextual actual que justifique presentar la aplicación.
+
+Ejemplos:
+
+- no existe turno vigente;
+- el turno es futuro;
+- el turno expiró;
+- el turno fue retirado o cancelado;
+- no existe rol operativo resoluble;
+- no existe grant de entrada aplicable, ni de rol ni individual;
+- la aplicación no admite carril operativo.
+
+Resultado:
+
+```text
+CONTEXT_HIDDEN
+→ no tarjeta contextual
+```
+
+La ausencia visual no equivale a deny del resto del sistema.
+
+---
+
+#### 32. Precedencia de presentación final
+
+Para cada aplicación:
+
+```text
+1. aplicar frontera de actor;
+2. aplicar estado del catálogo;
+3. aplicar reservas especiales;
+4. evaluar carril base cuando exista;
+5. evaluar carril operativo cuando exista;
+6. combinar según modalidad;
+7. aplicar política de presentación;
+```
+
+Para NEXO, FOGO y ORIGO:
+
+```text
+BASE_ALLOW
+→ VISIBLE_BASE
+
+si no hay BASE_ALLOW:
+    OPERATIONAL_ALLOW
+    → CONTEXT_VISIBLE
+
+si no hay ALLOW:
+    relevancia contextual con bloqueo
+    → CONTEXT_BLOCKED
+
+en otro caso
+    → CONTEXT_HIDDEN
+```
+
+Para PULSO:
+
+```text
+OPERATIONAL_ALLOW
+→ CONTEXT_VISIBLE
+
+relevancia contextual con bloqueo
+→ CONTEXT_BLOCKED
+
+sin elegibilidad contextual actual
+→ CONTEXT_HIDDEN
+```
+
+---
+
+#### 33. Contexto operativo inválido no revoca un base ALLOW independiente
+
+Para una aplicación `BASE_OR_OPERATIONAL`:
+
+```text
+BASE_DECISION = ALLOW
+OPERATIONAL_DECISION = DENY
+```
+
+no produce automáticamente ocultamiento.
+
+Resultado:
+
+```text
+VISIBLE_BASE
+```
+
+si el deny operativo no es un bloqueo transversal.
+
+El usuario podrá entrar por su autoridad base.
+
+Dentro de la aplicación, una operación que dependa del carril operativo seguirá siendo evaluada independientemente.
+
+---
+
+#### 34. Ausencia de turno vigente
+
+Cuando:
+
+```text
+active_shift = null
+```
+
+por ausencia legítima de turno vigente:
+
+```text
+operational lane = UNAVAILABLE
+```
+
+La ausencia no invalida el carril base.
+
+Resultado:
+
+- ANIMA, VISO y NUMERA conservan su evaluación base;
+- NEXO, FOGO y ORIGO conservan visibilidad si existe base ALLOW;
+- PULSO no adquiere visibilidad contextual;
+- las aplicaciones operativas sin base ALLOW quedan `CONTEXT_HIDDEN`.
+
+No se utilizará el último turno conocido como fallback.
+
+---
+
+#### 35. Turno futuro publicado
+
+Un turno futuro:
+
+```text
+publicado
++
+fuera de la ventana vigente
+```
+
+no crea contexto operativo actual.
+
+Por tanto:
+
+```text
+FUTURE_SHIFT
+→ NO CONTEXT_VISIBLE
+```
+
+La programación futura podrá mostrarse en sus superficies propietarias.
+
+No activa aplicaciones antes de tiempo.
+
+---
+
+#### 36. Turno vigente sin check-in
+
+Este es un caso explícitamente permitido para los permisos de entrada `T`.
+
+Resultado conceptual:
+
+```text
+TURN = vigente
+CHECKIN = null
+ROLE = válido
+SITE = válida
+AREA = válida cuando el grant la exige
+APP_ACCESS = ALLOW
+→ CONTEXT_VISIBLE
+```
+
+La aplicación destino podrá mostrar que las operaciones presenciales requieren registrar entrada.
+
+SHELL no simula esas operaciones.
+
+---
+
+#### 37. Turno vigente con check-in compatible
+
+Resultado:
+
+```text
+TURN = vigente
+CHECKIN = activo y compatible
+APP_ACCESS = ALLOW
+→ CONTEXT_VISIBLE
+```
+
+La presencia del check-in puede habilitar permisos internos `T+C`.
+
+No transforma `app.access` en wildcard.
+
+---
+
+#### 38. Ambigüedad entre turnos
+
+Cuando existen varios turnos simultáneamente elegibles sin resolución inequívoca:
+
+```text
+SHIFT_OVERLAP
+OR
+MULTIPLE_ELIGIBLE_SHIFTS
+→ operational lane INVALID
+```
+
+SHELL no seleccionará:
+
+- el primero;
+- el más reciente;
+- el turno de la sede seleccionada;
+- el turno que produzca más aplicaciones.
+
+Resultado:
+
+- el carril base permanece independiente;
+- no se deriva visibilidad operativa de un turno arbitrario;
+- las aplicaciones contextuales que dependan de ese turno no se vuelven navegables por inferencia.
+
+---
+
+#### 39. Turno cancelado, retirado o expirado
+
+Un turno que deja de ser vigente deja de satisfacer `T`.
+
+Resultado:
+
+```text
+TURN NO VIGENTE
+→ T = NO SATISFECHO
+→ visibilidad derivada de ese carril deja de ser válida
+```
+
+No existe gracia basada en:
+
+- tarjeta previamente visible;
+- página abierta;
+- caché;
+- historial del navegador;
+- último contexto;
+- check-in histórico.
+
+El carril base independiente puede continuar.
+
+---
+
+#### 40. Cambio de sede durante el ciclo operativo
+
+Un cambio legítimo que modifique la sede operativa requiere un nuevo contexto resuelto.
+
+No se parchea el snapshot anterior.
+
+Mientras exista ambigüedad:
+
+```text
+NO OPERATIONAL ALLOW NUEVO
+```
+
+Una tarjeta no conservará navegación por la sede anterior después de que el contexto quede obsoleto.
+
+---
+
+#### 41. Cambio de área durante el ciclo operativo
+
+Cuando el grant de entrada requiere un área concreta, un cambio válido de área exige un nuevo contexto.
+
+Mientras área anterior y nueva sean ambiguas:
+
+```text
+CARRIL OPERATIVO NO PUEDE COMPLETAR EL GRANT
+```
+
+No se conserva la autorización residual del área anterior.
+
+Para roles legítimamente site-wide, el área nula continúa siendo válida únicamente cuando el contrato del rol y del grant lo permitan.
+
+---
+
+#### 42. Cambio de rol operativo
+
+Un cambio de rol operativo requiere una nueva realidad laboral válida.
+
+No puede realizarse mediante:
+
+- selector visual;
+- cambio de tarjeta;
+- query parameter;
+- cookie;
+- navegación entre aplicaciones;
+- edición local del contexto.
+
+Cuando cambia el rol efectivo:
+
+1. se resuelve un nuevo contexto;
+2. se reevalúan los cuatro permisos de entrada operativos;
+3. se recalcula la presentación.
+
+No se conserva la matriz del rol anterior.
+
+---
+
+#### 43. Contexto obsoleto
+
+Un snapshot puede quedar obsoleto cuando cambia:
+
+- actor;
+- estado del empleado;
+- turno;
+- check-in;
+- rol operativo;
+- sede;
+- área;
+- dispositivo;
+- catálogo;
+- matrices;
+- override;
+- deny.
+
+Regla:
+
+```text
+STALE CONTEXT
+≠
+AUTORIDAD VIGENTE
+```
+
+SHELL deberá obtener una nueva resolución antes de mantener una decisión que dependa de los hechos modificados.
+
+Esta tarea no define TTL ni estrategia de caché.
+
+---
+
+#### 44. Simulación
+
+La simulación permanece separada del contexto real.
+
+```text
+SimulationContext
+≠
+AccessContext
+```
+
+Una simulación no puede:
+
+- crear turno real;
+- crear check-in real;
+- cambiar rol operativo real;
+- cambiar sede operativa real;
+- cambiar área operativa real;
+- volver navegable una aplicación real;
+- autorizar una mutación real.
+
+La simulación podrá tener su propia experiencia futura, pero no modifica la matriz efectiva del Hub real.
+
+---
+
+#### 45. Dispositivo compartido
+
+Un dispositivo compartido no crea visibilidad empresarial por su sola identidad técnica.
+
+La evaluación continúa requiriendo:
+
+```text
+ACTOR HUMANO EFECTIVO
++
+CONTEXTO LABORAL DEL ACTOR
++
+PERMISO EXACTO
+```
+
+El dispositivo puede agregar restricciones.
+
+No puede ampliar:
+
+- rol;
+- sede;
+- área;
+- grant;
+- app access.
+
+La política detallada de comportamiento por dispositivo permanece en las tareas propietarias correspondientes.
+
+---
+
+#### 46. Evaluación server-side obligatoria
+
+La interfaz no calculará `CONTEXT_VISIBLE` mediante:
+
+- comparación local de rol;
+- presencia de check-in en estado React;
+- cookie de sede;
+- `localStorage`;
+- lista embebida de aplicaciones;
+- booleano legacy `can_operate`;
+- permiso reconstruido en cliente.
+
+La decisión de entrada deberá provenir de la frontera de autorización gobernada.
+
+El cliente solo consume una proyección segura suficiente para presentar el resultado.
+
+---
+
+#### 47. Proyección segura
+
+La proyección de presentación puede incluir la información pública necesaria para:
+
+- identificar la aplicación;
+- conocer si es visible;
+- conocer si está bloqueada;
+- mostrar una razón pública gobernada cuando corresponda.
+
+No deberá exponer:
+
+- matched grants;
+- matched denies;
+- fingerprints internos;
+- SQLSTATE;
+- filas de matrices;
+- secretos;
+- payload completo de `AccessContext`;
+- evidencia sensible de autorización.
+
+La proyección no funciona como capability token.
+
+---
+
+#### 48. URL directa
+
+La visibilidad del Hub no sustituye el guard de la aplicación destino.
+
+Por tanto:
+
+```text
+CARD_HIDDEN
++
+URL ESCRITA MANUALMENTE
+→ DESTINO DEBE REAUTORIZAR
+```
+
+y:
+
+```text
+CARD_VISIBLE
+→ NO SIGNIFICA AUTORIZAR TODAS LAS ACCIONES
+```
+
+Alterar HTML, href, estado local o navegación no cambia la decisión del servidor.
+
+---
+
+#### 49. Entrada a aplicación no concede capacidades internas
+
+Cuando un actor entra por:
+
+```text
+nexo.access
+fogo.access
+origo.access
+pulso.access
+```
+
+solo obtiene la capacidad de entrada autorizada.
+
+Cada capacidad interna vuelve a evaluar:
+
+- permiso exacto;
+- modalidad;
+- T o T+C;
+- área cuando corresponda;
+- recurso;
+- scope;
+- grants;
+- denies;
+- estado.
+
+La aplicación puede estar visible antes del check-in y aun así bloquear correctamente operaciones presenciales.
+
+---
+
+#### 50. Matriz de comportamiento por estado de contexto
+
+| Contexto | Base ALLOW en NEXO/FOGO/ORIGO | Allow operativo de entrada | Resultado |
+| --- | --- | --- | --- |
+| sin turno vigente | sí | no disponible | visible por base |
+| sin turno vigente | no | no disponible | contextual oculta |
+| turno vigente, sin check-in, grant `T` completo | no | sí | contextual visible |
+| turno vigente, check-in compatible, grant completo | no | sí | contextual visible |
+| turno vigente, check-in activo incompatible | no | no | contextual bloqueada cuando exista relevancia contextual |
+| turno vigente, área requerida por grant ausente | no | no | contextual bloqueada |
+| turno vigente, rol sin grant ni override de entrada | no | no | contextual oculta |
+| turno ambiguo | sí | carril inválido | visible por base |
+| turno ambiguo | no | carril inválido | sin navegación contextual derivada |
+| turno expirado/cancelado/retirado | sí | no disponible | visible por base |
+| turno expirado/cancelado/retirado | no | no disponible | contextual oculta |
+| bloqueo estructural transversal | no aplicable | no aplicable | sin grid laboral autorizado |
+
+PULSO usa únicamente las filas de resultado operativo porque no posee carril base para `pulso.access`.
+
+---
+
+#### 51. Relevancia contextual
+
+Una aplicación es contextualmente relevante cuando el servidor puede vincular al actor con una posibilidad gobernada de entrada operativa mediante:
+
+- grant del rol operativo;
+- concesión individual operativa;
+- contexto de turno resoluble;
+- aplicación que admite carril operativo.
+
+La relevancia no concede acceso.
+
+Sirve únicamente para distinguir:
+
+```text
+CONTEXT_BLOCKED
+```
+
+de:
+
+```text
+CONTEXT_HIDDEN
+```
+
+No se expondrá al cliente cuál fuente concreta creó esa relevancia.
+
+---
+
+#### 52. No existe fallback permisivo
+
+Ante:
+
+- timeout;
+- error de resolver contexto;
+- payload incompatible;
+- versión desconocida;
+- decisión de autorización inválida;
+- aplicación desconocida;
+- rol desconocido;
+- área incompatible;
+- ambigüedad;
+
+SHELL no puede convertir la incertidumbre en:
+
+```text
+VISIBLE
+```
+
+Resultado seguro:
+
+```text
+NO NAVEGABLE
+```
+
+La presentación pública del error se gobierna por los contratos de bloqueo y disponibilidad.
+
+---
+
+#### 53. Resultado cuantitativo consolidado
+
+```text
+CONTEXT_EXPANDABLE_APPS = 4
+
+BASE_OR_OPERATIONAL_ENTRY_APPS = 3
+OPERATIONAL_ONLY_ENTRY_APPS = 1
+
+OPERATIONAL_ENTRY_PREREQUISITE_T = 4
+OPERATIONAL_ENTRY_PREREQUISITE_T_PLUS_C = 0
+
+OPERATIONAL_BASELINE_ROLES = 12
+OPERATIONAL_BASELINE_VISIBILITY_EDGES = 25
+
+BASELINE_NEXO = 12
+BASELINE_PULSO = 7
+BASELINE_FOGO = 4
+BASELINE_ORIGO = 2
+```
+
+La efectividad individual puede diferir por:
+
+- concesiones individuales;
+- denegaciones;
+- contexto;
+- vigencia;
+- territorio;
+- estado de aplicación.
+
+---
+
+#### 54. Handoff a `SHELL-APP-004`
+
+La siguiente tarea recibe esta semántica cerrada:
+
+1. `app.access` operativo usa turno vigente, no exige check-in;
+2. turno publicado y turno vigente son estados distintos;
+3. turno vigente y turno activo son estados distintos;
+4. turno activo continúa significando turno vigente más check-in activo;
+5. SHELL no puede llamar “activo” a un turno meramente vigente para ocultar esa diferencia;
+6. la visibilidad contextual puede existir antes del check-in;
+7. un turno futuro no habilita visibilidad contextual;
+8. un turno expirado, retirado o cancelado deja de habilitarla;
+9. ambigüedad de turno bloquea la derivación operativa;
+10. el carril base permanece independiente.
+
+`SHELL-APP-004` deberá decidir exclusivamente cómo mostrar el turno correspondiente.
+
+No reabrirá la política de visibilidad contextual aprobada aquí.
+
+---
+
+#### 55. No se adelanta `SHELL-APP-004`
+
+Esta tarea no define:
+
+- componente visual del turno;
+- posición del turno en SHELL;
+- texto humano del estado;
+- formato horario;
+- contador de tiempo;
+- CTA de check-in;
+- colores;
+- iconografía;
+- detalle del turno;
+- historial;
+- turno siguiente;
+- comportamiento responsive.
+
+Solo define cómo el contexto del turno participa en visibilidad de aplicaciones.
+
+---
+
+#### 56. Frontera con `SHELL-APP-005` a `SHELL-APP-007`
+
+Esta tarea consume sede, área y rol operativo como hechos de autorización.
+
+No decide cómo se muestran.
+
+Quedan reservados:
+
+```text
+SHELL-APP-005
+→ Mostrar sede activa
+
+SHELL-APP-006
+→ Mostrar área activa
+
+SHELL-APP-007
+→ Mostrar rol operativo activo
+```
+
+La futura UI no podrá reinterpretar esos campos como autoridad.
+
+---
+
+#### 57. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea especializa la presentación de SHELL usando reglas ya cubiertas por los contratos vigentes de contexto, autorización y navegación.
+
+No crea un nuevo permiso, nuevo estado de autorización ni nueva frontera de seguridad.
+
+---
+
+#### 58. Cobertura de prueba vigente reutilizada
+
+Sin modificar el Registro Canónico de Requisitos de Prueba, esta tarea reutiliza:
+
+- `TREQ-SHELL-003` — catálogo canónico único para identidad y disponibilidad;
+- `TREQ-SHELL-014` — la raíz autenticada resuelve aplicaciones autorizadas;
+- `TREQ-SHELL-015` — disponibilidad del launcher derivada de decisión canónica;
+- `TREQ-SHELL-016` — una aplicación sin acceso efectivo permanece no navegable y, cuando se presenta, muestra estado bloqueado;
+- `TREQ-SHELL-023` — rutas runtime protegidas;
+- `TREQ-SHELL-028` — catálogo de aplicaciones único y versionado;
+- `TREQ-SHELL-030` — visibilidad derivada de permisos y contexto sin sustituir autorización del servidor;
+- `TREQ-SHELL-031` — simulación separada de la autoridad real;
+- `TREQ-SHELL-063` — frontera server/client de contexto y autorización;
+- `TREQ-SHELL-067` — resolución de `AccessContext` validada y fail closed;
+- `TREQ-SHELL-068` — evaluación canónica de autorización;
+- `TREQ-SHELL-069` — solo una decisión ALLOW válida permite continuar;
+- `TREQ-SHELL-070` — proyección segura del contexto;
+- `TREQ-SHELL-071` — proyección segura de la decisión;
+- `TREQ-SHELL-072` — cliente sin autoridad propia.
+
+Esta sección es trazabilidad heredada.
+
+No constituye modificación del registro.
+
+---
+
+#### 59. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | El artefacto todavía no ha sido insertado ni compilado dentro de la rama local de `SHELL-APP-003`. |
+| LOCAL | NOT_EXECUTED | Todavía no se han ejecutado formateo, quality, delivery ni la batería documental sobre el checkout local de la tarea. |
+| REMOTA | PASS | Se verificaron `main` posterior al cierre de `SHELL-APP-002`, continuidad H2, topología, owner, protocolo, contrato de entrega, políticas documentales, `AccessContext`, reglas de turno y check-in, clasificación de área, precedencia, matrices operativas, cobertura SHELL y scripts vigentes. |
+| OPERATIVA | NOT_APPLICABLE | La tarea define política documental y no prueba sesiones, turnos, check-ins, usuarios o aplicaciones desplegadas en un ambiente operativo. |
+| FÍSICA | NOT_APPLICABLE | La tarea no crea ni autoriza una instancia `SHELL-APP-003::implementation_unit_id` y no modifica runtime, datos, infraestructura ni despliegues. |
+
+---
+
+#### 60. Criterios de aceptación
+
+- [ ] El título es exactamente `SHELL-APP-003 — Definir aplicaciones visibles por contexto`.
+- [ ] `SHELL-APP-002` permanece como tarea anterior.
+- [ ] `SHELL-APP-004` permanece como siguiente tarea.
+- [ ] La tarea permanece en carril documental.
+- [ ] La topología `PER_IMPLEMENTATION_UNIT` no se interpreta como autorización física.
+- [ ] Se consumen exactamente cuatro tipos de actor heredados.
+- [ ] Solo `EMPLOYEE` participa en expansión contextual laboral.
+- [ ] `shell.access` continúa siendo `BASE_ONLY`.
+- [ ] Solo NEXO, FOGO, ORIGO y PULSO pueden adquirir entrada por carril operativo.
+- [ ] NEXO, FOGO y ORIGO conservan `BASE_OR_OPERATIONAL`.
+- [ ] PULSO conserva `OPERATIONAL_ONLY`.
+- [ ] Los cuatro permisos operativos de entrada conservan prerrequisito `T`.
+- [ ] Ningún permiso de entrada operativo exige check-in activo.
+- [ ] La ausencia de check-in no bloquea por sí sola la entrada `T`.
+- [ ] Un check-in activo incompatible bloquea el carril operativo.
+- [ ] Un check-in cerrado, expirado u offline pendiente no se trata como activo.
+- [ ] Un turno publicado futuro no habilita visibilidad contextual.
+- [ ] Un turno vigente puede habilitar visibilidad antes del check-in.
+- [ ] Turno vigente no se redefine como turno activo.
+- [ ] Un turno ambiguo no se resuelve permisivamente.
+- [ ] Un turno cancelado, retirado o expirado deja de satisfacer `T`.
+- [ ] La sede operativa procede del turno.
+- [ ] No se usa sede seleccionada o primaria como autoridad operativa.
+- [ ] El área operativa procede del turno cuando corresponde.
+- [ ] `SITE_SUFFICIENT` no elimina restricciones de área impuestas por el grant o rol.
+- [ ] El rol operativo procede del turno.
+- [ ] No se usa rol base, navigation role, dispositivo o simulación como rol operativo.
+- [ ] La matriz baseline conserva exactamente doce roles operativos.
+- [ ] La matriz baseline conserva exactamente veinticinco relaciones rol operativo → aplicación.
+- [ ] NEXO conserva doce candidatos baseline.
+- [ ] PULSO conserva siete.
+- [ ] FOGO conserva cuatro.
+- [ ] ORIGO conserva dos.
+- [ ] Una concesión individual operativa válida puede ampliar la baseline.
+- [ ] Un deny operativo aplicable puede restringirla.
+- [ ] La baseline no se convierte en allowlist hardcodeada.
+- [ ] Se definen `CONTEXT_VISIBLE`, `CONTEXT_BLOCKED` y `CONTEXT_HIDDEN`.
+- [ ] Una aplicación bloqueada no es navegable.
+- [ ] Una aplicación sin relevancia contextual no se presenta por inferencia.
+- [ ] Un base ALLOW completo sobre NEXO, FOGO u ORIGO permanece independiente de un fallo exclusivamente operativo.
+- [ ] Un bloqueo estructural transversal invalida toda visibilidad laboral.
+- [ ] El contexto obsoleto no conserva autoridad.
+- [ ] La simulación no modifica visibilidad real.
+- [ ] El dispositivo compartido no crea permisos o aplicaciones.
+- [ ] La decisión se resuelve en servidor.
+- [ ] El cliente consume únicamente una proyección segura.
+- [ ] Alterar HTML, href o estado local no concede acceso.
+- [ ] La aplicación destino reautoriza sus capacidades internas.
+- [ ] No se desarrolla la presentación visual de turno.
+- [ ] No se desarrolla la presentación visual de sede.
+- [ ] No se desarrolla la presentación visual de área.
+- [ ] No se desarrolla la presentación visual de rol operativo.
+- [ ] No se crean requisitos de prueba.
+- [ ] No se modifican requisitos de prueba.
+- [ ] No se modifica 04A.
+- [ ] No se modifica código.
+- [ ] No se modifica Supabase.
+- [ ] No se autoriza implementación física.
+
+---
+
+#### 61. Límites
+
+Esta tarea no:
+
+- modifica `AccessContext`;
+- modifica `AuthorizationDecision`;
+- crea nuevos estados de `LaneReadiness`;
+- crea códigos de razón;
+- crea permisos;
+- modifica modalidades;
+- modifica prerrequisitos `T` o `T+C`;
+- modifica clasificación de área;
+- modifica scopes;
+- modifica matrices base;
+- modifica matrices operativas;
+- modifica overrides individuales;
+- crea grants;
+- crea denies;
+- modifica roles;
+- modifica turnos;
+- modifica check-ins;
+- modifica sedes;
+- modifica áreas;
+- modifica dispositivos;
+- modifica simulaciones;
+- cambia el catálogo de aplicaciones;
+- cambia dominios;
+- cambia URLs;
+- cambia logos;
+- cambia nombres;
+- cambia el estado diferido de AURA;
+- incorpora PASS al grid laboral primario;
+- modifica ANIMA;
+- modifica VISO;
+- modifica NEXO;
+- modifica FOGO;
+- modifica ORIGO;
+- modifica PULSO;
+- modifica NUMERA;
+- crea componentes visuales;
+- define layout;
+- define colores;
+- define iconos;
+- define textos públicos de error;
+- implementa tarjetas;
+- implementa navegación;
+- implementa caché;
+- define TTL;
+- implementa invalidación Realtime;
+- modifica middleware;
+- modifica Server Actions;
+- modifica RLS;
+- modifica RPC;
+- modifica Auth;
+- modifica datos;
+- crea migraciones;
+- despliega;
+- crea `implementation_unit_id`;
+- autoriza una instancia física;
+- crea requisitos de prueba;
+- modifica requisitos de prueba;
+- modifica el Registro Canónico de Requisitos de Prueba;
+- desarrolla `SHELL-APP-004`.
+
+---
+
+#### 62. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-APP-002 — Definir aplicaciones visibles por actor`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-APP-003 — Definir aplicaciones visibles por contexto`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-APP-004 — Mostrar turno activo`
