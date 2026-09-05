@@ -1351,5 +1351,1357 @@ Esta tarea no:
 `SHELL-APP-002 — Definir aplicaciones visibles por actor`
 
 
-### [ ] SHELL-APP-002 — Definir aplicaciones visibles por actor
+### ✅ SHELL-APP-002 — Definir aplicaciones visibles por actor
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-APP-001 — Inventariar la experiencia actual del hub
+**Tarea siguiente:** SHELL-APP-003 — Definir aplicaciones visibles por contexto
+**Tipo de tarea:** definición técnico-documental de política de visibilidad del Hub por actor efectivo y elegibilidad laboral permanente; el marcador canónico se define una sola vez y la futura materialización conserva topología `PER_IMPLEMENTATION_UNIT`, sin crear instancia física en esta tarea
+**Bloque:** BLOQUE H2 — SHELL como aplicación y hub contextual
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md`
+**Estado físico resultante:** política documental de visibilidad por actor definida sobre el catálogo, autorización y matrices vigentes, sin modificar el runtime del Hub
+**Cambios físicos autorizados:** ninguno; no se modifican código, navegación runtime, permisos, matrices, Supabase, datos, dominios, despliegues ni configuración
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir qué aplicaciones puede considerar visibles el Hub Vento OS a partir del actor efectivo y de su elegibilidad laboral permanente, sin confundir:
+
+- tipo de actor;
+- rol base;
+- rol operativo;
+- contexto de turno;
+- permiso efectivo;
+- visibilidad de una aplicación;
+- autorización de las acciones internas de esa aplicación.
+
+La tarea consume el inventario AS-IS de `SHELL-APP-001` y produce una política TO-BE de visibilidad por actor.
+
+La regla general queda:
+
+```text
+ACTOR EFECTIVO
++
+APLICACIÓN CANÓNICA
++
+CARRIL DE ACCESO A LA APLICACIÓN
++
+DECISIÓN EFECTIVA DEL PERMISO app.access
++
+ESTADO DE CICLO DE VIDA DE LA APLICACIÓN
++
+FRONTERA LABORAL / CLIENTE
+→
+VISIBILIDAD POR ACTOR
+```
+
+Esta tarea no decide todavía si una aplicación adicional se vuelve visible por turno, sede, área o rol operativo.
+
+---
+
+#### 2. Decisión principal
+
+La visibilidad del Hub no se derivará de una lista fija de roles escrita en la interfaz.
+
+La autoridad será:
+
+```text
+ACTOR EFECTIVO RESUELTO
+→
+EVALUACIÓN CANÓNICA DEL PERMISO DE ENTRADA
+→
+POLÍTICA DE PRESENTACIÓN DE SHELL
+```
+
+La matriz de roles de esta tarea es una proyección verificable del estado canónico actual de concesiones.
+
+No constituye una segunda matriz de autorización.
+
+Por tanto:
+
+```text
+MATRIZ DE ESTA TAREA
+≠
+NUEVA FUENTE DE PERMISOS
+```
+
+y:
+
+```text
+ROL
+≠
+AUTORIZACIÓN
+```
+
+---
+
+#### 3. Universo canónico de tipos de actor
+
+Se conservan exactamente cuatro tipos de actor efectivo:
+
+| Tipo de actor | Naturaleza | Acceso al Hub laboral |
+| --- | --- | --- |
+| `EMPLOYEE` | trabajador laboral resoluble | puede participar en la política de SHELL |
+| `CUSTOMER` | identidad de cliente | no recibe el grid laboral de SHELL |
+| `SYSTEM` | actor no humano | no recibe interfaz interactiva del Hub |
+| `UNRESOLVED` | identidad o actor no resuelto | denegación cerrada; sin grid de aplicaciones |
+
+No se crean tipos adicionales.
+
+---
+
+#### 4. Regla para `EMPLOYEE`
+
+Un actor `EMPLOYEE` solo participa en el Hub laboral cuando la resolución canónica determina un empleado válido y activo.
+
+La visibilidad permanente de una aplicación se evalúa mediante el carril base compatible con el permiso de entrada de esa aplicación.
+
+El carril base puede obtener concesión desde:
+
+```text
+ROL BASE
+OR
+CONCESIÓN INDIVIDUAL BASE
+```
+
+y queda sujeto a:
+
+- denegaciones estructurales;
+- bloqueos individuales transversales;
+- denegaciones explícitas del carril;
+- modalidad de autorización del permiso;
+- estado de la aplicación;
+- vigencia de la asignación;
+- política de presentación de SHELL.
+
+Un empleado inactivo no conserva visibilidad por tener filas históricas de permiso.
+
+---
+
+#### 5. Regla para `CUSTOMER`
+
+`CUSTOMER` no es actor del grid laboral de SHELL.
+
+La identidad de cliente:
+
+```text
+CUSTOMER
+→
+NO_INTERACTIVE_LABOR_HUB
+```
+
+Vento Pass conserva su propia frontera de identidad de cliente.
+
+La existencia del código `pass`, de un cliente autenticado o de una cuenta de Vento Pass no concede:
+
+- `shell.access`;
+- rol base;
+- rol operativo;
+- acceso a aplicaciones laborales.
+
+Si una misma persona posee además una identidad laboral válida, el acceso al Hub deberá resolverse como actor `EMPLOYEE`, no mediante su identidad `CUSTOMER`.
+
+---
+
+#### 6. Regla para `SYSTEM`
+
+Un actor `SYSTEM` no recibe:
+
+- tarjetas;
+- launcher interactivo;
+- selector de aplicaciones;
+- menú de navegación humana.
+
+Las integraciones o automatizaciones que actúen como `SYSTEM` deberán consumir contratos técnicos propios y no simular un usuario de SHELL.
+
+Resultado:
+
+```text
+SYSTEM
+→
+NO_INTERACTIVE_HUB
+```
+
+---
+
+#### 7. Regla para `UNRESOLVED`
+
+Cuando el actor efectivo sea `UNRESOLVED`:
+
+```text
+VISIBLE_APPS = 0
+```
+
+No se utilizará como fallback:
+
+- email;
+- rol almacenado en cliente;
+- cookie de simulación;
+- nombre visible;
+- última aplicación abierta;
+- listado local de tarjetas.
+
+La resolución incompleta falla cerrada.
+
+---
+
+#### 8. Diferencia entre actor, rol base y rol operativo
+
+Para `EMPLOYEE` se conserva:
+
+```text
+ACTOR
+→ identidad laboral efectiva
+
+ROL BASE
+→ responsabilidad permanente
+
+ROL OPERATIVO
+→ función temporal dentro de contexto operativo
+```
+
+Por tanto:
+
+```text
+EMPLOYEE
+≠ propietario
+≠ gerente
+≠ bodeguero
+```
+
+Los códigos de rol son atributos o fuentes de concesión del actor laboral.
+
+No son tipos de actor.
+
+---
+
+#### 9. Universo canónico de roles base
+
+La línea vigente contiene exactamente ocho roles base:
+
+1. `propietario`;
+2. `gerente_general`;
+3. `gerente`;
+4. `supervisor`;
+5. `auxiliar_administrativa`;
+6. `contador`;
+7. `marketing`;
+8. `trabajador_operativo`.
+
+La línea histórica de siete roles se conserva como baseline anterior.
+
+La decisión aditiva `AUTH-MOD-021` incorpora `trabajador_operativo` y su sucesor de concesiones base.
+
+---
+
+#### 10. Reconciliación de `trabajador_operativo`
+
+`trabajador_operativo` recibe exactamente cinco concesiones base iniciales.
+
+Para visibilidad de aplicaciones son relevantes:
+
+```text
+shell.access
+anima.access
+```
+
+No recibe por su rol base:
+
+```text
+viso.access
+nexo.access
+fogo.access
+origo.access
+pulso.access
+numera.access
+aura.access
+pass.access
+```
+
+Por tanto, sin otra concesión individual válida y sin contexto operativo:
+
+```text
+trabajador_operativo
+→ Hub SHELL
+→ ANIMA
+```
+
+No se infiere ninguna aplicación operativa adicional desde el nombre del rol.
+
+---
+
+#### 11. Universo canónico de aplicaciones
+
+Se conservan exactamente diez aplicaciones:
+
+| Código | Nombre | Tipo | Identidad | Roadmap |
+| --- | --- | --- | --- | --- |
+| `shell` | Vento OS | Hub | Laboral | Núcleo |
+| `anima` | ANIMA | Híbrida | Laboral | Núcleo |
+| `viso` | VISO | Administrativa | Laboral | Núcleo |
+| `nexo` | NEXO | Híbrida | Laboral | Núcleo |
+| `fogo` | FOGO | Operativa | Laboral | Núcleo |
+| `origo` | ORIGO | Híbrida | Laboral | Núcleo |
+| `pulso` | PULSO | Operativa | Laboral | Núcleo |
+| `numera` | NUMERA | Híbrida | Laboral | Núcleo |
+| `aura` | AURA | Administrativa | Laboral | Diferido |
+| `pass` | Vento Pass | Cliente | Cliente | Adyacente |
+
+La tarea no crea, retira ni renombra aplicaciones.
+
+---
+
+#### 12. Modalidad canónica de los permisos de entrada
+
+| Aplicación | Permiso de entrada | Modalidad |
+| --- | --- | --- |
+| `shell` | `shell.access` | `BASE_ONLY` |
+| `anima` | `anima.access` | `BASE_ONLY` |
+| `viso` | `viso.access` | `BASE_ONLY` |
+| `nexo` | `nexo.access` | `BASE_OR_OPERATIONAL` |
+| `fogo` | `fogo.access` | `BASE_OR_OPERATIONAL` |
+| `origo` | `origo.access` | `BASE_OR_OPERATIONAL` |
+| `pulso` | `pulso.access` | `OPERATIONAL_ONLY` |
+| `numera` | `numera.access` | `BASE_ONLY` |
+| `aura` | `aura.access` | `BASE_ONLY` |
+| `pass` | `pass.access` | `BASE_ONLY` |
+
+La modalidad del catálogo prevalece sobre la tabla donde exista una asignación.
+
+---
+
+#### 13. Estados de presentación definidos por esta tarea
+
+Se definen estos estados documentales de visibilidad:
+
+| Estado | Significado |
+| --- | --- |
+| `HUB_SELF` | `shell` es la propia superficie de entrada; no se representa como tarjeta de sí misma |
+| `VISIBLE_BASE` | la aplicación puede mostrarse en la superficie laboral primaria cuando el carril base produce ALLOW efectivo |
+| `HIDDEN_BASE` | el actor no tiene elegibilidad base efectiva para esa aplicación; no se muestra por el solo rol base |
+| `CONTEXT_CANDIDATE` | la aplicación no es visible por base pero puede adquirir elegibilidad mediante carril operativo; resolución reservada a `SHELL-APP-003` |
+| `DEFERRED_RESERVED` | la aplicación existe canónicamente pero no se presenta como capacidad navegable mientras permanezca diferida |
+| `ADJACENT_RESERVED` | existe una elegibilidad laboral-administrativa que no convierte la aplicación de cliente en parte del grid laboral primario |
+| `NO_INTERACTIVE_HUB` | el tipo de actor no recibe grid laboral |
+
+Estos estados son de presentación.
+
+No sustituyen `ALLOW`, `DENY`, `READY`, `BLOCKED` ni las decisiones canónicas de autorización.
+
+---
+
+#### 14. Clasificación de aplicación dentro del Hub
+
+| Aplicación | Clase de presentación |
+| --- | --- |
+| `shell` | `HUB_SELF` |
+| `anima` | `PRIMARY_BASE` |
+| `viso` | `PRIMARY_BASE` |
+| `nexo` | `PRIMARY_BASE_OR_CONTEXT` |
+| `fogo` | `PRIMARY_BASE_OR_CONTEXT` |
+| `origo` | `PRIMARY_BASE_OR_CONTEXT` |
+| `pulso` | `PRIMARY_CONTEXT_ONLY` |
+| `numera` | `PRIMARY_BASE` |
+| `aura` | `DEFERRED_RESERVED` |
+| `pass` | `ADJACENT_RESERVED` |
+
+La clase define dónde puede participar una aplicación.
+
+No concede acceso.
+
+---
+
+#### 15. Regla de visibilidad base efectiva
+
+Para una aplicación `PRIMARY_BASE` o `PRIMARY_BASE_OR_CONTEXT`:
+
+```text
+ACTOR = EMPLOYEE
++
+BASE_DECISION(app.access) = ALLOW
++
+APLICACIÓN ACTIVA Y NAVEGABLE
++
+SIN BLOQUEO ESTRUCTURAL
+→
+VISIBLE_BASE
+```
+
+Si el carril base no produce ALLOW:
+
+```text
+→ HIDDEN_BASE
+```
+
+salvo que la aplicación admita carril operativo, caso que podrá convertirse en `CONTEXT_CANDIDATE` únicamente mediante `SHELL-APP-003`.
+
+---
+
+#### 16. Concesiones individuales
+
+La matriz por rol base es una baseline.
+
+Una concesión individual base válida puede añadir un permiso compatible con el carril base.
+
+Por tanto:
+
+```text
+ROLE_BASE_ALLOW
+OR
+EMPLOYEE_BASE_ALLOW
+→
+BASE_ALLOW
+```
+
+antes de aplicar denegaciones.
+
+Ejemplo conceptual:
+
+```text
+trabajador_operativo
++
+employee_permissions válido para nexo.access
+→
+puede adquirir elegibilidad base de NEXO
+```
+
+solo si el permiso, alcance, aplicación y demás condiciones del carril base son válidos.
+
+La interfaz no implementará una excepción local paralela.
+
+---
+
+#### 17. Denegaciones
+
+La presentación debe respetar la jerarquía canónica:
+
+1. denegación estructural;
+2. bloqueo individual transversal;
+3. denegación explícita del carril;
+4. concesión válida;
+5. denegación por defecto.
+
+Un deny aplicable prevalece sobre los allows aplicables dentro del mismo carril.
+
+Por tanto:
+
+```text
+ROL BASE PERMITE
++
+DENY BASE APLICABLE
+→
+NO VISIBLE POR CARRIL BASE
+```
+
+La tarjeta no podrá reactivar el acceso.
+
+---
+
+#### 18. Matriz base de referencia por rol
+
+Leyenda:
+
+- `HUB` = `HUB_SELF`;
+- `V` = `VISIBLE_BASE`;
+- `H` = `HIDDEN_BASE`;
+- `D` = `DEFERRED_RESERVED`;
+- `A` = `ADJACENT_RESERVED`.
+
+| Rol base | SHELL | ANIMA | VISO | NEXO | FOGO | ORIGO | PULSO | NUMERA | AURA | PASS |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `propietario` | HUB | V | V | V | V | V | H | V | D | A |
+| `gerente_general` | HUB | V | V | V | V | V | H | V | D | A |
+| `gerente` | HUB | V | V | V | V | V | H | V | D | H |
+| `supervisor` | HUB | V | V | V | V | V | H | H | D | H |
+| `auxiliar_administrativa` | HUB | V | V | V | V | V | H | V | D | H |
+| `contador` | HUB | V | V | V | V | V | H | V | D | H |
+| `marketing` | HUB | V | V | V | H | H | H | H | D | H |
+| `trabajador_operativo` | HUB | V | H | H | H | H | H | H | D | H |
+
+La matriz expresa la proyección de los grants canónicos vigentes.
+
+No reemplaza la evaluación efectiva del actor.
+
+---
+
+#### 19. Conteos de visibilidad base primaria
+
+Excluyendo `shell`, `aura`, `pass` y cualquier expansión operativa:
+
+| Aplicación | Roles base con `VISIBLE_BASE` |
+| --- | ---: |
+| ANIMA | **8** |
+| VISO | **7** |
+| NEXO | **7** |
+| FOGO | **6** |
+| ORIGO | **6** |
+| NUMERA | **5** |
+| PULSO | **0** |
+
+Total de relaciones rol-base → aplicación primaria:
+
+```text
+PRIMARY_BASE_VISIBILITY_EDGES = 39
+```
+
+El número sirve como control de reconciliación del snapshot.
+
+No se persiste como fuente de autorización.
+
+---
+
+#### 20. Visibilidad base por rol
+
+| Rol base | Aplicaciones primarias visibles por baseline |
+| --- | --- |
+| `propietario` | ANIMA, VISO, NEXO, FOGO, ORIGO, NUMERA |
+| `gerente_general` | ANIMA, VISO, NEXO, FOGO, ORIGO, NUMERA |
+| `gerente` | ANIMA, VISO, NEXO, FOGO, ORIGO, NUMERA |
+| `supervisor` | ANIMA, VISO, NEXO, FOGO, ORIGO |
+| `auxiliar_administrativa` | ANIMA, VISO, NEXO, FOGO, ORIGO, NUMERA |
+| `contador` | ANIMA, VISO, NEXO, FOGO, ORIGO, NUMERA |
+| `marketing` | ANIMA, VISO, NEXO |
+| `trabajador_operativo` | ANIMA |
+
+SHELL es la superficie que contiene esta selección y no se suma al conteo de tarjetas.
+
+---
+
+#### 21. Regla de ANIMA
+
+ANIMA es visible por baseline para los ocho roles base porque cada uno dispone de `anima.access` dentro del carril base vigente.
+
+La visibilidad de ANIMA no concede:
+
+- administración de trabajadores;
+- programación;
+- gestión documental ajena;
+- permisos internos adicionales.
+
+Cada capacidad interna conserva su permiso exacto.
+
+---
+
+#### 22. Regla de VISO
+
+VISO es visible por baseline para:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+```
+
+No es visible por baseline para:
+
+```text
+trabajador_operativo
+```
+
+Una concesión individual válida podrá alterar el resultado efectivo del actor sin cambiar el rol base.
+
+---
+
+#### 23. Regla de NEXO
+
+NEXO es visible por baseline para los siete roles base históricos:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+marketing
+```
+
+`trabajador_operativo` no obtiene NEXO por su rol base.
+
+Como `nexo.access` es `BASE_OR_OPERATIONAL`, NEXO también posee una vía contextual cuya resolución corresponde a `SHELL-APP-003`.
+
+---
+
+#### 24. Regla de FOGO
+
+FOGO es visible por baseline para:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+```
+
+No es visible por baseline para:
+
+```text
+marketing
+trabajador_operativo
+```
+
+Como `fogo.access` es `BASE_OR_OPERATIONAL`, la ausencia de visibilidad base no significa ocultamiento permanente para un empleado que posteriormente posea un contexto operativo válido.
+
+---
+
+#### 25. Regla de ORIGO
+
+ORIGO es visible por baseline para:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+auxiliar_administrativa
+contador
+```
+
+No es visible por baseline para:
+
+```text
+marketing
+trabajador_operativo
+```
+
+`origo.access` admite carril operativo.
+
+La expansión contextual queda reservada a la siguiente tarea.
+
+---
+
+#### 26. Regla de NUMERA
+
+NUMERA es visible por baseline para:
+
+```text
+propietario
+gerente_general
+gerente
+auxiliar_administrativa
+contador
+```
+
+No es visible por baseline para:
+
+```text
+supervisor
+marketing
+trabajador_operativo
+```
+
+`numera.access` es `BASE_ONLY`.
+
+Por tanto, un rol operativo no podrá activar NUMERA.
+
+---
+
+#### 27. Regla de PULSO
+
+`pulso.access` es `OPERATIONAL_ONLY`.
+
+La matriz base contiene:
+
+```text
+PULSO_VISIBLE_BASE_ROLES = 0
+```
+
+Tener un rol base privilegiado no convierte por sí solo PULSO en aplicación visible.
+
+Las concesiones base que actúan como componentes de permisos `BASE_AND_OPERATIONAL` internos no equivalen a `pulso.access`.
+
+PULSO solo podrá adquirir visibilidad laboral cuando `SHELL-APP-003` resuelva un contexto operativo que pueda satisfacer `pulso.access`.
+
+---
+
+#### 28. Regla de AURA
+
+AURA conserva identidad canónica laboral pero roadmap diferido.
+
+La existencia histórica o vigente de `aura.access` no convierte AURA en una aplicación navegable del Hub.
+
+Resultado primario:
+
+```text
+AURA
+→
+DEFERRED_RESERVED
+→
+PRIMARY_VISIBLE = NO
+```
+
+Las concesiones base reservadas observadas para:
+
+```text
+propietario
+gerente_general
+marketing
+```
+
+se conservan sin ejecutarse como visibilidad productiva mientras AURA permanezca diferida.
+
+La tarea no elimina esos grants.
+
+---
+
+#### 29. Regla de PASS
+
+Vento Pass es una aplicación de identidad de cliente y alcance adyacente.
+
+No se incorpora al grid laboral primario.
+
+Las concesiones laborales `pass.access` de:
+
+```text
+propietario
+gerente_general
+```
+
+se interpretan únicamente como elegibilidad laboral-administrativa adyacente.
+
+Resultado:
+
+```text
+PASS_CUSTOMER_ACCESS
+≠
+LABOR_RBAC
+
+PASS_LABOR_ADMIN_ELIGIBILITY
+≠
+PRIMARY_LABOR_HUB_CARD
+```
+
+La separación de superficies se desarrolla en `SHELL-APP-011` y `SHELL-APP-012`.
+
+---
+
+#### 30. SHELL no se muestra como aplicación de sí misma
+
+Los ocho roles base poseen `shell.access`.
+
+Ese permiso habilita la entrada laboral al Hub cuando la evaluación efectiva resulta ALLOW.
+
+No se renderiza una tarjeta SHELL dentro de SHELL.
+
+Resultado:
+
+```text
+shell
+→ HUB_SELF
+→ CARD = NO
+```
+
+---
+
+#### 31. Aplicación activa no equivale a aplicación visible
+
+Una aplicación puede existir en el catálogo y permanecer oculta o reservada para un actor.
+
+Ejemplos:
+
+```text
+AURA
+→ catálogo válido
+→ roadmap diferido
+→ no visible
+
+PULSO
+→ catálogo núcleo
+→ actor sin contexto operativo
+→ no visible por base
+```
+
+La mera existencia del registro no es criterio de presentación.
+
+---
+
+#### 32. Permiso de entrada no equivale a capacidad interna
+
+Un `app.access` efectivo permite entrar a la aplicación correspondiente.
+
+No concede:
+
+- módulos;
+- acciones;
+- datos;
+- mutaciones;
+- alcances;
+- permisos secundarios.
+
+La aplicación destino debe volver a autorizar sus superficies y acciones.
+
+---
+
+#### 33. Visibilidad no equivale a autorización
+
+SHELL puede utilizar una decisión de autorización para determinar presentación.
+
+La presentación resultante nunca será una fuente de autoridad.
+
+Queda prohibido:
+
+```text
+CARD_VISIBLE
+→ AUTORIZAR_MUTACIÓN
+```
+
+y:
+
+```text
+CARD_HIDDEN
+→ OMITIR_GUARD_DEL_DESTINO
+```
+
+Toda operación protegida deberá reevaluarse en servidor según su contrato.
+
+---
+
+#### 34. Roles operativos fuera de la matriz de actor
+
+Los roles operativos no se agregan como filas de la matriz principal porque no son tipos de actor ni responsabilidad permanente.
+
+El catálogo operativo vigente contiene exactamente doce roles:
+
+1. `cajero_satelite`;
+2. `barista_satelite`;
+3. `cocinero_satelite`;
+4. `servicio_salon`;
+5. `mostrador_satelite`;
+6. `operador_integral_satelite`;
+7. `produccion_cocina`;
+8. `produccion_panaderia`;
+9. `produccion_reposteria`;
+10. `bodeguero`;
+11. `conductor_logistica`;
+12. `gerencia_operativa`.
+
+Su efecto sobre visibilidad queda reservado a `SHELL-APP-003`.
+
+---
+
+#### 35. Handoff de candidatos operativos
+
+Sin decidir todavía las condiciones de turno, sede, área o check-in, la matriz de grants operativos entrega estos candidatos a `SHELL-APP-003`:
+
+| Rol operativo | NEXO | FOGO | ORIGO | PULSO |
+| --- | --- | --- | --- | --- |
+| `cajero_satelite` | candidato | — | — | candidato |
+| `barista_satelite` | candidato | — | — | candidato |
+| `cocinero_satelite` | candidato | — | — | candidato |
+| `servicio_salon` | candidato | — | — | candidato |
+| `mostrador_satelite` | candidato | — | — | candidato |
+| `operador_integral_satelite` | candidato | — | — | candidato |
+| `produccion_cocina` | candidato | candidato | — | — |
+| `produccion_panaderia` | candidato | candidato | — | — |
+| `produccion_reposteria` | candidato | candidato | — | — |
+| `bodeguero` | candidato | — | candidato | — |
+| `conductor_logistica` | candidato | — | — | — |
+| `gerencia_operativa` | candidato | candidato | candidato | candidato |
+
+Esta tabla no activa ninguna aplicación.
+
+---
+
+#### 36. Conteos del handoff operativo
+
+| Aplicación | Roles operativos con grant de entrada |
+| --- | ---: |
+| NEXO | **12** |
+| PULSO | **7** |
+| FOGO | **4** |
+| ORIGO | **2** |
+| SHELL | **0** |
+| ANIMA | **0** |
+| VISO | **0** |
+| NUMERA | **0** |
+| AURA | **0** |
+| PASS | **0** |
+
+Estos conteos son entradas para la siguiente tarea.
+
+No representan número de actores visibles en runtime.
+
+---
+
+#### 37. `HIDDEN_BASE` no significa ocultamiento permanente
+
+Para aplicaciones que admiten carril operativo:
+
+```text
+NEXO
+FOGO
+ORIGO
+PULSO
+```
+
+la ausencia de base ALLOW significa únicamente:
+
+```text
+NO ELEGIBLE POR CARRIL BASE
+```
+
+`SHELL-APP-003` deberá decidir si el contexto vigente permite:
+
+- convertirla en visible;
+- mostrarla bloqueada;
+- mantenerla oculta.
+
+Esta tarea no toma esa decisión contextual.
+
+---
+
+#### 38. Aplicaciones `BASE_ONLY`
+
+Para:
+
+```text
+ANIMA
+VISO
+NUMERA
+```
+
+un rol operativo no puede completar un permiso de entrada faltante.
+
+La visibilidad debe depender de un carril base válido.
+
+AURA y PASS también son `BASE_ONLY`, pero sus reglas adicionales de diferimiento y frontera adyacente prevalecen para presentación.
+
+---
+
+#### 39. Aplicaciones `BASE_OR_OPERATIONAL`
+
+Para:
+
+```text
+NEXO
+FOGO
+ORIGO
+```
+
+un actor puede llegar a tener elegibilidad por:
+
+```text
+BASE_ALLOW COMPLETO
+OR
+OPERATIONAL_ALLOW COMPLETO
+```
+
+Los dos carriles no mezclan fragmentos incompletos.
+
+`SHELL-APP-002` define la parte base.
+
+`SHELL-APP-003` define la parte contextual.
+
+---
+
+#### 40. Aplicación `OPERATIONAL_ONLY`
+
+PULSO requiere carril operativo completo.
+
+Un `BASE_COMPONENT` para una acción sensible interna no se trata como acceso a la aplicación.
+
+La única señal válida para entrada ordinaria es la decisión compatible con:
+
+```text
+pulso.access
+```
+
+según su modalidad `OPERATIONAL_ONLY`.
+
+---
+
+#### 41. Precedencia de cambios futuros de matrices
+
+Si una concesión canónica cambia después de este snapshot:
+
+1. se actualiza la fuente de autorización correspondiente;
+2. la evaluación efectiva refleja la nueva decisión;
+3. la matriz de referencia de SHELL debe reconciliarse;
+4. no se mantienen listas hardcodeadas divergentes por compatibilidad visual.
+
+La matriz documental no podrá utilizarse para conservar una concesión que ya fue retirada.
+
+---
+
+#### 42. Regla de catálogo único
+
+Los nombres, códigos, destinos, estados y marcas deberán provenir de un catálogo único versionado.
+
+La política de actor decide:
+
+```text
+QUÉ IDENTIDADES SON PRESENTABLES
+```
+
+No vuelve a definir:
+
+```text
+CÓDIGO
+NOMBRE
+URL
+LOGO
+ESTADO DE CICLO DE VIDA
+```
+
+Estas propiedades pertenecen a sus contratos propietarios.
+
+---
+
+#### 43. Regla de ausencia
+
+Si una aplicación no aparece como visible para un actor:
+
+- no se agrega un enlace oculto manipulable;
+- no se genera un destino alternativo por inferencia;
+- no se reemplaza por otra aplicación;
+- no se concede acceso implícito al escribir la URL.
+
+El destino sigue protegiendo su propia autorización.
+
+---
+
+#### 44. Regla de simulación
+
+La simulación no cambia el tipo real de actor ni convierte una selección de interfaz en autoridad.
+
+Una futura experiencia de simulación deberá:
+
+- ser explícita;
+- estar autorizada;
+- expirar;
+- auditarse;
+- validarse en servidor.
+
+Una cookie o estado de cliente no podrá ampliar la matriz efectiva.
+
+---
+
+#### 45. Regla de actor con múltiples fuentes de permiso
+
+Un mismo empleado puede recibir concesiones desde rol base y concesiones individuales.
+
+La presentación utiliza la decisión efectiva de autorización y no intenta adivinar qué fuente “ganó”.
+
+No se mostrará información sensible sobre:
+
+- grant exacto;
+- deny exacto;
+- tabla de origen;
+- evidencia interna de decisión.
+
+La explicación pública de bloqueo queda reservada a `SHELL-APP-010`.
+
+---
+
+#### 46. Resultado para actor `EMPLOYEE`
+
+El algoritmo documental queda:
+
+```text
+1. Resolver actor efectivo.
+2. Exigir EMPLOYEE válido y activo.
+3. Confirmar shell.access efectivo para ingresar al Hub.
+4. Cargar catálogo canónico.
+5. Excluir shell de la cuadrícula porque es HUB_SELF.
+6. Marcar AURA como DEFERRED_RESERVED.
+7. Mantener PASS fuera del grid primario laboral.
+8. Para apps BASE_ONLY o BASE_OR_OPERATIONAL:
+   evaluar carril base de app.access.
+9. VISIBLE_BASE solo cuando el carril base da ALLOW.
+10. HIDDEN_BASE cuando no existe ALLOW base.
+11. No resolver aquí promociones por contexto operativo.
+12. No usar la visibilidad para autorizar acciones.
+```
+
+---
+
+#### 47. Resultado para actores no laborales
+
+```text
+CUSTOMER
+→ NO_INTERACTIVE_LABOR_HUB
+
+SYSTEM
+→ NO_INTERACTIVE_HUB
+
+UNRESOLVED
+→ NO_INTERACTIVE_HUB
+→ FAIL_CLOSED
+```
+
+No existe un fallback “mostrar todas bloqueadas” para estos tipos de actor.
+
+---
+
+#### 48. Resultado cuantitativo consolidado
+
+```text
+ACTOR_TYPES = 4
+EMPLOYEE_BASE_ROLES = 8
+CANONICAL_APPS = 10
+
+PRIMARY_BASE_APPS = 6
+PRIMARY_CONTEXT_ONLY_APPS = 1
+DEFERRED_APPS = 1
+ADJACENT_APPS = 1
+HUB_SELF_APPS = 1
+
+PRIMARY_BASE_VISIBILITY_EDGES = 39
+
+BASE_VISIBLE_ANIMA = 8
+BASE_VISIBLE_VISO = 7
+BASE_VISIBLE_NEXO = 7
+BASE_VISIBLE_FOGO = 6
+BASE_VISIBLE_ORIGO = 6
+BASE_VISIBLE_NUMERA = 5
+BASE_VISIBLE_PULSO = 0
+
+OPERATIONAL_ROLES = 12
+OP_CANDIDATE_NEXO = 12
+OP_CANDIDATE_PULSO = 7
+OP_CANDIDATE_FOGO = 4
+OP_CANDIDATE_ORIGO = 2
+```
+
+---
+
+#### 49. Handoff exacto a `SHELL-APP-003`
+
+La siguiente tarea recibe:
+
+1. cuatro tipos de actor;
+2. ocho roles base;
+3. diez aplicaciones canónicas;
+4. clasificación de presentación por aplicación;
+5. matriz base de 39 relaciones primarias;
+6. reglas de grants individuales y denies;
+7. doce roles operativos sin convertirlos en actores;
+8. matriz de candidatos operativos;
+9. NEXO con 12 roles operativos candidatos;
+10. PULSO con 7;
+11. FOGO con 4;
+12. ORIGO con 2;
+13. prohibición de usar contexto de cliente para autorizar el Hub laboral;
+14. AURA diferida;
+15. PASS adyacente;
+16. regla de que `HIDDEN_BASE` no significa ocultamiento permanente para apps con carril operativo;
+17. prohibición de mezclar fragmentos de carril base y operativo.
+
+`SHELL-APP-003` deberá resolver exactamente el efecto de:
+
+- turno;
+- sede;
+- área;
+- rol operativo;
+- check-in cuando aplique;
+- contexto inválido, ausente o expirado.
+
+---
+
+#### 50. No se adelanta `SHELL-APP-003`
+
+Esta tarea no decide:
+
+- si una aplicación contextual se muestra antes del turno;
+- si una app contextual se muestra bloqueada o se oculta;
+- qué sede habilita una aplicación;
+- qué área habilita una aplicación;
+- si el check-in modifica visibilidad;
+- qué ocurre ante dos contextos territoriales;
+- qué estado visual corresponde a contexto inválido.
+
+Esas decisiones pertenecen a `SHELL-APP-003`.
+
+---
+
+#### 51. No se adelantan tareas posteriores
+
+No se desarrolla aquí:
+
+- visualización de turno;
+- visualización de sede;
+- visualización de área;
+- visualización de rol operativo;
+- pendientes transversales;
+- página inicial por tipo de usuario;
+- explicación del bloqueo;
+- separación visual final de superficies adyacentes;
+- retorno entre aplicaciones;
+- persistencia de contexto;
+- comportamiento por dispositivo.
+
+Cada responsabilidad conserva su tarea reservada en H2.
+
+---
+
+#### 52. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea proyecta decisiones ya protegidas por los contratos vigentes de catálogo, autorización, modalidad, denegaciones y visibilidad de SHELL.
+
+No crea una segunda fuente de permisos ni una regla de seguridad independiente.
+
+---
+
+#### 53. Cobertura de prueba vigente reutilizada
+
+Sin modificar el Registro Canónico de Requisitos de Prueba, esta tarea reutiliza:
+
+- `TREQ-SHELL-001` — una aplicación no se considera disponible por su mera existencia o permiso;
+- `TREQ-SHELL-003` — identidad, nombre, destino, estado, marca y disponibilidad desde catálogo canónico;
+- `TREQ-SHELL-015` — disponibilidad del launcher derivada de decisión canónica de permiso;
+- `TREQ-SHELL-016` — aplicación sin acceso efectivo no navegable;
+- `TREQ-SHELL-028` — catálogo único versionado para launcher y navegación;
+- `TREQ-SHELL-030` — visibilidad derivada de permisos y contexto sin sustituir autorización de servidor;
+- `TREQ-SHELL-031` — simulación separada de autoridad.
+
+La exactitud de roles, grants, modalidades y denegaciones continúa protegida por los requisitos de autorización ya existentes en sus bloques propietarios.
+
+Esta sección es trazabilidad heredada y no modifica 04A.
+
+---
+
+#### 54. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | El artefacto todavía no ha sido insertado y compilado dentro de la rama local de `SHELL-APP-002`. |
+| LOCAL | NOT_EXECUTED | Todavía no se han ejecutado format, quality, delivery ni la batería documental sobre el checkout local de la tarea. |
+| REMOTA | PASS | Se verificaron el `main` posterior al cierre de `SHELL-APP-001`, continuidad, topología, políticas documentales, owner H2, catálogo de aplicaciones, tipos de actor, precedencia, denegaciones, modalidades, datasets de grants, sucesor de ocho roles, matriz de doce roles operativos, 04A SHELL y scripts de validación. |
+| OPERATIVA | NOT_APPLICABLE | La tarea define política documental; no prueba sesiones, usuarios, permisos o aplicaciones desplegadas en ambientes reales. |
+| FÍSICA | NOT_APPLICABLE | No crea ni autoriza una instancia `SHELL-APP-002::implementation_unit_id` y no modifica runtime, datos ni infraestructura. |
+
+---
+
+#### 55. Criterios de aceptación
+
+- [ ] El título es exactamente `SHELL-APP-002 — Definir aplicaciones visibles por actor`.
+- [ ] `SHELL-APP-001` permanece como tarea anterior.
+- [ ] `SHELL-APP-003` permanece como siguiente tarea.
+- [ ] La conversación y el artefacto permanecen en carril documental.
+- [ ] La topología `PER_IMPLEMENTATION_UNIT` no se interpreta como autorización física.
+- [ ] Se conservan exactamente cuatro tipos de actor.
+- [ ] Solo `EMPLOYEE` participa en el grid laboral.
+- [ ] `CUSTOMER` no recibe RBAC laboral por identidad de cliente.
+- [ ] `SYSTEM` no recibe Hub interactivo.
+- [ ] `UNRESOLVED` falla cerrado.
+- [ ] Se conservan exactamente ocho roles base.
+- [ ] `trabajador_operativo` se trata como sucesor canónico vigente y no se pierde por usar el baseline histórico de siete roles.
+- [ ] Se conservan exactamente diez aplicaciones.
+- [ ] SHELL se clasifica `HUB_SELF`.
+- [ ] ANIMA, VISO y NUMERA se clasifican como entradas primarias de carril base.
+- [ ] NEXO, FOGO y ORIGO conservan doble posibilidad base u operativa.
+- [ ] PULSO no recibe visibilidad base.
+- [ ] AURA permanece diferida.
+- [ ] PASS permanece fuera del grid laboral primario.
+- [ ] La matriz contiene exactamente ocho filas de rol base.
+- [ ] La matriz contiene exactamente diez columnas de aplicación.
+- [ ] ANIMA tiene ocho roles base visibles.
+- [ ] VISO tiene siete.
+- [ ] NEXO tiene siete.
+- [ ] FOGO tiene seis.
+- [ ] ORIGO tiene seis.
+- [ ] NUMERA tiene cinco.
+- [ ] PULSO tiene cero.
+- [ ] El total de relaciones primarias base es 39.
+- [ ] `propietario` y `gerente_general` conservan elegibilidad laboral-administrativa adyacente hacia PASS sin convertirla en acceso de cliente.
+- [ ] Las concesiones AURA existentes no vuelven navegable una aplicación diferida.
+- [ ] Una concesión individual base válida puede ampliar la baseline del rol.
+- [ ] Un deny aplicable puede restringirla según precedencia canónica.
+- [ ] La matriz no se declara segunda fuente de autorización.
+- [ ] La visibilidad no se utiliza para autorizar acciones.
+- [ ] Se conservan exactamente doce roles operativos en el handoff.
+- [ ] NEXO recibe doce candidatos operativos.
+- [ ] PULSO recibe siete.
+- [ ] FOGO recibe cuatro.
+- [ ] ORIGO recibe dos.
+- [ ] Los roles operativos no se denominan tipos de actor.
+- [ ] No se resuelven turno, sede, área ni check-in dentro de esta tarea.
+- [ ] `HIDDEN_BASE` no se interpreta como ocultamiento permanente para una app compatible con carril operativo.
+- [ ] No se mezclan fragmentos incompletos de los dos carriles.
+- [ ] No se desarrolla `SHELL-APP-003`.
+- [ ] No se crean requisitos de prueba.
+- [ ] No se modifican requisitos de prueba.
+- [ ] No se modifica 04A.
+- [ ] No se modifica código.
+- [ ] No se modifica Supabase.
+- [ ] No se autoriza implementación física.
+
+---
+
+#### 56. Límites
+
+Esta tarea no:
+
+- modifica el catálogo de aplicaciones;
+- modifica los roles base;
+- modifica los roles operativos;
+- modifica `role_permissions`;
+- modifica `employee_permissions`;
+- modifica `operational_role_permissions`;
+- crea grants;
+- crea denies;
+- cambia modalidades;
+- cambia precedencia;
+- cambia el estado de AURA;
+- convierte PASS en aplicación laboral de cliente;
+- crea tarjetas;
+- elimina tarjetas;
+- cambia `src/app/page.tsx`;
+- cambia `/login`;
+- cambia destinos;
+- cambia logos;
+- cambia textos;
+- cambia middleware;
+- define razones públicas de bloqueo;
+- define visibilidad por turno;
+- define visibilidad por sede;
+- define visibilidad por área;
+- define visibilidad por rol operativo activo;
+- define comportamiento por check-in;
+- define página inicial;
+- define navegación de retorno;
+- define persistencia de contexto;
+- implementa simulación;
+- modifica Supabase;
+- modifica Auth;
+- modifica RLS;
+- modifica RPC;
+- modifica datos;
+- crea migraciones;
+- despliega;
+- crea `implementation_unit_id`;
+- autoriza una instancia física;
+- crea requisitos de prueba;
+- modifica requisitos de prueba;
+- modifica el Registro Canónico de Requisitos de Prueba;
+- desarrolla `SHELL-APP-003`.
+
+---
+
+#### 57. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`SHELL-APP-001 — Inventariar la experiencia actual del hub`
+
+**TAREA ACTUAL APROBADA**
+`SHELL-APP-002 — Definir aplicaciones visibles por actor`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-APP-003 — Definir aplicaciones visibles por contexto`
+
+
 ### [ ] SHELL-APP-003 — Definir aplicaciones visibles por contexto
