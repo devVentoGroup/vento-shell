@@ -142,5 +142,13 @@
     "TREQ TREQ-SUPABASE-1760 PASS",
     "FINAL_PHYSICAL_BATTERY 7/7 PASS",
     "REMOTE_EVIDENCE PENDING"
+  ],
+  "target_environments": [
+    {
+      "environment_role": "STAGING",
+      "target_type": "SUPABASE_PROJECT_REF",
+      "target_id": "rcrxixmqhrndcervbllp",
+      "owner": "SUPA-TRANS-015"
+    }
   ]
 }
