@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "SHELL-CI-020::GAP-PKG-001"
@@ -17,12 +17,64 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/staging-acl-reconciliation.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/staging-acl-reconciliation.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/supabase/staging-acl-reconciliation.mjs",
+    "node --test scripts/supabase/staging-acl-reconciliation.test.mjs",
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:drift:test",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "zero_treq_reason": "La corrección restaura la reproducibilidad del HISTORY_PASS de MRP015-020 ampliando la reconciliación versionada de ACL hosted para cubrir el exceso de authenticated EXECUTE previo a AUTH-DB-018; no modifica semántica funcional, TREQ, 04A ni migraciones históricas.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-04",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADOOOO",
+    "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
+  },
+  "evidence": [
+    "IMPLEMENTED authenticated RPC ACL reconciliation V4 restricted to the ten canonical server-only RPC targets at the exact seven-migration prefix through 20260828023253.",
+    "IMPLEMENTED hosted STAGING reconciliation through the Supabase Management API using postgres actor and transaction-guarded REVOKE EXECUTE operations only.",
+    "VERIFIED hosted reconciliation committed exactly ten authenticated EXECUTE revokes.",
+    "VERIFIED canonical AUTH-DB-018 RPC universe after reconciliation: contracts=100, physical_current=93, client_executable=83, server_only=10.",
+    "VERIFIED exact CORR-008 targets after reconciliation: present=10, authenticated_execute=0, service_role_execute=10, anon_execute=0.",
+    "VERIFIED hosted STAGING migration history remained count=7 with head=20260828023253.",
+    "VERIFIED zero new grants, zero data mutations, zero destructive DDL, zero migration repair, zero remote reset and zero PRODUCTION mutation.",
+    "VERIFIED all authorized CORR-008 validation commands PASS after final V4 materialization.",
+    "VERIFIED staging-acl-reconciliation V4 syntax and regression suite PASS.",
+    "VERIFIED migration manifest and Supabase drift regression suites PASS.",
+    "VERIFIED correction governance, package readiness, plan, TREQ, repository tests and diff integrity PASS."
+  ],
   "opened_at": "2026-09-05T03:00:33.543Z"
 }
