@@ -40,6 +40,20 @@ function markdown(value) {
   return String(value ?? '—').replaceAll('|', '\\|').replace(/\s+/gu, ' ').trim() || '—';
 }
 
+function completeTargetEnvironments(values) {
+  return Array.isArray(values)
+    && values.length > 0
+    && values.every((value) => (
+      value
+      && typeof value === 'object'
+      && !Array.isArray(value)
+      && String(value.environment_role ?? '').trim()
+      && String(value.target_type ?? '').trim()
+      && String(value.target_id ?? '').trim()
+      && String(value.owner ?? '').trim()
+    ));
+}
+
 function expectedInstancePattern(taskId, lifecycle) {
   if (lifecycle.mode === 'GLOBAL_ENABLE_ONCE') return `${taskId}::GLOBAL`;
   if (lifecycle.mode === 'GLOBAL_FINAL') return `${taskId}::GLOBAL-FINAL`;
@@ -221,6 +235,13 @@ export function validateImplementationControl(control, workTopology) {
       if (!Array.isArray(entry.validation_commands) || entry.validation_commands.length === 0) {
         errors.push(`${entry.instance_id} debe declarar validation_commands antes de ${entry.status}.`);
       }
+      if (
+        entry.task_id === 'SHELL-CI-020'
+        && /^SHELL-CI-020::GAP-PKG-\d{3}$/u.test(entry.instance_id)
+        && !completeTargetEnvironments(entry.target_environments)
+      ) {
+        errors.push(`${entry.instance_id} debe declarar target_environments completos antes de ${entry.status}.`);
+      }
       const authorization = entry.authorization;
       if (!authorization || typeof authorization !== 'object' || Array.isArray(authorization)) {
         errors.push(`${entry.instance_id} debe conservar authorization como evidencia humana antes de ${entry.status}.`);
@@ -323,6 +344,7 @@ export function deriveImplementationControl({
         targetRepositories: explicit?.target_repositories ?? [],
         authorizedChanges: explicit?.authorized_changes ?? [],
         validationCommands: explicit?.validation_commands ?? [],
+        targetEnvironments: explicit?.target_environments ?? [],
         evidence: explicit?.evidence ?? [],
         blocker: explicit?.blocker ?? null,
       };
@@ -346,6 +368,7 @@ export function deriveImplementationControl({
         targetRepositories: entry.target_repositories ?? [],
         authorizedChanges: entry.authorized_changes ?? [],
         validationCommands: entry.validation_commands ?? [],
+        targetEnvironments: entry.target_environments ?? [],
         evidence: entry.evidence ?? [],
         blocker: entry.blocker ?? null,
       };

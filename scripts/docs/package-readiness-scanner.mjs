@@ -1008,6 +1008,31 @@ function parseRepositoryProjection(source) {
   return result;
 }
 
+export function parseDeploymentEnvironmentProjection(source) {
+  let block;
+  try {
+    block = extractTaskBlock(source, 'DELIV-PKG-019');
+  } catch {
+    return new Map();
+  }
+  const table = findTable(block, ['package_id', 'perfil ambiente', 'resultado 019']);
+  if (!table) return new Map();
+  const result = new Map();
+  for (const row of table.rows) {
+    const packageId = tableValue(row, table, ['package_id', 'paquete']);
+    if (!/^GAP-PKG-\d{3}$/u.test(packageId)) continue;
+    const profileCell = tableValue(row, table, ['perfil ambiente']);
+    const rolloutProfile = /\bTP-[A-Z]+-\d{3}\b/u.exec(profileCell)?.[0] ?? null;
+    const environmentProfile = /\bENV-[A-Z0-9-]+\b/u.exec(profileCell)?.[0] ?? null;
+    result.set(packageId, {
+      rollout_profile_019: rolloutProfile,
+      deployment_environment_profile_019: environmentProfile,
+      rollout_result_019: tableValue(row, table, ['resultado 019']),
+    });
+  }
+  return result;
+}
+
 function extractTaskIds(value) {
   return [...new Set([...String(value ?? '').matchAll(TASK_ID_PATTERN)].map((match) => match[0]))]
     .sort((left, right) => left.localeCompare(right, 'en'));
@@ -1299,6 +1324,7 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
   const membershipAudit = parseGapMembershipAudit(gapRoutingSource, config);
   const dominantProjection = parseDominantTaskProjection(source);
   const executionProjection = parsePackageExecutionProjection(source);
+  const deploymentEnvironmentProjection = parseDeploymentEnvironmentProjection(source);
   const packages = [];
   const seen = new Set();
   for (const row of table.rows) {
@@ -1321,6 +1347,11 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
       ...(taskRouting.get(packageId) ?? { primary_task_ids: [], support_task_ids: [] }),
       ...(dominantProjection.get(packageId) ?? { dominant_task_id: null, runtime_profile_007: null, runtime_state_007: null }),
       execution: executionProjection.get(packageId) ?? null,
+      ...(deploymentEnvironmentProjection.get(packageId) ?? {
+        rollout_profile_019: null,
+        deployment_environment_profile_019: null,
+        rollout_result_019: null,
+      }),
       gap_membership_count: membershipAudit.by_package.get(packageId) ?? 0,
     });
   }
@@ -1345,6 +1376,12 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
   const withoutExecutionOrder = packages.filter(({ execution }) => !execution);
   if (withoutExecutionOrder.length > 0) {
     fail(`DELIV-PKG-015 no resolvió orden para ${withoutExecutionOrder.length} package(s): ${withoutExecutionOrder.slice(0, 10).map(({ package_id: packageId }) => packageId).join(', ')}${withoutExecutionOrder.length > 10 ? ', ...' : ''}.`);
+  }
+  const withoutDeploymentEnvironment = packages.filter(({ rollout_profile_019: rollout, deployment_environment_profile_019: environment }) => (
+    !rollout || !environment
+  ));
+  if (withoutDeploymentEnvironment.length > 0) {
+    fail(`DELIV-PKG-019 no resolvió rollout/ambiente para ${withoutDeploymentEnvironment.length} package(s): ${withoutDeploymentEnvironment.slice(0, 10).map(({ package_id: packageId }) => packageId).join(', ')}${withoutDeploymentEnvironment.length > 10 ? ', ...' : ''}.`);
   }
   return {
     catalog_id: config.catalog_id,
@@ -1378,8 +1415,11 @@ function implementationUnitSatisfied(value) {
   return !/(?:NO_MATERIALIZADO|PENDIENTE|UNKNOWN|DESCONOCIDO|N\/A|NO_APLICA)/u.test(normalized);
 }
 
-function canonicalPackageBlockers(entry, contract, packageGate = null) {
+function canonicalPackageBlockers(entry, contract, packageGate = null, deploymentEnvironment = null) {
   const blockers = [];
+  if (deploymentEnvironment && deploymentEnvironment.status !== 'PASS') {
+    blockers.push(`DEPLOYMENT_ENVIRONMENT:${deploymentEnvironment.status}:${deploymentEnvironment.detail}`);
+  }
   if (packageGate?.approval_complete) return blockers;
   if (!finalDecisionPass(entry.state_023, contract)) blockers.push(`CANONICAL_EVIDENCE_STATE:${entry.state_023 || 'UNKNOWN'}`);
   if (!finalDecisionPass(entry.physical_state, contract)) blockers.push(`CANONICAL_PHYSICAL_STATE:${entry.physical_state || 'UNKNOWN'}`);
@@ -1395,10 +1435,10 @@ function taskPrerequisiteBlockers(taskPrerequisites) {
     .map(({ task_id: taskId, status }) => `TASK_PREREQUISITE:${taskId}:${status}`);
 }
 
-function canonicalDocumentaryGate({ entry, contract, inventory, taskPrerequisites, packageGate = null }) {
-  const pass = packageGate?.approval_complete === true;
+function canonicalDocumentaryGate({ entry, contract, inventory, taskPrerequisites, packageGate = null, deploymentEnvironment = null }) {
+  const pass = packageGate?.approval_complete === true && deploymentEnvironment?.status === 'PASS';
   const template = taskEvidence(contract.gate.task_id, inventory);
-  const blockers = [...canonicalPackageBlockers(entry, contract, packageGate), ...taskPrerequisiteBlockers(taskPrerequisites)];
+  const blockers = [...canonicalPackageBlockers(entry, contract, packageGate, deploymentEnvironment), ...taskPrerequisiteBlockers(taskPrerequisites)];
   const checks = [
     {
       id: 'PACKAGE_ID_EXISTS',
@@ -1435,8 +1475,8 @@ function canonicalDocumentaryGate({ entry, contract, inventory, taskPrerequisite
   };
 }
 
-function canonicalPackageDossier(entry, contract, inventory, packageGate = null) {
-  const pass = packageGate?.approval_complete === true;
+function canonicalPackageDossier(entry, contract, inventory, packageGate = null, deploymentEnvironment = null) {
+  const pass = packageGate?.approval_complete === true && deploymentEnvironment?.status === 'PASS';
   const templates = contract.dossier_conditions.flatMap(({ deliv_pkg_refs: refs }) => refs.map((taskId) => taskEvidence(taskId, inventory)));
   const contractReady = templates.every(({ status }) => status === 'PASS');
   return {
@@ -1667,6 +1707,52 @@ export function derivePackageExecutionRequirements({ contract, packageGate = nul
     in_package_candidate_gate: foundation.in_package_candidate_gate
       ? { ...foundation.in_package_candidate_gate }
       : null,
+  };
+}
+
+export function evaluatePackageDeploymentEnvironment({ entry, packageGate = null, executionRequirements = null } = {}) {
+  const declared = packageGate?.deployment_environment ?? null;
+  const expectedRollout = String(entry?.rollout_profile_019 ?? '').trim();
+  const expectedEnvironment = String(entry?.deployment_environment_profile_019 ?? '').trim();
+  const problems = [];
+
+  if (!declared) {
+    problems.push('DECLARATION_MISSING');
+  } else {
+    if (declared.canonical_task_id !== 'DELIV-PKG-019') problems.push('CANONICAL_TASK_MISMATCH');
+    if (String(declared.rollout_profile ?? '').trim() !== expectedRollout) problems.push('ROLLOUT_PROFILE_MISMATCH');
+    if (String(declared.environment_profile ?? '').trim() !== expectedEnvironment) problems.push('ENVIRONMENT_PROFILE_MISMATCH');
+  }
+
+  if (declared && expectedEnvironment === 'ENV-SUPABASE-LOCAL-CI-STAGING') {
+    if (executionRequirements?.supabase_mutation_required !== true) {
+      problems.push('SUPABASE_FOUNDATION_NOT_APPLICABLE');
+    }
+    const binding = executionRequirements?.remote_environment_identity?.bindings?.STAGING ?? null;
+    const targets = Array.isArray(declared.targets) ? declared.targets : [];
+    const stagingTargets = targets.filter((target) => String(target?.environment_role ?? '').trim().toUpperCase() === 'STAGING');
+    const productionTargets = targets.filter((target) => String(target?.environment_role ?? '').trim().toUpperCase() === 'PRODUCTION');
+    if (!binding) problems.push('STAGING_BINDING_MISSING');
+    if (stagingTargets.length !== 1) problems.push(`STAGING_TARGET_COUNT_${stagingTargets.length}`);
+    if (declared.production_authorized !== false) problems.push('PRODUCTION_MUST_REMAIN_UNAUTHORIZED');
+    if (productionTargets.length > 0) problems.push('PRODUCTION_TARGET_FORBIDDEN');
+    if (binding && stagingTargets.length === 1) {
+      const target = stagingTargets[0];
+      if (String(target.target_type ?? '').trim().toUpperCase() !== 'SUPABASE_PROJECT_REF') problems.push('STAGING_TARGET_TYPE_MISMATCH');
+      if (String(target.target_id ?? '').trim() !== String(binding.project_ref ?? '').trim()) problems.push('STAGING_PROJECT_REF_MISMATCH');
+      if (String(target.owner ?? '').trim() !== String(binding.owner ?? '').trim()) problems.push('STAGING_OWNER_MISMATCH');
+    }
+  }
+
+  return {
+    status: problems.length === 0 ? 'PASS' : 'FAIL',
+    expected_rollout_profile: expectedRollout || null,
+    expected_environment_profile: expectedEnvironment || null,
+    declared,
+    problems,
+    detail: problems.length === 0
+      ? `DELIV-PKG-019 coincide con ${expectedRollout}/${expectedEnvironment}.`
+      : problems.join(', '),
   };
 }
 
@@ -2032,12 +2118,24 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
       })
       : null;
     const executionRequirements = derivePackageExecutionRequirements({ contract, packageGate: gateRecord });
-    const canonicalBlockers = canonicalPackageBlockers(entry, contract, packageGate);
+    const deploymentEnvironment = evaluatePackageDeploymentEnvironment({
+      entry,
+      packageGate,
+      executionRequirements,
+    });
+    const canonicalBlockers = canonicalPackageBlockers(entry, contract, packageGate, deploymentEnvironment);
     const taskBlockers = taskPrerequisiteBlockers(taskPrerequisites);
     const blockers = [...new Set([...canonicalBlockers, ...taskBlockers])];
     const status = blockers.length === 0 ? 'READY_FOR_GATE' : 'COMPILED';
-    const dossier = canonicalPackageDossier(entry, contract, inventory, packageGate);
-    const documentaryGate = canonicalDocumentaryGate({ entry, contract, inventory, taskPrerequisites, packageGate });
+    const dossier = canonicalPackageDossier(entry, contract, inventory, packageGate, deploymentEnvironment);
+    const documentaryGate = canonicalDocumentaryGate({
+      entry,
+      contract,
+      inventory,
+      taskPrerequisites,
+      packageGate,
+      deploymentEnvironment,
+    });
     const draft = {
       package_id: entry.package_id,
       source_kind: 'CANONICAL_GAP_PACKAGE',
@@ -2051,6 +2149,7 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
       runtime_profile: entry.runtime_profile ?? null,
       execution: entry.execution,
       execution_requirements: executionRequirements,
+      deployment_environment: deploymentEnvironment,
       status,
       status_scope: 'DOCUMENTARY_READINESS',
       capability_status: 'CANONICAL_E5_PACKAGE',
@@ -2070,6 +2169,9 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
         inherited_gate_017: entry.inherited_gate_017 ?? null,
         test_profile_016: entry.test_profile_016 ?? null,
         observability_017: entry.observability_017 ?? null,
+        rollout_profile_019: entry.rollout_profile_019 ?? null,
+        deployment_environment_profile_019: entry.deployment_environment_profile_019 ?? null,
+        rollout_result_019: entry.rollout_result_019 ?? null,
       },
       dossier,
       gate_documentary: documentaryGate,

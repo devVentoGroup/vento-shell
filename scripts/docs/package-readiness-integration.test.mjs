@@ -408,3 +408,14 @@ test('docs:plan:check converge todas sus proyecciones antes de comprobarlas', ()
     ),
   );
 });
+
+test('DELIV-PKG-019 queda enlazado fail-closed hasta la autorización CI020', () => {
+  const implementationSource = fs.readFileSync('scripts/docs/implementation-control.mjs', 'utf8');
+  const guardSource = fs.readFileSync('scripts/docs/implementation-correction-guard.mjs', 'utf8');
+  assert.match(scannerSource, /parseDeploymentEnvironmentProjection/u);
+  assert.match(scannerSource, /evaluatePackageDeploymentEnvironment/u);
+  assert.match(scannerSource, /deployment_environment_profile_019/u);
+  assert.match(implementationSource, /target_environments completos/u);
+  assert.match(guardSource, /IMPLEMENTATION_ENVIRONMENT_MISMATCH/u);
+  assert.match(guardSource, /PRODUCTION no está autorizada/u);
+});

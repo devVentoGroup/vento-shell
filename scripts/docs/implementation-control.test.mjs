@@ -367,3 +367,59 @@ test('foundation pendiente prevalece sobre PENDING_AUTHORIZATION de SHELL-CI-020
   assert.equal(projected.record.status, 'PENDING_AUTHORIZATION');
   assert.equal(result.physical.blockedCount, 1);
 });
+
+test('SHELL-CI-020 AUTHORIZED exige target_environments completos', () => {
+  const task = { id: 'SHELL-CI-020', title: 'Implementar package', marker: '✅', relativePath: 'ci.md' };
+  const workTopology = {
+    ordered: [task],
+    inventory: new Map([[task.id, task]]),
+    topology: new Map([[task.id, {
+      taskId: task.id,
+      mode: 'PER_IMPLEMENTATION_UNIT',
+      instancePattern: '<task_id>::<implementation_unit_id>',
+    }]]),
+    currentId: task.id,
+  };
+  const entry = {
+    instance_id: 'SHELL-CI-020::GAP-PKG-001',
+    task_id: 'SHELL-CI-020',
+    status: 'AUTHORIZED',
+    target_repositories: ['vento-group-sas/vento-shell'],
+    authorized_changes: ['supabase/functions/shift-runtime-processor/index.ts'],
+    validation_commands: ['npm test'],
+    prerequisite_evidence: ['E5-GATE-008::GAP-PKG-001'],
+    authorization: {
+      decision: 'APPROVED',
+      approved_by: 'VENTO_OWNER',
+      approved_at: '2026-09-05T14:00:00-05:00',
+      timezone: 'America/Bogota',
+      approval_statement: 'APROBADO.',
+      source_contract_sha256: 'a'.repeat(64),
+    },
+    evidence: [],
+  };
+  assert.throws(() => deriveImplementationControl({
+    control: { ...baseControl, instances: [entry] },
+    workTopology,
+    packageExecution: null,
+    preflight: { task: { id: task.id, title: task.title, owner: task.relativePath } },
+  }), /target_environments completos/u);
+
+  const valid = {
+    ...entry,
+    target_environments: [{
+      environment_role: 'STAGING',
+      target_type: 'SUPABASE_PROJECT_REF',
+      target_id: 'rcrxixmqhrndcervbllp',
+      owner: 'SUPA-TRANS-015',
+    }],
+  };
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [valid] },
+    workTopology,
+    packageExecution: null,
+    preflight: { task: { id: task.id, title: task.title, owner: task.relativePath } },
+  });
+  assert.equal(result.primaryAction.type, 'EJECUTAR_IMPLEMENTACION');
+  assert.deepEqual(result.physical.active.targetEnvironments, valid.target_environments);
+});
