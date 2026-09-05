@@ -514,7 +514,25 @@
           "foundation_id": "MRP015-030",
           "gate_id": "CLEAN_REPLAY_PASS",
           "owner_task": "SUPA-TRANS-015",
-          "evidence_ref": null
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-030",
+            "gate_id": "CLEAN_REPLAY_PASS",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-05T17:59:58.157Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "CLEAN_REPLAY",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "d6531265af5c785008be4bf460e774694c8316ac16132bcbaa10b6d90d080416",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "df4d9cb849ee82e28f29fbe46bf44cb2777136610e99272c8b1728b73b8866b7"
+          }
         },
         {
           "foundation_id": "MRP015-040",
