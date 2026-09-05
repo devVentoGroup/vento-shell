@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1596** |
 | Tareas `AUTH` únicas | **319** |
-| Tareas aprobadas | **1117** |
+| Tareas aprobadas | **1118** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **479** |
+| Tareas no iniciadas | **478** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **69.99% (1117/1596)** |
+| Porcentaje de completamiento | **70.05% (1118/1596)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance** |
-| Tarea actual | **SHELL-APP-001 — Inventariar la experiencia actual del hub** |
+| Última tarea aprobada | **SHELL-APP-001 — Inventariar la experiencia actual del hub** |
+| Tarea actual | **SHELL-APP-002 — Definir aplicaciones visibles por actor** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-APP-002 — Definir aplicaciones visibles por actor** |
+| Siguiente tarea | **SHELL-APP-003 — Definir aplicaciones visibles por contexto** |
 | Bloque actual | **BLOQUE H2 — SHELL como aplicación** |
-| Progreso del bloque | **BLOQUE H2: 0 de 21 aprobadas; SHELL-APP-001 pendiente** |
+| Progreso del bloque | **BLOQUE H2: 1 de 21 aprobadas; SHELL-APP-002 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-020::GAP-PKG-001** |
-| Carril documental | **ACTIVO — SHELL-APP-001** |
+| Carril documental | **ACTIVO — SHELL-APP-002** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-020::GAP-PKG-001** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `VISO-CORE-006` — Aprobar núcleo antes de ampliar alcance |
-| Tarea actual | `SHELL-APP-001` — Inventariar la experiencia actual del hub — **NO INICIADA** |
-| Siguiente tarea | `SHELL-APP-002` — Definir aplicaciones visibles por actor |
+| Última aprobada | `SHELL-APP-001` — Inventariar la experiencia actual del hub |
+| Tarea actual | `SHELL-APP-002` — Definir aplicaciones visibles por actor — **NO INICIADA** |
+| Siguiente tarea | `SHELL-APP-003` — Definir aplicaciones visibles por contexto |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUE H2: 0 DE 21 APROBADAS — ACTUAL SHELL-APP-001** |
+| CONTINUIDAD ACTIVA | **BLOQUE H2: 1 DE 21 APROBADAS — ACTUAL SHELL-APP-002** |
 | Implementación física | **SHELL-CI-020::GAP-PKG-001 — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance
-        ↓
-TAREA ACTUAL
 SHELL-APP-001 — Inventariar la experiencia actual del hub
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-APP-002 — Definir aplicaciones visibles por actor
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-APP-003 — Definir aplicaciones visibles por contexto
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H2 — 0 de 21 tareas aprobadas
+BLOQUE H2 — 1 de 21 tareas aprobadas
 ```
