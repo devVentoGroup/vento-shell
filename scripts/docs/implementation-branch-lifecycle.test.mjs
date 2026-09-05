@@ -494,3 +494,27 @@ test('package registry persistente es proyección derivada física', () => {
     'DERIVED_PROJECTION',
   );
 });
+
+// CORR-010 OWN LEDGER SCOPE
+test('el lifecycle permite únicamente el ledger propio sin exigirlo en authorized_changes', () => {
+  const instance = {
+    instance_id: 'SHELL-CI-021::GAP-PKG-001',
+    authorized_changes: [
+      { repo: 'vento-group-sas/vento-shell', path: 'packages/ui-web/src/Test.tsx', change: 'MODIFY' },
+    ],
+  };
+  assert.equal(
+    classifyImplementationPath(
+      'docs/plan-canonico/modular/implementation-instances/SHELL-CI-021__GAP-PKG-001.json',
+      instance,
+    ),
+    'OWN_INSTANCE_LEDGER',
+  );
+  assert.equal(
+    classifyImplementationPath(
+      'docs/plan-canonico/modular/implementation-instances/SHELL-CI-022__GAP-PKG-001.json',
+      instance,
+    ),
+    'OTHER',
+  );
+});

@@ -69,7 +69,7 @@ test('SHELL-CI-020 no puede iniciar mientras CURRENT_EXECUTABLE_WORK sea una fun
 
     const ready = { registry: {
         package_execution: {
-            current: { package_id: 'GAP-PKG-001', next_action: { type: 'AUTHORIZE_PHYSICAL_IMPLEMENTATION', target: 'SHELL-CI-020::GAP-PKG-001' } },
+            current: { package_id: 'GAP-PKG-001', next_action: { type: 'CONTINUE_PHYSICAL_LIFECYCLE', target: 'SHELL-CI-020::GAP-PKG-001' } },
         },
         packages: [{
             package_id: 'GAP-PKG-001',
@@ -104,4 +104,32 @@ test('guard rechaza target_environments distinto del package-gate', () => {
         () => assertImplementationDeploymentEnvironment({ instance, pkg }),
         /IMPLEMENTATION_ENVIRONMENT_MISMATCH/u,
     );
+});
+
+// CORR-010 PACKAGE STAGE GUARD
+test('guard solo admite la etapa física exacta CI020..CI024 del package actual', () => {
+  for (const taskId of ['SHELL-CI-021', 'SHELL-CI-022', 'SHELL-CI-023', 'SHELL-CI-024']) {
+    const instance = {
+      instance_id: `${taskId}::GAP-PKG-001`,
+      task_id: taskId,
+    };
+    const readiness = { registry: { package_execution: {
+      current: {
+        package_id: 'GAP-PKG-001',
+        next_action: { type: 'CONTINUE_PHYSICAL_LIFECYCLE', target: instance.instance_id },
+      },
+    } } };
+    assert.equal(assertImplementationPackageReadiness({ instance, readiness }), true);
+  }
+
+  assert.throws(
+    () => assertImplementationPackageReadiness({
+      instance: { instance_id: 'SHELL-CI-023::GAP-PKG-001', task_id: 'SHELL-CI-023' },
+      readiness: { registry: { package_execution: { current: {
+        package_id: 'GAP-PKG-001',
+        next_action: { type: 'CONTINUE_PHYSICAL_LIFECYCLE', target: 'SHELL-CI-021::GAP-PKG-001' },
+      } } } },
+    }),
+    /IMPLEMENTATION_START_NOT_READY/u,
+  );
 });

@@ -423,3 +423,38 @@ test('SHELL-CI-020 AUTHORIZED exige target_environments completos', () => {
   assert.equal(result.primaryAction.type, 'EJECUTAR_IMPLEMENTACION');
   assert.deepEqual(result.physical.active.targetEnvironments, valid.target_environments);
 });
+
+// CORR-010 PACKAGE CANDIDATE DERIVATION
+test('deriva y materializa únicamente la siguiente TEMPLATE_PER_PACKAGE indicada por package_execution', () => {
+  const tasks = ['SHELL-CI-021', 'SHELL-CI-022', 'SHELL-CI-023', 'SHELL-CI-024']
+    .map((id) => ({ id, title: id, marker: '✅', relativePath: 'ci.md' }));
+  const workTopology = {
+    ordered: tasks,
+    inventory: new Map(tasks.map((task) => [task.id, task])),
+    topology: new Map(tasks.map((task) => [task.id, {
+      taskId: task.id,
+      mode: 'TEMPLATE_PER_PACKAGE',
+      instancePattern: '<task_id>::<package_id>',
+    }])),
+    currentId: 'SHELL-CI-021',
+  };
+  const packageExecution = {
+    current: {
+      package_id: 'GAP-PKG-001',
+      next_action: {
+        type: 'CONTINUE_PHYSICAL_LIFECYCLE',
+        target: 'SHELL-CI-021::GAP-PKG-001',
+      },
+    },
+  };
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [] },
+    workTopology,
+    packageExecution,
+    preflight: { task: { id: 'SHELL-CI-021', title: 'SHELL-CI-021', owner: 'ci.md' } },
+  });
+  assert.equal(result.primaryAction.type, 'AUTORIZAR_IMPLEMENTACION');
+  assert.equal(result.primaryAction.target, 'SHELL-CI-021::GAP-PKG-001');
+  assert.equal(result.physical.active.source, 'DERIVED_FROM_APPROVED_CONTRACT');
+  assert.equal(result.physical.active.lifecycleMode, 'TEMPLATE_PER_PACKAGE');
+});

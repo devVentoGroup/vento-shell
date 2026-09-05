@@ -174,6 +174,221 @@ export function validateFoundationEvidenceRef(gate, evidenceRef) {
   return { status: 'PASS', detail: `Gate ${gate.gate_id} conserva evidencia estructurada e íntegra de ${FOUNDATION_EVIDENCE_PRODUCER}.` };
 }
 
+const IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE = 'MRP015_050_CANDIDATE_READY';
+const SHELL_REPOSITORY = 'vento-group-sas/vento-shell';
+
+function repositoryHeadSha(root) {
+  const result = spawnSync('git', ['rev-parse', 'HEAD'], {
+    cwd: root,
+    encoding: 'utf8',
+    windowsHide: true,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  if (result.error || result.status !== 0) {
+    fail(`No se pudo resolver HEAD para MRP015-050: ${result.error?.message ?? result.stderr ?? result.stdout}.`);
+  }
+  const value = String(result.stdout ?? '').trim().toLowerCase();
+  if (!/^[a-f0-9]{40}$/u.test(value)) fail(`HEAD inválido para MRP015-050: ${value || 'EMPTY'}.`);
+  return value;
+}
+
+function candidateLedgerPath(instanceId) {
+  return `${READINESS_PATHS.implementationInstances}/${String(instanceId).replaceAll('::', '__')}.json`;
+}
+
+function candidateScopeRows({ root, instance, foundation }) {
+  const ownLedger = candidateLedgerPath(instance.instance_id);
+  const rows = (instance.authorized_changes ?? [])
+    .filter((entry) => String(entry?.repo ?? '').trim() === SHELL_REPOSITORY)
+    .map((entry) => ({
+      path: normalizedTargetPath(entry?.path),
+      change: String(entry?.change ?? '').trim().toUpperCase(),
+    }))
+    .filter((entry) => entry.path
+      && entry.path !== ownLedger
+      && entry.change !== 'EXECUTE_ONLY'
+      && targetRequiresSupabaseFoundation(entry.path, foundation))
+    .sort((left, right) => left.path.localeCompare(right.path, 'en') || left.change.localeCompare(right.change, 'en'));
+
+  if (rows.length === 0) {
+    fail(`MRP015-050 no aplica: ${instance.instance_id} no declara superficies Supabase mutables en ${SHELL_REPOSITORY}.`);
+  }
+
+  const files = rows.map((entry) => {
+    const absolute = rel(root, entry.path);
+    const exists = fs.existsSync(absolute) && fs.statSync(absolute).isFile();
+    if (['CREATE', 'MODIFY'].includes(entry.change) && !exists) {
+      fail(`MRP015-050: ${entry.change} exige archivo materializado ${entry.path}.`);
+    }
+    if (entry.change === 'DELETE' && exists) {
+      fail(`MRP015-050: DELETE aún conserva ${entry.path}.`);
+    }
+    return {
+      ...entry,
+      exists,
+      content_sha256: exists ? sha256(fs.readFileSync(absolute, 'utf8')) : null,
+    };
+  });
+
+  return { rows, files };
+}
+
+function candidateDigests({ root, instance, foundation }) {
+  const snapshot = candidateScopeRows({ root, instance, foundation });
+  return {
+    authorized_scope_sha256: sha256(canonicalJson(snapshot.rows)),
+    candidate_scope_sha256: sha256(canonicalJson(snapshot.files)),
+    files: snapshot.files,
+  };
+}
+
+export function buildInPackageCandidateEvidence({
+  root = process.cwd(),
+  packageId,
+  instance,
+  gate,
+  candidateHeadSha = null,
+  recordedAt = new Date().toISOString(),
+} = {}) {
+  const normalizedPackageId = String(packageId ?? '').trim().toUpperCase();
+  if (!/^GAP-PKG-\d{3}$/u.test(normalizedPackageId)) fail(`MRP015-050 package inválido: ${packageId ?? 'EMPTY'}.`);
+  const expectedInstanceId = `SHELL-CI-020::${normalizedPackageId}`;
+  if (instance?.instance_id !== expectedInstanceId || instance?.task_id !== 'SHELL-CI-020') {
+    fail(`MRP015-050 exige ${expectedInstanceId}.`);
+  }
+  if (
+    gate?.foundation_id !== 'MRP015-050'
+    || gate?.gate_id !== 'CANDIDATE_READY'
+    || gate?.owner_task !== 'SUPA-TRANS-015'
+    || gate?.phase !== 'AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY'
+  ) {
+    fail('MRP015-050 conserva contrato de gate inválido.');
+  }
+
+  const contract = readJson(root, READINESS_PATHS.contract);
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation ?? null;
+  const digests = candidateDigests({ root, instance, foundation });
+  const head = candidateHeadSha ?? repositoryHeadSha(root);
+  if (!/^[a-f0-9]{40}$/u.test(String(head))) fail(`MRP015-050 candidate_head_sha inválido: ${head ?? 'EMPTY'}.`);
+
+  const payload = {
+    schema_version: 1,
+    evidence_type: IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE,
+    foundation_id: 'MRP015-050',
+    gate_id: 'CANDIDATE_READY',
+    owner_task: 'SUPA-TRANS-015',
+    phase: 'AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY',
+    package_id: normalizedPackageId,
+    instance_id: expectedInstanceId,
+    recorded_at: recordedAt,
+    candidate_head_sha: String(head).toLowerCase(),
+    authorized_scope_sha256: digests.authorized_scope_sha256,
+    candidate_scope_sha256: digests.candidate_scope_sha256,
+    candidate_file_count: digests.files.length,
+    status: 'PASS',
+    remote_mutations: false,
+    secret_values_in_evidence: false,
+  };
+  return { ...payload, payload_sha256: sha256(canonicalJson(payload)) };
+}
+
+export function validateInPackageCandidateEvidence({
+  root = process.cwd(),
+  packageId,
+  instance,
+  gate,
+  currentHeadSha = null,
+} = {}) {
+  const normalizedPackageId = String(packageId ?? '').trim().toUpperCase();
+  const expectedInstanceId = `SHELL-CI-020::${normalizedPackageId}`;
+  const evidence = [...(Array.isArray(instance?.evidence) ? instance.evidence : [])]
+    .reverse()
+    .find((entry) => entry && typeof entry === 'object'
+      && !Array.isArray(entry)
+      && entry.evidence_type === IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE) ?? null;
+  if (!evidence) return { status: 'UNKNOWN', detail: 'No existe evidencia package-scoped MRP015-050.' };
+
+  const identity = {
+    schema_version: 1,
+    evidence_type: IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE,
+    foundation_id: 'MRP015-050',
+    gate_id: 'CANDIDATE_READY',
+    owner_task: 'SUPA-TRANS-015',
+    phase: 'AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY',
+    package_id: normalizedPackageId,
+    instance_id: expectedInstanceId,
+    status: 'PASS',
+    remote_mutations: false,
+    secret_values_in_evidence: false,
+  };
+  for (const [key, value] of Object.entries(identity)) {
+    if (evidence[key] !== value) return { status: 'FAIL', detail: `MRP015-050 ${key} inválido.` };
+  }
+  if (instance?.instance_id !== expectedInstanceId || instance?.task_id !== 'SHELL-CI-020') {
+    return { status: 'FAIL', detail: 'MRP015-050 no pertenece al ledger CI020 esperado.' };
+  }
+  if (!/^\d{4}-\d{2}-\d{2}T/u.test(String(evidence.recorded_at ?? ''))) {
+    return { status: 'FAIL', detail: 'MRP015-050 recorded_at inválido.' };
+  }
+  const { payload_sha256: digest, ...payload } = evidence;
+  if (!/^[a-f0-9]{64}$/u.test(String(digest ?? '')) || sha256(canonicalJson(payload)) !== digest) {
+    return { status: 'FAIL', detail: 'MRP015-050 payload_sha256 inválido.' };
+  }
+
+  try {
+    const contract = readJson(root, READINESS_PATHS.contract);
+    const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation ?? null;
+    const digests = candidateDigests({ root, instance, foundation });
+    const head = currentHeadSha ?? repositoryHeadSha(root);
+    if (evidence.candidate_head_sha !== String(head).toLowerCase()) {
+      return { status: 'FAIL', detail: 'MRP015-050 quedó stale porque HEAD cambió.' };
+    }
+    if (evidence.authorized_scope_sha256 !== digests.authorized_scope_sha256) {
+      return { status: 'FAIL', detail: 'MRP015-050 quedó stale porque cambió authorized_changes.' };
+    }
+    if (evidence.candidate_scope_sha256 !== digests.candidate_scope_sha256) {
+      return { status: 'FAIL', detail: 'MRP015-050 quedó stale porque cambió el candidato materializado.' };
+    }
+    if (evidence.candidate_file_count !== digests.files.length) {
+      return { status: 'FAIL', detail: 'MRP015-050 candidate_file_count inconsistente.' };
+    }
+  } catch (error) {
+    return { status: 'FAIL', detail: error instanceof Error ? error.message : String(error) };
+  }
+
+  if (
+    gate?.foundation_id !== 'MRP015-050'
+    || gate?.gate_id !== 'CANDIDATE_READY'
+    || gate?.owner_task !== 'SUPA-TRANS-015'
+  ) {
+    return { status: 'FAIL', detail: 'MRP015-050 gate identity inválida.' };
+  }
+  return { status: 'PASS', detail: `MRP015-050 válido para ${normalizedPackageId} y ${expectedInstanceId}.`, evidence };
+}
+
+export function recordInPackageCandidateEvidence({ root = process.cwd(), packageId } = {}) {
+  const normalizedPackageId = String(packageId ?? '').trim().toUpperCase();
+  if (!/^GAP-PKG-\d{3}$/u.test(normalizedPackageId)) fail(`MRP015-050 package inválido: ${packageId ?? 'EMPTY'}.`);
+  const contract = readJson(root, READINESS_PATHS.contract);
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation ?? null;
+  const gate = foundation?.in_package_candidate_gate ?? null;
+  const instanceId = `SHELL-CI-020::${normalizedPackageId}`;
+  const instances = readImplementationInstances(root);
+  const instance = instances.get(instanceId) ?? null;
+  if (!instance) fail(`MRP015-050 no encuentra ${instanceId}.`);
+  if (!['IN_PROGRESS', 'IMPLEMENTED'].includes(instance.status)) {
+    fail(`MRP015-050 exige ${instanceId} IN_PROGRESS o IMPLEMENTED; actual ${instance.status ?? 'UNKNOWN'}.`);
+  }
+
+  const evidence = buildInPackageCandidateEvidence({ root, packageId: normalizedPackageId, instance, gate });
+  const next = {
+    ...instance,
+    evidence: [...(Array.isArray(instance.evidence) ? instance.evidence : []), evidence],
+  };
+  fs.writeFileSync(rel(root, candidateLedgerPath(instanceId)), stableJson(next), 'utf8');
+  return { status: 'PASS', packageId: normalizedPackageId, instanceId, evidence };
+}
+
 function processEvidence(id, result) {
   const stdout = String(result.stdout ?? '');
   const stderr = String(result.stderr ?? '');
@@ -711,8 +926,25 @@ function validateSupabasePreE5Foundation(contract, errors) {
     candidate?.foundation_id !== 'MRP015-050'
     || candidate?.gate_id !== 'CANDIDATE_READY'
     || candidate?.owner_task !== 'SUPA-TRANS-015'
+    || candidate?.phase !== 'AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY'
   ) {
-    errors.push('supabase_pre_e5_foundation.in_package_candidate_gate debe ser MRP015-050/CANDIDATE_READY de SUPA-TRANS-015.');
+    errors.push('supabase_pre_e5_foundation.in_package_candidate_gate debe ser MRP015-050/CANDIDATE_READY de SUPA-TRANS-015 en fase AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY.');
+  }
+  const candidateBinding = candidate?.evidence_binding;
+  if (
+    candidateBinding?.storage !== 'SHELL_CI_020_INSTANCE_EVIDENCE'
+    || candidateBinding?.evidence_type !== IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE
+    || candidateBinding?.producer !== 'package-readiness-scanner::recordInPackageCandidateEvidence'
+    || candidateBinding?.package_scoped !== true
+    || candidateBinding?.instance_task !== 'SHELL-CI-020'
+    || candidateBinding?.candidate_head_sha_required !== true
+    || candidateBinding?.authorized_scope_sha256_required !== true
+    || candidateBinding?.candidate_scope_sha256_required !== true
+    || candidateBinding?.cross_package_reuse_forbidden !== true
+    || candidateBinding?.stale_after_candidate_change !== true
+    || candidateBinding?.secret_values_forbidden !== true
+  ) {
+    errors.push('MRP015-050.evidence_binding no conserva binding package-scoped fail-closed sobre el ledger SHELL-CI-020.');
   }
 
   const remote = foundation.remote_environment_identity;
@@ -1958,19 +2190,48 @@ function evaluateEffectiveGate(documentaryGate, physicalDependencies) {
   return { gate_id: documentaryGate.gate_id, status, pass: status === 'PASS', scope: 'EFFECTIVE_PACKAGE_GATE', checks };
 }
 
-function physicalLifecycleStatus(packageId, instances, contract) {
-  const ci020 = instances.get(`${contract.implementation_entry_task}::${packageId}`);
-  const ci024 = instances.get(`SHELL-CI-024::${packageId}`);
-  if (ci024?.status === 'VERIFIED') return { status: 'CLOSED', source: ci024.instance_id, nextExecution: null };
-  if (ci020?.status === 'VERIFIED') {
-    const next = Array.from({ length: 4 }, (_, index) => `SHELL-CI-${String(index + 21).padStart(3, '0')}::${packageId}`)
-      .find((instanceId) => instances.get(instanceId)?.status !== 'VERIFIED') ?? null;
-    const active = Array.from({ length: 4 }, (_, index) => `SHELL-CI-${String(index + 21).padStart(3, '0')}::${packageId}`)
-      .find((instanceId) => PHYSICAL_ACTIVE.has(instances.get(instanceId)?.status)) ?? null;
-    return { status: 'DEPLOYED', source: active ?? ci020.instance_id, nextExecution: active ?? next };
+export function physicalLifecycleStatus(packageId, instances, contract) {
+  const taskIds = [
+    contract.implementation_entry_task,
+    'SHELL-CI-021',
+    'SHELL-CI-022',
+    'SHELL-CI-023',
+    'SHELL-CI-024',
+  ];
+  const instanceIds = taskIds.map((taskId) => `${taskId}::${packageId}`);
+  const records = instanceIds.map((instanceId) => instances.get(instanceId) ?? null);
+  const firstUnverified = records.findIndex((record) => record?.status !== 'VERIFIED');
+
+  if (firstUnverified < 0) {
+    const last = records.at(-1);
+    return { status: 'CLOSED', source: last.instance_id, nextExecution: null };
   }
-  if (ci020 && PHYSICAL_ACTIVE.has(ci020.status)) return { status: 'IMPLEMENTING', source: ci020.instance_id, nextExecution: ci020.instance_id };
-  return null;
+
+  const future = records
+    .slice(firstUnverified + 1)
+    .filter(Boolean)
+    .map((record) => `${record.instance_id}:${record.status ?? 'UNKNOWN'}`);
+  if (future.length > 0) {
+    fail(
+      `PHYSICAL_STAGE_SEQUENCE_VIOLATION: ${packageId} espera ${instanceIds[firstUnverified]}; `
+      + `etapas futuras materializadas: ${future.join(', ')}.`,
+    );
+  }
+
+  const current = records[firstUnverified];
+  if (firstUnverified === 0) {
+    if (current && PHYSICAL_ACTIVE.has(current.status)) {
+      return { status: 'IMPLEMENTING', source: current.instance_id, nextExecution: current.instance_id };
+    }
+    return null;
+  }
+
+  const previous = records[firstUnverified - 1];
+  return {
+    status: 'DEPLOYED',
+    source: current?.instance_id ?? previous.instance_id,
+    nextExecution: instanceIds[firstUnverified],
+  };
 }
 
 function compactPackageForPersistence(pkg) {
@@ -2967,6 +3228,7 @@ function parseArgs(argv) {
     json: false,
     packageId: null,
     recordFoundationId: null,
+    recordCandidatePackageId: null,
     foundationStatus: false,
     changelogRef: null,
     toolchainFreezeRef: null,
@@ -2977,7 +3239,11 @@ function parseArgs(argv) {
     else if (token === '--check') args.check = true;
     else if (token === '--json') args.json = true;
     else if (token === '--foundation-status') args.foundationStatus = true;
-    else if (token === '--record-foundation') {
+    else if (token === '--record-candidate') {
+      args.recordCandidatePackageId = argv[index + 1];
+      if (!args.recordCandidatePackageId) fail('Falta package_id después de --record-candidate.');
+      index += 1;
+    } else if (token === '--record-foundation') {
       args.recordFoundationId = argv[index + 1];
       if (!args.recordFoundationId) fail('Falta foundation_id después de --record-foundation.');
       index += 1;
@@ -3000,8 +3266,11 @@ function parseArgs(argv) {
     } else fail(`Argumento desconocido: ${token}.`);
   }
   if (args.write && args.check) fail('--write y --check son mutuamente excluyentes.');
-  if (args.recordFoundationId && (args.write || args.check || args.foundationStatus || args.packageId || args.json)) {
-    fail('--record-foundation no puede combinarse con modos de scan/status.');
+  if (args.recordFoundationId && (args.write || args.check || args.foundationStatus || args.packageId || args.json || args.recordCandidatePackageId)) {
+    fail('--record-foundation no puede combinarse con modos de scan/status/candidate.');
+  }
+  if (args.recordCandidatePackageId && (args.write || args.check || args.foundationStatus || args.packageId || args.json || args.recordFoundationId)) {
+    fail('--record-candidate no puede combinarse con modos de scan/status/foundation.');
   }
   return args;
 }
@@ -3077,6 +3346,26 @@ function printFoundationStatus(root) {
 
 function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.recordCandidatePackageId) {
+    const result = recordInPackageCandidateEvidence({
+      root: process.cwd(),
+      packageId: args.recordCandidatePackageId,
+    });
+    console.log('=== RESULTADO PARA CHATGPT ===');
+    console.log('ESTADO: PASS');
+    console.log('OPERACION: IN_PACKAGE_CANDIDATE_RECORD');
+    console.log(`PACKAGE_ID: ${result.packageId}`);
+    console.log(`INSTANCE_ID: ${result.instanceId}`);
+    console.log('FOUNDATION_ID: MRP015-050');
+    console.log('GATE_ID: CANDIDATE_READY');
+    console.log(`CANDIDATE_HEAD_SHA: ${result.evidence.candidate_head_sha}`);
+    console.log(`AUTHORIZED_SCOPE_SHA256: ${result.evidence.authorized_scope_sha256}`);
+    console.log(`CANDIDATE_SCOPE_SHA256: ${result.evidence.candidate_scope_sha256}`);
+    console.log('REMOTE_MUTATIONS: NO');
+    console.log('SECRET_VALUES_IN_EVIDENCE: NO');
+    console.log('=== FIN RESULTADO PARA CHATGPT ===');
+    return;
+  }
   if (args.recordFoundationId) {
     const result = recordSupabaseFoundationEvidence({
       root: process.cwd(),

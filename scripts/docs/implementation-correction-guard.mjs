@@ -62,19 +62,24 @@ export function assertImplementationDeploymentEnvironment({ instance, pkg } = {}
   return true;
 }
 
+export function packageLifecycleIdentity(instance) {
+  if (!instance || typeof instance !== 'object') return null;
+  const instanceId = String(instance.instance_id ?? '').trim();
+  const match = /^(SHELL-CI-02[0-4])::(GAP-PKG-\d{3})$/u.exec(instanceId);
+  if (!match || String(instance.task_id ?? '').trim() !== match[1]) return null;
+  return { taskId: match[1], packageId: match[2], instanceId };
+}
+
 export function assertImplementationPackageReadiness({ instance, readiness } = {}) {
   if (!instance || typeof instance !== 'object') fail('instancia de implementación inválida.');
 
-  if (instance.task_id !== 'SHELL-CI-020') return true;
+  const identity = packageLifecycleIdentity(instance);
+  if (!identity) return true;
 
-  const match = /^SHELL-CI-020::(GAP-PKG-\d{3})$/u.exec(String(instance.instance_id ?? ''));
-  if (!match) return true;
-
-  const packageId = match[1];
   const execution = readiness?.registry?.package_execution ?? null;
   const current = execution?.current ?? null;
 
-  if (!current || current.package_id !== packageId) {
+  if (!current || current.package_id !== identity.packageId) {
     fail(
       `IMPLEMENTATION_START_NOT_READY: ${instance.instance_id} no coincide con el package actual `
       + `${current?.package_id ?? 'NONE'}.`,
@@ -83,8 +88,8 @@ export function assertImplementationPackageReadiness({ instance, readiness } = {
 
   const action = current.next_action;
   if (
-    action?.type !== 'AUTHORIZE_PHYSICAL_IMPLEMENTATION'
-    || action?.target !== instance.instance_id
+    action?.type !== 'CONTINUE_PHYSICAL_LIFECYCLE'
+    || action?.target !== identity.instanceId
   ) {
     const work = execution.current_work ?? current.current_work ?? null;
     fail(
@@ -94,9 +99,13 @@ export function assertImplementationPackageReadiness({ instance, readiness } = {
     );
   }
 
-  const pkg = readiness?.registry?.packages?.find(({ package_id: id }) => id === packageId) ?? null;
-  if (!pkg) fail(`IMPLEMENTATION_ENVIRONMENT_NOT_READY: ${instance.instance_id}; package ${packageId} no encontrado.`);
-  assertImplementationDeploymentEnvironment({ instance, pkg });
+  if (identity.taskId === 'SHELL-CI-020') {
+    const pkg = readiness?.registry?.packages?.find(({ package_id: id }) => id === identity.packageId) ?? null;
+    if (!pkg) {
+      fail(`IMPLEMENTATION_ENVIRONMENT_NOT_READY: ${instance.instance_id}; package ${identity.packageId} no encontrado.`);
+    }
+    assertImplementationDeploymentEnvironment({ instance, pkg });
+  }
 
   return true;
 }
@@ -110,10 +119,7 @@ export function assertImplementationStartNotBlocked({ root = process.cwd(), inst
     const corrections = loadValidatedCorrectionControl({ root });
     assertImplementationTargetsNotBlocked(corrections, instance);
 
-    if (
-        instance.task_id === 'SHELL-CI-020'
-        && /^SHELL-CI-020::GAP-PKG-\d{3}$/u.test(instance.instance_id)
-    ) {
+    if (packageLifecycleIdentity(instance)) {
         const readiness = scanPackageReadiness({
             root,
             check: true,

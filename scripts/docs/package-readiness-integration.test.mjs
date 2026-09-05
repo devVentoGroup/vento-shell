@@ -419,3 +419,18 @@ test('DELIV-PKG-019 queda enlazado fail-closed hasta la autorización CI020', ()
   assert.match(guardSource, /IMPLEMENTATION_ENVIRONMENT_MISMATCH/u);
   assert.match(guardSource, /PRODUCTION no está autorizada/u);
 });
+
+// CORR-010 PACKAGE LIFECYCLE INTEGRATION
+test('integración conecta secuencia CI020..024, ledger propio y MRP015-050 package-scoped', () => {
+  const implementationControlSource = fs.readFileSync('scripts/docs/implementation-control.mjs', 'utf8');
+  const implementationLifecycleSource = fs.readFileSync('scripts/docs/implementation-branch-lifecycle.mjs', 'utf8');
+  const guardSource = fs.readFileSync('scripts/docs/implementation-correction-guard.mjs', 'utf8');
+  assert.match(scannerSource, /PHYSICAL_STAGE_SEQUENCE_VIOLATION/u);
+  assert.match(scannerSource, /MRP015_050_CANDIDATE_READY/u);
+  assert.match(scannerSource, /recordInPackageCandidateEvidence/u);
+  assert.match(implementationControlSource, /SHELL-CI-02\[1-4\]/u);
+  assert.match(implementationControlSource, /TEMPLATE_PER_PACKAGE/u);
+  assert.match(implementationLifecycleSource, /OWN_INSTANCE_LEDGER/u);
+  assert.match(implementationLifecycleSource, /MRP015-050\/CANDIDATE_READY/u);
+  assert.match(guardSource, /CONTINUE_PHYSICAL_LIFECYCLE/u);
+});
