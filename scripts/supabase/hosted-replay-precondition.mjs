@@ -4,7 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 const MANAGEMENT_BASE_URL = 'https://api.supabase.com';
 const CONTRACT_RELATIVE_PATH = 'scripts/docs/package-readiness/package-readiness-contract.json';
-const CORRECTION_ID = 'DELIV-PKG-015::CORR-006';
+const CORRECTION_ID = 'DELIV-PKG-015::CORR-007';
+const INSPECTION_ROLE = 'supabase_read_only_user';
 const RESULT_START = '=== RESULTADO PARA CHATGPT ===';
 const RESULT_END = '=== FIN RESULTADO PARA CHATGPT ===';
 
@@ -111,10 +112,10 @@ select pg_catalog.jsonb_build_object(
 export const MUTATION_SQL = String.raw`
 begin;
 
-do $vento_corr_006$
+do $vento_corr_007$
 begin
   if current_user <> 'postgres' then
-    raise exception 'VENTO_CORR_006_CURRENT_USER_NOT_POSTGRES';
+    raise exception 'VENTO_CORR_007_CURRENT_USER_NOT_POSTGRES';
   end if;
 
   if exists (
@@ -129,10 +130,10 @@ begin
         or pg_catalog.has_table_privilege('anon', c.oid, 'DELETE')
       )
   ) then
-    raise exception 'VENTO_CORR_006_REPLAY_ALREADY_STARTED';
+    raise exception 'VENTO_CORR_007_REPLAY_ALREADY_STARTED';
   end if;
 end
-$vento_corr_006$;
+$vento_corr_007$;
 
 alter default privileges for role postgres in schema public
   revoke all on tables from anon;
@@ -143,7 +144,7 @@ alter default privileges for role postgres in schema public
 alter default privileges for role postgres in schema public
   revoke all on sequences from anon;
 
-do $vento_corr_006_post$
+do $vento_corr_007_post$
 begin
   if exists (
     select 1
@@ -155,10 +156,10 @@ begin
       and d.defaclobjtype in ('r', 'f', 'S')
       and a.grantee = 'anon'::pg_catalog.regrole::pg_catalog.oid
   ) then
-    raise exception 'VENTO_CORR_006_POSTGRES_ANON_DEFAULTS_REMAIN';
+    raise exception 'VENTO_CORR_007_POSTGRES_ANON_DEFAULTS_REMAIN';
   end if;
 end
-$vento_corr_006_post$;
+$vento_corr_007_post$;
 
 commit;
 `;
@@ -385,12 +386,13 @@ export function assessPreReplayState({ snapshot, migrations } = {}) {
   const anonDml = Number(snapshot?.public_relations_with_anon_dml ?? Number.NaN);
   const migrationCount = Array.isArray(migrations) ? migrations.length : Number.NaN;
   const currentUser = String(snapshot?.current_user ?? '');
+  const inspectionActorCompatible = currentUser === INSPECTION_ROLE;
   const managedTypes = managedDefaultObjectTypes(snapshot);
   const managedDefaultsCompatible = managedTypes.length === 3
     && managedTypes.includes('S')
     && managedTypes.includes('f')
     && managedTypes.includes('r');
-  const applyAllowed = currentUser === 'postgres'
+  const applyAllowed = inspectionActorCompatible
     && Number.isFinite(anonDml)
     && anonDml === 0
     && Number.isFinite(migrationCount)
@@ -399,6 +401,7 @@ export function assessPreReplayState({ snapshot, migrations } = {}) {
   const readyForReplay = applyAllowed && postgresDefaults.length === 0;
   return {
     current_user: currentUser,
+    inspection_actor_compatible: inspectionActorCompatible,
     postgres_public_anon_default_grants: postgresDefaults.length,
     public_relations_with_anon_dml: anonDml,
     migration_history_count: migrationCount,
@@ -517,6 +520,7 @@ function printResult(result) {
   console.log(`PUBLIC_RELATIONS_WITH_ANON_DML: ${result.public_relations_with_anon_dml}`);
   console.log(`MIGRATION_HISTORY_COUNT: ${result.migration_history_count}`);
   console.log(`MANAGED_DEFAULTS_COMPATIBLE: ${yesNo(result.managed_defaults_compatible)}`);
+  console.log(`INSPECTION_ACTOR_COMPATIBLE: ${yesNo(result.inspection_actor_compatible)}`);
   console.log(`APPLY_ALLOWED: ${yesNo(result.apply_allowed)}`);
   console.log(`READY_FOR_REPLAY: ${yesNo(result.ready_for_replay)}`);
   console.log('SECRET_VALUES_IN_OUTPUT: NO');
@@ -557,5 +561,6 @@ if (isCli) await main();
 
 export const __test = Object.freeze({
   CORRECTION_ID,
+  INSPECTION_ROLE,
   CONTRACT_RELATIVE_PATH,
 });

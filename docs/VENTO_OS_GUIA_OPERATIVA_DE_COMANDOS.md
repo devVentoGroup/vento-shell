@@ -1340,6 +1340,46 @@ Para Supabase, la secuencia global previa al package es R0 → `MRP015-000` → 
 
 ## Precondición de replay hosted en STAGING
 
+El helper `supabase:hosted-replay:precondition` queda reservado para escenarios de pre-replay limpio sobre STAGING. No ejecuta reset, no modifica el historial y no sustituye `MRP015-020 / HISTORY_PASS`.
+
+La inspección read-only se ejecuta así:
+
+    npm run supabase:hosted-replay:precondition -- inspect --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015
+
+El endpoint `/database/query/read-only` ejecuta el snapshot como `supabase_read_only_user`. Ese es el actor de inspección esperado.
+
+La identidad de escritura se valida separadamente dentro de la operación enviada a `/database/query`. Antes de cualquier mutación, el SQL exige `current_user = postgres`.
+
+`apply` solo es elegible en un escenario de pre-replay con:
+
+- historial de migraciones vacío;
+- cero relaciones `public` con DML efectivo de `anon`;
+- defaults administrados compatibles;
+- actor read-only igual a `supabase_read_only_user`;
+- target igual al STAGING canónico;
+- PRODUCTION excluido.
+
+La invocación autorizada del modo mutador es:
+
+    npm run supabase:hosted-replay:precondition -- apply --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015 --acknowledge-mutation DELIV-PKG-015::CORR-007
+
+Para el `MRP015-020` actualmente en curso, STAGING conserva historial canónico existente y la reconciliación ACL ya fue ejecutada y verificada. Por tanto, no se ejecutan reset ni `apply`; el flujo continúa mediante las migraciones pendientes y la paridad final se demuestra con `STAGING_HISTORY_DRIFT`.
+
+Reglas invariables:
+
+- No usar `migration repair` para fabricar historial.
+- No repetir la reconciliación ACL ya verificada.
+- No ejecutar reset destructivo para satisfacer `MRP015-020`.
+- `MRP015-020` conserva paridad exacta de historial.
+- `MRP015-030 / CLEAN_REPLAY_PASS` permanece como foundation posterior independiente.
+- PRODUCTION no se modifica durante esta corrección.
+
+Al terminar cualquier operación que haya cargado `SUPABASE_ACCESS_TOKEN`:
+
+    Remove-Item Env:SUPABASE_ACCESS_TOKEN -ErrorAction SilentlyContinue
+    Set-Clipboard -Value ''
+### Recuperación del replay hosted
+
 Antes de cualquier replay hosted sobre STAGING, ejecutar primero la precondición versionada. El helper autentica la Management API únicamente mediante `SUPABASE_ACCESS_TOKEN` cargado de forma temporal en la sesión; el token no se versiona ni debe imprimirse.
 
 En PowerShell, después de copiar el Personal Access Token al portapapeles:
@@ -1355,7 +1395,17 @@ La inspección es de solo lectura y debe apuntar explícitamente al binding can�
 npm run supabase:hosted-replay:precondition -- inspect --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015
 ```
 
-Si `APPLY_ALLOWED: NO`, el flujo se detiene. `apply` solo puede ejecutarse después de un reset destructivo de STAGING previamente autorizado que deje el historial de migraciones vacío, cero relaciones `public` con DML de `anon` y los defaults administrados de `supabase_admin` compatibles. El helper se ejecuta antes del baseline y antes de cualquier migración forward.
+Si `APPLY_ALLOWED: NO`, se detiene exclusivamente el replay hosted. Ese resultado
+no ordena ni autoriza un reset. `apply` solo corresponde a un destino nuevo y
+aislado, antes del baseline, con historial vacío, cero relaciones `public` con
+DML de `anon` y defaults administrados de `supabase_admin` compatibles.
+
+En la rama STAGING existente deben preservarse VITAL y los contratos legacy.
+`AUTH-DB-019::GLOBAL` conserva `public.employees.id` y su FK hacia `auth.users`;
+`SUPA-TRANS-015 / MRP015-005` excluye VITAL de las mutaciones Vento OS. Un reset
+general que intente eliminar `vital`, `public.employees`, `pg_cron` o `unaccent`
+no cumple este procedimiento. Una autorización genérica de reset no sustituye
+la reconciliación explícita de esos límites.
 
 Cuando STAGING ya cumpla esas precondiciones, la única mutación permitida por este helper es:
 
@@ -1366,14 +1416,27 @@ npm run supabase:hosted-replay:precondition -- apply --environment-role staging 
 Orden obligatorio:
 
 ```text
-reset destructivo autorizado de STAGING
+destino nuevo y aislado, autorizado y sin objetos que deban preservarse
 -> inspect
 -> apply
 -> baseline
 -> migraciones forward en orden canónico
 ```
 
-Durante `MRP015-020`, el STAGING parcialmente reproducido no es elegible para `apply`. El helper no remedia objetos ya recreados; ese estado requiere un rebuild controlado antes de volver a ejecutar la precondición.
+El STAGING parcialmente reproducido no es elegible para `apply`. El helper no
+remedia objetos ya recreados. La continuación requiere un procedimiento de
+compatibilidad sobre la rama existente que preserve objetos, datos y FKs, o un
+destino de ensayo nuevo con identidad aprobada y aislamiento demostrado. Ninguna
+de esas alternativas se ejecuta automáticamente al reconciliar la historia.
+
+Esta inelegibilidad bloquea el replay hosted, aunque su prefijo migratorio sea
+reconciliable. Son comprobaciones distintas. No adelantar el despliegue a
+producción para resolver ninguna de ellas. Un reset de rama que reproduzca
+automáticamente el baseline tampoco demuestra que la precondición se ejecutó
+antes de él. Ante `out of shared memory`, conservar el log y comprobar objetos,
+FKs, extensiones e historial; su presencia posterior no demuestra por sí sola
+la reversión de todos los cambios. No aumentar memoria y reintentar un reset
+incompatible con la frontera VITAL.
 
 Reglas invariables:
 

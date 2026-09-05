@@ -17,17 +17,22 @@ import {
 const STAGING_REF = 'rcrxixmqhrndcervbllp';
 const PRODUCTION_REF = 'clzdpinthhtknkmefsxx';
 const OWNER = 'SUPA-TRANS-015';
-const ACK = 'DELIV-PKG-015::CORR-006';
+const ACK = 'DELIV-PKG-015::CORR-007';
 
 const bindings = Object.freeze({
   staging: Object.freeze({ classification: 'STAGING', project_ref: STAGING_REF, owner: OWNER }),
   production: Object.freeze({ classification: 'PRODUCTION', project_ref: PRODUCTION_REF, owner: OWNER }),
 });
 
-function snapshot({ postgresAnon = true, anonDml = 0, managed = true } = {}) {
+function snapshot({
+  postgresAnon = true,
+  anonDml = 0,
+  managed = true,
+  currentUser = 'supabase_read_only_user',
+} = {}) {
   return {
     database_name: 'postgres',
-    current_user: 'postgres',
+    current_user: currentUser,
     server_version_num: '170006',
     postgres_public_anon_defaults: postgresAnon
       ? [
@@ -153,6 +158,7 @@ test('mutation SQL changes only postgres public defaults for anon', () => {
   assert.doesNotMatch(normalized, /from authenticated/u);
   assert.doesNotMatch(normalized, /from service_role/u);
   assert.doesNotMatch(normalized, /revoke .* from public;/u);
+  assert.match(normalized, /if current_user <> 'postgres'/u);
   assert.doesNotMatch(normalized, /supabase_migrations\s*\.\s*schema_migrations/u);
   assert.doesNotMatch(normalized, /\b(?:insert|update|delete|truncate)\s+(?:into|from|table)\s+public\./u);
 });
@@ -168,6 +174,31 @@ test('assessment blocks current contaminated staging state', () => {
   assert.equal(assessment.migration_history_count, 1);
   assert.equal(assessment.apply_allowed, false);
   assert.equal(assessment.ready_for_replay, false);
+});
+
+test('live read-only actor authorizes clean preconditions and unexpected actor fails closed', () => {
+  const clean = assessPreReplayState({
+    snapshot: snapshot({ postgresAnon: true, anonDml: 0 }),
+    migrations: [],
+  });
+
+  assert.equal(clean.current_user, 'supabase_read_only_user');
+  assert.equal(clean.inspection_actor_compatible, true);
+  assert.equal(clean.apply_allowed, true);
+  assert.equal(clean.ready_for_replay, false);
+
+  const unexpectedActor = assessPreReplayState({
+    snapshot: snapshot({
+      postgresAnon: true,
+      anonDml: 0,
+      currentUser: 'postgres',
+    }),
+    migrations: [],
+  });
+
+  assert.equal(unexpectedActor.inspection_actor_compatible, false);
+  assert.equal(unexpectedActor.apply_allowed, false);
+  assert.equal(unexpectedActor.ready_for_replay, false);
 });
 
 test('inspect never sends a mutating database query', async () => {
