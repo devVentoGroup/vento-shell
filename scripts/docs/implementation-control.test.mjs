@@ -311,3 +311,150 @@ test('una instancia por unidad no puede autorizarse sin evidencia de sus gates',
     workTopology,
   }), /debe declarar prerequisite_evidence/u);
 });
+
+test('foundation pendiente prevalece sobre PENDING_AUTHORIZATION de SHELL-CI-020', () => {
+  const task = { id: 'SHELL-CI-020', title: 'Implementar package', marker: '✅', relativePath: 'ci.md' };
+  const workTopology = {
+    ordered: [task],
+    inventory: new Map([[task.id, task]]),
+    topology: new Map([[task.id, {
+      taskId: task.id,
+      mode: 'PER_IMPLEMENTATION_UNIT',
+      instancePattern: '<task_id>::<implementation_unit_id>',
+    }]]),
+    currentId: task.id,
+  };
+  const pending = {
+    instance_id: 'SHELL-CI-020::GAP-PKG-001',
+    task_id: 'SHELL-CI-020',
+    status: 'PENDING_AUTHORIZATION',
+    target_repositories: [],
+    authorized_changes: [],
+    validation_commands: [],
+    authorization: null,
+    evidence: [],
+  };
+  const packageExecution = {
+    current_work: {
+      kind: 'FOUNDATION_GATE',
+      id: 'MRP015-000',
+      gate_id: 'TOOLCHAIN_READY',
+      owner_task: 'SUPA-TRANS-015',
+      consumer_package_id: 'GAP-PKG-001',
+      status: 'UNKNOWN',
+    },
+    current: {
+      next_action: {
+        type: 'WAIT_FOR_FOUNDATION_PREREQUISITE',
+        target: 'MRP015-000',
+        command: 'npm run docs:package:readiness:check -- --package GAP-PKG-001',
+        reason: 'GAP-PKG-001 conserva el turno hasta cerrar TOOLCHAIN_READY.',
+      },
+    },
+  };
+
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [pending] },
+    workTopology,
+    packageExecution,
+  });
+
+  assert.equal(result.primaryAction.type, 'WAIT_FOR_FOUNDATION_PREREQUISITE');
+  assert.equal(result.primaryAction.target, 'MRP015-000');
+  assert.equal(result.physical.active, null);
+  const projected = result.physical.instances.find(({ instanceId }) => instanceId === pending.instance_id);
+  assert.equal(projected.status, 'WAITING_FOR_FOUNDATION_PREREQUISITE');
+  assert.equal(projected.record.status, 'PENDING_AUTHORIZATION');
+  assert.equal(result.physical.blockedCount, 1);
+});
+
+test('SHELL-CI-020 AUTHORIZED exige target_environments completos', () => {
+  const task = { id: 'SHELL-CI-020', title: 'Implementar package', marker: '✅', relativePath: 'ci.md' };
+  const workTopology = {
+    ordered: [task],
+    inventory: new Map([[task.id, task]]),
+    topology: new Map([[task.id, {
+      taskId: task.id,
+      mode: 'PER_IMPLEMENTATION_UNIT',
+      instancePattern: '<task_id>::<implementation_unit_id>',
+    }]]),
+    currentId: task.id,
+  };
+  const entry = {
+    instance_id: 'SHELL-CI-020::GAP-PKG-001',
+    task_id: 'SHELL-CI-020',
+    status: 'AUTHORIZED',
+    target_repositories: ['vento-group-sas/vento-shell'],
+    authorized_changes: ['supabase/functions/shift-runtime-processor/index.ts'],
+    validation_commands: ['npm test'],
+    prerequisite_evidence: ['E5-GATE-008::GAP-PKG-001'],
+    authorization: {
+      decision: 'APPROVED',
+      approved_by: 'VENTO_OWNER',
+      approved_at: '2026-09-05T14:00:00-05:00',
+      timezone: 'America/Bogota',
+      approval_statement: 'APROBADO.',
+      source_contract_sha256: 'a'.repeat(64),
+    },
+    evidence: [],
+  };
+  assert.throws(() => deriveImplementationControl({
+    control: { ...baseControl, instances: [entry] },
+    workTopology,
+    packageExecution: null,
+    preflight: { task: { id: task.id, title: task.title, owner: task.relativePath } },
+  }), /target_environments completos/u);
+
+  const valid = {
+    ...entry,
+    target_environments: [{
+      environment_role: 'STAGING',
+      target_type: 'SUPABASE_PROJECT_REF',
+      target_id: 'rcrxixmqhrndcervbllp',
+      owner: 'SUPA-TRANS-015',
+    }],
+  };
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [valid] },
+    workTopology,
+    packageExecution: null,
+    preflight: { task: { id: task.id, title: task.title, owner: task.relativePath } },
+  });
+  assert.equal(result.primaryAction.type, 'EJECUTAR_IMPLEMENTACION');
+  assert.deepEqual(result.physical.active.targetEnvironments, valid.target_environments);
+});
+
+// CORR-010 PACKAGE CANDIDATE DERIVATION
+test('deriva y materializa únicamente la siguiente TEMPLATE_PER_PACKAGE indicada por package_execution', () => {
+  const tasks = ['SHELL-CI-021', 'SHELL-CI-022', 'SHELL-CI-023', 'SHELL-CI-024']
+    .map((id) => ({ id, title: id, marker: '✅', relativePath: 'ci.md' }));
+  const workTopology = {
+    ordered: tasks,
+    inventory: new Map(tasks.map((task) => [task.id, task])),
+    topology: new Map(tasks.map((task) => [task.id, {
+      taskId: task.id,
+      mode: 'TEMPLATE_PER_PACKAGE',
+      instancePattern: '<task_id>::<package_id>',
+    }])),
+    currentId: 'SHELL-CI-021',
+  };
+  const packageExecution = {
+    current: {
+      package_id: 'GAP-PKG-001',
+      next_action: {
+        type: 'CONTINUE_PHYSICAL_LIFECYCLE',
+        target: 'SHELL-CI-021::GAP-PKG-001',
+      },
+    },
+  };
+  const result = deriveImplementationControl({
+    control: { ...baseControl, instances: [] },
+    workTopology,
+    packageExecution,
+    preflight: { task: { id: 'SHELL-CI-021', title: 'SHELL-CI-021', owner: 'ci.md' } },
+  });
+  assert.equal(result.primaryAction.type, 'AUTORIZAR_IMPLEMENTACION');
+  assert.equal(result.primaryAction.target, 'SHELL-CI-021::GAP-PKG-001');
+  assert.equal(result.physical.active.source, 'DERIVED_FROM_APPROVED_CONTRACT');
+  assert.equal(result.physical.active.lifecycleMode, 'TEMPLATE_PER_PACKAGE');
+});

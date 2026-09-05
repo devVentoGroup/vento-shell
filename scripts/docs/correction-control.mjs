@@ -26,12 +26,13 @@ const COMMIT_PATTERN = /^[0-9a-f]{40}$/u;
 const TREQ_PATTERN = /^TREQ-[A-Z0-9]+(?:-[A-Z0-9]+)*-[0-9]{3}$/u;
 const GIT_MAX_BUFFER_BYTES = 64 * 1024 * 1024;
 const GIT_FAILURE_DIAGNOSTIC_LIMIT = 4000;
-const DERIVED_CORRECTION_PROJECTIONS = new Set([
+export const DERIVED_CORRECTION_PROJECTIONS = new Set([
     CORRECTION_STARTER_PROJECTION,
     'docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md',
     'docs/plan-canonico/modular/active-sequence.json',
     'docs/plan-canonico/modular/.generated/REGISTRO_GLOBAL_DE_TAREAS.md',
     'docs/plan-canonico/modular/.generated/REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md',
+    'scripts/docs/package-readiness/implementation-package-registry.json',
 ]);
 const OPEN_STATUSES = new Set([
     'PENDING_AUTHORIZATION',

@@ -16,6 +16,7 @@ const FUNCTIONS_RELATIVE = 'supabase/functions';
 const OUTPUT_PREFIX = '.delivery/';
 const PROCESS_OUTPUT_MAX_BYTES = 32 * 1024 * 1024;
 const ALLOWED_REMOTE_ROLES = new Set(['staging', 'production']);
+const ALLOWED_REMOTE_SCOPES = new Set(['full', 'environment', 'history']);
 const ALLOWLIST_CLASSIFICATIONS = new Set(['EXPECTED_OVERLAY', 'TEMPORARY_EXCEPTION']);
 const DEFAULT_SUPABASE_SECRET_NAMES = new Set([
   'SUPABASE_URL',
@@ -681,6 +682,7 @@ export function assertManagementRequest(method, pathname) {
   const normalizedMethod = String(method ?? '').toUpperCase();
   const normalizedPath = String(pathname ?? '');
   const allowedGet = [
+    /^\/v1\/branches\/[A-Za-z0-9_-]+$/u,
     /^\/v1\/projects\/[A-Za-z0-9_-]+$/u,
     /^\/v1\/projects\/[A-Za-z0-9_-]+\/database\/migrations$/u,
     /^\/v1\/projects\/[A-Za-z0-9_-]+\/functions$/u,
@@ -725,6 +727,47 @@ function normalizeProject(payload) {
       release_channel: payload?.database?.release_channel ?? null,
     },
   };
+}
+
+function normalizeBranchProject(payload) {
+  return {
+    ref: payload?.ref ?? null,
+    name: payload?.name ?? null,
+    region: payload?.region ?? null,
+    status: payload?.status ?? null,
+    hosted_identity_kind: 'branch',
+    database: {
+      version: payload?.postgres_version ?? null,
+      postgres_engine: payload?.postgres_engine ?? null,
+      release_channel: payload?.release_channel ?? null,
+    },
+  };
+}
+
+async function resolveHostedProjectIdentity(ref, token, fetchImpl) {
+  let projectError = null;
+  try {
+    return normalizeProject(await managementRequest({
+      token,
+      pathname: `/v1/projects/${ref}`,
+      fetchImpl,
+    }));
+  } catch (error) {
+    projectError = error;
+  }
+
+  try {
+    return normalizeBranchProject(await managementRequest({
+      token,
+      pathname: `/v1/branches/${ref}`,
+      fetchImpl,
+    }));
+  } catch (branchError) {
+    fail(
+      'REMOTE_HOSTED_IDENTITY_UNRESOLVED',
+      `project=${safeAscii(projectError?.message ?? String(projectError))};branch=${safeAscii(branchError?.message ?? String(branchError))}`,
+    );
+  }
 }
 
 function normalizeMigrationHistory(payload) {
@@ -841,20 +884,24 @@ export async function observeRemoteEnvironment({
   projectRef,
   environmentRole,
   owner,
+  scope = 'full',
   token,
   fetchImpl = fetch,
 } = {}) {
   const role = String(environmentRole ?? '').trim().toLowerCase();
   const ref = String(projectRef ?? '').trim();
   const environmentOwner = String(owner ?? '').trim();
+  const remoteScope = String(scope ?? 'full').trim().toLowerCase();
   const identityIssues = [];
   if (!ALLOWED_REMOTE_ROLES.has(role)) identityIssues.push('ENVIRONMENT_ROLE_MISSING_OR_INVALID');
+  if (!ALLOWED_REMOTE_SCOPES.has(remoteScope)) identityIssues.push('REMOTE_SCOPE_MISSING_OR_INVALID');
   if (!/^[A-Za-z0-9_-]+$/u.test(ref)) identityIssues.push('PROJECT_REF_MISSING_OR_INVALID');
   if (!environmentOwner) identityIssues.push('ENVIRONMENT_OWNER_MISSING');
   if (!token) identityIssues.push('SUPABASE_ACCESS_TOKEN_MISSING');
   if (identityIssues.length > 0) {
     return {
       environment_role: role || null,
+      remote_scope: remoteScope || null,
       identity: { project_ref: ref || null, owner: environmentOwner || null },
       identity_status: 'INSUFFICIENT_EVIDENCE',
       identity_issues: identityIssues,
@@ -863,51 +910,64 @@ export async function observeRemoteEnvironment({
     };
   }
 
-  const project = await captureSurface('project', async () => normalizeProject(await managementRequest({
-    token, pathname: `/v1/projects/${ref}`, fetchImpl,
-  })));
-  const migrations = await captureSurface('migrations', async () => normalizeMigrationHistory(await managementRequest({
-    token, pathname: `/v1/projects/${ref}/database/migrations`, fetchImpl,
-  })));
-  const functionList = await captureSurface('edge_functions', async () => {
-    const list = await managementRequest({ token, pathname: `/v1/projects/${ref}/functions`, fetchImpl });
-    if (!Array.isArray(list)) fail('REMOTE_FUNCTION_LIST_INVALID');
-    const normalized = [];
-    for (const metadata of [...list].sort((left, right) => String(left?.slug ?? '').localeCompare(String(right?.slug ?? ''), 'en'))) {
-      const slug = String(metadata?.slug ?? '').trim();
-      if (!slug) fail('REMOTE_FUNCTION_SLUG_MISSING');
-      const body = await managementRequest({
-        token,
-        pathname: `/v1/projects/${ref}/functions/${slug}/body`,
-        fetchImpl,
-      });
-      normalized.push(normalizeRemoteFunctionBody(slug, metadata, body));
-    }
-    return normalized;
-  });
-  const auth = await captureSurface('auth', async () => normalizeAuthConfig(await managementRequest({
-    token, pathname: `/v1/projects/${ref}/config/auth`, fetchImpl,
-  })));
-  const storage = await captureSurface('storage', async () => normalizeStorageConfig(await managementRequest({
-    token, pathname: `/v1/projects/${ref}/config/storage`, fetchImpl,
-  })));
-  const realtime = await captureSurface('realtime', async () => normalizeRealtimeConfig(await managementRequest({
-    token, pathname: `/v1/projects/${ref}/config/realtime`, fetchImpl,
-  })));
-  const postgrest = await captureSurface('postgrest', async () => normalizePostgrestConfig(await managementRequest({
-    token, pathname: `/v1/projects/${ref}/postgrest`, fetchImpl,
-  })));
-  const secrets = await captureSurface('secret_names', async () => normalizeSecretNames(await managementRequest({
-    token, pathname: `/v1/projects/${ref}/secrets`, fetchImpl,
-  })));
-  const sqlFingerprint = await captureSurface('sql_fingerprint', async () => remoteReadOnlySql(ref, token, FINGERPRINT_SQL, fetchImpl));
-  const storageBuckets = await captureSurface('storage_buckets', async () => remoteReadOnlySql(ref, token, STORAGE_BUCKETS_SQL, fetchImpl));
-  const cron = sqlFingerprint.status === 'PASS' && !extensionNames(sqlFingerprint.value).has('pg_cron')
-    ? { name: 'cron_jobs', status: 'NOT_APPLICABLE', value: [] }
-    : await captureSurface('cron_jobs', async () => remoteReadOnlySql(ref, token, CRON_JOBS_SQL, fetchImpl));
-  const surfaces = [project, migrations, functionList, auth, storage, realtime, postgrest, secrets, sqlFingerprint, storageBuckets, cron];
+  const surfaces = [];
+  const project = await captureSurface('project', async () => resolveHostedProjectIdentity(
+    ref,
+    token,
+    fetchImpl,
+  ));
+  surfaces.push(project);
+
+  if (remoteScope === 'history' || remoteScope === 'full') {
+    const migrations = await captureSurface('migrations', async () => normalizeMigrationHistory(await managementRequest({
+      token, pathname: `/v1/projects/${ref}/database/migrations`, fetchImpl,
+    })));
+    surfaces.push(migrations);
+  }
+
+  if (remoteScope === 'full') {
+    const functionList = await captureSurface('edge_functions', async () => {
+      const list = await managementRequest({ token, pathname: `/v1/projects/${ref}/functions`, fetchImpl });
+      if (!Array.isArray(list)) fail('REMOTE_FUNCTION_LIST_INVALID');
+      const normalized = [];
+      for (const metadata of [...list].sort((left, right) => String(left?.slug ?? '').localeCompare(String(right?.slug ?? ''), 'en'))) {
+        const slug = String(metadata?.slug ?? '').trim();
+        if (!slug) fail('REMOTE_FUNCTION_SLUG_MISSING');
+        const body = await managementRequest({
+          token,
+          pathname: `/v1/projects/${ref}/functions/${slug}/body`,
+          fetchImpl,
+        });
+        normalized.push(normalizeRemoteFunctionBody(slug, metadata, body));
+      }
+      return normalized;
+    });
+    const auth = await captureSurface('auth', async () => normalizeAuthConfig(await managementRequest({
+      token, pathname: `/v1/projects/${ref}/config/auth`, fetchImpl,
+    })));
+    const storage = await captureSurface('storage', async () => normalizeStorageConfig(await managementRequest({
+      token, pathname: `/v1/projects/${ref}/config/storage`, fetchImpl,
+    })));
+    const realtime = await captureSurface('realtime', async () => normalizeRealtimeConfig(await managementRequest({
+      token, pathname: `/v1/projects/${ref}/config/realtime`, fetchImpl,
+    })));
+    const postgrest = await captureSurface('postgrest', async () => normalizePostgrestConfig(await managementRequest({
+      token, pathname: `/v1/projects/${ref}/postgrest`, fetchImpl,
+    })));
+    const secrets = await captureSurface('secret_names', async () => normalizeSecretNames(await managementRequest({
+      token, pathname: `/v1/projects/${ref}/secrets`, fetchImpl,
+    })));
+    const sqlFingerprint = await captureSurface('sql_fingerprint', async () => remoteReadOnlySql(ref, token, FINGERPRINT_SQL, fetchImpl));
+    const storageBuckets = await captureSurface('storage_buckets', async () => remoteReadOnlySql(ref, token, STORAGE_BUCKETS_SQL, fetchImpl));
+    const cron = sqlFingerprint.status === 'PASS' && !extensionNames(sqlFingerprint.value).has('pg_cron')
+      ? { name: 'cron_jobs', status: 'NOT_APPLICABLE', value: [] }
+      : await captureSurface('cron_jobs', async () => remoteReadOnlySql(ref, token, CRON_JOBS_SQL, fetchImpl));
+    surfaces.push(functionList, auth, storage, realtime, postgrest, secrets, sqlFingerprint, storageBuckets, cron);
+  }
+
   const core = {
     environment_role: role,
+    remote_scope: remoteScope,
     identity: {
       project_ref: ref,
       owner: environmentOwner,
@@ -1151,9 +1211,36 @@ export function compareLocal({ expected, observed, allowlist = [] } = {}) {
   };
 }
 
-export function compareRemote({ expected, localObserved, remoteObserved, allowlist = [] } = {}) {
+export function compareRemote({ expected, localObserved = null, remoteObserved, allowlist = [], scope = 'full' } = {}) {
   const environment = remoteObserved?.environment_role ?? 'unknown';
+  const remoteScope = String(scope ?? remoteObserved?.remote_scope ?? 'full').trim().toLowerCase();
   const drifts = [];
+  const finalize = () => {
+    const applied = applyAllowlist(drifts, allowlist);
+    return {
+      environment_role: environment,
+      remote_scope: remoteScope,
+      expected_digest: expected?.expected_digest ?? null,
+      observed_digest: remoteObserved?.observed_digest ?? null,
+      candidate_sha: expected?.candidate?.commit_sha ?? null,
+      drifts: applied,
+      certification: certificationFor(environment, applied),
+    };
+  };
+
+  if (!ALLOWED_REMOTE_SCOPES.has(remoteScope)) {
+    addDrift(drifts, {
+      surface: 'environment.scope',
+      identity: remoteScope || 'UNKNOWN',
+      environment,
+      expected: [...ALLOWED_REMOTE_SCOPES].sort(),
+      observed: remoteScope || 'MISSING',
+      classification: 'INSUFFICIENT_EVIDENCE',
+      reason: 'Remote certification scope is missing or invalid.',
+    });
+    return finalize();
+  }
+
   if (!expected?.candidate?.clean) {
     addDrift(drifts, {
       surface: 'candidate.git_tree',
@@ -1177,19 +1264,55 @@ export function compareRemote({ expected, localObserved, remoteObserved, allowli
         reason: 'Environment identity is incomplete.',
       });
     }
-    const applied = applyAllowlist(drifts, allowlist);
-    return {
-      environment_role: environment,
-      expected_digest: expected?.expected_digest ?? null,
-      observed_digest: remoteObserved?.observed_digest ?? null,
-      drifts: applied,
-      certification: certificationFor(environment, applied),
-    };
+    return finalize();
   }
 
   const surfaces = surfaceMap(remoteObserved);
   const project = surfaceValueOrInsufficient(drifts, surfaces, 'project', environment);
+  if (project) {
+    compareExact(drifts, {
+      surface: 'environment.project_ref',
+      identity: remoteObserved.identity.project_ref,
+      environment,
+      expected: remoteObserved.identity.project_ref,
+      observed: project.ref,
+      reason: 'Hosted project identity differs from the explicit environment binding.',
+    });
+    compareExact(drifts, {
+      surface: 'postgres.major',
+      identity: remoteObserved.identity.project_ref,
+      environment,
+      expected: String(expected.config.contract.postgres_major),
+      observed: String(project.database.postgres_engine ?? '').split('.')[0],
+      reason: 'Hosted PostgreSQL major differs from the candidate contract.',
+    });
+  }
+
+  if (remoteScope === 'environment') return finalize();
+
   const migrations = surfaceValueOrInsufficient(drifts, surfaces, 'migrations', environment);
+  if (migrations) {
+    const expectedVersions = expectedMigrationHistory(expected);
+    const remoteVersions = migrations.map((entry) => entry.version).sort();
+    const productionHistoryPrefix = remoteScope === 'history' && environment === 'production';
+    const expectedVersionsForScope = productionHistoryPrefix
+      ? expectedVersions.slice(0, Math.max(1, remoteVersions.length))
+      : expectedVersions;
+
+    compareExact(drifts, {
+      surface: 'migration_history.versions',
+      identity: remoteObserved.identity.project_ref,
+      environment,
+      expected: expectedVersionsForScope,
+      observed: remoteVersions,
+      reason: productionHistoryPrefix
+        ? 'Production migration history must be a non-empty canonical prefix of the versioned candidate universe.'
+        : 'Hosted migration history differs from the versioned candidate universe.',
+    });
+  }
+
+  if (remoteScope === 'history') return finalize();
+
   const functions = surfaceValueOrInsufficient(drifts, surfaces, 'edge_functions', environment);
   const auth = surfaceValueOrInsufficient(drifts, surfaces, 'auth', environment);
   const storage = surfaceValueOrInsufficient(drifts, surfaces, 'storage', environment);
@@ -1202,29 +1325,6 @@ export function compareRemote({ expected, localObserved, remoteObserved, allowli
   const cronJobs = localCronApplicable
     ? surfaceValueOrInsufficient(drifts, surfaces, 'cron_jobs', environment)
     : null;
-
-  if (project) {
-    compareExact(drifts, {
-      surface: 'postgres.major',
-      identity: remoteObserved.identity.project_ref,
-      environment,
-      expected: String(expected.config.contract.postgres_major),
-      observed: String(project.database.postgres_engine ?? '').split('.')[0],
-      reason: 'Hosted PostgreSQL major differs from the candidate contract.',
-    });
-  }
-
-  if (migrations) {
-    const remoteVersions = migrations.map((entry) => entry.version).sort();
-    compareExact(drifts, {
-      surface: 'migration_history.versions',
-      identity: remoteObserved.identity.project_ref,
-      environment,
-      expected: expectedMigrationHistory(expected),
-      observed: remoteVersions,
-      reason: 'Hosted migration history differs from the versioned candidate universe.',
-    });
-  }
 
   if (sqlFingerprint && localObserved?.sql_fingerprint) {
     compareExact(drifts, {
@@ -1336,17 +1436,15 @@ export function compareRemote({ expected, localObserved, remoteObserved, allowli
     });
   }
 
-  if (localCronApplicable) {
-    if (cronJobs) {
-      compareExact(drifts, {
-        surface: 'cron.jobs',
-        identity: remoteObserved.identity.project_ref,
-        environment,
-        expected: localObserved.cron.jobs,
-        observed: cronJobs,
-        reason: 'Hosted cron job contract differs from the clean local candidate.',
-      });
-    }
+  if (localCronApplicable && cronJobs) {
+    compareExact(drifts, {
+      surface: 'cron.jobs',
+      identity: remoteObserved.identity.project_ref,
+      environment,
+      expected: localObserved.cron.jobs,
+      observed: cronJobs,
+      reason: 'Hosted cron job contract differs from the clean local candidate.',
+    });
   }
 
   if (secrets) {
@@ -1366,15 +1464,7 @@ export function compareRemote({ expected, localObserved, remoteObserved, allowli
     }
   }
 
-  const applied = applyAllowlist(drifts, allowlist);
-  return {
-    environment_role: environment,
-    expected_digest: expected.expected_digest,
-    observed_digest: remoteObserved.observed_digest,
-    candidate_sha: expected.candidate.commit_sha,
-    drifts: applied,
-    certification: certificationFor(environment, applied),
-  };
+  return finalize();
 }
 
 function parseArgs(argv) {
@@ -1383,6 +1473,7 @@ function parseArgs(argv) {
     environmentRole: null,
     projectRef: null,
     owner: null,
+    scope: 'full',
     allowlist: null,
     output: null,
     strict: false,
@@ -1390,13 +1481,14 @@ function parseArgs(argv) {
   for (let index = 1; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--strict') args.strict = true;
-    else if (['--environment-role', '--project-ref', '--owner', '--allowlist', '--output'].includes(token)) {
+    else if (['--environment-role', '--project-ref', '--owner', '--scope', '--allowlist', '--output'].includes(token)) {
       const value = argv[index + 1];
       if (!value || value.startsWith('--')) fail('ARGUMENT_VALUE_MISSING', token);
       const key = {
         '--environment-role': 'environmentRole',
         '--project-ref': 'projectRef',
         '--owner': 'owner',
+        '--scope': 'scope',
         '--allowlist': 'allowlist',
         '--output': 'output',
       }[token];
@@ -1407,6 +1499,8 @@ function parseArgs(argv) {
     }
   }
   if (!['expected', 'local', 'remote'].includes(args.mode)) fail('MODE_INVALID', args.mode || 'EMPTY');
+  if (!ALLOWED_REMOTE_SCOPES.has(String(args.scope ?? '').toLowerCase())) fail('REMOTE_SCOPE_INVALID', args.scope || 'EMPTY');
+  args.scope = String(args.scope).toLowerCase();
   return args;
 }
 
@@ -1449,6 +1543,7 @@ function printControllerResult({ mode, result, output = null, strict = false }) 
   console.log('OPERACION: SUPABASE_ENVIRONMENT_DRIFT');
   console.log(`MODE: ${safeAscii(mode).toUpperCase()}`);
   console.log(`ENVIRONMENT_ROLE: ${safeAscii(result?.environment_role ?? 'EXPECTED').toUpperCase()}`);
+  console.log(`REMOTE_SCOPE: ${safeAscii(result?.remote_scope ?? 'N/A').toUpperCase()}`);
   console.log(`CANDIDATE_SHA: ${safeAscii(result?.candidate_sha ?? result?.candidate?.commit_sha ?? 'N/A')}`);
   console.log(`EXPECTED_DIGEST: ${safeAscii(result?.expected_digest ?? 'N/A')}`);
   console.log(`OBSERVED_DIGEST: ${safeAscii(result?.observed_digest ?? 'N/A')}`);
@@ -1514,7 +1609,8 @@ async function main() {
       return;
     }
 
-    const localObserved = observeLocalDatabase({ root, expected });
+    const needsLocalObservation = args.mode === 'local' || (args.mode === 'remote' && args.scope === 'full');
+    const localObserved = needsLocalObservation ? observeLocalDatabase({ root, expected }) : null;
     if (args.mode === 'local') {
       const result = {
         ...compareLocal({ expected, observed: localObserved, allowlist }),
@@ -1530,9 +1626,10 @@ async function main() {
       projectRef: args.projectRef,
       environmentRole: args.environmentRole,
       owner: args.owner,
+      scope: args.scope,
       token: process.env.SUPABASE_ACCESS_TOKEN,
     });
-    const result = compareRemote({ expected, localObserved, remoteObserved, allowlist });
+    const result = compareRemote({ expected, localObserved, remoteObserved, allowlist, scope: args.scope });
     const bundle = { expected, local_expected_observation: localObserved, observed: remoteObserved, result };
     const output = writeBundle(root, args.output, bundle);
     printControllerResult({ mode: args.mode, result, output, strict: args.strict });
@@ -1552,4 +1649,5 @@ export const __test = Object.freeze({
   CRON_JOBS_SQL,
   MANAGED_SCHEMAS,
   PROCESS_OUTPUT_MAX_BYTES,
+  ALLOWED_REMOTE_SCOPES,
 });

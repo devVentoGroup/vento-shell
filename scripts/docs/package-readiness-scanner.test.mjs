@@ -3,8 +3,16 @@ import fs from 'node:fs';
 import test from 'node:test';
 
 import {
+  buildFoundationEvidenceRef,
+  derivePackageExecutionRequirements,
   evaluateCapability,
+  evaluatePhysicalDependencies,
+  evaluatePackageDeploymentEnvironment,
+  requiredFoundationCheckIds,
+  remoteDriftArgs,
+  validateFoundationEvidenceRef,
   parseCanonicalPackageCatalogFromSource,
+  parseDeploymentEnvironmentProjection,
   parsePackageExecutionProjection,
   parsePackageTaskRouting,
   prioritizeImplementationReadyQueue,
@@ -17,6 +25,27 @@ const contract = JSON.parse(fs.readFileSync(
   new URL('./package-readiness/package-readiness-contract.json', import.meta.url),
   'utf8',
 ));
+
+
+test('remote drift args separan ENVIRONMENT_READY de HISTORY_PASS', () => {
+  const binding = { project_ref: 'abc123', owner: 'SUPA-TRANS-015' };
+  assert.deepEqual(remoteDriftArgs(binding, 'STAGING', 'environment'), [
+    'run', '--silent', 'supabase:drift:remote', '--',
+    '--environment-role', 'staging',
+    '--project-ref', 'abc123',
+    '--owner', 'SUPA-TRANS-015',
+    '--scope', 'environment',
+    '--strict',
+  ]);
+  assert.deepEqual(remoteDriftArgs(binding, 'PRODUCTION', 'history'), [
+    'run', '--silent', 'supabase:drift:remote', '--',
+    '--environment-role', 'production',
+    '--project-ref', 'abc123',
+    '--owner', 'SUPA-TRANS-015',
+    '--scope', 'history',
+    '--strict',
+  ]);
+});
 
 function approvedTask(id, title = id) {
   return {
@@ -106,6 +135,13 @@ function approvedPackageGateRecord(packageId) {
     updated_at: '2026-08-29T20:00:00.000Z',
     physical_identity: { targets: [{ repository: 'vento-shell', path: 'packages/test', symbol_or_surface: 'TestSurface', operation: 'materialize' }] },
     implementation_units: [{ unit_id: 'TEST-UNIT-001', repository: 'vento-shell', change: 'Materializar el package de prueba.' }],
+    deployment_environment: {
+      canonical_task_id: 'DELIV-PKG-019',
+      rollout_profile: 'TP-UI-001',
+      environment_profile: 'ENV-WEB-CI-STAGING',
+      targets: [{ environment_role: 'STAGING', target_type: 'WEB_ENVIRONMENT', target_id: 'staging', owner: 'VENTO_OWNER' }],
+      production_authorized: false,
+    },
     evidence_plan: {
       tests: [{ command: 'npm test', expected_result: 'PASS' }],
       observability: [{ signal: 'test.signal', expected_result: 'Visible' }],
@@ -199,7 +235,14 @@ function canonicalCatalogSource({ passPackage = null } = {}) {
     const packageId = `GAP-PKG-${String(index + 1).padStart(3, '0')}`;
     return `| \`${packageId}\` | ninguna arista confirmada | \`BLOQUEADO_POR_IDENTIDAD\` | Capa 1: contrato/datos autoritativos |`;
   }).join('\n');
-  return `### ✅ DELIV-PKG-002 — Vincular\n\n| package_id | process_id | gap_id estable E1 | capability_id |\n| --- | --- | --- | --- |\n| \`GAP-PKG-001\` | \`VPROC-0001\` | \`H-001\` | \`CAP-01.01\` |\n\n### ✅ DELIV-PKG-007 — Runtime\n\n| package_id | Tarea dominante | runtime_profile | Lógica | Server Action | API | RPC | Edge | Estado |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${dominantRows}\n\n### ✅ DELIV-PKG-015 — Orden\n\n| package_id | Dependencia entre paquetes | Orden actual | Orden posterior al gate |\n| --- | --- | --- | --- |\n${orderRows}\n\n### ✅ DELIV-PKG-017 — Observabilidad\n\n| Paquete | Repositorio propietario | Perfil 016 | Runtime | Responsable de decisión | Resultado 017 | Gate heredado |\n| --- | --- | --- | --- | --- | --- | --- |\n${runtimeRows}\n\n### ✅ DELIV-PKG-025 — Cierre final\n\n| package_id | Disposición 025 | Estado 023 heredado | Estado físico heredado | implementation_unit_id | Decisión final 025 | Propietario de salida | Condición de salida |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n${finalRows}\n`;
+  const deploymentRows = Array.from({ length: 207 }, (_, index) => {
+    const packageId = `GAP-PKG-${String(index + 1).padStart(3, '0')}`;
+    const profile = packageId === 'GAP-PKG-004'
+      ? '`TP-UI-001` / `ENV-WEB-CI-STAGING`'
+      : '`TP-DB-001` / `ENV-SUPABASE-LOCAL-CI-STAGING`';
+    return `| \`${packageId}\` | \`devVentoGroup/vento-shell\` | \`OWN-SEG\` | ${profile} | \`READY\` | Capa 1 | fixture | \`ESPECIFICADO\` |`;
+  }).join('\n');
+  return `### ✅ DELIV-PKG-002 — Vincular\n\n| package_id | process_id | gap_id estable E1 | capability_id |\n| --- | --- | --- | --- |\n| \`GAP-PKG-001\` | \`VPROC-0001\` | \`H-001\` | \`CAP-01.01\` |\n\n### ✅ DELIV-PKG-007 — Runtime\n\n| package_id | Tarea dominante | runtime_profile | Lógica | Server Action | API | RPC | Edge | Estado |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n${dominantRows}\n\n### ✅ DELIV-PKG-015 — Orden\n\n| package_id | Dependencia entre paquetes | Orden actual | Orden posterior al gate |\n| --- | --- | --- | --- |\n${orderRows}\n\n### ✅ DELIV-PKG-017 — Observabilidad\n\n| Paquete | Repositorio propietario | Perfil 016 | Runtime | Responsable de decisión | Resultado 017 | Gate heredado |\n| --- | --- | --- | --- | --- | --- | --- |\n${runtimeRows}\n\n### ✅ DELIV-PKG-019 — Rollout\n\n| package_id | Repositorio | Propietario | Perfil / ambiente | Gate físico 015 | Orden | Artefacto de rollout | Resultado 019 |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n${deploymentRows}\n\n### ✅ DELIV-PKG-025 — Cierre final\n\n| package_id | Disposición 025 | Estado 023 heredado | Estado físico heredado | implementation_unit_id | Decisión final 025 | Propietario de salida | Condición de salida |\n| --- | --- | --- | --- | --- | --- | --- | --- |\n${finalRows}\n`;
 }
 
 test('el contrato conserva 14 condiciones, DELIV-PKG-001..025 y catálogo GAP-PKG-001..207', () => {
@@ -597,4 +640,210 @@ test('la cola diagnóstica de ready es estable y no decide el turno por carril n
     { package_id: 'SPECIAL-001', ready_for_gate_at: '2026-08-29T12:00:00Z' },
   ], { lanes: [{ lane_id: 'SPECIAL-001', active: true, status: 'ACTIVE' }] });
   assert.deepEqual(queue.map(({ package_id: packageId }) => packageId), ['GAP-PKG-001', 'GAP-PKG-002', 'SPECIAL-001']);
+});
+
+test('Supabase remoto exige R0 y fundaciones MRP015 antes del package', () => {
+  const gate = { physical_identity: { targets: [{ path: 'supabase/functions/example/index.ts' }] } };
+  const requirements = derivePackageExecutionRequirements({ contract, packageGate: gate });
+  assert.equal(requirements.supabase_mutation_required, true);
+  assert.deepEqual(requirements.pre_entry_foundation_gates.map(({ foundation_id: id }) => id), ['MRP015-000', 'MRP015-010', 'MRP015-020', 'MRP015-030', 'MRP015-040']);
+
+  const unresolvedContract = structuredClone(contract);
+  for (const foundation of unresolvedContract.physical_dependencies.supabase_pre_e5_foundation.ordered_foundation_gates) {
+    foundation.evidence_ref = null;
+  }
+
+  const instances = verifiedPhysicalDependencies();
+  for (const instanceId of unresolvedContract.physical_dependencies.supabase_pre_e5_foundation.required_verified_instances) {
+    instances.set(instanceId, { instance_id: instanceId, status: 'VERIFIED' });
+  }
+
+  const unresolvedRequirements = derivePackageExecutionRequirements({ contract: unresolvedContract, packageGate: gate });
+  const unresolved = evaluatePhysicalDependencies({ contract: unresolvedContract, instances, executionRequirements: unresolvedRequirements });
+  const firstFoundation = unresolved.evidence.find(({ kind, status }) => kind === 'FOUNDATION_GATE' && status !== 'PASS');
+  assert.equal(firstFoundation.source, 'MRP015-000::TOOLCHAIN_READY');
+  assert.equal(unresolved.available, false);
+
+  const resolved = structuredClone(unresolvedContract);
+  for (const foundation of resolved.physical_dependencies.supabase_pre_e5_foundation.ordered_foundation_gates) {
+    const checks = requiredFoundationCheckIds(foundation.foundation_id).map((id) => ({
+      id,
+      status: 'PASS',
+      exit_code: 0,
+      stdout_sha256: 'a'.repeat(64),
+      stderr_sha256: 'b'.repeat(64),
+    }));
+    foundation.evidence_ref = buildFoundationEvidenceRef({
+      gate: foundation,
+      checks,
+      recordedAt: '2026-09-03T21:29:46-05:00',
+    });
+  }
+  resolved.physical_dependencies.supabase_pre_e5_foundation.remote_environment_identity.bindings.STAGING = { classification: 'STAGING', project_ref: 'staging-fixture-ref', owner: 'fixture-owner' };
+  resolved.physical_dependencies.supabase_pre_e5_foundation.remote_environment_identity.bindings.PRODUCTION = { classification: 'PRODUCTION', project_ref: 'production-fixture-ref', owner: 'fixture-owner' };
+
+  const resolvedRequirements = derivePackageExecutionRequirements({ contract: resolved, packageGate: gate });
+  const resolvedDependencies = evaluatePhysicalDependencies({ contract: resolved, instances, executionRequirements: resolvedRequirements });
+  assert.equal(resolvedDependencies.status, 'PASS');
+  assert.equal(resolvedDependencies.available, true);
+});
+
+test('evidence_ref libre o corrupta nunca cierra una foundation PRE_E5', () => {
+  const gate = structuredClone(contract.physical_dependencies.supabase_pre_e5_foundation.ordered_foundation_gates[0]);
+  assert.equal(validateFoundationEvidenceRef(gate, 'fixture:MRP015-000').status, 'FAIL');
+
+  const checks = requiredFoundationCheckIds(gate.foundation_id).map((id) => ({
+    id, status: 'PASS', exit_code: 0, stdout_sha256: 'a'.repeat(64), stderr_sha256: 'b'.repeat(64),
+  }));
+  const valid = buildFoundationEvidenceRef({ gate, checks, recordedAt: '2026-09-03T21:29:46-05:00' });
+  assert.equal(validateFoundationEvidenceRef(gate, valid).status, 'PASS');
+
+  const corrupt = structuredClone(valid);
+  corrupt.payload_sha256 = '0'.repeat(64);
+  assert.equal(validateFoundationEvidenceRef(gate, corrupt).status, 'FAIL');
+});
+
+test('DELIV-PKG-019 proyecta rollout y ambiente para las 207 raíces', () => {
+  const projection = parseDeploymentEnvironmentProjection(canonicalCatalogSource());
+  assert.equal(projection.size, 207);
+  assert.deepEqual(projection.get('GAP-PKG-001'), {
+    rollout_profile_019: 'TP-DB-001',
+    deployment_environment_profile_019: 'ENV-SUPABASE-LOCAL-CI-STAGING',
+    rollout_result_019: 'ESPECIFICADO',
+  });
+});
+
+test('GAP-PKG Supabase exige exactamente el binding STAGING y excluye PRODUCTION en CI020', () => {
+  const entry = {
+    rollout_profile_019: 'TP-DB-001',
+    deployment_environment_profile_019: 'ENV-SUPABASE-LOCAL-CI-STAGING',
+  };
+  const packageGate = {
+    deployment_environment: {
+      canonical_task_id: 'DELIV-PKG-019',
+      rollout_profile: 'TP-DB-001',
+      environment_profile: 'ENV-SUPABASE-LOCAL-CI-STAGING',
+      targets: [{ environment_role: 'STAGING', target_type: 'SUPABASE_PROJECT_REF', target_id: 'rcrxixmqhrndcervbllp', owner: 'SUPA-TRANS-015' }],
+      production_authorized: false,
+    },
+  };
+  const executionRequirements = {
+    supabase_mutation_required: true,
+    remote_environment_identity: {
+      bindings: {
+        STAGING: { classification: 'STAGING', project_ref: 'rcrxixmqhrndcervbllp', owner: 'SUPA-TRANS-015' },
+      },
+    },
+  };
+  const pass = evaluatePackageDeploymentEnvironment({ entry, packageGate, executionRequirements });
+  assert.equal(pass.status, 'PASS');
+
+  const wrong = structuredClone(packageGate);
+  wrong.deployment_environment.targets[0].target_id = 'wrong-project';
+  const fail = evaluatePackageDeploymentEnvironment({ entry, packageGate: wrong, executionRequirements });
+  assert.equal(fail.status, 'FAIL');
+  assert.ok(fail.problems.includes('STAGING_PROJECT_REF_MISMATCH'));
+});
+
+// CORR-010 STRICT PHYSICAL STAGES 207
+test('las 207 identidades GAP-PKG conservan CI020→CI021→CI022→CI023→CI024 sin saltos', async () => {
+  const { physicalLifecycleStatus } = await import('./package-readiness-scanner.mjs');
+  const physicalContract = { implementation_entry_task: 'SHELL-CI-020' };
+  for (let number = 1; number <= 207; number += 1) {
+    const packageId = `GAP-PKG-${String(number).padStart(3, '0')}`;
+    const instances = new Map();
+    assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract), null);
+
+    const ids = ['SHELL-CI-020', 'SHELL-CI-021', 'SHELL-CI-022', 'SHELL-CI-023', 'SHELL-CI-024']
+      .map((taskId) => `${taskId}::${packageId}`);
+    instances.set(ids[0], { instance_id: ids[0], status: 'AUTHORIZED' });
+    assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract).nextExecution, ids[0]);
+    instances.set(ids[0], { instance_id: ids[0], status: 'VERIFIED' });
+    assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract).nextExecution, ids[1]);
+    for (let index = 1; index < 4; index += 1) {
+      instances.set(ids[index], { instance_id: ids[index], status: 'VERIFIED' });
+      assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract).nextExecution, ids[index + 1]);
+    }
+    instances.set(ids[4], { instance_id: ids[4], status: 'VERIFIED' });
+    assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract).status, 'CLOSED');
+  }
+});
+
+test('scanner rechaza artefactos de una etapa física futura', async () => {
+  const { physicalLifecycleStatus } = await import('./package-readiness-scanner.mjs');
+  const instances = new Map([
+    ['SHELL-CI-020::GAP-PKG-001', { instance_id: 'SHELL-CI-020::GAP-PKG-001', status: 'VERIFIED' }],
+    ['SHELL-CI-023::GAP-PKG-001', { instance_id: 'SHELL-CI-023::GAP-PKG-001', status: 'AUTHORIZED' }],
+  ]);
+  assert.throws(
+    () => physicalLifecycleStatus('GAP-PKG-001', instances, { implementation_entry_task: 'SHELL-CI-020' }),
+    /PHYSICAL_STAGE_SEQUENCE_VIOLATION/u,
+  );
+});
+
+test('MRP015-050 queda ligado al package, CI020, HEAD, alcance y contenido materializado', async () => {
+  const os = await import('node:os');
+  const pathModule = await import('node:path');
+  const {
+    buildInPackageCandidateEvidence,
+    validateInPackageCandidateEvidence,
+  } = await import('./package-readiness-scanner.mjs');
+  const root = fs.mkdtempSync(pathModule.join(os.tmpdir(), 'vento-mrp015-050-'));
+  try {
+    const contractPath = pathModule.join(root, 'scripts/docs/package-readiness');
+    fs.mkdirSync(contractPath, { recursive: true });
+    fs.writeFileSync(
+      pathModule.join(contractPath, 'package-readiness-contract.json'),
+      JSON.stringify(contract),
+      'utf8',
+    );
+    const target = pathModule.join(root, 'supabase/functions/test/index.ts');
+    fs.mkdirSync(pathModule.dirname(target), { recursive: true });
+    fs.writeFileSync(target, 'export const value = 1;\n', 'utf8');
+    const instance = {
+      instance_id: 'SHELL-CI-020::GAP-PKG-001',
+      task_id: 'SHELL-CI-020',
+      authorized_changes: [{
+        repo: 'vento-group-sas/vento-shell',
+        path: 'supabase/functions/test/index.ts',
+        change: 'MODIFY',
+      }],
+      evidence: [],
+    };
+    const gate = contract.physical_dependencies.supabase_pre_e5_foundation.in_package_candidate_gate;
+    const head = 'a'.repeat(40);
+    const evidence = buildInPackageCandidateEvidence({
+      root,
+      packageId: 'GAP-PKG-001',
+      instance,
+      gate,
+      candidateHeadSha: head,
+      recordedAt: '2026-09-05T20:00:00.000Z',
+    });
+    instance.evidence.push(evidence);
+    assert.equal(validateInPackageCandidateEvidence({
+      root,
+      packageId: 'GAP-PKG-001',
+      instance,
+      gate,
+      currentHeadSha: head,
+    }).status, 'PASS');
+    assert.equal(validateInPackageCandidateEvidence({
+      root,
+      packageId: 'GAP-PKG-002',
+      instance,
+      gate,
+      currentHeadSha: head,
+    }).status, 'FAIL');
+    fs.writeFileSync(target, 'export const value = 2;\n', 'utf8');
+    assert.match(validateInPackageCandidateEvidence({
+      root,
+      packageId: 'GAP-PKG-001',
+      instance,
+      gate,
+      currentHeadSha: head,
+    }).detail, /stale/u);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
 });

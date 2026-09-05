@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "correction_id": "DELIV-PKG-015::CORR-004",
+  "task_id": "DELIV-PKG-015",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "IMPLEMENTATION_DEFECT",
+  "status": "VERIFIED",
+  "blocking": true,
+  "blocked_targets": [
+    "SHELL-CI-020::GAP-PKG-001"
+  ],
+  "baseline": {
+    "main_commit": "4e559625a4390cba9cc9511aaea0834d21a4bcbc",
+    "target_task_path": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+    "target_task_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/commit-scope.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness/package-readiness-contract.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.test.mjs",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/docs/commit-scope.mjs",
+    "node --check scripts/docs/package-readiness-scanner.mjs",
+    "node --check scripts/supabase/environment-drift.mjs",
+    "node --test scripts/docs/commit-scope.test.mjs",
+    "node --test scripts/docs/package-readiness-scanner.test.mjs",
+    "npm run supabase:drift:test",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:package:execution:check",
+    "npm run docs:implementation:check",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "La correccion restaura el tooling PRE_E5 de MRP015-010 y su separacion de MRP015-020; no crea ni modifica TREQ ni el registro 04A.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-04T11:09:07.574-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO CORRECCION MRP015-010: autoriza DELIV-PKG-015::CORR-004 exclusivamente para corregir el orden de materializacion de bindings, separar ENVIRONMENT_READY de HISTORY_PASS, restaurar ejecucion portable del tooling y preservar fail-closed sin capacidad funcional nueva, TREQ, 04A, migraciones, datos, secretos ni mutaciones Supabase remotas.",
+    "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
+  },
+  "evidence": [
+    "IMPLEMENTED scripts/supabase/environment-drift.mjs with explicit full/environment/history remote scopes; default full remains unchanged.",
+    "IMPLEMENTED MRP015-010 remote checks with scope=environment and MRP015-020 history checks with scope=history.",
+    "IMPLEMENTED environment/history remote scopes without local Docker harness while preserving clean immutable candidate fail-closed.",
+    "IMPLEMENTED scripts/supabase classification as TRANSVERSAL in commit-scope with regression test.",
+    "IMPLEMENTED STAGING binding juaqdqdnuwtbpbpushsd and PRODUCTION binding clzdpinthhtknkmefsxx, owner SUPA-TRANS-015.",
+    "VERIFIED node --check on modified mjs files PASS.",
+    "VERIFIED commit-scope regression PASS.",
+    "VERIFIED package-readiness-scanner scope regression PASS.",
+    "VERIFIED supabase:drift:test PASS.",
+    "VERIFIED docs:correction:check and docs:correction:test PASS.",
+    "VERIFIED package readiness and execution controls PASS without advancing GAP-PKG-001.",
+    "VERIFIED docs plan and TREQ validators PASS.",
+    "VERIFIED npm test --silent PASS.",
+    "VERIFIED git diff --check PASS.",
+    "VERIFIED zero TREQ changes and zero 04A changes."
+  ],
+  "opened_at": "2026-09-04T16:01:51.582Z"
+}

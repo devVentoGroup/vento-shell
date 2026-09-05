@@ -7106,6 +7106,30 @@ TAREA ACTUAL APROBADA
 SIGUIENTE TAREA RESERVADA
 ``DELIV-PKG-016 — Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E``
 
+<!-- DELIV-PKG-015-CORR-002:START -->
+#### Invariante fail-closed de trabajo ejecutable y fundaciones
+
+`CURRENT_PACKAGE` identifica el `package_id` que conserva el turno topológico. No implica que ese package sea todavía el trabajo físicamente ejecutable.
+
+`CURRENT_EXECUTABLE_WORK` identifica el primer prerrequisito, instancia física o fundación incumplida del `CURRENT_PACKAGE`. Mientras exista, el package consumidor permanece bloqueado y ningún package posterior puede adelantarlo.
+
+Para todo package cuyo expediente físico incluya una mutación remota de Supabase, la precedencia reutilizable es:
+
+```text
+R0 VERIFIED
+→ MRP015-000 / TOOLCHAIN_READY
+→ MRP015-010 / ENVIRONMENT_READY
+→ MRP015-020 / HISTORY_PASS
+→ MRP015-030 / CLEAN_REPLAY_PASS
+→ MRP015-040 / RESOURCE_MANIFEST_PASS
+→ SHELL-CI-020::<package_id>
+→ MRP015-050 / CANDIDATE_READY antes del despliegue remoto
+```
+
+La ausencia de evidencia de cualquiera de esos gates bloquea fail-closed. Un nombre de proyecto, un runtime profile, una etiqueta `dev` o la existencia de un proyecto remoto no satisfacen `ENVIRONMENT_READY` por inferencia.
+
+Si una fundación requerida carece todavía de ejecutor físico materializado, la línea se detiene en la identidad de esa fundación y conserva su owner canónico; nunca salta al package consumidor.
+<!-- DELIV-PKG-015-CORR-002:END -->
 
 ### ✅ DELIV-PKG-016 — Vincular requisitos `TREQ-*` y definir pruebas unitarias, contractuales, de integración, seguridad y E2E
 

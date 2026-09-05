@@ -2,31 +2,31 @@
   "schema_version": 1,
   "generated_from": "execution-route.json",
   "route_id": "NORMAL-CANONICAL-FLOW-001",
-  "sequence_id": "PHASE-04-G-VISO-CORE",
-  "block_code": "BLOQUES G Y G2",
-  "block_title": "VISO administrador del modelo y núcleo operativo",
-  "previous_task_id": "VISO-CORE-001",
+  "sequence_id": "PHASE-04-H2-SHELL-APPLICATION",
+  "block_code": "BLOQUE H2",
+  "block_title": "SHELL como aplicación",
+  "previous_task_id": "SHELL-APP-003",
   "latest_treq_task_id": "NEXO-UX-025",
-  "handoff_task_id": "SHELL-APP-001",
-  "handoff_sequence_id": "PHASE-04-H2-SHELL-APPLICATION",
+  "handoff_task_id": "AUTH-UI-040",
+  "handoff_sequence_id": "PHASE-04-I-UI-IMPLEMENTATION",
   "segments": [
     {
-      "prefix": "VISO-CORE",
-      "from": 2,
-      "to": 6
+      "prefix": "SHELL-APP",
+      "from": 4,
+      "to": 21
     }
   ],
   "block_progress": {
-    "total_tasks": 26,
-    "approved_tasks": 21,
-    "pending_tasks": 5
+    "total_tasks": 21,
+    "approved_tasks": 3,
+    "pending_tasks": 18
   },
   "route_progress": {
     "covered_tasks": 1596,
-    "pending_tasks": 484,
+    "pending_tasks": 476,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
-    "active_stage": 16
+    "active_stage": 17
   },
   "selected_route_id": "NORMAL-CANONICAL-FLOW-001"
 }

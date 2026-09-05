@@ -26,15 +26,31 @@ function linearPackageAction(registry) {
   const execution = registry?.package_execution ?? null;
   const current = execution?.current ?? null;
   if (!current) return null;
+
   const action = current.next_action;
+  const work = execution.current_work ?? current.current_work ?? {
+    kind: 'PACKAGE',
+    id: current.package_id,
+    consumer_package_id: current.package_id,
+  };
+
+  const foundation = work.kind === 'FOUNDATION_GATE';
+
   return {
     type: action.type,
     target: action.target,
-    title: `${current.package_id} ocupa el turno ${current.position}/${execution.sequence.length}`,
-    instruction: `${action.reason} Ejecutar: ${action.command}`,
-    why: 'La secuencia es determinista; un package bloqueado conserva el turno y no puede ser adelantado.',
+    title: foundation
+      ? `${work.id} es el trabajo requerido antes de ${current.package_id}`
+      : `${current.package_id} ocupa el turno ${current.position}/${execution.sequence.length}`,
+    instruction: foundation
+      ? `${action.reason} No autorizar ni continuar ${current.package_id} hasta cerrar este gate.`
+      : `${action.reason} Ejecutar: ${action.command}`,
+    why: foundation
+      ? `${current.package_id} conserva el turno topológico como consumidor bloqueado; la fundación tiene precedencia física.`
+      : 'La secuencia es determinista; un package bloqueado conserva el turno y no puede ser adelantado.',
     command: action.command,
     packageId: current.package_id,
+    currentWork: work,
     source: 'PACKAGE_EXECUTION_LINEAR',
   };
 }
@@ -95,6 +111,8 @@ function printStatus(status) {
   if (status.readinessCurrent) {
     console.log(`CURRENT_PACKAGE: ${status.readinessCurrent.package_id}`);
     console.log(`CURRENT_POSITION: ${status.readinessCurrent.position}`);
+    console.log(`CURRENT_EXECUTABLE_WORK: ${status.readinessCurrent.current_work?.id ?? "NONE"}`);
+    console.log(`CURRENT_EXECUTABLE_WORK_KIND: ${status.readinessCurrent.current_work?.kind ?? "NONE"}`);
   }
   if (status.readinessCandidate) {
     console.log(`PACKAGE_ID: ${status.readinessCandidate.packageId}`);

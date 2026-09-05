@@ -127,3 +127,22 @@ test('la proyección del starter es determinista entre triggers operacionales', 
   assert.match(expected, /TRIGGER: STARTER_PROJECTION/u);
   assert.doesNotMatch(expected, /chatgpt-starter|local-derived-sync/u);
 });
+
+test('el starter diferencia CURRENT_PACKAGE de CURRENT_EXECUTABLE_WORK para fundaciones', () => {
+  const snapshot = readiness(false);
+  snapshot.registry.package_execution.current.current_work = {
+    kind: 'FOUNDATION_GATE',
+    id: 'MRP015-000',
+    gate_id: 'TOOLCHAIN_READY',
+    owner_task: 'SUPA-TRANS-015',
+    consumer_package_id: 'NEXO-PACKAGE-001',
+    status: 'UNKNOWN',
+  };
+  snapshot.registry.package_execution.current_work = snapshot.registry.package_execution.current.current_work;
+  snapshot.registry.package_execution.current.next_action = { type: 'WAIT_FOR_FOUNDATION_PREREQUISITE', target: 'MRP015-000', command: 'npm run docs:package:readiness:check -- --package NEXO-PACKAGE-001', reason: 'Pendiente.' };
+
+  const block = renderReadinessStarterBlock({ readiness: snapshot, lane: 'PHYSICAL_IMPLEMENTATION', coordinated: null });
+  assert.match(block, /CURRENT_EXECUTABLE_WORK: MRP015-000/u);
+  assert.match(block, /CURRENT_EXECUTABLE_WORK_KIND: FOUNDATION_GATE/u);
+  assert.match(block, /BLOCKED_CONSUMER_PACKAGE: NEXO-PACKAGE-001/u);
+});

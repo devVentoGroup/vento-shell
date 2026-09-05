@@ -272,8 +272,10 @@ La autoridad para estas reglas está en el código, los tests, los workflows y l
 2. `docs:implementation:finish` es idempotente y reanudable. Ante interrupción, consulta estado real y vuelve a ejecutar el mismo lifecycle; no reconstruyas manualmente commit, push, PR o merge.
 3. Nunca uses force-push para conseguir que pase un cierre físico.
 4. Nunca sustituyas un fallo de gate por un workaround manual. Si el gate está equivocado, se corrige como infraestructura y se agrega regresión.
-5. Para llamadas npm desde Node, usa `resolveNpmInvocation`. Para ejecutar un `.mjs` conocido directamente, usa `process.execPath`.
-6. Antes de nombrar un script npm, lee `package.json`. El nombre exacto de sincronización local es `docs:plan:local-sync`.
+5. Las fundaciones PRE_E5 de SUPA-TRANS-015 solo pueden quedar PASS mediante `docs:package:foundation:record`; escribir manualmente `evidence_ref` o usar una cadena libre no constituye evidencia. El productor ejecuta los checks del gate, guarda solo metadatos/digests seguros y materializa evidencia estructurada con integridad SHA-256.
+6. Si `CURRENT_EXECUTABLE_WORK` es una foundation o prerrequisito físico, esa acción prevalece sobre cualquier instancia consumidora `PENDING_AUTHORIZATION`; no se autoriza la instancia hasta que el prerrequisito quede PASS.
+7. Para llamadas npm desde Node, usa `resolveNpmInvocation`. Para ejecutar un `.mjs` conocido directamente, usa `process.execPath`.
+8. Antes de nombrar un script npm, lee `package.json`. El nombre exacto de sincronización local es `docs:plan:local-sync`.
 7. El workflow no asume que `github.event.before` siga alcanzable después de reescrituras de historia; debe tener fallback seguro.
 8. HTTP 499 y errores de red transitorios se reintentan; un check en FAILURE no se reintenta como si fuera un problema de transporte.
 9. CRLF/LF no puede cambiar la identidad persistida de una migración ni exigir habilitar una carpeta nueva en la política EOL.
@@ -1317,3 +1319,190 @@ gh pr status
 ```
 
 Si recuerdas estos diez comandos, puedes resolver la mayoría del trabajo diario sin memorizar el resto.
+
+<!-- CURRENT-EXECUTABLE-WORK-CORR-002:START -->
+## Implementación lineal: package consumidor y trabajo ejecutable
+
+Antes de autorizar o continuar una implementación por package, consultar el scanner y distinguir:
+
+```text
+CURRENT_PACKAGE
+≠ necesariamente
+CURRENT_EXECUTABLE_WORK
+```
+
+Cuando `CURRENT_EXECUTABLE_WORK` sea una fundación o un prerrequisito físico, se resuelve primero esa identidad. El package conserva el turno como consumidor bloqueado y no se inicia, despliega ni cierra por inferencia.
+
+Para Supabase, la secuencia global previa al package es R0 → `MRP015-000` → `MRP015-010` → `MRP015-020` → `MRP015-030` → `MRP015-040`. El candidato `MRP015-050` pertenece al ciclo del package y precede al despliegue remoto.
+<!-- CURRENT-EXECUTABLE-WORK-CORR-002:END -->
+
+---
+
+## Precondición de replay hosted en STAGING
+
+### Reconciliación ACL `authenticated` antes de `AUTH-DB-018`
+
+Si `MRP015-020 / HISTORY_PASS` se reanuda sobre el STAGING existente después de que el historial remoto ya alcanzó exactamente `20260828023253_auth_db_016_canonical_schema_foundation`, cualquier diferencia de `authenticated EXECUTE` en funciones `public` debe reconciliarse contra un snapshot canónico del mismo prefijo de siete migraciones antes de reintentar `AUTH-DB-018`.
+
+La reconciliación usa `scripts/supabase/staging-acl-reconciliation.mjs` en modo `authenticated` y conserva estas invariantes:
+
+- destino obligatorio: STAGING canónico `rcrxixmqhrndcervbllp`;
+- historial exacto de siete migraciones, con head `20260828023253`;
+- solo se permiten `REVOKE EXECUTE ... FROM authenticated` sobre funciones `public` cuya ACL exceda el snapshot canónico;
+- el conjunto de reparación válido para este incidente es exactamente `0` o `10` revokes;
+- no se crean grants nuevos;
+- no se modifica `anon`;
+- no se modifican default privileges;
+- no se modifica migration history;
+- no se modifica estructura, datos, owners, definiciones de función ni objetos fuera del ACL objetivo;
+- production queda prohibido por binding;
+- una segunda ejecución sobre estado ya reconciliado debe producir `0` revokes.
+
+`AUTH-DB-018` conserva sin cambios su precondición contractual de `83` RPC client-executable y `10` server-only. No se relaja la migración para acomodar drift hosted.
+
+Después de reconciliar y verificar el estado `83 / 10`, continuar con `supabase db push --dry-run`; el dry-run debe mostrar únicamente las migraciones todavía pendientes. Solo después de esa comprobación se reanuda el `db push` de STAGING y se exige `STAGING_HISTORY_DRIFT` en `scope=history`.
+
+En `MRP015-020 / HISTORY_PASS`, `STAGING_HISTORY_DRIFT` exige paridad exacta entre el historial aplicado y el universo versionado del manifiesto. `PRODUCTION_HISTORY_DRIFT`, únicamente cuando se ejecuta en `scope=history`, exige que el historial aplicado de PRODUCTION sea un prefijo canónico no vacío del mismo universo: cada versión remota debe coincidir con las primeras N versiones canónicas. Este check es estrictamente read-only y no autoriza `db push`, `migration repair`, `reset` ni ninguna promoción a PRODUCTION. Todo `scope=full` conserva la exigencia de paridad completa.
+
+No usar `reset`, `migration repair`, edición de migraciones históricas ni mutación de PRODUCTION como mecanismo de recuperación de este caso.
+
+El helper `supabase:hosted-replay:precondition` queda reservado para escenarios de pre-replay limpio sobre STAGING. No ejecuta reset, no modifica el historial y no sustituye `MRP015-020 / HISTORY_PASS`.
+
+La inspección read-only se ejecuta así:
+
+    npm run supabase:hosted-replay:precondition -- inspect --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015
+
+El endpoint `/database/query/read-only` ejecuta el snapshot como `supabase_read_only_user`. Ese es el actor de inspección esperado.
+
+La identidad de escritura se valida separadamente dentro de la operación enviada a `/database/query`. Antes de cualquier mutación, el SQL exige `current_user = postgres`.
+
+`apply` solo es elegible en un escenario de pre-replay con:
+
+- historial de migraciones vacío;
+- cero relaciones `public` con DML efectivo de `anon`;
+- defaults administrados compatibles;
+- actor read-only igual a `supabase_read_only_user`;
+- target igual al STAGING canónico;
+- PRODUCTION excluido.
+
+La invocación autorizada del modo mutador es:
+
+    npm run supabase:hosted-replay:precondition -- apply --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015 --acknowledge-mutation DELIV-PKG-015::CORR-007
+
+Para el `MRP015-020` actualmente en curso, STAGING conserva historial canónico existente y la reconciliación ACL ya fue ejecutada y verificada. Por tanto, no se ejecutan reset ni `apply`; el flujo continúa mediante las migraciones pendientes y la paridad final se demuestra con `STAGING_HISTORY_DRIFT`.
+
+Reglas invariables:
+
+- No usar `migration repair` para fabricar historial.
+- No repetir la reconciliación ACL ya verificada.
+- No ejecutar reset destructivo para satisfacer `MRP015-020`.
+- `MRP015-020` conserva paridad exacta de historial.
+- `MRP015-030 / CLEAN_REPLAY_PASS` permanece como foundation posterior independiente.
+- PRODUCTION no se modifica durante esta corrección.
+
+Al terminar cualquier operación que haya cargado `SUPABASE_ACCESS_TOKEN`:
+
+    Remove-Item Env:SUPABASE_ACCESS_TOKEN -ErrorAction SilentlyContinue
+    Set-Clipboard -Value ''
+### Recuperación del replay hosted
+
+Antes de cualquier replay hosted sobre STAGING, ejecutar primero la precondición versionada. El helper autentica la Management API únicamente mediante `SUPABASE_ACCESS_TOKEN` cargado de forma temporal en la sesión; el token no se versiona ni debe imprimirse.
+
+En PowerShell, después de copiar el Personal Access Token al portapapeles:
+
+```powershell
+$env:SUPABASE_ACCESS_TOKEN = (Get-Clipboard -Raw).Trim()
+if ([string]::IsNullOrWhiteSpace($env:SUPABASE_ACCESS_TOKEN)) { throw 'SUPABASE_ACCESS_TOKEN_NOT_SET' }
+```
+
+La inspección es de solo lectura y debe apuntar explícitamente al binding canónico de STAGING:
+
+```powershell
+npm run supabase:hosted-replay:precondition -- inspect --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015
+```
+
+Si `APPLY_ALLOWED: NO`, se detiene exclusivamente el replay hosted. Ese resultado
+no ordena ni autoriza un reset. `apply` solo corresponde a un destino nuevo y
+aislado, antes del baseline, con historial vacío, cero relaciones `public` con
+DML de `anon` y defaults administrados de `supabase_admin` compatibles.
+
+En la rama STAGING existente deben preservarse VITAL y los contratos legacy.
+`AUTH-DB-019::GLOBAL` conserva `public.employees.id` y su FK hacia `auth.users`;
+`SUPA-TRANS-015 / MRP015-005` excluye VITAL de las mutaciones Vento OS. Un reset
+general que intente eliminar `vital`, `public.employees`, `pg_cron` o `unaccent`
+no cumple este procedimiento. Una autorización genérica de reset no sustituye
+la reconciliación explícita de esos límites.
+
+Cuando STAGING ya cumpla esas precondiciones, la única mutación permitida por este helper es:
+
+```powershell
+npm run supabase:hosted-replay:precondition -- apply --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015 --acknowledge-mutation DELIV-PKG-015::CORR-006
+```
+
+Orden obligatorio:
+
+```text
+destino nuevo y aislado, autorizado y sin objetos que deban preservarse
+-> inspect
+-> apply
+-> baseline
+-> migraciones forward en orden canónico
+```
+
+El STAGING parcialmente reproducido no es elegible para `apply`. El helper no
+remedia objetos ya recreados. La continuación requiere un procedimiento de
+compatibilidad sobre la rama existente que preserve objetos, datos y FKs, o un
+destino de ensayo nuevo con identidad aprobada y aislamiento demostrado. Ninguna
+de esas alternativas se ejecuta automáticamente al reconciliar la historia.
+
+Esta inelegibilidad bloquea el replay hosted, aunque su prefijo migratorio sea
+reconciliable. Son comprobaciones distintas. No adelantar el despliegue a
+producción para resolver ninguna de ellas. Un reset de rama que reproduzca
+automáticamente el baseline tampoco demuestra que la precondición se ejecutó
+antes de él. Ante `out of shared memory`, conservar el log y comprobar objetos,
+FKs, extensiones e historial; su presencia posterior no demuestra por sí sola
+la reversión de todos los cambios. No aumentar memoria y reintentar un reset
+incompatible con la frontera VITAL.
+
+Reglas invariables:
+
+- PRODUCTION está prohibido para este helper.
+- No usar `migration repair` para fabricar historial.
+- No ejecutar `AUTH-DB-005` manualmente fuera de la cadena de replay.
+- No ejecutar `GRANT`/`REVOKE` ad hoc sobre relaciones existentes para acomodar el precondition.
+- No usar `apply` sobre un STAGING parcialmente reproducido.
+- Después de `apply`, el replay comienza en baseline y continúa por la cadena canónica.
+
+Al terminar la inspección o la mutación autorizada, limpiar el token de la sesión y del portapapeles:
+
+```powershell
+Remove-Item Env:SUPABASE_ACCESS_TOKEN -ErrorAction SilentlyContinue
+Set-Clipboard -Value ''
+```
+
+<!-- CURRENT-EXECUTABLE-WORK-CORR-010:BEGIN -->
+## Secuencia física estricta por GAP-PKG
+
+Una vez autorizado el handoff de `SHELL-CI-020::<package_id>`, el package conserva el turno hasta cerrar exactamente esta secuencia:
+
+```text
+SHELL-CI-020::<package_id>
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+→ SHELL-CI-023::<package_id>
+→ SHELL-CI-024::<package_id>
+→ CLOSED
+```
+
+`package_execution` proyecta `CONTINUE_PHYSICAL_LIFECYCLE` sobre una sola instancia exacta. Una instancia futura no puede existir antes de que su predecesora esté `VERIFIED`. Al verificar una etapa, `docs:plan:build` puede materializar únicamente la siguiente como `PENDING_AUTHORIZATION`; nunca la autoriza automáticamente.
+
+El ledger de la instancia actual puede evolucionar como parte del lifecycle sin tener que declararse como cambio funcional. El ledger de otra instancia continúa fuera de alcance, salvo el único borrador `PENDING_AUTHORIZATION` derivado de la etapa siguiente.
+
+Para un GAP-PKG que muta Supabase, `MRP015-000` a `MRP015-040` siguen siendo gates globales previos. `MRP015-050 / CANDIDATE_READY` no es global: pertenece al `SHELL-CI-020::<package_id>` actual y debe registrarse después de materializar el candidato y antes de cualquier despliegue remoto:
+
+```powershell
+node scripts/docs/package-readiness-scanner.mjs --record-candidate GAP-PKG-001
+```
+
+La evidencia se guarda dentro de `evidence` del ledger `SHELL-CI-020` y queda ligada a `package_id`, `instance_id`, HEAD, `authorized_changes` y hashes de las superficies Supabase materializadas. Si cualquiera de esos elementos cambia, la evidencia queda stale y debe regenerarse antes de cerrar CI020. Nunca contiene secretos ni autoriza producción.
+<!-- CURRENT-EXECUTABLE-WORK-CORR-010:END -->

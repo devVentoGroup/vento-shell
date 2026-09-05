@@ -20,23 +20,23 @@
 | Fragmentos canónicos | **315** |
 | Tareas canónicas con marcador | **1596** |
 | Tareas `AUTH` únicas | **319** |
-| Tareas aprobadas | **1112** |
+| Tareas aprobadas | **1120** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **484** |
+| Tareas no iniciadas | **476** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **69.67% (1112/1596)** |
+| Porcentaje de completamiento | **70.18% (1120/1596)** |
 | Compilado derivado local      | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md` — regenerable; no versionado    |
 | Estado del compilado          | **REGENERABLE LOCALMENTE; CI LO PUBLICA TEMPORALMENTE TRAS VALIDAR**                             |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **VISO-CORE-001 — Definir núcleo mínimo de VISO** |
-| Tarea actual | **VISO-CORE-002 — Vincular núcleo con capacidades empresariales** |
+| Última tarea aprobada | **SHELL-APP-003 — Definir aplicaciones visibles por contexto** |
+| Tarea actual | **SHELL-APP-004 — Mostrar turno activo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **VISO-CORE-003 — Implementar dependencias administrativas mínimas** |
-| Bloque actual | **BLOQUES G Y G2 — VISO administrador del modelo y núcleo operativo** |
-| Progreso del bloque | **BLOQUES G Y G2: 21 de 26 aprobadas; VISO-CORE-002 pendiente** |
+| Siguiente tarea | **SHELL-APP-005 — Mostrar sede activa** |
+| Bloque actual | **BLOQUE H2 — SHELL como aplicación** |
+| Progreso del bloque | **BLOQUE H2: 3 de 21 aprobadas; SHELL-APP-004 pendiente** |
 | Estado de implementación | **GLOBAL_IMPLEMENTATION_READY** |
 | Acción principal obligatoria | **AUTORIZAR_IMPLEMENTACION — SHELL-CI-020::GAP-PKG-001** |
-| Carril documental | **ACTIVO — VISO-CORE-002** |
+| Carril documental | **ACTIVO — SHELL-APP-004** |
 | Carril físico | **PENDING_AUTHORIZATION — SHELL-CI-020::GAP-PKG-001** |
 | Alcance físico autorizado | **NINGUNO** |
 
@@ -44,9 +44,9 @@
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `VISO-CORE-001` — Definir núcleo mínimo de VISO |
-| Tarea actual | `VISO-CORE-002` — Vincular núcleo con capacidades empresariales — **NO INICIADA** |
-| Siguiente tarea | `VISO-CORE-003` — Implementar dependencias administrativas mínimas |
+| Última aprobada | `SHELL-APP-003` — Definir aplicaciones visibles por contexto |
+| Tarea actual | `SHELL-APP-004` — Mostrar turno activo — **NO INICIADA** |
+| Siguiente tarea | `SHELL-APP-005` — Mostrar sede activa |
 | Restricción | **NO EJECUTAR CÓDIGO, DATOS, SUPABASE NI DESPLIEGUES SIN UNA INSTANCIA EXPLÍCITAMENTE AUTORIZADA** |
 
 ## Progreso documental aprobado
@@ -59,7 +59,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **BLOQUES G Y G2: 21 DE 26 APROBADAS — ACTUAL VISO-CORE-002** |
+| CONTINUIDAD ACTIVA | **BLOQUE H2: 3 DE 21 APROBADAS — ACTUAL SHELL-APP-004** |
 | Implementación física | **SHELL-CI-020::GAP-PKG-001 — PENDING_AUTHORIZATION** |
 
 ## Reglas de edición
@@ -92,14 +92,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-VISO-CORE-001 — Definir núcleo mínimo de VISO
+SHELL-APP-003 — Definir aplicaciones visibles por contexto
         ↓
 TAREA ACTUAL
-VISO-CORE-002 — Vincular núcleo con capacidades empresariales
+SHELL-APP-004 — Mostrar turno activo
         ↓
 SIGUIENTE TAREA RESERVADA
-VISO-CORE-003 — Implementar dependencias administrativas mínimas
+SHELL-APP-005 — Mostrar sede activa
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUES G Y G2 — 21 de 26 tareas aprobadas
+BLOQUE H2 — 3 de 21 tareas aprobadas
 ```

@@ -11,7 +11,7 @@ import {
     waitForPrChecksToComplete,
 } from './task-branch-lifecycle.mjs';
 import {
-    CORRECTION_STARTER_PROJECTION,
+    DERIVED_CORRECTION_PROJECTIONS,
     assertBaselineCurrent,
     assertCorrectionPaths,
     computeBaselineAtRef,
@@ -144,13 +144,41 @@ function ensureMainSynchronized(root) {
     return true;
 }
 
-function ensureOnlyPaths(root, expectedPaths, label) {
+function reconcileDerivedWorktree(root, expectedPaths, label) {
+    const expected = new Set(expectedPaths);
     const actual = worktreePaths(root);
-    const expected = [...new Set(expectedPaths)].sort();
-    const sorted = [...actual].sort();
-    if (JSON.stringify(sorted) !== JSON.stringify(expected)) {
-        fail(`${label} exige exactamente estos cambios locales: ${expected.join(', ') || 'NINGUNO'}; actuales: ${sorted.join(', ') || 'NINGUNO'}.`);
+
+    const unexpected = actual.filter(
+        (entry) => !expected.has(entry) && !DERIVED_CORRECTION_PROJECTIONS.has(entry),
+    );
+
+    if (unexpected.length > 0) {
+        fail(
+            `${label} detectó cambios locales reales fuera del alcance: ${unexpected.join(', ')}.`,
+        );
     }
+
+    const derived = actual.filter(
+        (entry) => DERIVED_CORRECTION_PROJECTIONS.has(entry),
+    );
+
+    if (derived.length > 0) {
+        git(
+            ['restore', '--source=HEAD', '--staged', '--worktree', '--', ...derived],
+            { cwd: root },
+        );
+    }
+
+    const remaining = worktreePaths(root).sort();
+    const required = [...expected].sort();
+
+    if (JSON.stringify(remaining) !== JSON.stringify(required)) {
+        fail(
+            `${label} no pudo reconciliar el worktree; esperados: ${required.join(', ') || 'NINGUNO'}; actuales: ${remaining.join(', ') || 'NINGUNO'}.`,
+        );
+    }
+
+    return derived;
 }
 
 function writeRecord(root, record) {
@@ -205,9 +233,9 @@ export function prepareCorrection({
     blockedTargets = [],
 } = {}) {
     ensureGhReady(root);
-    if (worktreePaths(root).length > 0) fail('CORRECTION_PREPARE exige worktree limpio.');
+    reconcileDerivedWorktree(root, [], 'CORRECTION_PREPARE');
     ensureMainSynchronized(root);
-    if (worktreePaths(root).length > 0) fail('CORRECTION_PREPARE exige main limpio después de sincronizar.');
+    reconcileDerivedWorktree(root, [], 'CORRECTION_PREPARE_POST_SYNC');
 
     const normalizedTaskId = normalizeTaskId(taskId);
     const normalizedType = String(type ?? '').trim().toUpperCase();
@@ -462,14 +490,14 @@ export function registerCorrection({ root = ensureRepositoryRoot(), correctionId
     if (mainSync.behind !== 0 || mainSync.ahead !== 0) {
         fail(`main debe estar sincronizado 0/0 antes de registrar la corrección: ${mainSync.raw}.`);
     }
-    ensureOnlyPaths(root, [recordPath], 'CORRECTION_REGISTER');
+    reconcileDerivedWorktree(root, [recordPath], 'CORRECTION_REGISTER');
     const record = readRecord(root, id);
     if (record.status !== 'PENDING_AUTHORIZATION') fail(`${id} debe estar PENDING_AUTHORIZATION para register.`);
     const branch = correctionRegistrationBranchName(id);
     git(['switch', '-c', branch], { cwd: root });
     npm(['run', '--silent', 'docs:correction:starter'], { cwd: root });
     runGovernanceValidation(root);
-    const allowedPaths = [recordPath, CORRECTION_STARTER_PROJECTION];
+    const allowedPaths = [recordPath, ...DERIVED_CORRECTION_PROJECTIONS];
     const body = [
         'VENTO-TREQ-AFFECTED: NONE',
         `VENTO-TREQ-ZERO-REASON: ${id} registra una corrección histórica pendiente sin modificar todavía requisitos TREQ.`,
@@ -514,7 +542,7 @@ export function startCorrection({ root = ensureRepositoryRoot(), correctionId } 
     if (mainSync.behind !== 0 || mainSync.ahead !== 0) {
         fail(`main debe estar sincronizado 0/0 antes de iniciar la corrección: ${mainSync.raw}.`);
     }
-    ensureOnlyPaths(root, [recordPath], 'CORRECTION_START');
+    reconcileDerivedWorktree(root, [recordPath], 'CORRECTION_START');
     const record = readRecord(root, id);
     if (record.status !== 'AUTHORIZED') fail(`${id} debe estar AUTHORIZED antes de start; estado ${record.status}.`);
     if (!record.authorization || record.authorization.decision !== 'APPROVED') fail(`${id} no conserva authorization APPROVED.`);

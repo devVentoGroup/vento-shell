@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "correction_id": "DELIV-PKG-015::CORR-009",
+  "task_id": "DELIV-PKG-015",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "IMPLEMENTATION_DEFECT",
+  "status": "VERIFIED",
+  "blocking": true,
+  "blocked_targets": [
+    "SHELL-CI-020::GAP-PKG-001"
+  ],
+  "baseline": {
+    "main_commit": "90a8186c83b084dcb7c1cd5d3b5a8d13834b7dfd",
+    "target_task_path": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+    "target_task_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/environment-drift.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/supabase/environment-drift.mjs",
+    "node --test scripts/supabase/environment-drift.test.mjs",
+    "npm run supabase:drift:test",
+    "npm run supabase:drift:remote -- --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015 --scope history --strict",
+    "npm run supabase:drift:remote -- --environment-role production --project-ref clzdpinthhtknkmefsxx --owner SUPA-TRANS-015 --scope history --strict",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "La corrección ajusta únicamente la semántica de certificación de HISTORY_PASS para distinguir STAGING con paridad exacta de PRODUCTION como prefijo canónico read-only; no crea ni modifica comportamiento funcional, TREQ, 04A ni migraciones históricas.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-05",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
+  },
+  "evidence": [
+    "IMPLEMENTED HISTORY_PASS semantics: STAGING scope=history requires exact canonical migration history; PRODUCTION scope=history requires a non-empty canonical prefix; scope=full remains exact.",
+    "VERIFIED node --check scripts/supabase/environment-drift.mjs PASS.",
+    "VERIFIED node --test scripts/supabase/environment-drift.test.mjs PASS.",
+    "VERIFIED npm run supabase:drift:test PASS.",
+    "VERIFIED npm run docs:correction:check PASS.",
+    "VERIFIED npm run docs:correction:test PASS.",
+    "VERIFIED npm run docs:package:readiness:check -- --package GAP-PKG-001 PASS.",
+    "VERIFIED npm run docs:plan:build PASS.",
+    "VERIFIED npm run docs:plan:check PASS.",
+    "VERIFIED npm run docs:plan:test PASS.",
+    "VERIFIED npm run docs:treq:check PASS.",
+    "VERIFIED npm run docs:treq:test PASS.",
+    "VERIFIED npm test --silent PASS.",
+    "VERIFIED git diff --check PASS.",
+    "VERIFIED live STAGING scope=history PASS with exit_code=0 and REMOTE_MUTATIONS=NO.",
+    "VERIFIED live PRODUCTION scope=history PASS with candidate_sha=a9d96ef9fdeeda5d0eeb2ca3831df894ef4356e2, drift_total=0, unauthorized_drift=0, insufficient_evidence=0, certification=PRODUCTION_CERTIFIED and REMOTE_MUTATIONS=NO.",
+    "VERIFIED zero TREQ changes, zero 04A changes, zero migration-file changes, zero db push, zero migration repair, zero reset and zero Supabase remote mutations."
+  ],
+  "opened_at": "2026-09-05T15:16:37.508Z"
+}

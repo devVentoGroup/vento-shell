@@ -16,6 +16,7 @@ test('clasifica fuentes canónicas y herramientas transversales por separado', (
     'CANONICAL_TASK',
   );
   assert.equal(classifyCommitPath('scripts/docs/watch-plan-canonico.mjs'), 'TRANSVERSAL');
+  assert.equal(classifyCommitPath('scripts/supabase/environment-drift.mjs'), 'TRANSVERSAL');
   assert.equal(
     classifyCommitPath('docs/plan-canonico/modular/package-selection-policy.json'),
     'TRANSVERSAL',

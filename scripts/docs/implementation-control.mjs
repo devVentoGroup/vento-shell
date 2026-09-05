@@ -3,6 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { resolveTaskWorkTopology } from './task-work-topology.mjs';
+import { scanPackageReadiness } from './package-readiness-scanner.mjs';
 
 const CONTROL_PATH = 'docs/plan-canonico/modular/implementation-control.json';
 const INSTANCE_RECORDS_DIRECTORY = 'docs/plan-canonico/modular/implementation-instances';
@@ -39,10 +40,66 @@ function markdown(value) {
   return String(value ?? '—').replaceAll('|', '\\|').replace(/\s+/gu, ' ').trim() || '—';
 }
 
+function completeTargetEnvironments(values) {
+  return Array.isArray(values)
+    && values.length > 0
+    && values.every((value) => (
+      value
+      && typeof value === 'object'
+      && !Array.isArray(value)
+      && String(value.environment_role ?? '').trim()
+      && String(value.target_type ?? '').trim()
+      && String(value.target_id ?? '').trim()
+      && String(value.owner ?? '').trim()
+    ));
+}
+
 function expectedInstancePattern(taskId, lifecycle) {
   if (lifecycle.mode === 'GLOBAL_ENABLE_ONCE') return `${taskId}::GLOBAL`;
   if (lifecycle.mode === 'GLOBAL_FINAL') return `${taskId}::GLOBAL-FINAL`;
   return null;
+}
+
+export function derivePackageLifecycleCandidate({ packageExecution, workTopology, explicitById }) {
+  const action = packageExecution?.current?.next_action ?? null;
+  if (action?.type !== 'CONTINUE_PHYSICAL_LIFECYCLE') return null;
+
+  const instanceId = String(action.target ?? '').trim();
+  const match = /^(SHELL-CI-02[1-4])::(GAP-PKG-\d{3})$/u.exec(instanceId);
+  if (!match) return null;
+
+  const taskId = match[1];
+  const packageId = match[2];
+  if (String(packageExecution?.current?.package_id ?? '').trim() !== packageId) {
+    fail([`${instanceId} no pertenece al package actual ${packageExecution?.current?.package_id ?? 'NONE'}.`]);
+  }
+
+  const task = workTopology.inventory.get(taskId) ?? null;
+  const lifecycle = workTopology.topology.get(taskId) ?? null;
+  if (!task || stateFromMarker(task.marker) !== 'APROBADA') {
+    fail([`${taskId} debe existir y estar APROBADA para derivar ${instanceId}.`]);
+  }
+  if (lifecycle?.mode !== 'TEMPLATE_PER_PACKAGE') {
+    fail([`${taskId} debe conservar topología TEMPLATE_PER_PACKAGE; actual ${lifecycle?.mode ?? 'NONE'}.`]);
+  }
+
+  const explicit = explicitById.get(instanceId) ?? null;
+  return {
+    instanceId,
+    recordPath: instanceRecordRelativePath(instanceId),
+    taskId,
+    taskTitle: task.title,
+    lifecycleMode: lifecycle.mode,
+    status: explicit?.status ?? 'READY_FOR_AUTHORIZATION',
+    source: explicit ? 'EXPLICIT' : 'DERIVED_FROM_APPROVED_CONTRACT',
+    record: explicit,
+    targetRepositories: explicit?.target_repositories ?? [],
+    authorizedChanges: explicit?.authorized_changes ?? [],
+    validationCommands: explicit?.validation_commands ?? [],
+    targetEnvironments: explicit?.target_environments ?? [],
+    evidence: explicit?.evidence ?? [],
+    blocker: explicit?.blocker ?? null,
+  };
 }
 
 export function instanceRecordRelativePath(instanceId) {
@@ -220,6 +277,13 @@ export function validateImplementationControl(control, workTopology) {
       if (!Array.isArray(entry.validation_commands) || entry.validation_commands.length === 0) {
         errors.push(`${entry.instance_id} debe declarar validation_commands antes de ${entry.status}.`);
       }
+      if (
+        entry.task_id === 'SHELL-CI-020'
+        && /^SHELL-CI-020::GAP-PKG-\d{3}$/u.test(entry.instance_id)
+        && !completeTargetEnvironments(entry.target_environments)
+      ) {
+        errors.push(`${entry.instance_id} debe declarar target_environments completos antes de ${entry.status}.`);
+      }
       const authorization = entry.authorization;
       if (!authorization || typeof authorization !== 'object' || Array.isArray(authorization)) {
         errors.push(`${entry.instance_id} debe conservar authorization como evidencia humana antes de ${entry.status}.`);
@@ -274,12 +338,22 @@ export function deriveImplementationControl({
   control: suppliedControl = null,
   workTopology: suppliedTopology = null,
   preflight: suppliedPreflight = null,
+  packageExecution: suppliedPackageExecution = undefined,
 } = {}) {
   const workTopology = suppliedTopology ?? resolveTaskWorkTopology({ root });
   const control = validateImplementationControl(
     suppliedControl ?? loadImplementationControl({ root }),
     workTopology,
   );
+  const packageExecution = suppliedPackageExecution !== undefined
+    ? suppliedPackageExecution
+    : suppliedControl
+      ? null
+      : scanPackageReadiness({
+        root,
+        trigger: 'implementation-control',
+        supplied: { skipDerivedReports: true },
+      }).registry.package_execution;
   const operatorPolicy = control.execution_operator_policy;
   const currentTask = workTopology.inventory.get(workTopology.currentId);
   if (!suppliedPreflight && !currentTask) {
@@ -312,12 +386,21 @@ export function deriveImplementationControl({
         targetRepositories: explicit?.target_repositories ?? [],
         authorizedChanges: explicit?.authorized_changes ?? [],
         validationCommands: explicit?.validation_commands ?? [],
+        targetEnvironments: explicit?.target_environments ?? [],
         evidence: explicit?.evidence ?? [],
         blocker: explicit?.blocker ?? null,
       };
     });
 
-  const candidateIds = new Set(globalCandidates.map(({ instanceId }) => instanceId));
+  const packageCandidate = derivePackageLifecycleCandidate({
+    packageExecution,
+    workTopology,
+    explicitById,
+  });
+  const packageCandidates = packageCandidate ? [packageCandidate] : [];
+  const candidateIds = new Set(
+    [...globalCandidates, ...packageCandidates].map(({ instanceId }) => instanceId),
+  );
   const explicitOther = control.instances
     .filter((entry) => !candidateIds.has(entry.instance_id))
     .map((entry) => {
@@ -335,11 +418,49 @@ export function deriveImplementationControl({
         targetRepositories: entry.target_repositories ?? [],
         authorizedChanges: entry.authorized_changes ?? [],
         validationCommands: entry.validation_commands ?? [],
+        targetEnvironments: entry.target_environments ?? [],
         evidence: entry.evidence ?? [],
         blocker: entry.blocker ?? null,
       };
     });
-  const instances = [...globalCandidates, ...explicitOther];
+  const instances = [...globalCandidates, ...packageCandidates, ...explicitOther];
+  const currentPackageWork = packageExecution?.current_work ?? packageExecution?.current?.current_work ?? null;
+  let packagePrerequisiteAction = null;
+
+  if (['FOUNDATION_GATE', 'PHYSICAL_PREREQUISITE'].includes(currentPackageWork?.kind)) {
+    const consumerPackageId = String(currentPackageWork.consumer_package_id ?? '').trim();
+    const consumerInstanceId = consumerPackageId ? `SHELL-CI-020::${consumerPackageId}` : null;
+    const consumerInstance = consumerInstanceId
+      ? instances.find(({ instanceId }) => instanceId === consumerInstanceId) ?? null
+      : null;
+
+    if (consumerInstance && ['AUTHORIZED', 'IN_PROGRESS', 'IMPLEMENTED'].includes(consumerInstance.status)) {
+      fail([`${consumerInstanceId} no puede estar ${consumerInstance.status} mientras ${currentPackageWork.id} sigue pendiente.`]);
+    }
+
+    if (consumerInstance && ['PENDING_AUTHORIZATION', 'READY_FOR_AUTHORIZATION'].includes(consumerInstance.status)) {
+      consumerInstance.status = currentPackageWork.kind === 'FOUNDATION_GATE'
+        ? 'WAITING_FOR_FOUNDATION_PREREQUISITE'
+        : 'WAITING_FOR_PHYSICAL_PREREQUISITE';
+      consumerInstance.blocker = `${consumerPackageId} debe cerrar primero ${currentPackageWork.id}${currentPackageWork.gate_id ? ` / ${currentPackageWork.gate_id}` : ''}.`;
+    }
+
+    const packageAction = packageExecution?.current?.next_action ?? null;
+    packagePrerequisiteAction = {
+      type: currentPackageWork.kind === 'FOUNDATION_GATE'
+        ? 'WAIT_FOR_FOUNDATION_PREREQUISITE'
+        : 'WAIT_FOR_PHYSICAL_PREREQUISITE',
+      target: currentPackageWork.id,
+      title: currentPackageWork.gate_id
+        ? `${currentPackageWork.gate_id} — ${currentPackageWork.owner_task ?? currentPackageWork.id}`
+        : currentPackageWork.id,
+      instruction: packageAction?.command
+        ? `Resolver ${currentPackageWork.id} antes de autorizar ${consumerInstanceId ?? consumerPackageId}; comprobar con ${packageAction.command}.`
+        : `Resolver ${currentPackageWork.id} antes de autorizar ${consumerInstanceId ?? consumerPackageId}.`,
+      why: packageAction?.reason
+        ?? `${consumerPackageId || 'El package consumidor'} conserva el turno, pero su primer prerrequisito físico no está PASS.`,
+    };
+  }
 
   let unfinishedGlobal = null;
   for (const instance of globalCandidates) {
@@ -390,7 +511,7 @@ export function deriveImplementationControl({
     parallelWithPhysical: Boolean(selected),
     owner: preflight.task.owner,
   };
-  const primaryAction = selected ? {
+  const primaryAction = packagePrerequisiteAction ?? (selected ? {
     type: actionType,
     target: selected.instanceId,
     title: selected.taskTitle,
@@ -406,7 +527,7 @@ export function deriveImplementationControl({
     title: documentary.taskTitle,
     instruction: `Desarrollar únicamente el contrato documental de ${documentary.taskId}; no iniciar su instancia física por inferencia.`,
     why: 'No existe una instancia física autorizada, activa, pendiente de validación o lista para autorización.',
-  };
+  });
 
   const modeByStatus = {
     IN_PROGRESS: 'GLOBAL_IMPLEMENTATION_ACTIVE',
@@ -414,7 +535,9 @@ export function deriveImplementationControl({
     IMPLEMENTED: 'GLOBAL_VALIDATION_REQUIRED',
     BLOCKED: 'IMPLEMENTATION_BLOCKED',
   };
-  const mode = selected ? modeByStatus[selected.status] ?? 'GLOBAL_IMPLEMENTATION_READY' : 'DOCUMENTATION_ONLY';
+  const mode = packagePrerequisiteAction
+    ? 'IMPLEMENTATION_BLOCKED'
+    : selected ? modeByStatus[selected.status] ?? 'GLOBAL_IMPLEMENTATION_READY' : 'DOCUMENTATION_ONLY';
   const authorized = instances.filter(({ status }) => (
     ['AUTHORIZED', 'IN_PROGRESS', 'IMPLEMENTED'].includes(status)
   ));
@@ -458,7 +581,10 @@ export function deriveImplementationControl({
       authorized,
       readyCount: instances.filter(({ status }) => status === 'READY_FOR_AUTHORIZATION').length,
       blockedCount: instances.filter(({ status }) => (
-        status === 'BLOCKED' || status === 'WAITING_FOR_PREVIOUS_INSTANCE'
+        status === 'BLOCKED'
+        || status === 'WAITING_FOR_PREVIOUS_INSTANCE'
+        || status === 'WAITING_FOR_FOUNDATION_PREREQUISITE'
+        || status === 'WAITING_FOR_PHYSICAL_PREREQUISITE'
       )).length,
     },
   };
@@ -561,9 +687,16 @@ export function ensurePendingImplementationRecord({ root, control, check = false
   return true;
 }
 
-export function writeImplementationControlArtifacts({ root = process.cwd(), check = false } = {}) {
+export function writeImplementationControlArtifacts({
+  root = process.cwd(),
+  check = false,
+  materializePendingRecord = true,
+} = {}) {
   let control = deriveImplementationControl({ root });
-  if (ensurePendingImplementationRecord({ root, control, check })) {
+  if (
+    materializePendingRecord
+    && ensurePendingImplementationRecord({ root, control, check })
+  ) {
     control = deriveImplementationControl({ root });
   }
   const markdown = renderCurrentWorkDirective(control);

@@ -1,0 +1,239 @@
+{
+  "schema_version": 1,
+  "correction_id": "DELIV-PKG-015::CORR-002",
+  "task_id": "DELIV-PKG-015",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "DOCUMENTARY_CONTRADICTION",
+  "status": "VERIFIED",
+  "blocking": true,
+  "blocked_targets": [
+    "SHELL-CI-020"
+  ],
+  "baseline": {
+    "main_commit": "82595eec83557ac76ca5703823ea331b6ef3ed59",
+    "target_task_path": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+    "target_task_sha256": "80922253f9a7fffe6d2dade19b17e7523d995ad97044d012c81e31cd112a9ef9",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/01_PROTOCOLO.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/90_ORDEN_DE_IMPLEMENTACION.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/package-execution-policy.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/implementation-readiness-policy.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/task-work-topology.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness/package-readiness-contract.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-integration.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-execution-control.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-execution-control.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/task-work-topology.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/task-work-topology.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-readiness-coordinator.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-readiness-coordinator.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-readiness-artifacts.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-readiness-artifacts.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/chatgpt-work-starter-readiness.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/chatgpt-work-starter-readiness.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/sync-pending-task-context.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/sync-pending-task-context.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-correction-guard.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-correction-guard.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-control.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-control.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/sync-local-derived-artifacts.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/correction-control.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/correction-control.test.mjs",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:work-topology:check",
+    "npm run docs:package:readiness:check",
+    "npm run docs:package:execution:check",
+    "npm run docs:implementation:check",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "La corrección restaura el orden físico fail-closed, las fundaciones PRE_E5, la selección del siguiente trabajo ejecutable, los iniciadores y las proyecciones de contexto sin crear ni modificar requisitos TREQ ni el registro 04A.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-03T16:22:00-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO: autoriza DELIV-PKG-015::CORR-002 para corregir de forma transversal y fail-closed la linealidad física de implementación, de modo que el primer prerrequisito, base o fundación incumplida sea el trabajo ejecutable actual antes del GAP-PKG consumidor; exige que package-readiness, package-execution, los iniciadores, REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO, guards y guía operativa proyecten la misma decisión, incluyendo fundaciones Supabase y binding ambiental, sin crear capacidad funcional nueva, sin modificar TREQ/04A y sin alterar instancias históricas VERIFIED. La autorización incluye cerrar de forma transversal el autosync de todas las proyecciones regenerables verificadas por docs:plan:check, evitando regeneraciones manuales y haciendo fallar CI si una proyección versionada requerida no fue comprometida.",
+    "source_contract_sha256": "80922253f9a7fffe6d2dade19b17e7523d995ad97044d012c81e31cd112a9ef9"
+  },
+  "evidence": [
+    "VERIFIED npm run docs:plan:build PASS.",
+    "IMPLEMENTED duplicated replaceBetween boundaries repaired in all four affected modules.",
+    "VERIFIED npm run quality:repair PASS.",
+    "IMPLEMENTED package-readiness differentiates CURRENT_PACKAGE from CURRENT_EXECUTABLE_WORK.",
+    "IMPLEMENTED package-execution keeps the GAP-PKG as topological consumer while projecting the first unmet foundation.",
+    "IMPLEMENTED starters and pending-task projection expose the same CURRENT_EXECUTABLE_WORK.",
+    "IMPLEMENTED SHELL-CI-020 start and finish are guarded against unmet physical or foundation prerequisites.",
+    "NOT_APPLICABLE npm run docs:delivery-exec:check: exige --file para un ejecutable TXT/CommonJS concreto; DELIV-PKG-015::CORR-002 no entrega un ejecutable.",
+    "IMPLEMENTED LOCAL_DERIVED_SYNC reconcilia primero continuidad versionada y REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO antes de congelar el worktree no derivado.",
+    "IMPLEMENTED pruebas del derived sync reparadas sin regex generadas por interpolacion.",
+    "VERIFIED regresiones dirigidas del derived sync PASS.",
+    "VERIFIED docs:plan:local-sync es idempotente en dos ejecuciones consecutivas.",
+    "VERIFIED npm run docs:correction:check PASS.",
+    "VERIFIED npm run docs:correction:test PASS.",
+    "VERIFIED npm run docs:work-topology:check PASS.",
+    "VERIFIED npm run docs:package:readiness:check PASS.",
+    "VERIFIED npm run docs:package:execution:check PASS.",
+    "VERIFIED npm run docs:implementation:check PASS.",
+    "VERIFIED npm run docs:plan:check PASS.",
+    "VERIFIED npm run docs:plan:test PASS.",
+    "VERIFIED npm run docs:treq:check PASS.",
+    "VERIFIED npm run docs:treq:test PASS.",
+    "VERIFIED npm test --silent PASS.",
+    "VERIFIED git --no-pager diff --check PASS.",
+    "VERIFIED CURRENT_PACKAGE=GAP-PKG-001; CURRENT_EXECUTABLE_WORK=MRP015-000; GATE=TOOLCHAIN_READY; OWNER=SUPA-TRANS-015.",
+    "VERIFIED GAP-PKG-001 permanece como consumidor bloqueado y ningun package posterior puede adelantarlo.",
+    "VERIFIED todas las proyecciones verificadas por docs:plan:check convergen automaticamente antes de sus respectivos checks."
+  ],
+  "opened_at": "2026-09-03T21:06:22.115Z"
+}

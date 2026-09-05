@@ -133,3 +133,17 @@ test('VENTO Required Gate ejecuta remotamente el scope de una rama CORR cuando a
     });
     assert.ok(result.paths.length > 0);
 });
+
+test('package registry persistente es proyección derivada de corrección', () => {
+    const record = {
+        correction_id: 'AUTH-DB-033::CORR-001',
+        authorized_changes: [],
+    };
+    const classified = assertCorrectionPaths(
+        ['scripts/docs/package-readiness/implementation-package-registry.json'],
+        record,
+        { root: process.cwd(), baseRef: 'HEAD', registration: false },
+    );
+    assert.equal(classified.length, 1);
+    assert.equal(classified[0].kind, 'DERIVED_PROJECTION');
+});

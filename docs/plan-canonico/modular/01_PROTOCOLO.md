@@ -1176,3 +1176,13 @@ La existencia del handoff no concede autorización. La autorización y ejecució
 Si la secuencia derivada de `DELIV-PKG-015` contradice una decisión canónica ya aprobada, queda prohibido ejecutar otro package por selección humana, fuerza o bypass. Debe abrirse una corrección documental de `DELIV-PKG-015` con razón `DOCUMENTARY_CONTRADICTION`. Mientras exista una corrección de la fuente de orden que no esté `VERIFIED` en `main`, todas las mutaciones de package permanecen congeladas.
 
 El lifecycle de correcciones solo restaura conformidad con contratos o decisiones ya aprobados. No puede utilizarse para repriorizar packages por conveniencia ni para introducir nuevas dependencias de negocio fuera del proceso documental canónico.
+
+<!-- CURRENT-EXECUTABLE-WORK-CORR-002:START -->
+## Invariante transversal de implementación lineal fail-closed
+
+`CURRENT_PACKAGE` es el consumidor que conserva el turno. `CURRENT_EXECUTABLE_WORK` es el primer prerrequisito o fundación incumplida que debe resolverse antes de actuar sobre ese consumidor.
+
+Los iniciadores, el scanner de readiness, package-execution, implementation-readiness y `REGISTRO_DE_TAREAS_PENDIENTES_CON_CONTEXTO.md` deben proyectar la misma identidad de trabajo actual. Ningún carril puede convertir un package bloqueado en autorización física.
+
+Cuando el package modifica Supabase, las fundaciones PRE_E5 y los gates aplicables de `SUPA-TRANS-015` se evalúan antes de habilitar `SHELL-CI-020`. La evidencia ausente es bloqueante; no se infieren ambientes, project refs, owners ni ejecución previa.
+<!-- CURRENT-EXECUTABLE-WORK-CORR-002:END -->

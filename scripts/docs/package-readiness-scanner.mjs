@@ -1,5 +1,7 @@
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 import { readCanonicalTaskInventory } from './task-semantic-contract.mjs';
@@ -14,6 +16,7 @@ import {
   deriveLinearPackageExecution,
   readPackageExecutionPolicy,
 } from './package-execution-control.mjs';
+import { resolveNpmInvocation } from './task-branch-lifecycle.mjs';
 
 export const READINESS_PATHS = Object.freeze({
   contract: 'scripts/docs/package-readiness/package-readiness-contract.json',
@@ -39,6 +42,35 @@ const PHYSICAL_ACTIVE = new Set(['AUTHORIZED', 'IN_PROGRESS', 'IMPLEMENTED']);
 const BLOCKING_LANE_STATES = new Set(['SUSPENDED', 'BLOCKED', 'RETIRED']);
 const PASS_WORDS = new Set(['PASS', 'APROBADO', 'APROBADA', 'READY', 'IMPLEMENTATION_READY']);
 const TASK_ID_PATTERN = /\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)*-\d{3,4}\b/gu;
+const FOUNDATION_EVIDENCE_PRODUCER = 'docs:package:foundation:record';
+const FOUNDATION_REQUIRED_CHECKS = Object.freeze({
+  'MRP015-000': [
+    'SUPABASE_LOCK_PROVENANCE',
+    'SUPABASE_CLI_VERSION',
+    'SUPABASE_CLI_HELP',
+    'SUPABASE_FUNCTIONS_HELP',
+    'SUPABASE_DB_HELP',
+    'SUPABASE_DB_LINT_HELP',
+    'DOCKER_SERVER',
+    'SUPABASE_DB_HARNESS_TEST',
+    'SUPABASE_DRIFT_TEST',
+    'SUPABASE_CLEAN_REPLAY',
+    'CHANGELOG_REVIEW_ATTESTATION',
+    'TOOLCHAIN_FREEZE_ATTESTATION',
+  ],
+  'MRP015-010': [
+    'ENVIRONMENT_BINDINGS',
+    'STAGING_REMOTE_DRIFT',
+    'PRODUCTION_REMOTE_DRIFT',
+  ],
+  'MRP015-020': [
+    'MIGRATION_MANIFEST',
+    'STAGING_HISTORY_DRIFT',
+    'PRODUCTION_HISTORY_DRIFT',
+  ],
+  'MRP015-030': ['CLEAN_REPLAY'],
+  'MRP015-040': ['MIGRATION_MANIFEST', 'EXPECTED_RESOURCE_MANIFEST'],
+});
 
 function fail(message) {
   throw new Error(message);
@@ -59,6 +91,475 @@ function readJson(root, relativePath, { optional = false, fallback = null } = {}
   } catch (error) {
     fail(`${relativePath} no contiene JSON valido: ${error instanceof Error ? error.message : String(error)}`);
   }
+}
+
+function sha256(value) {
+  return crypto.createHash('sha256').update(String(value), 'utf8').digest('hex');
+}
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map((entry) => canonicalJson(entry)).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+export function requiredFoundationCheckIds(foundationId) {
+  return [...(FOUNDATION_REQUIRED_CHECKS[String(foundationId ?? '').trim()] ?? [])];
+}
+
+export function buildFoundationEvidenceRef({ gate, checks, recordedAt = new Date().toISOString() } = {}) {
+  const required = requiredFoundationCheckIds(gate?.foundation_id);
+  if (required.length === 0) fail(`Foundation desconocida: ${gate?.foundation_id ?? 'EMPTY'}.`);
+  const byId = new Map((checks ?? []).map((check) => [check.id, check]));
+  const missing = required.filter((id) => !byId.has(id));
+  if (missing.length > 0) fail(`${gate.foundation_id}: faltan checks ${missing.join(', ')}.`);
+  const normalizedChecks = required.map((id) => byId.get(id));
+  if (normalizedChecks.some((check) => check.status !== 'PASS' || check.exit_code !== 0)) {
+    fail(`${gate.foundation_id}: no puede materializar evidencia con checks no PASS.`);
+  }
+  const payload = {
+    schema_version: 1,
+    foundation_id: gate.foundation_id,
+    gate_id: gate.gate_id,
+    owner_task: gate.owner_task,
+    producer: FOUNDATION_EVIDENCE_PRODUCER,
+    recorded_at: recordedAt,
+    status: 'PASS',
+    checks: normalizedChecks,
+  };
+  return { ...payload, payload_sha256: sha256(canonicalJson(payload)) };
+}
+
+export function validateFoundationEvidenceRef(gate, evidenceRef) {
+  if (evidenceRef === null || evidenceRef === undefined) {
+    return { status: 'UNKNOWN', detail: `Gate ${gate.gate_id} no conserva evidence_ref materializada.` };
+  }
+  if (!evidenceRef || typeof evidenceRef !== 'object' || Array.isArray(evidenceRef)) {
+    return { status: 'FAIL', detail: `Gate ${gate.gate_id} rechaza evidence_ref libre; se requiere evidencia estructurada del productor canónico.` };
+  }
+  const expectedIdentity = {
+    schema_version: 1,
+    foundation_id: gate.foundation_id,
+    gate_id: gate.gate_id,
+    owner_task: gate.owner_task,
+    producer: FOUNDATION_EVIDENCE_PRODUCER,
+    status: 'PASS',
+  };
+  for (const [key, value] of Object.entries(expectedIdentity)) {
+    if (evidenceRef[key] !== value) {
+      return { status: 'FAIL', detail: `Gate ${gate.gate_id} conserva evidencia con ${key} inválido.` };
+    }
+  }
+  if (!/^\d{4}-\d{2}-\d{2}T/u.test(String(evidenceRef.recorded_at ?? ''))) {
+    return { status: 'FAIL', detail: `Gate ${gate.gate_id} no conserva recorded_at ISO.` };
+  }
+  const required = requiredFoundationCheckIds(gate.foundation_id);
+  const checks = Array.isArray(evidenceRef.checks) ? evidenceRef.checks : [];
+  const byId = new Map(checks.map((check) => [check?.id, check]));
+  for (const id of required) {
+    const check = byId.get(id);
+    if (!check || check.status !== 'PASS' || check.exit_code !== 0) {
+      return { status: 'FAIL', detail: `Gate ${gate.gate_id} no conserva check PASS obligatorio ${id}.` };
+    }
+    if (!/^[a-f0-9]{64}$/u.test(String(check.stdout_sha256 ?? '')) || !/^[a-f0-9]{64}$/u.test(String(check.stderr_sha256 ?? ''))) {
+      return { status: 'FAIL', detail: `Gate ${gate.gate_id} conserva digest inválido en ${id}.` };
+    }
+  }
+  const { payload_sha256: digest, ...payload } = evidenceRef;
+  if (!/^[a-f0-9]{64}$/u.test(String(digest ?? '')) || sha256(canonicalJson(payload)) !== digest) {
+    return { status: 'FAIL', detail: `Gate ${gate.gate_id} conserva evidencia con integridad SHA-256 inválida.` };
+  }
+  return { status: 'PASS', detail: `Gate ${gate.gate_id} conserva evidencia estructurada e íntegra de ${FOUNDATION_EVIDENCE_PRODUCER}.` };
+}
+
+const IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE = 'MRP015_050_CANDIDATE_READY';
+const SHELL_REPOSITORY = 'vento-group-sas/vento-shell';
+
+function repositoryHeadSha(root) {
+  const result = spawnSync('git', ['rev-parse', 'HEAD'], {
+    cwd: root,
+    encoding: 'utf8',
+    windowsHide: true,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  if (result.error || result.status !== 0) {
+    fail(`No se pudo resolver HEAD para MRP015-050: ${result.error?.message ?? result.stderr ?? result.stdout}.`);
+  }
+  const value = String(result.stdout ?? '').trim().toLowerCase();
+  if (!/^[a-f0-9]{40}$/u.test(value)) fail(`HEAD inválido para MRP015-050: ${value || 'EMPTY'}.`);
+  return value;
+}
+
+function candidateLedgerPath(instanceId) {
+  return `${READINESS_PATHS.implementationInstances}/${String(instanceId).replaceAll('::', '__')}.json`;
+}
+
+function candidateScopeRows({ root, instance, foundation }) {
+  const ownLedger = candidateLedgerPath(instance.instance_id);
+  const rows = (instance.authorized_changes ?? [])
+    .filter((entry) => String(entry?.repo ?? '').trim() === SHELL_REPOSITORY)
+    .map((entry) => ({
+      path: normalizedTargetPath(entry?.path),
+      change: String(entry?.change ?? '').trim().toUpperCase(),
+    }))
+    .filter((entry) => entry.path
+      && entry.path !== ownLedger
+      && entry.change !== 'EXECUTE_ONLY'
+      && targetRequiresSupabaseFoundation(entry.path, foundation))
+    .sort((left, right) => left.path.localeCompare(right.path, 'en') || left.change.localeCompare(right.change, 'en'));
+
+  if (rows.length === 0) {
+    fail(`MRP015-050 no aplica: ${instance.instance_id} no declara superficies Supabase mutables en ${SHELL_REPOSITORY}.`);
+  }
+
+  const files = rows.map((entry) => {
+    const absolute = rel(root, entry.path);
+    const exists = fs.existsSync(absolute) && fs.statSync(absolute).isFile();
+    if (['CREATE', 'MODIFY'].includes(entry.change) && !exists) {
+      fail(`MRP015-050: ${entry.change} exige archivo materializado ${entry.path}.`);
+    }
+    if (entry.change === 'DELETE' && exists) {
+      fail(`MRP015-050: DELETE aún conserva ${entry.path}.`);
+    }
+    return {
+      ...entry,
+      exists,
+      content_sha256: exists ? sha256(fs.readFileSync(absolute, 'utf8')) : null,
+    };
+  });
+
+  return { rows, files };
+}
+
+function candidateDigests({ root, instance, foundation }) {
+  const snapshot = candidateScopeRows({ root, instance, foundation });
+  return {
+    authorized_scope_sha256: sha256(canonicalJson(snapshot.rows)),
+    candidate_scope_sha256: sha256(canonicalJson(snapshot.files)),
+    files: snapshot.files,
+  };
+}
+
+export function buildInPackageCandidateEvidence({
+  root = process.cwd(),
+  packageId,
+  instance,
+  gate,
+  candidateHeadSha = null,
+  recordedAt = new Date().toISOString(),
+} = {}) {
+  const normalizedPackageId = String(packageId ?? '').trim().toUpperCase();
+  if (!/^GAP-PKG-\d{3}$/u.test(normalizedPackageId)) fail(`MRP015-050 package inválido: ${packageId ?? 'EMPTY'}.`);
+  const expectedInstanceId = `SHELL-CI-020::${normalizedPackageId}`;
+  if (instance?.instance_id !== expectedInstanceId || instance?.task_id !== 'SHELL-CI-020') {
+    fail(`MRP015-050 exige ${expectedInstanceId}.`);
+  }
+  if (
+    gate?.foundation_id !== 'MRP015-050'
+    || gate?.gate_id !== 'CANDIDATE_READY'
+    || gate?.owner_task !== 'SUPA-TRANS-015'
+    || gate?.phase !== 'AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY'
+  ) {
+    fail('MRP015-050 conserva contrato de gate inválido.');
+  }
+
+  const contract = readJson(root, READINESS_PATHS.contract);
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation ?? null;
+  const digests = candidateDigests({ root, instance, foundation });
+  const head = candidateHeadSha ?? repositoryHeadSha(root);
+  if (!/^[a-f0-9]{40}$/u.test(String(head))) fail(`MRP015-050 candidate_head_sha inválido: ${head ?? 'EMPTY'}.`);
+
+  const payload = {
+    schema_version: 1,
+    evidence_type: IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE,
+    foundation_id: 'MRP015-050',
+    gate_id: 'CANDIDATE_READY',
+    owner_task: 'SUPA-TRANS-015',
+    phase: 'AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY',
+    package_id: normalizedPackageId,
+    instance_id: expectedInstanceId,
+    recorded_at: recordedAt,
+    candidate_head_sha: String(head).toLowerCase(),
+    authorized_scope_sha256: digests.authorized_scope_sha256,
+    candidate_scope_sha256: digests.candidate_scope_sha256,
+    candidate_file_count: digests.files.length,
+    status: 'PASS',
+    remote_mutations: false,
+    secret_values_in_evidence: false,
+  };
+  return { ...payload, payload_sha256: sha256(canonicalJson(payload)) };
+}
+
+export function validateInPackageCandidateEvidence({
+  root = process.cwd(),
+  packageId,
+  instance,
+  gate,
+  currentHeadSha = null,
+} = {}) {
+  const normalizedPackageId = String(packageId ?? '').trim().toUpperCase();
+  const expectedInstanceId = `SHELL-CI-020::${normalizedPackageId}`;
+  const evidence = [...(Array.isArray(instance?.evidence) ? instance.evidence : [])]
+    .reverse()
+    .find((entry) => entry && typeof entry === 'object'
+      && !Array.isArray(entry)
+      && entry.evidence_type === IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE) ?? null;
+  if (!evidence) return { status: 'UNKNOWN', detail: 'No existe evidencia package-scoped MRP015-050.' };
+
+  const identity = {
+    schema_version: 1,
+    evidence_type: IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE,
+    foundation_id: 'MRP015-050',
+    gate_id: 'CANDIDATE_READY',
+    owner_task: 'SUPA-TRANS-015',
+    phase: 'AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY',
+    package_id: normalizedPackageId,
+    instance_id: expectedInstanceId,
+    status: 'PASS',
+    remote_mutations: false,
+    secret_values_in_evidence: false,
+  };
+  for (const [key, value] of Object.entries(identity)) {
+    if (evidence[key] !== value) return { status: 'FAIL', detail: `MRP015-050 ${key} inválido.` };
+  }
+  if (instance?.instance_id !== expectedInstanceId || instance?.task_id !== 'SHELL-CI-020') {
+    return { status: 'FAIL', detail: 'MRP015-050 no pertenece al ledger CI020 esperado.' };
+  }
+  if (!/^\d{4}-\d{2}-\d{2}T/u.test(String(evidence.recorded_at ?? ''))) {
+    return { status: 'FAIL', detail: 'MRP015-050 recorded_at inválido.' };
+  }
+  const { payload_sha256: digest, ...payload } = evidence;
+  if (!/^[a-f0-9]{64}$/u.test(String(digest ?? '')) || sha256(canonicalJson(payload)) !== digest) {
+    return { status: 'FAIL', detail: 'MRP015-050 payload_sha256 inválido.' };
+  }
+
+  try {
+    const contract = readJson(root, READINESS_PATHS.contract);
+    const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation ?? null;
+    const digests = candidateDigests({ root, instance, foundation });
+    const head = currentHeadSha ?? repositoryHeadSha(root);
+    if (evidence.candidate_head_sha !== String(head).toLowerCase()) {
+      return { status: 'FAIL', detail: 'MRP015-050 quedó stale porque HEAD cambió.' };
+    }
+    if (evidence.authorized_scope_sha256 !== digests.authorized_scope_sha256) {
+      return { status: 'FAIL', detail: 'MRP015-050 quedó stale porque cambió authorized_changes.' };
+    }
+    if (evidence.candidate_scope_sha256 !== digests.candidate_scope_sha256) {
+      return { status: 'FAIL', detail: 'MRP015-050 quedó stale porque cambió el candidato materializado.' };
+    }
+    if (evidence.candidate_file_count !== digests.files.length) {
+      return { status: 'FAIL', detail: 'MRP015-050 candidate_file_count inconsistente.' };
+    }
+  } catch (error) {
+    return { status: 'FAIL', detail: error instanceof Error ? error.message : String(error) };
+  }
+
+  if (
+    gate?.foundation_id !== 'MRP015-050'
+    || gate?.gate_id !== 'CANDIDATE_READY'
+    || gate?.owner_task !== 'SUPA-TRANS-015'
+  ) {
+    return { status: 'FAIL', detail: 'MRP015-050 gate identity inválida.' };
+  }
+  return { status: 'PASS', detail: `MRP015-050 válido para ${normalizedPackageId} y ${expectedInstanceId}.`, evidence };
+}
+
+export function recordInPackageCandidateEvidence({ root = process.cwd(), packageId } = {}) {
+  const normalizedPackageId = String(packageId ?? '').trim().toUpperCase();
+  if (!/^GAP-PKG-\d{3}$/u.test(normalizedPackageId)) fail(`MRP015-050 package inválido: ${packageId ?? 'EMPTY'}.`);
+  const contract = readJson(root, READINESS_PATHS.contract);
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation ?? null;
+  const gate = foundation?.in_package_candidate_gate ?? null;
+  const instanceId = `SHELL-CI-020::${normalizedPackageId}`;
+  const instances = readImplementationInstances(root);
+  const instance = instances.get(instanceId) ?? null;
+  if (!instance) fail(`MRP015-050 no encuentra ${instanceId}.`);
+  if (!['IN_PROGRESS', 'IMPLEMENTED'].includes(instance.status)) {
+    fail(`MRP015-050 exige ${instanceId} IN_PROGRESS o IMPLEMENTED; actual ${instance.status ?? 'UNKNOWN'}.`);
+  }
+
+  const evidence = buildInPackageCandidateEvidence({ root, packageId: normalizedPackageId, instance, gate });
+  const next = {
+    ...instance,
+    evidence: [...(Array.isArray(instance.evidence) ? instance.evidence : []), evidence],
+  };
+  fs.writeFileSync(rel(root, candidateLedgerPath(instanceId)), stableJson(next), 'utf8');
+  return { status: 'PASS', packageId: normalizedPackageId, instanceId, evidence };
+}
+
+function processEvidence(id, result) {
+  const stdout = String(result.stdout ?? '');
+  const stderr = String(result.stderr ?? '');
+  return {
+    id,
+    status: result.status === 0 ? 'PASS' : 'FAIL',
+    exit_code: result.status,
+    stdout_sha256: sha256(stdout),
+    stderr_sha256: sha256(stderr),
+  };
+}
+
+function runEvidenceCommand(id, command, args, { root = process.cwd(), env = process.env } = {}) {
+  const result = spawnSync(command, args, {
+    cwd: root,
+    encoding: 'utf8',
+    windowsHide: true,
+    env,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+  if (result.error) {
+    return processEvidence(id, { status: 1, stdout: '', stderr: result.error.message });
+  }
+  return processEvidence(id, {
+    status: Number.isInteger(result.status) ? result.status : 1,
+    stdout: result.stdout,
+    stderr: result.stderr,
+  });
+}
+
+function runNpmEvidence(id, args, options = {}) {
+  const invocation = resolveNpmInvocation();
+  return runEvidenceCommand(id, invocation.command, [...invocation.prefixArgs, ...args], options);
+}
+
+function staticEvidence(id, pass, detail) {
+  const text = String(detail ?? '');
+  return {
+    id,
+    status: pass ? 'PASS' : 'FAIL',
+    exit_code: pass ? 0 : 1,
+    stdout_sha256: sha256(text),
+    stderr_sha256: sha256(pass ? '' : text),
+  };
+}
+
+function supabaseLockProvenance(root) {
+  const lock = readJson(root, 'package-lock.json');
+  const entry = lock?.packages?.['node_modules/supabase'];
+  const version = String(entry?.version ?? '').trim();
+  const integrity = String(entry?.integrity ?? '').trim();
+  const pass = /^\d+\.\d+\.\d+$/u.test(version) && /^sha512-/u.test(integrity);
+  return { pass, version, integrity };
+}
+
+function resolvedEnvironmentBindings(foundation) {
+  const bindings = foundation?.remote_environment_identity?.bindings ?? {};
+  const staging = bindings.STAGING ?? {};
+  const production = bindings.PRODUCTION ?? {};
+  const pass = staging.classification === 'STAGING'
+    && production.classification === 'PRODUCTION'
+    && String(staging.project_ref ?? '').trim()
+    && String(production.project_ref ?? '').trim()
+    && String(staging.owner ?? '').trim()
+    && String(production.owner ?? '').trim()
+    && staging.project_ref !== production.project_ref;
+  return { pass: Boolean(pass), staging, production };
+}
+
+export function remoteDriftArgs(binding, role, scope) {
+  const normalizedScope = String(scope ?? '').trim().toLowerCase();
+  if (!['environment', 'history', 'full'].includes(normalizedScope)) {
+    fail(`Remote drift scope invalido: ${scope ?? 'EMPTY'}.`);
+  }
+  return [
+    'run', '--silent', 'supabase:drift:remote', '--',
+    '--environment-role', String(role).toLowerCase(),
+    '--project-ref', String(binding.project_ref),
+    '--owner', String(binding.owner),
+    '--scope', normalizedScope,
+    '--strict',
+  ];
+}
+
+function runRemoteDrift(id, binding, role, scope, root) {
+  return runNpmEvidence(id, remoteDriftArgs(binding, role, scope), { root });
+}
+
+function foundationChecks(root, foundation, gate, options) {
+  const checks = [];
+  const id = gate.foundation_id;
+  if (id === 'MRP015-000') {
+    const provenance = supabaseLockProvenance(root);
+    checks.push(staticEvidence('SUPABASE_LOCK_PROVENANCE', provenance.pass, `version=${provenance.version};integrity=${provenance.integrity}`));
+    const versionCheck = runNpmEvidence('SUPABASE_CLI_VERSION', ['exec', '--', 'supabase', '--version'], { root });
+    checks.push(versionCheck);
+    const cliHelp = runNpmEvidence('SUPABASE_CLI_HELP', ['exec', '--', 'supabase', '--help'], { root });
+    checks.push(cliHelp);
+    checks.push(runNpmEvidence('SUPABASE_FUNCTIONS_HELP', ['exec', '--', 'supabase', 'functions', '--help'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_DB_HELP', ['exec', '--', 'supabase', 'db', '--help'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_DB_LINT_HELP', ['exec', '--', 'supabase', 'db', 'lint', '--help'], { root }));
+    checks.push(runEvidenceCommand('DOCKER_SERVER', 'docker', ['version', '--format', '{{.Server.Version}}'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_DB_HARNESS_TEST', ['run', '--silent', 'supabase:db:harness:test'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_DRIFT_TEST', ['run', '--silent', 'supabase:drift:test'], { root }));
+    checks.push(runNpmEvidence('SUPABASE_CLEAN_REPLAY', ['run', '--silent', 'supabase:db:test:clean'], { root }));
+    checks.push(staticEvidence('CHANGELOG_REVIEW_ATTESTATION', Boolean(options.changelogRef), options.changelogRef || 'MISSING_CHANGELOG_REF'));
+    checks.push(staticEvidence('TOOLCHAIN_FREEZE_ATTESTATION', Boolean(options.toolchainFreezeRef), options.toolchainFreezeRef || 'MISSING_TOOLCHAIN_FREEZE_REF'));
+    return checks;
+  }
+
+  const bindings = resolvedEnvironmentBindings(foundation);
+  if (id === 'MRP015-010') {
+    checks.push(staticEvidence('ENVIRONMENT_BINDINGS', bindings.pass, bindings.pass ? 'STAGING_AND_PRODUCTION_BOUND' : 'UNRESOLVED_BINDINGS'));
+    if (bindings.pass) {
+      checks.push(runRemoteDrift('STAGING_REMOTE_DRIFT', bindings.staging, 'STAGING', 'environment', root));
+      checks.push(runRemoteDrift('PRODUCTION_REMOTE_DRIFT', bindings.production, 'PRODUCTION', 'environment', root));
+    }
+    return checks;
+  }
+  if (id === 'MRP015-020') {
+    checks.push(runNpmEvidence('MIGRATION_MANIFEST', ['run', '--silent', 'supabase:migrations:manifest:check'], { root }));
+    if (bindings.pass) {
+      checks.push(runRemoteDrift('STAGING_HISTORY_DRIFT', bindings.staging, 'STAGING', 'history', root));
+      checks.push(runRemoteDrift('PRODUCTION_HISTORY_DRIFT', bindings.production, 'PRODUCTION', 'history', root));
+    }
+    return checks;
+  }
+  if (id === 'MRP015-030') {
+    checks.push(runNpmEvidence('CLEAN_REPLAY', ['run', '--silent', 'supabase:db:test:clean'], { root }));
+    return checks;
+  }
+  if (id === 'MRP015-040') {
+    checks.push(runNpmEvidence('MIGRATION_MANIFEST', ['run', '--silent', 'supabase:migrations:manifest:check'], { root }));
+    checks.push(runNpmEvidence('EXPECTED_RESOURCE_MANIFEST', ['run', '--silent', 'supabase:drift:expected', '--', '--strict'], { root }));
+    return checks;
+  }
+  fail(`Foundation desconocida: ${id}.`);
+}
+
+export function recordSupabaseFoundationEvidence({
+  root = process.cwd(),
+  foundationId,
+  changelogRef = null,
+  toolchainFreezeRef = null,
+} = {}) {
+  const contract = readJson(root, READINESS_PATHS.contract);
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation;
+  const gates = foundation?.ordered_foundation_gates ?? [];
+  const index = gates.findIndex((gate) => gate.foundation_id === foundationId);
+  if (index < 0) fail(`Foundation no encontrada: ${foundationId ?? 'EMPTY'}.`);
+
+  for (const previous of gates.slice(0, index)) {
+    const validated = validateFoundationEvidenceRef(previous, previous.evidence_ref);
+    if (validated.status !== 'PASS') {
+      fail(`${foundationId} no puede ejecutarse antes de ${previous.foundation_id}; estado ${validated.status}.`);
+    }
+  }
+
+  const gate = gates[index];
+  const checks = foundationChecks(root, foundation, gate, { changelogRef, toolchainFreezeRef });
+  const required = requiredFoundationCheckIds(foundationId);
+  const byId = new Map(checks.map((check) => [check.id, check]));
+  const failed = required.filter((id) => byId.get(id)?.status !== 'PASS');
+  if (failed.length > 0) {
+    return { status: 'FAIL', foundationId, failed, checks, evidence: null };
+  }
+
+  const evidence = buildFoundationEvidenceRef({ gate, checks });
+  gate.evidence_ref = evidence;
+  fs.writeFileSync(rel(root, READINESS_PATHS.contract), stableJson(contract), 'utf8');
+  return { status: 'PASS', foundationId, failed: [], checks, evidence };
 }
 
 function stableJson(value) {
@@ -358,6 +859,135 @@ export function evaluateCapability({ capabilityId, capability, contract, invento
   };
 }
 
+function validateSupabasePreE5Foundation(contract, errors) {
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation;
+  const expectedR0 = [
+    'AUTH-DB-015::GLOBAL',
+    'AUTH-DB-027::GLOBAL',
+    'AUTH-DB-028::GLOBAL',
+    'AUTH-DB-029::GLOBAL',
+    'AUTH-DB-001::GLOBAL',
+    'AUTH-DB-002::GLOBAL',
+    'AUTH-DB-003::GLOBAL',
+    'AUTH-DB-004::GLOBAL',
+    'AUTH-DB-005::GLOBAL',
+  ];
+  const expectedPreEntry = [
+    ['MRP015-000', 'TOOLCHAIN_READY'],
+    ['MRP015-010', 'ENVIRONMENT_READY'],
+    ['MRP015-020', 'HISTORY_PASS'],
+    ['MRP015-030', 'CLEAN_REPLAY_PASS'],
+    ['MRP015-040', 'RESOURCE_MANIFEST_PASS'],
+  ];
+
+  if (!foundation || typeof foundation !== 'object' || Array.isArray(foundation)) {
+    errors.push('physical_dependencies.supabase_pre_e5_foundation es obligatorio.');
+    return;
+  }
+
+  if (foundation.owner_task !== 'SUPA-TRANS-015') {
+    errors.push('supabase_pre_e5_foundation.owner_task debe ser SUPA-TRANS-015.');
+  }
+
+  if (JSON.stringify(foundation.required_verified_instances) !== JSON.stringify(expectedR0)) {
+    errors.push('supabase_pre_e5_foundation.required_verified_instances debe conservar R0 completo y ordenado.');
+  }
+
+  const actualPreEntry = (foundation.ordered_foundation_gates ?? [])
+    .map((entry) => [entry.foundation_id, entry.gate_id]);
+
+  if (JSON.stringify(actualPreEntry) !== JSON.stringify(expectedPreEntry)) {
+    errors.push('supabase_pre_e5_foundation.ordered_foundation_gates debe conservar MRP015-000/010/020/030/040 en orden.');
+  }
+
+  const evidenceContract = foundation.evidence_contract;
+  if (
+    evidenceContract?.schema_version !== 1
+    || evidenceContract?.producer !== FOUNDATION_EVIDENCE_PRODUCER
+    || evidenceContract?.status_required !== 'PASS'
+    || evidenceContract?.integrity !== 'SHA256_CANONICAL_JSON_V1'
+    || evidenceContract?.fail_closed !== true
+    || evidenceContract?.secret_values_forbidden !== true
+  ) {
+    errors.push('supabase_pre_e5_foundation.evidence_contract no coincide con el contrato estructurado fail-closed.');
+  }
+
+  for (const gate of foundation.ordered_foundation_gates ?? []) {
+    if (gate.owner_task !== 'SUPA-TRANS-015') {
+      errors.push(`${gate.foundation_id}: owner_task debe ser SUPA-TRANS-015.`);
+    }
+    if (gate.evidence_ref !== null && (!gate.evidence_ref || typeof gate.evidence_ref !== 'object' || Array.isArray(gate.evidence_ref))) {
+      errors.push(`${gate.foundation_id}: evidence_ref debe ser null o evidencia estructurada; referencias libres están prohibidas.`);
+    }
+  }
+
+  const candidate = foundation.in_package_candidate_gate;
+  if (
+    candidate?.foundation_id !== 'MRP015-050'
+    || candidate?.gate_id !== 'CANDIDATE_READY'
+    || candidate?.owner_task !== 'SUPA-TRANS-015'
+    || candidate?.phase !== 'AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY'
+  ) {
+    errors.push('supabase_pre_e5_foundation.in_package_candidate_gate debe ser MRP015-050/CANDIDATE_READY de SUPA-TRANS-015 en fase AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY.');
+  }
+  const candidateBinding = candidate?.evidence_binding;
+  if (
+    candidateBinding?.storage !== 'SHELL_CI_020_INSTANCE_EVIDENCE'
+    || candidateBinding?.evidence_type !== IN_PACKAGE_CANDIDATE_EVIDENCE_TYPE
+    || candidateBinding?.producer !== 'package-readiness-scanner::recordInPackageCandidateEvidence'
+    || candidateBinding?.package_scoped !== true
+    || candidateBinding?.instance_task !== 'SHELL-CI-020'
+    || candidateBinding?.candidate_head_sha_required !== true
+    || candidateBinding?.authorized_scope_sha256_required !== true
+    || candidateBinding?.candidate_scope_sha256_required !== true
+    || candidateBinding?.cross_package_reuse_forbidden !== true
+    || candidateBinding?.stale_after_candidate_change !== true
+    || candidateBinding?.secret_values_forbidden !== true
+  ) {
+    errors.push('MRP015-050.evidence_binding no conserva binding package-scoped fail-closed sobre el ledger SHELL-CI-020.');
+  }
+
+  const remote = foundation.remote_environment_identity;
+  if (remote?.do_not_infer_from_project_name !== true) {
+    errors.push('remote_environment_identity.do_not_infer_from_project_name debe ser true.');
+  }
+
+  if (JSON.stringify(remote?.required_environment_roles) !== JSON.stringify(['STAGING', 'PRODUCTION'])) {
+    errors.push('remote_environment_identity.required_environment_roles debe ser [STAGING,PRODUCTION].');
+  }
+
+  for (const role of ['STAGING', 'PRODUCTION']) {
+    const binding = remote?.bindings?.[role];
+
+    if (!binding || typeof binding !== 'object' || Array.isArray(binding)) {
+      errors.push(`remote_environment_identity.bindings.${role} es obligatorio.`);
+      continue;
+    }
+
+    const classification = String(binding.classification ?? '').trim();
+
+    if (!['UNRESOLVED_BLOCKING', role].includes(classification)) {
+      errors.push(`${role}: classification solo admite UNRESOLVED_BLOCKING o ${role}.`);
+      continue;
+    }
+
+    if (classification === 'UNRESOLVED_BLOCKING') {
+      if (binding.project_ref !== null || binding.owner !== null) {
+        errors.push(`${role}: UNRESOLVED_BLOCKING exige project_ref=null y owner=null.`);
+      }
+      continue;
+    }
+
+    if (!String(binding.project_ref ?? '').trim()) {
+      errors.push(`${role}: clasificación resuelta exige project_ref.`);
+    }
+
+    if (!String(binding.owner ?? '').trim()) {
+      errors.push(`${role}: clasificación resuelta exige owner.`);
+    }
+  }
+}
+
 function validateContract(contract) {
   const errors = [];
   if (contract?.schema_version !== 1) errors.push('schema_version debe ser 1.');
@@ -402,6 +1032,8 @@ function validateContract(contract) {
   if (queuePolicy?.linear_execution_source !== 'DELIV-PKG-015') {
     errors.push('queue_policy.linear_execution_source debe ser DELIV-PKG-015.');
   }
+
+  validateSupabasePreE5Foundation(contract, errors);
 
   if (errors.length) fail(`package-readiness-contract.json inválido:\n- ${errors.join('\n- ')}`);
   return contract;
@@ -603,6 +1235,31 @@ function parseRepositoryProjection(source) {
       decision_owner: tableValue(row, table, ['responsable de decision']),
       observability_017: tableValue(row, table, ['resultado 017']),
       inherited_gate_017: tableValue(row, table, ['gate heredado']),
+    });
+  }
+  return result;
+}
+
+export function parseDeploymentEnvironmentProjection(source) {
+  let block;
+  try {
+    block = extractTaskBlock(source, 'DELIV-PKG-019');
+  } catch {
+    return new Map();
+  }
+  const table = findTable(block, ['package_id', 'perfil ambiente', 'resultado 019']);
+  if (!table) return new Map();
+  const result = new Map();
+  for (const row of table.rows) {
+    const packageId = tableValue(row, table, ['package_id', 'paquete']);
+    if (!/^GAP-PKG-\d{3}$/u.test(packageId)) continue;
+    const profileCell = tableValue(row, table, ['perfil ambiente']);
+    const rolloutProfile = /\bTP-[A-Z]+-\d{3}\b/u.exec(profileCell)?.[0] ?? null;
+    const environmentProfile = /\bENV-[A-Z0-9-]+\b/u.exec(profileCell)?.[0] ?? null;
+    result.set(packageId, {
+      rollout_profile_019: rolloutProfile,
+      deployment_environment_profile_019: environmentProfile,
+      rollout_result_019: tableValue(row, table, ['resultado 019']),
     });
   }
   return result;
@@ -899,6 +1556,7 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
   const membershipAudit = parseGapMembershipAudit(gapRoutingSource, config);
   const dominantProjection = parseDominantTaskProjection(source);
   const executionProjection = parsePackageExecutionProjection(source);
+  const deploymentEnvironmentProjection = parseDeploymentEnvironmentProjection(source);
   const packages = [];
   const seen = new Set();
   for (const row of table.rows) {
@@ -921,6 +1579,11 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
       ...(taskRouting.get(packageId) ?? { primary_task_ids: [], support_task_ids: [] }),
       ...(dominantProjection.get(packageId) ?? { dominant_task_id: null, runtime_profile_007: null, runtime_state_007: null }),
       execution: executionProjection.get(packageId) ?? null,
+      ...(deploymentEnvironmentProjection.get(packageId) ?? {
+        rollout_profile_019: null,
+        deployment_environment_profile_019: null,
+        rollout_result_019: null,
+      }),
       gap_membership_count: membershipAudit.by_package.get(packageId) ?? 0,
     });
   }
@@ -945,6 +1608,12 @@ export function parseCanonicalPackageCatalogFromSource(source, contract, gapRout
   const withoutExecutionOrder = packages.filter(({ execution }) => !execution);
   if (withoutExecutionOrder.length > 0) {
     fail(`DELIV-PKG-015 no resolvió orden para ${withoutExecutionOrder.length} package(s): ${withoutExecutionOrder.slice(0, 10).map(({ package_id: packageId }) => packageId).join(', ')}${withoutExecutionOrder.length > 10 ? ', ...' : ''}.`);
+  }
+  const withoutDeploymentEnvironment = packages.filter(({ rollout_profile_019: rollout, deployment_environment_profile_019: environment }) => (
+    !rollout || !environment
+  ));
+  if (withoutDeploymentEnvironment.length > 0) {
+    fail(`DELIV-PKG-019 no resolvió rollout/ambiente para ${withoutDeploymentEnvironment.length} package(s): ${withoutDeploymentEnvironment.slice(0, 10).map(({ package_id: packageId }) => packageId).join(', ')}${withoutDeploymentEnvironment.length > 10 ? ', ...' : ''}.`);
   }
   return {
     catalog_id: config.catalog_id,
@@ -978,8 +1647,11 @@ function implementationUnitSatisfied(value) {
   return !/(?:NO_MATERIALIZADO|PENDIENTE|UNKNOWN|DESCONOCIDO|N\/A|NO_APLICA)/u.test(normalized);
 }
 
-function canonicalPackageBlockers(entry, contract, packageGate = null) {
+function canonicalPackageBlockers(entry, contract, packageGate = null, deploymentEnvironment = null) {
   const blockers = [];
+  if (deploymentEnvironment && deploymentEnvironment.status !== 'PASS') {
+    blockers.push(`DEPLOYMENT_ENVIRONMENT:${deploymentEnvironment.status}:${deploymentEnvironment.detail}`);
+  }
   if (packageGate?.approval_complete) return blockers;
   if (!finalDecisionPass(entry.state_023, contract)) blockers.push(`CANONICAL_EVIDENCE_STATE:${entry.state_023 || 'UNKNOWN'}`);
   if (!finalDecisionPass(entry.physical_state, contract)) blockers.push(`CANONICAL_PHYSICAL_STATE:${entry.physical_state || 'UNKNOWN'}`);
@@ -995,10 +1667,10 @@ function taskPrerequisiteBlockers(taskPrerequisites) {
     .map(({ task_id: taskId, status }) => `TASK_PREREQUISITE:${taskId}:${status}`);
 }
 
-function canonicalDocumentaryGate({ entry, contract, inventory, taskPrerequisites, packageGate = null }) {
-  const pass = packageGate?.approval_complete === true;
+function canonicalDocumentaryGate({ entry, contract, inventory, taskPrerequisites, packageGate = null, deploymentEnvironment = null }) {
+  const pass = packageGate?.approval_complete === true && deploymentEnvironment?.status === 'PASS';
   const template = taskEvidence(contract.gate.task_id, inventory);
-  const blockers = [...canonicalPackageBlockers(entry, contract, packageGate), ...taskPrerequisiteBlockers(taskPrerequisites)];
+  const blockers = [...canonicalPackageBlockers(entry, contract, packageGate, deploymentEnvironment), ...taskPrerequisiteBlockers(taskPrerequisites)];
   const checks = [
     {
       id: 'PACKAGE_ID_EXISTS',
@@ -1035,8 +1707,8 @@ function canonicalDocumentaryGate({ entry, contract, inventory, taskPrerequisite
   };
 }
 
-function canonicalPackageDossier(entry, contract, inventory, packageGate = null) {
-  const pass = packageGate?.approval_complete === true;
+function canonicalPackageDossier(entry, contract, inventory, packageGate = null, deploymentEnvironment = null) {
+  const pass = packageGate?.approval_complete === true && deploymentEnvironment?.status === 'PASS';
   const templates = contract.dossier_conditions.flatMap(({ deliv_pkg_refs: refs }) => refs.map((taskId) => taskEvidence(taskId, inventory)));
   const contractReady = templates.every(({ status }) => status === 'PASS');
   return {
@@ -1211,11 +1883,118 @@ function readImplementationInstances(root) {
   return instances;
 }
 
-function physicalDependencyInstanceIds(contract, capability) {
+function normalizedTargetPath(value) {
+  return String(value ?? '')
+    .replaceAll('\\', '/')
+    .replace(/^\.\/+/u, '')
+    .trim();
+}
+
+function targetRequiresSupabaseFoundation(relativePath, foundation) {
+  const normalized = normalizedTargetPath(relativePath);
+  if (!normalized) return false;
+
+  const excluded = foundation?.excluded_target_path_prefixes ?? [];
+  if (excluded.some((prefix) => normalized.startsWith(String(prefix)))) return false;
+
+  const exact = foundation?.applies_to_exact_target_paths ?? [];
+  if (exact.includes(normalized)) return true;
+
+  return (foundation?.applies_to_target_path_prefixes ?? [])
+    .some((prefix) => normalized.startsWith(String(prefix)));
+}
+
+export function derivePackageExecutionRequirements({ contract, packageGate = null } = {}) {
+  const foundation = contract?.physical_dependencies?.supabase_pre_e5_foundation ?? null;
+  const targets = Array.isArray(packageGate?.physical_identity?.targets)
+    ? packageGate.physical_identity.targets
+    : [];
+
+  const targetPaths = targets
+    .map((target) => normalizedTargetPath(target?.path))
+    .filter(Boolean);
+
+  const supabaseMutationRequired = Boolean(foundation)
+    && targetPaths.some((relativePath) => targetRequiresSupabaseFoundation(relativePath, foundation));
+
+  if (!supabaseMutationRequired) {
+    return {
+      supabase_mutation_required: false,
+      target_paths: targetPaths,
+      required_verified_instance_refs: [],
+      pre_entry_foundation_gates: [],
+      remote_environment_identity: null,
+      in_package_candidate_gate: null,
+    };
+  }
+
+  return {
+    supabase_mutation_required: true,
+    target_paths: targetPaths,
+    required_verified_instance_refs: [...(foundation.required_verified_instances ?? [])],
+    pre_entry_foundation_gates: (foundation.ordered_foundation_gates ?? []).map((gate) => ({ ...gate })),
+    remote_environment_identity: foundation.remote_environment_identity
+      ? structuredClone(foundation.remote_environment_identity)
+      : null,
+    in_package_candidate_gate: foundation.in_package_candidate_gate
+      ? { ...foundation.in_package_candidate_gate }
+      : null,
+  };
+}
+
+export function evaluatePackageDeploymentEnvironment({ entry, packageGate = null, executionRequirements = null } = {}) {
+  const declared = packageGate?.deployment_environment ?? null;
+  const expectedRollout = String(entry?.rollout_profile_019 ?? '').trim();
+  const expectedEnvironment = String(entry?.deployment_environment_profile_019 ?? '').trim();
+  const problems = [];
+
+  if (!declared) {
+    problems.push('DECLARATION_MISSING');
+  } else {
+    if (declared.canonical_task_id !== 'DELIV-PKG-019') problems.push('CANONICAL_TASK_MISMATCH');
+    if (String(declared.rollout_profile ?? '').trim() !== expectedRollout) problems.push('ROLLOUT_PROFILE_MISMATCH');
+    if (String(declared.environment_profile ?? '').trim() !== expectedEnvironment) problems.push('ENVIRONMENT_PROFILE_MISMATCH');
+  }
+
+  if (declared && expectedEnvironment === 'ENV-SUPABASE-LOCAL-CI-STAGING') {
+    if (executionRequirements?.supabase_mutation_required !== true) {
+      problems.push('SUPABASE_FOUNDATION_NOT_APPLICABLE');
+    }
+    const binding = executionRequirements?.remote_environment_identity?.bindings?.STAGING ?? null;
+    const targets = Array.isArray(declared.targets) ? declared.targets : [];
+    const stagingTargets = targets.filter((target) => String(target?.environment_role ?? '').trim().toUpperCase() === 'STAGING');
+    const productionTargets = targets.filter((target) => String(target?.environment_role ?? '').trim().toUpperCase() === 'PRODUCTION');
+    if (!binding) problems.push('STAGING_BINDING_MISSING');
+    if (stagingTargets.length !== 1) problems.push(`STAGING_TARGET_COUNT_${stagingTargets.length}`);
+    if (declared.production_authorized !== false) problems.push('PRODUCTION_MUST_REMAIN_UNAUTHORIZED');
+    if (productionTargets.length > 0) problems.push('PRODUCTION_TARGET_FORBIDDEN');
+    if (binding && stagingTargets.length === 1) {
+      const target = stagingTargets[0];
+      if (String(target.target_type ?? '').trim().toUpperCase() !== 'SUPABASE_PROJECT_REF') problems.push('STAGING_TARGET_TYPE_MISMATCH');
+      if (String(target.target_id ?? '').trim() !== String(binding.project_ref ?? '').trim()) problems.push('STAGING_PROJECT_REF_MISMATCH');
+      if (String(target.owner ?? '').trim() !== String(binding.owner ?? '').trim()) problems.push('STAGING_OWNER_MISMATCH');
+    }
+  }
+
+  return {
+    status: problems.length === 0 ? 'PASS' : 'FAIL',
+    expected_rollout_profile: expectedRollout || null,
+    expected_environment_profile: expectedEnvironment || null,
+    declared,
+    problems,
+    detail: problems.length === 0
+      ? `DELIV-PKG-019 coincide con ${expectedRollout}/${expectedEnvironment}.`
+      : problems.join(', '),
+  };
+}
+
+function physicalDependencyInstanceIds(contract, capability, executionRequirements = null) {
   const ids = [];
+
   for (const range of contract.physical_dependencies?.global_verified_ranges ?? []) {
     ids.push(...rangeTaskIds(range).map((taskId) => `${taskId}::GLOBAL`));
   }
+
   for (const selector of capability?.physical_dependencies ?? []) {
     if (Array.isArray(selector.global_task_refs)) {
       ids.push(...selector.global_task_refs.map((taskId) => `${taskId}::GLOBAL`));
@@ -1225,27 +2004,158 @@ function physicalDependencyInstanceIds(contract, capability) {
     }
     if (Array.isArray(selector.instance_refs)) ids.push(...selector.instance_refs);
   }
+
+  ids.push(...(executionRequirements?.required_verified_instance_refs ?? []));
+
   return [...new Set(ids)];
 }
 
-export function evaluatePhysicalDependencies({ contract, instances, capability = null }) {
-  const evidence = [];
-  for (const instanceId of physicalDependencyInstanceIds(contract, capability)) {
-    const record = instances.get(instanceId);
-    if (!record) {
-      evidence.push({ source: instanceId, status: 'UNKNOWN', detail: 'Instancia física requerida no encontrada.' });
-    } else if (record.status === 'VERIFIED') {
-      evidence.push({ source: instanceId, status: 'PASS', detail: 'VERIFIED.' });
-    } else {
-      evidence.push({ source: instanceId, status: 'FAIL', detail: `Estado ${record.status ?? 'DESCONOCIDO'}; se requiere VERIFIED.` });
+function remoteEnvironmentProblems(identity) {
+  if (!identity) return ['remote_environment_identity ausente.'];
+
+  const roles = identity.required_environment_roles ?? [];
+  const problems = [];
+  const refs = [];
+
+  for (const role of roles) {
+    const binding = identity.bindings?.[role] ?? null;
+
+    if (!binding) {
+      problems.push(`${role}=BINDING_MISSING`);
+      continue;
+    }
+
+    const classification = String(binding.classification ?? '').trim();
+
+    if (classification === 'UNRESOLVED_BLOCKING') {
+      problems.push(`${role}=UNRESOLVED_BLOCKING`);
+      continue;
+    }
+
+    if (classification !== role) {
+      problems.push(`${role}=CLASSIFICATION_${classification || 'MISSING'}`);
+      continue;
+    }
+
+    const projectRef = String(binding.project_ref ?? '').trim();
+    const owner = String(binding.owner ?? '').trim();
+
+    if (!projectRef) problems.push(`${role}=PROJECT_REF_MISSING`);
+    if (!owner) problems.push(`${role}=OWNER_MISSING`);
+
+    if (projectRef) refs.push(projectRef);
+  }
+
+  if (refs.length !== new Set(refs).size) {
+    problems.push('STAGING_PRODUCTION_PROJECT_REF_NOT_DISTINCT');
+  }
+
+  return problems;
+}
+
+function evaluateFoundationGate(gate, executionRequirements) {
+  const validated = validateFoundationEvidenceRef(gate, gate?.evidence_ref);
+  let { status, detail } = validated;
+
+  if (gate?.foundation_id === 'MRP015-010') {
+    const problems = remoteEnvironmentProblems(executionRequirements?.remote_environment_identity);
+    if (problems.length > 0) {
+      status = gate?.evidence_ref ? 'FAIL' : 'UNKNOWN';
+      detail = `ENVIRONMENT_READY pendiente o contradictorio; ${problems.join(', ')}.`;
     }
   }
+
+  return {
+    source: `${gate.foundation_id}::${gate.gate_id}`,
+    kind: 'FOUNDATION_GATE',
+    foundation_id: gate.foundation_id,
+    gate_id: gate.gate_id,
+    owner_task: gate.owner_task,
+    status,
+    detail,
+  };
+}
+
+export function evaluatePhysicalDependencies({
+  contract,
+  instances,
+  capability = null,
+  executionRequirements = null,
+}) {
+  const evidence = [];
+
+  for (const instanceId of physicalDependencyInstanceIds(
+    contract,
+    capability,
+    executionRequirements,
+  )) {
+    const record = instances.get(instanceId);
+
+    if (!record) {
+      evidence.push({
+        source: instanceId,
+        kind: 'IMPLEMENTATION_INSTANCE',
+        status: 'UNKNOWN',
+        detail: 'Instancia física requerida no encontrada.',
+      });
+    } else if (record.status === 'VERIFIED') {
+      evidence.push({
+        source: instanceId,
+        kind: 'IMPLEMENTATION_INSTANCE',
+        status: 'PASS',
+        detail: 'VERIFIED.',
+      });
+    } else {
+      evidence.push({
+        source: instanceId,
+        kind: 'IMPLEMENTATION_INSTANCE',
+        status: 'FAIL',
+        detail: `Estado ${record.status ?? 'DESCONOCIDO'}; se requiere VERIFIED.`,
+      });
+    }
+  }
+
+  for (const gate of executionRequirements?.pre_entry_foundation_gates ?? []) {
+    evidence.push(evaluateFoundationGate(gate, executionRequirements));
+  }
+
   return {
     status: aggregateEvidence(evidence),
     available: evidence.length > 0 && evidence.every(({ status }) => status === 'PASS'),
     evidence,
   };
 }
+
+export function assertPackagePhysicalDependenciesReady({
+  registry,
+  packageId,
+  operation = 'PACKAGE_PHYSICAL_OPERATION',
+} = {}) {
+  const normalized = String(packageId ?? '').trim().toUpperCase();
+  const pkg = registry?.packages?.find(({ package_id: id }) => id === normalized) ?? null;
+
+  if (!pkg) {
+    throw new Error(`${operation}: package inexistente ${normalized || 'EMPTY'}.`);
+  }
+
+  const blocker = (pkg.physical_dependencies?.evidence ?? [])
+    .find(({ status }) => status !== 'PASS') ?? null;
+
+  if (blocker) {
+    throw new Error(
+      `${operation}: ${normalized} bloqueado por ${blocker.source} `
+      + `(${blocker.status}); ${blocker.detail}`,
+    );
+  }
+
+  if (pkg.physical_dependencies?.status !== 'PASS') {
+    throw new Error(`${operation}: ${normalized} no conserva physical_dependencies=PASS.`);
+  }
+
+  return true;
+}
+
+
 
 function blockersStatus(blockers) {
   if (blockers.length === 0) return 'PASS';
@@ -1280,19 +2190,48 @@ function evaluateEffectiveGate(documentaryGate, physicalDependencies) {
   return { gate_id: documentaryGate.gate_id, status, pass: status === 'PASS', scope: 'EFFECTIVE_PACKAGE_GATE', checks };
 }
 
-function physicalLifecycleStatus(packageId, instances, contract) {
-  const ci020 = instances.get(`${contract.implementation_entry_task}::${packageId}`);
-  const ci024 = instances.get(`SHELL-CI-024::${packageId}`);
-  if (ci024?.status === 'VERIFIED') return { status: 'CLOSED', source: ci024.instance_id, nextExecution: null };
-  if (ci020?.status === 'VERIFIED') {
-    const next = Array.from({ length: 4 }, (_, index) => `SHELL-CI-${String(index + 21).padStart(3, '0')}::${packageId}`)
-      .find((instanceId) => instances.get(instanceId)?.status !== 'VERIFIED') ?? null;
-    const active = Array.from({ length: 4 }, (_, index) => `SHELL-CI-${String(index + 21).padStart(3, '0')}::${packageId}`)
-      .find((instanceId) => PHYSICAL_ACTIVE.has(instances.get(instanceId)?.status)) ?? null;
-    return { status: 'DEPLOYED', source: active ?? ci020.instance_id, nextExecution: active ?? next };
+export function physicalLifecycleStatus(packageId, instances, contract) {
+  const taskIds = [
+    contract.implementation_entry_task,
+    'SHELL-CI-021',
+    'SHELL-CI-022',
+    'SHELL-CI-023',
+    'SHELL-CI-024',
+  ];
+  const instanceIds = taskIds.map((taskId) => `${taskId}::${packageId}`);
+  const records = instanceIds.map((instanceId) => instances.get(instanceId) ?? null);
+  const firstUnverified = records.findIndex((record) => record?.status !== 'VERIFIED');
+
+  if (firstUnverified < 0) {
+    const last = records.at(-1);
+    return { status: 'CLOSED', source: last.instance_id, nextExecution: null };
   }
-  if (ci020 && PHYSICAL_ACTIVE.has(ci020.status)) return { status: 'IMPLEMENTING', source: ci020.instance_id, nextExecution: ci020.instance_id };
-  return null;
+
+  const future = records
+    .slice(firstUnverified + 1)
+    .filter(Boolean)
+    .map((record) => `${record.instance_id}:${record.status ?? 'UNKNOWN'}`);
+  if (future.length > 0) {
+    fail(
+      `PHYSICAL_STAGE_SEQUENCE_VIOLATION: ${packageId} espera ${instanceIds[firstUnverified]}; `
+      + `etapas futuras materializadas: ${future.join(', ')}.`,
+    );
+  }
+
+  const current = records[firstUnverified];
+  if (firstUnverified === 0) {
+    if (current && PHYSICAL_ACTIVE.has(current.status)) {
+      return { status: 'IMPLEMENTING', source: current.instance_id, nextExecution: current.instance_id };
+    }
+    return null;
+  }
+
+  const previous = records[firstUnverified - 1];
+  return {
+    status: 'DEPLOYED',
+    source: current?.instance_id ?? previous.instance_id,
+    nextExecution: instanceIds[firstUnverified],
+  };
 }
 
 function compactPackageForPersistence(pkg) {
@@ -1439,12 +2378,25 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
         relativePath: packageGateRecordRelativePath(entry.package_id, packageGatePolicy),
       })
       : null;
-    const canonicalBlockers = canonicalPackageBlockers(entry, contract, packageGate);
+    const executionRequirements = derivePackageExecutionRequirements({ contract, packageGate: gateRecord });
+    const deploymentEnvironment = evaluatePackageDeploymentEnvironment({
+      entry,
+      packageGate,
+      executionRequirements,
+    });
+    const canonicalBlockers = canonicalPackageBlockers(entry, contract, packageGate, deploymentEnvironment);
     const taskBlockers = taskPrerequisiteBlockers(taskPrerequisites);
     const blockers = [...new Set([...canonicalBlockers, ...taskBlockers])];
     const status = blockers.length === 0 ? 'READY_FOR_GATE' : 'COMPILED';
-    const dossier = canonicalPackageDossier(entry, contract, inventory, packageGate);
-    const documentaryGate = canonicalDocumentaryGate({ entry, contract, inventory, taskPrerequisites, packageGate });
+    const dossier = canonicalPackageDossier(entry, contract, inventory, packageGate, deploymentEnvironment);
+    const documentaryGate = canonicalDocumentaryGate({
+      entry,
+      contract,
+      inventory,
+      taskPrerequisites,
+      packageGate,
+      deploymentEnvironment,
+    });
     const draft = {
       package_id: entry.package_id,
       source_kind: 'CANONICAL_GAP_PACKAGE',
@@ -1457,6 +2409,8 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
       repository_owner: entry.repository_owner ?? null,
       runtime_profile: entry.runtime_profile ?? null,
       execution: entry.execution,
+      execution_requirements: executionRequirements,
+      deployment_environment: deploymentEnvironment,
       status,
       status_scope: 'DOCUMENTARY_READINESS',
       capability_status: 'CANONICAL_E5_PACKAGE',
@@ -1476,6 +2430,9 @@ function reconcileCanonicalRegistry({ registry, catalog, contract, inventory, pa
         inherited_gate_017: entry.inherited_gate_017 ?? null,
         test_profile_016: entry.test_profile_016 ?? null,
         observability_017: entry.observability_017 ?? null,
+        rollout_profile_019: entry.rollout_profile_019 ?? null,
+        deployment_environment_profile_019: entry.deployment_environment_profile_019 ?? null,
+        rollout_result_019: entry.rollout_result_019 ?? null,
       },
       dossier,
       gate_documentary: documentaryGate,
@@ -1587,7 +2544,12 @@ export function applyPhysicalOverlay({ registry, contract, instances, capability
     const capability = persisted.source_kind === 'SPECIAL_CAPABILITY'
       ? capabilityIndex.capabilities[persisted.capability_id] ?? null
       : null;
-    const physicalDependencies = evaluatePhysicalDependencies({ contract, instances, capability });
+    const physicalDependencies = evaluatePhysicalDependencies({
+      contract,
+      instances,
+      capability,
+      executionRequirements: persisted.execution_requirements ?? null,
+    });
     const effectiveGate = evaluateEffectiveGate(persisted.gate_documentary, physicalDependencies);
     const physical = physicalLifecycleStatus(persisted.package_id, instances, contract);
     const physicalEntryInstance = instances.get(
@@ -1847,6 +2809,7 @@ export function renderReadinessMarkdown(result) {
     : '- ✅ Sin advertencias estructurales.';
   const execution = result.registry.package_execution ?? null;
   const current = execution?.current ?? null;
+  const currentWork = execution?.current_work ?? current?.current_work ?? null;
   const currentPackage = current
     ? packages.find(({ package_id: packageId }) => packageId === current.package_id) ?? null
     : null;
@@ -1902,6 +2865,8 @@ export function renderReadinessMarkdown(result) {
 | Selección humana de package | **${execution?.human_package_selection === false ? 'NO' : 'NO EVALUADO'}** |
 | Estado de la línea | **${execution?.state ?? 'NOT_EVALUATED'}** |
 | Package actual | **${current?.package_id ?? 'NONE'}** |
+| CURRENT_EXECUTABLE_WORK | **${currentWork ? `${currentWork.kind}:${currentWork.id}` : 'NONE'}** |
+| Package consumidor bloqueado | **${currentWork?.kind && currentWork.kind !== 'PACKAGE' ? current?.package_id ?? 'NONE' : 'NONE'}** |
 | Posición actual | **${current ? `${current.position}/${execution.sequence.length}` : `0/${execution?.sequence.length ?? 0}`}** |
 | Acción exacta | **${current?.next_action.type ?? 'NONE'}** |
 | Objetivo | ${markdownCell(current?.next_action.target ?? 'NONE')} |
@@ -1925,7 +2890,12 @@ PACKAGE_ID COMO DESEMPATE ESTABLE
      v
 PRIMER PACKAGE NO CERRADO = TURNO ACTUAL
      |
-     +--> BLOQUEADO --------> CONSERVA EL TURNO
+     v
+PRIMER PRERREQUISITO / FUNDACION INCUMPLIDO = CURRENT_EXECUTABLE_WORK
+     |
+     +--> EXISTE -----------> BLOQUEA AL PACKAGE CONSUMIDOR
+     |
+     +--> NO EXISTE --------> PACKAGE PUEDE CONTINUAR
      |
      +--> GATE COMPLETO ----> IMPLEMENTATION_READY
                                   |
@@ -1946,14 +2916,15 @@ PRIMER PACKAGE NO CERRADO = TURNO ACTUAL
 3. **La capa de implementación ordena después de las dependencias.** Las capas válidas son 0 a 4.
 4. **\`package_id\` solo desempata de forma estable.** No crea prioridad empresarial nueva.
 5. **El primer package no \`CLOSED\` conserva el turno aunque esté bloqueado.** Ningún package posterior puede adelantarlo.
-6. **\`IMPLEMENTATION_READY\` no equivale a \`AUTHORIZED\`.** La autorización física humana sigue siendo obligatoria.
+6. **\`CURRENT_EXECUTABLE_WORK\` es el primer prerrequisito o fundación incumplida; el package actual queda como consumidor bloqueado hasta cerrarlo.**
+7. **\`IMPLEMENTATION_READY\` no equivale a \`AUTHORIZED\`.** La autorización física humana sigue siendo obligatoria.
 7. **Los packages sin orden físico canónico quedan diferidos fuera de la línea activa.** No bloquean la secuencia hasta que su fuente propietaria materialice un orden válido.
 
 ## Package actual
 
 ${readyMessage}
 
-${current ? `| Campo | Valor |\n| --- | --- |\n| Package | ${packageLink(current.package_id)} |\n| Posición | **${current.position}/${execution.sequence.length}** |\n| Capa | **${current.layer}** |\n| Estado efectivo | ${statusIcon(current.status)} **${current.status}** |\n| Dependencias explícitas | ${markdownCell(current.depends_on_package_ids.join(', ') || 'ninguna')} |\n| Tareas prerrequisito | ${currentTasks ? `**${currentTasks.approved}/${currentTasks.total}**` : 'N/A'} |\n| Gates de readiness | ${currentGates ? `**${currentGates.passed}/${currentGates.total}**` : 'N/A'} |\n| Package gate | **${markdownCell(currentPackageGate)}** |\n| Acción exacta | **${markdownCell(current.next_action.type)}** |\n| Objetivo | ${markdownCell(current.next_action.target)} |\n| Comando | \`${current.next_action.command}\` |\n| Autorización física | **REQUERIDA; este reporte no la concede** |\n\n**Por qué conserva el turno:** ${markdownCell(current.next_action.reason)}` : '✅ No existe un package actual pendiente.'}
+${current ? `| Campo | Valor |\n| --- | --- |\n| Package | ${packageLink(current.package_id)} |\n| Posición | **${current.position}/${execution.sequence.length}** |\n| Capa | **${current.layer}** |\n| Estado efectivo | ${statusIcon(current.status)} **${current.status}** |\n| Dependencias explícitas | ${markdownCell(current.depends_on_package_ids.join(', ') || 'ninguna')} |\n| Tareas prerrequisito | ${currentTasks ? `**${currentTasks.approved}/${currentTasks.total}**` : 'N/A'} |\n| Gates de readiness | ${currentGates ? `**${currentGates.passed}/${currentGates.total}**` : 'N/A'} |\n| Package gate | **${markdownCell(currentPackageGate)}** |\n| CURRENT_EXECUTABLE_WORK | **${markdownCell(currentWork ? `${currentWork.kind}:${currentWork.id}` : current.package_id)}** |\n| Gate de fundación | ${markdownCell(currentWork?.gate_id ?? "N/A")} |\n| Owner de fundación | ${markdownCell(currentWork?.owner_task ?? "N/A")} |\n| Acción exacta | **${markdownCell(current.next_action.type)}** |\n| Objetivo | ${markdownCell(current.next_action.target)} |\n| Comando | \`${current.next_action.command}\` |\n| Autorización física | **REQUERIDA; este reporte no la concede** |\n\n**Por qué conserva el turno:** ${markdownCell(current.next_action.reason)}` : '✅ No existe un package actual pendiente.'}
 
 ## Progreso por capa
 
@@ -2250,13 +3221,41 @@ export function scanPackageReadiness({
 }
 
 function parseArgs(argv) {
-  const args = { write: false, check: false, trigger: 'manual', json: false, packageId: null };
+  const args = {
+    write: false,
+    check: false,
+    trigger: 'manual',
+    json: false,
+    packageId: null,
+    recordFoundationId: null,
+    recordCandidatePackageId: null,
+    foundationStatus: false,
+    changelogRef: null,
+    toolchainFreezeRef: null,
+  };
   for (let index = 0; index < argv.length; index += 1) {
     const token = argv[index];
     if (token === '--write') args.write = true;
     else if (token === '--check') args.check = true;
     else if (token === '--json') args.json = true;
-    else if (token === '--package') {
+    else if (token === '--foundation-status') args.foundationStatus = true;
+    else if (token === '--record-candidate') {
+      args.recordCandidatePackageId = argv[index + 1];
+      if (!args.recordCandidatePackageId) fail('Falta package_id después de --record-candidate.');
+      index += 1;
+    } else if (token === '--record-foundation') {
+      args.recordFoundationId = argv[index + 1];
+      if (!args.recordFoundationId) fail('Falta foundation_id después de --record-foundation.');
+      index += 1;
+    } else if (token === '--changelog-ref') {
+      args.changelogRef = argv[index + 1];
+      if (!args.changelogRef) fail('Falta valor de --changelog-ref.');
+      index += 1;
+    } else if (token === '--toolchain-freeze-ref') {
+      args.toolchainFreezeRef = argv[index + 1];
+      if (!args.toolchainFreezeRef) fail('Falta valor de --toolchain-freeze-ref.');
+      index += 1;
+    } else if (token === '--package') {
       args.packageId = argv[index + 1];
       if (!args.packageId) fail('Falta valor de --package.');
       index += 1;
@@ -2267,6 +3266,12 @@ function parseArgs(argv) {
     } else fail(`Argumento desconocido: ${token}.`);
   }
   if (args.write && args.check) fail('--write y --check son mutuamente excluyentes.');
+  if (args.recordFoundationId && (args.write || args.check || args.foundationStatus || args.packageId || args.json || args.recordCandidatePackageId)) {
+    fail('--record-foundation no puede combinarse con modos de scan/status/candidate.');
+  }
+  if (args.recordCandidatePackageId && (args.write || args.check || args.foundationStatus || args.packageId || args.json || args.recordFoundationId)) {
+    fail('--record-candidate no puede combinarse con modos de scan/status/foundation.');
+  }
   return args;
 }
 
@@ -2326,8 +3331,63 @@ function printCliResult(result, { json = false, packageId = null } = {}) {
   }
 }
 
+function printFoundationStatus(root) {
+  const contract = readJson(root, READINESS_PATHS.contract);
+  const foundation = contract.physical_dependencies.supabase_pre_e5_foundation;
+  console.log('=== RESULTADO PARA CHATGPT ===');
+  console.log('ESTADO: PASS');
+  console.log('OPERACION: FOUNDATION_STATUS');
+  for (const gate of foundation.ordered_foundation_gates) {
+    const result = validateFoundationEvidenceRef(gate, gate.evidence_ref);
+    console.log(`${gate.foundation_id}: ${result.status} | ${gate.gate_id}`);
+  }
+  console.log('=== FIN RESULTADO PARA CHATGPT ===');
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
+  if (args.recordCandidatePackageId) {
+    const result = recordInPackageCandidateEvidence({
+      root: process.cwd(),
+      packageId: args.recordCandidatePackageId,
+    });
+    console.log('=== RESULTADO PARA CHATGPT ===');
+    console.log('ESTADO: PASS');
+    console.log('OPERACION: IN_PACKAGE_CANDIDATE_RECORD');
+    console.log(`PACKAGE_ID: ${result.packageId}`);
+    console.log(`INSTANCE_ID: ${result.instanceId}`);
+    console.log('FOUNDATION_ID: MRP015-050');
+    console.log('GATE_ID: CANDIDATE_READY');
+    console.log(`CANDIDATE_HEAD_SHA: ${result.evidence.candidate_head_sha}`);
+    console.log(`AUTHORIZED_SCOPE_SHA256: ${result.evidence.authorized_scope_sha256}`);
+    console.log(`CANDIDATE_SCOPE_SHA256: ${result.evidence.candidate_scope_sha256}`);
+    console.log('REMOTE_MUTATIONS: NO');
+    console.log('SECRET_VALUES_IN_EVIDENCE: NO');
+    console.log('=== FIN RESULTADO PARA CHATGPT ===');
+    return;
+  }
+  if (args.recordFoundationId) {
+    const result = recordSupabaseFoundationEvidence({
+      root: process.cwd(),
+      foundationId: args.recordFoundationId,
+      changelogRef: args.changelogRef,
+      toolchainFreezeRef: args.toolchainFreezeRef,
+    });
+    console.log('=== RESULTADO PARA CHATGPT ===');
+    console.log(`ESTADO: ${result.status}`);
+    console.log('OPERACION: FOUNDATION_RECORD');
+    console.log(`FOUNDATION_ID: ${result.foundationId}`);
+    console.log(`FAILED_CHECKS: ${result.failed.join(',') || 'NONE'}`);
+    console.log(`EVIDENCE_WRITTEN: ${result.status === 'PASS' ? 'SI' : 'NO'}`);
+    console.log('SECRET_VALUES_IN_EVIDENCE: NO');
+    console.log('=== FIN RESULTADO PARA CHATGPT ===');
+    if (result.status !== 'PASS') process.exitCode = 1;
+    return;
+  }
+  if (args.foundationStatus) {
+    printFoundationStatus(process.cwd());
+    return;
+  }
   const result = scanPackageReadiness(args);
   printCliResult(result, args);
 }

@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "correction_id": "DELIV-PKG-015::CORR-007",
+  "task_id": "DELIV-PKG-015",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "IMPLEMENTATION_DEFECT",
+  "status": "VERIFIED",
+  "blocking": true,
+  "blocked_targets": [
+    "SHELL-CI-020::GAP-PKG-001"
+  ],
+  "baseline": {
+    "main_commit": "785726e5c3036e0fcd3c7bfb76c84c12c9a5f8f5",
+    "target_task_path": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+    "target_task_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/staging-acl-reconciliation.mjs",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/staging-acl-reconciliation.test.mjs",
+      "change": "CREATE"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/hosted-replay-precondition.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/supabase/hosted-replay-precondition.test.mjs",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/supabase/staging-acl-reconciliation.mjs",
+    "node --test scripts/supabase/staging-acl-reconciliation.test.mjs",
+    "node --check scripts/supabase/hosted-replay-precondition.mjs",
+    "npm run supabase:hosted-replay:precondition:test",
+    "npm run supabase:migrations:manifest:check",
+    "npm run supabase:drift:test",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:package:execution:check",
+    "npm run docs:implementation:check",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "La correccion restaura el procedimiento hosted de MRP015-020 sin modificar semantica funcional, TREQ, 04A ni migraciones historicas; conserva la paridad exacta de HISTORY_PASS y versiona la reconciliacion ACL ya ejecutada sobre STAGING.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-04",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO PERO YA LLEVAMOS 7 CORRECCIONES DE LA MIERDA ESA DEL 015, QUE PORQUERÍA HICIMOS EN ESA PUTA TAREA? PUROS ERRORES Y CONTRADICCIONES",
+    "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
+  },
+  "evidence": [
+    "IMPLEMENTED staging ACL reconciliation tooling with STAGING-only binding, canonical five-migration precondition, fail-closed privilege comparison and zero GRANT behavior.",
+    "IMPLEMENTED hosted replay precondition actor separation: read-only snapshots require supabase_read_only_user while mutation SQL retains current_user=postgres guard before ALTER DEFAULT PRIVILEGES.",
+    "IMPLEMENTED operational guide correction removing destructive reset as the MRP015-020 HISTORY_PASS route while preserving MRP015-030 CLEAN_REPLAY_PASS as an independent later foundation.",
+    "VERIFIED hosted replay precondition tests PASS 13/13.",
+    "VERIFIED staging ACL reconciliation tests PASS 4/4.",
+    "VERIFIED migration manifest PASS with FILES=21, EMPTY_FILES=0, CONTENT_DUPLICATE_GROUPS=0, LOGICAL_FAMILY_GROUPS=0, REPEATED_VERSION_GROUPS=0, LEGACY_NAMING_FILES=0 and NEW_NAME_VIOLATIONS=0.",
+    "VERIFIED live STAGING read-only acceptance PASS with IDENTITY_KIND=BRANCH and LIVE_READ_ONLY_ACTOR=supabase_read_only_user.",
+    "VERIFIED live STAGING state MIGRATION_HISTORY_COUNT=5, PUBLIC_RELATIONS_WITH_ANON_DML=0, POSTGRES_PUBLIC_ANON_DEFAULT_GRANTS=5 and MANAGED_DEFAULTS_COMPATIBLE=SI.",
+    "VERIFIED live hosted inspection executed no mutation and exposed no secret values: MUTATION_EXECUTED=NO and SECRET_VALUES_IN_OUTPUT=NO.",
+    "VERIFIED APPLY_ALLOWED=NO and READY_FOR_REPLAY=NO are expected for the existing five-migration MRP015-020 state; apply was not executed.",
+    "VERIFIED ACL reconciliation was not re-executed after its successful hosted postcondition.",
+    "VERIFIED MRP015-020 retains exact HISTORY_PASS semantics; package-readiness scanner and environment-drift contracts were not modified.",
+    "VERIFIED full correction, package-readiness, package-execution, implementation, docs plan, TREQ, Supabase drift and repository test suites PASS.",
+    "VERIFIED git diff check PASS.",
+    "VERIFIED zero TREQ changes, zero 04A changes, zero migration SQL changes, zero migration repair, zero reset and zero PRODUCTION mutations."
+  ],
+  "opened_at": "2026-09-05T00:39:36.566Z"
+}

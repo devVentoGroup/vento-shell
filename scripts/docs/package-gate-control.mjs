@@ -20,6 +20,33 @@ function completeObjects(values, required) {
     && values.every((value) => value && required.every((key) => nonEmpty(value[key])));
 }
 
+function completeDeploymentEnvironment(value) {
+  return Boolean(value)
+    && typeof value === 'object'
+    && !Array.isArray(value)
+    && value.canonical_task_id === 'DELIV-PKG-019'
+    && nonEmpty(value.rollout_profile)
+    && nonEmpty(value.environment_profile)
+    && completeObjects(value.targets, ['environment_role', 'target_type', 'target_id', 'owner'])
+    && typeof value.production_authorized === 'boolean';
+}
+
+function normalizeDeploymentEnvironment(value) {
+  if (!completeDeploymentEnvironment(value)) return null;
+  return {
+    canonical_task_id: value.canonical_task_id,
+    rollout_profile: value.rollout_profile.trim(),
+    environment_profile: value.environment_profile.trim(),
+    targets: value.targets.map((target) => ({
+      environment_role: target.environment_role.trim().toUpperCase(),
+      target_type: target.target_type.trim().toUpperCase(),
+      target_id: target.target_id.trim(),
+      owner: target.owner.trim(),
+    })),
+    production_authorized: value.production_authorized,
+  };
+}
+
 export function readPackageGatePolicy(root = process.cwd()) {
   const policyPath = absolute(root, PACKAGE_GATE_POLICY_PATH);
   if (!fs.existsSync(policyPath)) fail(`No existe ${PACKAGE_GATE_POLICY_PATH}.`);
@@ -58,6 +85,22 @@ export function assessPackageGateRecord(record, { taskPrerequisites = null, poli
   const rollbackComplete = Array.isArray(record?.evidence_plan?.rollback_steps)
     && record.evidence_plan.rollback_steps.length > 0
     && record.evidence_plan.rollback_steps.every(nonEmpty);
+  const deploymentEnvironmentComplete = completeDeploymentEnvironment(record?.deployment_environment);
+  const deploymentEnvironment = normalizeDeploymentEnvironment(record?.deployment_environment);
+  if (deploymentEnvironment) {
+    const targetKeys = deploymentEnvironment.targets.map((target) => (
+      `${target.environment_role}:${target.target_type}:${target.target_id}`
+    ));
+    if (new Set(targetKeys).size !== targetKeys.length) {
+      errors.push('deployment_environment.targets contiene destinos duplicados');
+    }
+    if (
+      deploymentEnvironment.production_authorized === false
+      && deploymentEnvironment.targets.some((target) => target.environment_role === 'PRODUCTION')
+    ) {
+      errors.push('deployment_environment no puede incluir PRODUCTION cuando production_authorized=false');
+    }
+  }
   const evidenceComplete = testsComplete && observabilityComplete && acceptanceComplete && rollbackComplete;
   const tasksComplete = taskPrerequisites ? taskPrerequisites.remaining === 0 : true;
   const authorization = record?.authorization ?? {};
@@ -67,7 +110,7 @@ export function assessPackageGateRecord(record, { taskPrerequisites = null, poli
     && nonEmpty(authorization.approval_ref)
     && nonEmpty(authorization.approval_statement)
     && authorization.approval_statement.includes(policy.approval_word);
-  const dossierComplete = identityComplete && unitsComplete && evidenceComplete;
+  const dossierComplete = identityComplete && unitsComplete && deploymentEnvironmentComplete && evidenceComplete;
   const status = !tasksComplete
     ? 'WAITING_DOCUMENTATION'
     : !dossierComplete
@@ -99,8 +142,10 @@ export function assessPackageGateRecord(record, { taskPrerequisites = null, poli
     sections: {
       physical_identity: identityComplete,
       implementation_units: unitsComplete,
+      deployment_environment: deploymentEnvironmentComplete,
       evidence_plan: evidenceComplete,
     },
+    deployment_environment: deploymentEnvironment,
     gates,
   };
 }

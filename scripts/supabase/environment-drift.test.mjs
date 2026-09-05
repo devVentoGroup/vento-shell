@@ -15,6 +15,7 @@ import {
   extractSqlScalar,
   inventoryEdgeFunctions,
   normalizeRemoteFunctionBody,
+  observeRemoteEnvironment,
   parseToml,
   sha256,
   stableStringify,
@@ -88,6 +89,7 @@ test('normaliza cuerpo remoto de Edge Function al mismo modelo de archivos', () 
 
 test('Management API queda cerrada a GET y SQL read-only', () => {
   assert.equal(assertManagementRequest('GET', '/v1/projects/abc123'), true);
+  assert.equal(assertManagementRequest('GET', '/v1/branches/abc123'), true);
   assert.equal(assertManagementRequest('GET', '/v1/projects/abc123/database/migrations'), true);
   assert.equal(assertManagementRequest('POST', '/v1/projects/abc123/database/query/read-only'), true);
   assert.throws(
@@ -99,9 +101,121 @@ test('Management API queda cerrada a GET y SQL read-only', () => {
     /MANAGEMENT_API_OPERATION_FORBIDDEN/u,
   );
   assert.throws(
+    () => assertManagementRequest('PATCH', '/v1/branches/abc123'),
+    /MANAGEMENT_API_OPERATION_FORBIDDEN/u,
+  );
+  assert.throws(
     () => assertManagementRequest('DELETE', '/v1/projects/abc123/database/migrations'),
     /MANAGEMENT_API_OPERATION_FORBIDDEN/u,
   );
+});
+
+test('staging persistent branch se normaliza sin conservar credenciales sensibles', async () => {
+  const requests = [];
+  const fakeDbPass = 'FAKE_DB_PASS_SHOULD_NEVER_APPEAR';
+  const fakeJwtSecret = 'FAKE_JWT_SECRET_SHOULD_NEVER_APPEAR';
+  const response = (status, payload) => ({
+    ok: status >= 200 && status < 300,
+    status,
+    async json() { return payload; },
+  });
+  const fetchImpl = async (url) => {
+    const pathname = new URL(url).pathname;
+    requests.push(pathname);
+    if (pathname === '/v1/projects/staging-ref') {
+      return response(400, { message: 'Project not found' });
+    }
+    if (pathname === '/v1/branches/staging-ref') {
+      return response(200, {
+        ref: 'staging-ref',
+        postgres_version: 'supabase-postgres-17.6.1.166',
+        postgres_engine: '17',
+        release_channel: 'ga',
+        status: 'ACTIVE_HEALTHY',
+        db_host: 'db.staging-ref.supabase.co',
+        db_user: 'postgres',
+        db_pass: fakeDbPass,
+        jwt_secret: fakeJwtSecret,
+      });
+    }
+    throw new Error(`UNEXPECTED_REQUEST:${pathname}`);
+  };
+
+  const observed = await observeRemoteEnvironment({
+    projectRef: 'staging-ref',
+    environmentRole: 'staging',
+    owner: 'SUPA-TRANS-015',
+    scope: 'environment',
+    token: 'mock-management-token',
+    fetchImpl,
+  });
+
+  assert.equal(observed.identity_status, 'PASS');
+  assert.equal(observed.identity.project_ref, 'staging-ref');
+  assert.deepEqual(requests, ['/v1/projects/staging-ref', '/v1/branches/staging-ref']);
+  const project = observed.surfaces.find((entry) => entry.name === 'project');
+  assert.equal(project.status, 'PASS');
+  assert.equal(project.value.ref, 'staging-ref');
+  assert.equal(project.value.hosted_identity_kind, 'branch');
+  assert.equal(project.value.database.postgres_engine, '17');
+  const serialized = JSON.stringify(observed);
+  assert.equal(serialized.includes(fakeDbPass), false);
+  assert.equal(serialized.includes(fakeJwtSecret), false);
+  assert.equal(serialized.includes('db_pass'), false);
+  assert.equal(serialized.includes('jwt_secret'), false);
+
+  const result = compareRemote({
+    scope: 'environment',
+    expected: {
+      candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
+      expected_digest: 'expected',
+      config: { contract: { postgres_major: 17 } },
+    },
+    remoteObserved: observed,
+  });
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('staging separado como proyecto conserva el endpoint de proyecto sin fallback a branch', async () => {
+  const requests = [];
+  const response = (status, payload) => ({
+    ok: status >= 200 && status < 300,
+    status,
+    async json() { return payload; },
+  });
+  const fetchImpl = async (url) => {
+    const pathname = new URL(url).pathname;
+    requests.push(pathname);
+    if (pathname === '/v1/projects/staging-project-ref') {
+      return response(200, {
+        id: 'staging-project-ref',
+        ref: 'staging-project-ref',
+        name: 'staging-project',
+        region: 'us-east-2',
+        status: 'ACTIVE_HEALTHY',
+        database: {
+          version: '17.6.1.054',
+          postgres_engine: '17',
+          release_channel: 'ga',
+        },
+      });
+    }
+    throw new Error(`UNEXPECTED_REQUEST:${pathname}`);
+  };
+
+  const observed = await observeRemoteEnvironment({
+    projectRef: 'staging-project-ref',
+    environmentRole: 'staging',
+    owner: 'SUPA-TRANS-015',
+    scope: 'environment',
+    token: 'mock-management-token',
+    fetchImpl,
+  });
+  assert.deepEqual(requests, ['/v1/projects/staging-project-ref']);
+  assert.equal(observed.surfaces[0].status, 'PASS');
+  assert.equal(observed.surfaces[0].value.ref, 'staging-project-ref');
+  assert.equal(observed.surfaces[0].value.database.postgres_engine, '17');
 });
 
 test('extrae resultado escalar de respuestas SQL compatibles', () => {
@@ -242,6 +356,236 @@ test('remote sin identidad explicita termina en INSUFFICIENT_EVIDENCE', () => {
   });
   assert.equal(result.certification, 'INSUFFICIENT_EVIDENCE');
   assert.equal(result.drifts[0].surface, 'environment.identity');
+});
+
+test('scope environment certifica identidad remota sin consumir history ni recursos', () => {
+  const result = compareRemote({
+    scope: 'environment',
+    expected: {
+      candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
+      expected_digest: 'expected',
+      config: { contract: { postgres_major: 17 } },
+    },
+    remoteObserved: {
+      environment_role: 'staging',
+      remote_scope: 'environment',
+      identity: { project_ref: 'staging-ref' },
+      identity_status: 'PASS',
+      observed_digest: 'observed',
+      surfaces: [{
+        name: 'project',
+        status: 'PASS',
+        value: { ref: 'staging-ref', database: { postgres_engine: '17' } },
+      }],
+    },
+  });
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.equal(result.remote_scope, 'environment');
+  assert.deepEqual(result.drifts, []);
+});
+
+function compareHistoryFixture({
+  environmentRole,
+  versions,
+  scope = 'history',
+} = {}) {
+  const projectRef = `${environmentRole}-ref`;
+  const expectedVersions = [
+    '00000000000000',
+    '20260801000000',
+    '20260901000000',
+  ];
+
+  return compareRemote({
+    scope,
+    expected: {
+      candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
+      expected_digest: 'expected',
+      config: { contract: { postgres_major: 17 } },
+      migration_manifest: {
+        rows: expectedVersions.map((version) => ({ version })),
+      },
+    },
+    remoteObserved: {
+      environment_role: environmentRole,
+      remote_scope: scope,
+      identity: { project_ref: projectRef },
+      identity_status: 'PASS',
+      observed_digest: 'observed',
+      surfaces: [
+        {
+          name: 'project',
+          status: 'PASS',
+          value: {
+            ref: projectRef,
+            database: { postgres_engine: '17' },
+          },
+        },
+        {
+          name: 'migrations',
+          status: 'PASS',
+          value: versions.map((version) => ({
+            version,
+            name: `migration-${version}`,
+          })),
+        },
+      ],
+    },
+  });
+}
+
+test('scope history certifica PRODUCTION cuando conserva un prefijo canonico no vacio', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: ['00000000000000'],
+  });
+
+  assert.equal(result.certification, 'PRODUCTION_CERTIFIED');
+  assert.equal(result.remote_scope, 'history');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('scope history rechaza historial vacio en PRODUCTION', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history conserva paridad exacta obligatoria en STAGING', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'staging',
+    versions: ['00000000000000'],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history certifica STAGING cuando alcanza el universo completo', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'staging',
+    versions: [
+      '00000000000000',
+      '20260801000000',
+      '20260901000000',
+    ],
+  });
+
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('scope history rechaza huecos en el prefijo de PRODUCTION', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [
+      '00000000000000',
+      '20260901000000',
+    ],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history rechaza versiones desconocidas en PRODUCTION', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [
+      '00000000000000',
+      '99999999999999',
+    ],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history rechaza versiones duplicadas en PRODUCTION', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [
+      '00000000000000',
+      '00000000000000',
+    ],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history certifica PRODUCTION cuando alcanza el universo completo', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [
+      '00000000000000',
+      '20260801000000',
+      '20260901000000',
+    ],
+  });
+
+  assert.equal(result.certification, 'PRODUCTION_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('scope full sigue rechazando PRODUCTION incompleto', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    scope: 'full',
+    versions: ['00000000000000'],
+  });
+
+  assert.notEqual(result.certification, 'PRODUCTION_CERTIFIED');
+  assert.equal(
+    result.drifts.some(
+      (entry) => entry.surface === 'migration_history.versions',
+    ),
+    true,
+  );
+});
+
+test('scope environment conserva fail closed para candidate sucio', () => {
+  const result = compareRemote({
+    scope: 'environment',
+    expected: {
+      candidate: { clean: false, commit_sha: 'abc', dirty_path_count: 1 },
+      expected_digest: 'expected',
+      config: { contract: { postgres_major: 17 } },
+    },
+    remoteObserved: {
+      environment_role: 'staging',
+      remote_scope: 'environment',
+      identity: { project_ref: 'staging-ref' },
+      identity_status: 'PASS',
+      observed_digest: 'observed',
+      surfaces: [{
+        name: 'project',
+        status: 'PASS',
+        value: { ref: 'staging-ref', database: { postgres_engine: '17' } },
+      }],
+    },
+  });
+  assert.equal(result.certification, 'INSUFFICIENT_EVIDENCE');
+  assert.equal(result.drifts[0].surface, 'candidate.git_tree');
 });
 
 test('SQL de fingerprint excluye VITAL y no contiene operaciones de mutacion', () => {

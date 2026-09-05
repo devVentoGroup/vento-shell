@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1112** |
+| Aprobadas | **1120** |
 | En propuesta | **0** |
-| No iniciadas | **484** |
+| No iniciadas | **476** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **69.67% (1112/1596)** |
+| Porcentaje de completamiento | **70.18% (1120/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-CORE-001` — Definir núcleo mínimo de VISO | ✅ APROBADA |
-| Tarea actual | `VISO-CORE-002` — Vincular núcleo con capacidades empresariales | ⬜ NO INICIADA |
-| Siguiente reservada | `VISO-CORE-003` — Implementar dependencias administrativas mínimas | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-APP-003` — Definir aplicaciones visibles por contexto | ✅ APROBADA |
+| Tarea actual | `SHELL-APP-004` — Mostrar turno activo | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-APP-005` — Mostrar sede activa | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -663,11 +663,11 @@
 | ⬜ NO INICIADA | `VISO-SCH-007` | Definir autorización, auditoría, eventos y notificaciones | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
 | ⬜ NO INICIADA | `VISO-SCH-008` | Aprobar contrato de programación antes de E5 | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
 | ✅ APROBADA | `VISO-CORE-001` | Definir núcleo mínimo de VISO | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-002` | Vincular núcleo con capacidades empresariales | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-003` | Implementar dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-004` | Implementar autorización real del núcleo | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-005` | Implementar validación de conflictos y auditoría | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-006` | Aprobar núcleo antes de ampliar alcance | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ✅ APROBADA | `VISO-CORE-002` | Vincular núcleo con capacidades empresariales | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ✅ APROBADA | `VISO-CORE-003` | Implementar dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ✅ APROBADA | `VISO-CORE-004` | Implementar autorización real del núcleo | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ✅ APROBADA | `VISO-CORE-005` | Implementar validación de conflictos y auditoría | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ✅ APROBADA | `VISO-CORE-006` | Aprobar núcleo antes de ampliar alcance | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-UX-001` | Reorganizar navegación por dominios administrativos | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `VISO-UX-002` | Crear sección Personal | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `VISO-UX-003` | Crear sección Programación | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
@@ -787,9 +787,9 @@
 | ✅ APROBADA | `SHELL-CTX-004` | Implementar readiness operativo sin booleanos de autorización | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CTX-005` | Implementar razones seguras de bloqueo contextual | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-CTX-006` | Implementar caché compartida, single-flight y validación de frescura | `bloques/H_FUNDACION_COMPARTIDA/03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-APP-001` | Inventariar la experiencia actual del hub | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
-| ⬜ NO INICIADA | `SHELL-APP-002` | Definir aplicaciones visibles por actor | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
-| ⬜ NO INICIADA | `SHELL-APP-003` | Definir aplicaciones visibles por contexto | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
+| ✅ APROBADA | `SHELL-APP-001` | Inventariar la experiencia actual del hub | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
+| ✅ APROBADA | `SHELL-APP-002` | Definir aplicaciones visibles por actor | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
+| ✅ APROBADA | `SHELL-APP-003` | Definir aplicaciones visibles por contexto | `bloques/H2_SHELL_APP/01_INVENTARIO_Y_VISIBILIDAD_DE_APLICACIONES.md` |
 | ⬜ NO INICIADA | `SHELL-APP-004` | Mostrar turno activo | `bloques/H2_SHELL_APP/02_CONTEXTO_Y_TRABAJO_PENDIENTE.md` |
 | ⬜ NO INICIADA | `SHELL-APP-005` | Mostrar sede activa | `bloques/H2_SHELL_APP/02_CONTEXTO_Y_TRABAJO_PENDIENTE.md` |
 | ⬜ NO INICIADA | `SHELL-APP-006` | Mostrar área activa | `bloques/H2_SHELL_APP/02_CONTEXTO_Y_TRABAJO_PENDIENTE.md` |

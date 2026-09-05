@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "correction_id": "DELIV-PKG-019::CORR-001",
+  "task_id": "DELIV-PKG-019",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "IMPLEMENTATION_DEFECT",
+  "status": "VERIFIED",
+  "blocking": true,
+  "blocked_targets": [
+    "SHELL-CI-020::GAP-PKG-001"
+  ],
+  "baseline": {
+    "main_commit": "fc6d0a48c539cfe880f801e450c094fe80f82fcf",
+    "target_task_path": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+    "target_task_sha256": "5f8903279cfcb759c88216ad997158ad657d5bb5720198d6307c0b0c9374cb4c",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/plan-canonico/modular/package-gate-instances/GAP-PKG-001.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-gate-control.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-gate-control.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-integration.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-control.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-control.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-correction-guard.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-correction-guard.test.mjs",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/docs/package-gate-control.mjs",
+    "node --check scripts/docs/package-readiness-scanner.mjs",
+    "node --check scripts/docs/implementation-control.mjs",
+    "node --check scripts/docs/implementation-correction-guard.mjs",
+    "node --test scripts/docs/package-gate-control.test.mjs",
+    "node --test scripts/docs/package-readiness-scanner.test.mjs",
+    "node --test scripts/docs/package-readiness-integration.test.mjs",
+    "node --test scripts/docs/implementation-control.test.mjs",
+    "node --test scripts/docs/implementation-correction-guard.test.mjs",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:gate:check",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:package:execution:check",
+    "npm run docs:implementation:check",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "La corrección materializa y hace cumplir el ambiente de despliegue ya aprobado por DELIV-PKG-019 para GAP-PKG-001; no crea ni modifica TREQ ni el registro 04A.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-05T14:13:38.719-05:00",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO DELIV-PKG-019::CORR-001: autoriza exclusivamente materializar y hacer cumplir el ambiente de despliegue ya definido para GAP-PKG-001, exigir coherencia E5 -> package-gate -> SHELL-CI-020, permitir únicamente STAGING rcrxixmqhrndcervbllp bajo SUPA-TRANS-015 y mantener PRODUCTION no autorizada, sin cambios funcionales, TREQ, 04A, migraciones, datos, secretos ni mutaciones Supabase remotas.",
+    "source_contract_sha256": "5f8903279cfcb759c88216ad997158ad657d5bb5720198d6307c0b0c9374cb4c"
+  },
+  "evidence": [
+    "IMPLEMENTED GAP-PKG-001 deployment_environment from canonical DELIV-PKG-019: TP-DB-001 / ENV-SUPABASE-LOCAL-CI-STAGING.",
+    "IMPLEMENTED exact STAGING target rcrxixmqhrndcervbllp owned by SUPA-TRANS-015; PRODUCTION remains unauthorized for CI020.",
+    "IMPLEMENTED package-gate dossier requirement for explicit deployment_environment and fail-closed production contradiction detection.",
+    "IMPLEMENTED DELIV-PKG-019 rollout/environment projection for all GAP-PKG roots and scanner mismatch blocking.",
+    "IMPLEMENTED Supabase STAGING binding validation against package-readiness foundation identity.",
+    "IMPLEMENTED SHELL-CI-020 target_environments requirement before AUTHORIZED lifecycle states.",
+    "IMPLEMENTED implementation-start guard equality between CI020 target_environments and approved package-gate deployment targets.",
+    "VERIFIED package-gate, package-readiness, integration, implementation-control and correction-guard regression tests PASS.",
+    "VERIFIED canonical package readiness, package execution, implementation, plan, TREQ and repository test gates PASS.",
+    "VERIFIED zero TREQ changes, zero 04A changes, zero migration changes and zero Supabase remote mutations.",
+    "REVIEWED Supabase breaking-change changelog on 2026-09-05; no current breaking change alters this documentary environment-binding correction."
+  ],
+  "opened_at": "2026-09-05T18:52:50.049Z"
+}

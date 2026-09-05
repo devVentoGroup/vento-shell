@@ -32,6 +32,13 @@ function completeRecord(overrides = {}) {
     status: 'READY_FOR_APPROVAL',
     physical_identity: { targets: [{ repository: 'vento-pass', path: 'src/profile.ts', symbol_or_surface: 'Profile', operation: 'create' }] },
     implementation_units: [{ unit_id: 'PASS-PROFILE-001', repository: 'vento-pass', change: 'Materializar perfil del cliente.' }],
+    deployment_environment: {
+      canonical_task_id: 'DELIV-PKG-019',
+      rollout_profile: 'TP-UI-001',
+      environment_profile: 'ENV-WEB-CI-STAGING',
+      targets: [{ environment_role: 'STAGING', target_type: 'WEB_ENVIRONMENT', target_id: 'staging', owner: 'VENTO_OWNER' }],
+      production_authorized: false,
+    },
     evidence_plan: {
       tests: [{ command: 'npm test', expected_result: 'PASS' }],
       observability: [{ signal: 'profile.created', expected_result: 'Evento emitido.' }],
@@ -88,4 +95,27 @@ test('una aprobación no puede saltarse tareas documentales pendientes', () => {
   const assessment = assessPackageGateRecord(approved, { policy, taskPrerequisites: { remaining: 1 } });
   assert.equal(assessment.valid, false);
   assert.match(assessment.errors.join(' '), /tareas prerrequisito pendientes/u);
+});
+
+test('deployment_environment es parte obligatoria del dossier antes de aprobación', () => {
+  const incomplete = completeRecord({ deployment_environment: null });
+  const assessment = assessPackageGateRecord(incomplete, { policy, taskPrerequisites: { remaining: 0 } });
+  assert.equal(assessment.status, 'MATURATION_DRAFT');
+  assert.equal(assessment.sections.deployment_environment, false);
+  assert.equal(assessment.dossier_complete, false);
+});
+
+test('production_authorized=false rechaza un destino PRODUCTION', () => {
+  const invalid = completeRecord({
+    deployment_environment: {
+      canonical_task_id: 'DELIV-PKG-019',
+      rollout_profile: 'TP-DB-001',
+      environment_profile: 'ENV-SUPABASE-LOCAL-CI-STAGING',
+      targets: [{ environment_role: 'PRODUCTION', target_type: 'SUPABASE_PROJECT_REF', target_id: 'prod-ref', owner: 'SUPA-TRANS-015' }],
+      production_authorized: false,
+    },
+  });
+  const assessment = assessPackageGateRecord(invalid, { policy, taskPrerequisites: { remaining: 0 } });
+  assert.equal(assessment.valid, false);
+  assert.match(assessment.errors.join(' '), /production_authorized=false/u);
 });

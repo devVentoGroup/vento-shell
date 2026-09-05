@@ -303,7 +303,316 @@
         "from": 1,
         "to": 19
       }
-    ]
+    ],
+    "supabase_pre_e5_foundation": {
+      "owner_task": "SUPA-TRANS-015",
+      "source_tasks": [
+        "SUPA-ARC-024",
+        "SUPA-TRANS-013",
+        "SUPA-TRANS-015"
+      ],
+      "applies_to_target_path_prefixes": [
+        "supabase/functions/",
+        "supabase/migrations/"
+      ],
+      "applies_to_exact_target_paths": [
+        "supabase/config.toml"
+      ],
+      "excluded_target_path_prefixes": [
+        "supabase/tests/"
+      ],
+      "required_verified_instances": [
+        "AUTH-DB-015::GLOBAL",
+        "AUTH-DB-027::GLOBAL",
+        "AUTH-DB-028::GLOBAL",
+        "AUTH-DB-029::GLOBAL",
+        "AUTH-DB-001::GLOBAL",
+        "AUTH-DB-002::GLOBAL",
+        "AUTH-DB-003::GLOBAL",
+        "AUTH-DB-004::GLOBAL",
+        "AUTH-DB-005::GLOBAL"
+      ],
+      "ordered_foundation_gates": [
+        {
+          "foundation_id": "MRP015-000",
+          "gate_id": "TOOLCHAIN_READY",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-000",
+            "gate_id": "TOOLCHAIN_READY",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-04T03:54:21.779Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "SUPABASE_LOCK_PROVENANCE",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "a6ca77103e1a18a2638611793df47f2f9ffae8c15deb93131ef529217a92bff1",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_CLI_VERSION",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "c84a29ed303c437cdf00af319b36c5f3cf84a97332b842842c66d8842b2127a0",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_CLI_HELP",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "796cc863a01c16ac0dfbe150b63886b0f44538c7dc6b6f56ae86a1ed2e097f09",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_FUNCTIONS_HELP",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "9c6489d83315dc98c966b8f63fe6508bf8d2859ddf6b2f50cdde6c41514b2252",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_DB_HELP",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "5c0bd3df148416e72685bf91ac775df01013880612c3e7f4a9e9fab9434bffe6",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_DB_LINT_HELP",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "9abc25beae34cfd318eb03a6974251d99ed5ee5a0a012fce9756a6f3517a7a62",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "DOCKER_SERVER",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "aaa3c9962de64c23cb8de5e57eb229d404b0c35bf1efa3565b1f1e77933b25ef",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_DB_HARNESS_TEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "373338662510247262f4f1d0385d6fb0d966034ecddfcf36db1558ee9d582a61",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_DRIFT_TEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "11cd676350ba58f4aeac4b409e388b5df16d00b4aadc34ec989fa33e957661d9",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "SUPABASE_CLEAN_REPLAY",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "d6531265af5c785008be4bf460e774694c8316ac16132bcbaa10b6d90d080416",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "CHANGELOG_REVIEW_ATTESTATION",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "44fbf126fc1ed67cf19a1385b86165c890d9de44d02a1d7c119ec685a94c8dd1",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "TOOLCHAIN_FREEZE_ATTESTATION",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "a914f41fb09513d7bae53f4c7d9012200a23ec5446bec50c832993303b6bfef5",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "c39f885f5d485e112418fe1ddb9b09716204f5160f30583da0014e7be952f593"
+          }
+        },
+        {
+          "foundation_id": "MRP015-010",
+          "gate_id": "ENVIRONMENT_READY",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-010",
+            "gate_id": "ENVIRONMENT_READY",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-04T18:17:43.609Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "ENVIRONMENT_BINDINGS",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "f128fd6c0653ce09ea0f2469f87b4cc63993307fa13e626599a6a65446d7e5f6",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "STAGING_REMOTE_DRIFT",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "24318bc124ad5bd6feb7a5a534705adca85a44a682262ae19c420273c8b822fa",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "PRODUCTION_REMOTE_DRIFT",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "cad9497b2bf2b0bbd5586536c7a8e614b35fe84b243e2a66089b41cb3d828b43",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "c4b09fb8b59f72d29e6d85ec3cc4755735a365b3f533f33dd55a10ede23d77e5"
+          }
+        },
+        {
+          "foundation_id": "MRP015-020",
+          "gate_id": "HISTORY_PASS",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-020",
+            "gate_id": "HISTORY_PASS",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-05T17:04:05.812Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "MIGRATION_MANIFEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "e9eeb962ffe310bf82c79108768be3bcbeab2297ac109809f51cec9fc3a86e76",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "STAGING_HISTORY_DRIFT",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "75544071a62c7e9d338cbe262437a49ab8fd661018d0069b54c3105702f81f0f",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "PRODUCTION_HISTORY_DRIFT",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "d93438f96641a6c2e7e6b44d03a18a5d1de4dda779d027bd0408fb4b8e32936e",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "7bf8501ca11d39397a857a4d242acb97437973877b03ff5233a5bee7051f8d23"
+          }
+        },
+        {
+          "foundation_id": "MRP015-030",
+          "gate_id": "CLEAN_REPLAY_PASS",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-030",
+            "gate_id": "CLEAN_REPLAY_PASS",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-05T17:59:58.157Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "CLEAN_REPLAY",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "d6531265af5c785008be4bf460e774694c8316ac16132bcbaa10b6d90d080416",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "df4d9cb849ee82e28f29fbe46bf44cb2777136610e99272c8b1728b73b8866b7"
+          }
+        },
+        {
+          "foundation_id": "MRP015-040",
+          "gate_id": "RESOURCE_MANIFEST_PASS",
+          "owner_task": "SUPA-TRANS-015",
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-040",
+            "gate_id": "RESOURCE_MANIFEST_PASS",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-05T18:12:39.986Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "MIGRATION_MANIFEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "e9eeb962ffe310bf82c79108768be3bcbeab2297ac109809f51cec9fc3a86e76",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "EXPECTED_RESOURCE_MANIFEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "5b5ab558bdcae8ff3308552881275ed62c85a2d61cbe29e7bc89b15a40cd1b7f",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "6c6cb0306f13d822e4e979f1602bd76fb74ee6615ac851cc26a05622884e99a8"
+          }
+        }
+      ],
+      "remote_environment_identity": {
+        "do_not_infer_from_project_name": true,
+        "required_environment_roles": [
+          "STAGING",
+          "PRODUCTION"
+        ],
+        "bindings": {
+          "STAGING": {
+            "classification": "STAGING",
+            "project_ref": "rcrxixmqhrndcervbllp",
+            "owner": "SUPA-TRANS-015"
+          },
+          "PRODUCTION": {
+            "classification": "PRODUCTION",
+            "project_ref": "clzdpinthhtknkmefsxx",
+            "owner": "SUPA-TRANS-015"
+          }
+        }
+      },
+      "in_package_candidate_gate": {
+        "foundation_id": "MRP015-050",
+        "gate_id": "CANDIDATE_READY",
+        "owner_task": "SUPA-TRANS-015",
+        "phase": "AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY",
+        "evidence_binding": {
+          "storage": "SHELL_CI_020_INSTANCE_EVIDENCE",
+          "evidence_type": "MRP015_050_CANDIDATE_READY",
+          "producer": "package-readiness-scanner::recordInPackageCandidateEvidence",
+          "package_scoped": true,
+          "instance_task": "SHELL-CI-020",
+          "candidate_head_sha_required": true,
+          "authorized_scope_sha256_required": true,
+          "candidate_scope_sha256_required": true,
+          "cross_package_reuse_forbidden": true,
+          "stale_after_candidate_change": true,
+          "secret_values_forbidden": true
+        }
+      },
+      "evidence_contract": {
+        "schema_version": 1,
+        "producer": "docs:package:foundation:record",
+        "status_required": "PASS",
+        "integrity": "SHA256_CANONICAL_JSON_V1",
+        "fail_closed": true,
+        "secret_values_forbidden": true
+      }
+    }
   },
   "persistent_package_statuses": [
     "DISCOVERED",
