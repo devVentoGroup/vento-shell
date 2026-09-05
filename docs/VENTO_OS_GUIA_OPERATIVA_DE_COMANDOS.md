@@ -1479,3 +1479,30 @@ Al terminar la inspección o la mutación autorizada, limpiar el token de la ses
 Remove-Item Env:SUPABASE_ACCESS_TOKEN -ErrorAction SilentlyContinue
 Set-Clipboard -Value ''
 ```
+
+<!-- CURRENT-EXECUTABLE-WORK-CORR-010:BEGIN -->
+## Secuencia física estricta por GAP-PKG
+
+Una vez autorizado el handoff de `SHELL-CI-020::<package_id>`, el package conserva el turno hasta cerrar exactamente esta secuencia:
+
+```text
+SHELL-CI-020::<package_id>
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+→ SHELL-CI-023::<package_id>
+→ SHELL-CI-024::<package_id>
+→ CLOSED
+```
+
+`package_execution` proyecta `CONTINUE_PHYSICAL_LIFECYCLE` sobre una sola instancia exacta. Una instancia futura no puede existir antes de que su predecesora esté `VERIFIED`. Al verificar una etapa, `docs:plan:build` puede materializar únicamente la siguiente como `PENDING_AUTHORIZATION`; nunca la autoriza automáticamente.
+
+El ledger de la instancia actual puede evolucionar como parte del lifecycle sin tener que declararse como cambio funcional. El ledger de otra instancia continúa fuera de alcance, salvo el único borrador `PENDING_AUTHORIZATION` derivado de la etapa siguiente.
+
+Para un GAP-PKG que muta Supabase, `MRP015-000` a `MRP015-040` siguen siendo gates globales previos. `MRP015-050 / CANDIDATE_READY` no es global: pertenece al `SHELL-CI-020::<package_id>` actual y debe registrarse después de materializar el candidato y antes de cualquier despliegue remoto:
+
+```powershell
+node scripts/docs/package-readiness-scanner.mjs --record-candidate GAP-PKG-001
+```
+
+La evidencia se guarda dentro de `evidence` del ledger `SHELL-CI-020` y queda ligada a `package_id`, `instance_id`, HEAD, `authorized_changes` y hashes de las superficies Supabase materializadas. Si cualquiera de esos elementos cambia, la evidencia queda stale y debe regenerarse antes de cerrar CI020. Nunca contiene secretos ni autoriza producción.
+<!-- CURRENT-EXECUTABLE-WORK-CORR-010:END -->
