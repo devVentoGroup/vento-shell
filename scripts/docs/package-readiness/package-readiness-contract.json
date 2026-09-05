@@ -538,7 +538,32 @@
           "foundation_id": "MRP015-040",
           "gate_id": "RESOURCE_MANIFEST_PASS",
           "owner_task": "SUPA-TRANS-015",
-          "evidence_ref": null
+          "evidence_ref": {
+            "schema_version": 1,
+            "foundation_id": "MRP015-040",
+            "gate_id": "RESOURCE_MANIFEST_PASS",
+            "owner_task": "SUPA-TRANS-015",
+            "producer": "docs:package:foundation:record",
+            "recorded_at": "2026-09-05T18:12:39.986Z",
+            "status": "PASS",
+            "checks": [
+              {
+                "id": "MIGRATION_MANIFEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "e9eeb962ffe310bf82c79108768be3bcbeab2297ac109809f51cec9fc3a86e76",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              },
+              {
+                "id": "EXPECTED_RESOURCE_MANIFEST",
+                "status": "PASS",
+                "exit_code": 0,
+                "stdout_sha256": "5b5ab558bdcae8ff3308552881275ed62c85a2d61cbe29e7bc89b15a40cd1b7f",
+                "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+              }
+            ],
+            "payload_sha256": "6c6cb0306f13d822e4e979f1602bd76fb74ee6615ac851cc26a05622884e99a8"
+          }
         }
       ],
       "remote_environment_identity": {
