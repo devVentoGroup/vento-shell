@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1596** |
 | Tareas `AUTH` | **319** |
-| Aprobadas | **1116** |
+| Aprobadas | **1117** |
 | En propuesta | **0** |
-| No iniciadas | **480** |
+| No iniciadas | **479** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **69.92% (1116/1596)** |
+| Porcentaje de completamiento | **69.99% (1117/1596)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `VISO-CORE-005` — Implementar validación de conflictos y auditoría | ✅ APROBADA |
-| Tarea actual | `VISO-CORE-006` — Aprobar núcleo antes de ampliar alcance | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-APP-001` — Inventariar la experiencia actual del hub | ⬜ NO INICIADA |
+| Última aprobada | `VISO-CORE-006` — Aprobar núcleo antes de ampliar alcance | ✅ APROBADA |
+| Tarea actual | `SHELL-APP-001` — Inventariar la experiencia actual del hub | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-APP-002` — Definir aplicaciones visibles por actor | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -667,7 +667,7 @@
 | ✅ APROBADA | `VISO-CORE-003` | Implementar dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ✅ APROBADA | `VISO-CORE-004` | Implementar autorización real del núcleo | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ✅ APROBADA | `VISO-CORE-005` | Implementar validación de conflictos y auditoría | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-006` | Aprobar núcleo antes de ampliar alcance | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ✅ APROBADA | `VISO-CORE-006` | Aprobar núcleo antes de ampliar alcance | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-UX-001` | Reorganizar navegación por dominios administrativos | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `VISO-UX-002` | Crear sección Personal | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `VISO-UX-003` | Crear sección Programación | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |

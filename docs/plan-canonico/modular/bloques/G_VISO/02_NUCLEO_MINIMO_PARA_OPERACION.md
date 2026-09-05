@@ -6929,7 +6929,1085 @@ Esta tarea no:
 `VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance`
 
 
-### [ ] VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance
+### ✅ VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance
+
+**Estado:** APROBADA
+**Tarea anterior:** VISO-CORE-005 — Implementar validación de conflictos y auditoría
+**Tarea siguiente:** SHELL-APP-001 — Inventariar la experiencia actual del hub
+**Tipo de tarea:** cierre documental `DEFINE_ONCE`; aprueba y congela el contrato del núcleo mínimo de VISO antes de ampliar la continuidad documental, consolida los handoffs de `VISO-CORE-001` a `VISO-CORE-005`, fija las condiciones que deberán demostrar las materializaciones físicas aplicables y evita confundir aprobación documental con implementación, certificación o autorización física
+**Bloque:** `G_VISO — NÚCLEO MÍNIMO PARA OPERACIÓN`
+**Repositorio propietario:** `vento-group-sas/vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md`
+**Estado físico resultante:** contrato de cierre del núcleo mínimo aprobado una sola vez; sin instancia física propia y sin declarar implementada, certificada ni desplegada ninguna unidad de `VISO-CORE-003`, `VISO-CORE-004` o `VISO-CORE-005`
+**Cambios físicos autorizados:** ninguno; `VISO-CORE-006` es `DEFINE_ONCE` con `NO_PHYSICAL_INSTANCE` y únicamente define la decisión documental de cierre, los invariantes de aprobación y el handoff de continuidad
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Aprobar el cierre documental del núcleo mínimo de VISO antes de ampliar la continuidad canónica hacia el siguiente bloque, consolidando en una sola decisión las fronteras, responsabilidades, contratos y condiciones definidos por `VISO-CORE-001` a `VISO-CORE-005`.
+
+La tarea no implementa el núcleo.
+
+No ejecuta una instancia física.
+
+No sustituye las pruebas, evidencias, gates ni decisiones que corresponden a cada materialización posterior.
+
+La regla raíz queda:
+
+```text
+CORTE MÍNIMO DEFINIDO
++
+VÍNCULO EMPRESARIAL DEFINIDO
++
+DEPENDENCIAS ADMINISTRATIVAS CONTRATADAS
++
+AUTORIZACIÓN REAL CONTRATADA
++
+CONFLICTOS, LÍMITES Y AUDITORÍA CONTRATADOS
+→
+CONTRATO DEL NÚCLEO MÍNIMO CERRADO
+→
+AMPLIACIÓN DOCUMENTAL PERMITIDA
+```
+
+Y nunca:
+
+```text
+TAREA DOCUMENTAL APROBADA
+→
+IMPLEMENTACIÓN FÍSICA PRESUMIDA
+```
+
+---
+
+#### 2. Naturaleza del cierre
+
+`VISO-CORE-006` es una tarea de cierre contractual.
+
+Su aprobación significa que el núcleo mínimo ya tiene:
+
+- frontera funcional definida;
+- responsabilidades asignadas;
+- owners canónicos preservados;
+- dependencias identificadas;
+- autorización separada de identidad y contexto;
+- conflictos y límites diferenciados de fallos técnicos;
+- auditoría diferenciada de decisión de autorización;
+- handoffs suficientes para materializaciones posteriores;
+- regla de cierre antes de ampliar la documentación.
+
+No significa que cada consumidor, package o unidad física ya haya sido implementado.
+
+---
+
+#### 3. Topología
+
+La tarea conserva:
+
+```text
+DEFINE_ONCE
+NO_PHYSICAL_INSTANCE
+```
+
+No crea:
+
+- instancia global;
+- instancia por package;
+- instancia por `implementation_unit_id`;
+- certificación física agregada.
+
+La aprobación documental ocurre una sola vez.
+
+---
+
+#### 4. Semántica de aprobación
+
+Debe conservarse la separación:
+
+```text
+VISO-CORE-006 DOCUMENTAL APROBADA
+=
+CONTRATO DE CIERRE DEL NÚCLEO APROBADO
+```
+
+y:
+
+```text
+VISO-CORE-006 DOCUMENTAL APROBADA
+≠
+VISO-CORE-003::implementation_unit_id IMPLEMENTADA
+≠
+VISO-CORE-004::implementation_unit_id IMPLEMENTADA
+≠
+VISO-CORE-005::implementation_unit_id IMPLEMENTADA
+≠
+PACKAGE CERRADO
+≠
+DESPLIEGUE REAL
+```
+
+Esta distinción es obligatoria para no mezclar continuidad documental con materialización.
+
+---
+
+#### 5. Entradas obligatorias
+
+El cierre documental consume como entradas:
+
+| Fuente | Responsabilidad recibida |
+| --- | --- |
+| `VISO-CORE-001` | corte funcional mínimo y frontera de VISO |
+| `VISO-CORE-002` | vínculo del corte con capacidades empresariales |
+| `VISO-CORE-003` | contrato de dependencias administrativas mínimas por unidad |
+| `VISO-CORE-004` | contrato de autorización real del núcleo por unidad |
+| `VISO-CORE-005` | contrato de conflictos, límites, concurrencia, corrección y auditoría por unidad |
+
+No reabre estas decisiones salvo contradicción canónica verificable.
+
+---
+
+#### 6. Regla de no reapertura
+
+La aprobación final no vuelve a diseñar:
+
+- el corte mínimo;
+- la matriz de capacidades;
+- las fuentes de identidad;
+- el modelo territorial;
+- los catálogos de roles;
+- el catálogo de permisos;
+- la semántica de contexto;
+- el evaluador de autorización;
+- la taxonomía de conflictos;
+- la auditoría de cambios;
+- la precedencia de errores;
+- la topología física de `VISO-CORE-003..005`.
+
+`VISO-CORE-006` verifica consistencia contractual y congela la frontera.
+
+---
+
+#### 7. Núcleo mínimo aprobado como contrato
+
+El núcleo mínimo conserva como responsabilidades administrativas transversales:
+
+- trabajador y relación laboral relevante;
+- organización;
+- sede;
+- área;
+- rol base;
+- rol operativo;
+- matrices de permisos base;
+- matrices de permisos operativos;
+- elegibilidad de rol por sede;
+- elegibilidad de rol por área;
+- asignaciones de sede;
+- asignaciones de área;
+- perfil operativo;
+- contexto efectivo;
+- vista previa administrativa;
+- procedencia de autoridad;
+- conflictos de configuración;
+- límites administrativos;
+- concurrencia aplicable;
+- corrección;
+- evidencia auditable de cambios;
+- lectura autorizada de auditoría cuando corresponda.
+
+La inclusión de una responsabilidad no convierte VISO en propietario del proceso operativo que la consume.
+
+---
+
+#### 8. Frontera del núcleo
+
+El núcleo administra hechos administrativos transversales.
+
+No absorbe la ejecución propietaria de otras aplicaciones.
+
+Permanece fuera del núcleo mínimo:
+
+- productos y menús;
+- CMS y contenido;
+- operación comercial propietaria;
+- inventario propietario;
+- compras;
+- producción;
+- POS;
+- contabilidad propietaria;
+- ejecución de asistencia;
+- reclutamiento;
+- expediente integral de talento;
+- experiencia visual final de otros módulos.
+
+Una pantalla AS-IS no amplía esta frontera.
+
+---
+
+#### 9. Autoridad de las fuentes
+
+Una capacidad administrativa solo puede considerarse parte funcional del núcleo cuando conserva su fuente o contrato canónico.
+
+VISO no crea copias competidoras de:
+
+- catálogos;
+- permisos;
+- roles;
+- territorio;
+- contexto;
+- decisiones de autorización;
+- auditoría;
+- reglas de negocio propietarias de otra aplicación.
+
+Una proyección administrativa no se convierte en fuente de verdad por ser editable desde VISO.
+
+---
+
+#### 10. Identidad y trabajo
+
+El núcleo conserva identidad laboral estable y la relación laboral relevante para:
+
+- asignaciones;
+- roles;
+- perfiles;
+- permisos;
+- contexto;
+- auditoría.
+
+Nombre, alias, correo, rol, sede o dispositivo no sustituyen la identidad raíz.
+
+Una relación laboral terminada no conserva autoridad por inercia.
+
+---
+
+#### 11. Organización, sede y área
+
+Organización, sede y área permanecen conceptos distintos.
+
+No se permite inferir que:
+
+```text
+ORGANIZACIÓN = SEDE
+SEDE = ÁREA
+ÁREA = PERMISO
+NOMBRE DE SEDE = ALCANCE
+```
+
+La administración del núcleo debe preservar las relaciones y restricciones aprobadas sin fabricar territorio.
+
+---
+
+#### 12. Roles
+
+Rol base y rol operativo permanecen separados.
+
+También permanecen separados de:
+
+- perfil;
+- sede;
+- área;
+- turno;
+- permiso;
+- decisión final.
+
+Un nombre de rol nunca constituye `ALLOW`.
+
+---
+
+#### 13. Permisos
+
+Las matrices base y operacionales conservan sus contratos propios.
+
+No se crean permisos por conveniencia de VISO.
+
+No se sustituyen permisos de acción por un permiso genérico de acceso al módulo.
+
+Cada materialización futura deberá utilizar la capacidad exacta aplicable o demostrar documentalmente que un permiso común no amplía privilegio.
+
+---
+
+#### 14. Asignaciones y elegibilidad
+
+Elegibilidad y asignación permanecen conceptos distintos.
+
+Debe conservarse:
+
+```text
+ROL ELEGIBLE EN SEDE
+≠
+TRABAJADOR ASIGNADO A SEDE
+```
+
+y:
+
+```text
+ROL ELEGIBLE EN ÁREA
+≠
+TRABAJADOR ASIGNADO A ÁREA
+```
+
+Una condición de elegibilidad no concede autoridad efectiva.
+
+---
+
+#### 15. Perfil operativo
+
+El perfil operativo continúa siendo configuración administrativa.
+
+No equivale a:
+
+- rol efectivo;
+- turno vigente;
+- permiso;
+- contexto;
+- decisión de autorización.
+
+El perfil puede orientar planificación sin convertirse en autoridad.
+
+---
+
+#### 16. Contexto efectivo
+
+El núcleo conserva la capacidad de consumir contexto suficiente para la capacidad protegida.
+
+Según el contrato aplicable puede incluir:
+
+- principal;
+- actor efectivo;
+- rol base;
+- rol operativo;
+- sede;
+- área;
+- turno;
+- check-in;
+- dispositivo;
+- permiso;
+- recurso.
+
+Solo se resuelven dimensiones requeridas por el contrato.
+
+---
+
+#### 17. Administración versus operación
+
+El cierre preserva dos carriles conceptuales:
+
+```text
+ADMINISTRACIÓN
+≠
+OPERACIÓN
+```
+
+Una capacidad administrativa no fabrica turno o check-in si no los requiere.
+
+Una capacidad operacional no puede omitirlos cuando son obligatorios.
+
+---
+
+#### 18. Vista previa
+
+La vista previa trabajador × sede × área × turno permanece una proyección administrativa.
+
+Permite inspeccionar una propuesta.
+
+No persiste autoridad.
+
+No sustituye autorización real.
+
+---
+
+#### 19. Simulación
+
+La simulación permanece fuera del piso mínimo de autoridad real.
+
+Puede existir como capacidad diagnóstica o administrativa avanzada.
+
+Nunca se mezcla con:
+
+- contexto efectivo;
+- decisión real;
+- persistencia de autoridad;
+- evidencia de una operación real.
+
+---
+
+#### 20. Procedencia
+
+El núcleo debe poder explicar de dónde procede una decisión de acceso.
+
+La procedencia conserva las fuentes canónicas de concesión y denegación.
+
+No crea un segundo evaluador.
+
+---
+
+#### 21. Autorización real
+
+La autoridad real permanece propiedad contractual de `VISO-CORE-004`.
+
+El cierre exige conservar la separación:
+
+```text
+SESIÓN
+≠
+ACTOR
+≠
+ROL
+≠
+PERMISO
+≠
+CONTEXTO
+≠
+AUTORIZACIÓN
+```
+
+Ninguna capa visual sustituye autorización server-side.
+
+---
+
+#### 22. Conflictos
+
+Los conflictos administrativos permanecen propiedad contractual de `VISO-CORE-005`.
+
+Debe conservarse:
+
+```text
+CONFLICTO PROSPECTIVO
+≠
+INCONSISTENCIA ESTRUCTURAL DE RUNTIME
+≠
+DENY COHERENTE
+≠
+FALLO TÉCNICO
+```
+
+Una condición no se reclasifica para reutilizar un mensaje o flujo de error.
+
+---
+
+#### 23. Límites
+
+Los límites del núcleo provienen de contratos de:
+
+- territorio;
+- cardinalidad;
+- lifecycle;
+- modalidad;
+- sensibilidad;
+- segregación;
+- versión;
+- recurso;
+- vigencia;
+- concurrencia.
+
+No son cuotas inventadas por UI.
+
+---
+
+#### 24. Concurrencia
+
+La mutación de configuración crítica debe impedir pérdida silenciosa de una escritura más reciente.
+
+`VISO-CORE-006` no impone un mecanismo técnico universal.
+
+La estrategia corresponde al owner y a la unidad aplicable.
+
+---
+
+#### 25. Corrección y rollback
+
+Una corrección administrativa crea una nueva mutación y nueva evidencia.
+
+Un rollback:
+
+- conserva referencia al cambio original;
+- conserva motivo;
+- no borra historia;
+- no restaura una fuente insegura por inferencia.
+
+---
+
+#### 26. Auditoría
+
+La auditoría describe lo ocurrido.
+
+No sustituye el estado vigente.
+
+No se sustituye con:
+
+- logs de consola;
+- Git;
+- métricas;
+- una decisión de autorización;
+- una copia editable en VISO.
+
+Cuando el contrato exige evidencia append-only, la historia se preserva.
+
+---
+
+#### 27. Decisión de autorización versus cambio
+
+Debe mantenerse:
+
+```text
+POR QUÉ SE AUTORIZÓ O DENEGÓ
+≠
+QUÉ CAMBIÓ REALMENTE
+```
+
+La evidencia de decisión y la evidencia de cambio pueden correlacionarse.
+
+No se colapsan.
+
+---
+
+#### 28. Readers y writers
+
+Una materialización futura del núcleo debe distinguir:
+
+- superficies de lectura;
+- writers;
+- jobs;
+- RPC;
+- Server Actions;
+- Route Handlers;
+- procesos asíncronos;
+- compatibilidad legacy.
+
+No basta inventariar páginas.
+
+---
+
+#### 29. Writer adoption
+
+La existencia de una fundación de auditoría no demuestra adopción por todos los writers.
+
+Cada unidad aplicable debe decidir cada writer como:
+
+```text
+ADOPTADO_CON_EVIDENCIA_CANÓNICA
+COMPATIBILIDAD_CONTROLADA
+BLOQUEADO
+FUERA_DEL_ALCANCE_DE_LA_UNIDAD
+```
+
+No se presume adopción.
+
+---
+
+#### 30. Cero bypass
+
+Ningún writer aplicable puede evitar, cuando correspondan:
+
+- autorización;
+- conflictos;
+- límites;
+- concurrencia;
+- evidencia;
+- alcance territorial.
+
+Credenciales privilegiadas no sustituyen estas reglas.
+
+---
+
+#### 31. Credenciales y capas técnicas
+
+`service_role`, funciones `SECURITY DEFINER` y RLS no constituyen autorización de negocio por sí mismas.
+
+Tampoco sustituyen:
+
+- actor;
+- contexto;
+- conflicto;
+- concurrencia;
+- auditoría.
+
+Cada capa conserva su responsabilidad.
+
+---
+
+#### 32. Delta mensual de programación
+
+El delta mensual de programación mantiene su carril contractual separado.
+
+`VISO-CORE-006` no:
+
+- activa el delta;
+- aprueba sus reglas;
+- publica horarios;
+- cambia `employee_shifts`;
+- redefine horizonte, límites o bloques;
+- absorbe su UX.
+
+La dependencia solo se vuelve condición de cierre para la materialización concreta cuando ese delta forme parte del alcance del núcleo que se está evaluando.
+
+---
+
+#### 33. Dependencia condicionada
+
+Cuando una materialización de `VISO-CORE-003` incluya programación laboral afectada por el delta:
+
+```text
+VISO-SCH-008
+→
+DEPENDENCIA OBLIGATORIA DE ESA MATERIALIZACIÓN
+```
+
+Si el delta forma parte del núcleo concreto evaluado:
+
+```text
+DELTA ABIERTO
+→
+NO DECLARAR CIERRE FÍSICO DE ESE ALCANCE
+```
+
+La aprobación documental de `VISO-CORE-006` únicamente congela esta regla.
+
+No declara satisfecha la dependencia.
+
+---
+
+#### 34. Package condicionado
+
+Cuando un package forme parte del alcance concreto del núcleo evaluado, su cierre aplicable debe existir antes de declarar completa esa materialización.
+
+Debe conservarse:
+
+```text
+CONTRATO DOCUMENTAL DE VISO-CORE-006
+≠
+CIERRE DEL PACKAGE
+```
+
+Esta tarea no crea, selecciona, autoriza, ejecuta ni cierra packages.
+
+---
+
+#### 35. Evidencia física futura
+
+Cuando una unidad materializada se presente como conforme con el núcleo, debe aportar evidencia suficiente de los contratos aplicables de `VISO-CORE-003`, `VISO-CORE-004` y `VISO-CORE-005`.
+
+La evidencia no puede reducirse a una declaración genérica.
+
+Debe ser trazable al alcance real evaluado.
+
+---
+
+#### 36. Handoff de dependencias
+
+Para una materialización aplicable, el handoff de `VISO-CORE-003` debe permitir demostrar, según corresponda:
+
+- dependencias administrativas;
+- bindings;
+- territorio;
+- asignaciones;
+- catálogos;
+- matrices;
+- contratos;
+- versiones;
+- dependencias condicionadas.
+
+Una dependencia ausente no se fabrica.
+
+---
+
+#### 37. Handoff de autorización
+
+Para una materialización aplicable, el handoff de `VISO-CORE-004` debe permitir demostrar, según corresponda:
+
+- operación;
+- permiso;
+- recurso;
+- entrypoint;
+- contexto;
+- decisión;
+- frescura;
+- territorio;
+- bypass;
+- legado restante.
+
+No se acepta “autorizado” como evidencia suficiente.
+
+---
+
+#### 38. Handoff de conflictos y auditoría
+
+Para una materialización aplicable, el handoff de `VISO-CORE-005` debe permitir demostrar, según corresponda:
+
+- conflictos;
+- severidades;
+- límites;
+- concurrencia;
+- writers;
+- auditoría;
+- readers;
+- corrección;
+- rollback;
+- pruebas;
+- versiones;
+- fingerprints;
+- bloqueadores;
+- cero bypass.
+
+---
+
+#### 39. Regla de evidencia proporcional
+
+No toda unidad debe demostrar todas las dimensiones si su contrato no las usa.
+
+Pero ninguna dimensión obligatoria puede omitirse por conveniencia.
+
+Debe conservarse:
+
+```text
+NO APLICA POR CONTRATO
+≠
+NO SE PROBÓ
+```
+
+---
+
+#### 40. Deuda no bloqueante
+
+Una deuda solo puede permanecer abierta cuando:
+
+- no rompe el corte mínimo;
+- no concede autoridad indebida;
+- no introduce bypass;
+- no destruye evidencia;
+- tiene owner;
+- tiene condición exacta de salida.
+
+Una deuda material sin owner bloquea la declaración de conformidad de la unidad afectada.
+
+---
+
+#### 41. Bloqueadores físicos preservados
+
+Sin ejecutar ni resolverlos desde esta tarea documental, siguen siendo bloqueadores de una materialización cuando apliquen:
+
+- dependencia obligatoria ausente;
+- autorización no demostrada;
+- permiso exacto ausente;
+- conflicto material sin resolución;
+- writer capaz de bypass;
+- concurrencia crítica no controlada;
+- audit trail obligatorio ausente;
+- proyección insegura;
+- rollback destructivo;
+- evidencia insuficiente;
+- package aplicable sin cierre.
+
+Esta lista define condiciones.
+
+No ejecuta su resolución.
+
+---
+
+#### 42. Resultado documental del minibloque
+
+Con `VISO-CORE-006` aprobado documentalmente, el minibloque conserva:
+
+| Tarea | Resultado contractual |
+| --- | --- |
+| `VISO-CORE-001` | corte mínimo definido |
+| `VISO-CORE-002` | vínculo empresarial definido |
+| `VISO-CORE-003` | materialización de dependencias definida por unidad |
+| `VISO-CORE-004` | autorización real definida por unidad |
+| `VISO-CORE-005` | conflictos, límites y auditoría definidos por unidad |
+| `VISO-CORE-006` | cierre documental, invariantes de aprobación y handoff definidos |
+
+El resultado es un contrato completo.
+
+No es un inventario de implementaciones ejecutadas.
+
+---
+
+#### 43. Decisión de cierre documental
+
+La decisión de esta tarea queda:
+
+```text
+CORTE DEL NÚCLEO MÍNIMO
+→ CERRADO DOCUMENTALMENTE
+
+RESPONSABILIDADES
+→ ASIGNADAS
+
+FRONTERAS
+→ CONGELADAS
+
+AMPLIACIÓN DOCUMENTAL
+→ HABILITADA DESPUÉS DEL CIERRE DE LIFECYCLE DE ESTA TAREA
+
+IMPLEMENTACIÓN FÍSICA
+→ NO DECLARADA
+
+AUTORIZACIÓN FÍSICA
+→ NO OTORGADA
+```
+
+---
+
+#### 44. Regla de ampliación
+
+La continuidad documental puede avanzar después de que esta tarea:
+
+1. quede aprobada por el usuario;
+2. pase los validadores documentales aplicables;
+3. cierre su lifecycle;
+4. produzca la continuidad canónica correspondiente.
+
+No se amplía el alcance antes de ese cierre.
+
+---
+
+#### 45. Handoff a SHELL-APP-001
+
+El siguiente bloque recibe un núcleo mínimo documentalmente cerrado.
+
+`SHELL-APP-001` no reabre por inferencia las decisiones de `VISO-CORE-001..006`.
+
+Cualquier contradicción futura deberá tratarse por su mecanismo canónico de corrección y no mediante cambios silenciosos del corte.
+
+---
+
+#### 46. No absorción de VISO-UX
+
+El cierre del núcleo no define experiencia administrativa final.
+
+VISO-UX conserva:
+
+- navegación;
+- composición;
+- presentación;
+- interacción;
+- experiencia de error;
+- visualización final de conflictos;
+- visualización final de auditoría.
+
+El núcleo solo fija los contratos que esa experiencia deberá respetar.
+
+---
+
+#### 47. No absorción de dominios operativos
+
+El cierre no traslada ownership operativo a VISO.
+
+NEXO, FOGO, ORIGO, PULSO y demás aplicaciones conservan sus procesos y efectos.
+
+VISO administra hechos transversales cuando le corresponda.
+
+---
+
+#### 48. No ampliación por AS-IS
+
+La existencia actual de:
+
+- una página;
+- un formulario;
+- un helper;
+- una tabla;
+- una RPC;
+- una Server Action;
+- una navegación;
+- una opción administrativa;
+
+no incorpora automáticamente esa capacidad al núcleo mínimo.
+
+El corte se rige por los contratos aprobados.
+
+---
+
+#### 49. No ampliación por conveniencia
+
+No se añade una capacidad al núcleo únicamente para:
+
+- simplificar una pantalla;
+- evitar navegar a otra aplicación;
+- reutilizar una tabla existente;
+- evitar diseñar un contrato propietario;
+- concentrar administración en VISO.
+
+La conveniencia no sustituye ownership.
+
+---
+
+#### 50. Reapertura futura
+
+El corte solo puede reabrirse cuando exista:
+
+- contradicción canónica verificable;
+- nueva capacidad empresarial aprobada que cambie el piso mínimo;
+- corrección formal;
+- cambio contractual explícito con owner.
+
+No se reabre por drift de UI o código aislado.
+
+---
+
+#### 51. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Requisitos creados:** 0
+**Requisitos modificados:** 0
+
+La tarea consolida y cierra documentalmente obligaciones ya protegidas por el registro vigente. No introduce una regla protegida independiente ni cambia la semántica de prueba existente.
+
+---
+
+#### 52. Cobertura de prueba vigente reutilizada
+
+Sin modificar el Registro Canónico de Requisitos de Prueba, esta tarea reutiliza:
+
+- `TREQ-VISO-001` — coherencia entre administración de roles, permisos, sedes, áreas, perfiles, excepciones, conflictos, procedencia, territorio, auditoría y resultado consumido por las aplicaciones;
+- `TREQ-AUTH-007` — administración explícita y territorial;
+- `TREQ-AUTH-009` — territorio determinista;
+- `TREQ-AUTH-013` — protección server-side de mutaciones;
+- `TREQ-AUTH-014` — invalidación y frescura;
+- `TREQ-AUTH-015` — evidencia correlacionable;
+- `TREQ-AUTH-016` — revocación preservando historia;
+- `TREQ-AUTH-289` a `TREQ-AUTH-298` — configuración inconsistente, carriles, precedencia causal, equivalencia multicanal, experiencia segura y reconciliación física.
+
+Estas referencias constituyen trazabilidad heredada.
+
+No actualizan el registro.
+
+---
+
+#### 53. Evidencia de validación
+
+| Clase | Estado | Evidencia |
+| --- | --- | --- |
+| BUILD | NOT_EXECUTED | La batería documental todavía no se ha ejecutado sobre el checkout local de la rama de `VISO-CORE-006`. |
+| LOCAL | NOT_EXECUTED | El bloque todavía no ha sido insertado, normalizado ni validado dentro de la rama documental local de `VISO-CORE-006`. |
+| REMOTA | PASS | Se verificaron la continuidad documental vigente, `VISO-CORE-005` como tarea anterior aprobada, `SHELL-APP-001` como siguiente tarea reservada, el owner modular, la topología `DEFINE_ONCE` / `NO_PHYSICAL_INSTANCE`, el protocolo documental, las políticas de formato y desarrollo, el contenido canónico del minibloque, el handoff de `VISO-CORE-005` y la cobertura vigente de VISO en el Registro Canónico de Requisitos de Prueba. |
+| OPERATIVA | NOT_APPLICABLE | Esta tarea no cambia operación real, personas, turnos, permisos, asignaciones, configuración, auditoría runtime ni datos empresariales. |
+| FÍSICA | NOT_APPLICABLE | `VISO-CORE-006` no posee instancia física propia; su aprobación documental no ejecuta, autoriza ni certifica materializaciones de `VISO-CORE-003..005`. |
+
+---
+
+#### 54. Criterios de aceptación
+
+- [ ] Se conserva `DEFINE_ONCE`.
+- [ ] Se conserva `NO_PHYSICAL_INSTANCE`.
+- [ ] No se crea una instancia física de `VISO-CORE-006`.
+- [ ] `VISO-CORE-005` permanece como tarea anterior.
+- [ ] `SHELL-APP-001` permanece como siguiente tarea reservada.
+- [ ] Se cierra únicamente el contrato documental del núcleo.
+- [ ] No se presume implementación física.
+- [ ] No se presume cierre de package.
+- [ ] No se presume despliegue.
+- [ ] No se presume evidencia física.
+- [ ] `VISO-CORE-001` conserva la definición del corte mínimo.
+- [ ] `VISO-CORE-002` conserva el vínculo empresarial.
+- [ ] `VISO-CORE-003` conserva dependencias administrativas por unidad.
+- [ ] `VISO-CORE-004` conserva autorización real por unidad.
+- [ ] `VISO-CORE-005` conserva conflictos, límites, concurrencia y auditoría por unidad.
+- [ ] No se reabre el catálogo de capacidades.
+- [ ] No se reabre el catálogo de permisos.
+- [ ] No se crea un catálogo local.
+- [ ] No se crea un evaluador local.
+- [ ] No se crea una auditoría paralela.
+- [ ] Identidad y atributos permanecen separados.
+- [ ] Organización, sede y área permanecen separados.
+- [ ] Rol base y rol operativo permanecen separados.
+- [ ] Perfil y rol efectivo permanecen separados.
+- [ ] Elegibilidad y asignación permanecen separadas.
+- [ ] Sesión y autorización permanecen separadas.
+- [ ] Contexto y permiso permanecen separados.
+- [ ] Vista previa no se convierte en autoridad.
+- [ ] Simulación no se convierte en autoridad.
+- [ ] Procedencia no crea otro evaluador.
+- [ ] Un nombre de rol no concede autoridad.
+- [ ] Una sede seleccionada no concede territorio.
+- [ ] Un área seleccionada no concede permiso.
+- [ ] Las capacidades administrativas no fabrican turno.
+- [ ] Las capacidades operacionales no omiten turno cuando aplica.
+- [ ] Conflicto prospectivo permanece distinto de inconsistencia runtime.
+- [ ] DENY coherente permanece distinto de conflicto.
+- [ ] Fallo técnico permanece distinto de conflicto.
+- [ ] Límites provienen de contratos.
+- [ ] Concurrencia permanece responsabilidad de cada materialización.
+- [ ] Corrección crea nueva evidencia.
+- [ ] Rollback conserva historia.
+- [ ] AuthorizationDecision no sustituye Change Audit.
+- [ ] Writer adoption no se presume.
+- [ ] Ningún writer puede usar una capa privilegiada como bypass.
+- [ ] RLS no sustituye autorización, conflicto ni auditoría.
+- [ ] El delta mensual conserva su carril propio.
+- [ ] `VISO-SCH-008` solo se exige cuando el alcance concreto correspondiente consume ese delta.
+- [ ] Un delta abierto bloquea únicamente la declaración física del alcance que lo requiere.
+- [ ] La aprobación documental no declara satisfecha la dependencia del delta.
+- [ ] Un package aplicable debe conservar su propio cierre antes de declarar completa su materialización.
+- [ ] Esta tarea no crea ni cierra packages.
+- [ ] La evidencia física futura permanece proporcional al alcance.
+- [ ] Una deuda material sin owner bloquea la conformidad de la unidad afectada.
+- [ ] Productos y menús permanecen fuera del núcleo.
+- [ ] CMS y contenido permanecen fuera del núcleo.
+- [ ] Inventario, compras, producción, POS y contabilidad propietaria permanecen fuera del núcleo.
+- [ ] La ejecución de asistencia permanece fuera del núcleo.
+- [ ] Reclutamiento y expediente integral permanecen fuera del núcleo.
+- [ ] VISO-UX conserva experiencia final.
+- [ ] El AS-IS no amplía el corte.
+- [ ] La conveniencia administrativa no amplía el corte.
+- [ ] Toda reapertura futura requiere mecanismo canónico.
+- [ ] No se crean requisitos de prueba.
+- [ ] No se modifican requisitos de prueba.
+- [ ] No se modifica el Registro Canónico de Requisitos de Prueba.
+
+---
+
+#### 55. Límites
+
+Esta tarea no:
+
+- autoriza implementación física;
+- ejecuta una implementación;
+- crea una instancia física;
+- crea una instancia global;
+- crea un `implementation_unit_id`;
+- selecciona un package;
+- modifica el orden de packages;
+- cierra un package;
+- despliega código;
+- modifica Supabase;
+- modifica datos reales;
+- crea migraciones;
+- cambia RLS;
+- cambia grants;
+- cambia funciones;
+- cambia triggers;
+- cambia Auth;
+- cambia secretos;
+- cambia Storage;
+- cambia Realtime;
+- cambia Edge Functions;
+- cambia cron;
+- cambia colas;
+- modifica código de `vento-viso`;
+- modifica código de aplicaciones operativas;
+- activa el delta mensual;
+- aprueba reglas del delta mensual;
+- publica horarios;
+- cambia `employee_shifts`;
+- redefine roles;
+- redefine permisos;
+- redefine territorio;
+- redefine contexto;
+- redefine conflictos;
+- redefine auditoría;
+- redefine concurrencia;
+- define UX final;
+- absorbe procesos de otras aplicaciones;
+- declara pruebas físicas ejecutadas;
+- declara materializaciones físicas certificadas;
+- crea requisitos de prueba;
+- modifica requisitos de prueba;
+- modifica el Registro Canónico de Requisitos de Prueba;
+- desarrolla `SHELL-APP-001`.
 
 ### Dependencias del delta mensual
 
@@ -6937,3 +8015,16 @@ Esta tarea no:
 - `VISO-CORE-004` debe demostrar permisos por acción o justificar un permiso común sin exceso.
 - `VISO-CORE-005` incluye conflictos, límites, concurrencia, auditoría, corrección, borrado de borradores y notificación.
 - `VISO-CORE-006` no cierra con el delta abierto ni sin cierre del package cuando este forme parte del núcleo.
+
+---
+
+#### 56. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`VISO-CORE-005 — Implementar validación de conflictos y auditoría`
+
+**TAREA ACTUAL APROBADA**
+`VISO-CORE-006 — Aprobar núcleo antes de ampliar alcance`
+
+**SIGUIENTE TAREA RESERVADA**
+`SHELL-APP-001 — Inventariar la experiencia actual del hub`
