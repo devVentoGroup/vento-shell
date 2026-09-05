@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "correction_id": "DELIV-PKG-015::CORR-009",
+  "task_id": "DELIV-PKG-015",
+  "target_instance_id": null,
+  "correction_type": "DOCUMENTARY",
+  "reason_code": "IMPLEMENTATION_DEFECT",
+  "status": "PENDING_AUTHORIZATION",
+  "blocking": true,
+  "blocked_targets": [
+    "SHELL-CI-020::GAP-PKG-001"
+  ],
+  "baseline": {
+    "main_commit": "90a8186c83b084dcb7c1cd5d3b5a8d13834b7dfd",
+    "target_task_path": "docs/plan-canonico/modular/bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md",
+    "target_task_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af",
+    "target_instance_record_path": null,
+    "target_instance_record_sha256": null
+  },
+  "target_repositories": [],
+  "authorized_changes": [],
+  "validation_commands": [],
+  "affected_treq_ids": [],
+  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
+  "authorization": null,
+  "evidence": [],
+  "opened_at": "2026-09-05T15:16:37.508Z"
+}
