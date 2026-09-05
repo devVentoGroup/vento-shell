@@ -5,7 +5,7 @@
   "target_instance_id": null,
   "correction_type": "DOCUMENTARY",
   "reason_code": "IMPLEMENTATION_DEFECT",
-  "status": "PENDING_AUTHORIZATION",
+  "status": "VERIFIED",
   "blocking": true,
   "blocked_targets": [
     "SHELL-CI-020::GAP-PKG-001"
@@ -17,12 +17,132 @@
     "target_instance_record_path": null,
     "target_instance_record_sha256": null
   },
-  "target_repositories": [],
-  "authorized_changes": [],
-  "validation_commands": [],
+  "target_repositories": [
+    "vento-group-sas/vento-shell"
+  ],
+  "authorized_changes": [
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-correction-guard.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-correction-guard.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-control.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-control.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-branch-lifecycle.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-execution-control.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-scanner.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness-integration.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/package-readiness/package-readiness-contract.json",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "scripts/docs/implementation-readiness-coordinator.test.mjs",
+      "change": "MODIFY"
+    },
+    {
+      "repo": "vento-group-sas/vento-shell",
+      "path": "docs/VENTO_OS_GUIA_OPERATIVA_DE_COMANDOS.md",
+      "change": "MODIFY"
+    }
+  ],
+  "validation_commands": [
+    "node --check scripts/docs/implementation-correction-guard.mjs",
+    "node --check scripts/docs/implementation-control.mjs",
+    "node --check scripts/docs/implementation-branch-lifecycle.mjs",
+    "node --check scripts/docs/package-readiness-scanner.mjs",
+    "node --test scripts/docs/implementation-correction-guard.test.mjs",
+    "node --test scripts/docs/implementation-control.test.mjs",
+    "node --test scripts/docs/implementation-branch-lifecycle.test.mjs",
+    "node --test scripts/docs/package-execution-control.test.mjs",
+    "node --test scripts/docs/package-readiness-scanner.test.mjs",
+    "node --test scripts/docs/package-readiness-integration.test.mjs",
+    "node --test scripts/docs/implementation-readiness-coordinator.test.mjs",
+    "npm run docs:correction:check",
+    "npm run docs:correction:test",
+    "npm run docs:package:execution:check",
+    "npm run docs:package:readiness:check -- --package GAP-PKG-001",
+    "npm run docs:implementation:check",
+    "npm run docs:plan:build",
+    "npm run docs:plan:check",
+    "npm run docs:plan:test",
+    "npm run docs:treq:check",
+    "npm run docs:treq:test",
+    "npm test --silent",
+    "git --no-pager diff --check"
+  ],
   "affected_treq_ids": [],
-  "zero_treq_reason": "Registro inicial de la corrección; todavía no modifica requisitos TREQ.",
-  "authorization": null,
-  "evidence": [],
+  "zero_treq_reason": "CORR-010 corrige exclusivamente el tooling del lifecycle físico de GAP-PKG, la materialización secuencial SHELL-CI-020..024 y la evidencia MRP015-050 por package; no crea ni modifica TREQ, 04A, migraciones ni semántica funcional.",
+  "authorization": {
+    "decision": "APPROVED",
+    "approved_by": "VENTO_OWNER",
+    "approved_at": "2026-09-05",
+    "timezone": "America/Bogota",
+    "approval_statement": "APROBADO",
+    "source_contract_sha256": "56eaa3da4795d76dd03dbc6ae9a98eb7b50d89b81d196c8843d9570b067915af"
+  },
+  "evidence": [
+    "CORR-010 package lifecycle CI020..CI024 strict sequence materialized.",
+    "CORR-010 START guard exact CONTINUE_PHYSICAL_LIFECYCLE target PASS.",
+    "CORR-010 next TEMPLATE_PER_PACKAGE derivation PASS.",
+    "CORR-010 own implementation ledger scope PASS.",
+    "CORR-010 MRP015-050 package-scoped candidate evidence PASS.",
+    "CORR-010 207 GAP-PKG physical-stage matrix PASS.",
+    "CORR-010 implementation-readiness-coordinator regression PASS.",
+    "CORR-010 docs:correction:check PASS.",
+    "CORR-010 docs:correction:test PASS.",
+    "CORR-010 docs:package:execution:check PASS.",
+    "CORR-010 GAP-PKG-001 readiness PASS.",
+    "CORR-010 docs:implementation:check PASS.",
+    "CORR-010 docs:plan:build PASS.",
+    "CORR-010 docs:plan:check PASS.",
+    "CORR-010 docs:plan:test PASS.",
+    "CORR-010 docs:treq:check PASS.",
+    "CORR-010 docs:treq:test PASS.",
+    "CORR-010 npm test --silent PASS.",
+    "CORR-010 git diff --check PASS.",
+    "CORR-010 TREQ=0 04A=0 migrations=0 remote_supabase_mutations=0."
+  ],
   "opened_at": "2026-09-05T19:58:37.444Z"
 }
