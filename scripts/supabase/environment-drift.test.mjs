@@ -384,30 +384,183 @@ test('scope environment certifica identidad remota sin consumir history ni recur
   assert.deepEqual(result.drifts, []);
 });
 
-test('scope history detecta exclusivamente drift del universo de migraciones', () => {
-  const result = compareRemote({
-    scope: 'history',
+function compareHistoryFixture({
+  environmentRole,
+  versions,
+  scope = 'history',
+} = {}) {
+  const projectRef = `${environmentRole}-ref`;
+  const expectedVersions = [
+    '00000000000000',
+    '20260801000000',
+    '20260901000000',
+  ];
+
+  return compareRemote({
+    scope,
     expected: {
       candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
       expected_digest: 'expected',
       config: { contract: { postgres_major: 17 } },
-      migration_manifest: { rows: [{ version: '00000000000000' }, { version: '20260901000000' }] },
+      migration_manifest: {
+        rows: expectedVersions.map((version) => ({ version })),
+      },
     },
     remoteObserved: {
-      environment_role: 'production',
-      remote_scope: 'history',
-      identity: { project_ref: 'production-ref' },
+      environment_role: environmentRole,
+      remote_scope: scope,
+      identity: { project_ref: projectRef },
       identity_status: 'PASS',
       observed_digest: 'observed',
       surfaces: [
-        { name: 'project', status: 'PASS', value: { ref: 'production-ref', database: { postgres_engine: '17' } } },
-        { name: 'migrations', status: 'PASS', value: [{ version: '00000000000000', name: 'baseline' }] },
+        {
+          name: 'project',
+          status: 'PASS',
+          value: {
+            ref: projectRef,
+            database: { postgres_engine: '17' },
+          },
+        },
+        {
+          name: 'migrations',
+          status: 'PASS',
+          value: versions.map((version) => ({
+            version,
+            name: `migration-${version}`,
+          })),
+        },
       ],
     },
   });
-  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+}
+
+test('scope history certifica PRODUCTION cuando conserva un prefijo canonico no vacio', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: ['00000000000000'],
+  });
+
+  assert.equal(result.certification, 'PRODUCTION_CERTIFIED');
   assert.equal(result.remote_scope, 'history');
-  assert.deepEqual(result.drifts.map((entry) => entry.surface), ['migration_history.versions']);
+  assert.deepEqual(result.drifts, []);
+});
+
+test('scope history rechaza historial vacio en PRODUCTION', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history conserva paridad exacta obligatoria en STAGING', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'staging',
+    versions: ['00000000000000'],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history certifica STAGING cuando alcanza el universo completo', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'staging',
+    versions: [
+      '00000000000000',
+      '20260801000000',
+      '20260901000000',
+    ],
+  });
+
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('scope history rechaza huecos en el prefijo de PRODUCTION', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [
+      '00000000000000',
+      '20260901000000',
+    ],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history rechaza versiones desconocidas en PRODUCTION', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [
+      '00000000000000',
+      '99999999999999',
+    ],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history rechaza versiones duplicadas en PRODUCTION', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [
+      '00000000000000',
+      '00000000000000',
+    ],
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['migration_history.versions'],
+  );
+});
+
+test('scope history certifica PRODUCTION cuando alcanza el universo completo', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    versions: [
+      '00000000000000',
+      '20260801000000',
+      '20260901000000',
+    ],
+  });
+
+  assert.equal(result.certification, 'PRODUCTION_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('scope full sigue rechazando PRODUCTION incompleto', () => {
+  const result = compareHistoryFixture({
+    environmentRole: 'production',
+    scope: 'full',
+    versions: ['00000000000000'],
+  });
+
+  assert.notEqual(result.certification, 'PRODUCTION_CERTIFIED');
+  assert.equal(
+    result.drifts.some(
+      (entry) => entry.surface === 'migration_history.versions',
+    ),
+    true,
+  );
 });
 
 test('scope environment conserva fail closed para candidate sucio', () => {

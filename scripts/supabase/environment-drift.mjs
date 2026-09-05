@@ -1292,14 +1292,22 @@ export function compareRemote({ expected, localObserved = null, remoteObserved, 
 
   const migrations = surfaceValueOrInsufficient(drifts, surfaces, 'migrations', environment);
   if (migrations) {
+    const expectedVersions = expectedMigrationHistory(expected);
     const remoteVersions = migrations.map((entry) => entry.version).sort();
+    const productionHistoryPrefix = remoteScope === 'history' && environment === 'production';
+    const expectedVersionsForScope = productionHistoryPrefix
+      ? expectedVersions.slice(0, Math.max(1, remoteVersions.length))
+      : expectedVersions;
+
     compareExact(drifts, {
       surface: 'migration_history.versions',
       identity: remoteObserved.identity.project_ref,
       environment,
-      expected: expectedMigrationHistory(expected),
+      expected: expectedVersionsForScope,
       observed: remoteVersions,
-      reason: 'Hosted migration history differs from the versioned candidate universe.',
+      reason: productionHistoryPrefix
+        ? 'Production migration history must be a non-empty canonical prefix of the versioned candidate universe.'
+        : 'Hosted migration history differs from the versioned candidate universe.',
     });
   }
 
