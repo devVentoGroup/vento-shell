@@ -589,7 +589,20 @@
         "foundation_id": "MRP015-050",
         "gate_id": "CANDIDATE_READY",
         "owner_task": "SUPA-TRANS-015",
-        "phase": "AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY"
+        "phase": "AFTER_LOCAL_MATERIALIZATION_BEFORE_REMOTE_DEPLOY",
+        "evidence_binding": {
+          "storage": "SHELL_CI_020_INSTANCE_EVIDENCE",
+          "evidence_type": "MRP015_050_CANDIDATE_READY",
+          "producer": "package-readiness-scanner::recordInPackageCandidateEvidence",
+          "package_scoped": true,
+          "instance_task": "SHELL-CI-020",
+          "candidate_head_sha_required": true,
+          "authorized_scope_sha256_required": true,
+          "candidate_scope_sha256_required": true,
+          "cross_package_reuse_forbidden": true,
+          "stale_after_candidate_change": true,
+          "secret_values_forbidden": true
+        }
       },
       "evidence_contract": {
         "schema_version": 1,

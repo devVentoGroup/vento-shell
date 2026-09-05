@@ -744,3 +744,106 @@ test('GAP-PKG Supabase exige exactamente el binding STAGING y excluye PRODUCTION
   assert.equal(fail.status, 'FAIL');
   assert.ok(fail.problems.includes('STAGING_PROJECT_REF_MISMATCH'));
 });
+
+// CORR-010 STRICT PHYSICAL STAGES 207
+test('las 207 identidades GAP-PKG conservan CI020→CI021→CI022→CI023→CI024 sin saltos', async () => {
+  const { physicalLifecycleStatus } = await import('./package-readiness-scanner.mjs');
+  const physicalContract = { implementation_entry_task: 'SHELL-CI-020' };
+  for (let number = 1; number <= 207; number += 1) {
+    const packageId = `GAP-PKG-${String(number).padStart(3, '0')}`;
+    const instances = new Map();
+    assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract), null);
+
+    const ids = ['SHELL-CI-020', 'SHELL-CI-021', 'SHELL-CI-022', 'SHELL-CI-023', 'SHELL-CI-024']
+      .map((taskId) => `${taskId}::${packageId}`);
+    instances.set(ids[0], { instance_id: ids[0], status: 'AUTHORIZED' });
+    assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract).nextExecution, ids[0]);
+    instances.set(ids[0], { instance_id: ids[0], status: 'VERIFIED' });
+    assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract).nextExecution, ids[1]);
+    for (let index = 1; index < 4; index += 1) {
+      instances.set(ids[index], { instance_id: ids[index], status: 'VERIFIED' });
+      assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract).nextExecution, ids[index + 1]);
+    }
+    instances.set(ids[4], { instance_id: ids[4], status: 'VERIFIED' });
+    assert.equal(physicalLifecycleStatus(packageId, instances, physicalContract).status, 'CLOSED');
+  }
+});
+
+test('scanner rechaza artefactos de una etapa física futura', async () => {
+  const { physicalLifecycleStatus } = await import('./package-readiness-scanner.mjs');
+  const instances = new Map([
+    ['SHELL-CI-020::GAP-PKG-001', { instance_id: 'SHELL-CI-020::GAP-PKG-001', status: 'VERIFIED' }],
+    ['SHELL-CI-023::GAP-PKG-001', { instance_id: 'SHELL-CI-023::GAP-PKG-001', status: 'AUTHORIZED' }],
+  ]);
+  assert.throws(
+    () => physicalLifecycleStatus('GAP-PKG-001', instances, { implementation_entry_task: 'SHELL-CI-020' }),
+    /PHYSICAL_STAGE_SEQUENCE_VIOLATION/u,
+  );
+});
+
+test('MRP015-050 queda ligado al package, CI020, HEAD, alcance y contenido materializado', async () => {
+  const os = await import('node:os');
+  const pathModule = await import('node:path');
+  const {
+    buildInPackageCandidateEvidence,
+    validateInPackageCandidateEvidence,
+  } = await import('./package-readiness-scanner.mjs');
+  const root = fs.mkdtempSync(pathModule.join(os.tmpdir(), 'vento-mrp015-050-'));
+  try {
+    const contractPath = pathModule.join(root, 'scripts/docs/package-readiness');
+    fs.mkdirSync(contractPath, { recursive: true });
+    fs.writeFileSync(
+      pathModule.join(contractPath, 'package-readiness-contract.json'),
+      JSON.stringify(contract),
+      'utf8',
+    );
+    const target = pathModule.join(root, 'supabase/functions/test/index.ts');
+    fs.mkdirSync(pathModule.dirname(target), { recursive: true });
+    fs.writeFileSync(target, 'export const value = 1;\n', 'utf8');
+    const instance = {
+      instance_id: 'SHELL-CI-020::GAP-PKG-001',
+      task_id: 'SHELL-CI-020',
+      authorized_changes: [{
+        repo: 'vento-group-sas/vento-shell',
+        path: 'supabase/functions/test/index.ts',
+        change: 'MODIFY',
+      }],
+      evidence: [],
+    };
+    const gate = contract.physical_dependencies.supabase_pre_e5_foundation.in_package_candidate_gate;
+    const head = 'a'.repeat(40);
+    const evidence = buildInPackageCandidateEvidence({
+      root,
+      packageId: 'GAP-PKG-001',
+      instance,
+      gate,
+      candidateHeadSha: head,
+      recordedAt: '2026-09-05T20:00:00.000Z',
+    });
+    instance.evidence.push(evidence);
+    assert.equal(validateInPackageCandidateEvidence({
+      root,
+      packageId: 'GAP-PKG-001',
+      instance,
+      gate,
+      currentHeadSha: head,
+    }).status, 'PASS');
+    assert.equal(validateInPackageCandidateEvidence({
+      root,
+      packageId: 'GAP-PKG-002',
+      instance,
+      gate,
+      currentHeadSha: head,
+    }).status, 'FAIL');
+    fs.writeFileSync(target, 'export const value = 2;\n', 'utf8');
+    assert.match(validateInPackageCandidateEvidence({
+      root,
+      packageId: 'GAP-PKG-001',
+      instance,
+      gate,
+      currentHeadSha: head,
+    }).detail, /stale/u);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});

@@ -60,6 +60,48 @@ function expectedInstancePattern(taskId, lifecycle) {
   return null;
 }
 
+export function derivePackageLifecycleCandidate({ packageExecution, workTopology, explicitById }) {
+  const action = packageExecution?.current?.next_action ?? null;
+  if (action?.type !== 'CONTINUE_PHYSICAL_LIFECYCLE') return null;
+
+  const instanceId = String(action.target ?? '').trim();
+  const match = /^(SHELL-CI-02[1-4])::(GAP-PKG-\d{3})$/u.exec(instanceId);
+  if (!match) return null;
+
+  const taskId = match[1];
+  const packageId = match[2];
+  if (String(packageExecution?.current?.package_id ?? '').trim() !== packageId) {
+    fail([`${instanceId} no pertenece al package actual ${packageExecution?.current?.package_id ?? 'NONE'}.`]);
+  }
+
+  const task = workTopology.inventory.get(taskId) ?? null;
+  const lifecycle = workTopology.topology.get(taskId) ?? null;
+  if (!task || stateFromMarker(task.marker) !== 'APROBADA') {
+    fail([`${taskId} debe existir y estar APROBADA para derivar ${instanceId}.`]);
+  }
+  if (lifecycle?.mode !== 'TEMPLATE_PER_PACKAGE') {
+    fail([`${taskId} debe conservar topología TEMPLATE_PER_PACKAGE; actual ${lifecycle?.mode ?? 'NONE'}.`]);
+  }
+
+  const explicit = explicitById.get(instanceId) ?? null;
+  return {
+    instanceId,
+    recordPath: instanceRecordRelativePath(instanceId),
+    taskId,
+    taskTitle: task.title,
+    lifecycleMode: lifecycle.mode,
+    status: explicit?.status ?? 'READY_FOR_AUTHORIZATION',
+    source: explicit ? 'EXPLICIT' : 'DERIVED_FROM_APPROVED_CONTRACT',
+    record: explicit,
+    targetRepositories: explicit?.target_repositories ?? [],
+    authorizedChanges: explicit?.authorized_changes ?? [],
+    validationCommands: explicit?.validation_commands ?? [],
+    targetEnvironments: explicit?.target_environments ?? [],
+    evidence: explicit?.evidence ?? [],
+    blocker: explicit?.blocker ?? null,
+  };
+}
+
 export function instanceRecordRelativePath(instanceId) {
   const normalized = String(instanceId ?? '').trim();
   if (!normalized || !/^[A-Za-z0-9._:-]+$/u.test(normalized)) {
@@ -350,7 +392,15 @@ export function deriveImplementationControl({
       };
     });
 
-  const candidateIds = new Set(globalCandidates.map(({ instanceId }) => instanceId));
+  const packageCandidate = derivePackageLifecycleCandidate({
+    packageExecution,
+    workTopology,
+    explicitById,
+  });
+  const packageCandidates = packageCandidate ? [packageCandidate] : [];
+  const candidateIds = new Set(
+    [...globalCandidates, ...packageCandidates].map(({ instanceId }) => instanceId),
+  );
   const explicitOther = control.instances
     .filter((entry) => !candidateIds.has(entry.instance_id))
     .map((entry) => {
@@ -373,7 +423,7 @@ export function deriveImplementationControl({
         blocker: entry.blocker ?? null,
       };
     });
-  const instances = [...globalCandidates, ...explicitOther];
+  const instances = [...globalCandidates, ...packageCandidates, ...explicitOther];
   const currentPackageWork = packageExecution?.current_work ?? packageExecution?.current?.current_work ?? null;
   let packagePrerequisiteAction = null;
 

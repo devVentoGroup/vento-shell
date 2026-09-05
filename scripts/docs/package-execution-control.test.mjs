@@ -229,3 +229,21 @@ test('una fundación incumplida se convierte en CURRENT_EXECUTABLE_WORK sin perd
   assert.equal(result.current_work.id, 'MRP015-000');
   assert.equal(result.current_work.consumer_package_id, 'GAP-PKG-001');
 });
+
+// CORR-010 CONTINUE PHYSICAL LIFECYCLE
+test('IMPLEMENTING y DEPLOYED conservan CONTINUE_PHYSICAL_LIFECYCLE sobre next_execution exacto', () => {
+  for (const [status, target] of [
+    ['IMPLEMENTING', 'SHELL-CI-020::GAP-PKG-001'],
+    ['DEPLOYED', 'SHELL-CI-021::GAP-PKG-001'],
+  ]) {
+    const current = {
+      ...pkg('GAP-PKG-001', 1, status),
+      next_execution: target,
+      blockers: [],
+      physical_dependencies: { status: 'PASS', evidence: [] },
+    };
+    const result = deriveLinearPackageExecution({ packages: [current] }, policy);
+    assert.equal(result.current.next_action.type, 'CONTINUE_PHYSICAL_LIFECYCLE');
+    assert.equal(result.current.next_action.target, target);
+  }
+});
