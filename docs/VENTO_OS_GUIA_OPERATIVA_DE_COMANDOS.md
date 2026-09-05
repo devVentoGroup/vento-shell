@@ -1340,6 +1340,30 @@ Para Supabase, la secuencia global previa al package es R0 → `MRP015-000` → 
 
 ## Precondición de replay hosted en STAGING
 
+### Reconciliación ACL `authenticated` antes de `AUTH-DB-018`
+
+Si `MRP015-020 / HISTORY_PASS` se reanuda sobre el STAGING existente después de que el historial remoto ya alcanzó exactamente `20260828023253_auth_db_016_canonical_schema_foundation`, cualquier diferencia de `authenticated EXECUTE` en funciones `public` debe reconciliarse contra un snapshot canónico del mismo prefijo de siete migraciones antes de reintentar `AUTH-DB-018`.
+
+La reconciliación usa `scripts/supabase/staging-acl-reconciliation.mjs` en modo `authenticated` y conserva estas invariantes:
+
+- destino obligatorio: STAGING canónico `rcrxixmqhrndcervbllp`;
+- historial exacto de siete migraciones, con head `20260828023253`;
+- solo se permiten `REVOKE EXECUTE ... FROM authenticated` sobre funciones `public` cuya ACL exceda el snapshot canónico;
+- el conjunto de reparación válido para este incidente es exactamente `0` o `10` revokes;
+- no se crean grants nuevos;
+- no se modifica `anon`;
+- no se modifican default privileges;
+- no se modifica migration history;
+- no se modifica estructura, datos, owners, definiciones de función ni objetos fuera del ACL objetivo;
+- production queda prohibido por binding;
+- una segunda ejecución sobre estado ya reconciliado debe producir `0` revokes.
+
+`AUTH-DB-018` conserva sin cambios su precondición contractual de `83` RPC client-executable y `10` server-only. No se relaja la migración para acomodar drift hosted.
+
+Después de reconciliar y verificar el estado `83 / 10`, continuar con `supabase db push --dry-run`; el dry-run debe mostrar únicamente las migraciones todavía pendientes. Solo después de esa comprobación se reanuda el `db push` de STAGING y se exige `STAGING_HISTORY_DRIFT` en `scope=history`.
+
+No usar `reset`, `migration repair`, edición de migraciones históricas ni mutación de PRODUCTION como mecanismo de recuperación de este caso.
+
 El helper `supabase:hosted-replay:precondition` queda reservado para escenarios de pre-replay limpio sobre STAGING. No ejecuta reset, no modifica el historial y no sustituye `MRP015-020 / HISTORY_PASS`.
 
 La inspección read-only se ejecuta así:
