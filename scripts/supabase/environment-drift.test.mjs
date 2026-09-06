@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -12,6 +13,7 @@ import {
   compareFunctionSets,
   compareLocal,
   compareRemote,
+  controllerOutcome,
   evaluateEdgeSecretRequirements,
   extractSqlScalar,
   fetchRemoteFunctionBody,
@@ -743,12 +745,12 @@ test('CORR-011 hosted parity regression: conserva causa exacta cuando falta SUPA
   assert.equal(result.drifts[0].observed, 'SUPABASE_ACCESS_TOKEN_MISSING');
 });
 
-function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKeys = ['shift_runtime_processor_cron']) {
+function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKeys = ['shift_runtime_processor_cron'], transform = (fixture) => fixture) {
   const sqlFingerprint = {
     extensions: [{ name: 'pg_cron', version: '1.6' }],
   };
 
-  return compareRemote({
+  return compareRemote(transform({
     scope: 'full',
     expected: {
       candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
@@ -859,7 +861,7 @@ function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKey
         { name: 'internal_job_secret_keys', status: 'PASS', value: observedInternalJobSecretKeys },
       ],
     },
-  });
+  }));
 }
 
 test('CORR-011 hosted parity regression: detecta cron hosted ausente aunque local no tenga pg_cron', () => {
@@ -1091,4 +1093,205 @@ test('CORR-011 explicit Edge environment requirements: una referencia nueva sin 
   assert.equal(drifts.length, 1);
   assert.equal(drifts[0].surface, 'edge_secrets.expected_contract');
   assert.equal(drifts[0].classification, 'INSUFFICIENT_EVIDENCE');
+});
+
+
+// These acceptance tests use synthetic resources only. A successful negative
+// test proves detector behavior; it does not certify a hosted VENTO environment.
+const acceptanceCron = [{
+  jobname: 'anima_shift_runtime_processor_every_5m',
+  schedule: '*/5 * * * *',
+  active: true,
+}];
+
+function acceptanceFixture() {
+  let fixture;
+  corr011HostedCronFixture(acceptanceCron, ['shift_runtime_processor_cron'], (value) => {
+    fixture = value;
+    return value;
+  });
+  return fixture;
+}
+
+function printedOutcome(result, strict) {
+  const moduleUrl = new URL('./environment-drift.mjs', import.meta.url).href;
+  return spawnSync(process.execPath, [
+    '--input-type=module', '-e',
+    `import { printControllerResult } from ${JSON.stringify(moduleUrl)}; printControllerResult(JSON.parse(process.argv[1]));`,
+    JSON.stringify({ mode: 'remote', result, strict }),
+  ], { encoding: 'utf8', timeout: 15000 });
+}
+
+test('CORR-011_ACCEPTANCE: un full compatible certifica solamente el ambiente sintetico', () => {
+  const result = compareRemote(acceptanceFixture());
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.deepEqual(controllerOutcome({ mode: 'remote', result, strict: true }), {
+    execution_status: 'PASS',
+    observation_status: 'PASS',
+    environment_certified: 'YES',
+    exit_code: 0,
+  });
+  const child = printedOutcome(result, true);
+  assert.equal(child.error, undefined);
+  assert.equal(child.status, 0);
+  assert.match(child.stdout, /^OBSERVATION_STATUS: PASS$/mu);
+  assert.match(child.stdout, /^ENVIRONMENT_CERTIFIED: YES$/mu);
+});
+
+test('CORR-011_ACCEPTANCE: observar drift no certifica el ambiente ni neutraliza strict', () => {
+  const result = corr011HostedCronFixture([], []);
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(result.drifts.map((row) => row.surface), [
+    'cron.jobs', 'internal_job_secrets.configured_keys',
+  ]);
+  assert.deepEqual(controllerOutcome({ mode: 'remote', result, strict: true }), {
+    execution_status: 'FAIL',
+    observation_status: 'PASS',
+    environment_certified: 'NO',
+    exit_code: 1,
+  });
+  const child = printedOutcome(result, true);
+  assert.equal(child.error, undefined);
+  assert.equal(child.status, 1);
+  assert.match(child.stdout, /^ESTADO: FAIL$/mu);
+  assert.match(child.stdout, /^OBSERVATION_STATUS: PASS$/mu);
+  assert.match(child.stdout, /^ENVIRONMENT_CERTIFIED: NO$/mu);
+  assert.match(child.stdout, /^CERTIFICATION: UNAUTHORIZED_DRIFT$/mu);
+  assert.match(child.stdout, /^REMOTE_MUTATIONS: NO$/mu);
+});
+
+test('CORR-011_ACCEPTANCE: sin strict el proceso puede observar sin aprobar despliegue', () => {
+  const result = corr011HostedCronFixture([]);
+  const child = printedOutcome(result, false);
+  assert.equal(child.error, undefined);
+  assert.equal(child.status, 0);
+  assert.match(child.stdout, /^ESTADO: PASS$/mu);
+  assert.match(child.stdout, /^ENVIRONMENT_CERTIFIED: NO$/mu);
+  assert.match(child.stdout, /^CERTIFICATION: UNAUTHORIZED_DRIFT$/mu);
+});
+
+test('CORR-011_ACCEPTANCE: una superficie ilegible es evidencia incompleta, no prueba negativa valida', () => {
+  const fixture = acceptanceFixture();
+  const edge = fixture.remoteObserved.surfaces.find((row) => row.name === 'edge_functions');
+  edge.status = 'INSUFFICIENT_EVIDENCE';
+  delete edge.value;
+  edge.error = 'SYNTHETIC_HTTP_403';
+  const result = compareRemote(fixture);
+  assert.equal(result.certification, 'INSUFFICIENT_EVIDENCE');
+  assert.equal(result.drifts[0].surface, 'edge_functions');
+  const outcome = controllerOutcome({ mode: 'remote', result, strict: true });
+  assert.equal(outcome.observation_status, 'FAIL');
+  assert.equal(outcome.environment_certified, 'NO');
+  assert.equal(outcome.exit_code, 1);
+});
+
+test('CORR-011_ACCEPTANCE: una credencial ausente no cuenta como observacion completa', async () => {
+  let called = false;
+  const fixture = acceptanceFixture();
+  fixture.remoteObserved = await observeRemoteEnvironment({
+    projectRef: 'staging-ref', environmentRole: 'staging', owner: 'SUPA-TRANS-015',
+    scope: 'full', token: null,
+    fetchImpl: async () => { called = true; throw new Error('NO_NETWORK_ALLOWED'); },
+  });
+  const result = compareRemote(fixture);
+  assert.equal(called, false);
+  assert.equal(result.drifts[0].observed, 'SUPABASE_ACCESS_TOKEN_MISSING');
+  assert.equal(controllerOutcome({ mode: 'remote', result, strict: true }).observation_status, 'FAIL');
+});
+
+test('CORR-011_ACCEPTANCE: candidate sucio no se acepta como observacion certificable', () => {
+  const fixture = acceptanceFixture();
+  fixture.expected.candidate.clean = false;
+  fixture.expected.candidate.dirty_path_count = 1;
+  const result = compareRemote(fixture);
+  assert.equal(result.certification, 'INSUFFICIENT_EVIDENCE');
+  assert.ok(result.drifts.some((row) => row.surface === 'candidate.git_tree'));
+  assert.equal(controllerOutcome({ mode: 'remote', result, strict: true }).environment_certified, 'NO');
+});
+
+test('CORR-011_ACCEPTANCE: JSON contradictorio o clasificacion desconocida falla incluso sin strict', () => {
+  const valid = compareRemote(acceptanceFixture());
+  const drift = corr011HostedCronFixture([]);
+  for (const result of [
+    { ...drift, certification: 'STAGING_CERTIFIED' },
+    { ...valid, certification: 'UNKNOWN' },
+    { ...valid, drifts: [{ classification: 'IGNORED' }] },
+    { ...valid, remote_scope: 'UNKNOWN' },
+    { ...valid, drifts: null },
+  ]) {
+    const outcome = controllerOutcome({ mode: 'remote', result, strict: false });
+    assert.equal(outcome.execution_status, 'FAIL');
+    assert.equal(outcome.observation_status, 'FAIL');
+    assert.notEqual(outcome.environment_certified, 'YES');
+    assert.equal(outcome.exit_code, 1);
+  }
+});
+
+test('CORR-011_ACCEPTANCE: environment e history no se presentan como certificacion full', () => {
+  const fixture = acceptanceFixture();
+  for (const scope of ['environment', 'history']) {
+    const result = compareRemote({ ...fixture, scope });
+    const outcome = controllerOutcome({ mode: 'remote', result, strict: true });
+    assert.equal(outcome.exit_code, 0);
+    assert.equal(outcome.observation_status, 'PASS');
+    assert.equal(outcome.environment_certified, 'NOT_APPLICABLE');
+  }
+});
+
+test('CORR-011_ACCEPTANCE: expected local no representa una observacion hosted', () => {
+  const result = { certification: 'EXPECTED_BASELINE_BUILT', drifts: [] };
+  const outcome = controllerOutcome({ mode: 'expected', result, strict: true });
+  assert.equal(outcome.execution_status, 'PASS');
+  assert.equal(outcome.observation_status, 'NOT_APPLICABLE');
+  assert.equal(outcome.environment_certified, 'NOT_APPLICABLE');
+});
+
+test('CORR-011_ACCEPTANCE: observador full sintetico solo usa GET y SQL read-only sin conservar valores secretos', async () => {
+  const fixture = acceptanceFixture();
+  const values = new Map(fixture.remoteObserved.surfaces.map((row) => [row.name, row.value]));
+  const calls = [];
+  const forbiddenValue = 'SYNTHETIC_SECRET_VALUE_MUST_NOT_LEAK';
+  const response = (value) => ({ ok: true, status: 200, async json() { return value; } });
+  const ref = '/v1/projects/staging-ref';
+  const reads = new Map([
+    [ref, { ref: 'staging-ref', database: { postgres_engine: '17' } }],
+    [`${ref}/database/migrations`, values.get('migrations')],
+    [`${ref}/functions`, []],
+    [`${ref}/config/auth`, values.get('auth')],
+    [`${ref}/config/storage`, { fileSizeLimit: values.get('storage').file_size_limit }],
+    [`${ref}/config/realtime`, values.get('realtime')],
+    [`${ref}/postgrest`, values.get('postgrest')],
+    [`${ref}/secrets`, [{ name: 'SYNTHETIC_EXTRA_NAME', value: forbiddenValue }]],
+  ]);
+  const observed = await observeRemoteEnvironment({
+    projectRef: 'staging-ref', environmentRole: 'staging', owner: 'SUPA-TRANS-015',
+    scope: 'full', token: 'SYNTHETIC_PAT_ONLY',
+    fetchImpl: async (url, options) => {
+      const pathname = new URL(url).pathname;
+      calls.push({ method: options.method, pathname });
+      assert.equal(assertManagementRequest(options.method, pathname), true);
+      if (options.method === 'GET' && reads.has(pathname)) return response(reads.get(pathname));
+      assert.equal(options.method, 'POST');
+      assert.equal(pathname, `${ref}/database/query/read-only`);
+      const query = JSON.parse(options.body).query;
+      let value;
+      if (query.includes('as internal_job_secret_keys')) value = [];
+      else if (query.includes('as storage_buckets')) value = values.get('storage_buckets');
+      else if (query.includes('as cron_jobs')) value = [];
+      else if (query.includes('as fingerprint')) value = values.get('sql_fingerprint');
+      else throw new Error('UNEXPECTED_SYNTHETIC_SQL');
+      return response([{ result: JSON.stringify(value) }]);
+    },
+  });
+  assert.equal(observed.surfaces.length, 12);
+  assert.ok(observed.surfaces.every((row) => row.status === 'PASS'));
+  assert.equal(calls.filter((row) => row.method === 'POST').length, 4);
+  const result = compareRemote({ ...fixture, remoteObserved: observed });
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(result.drifts.map((row) => row.surface), [
+    'cron.jobs', 'internal_job_secrets.configured_keys',
+  ]);
+  const serialized = JSON.stringify({ observed, result });
+  assert.equal(serialized.includes(forbiddenValue), false);
+  assert.equal(serialized.includes('SYNTHETIC_PAT_ONLY'), false);
 });

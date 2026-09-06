@@ -924,3 +924,22 @@ test('CORR-011 MRP015-040 hosted parity: exige STAGING full antes de certificar 
     ],
   );
 });
+
+
+test('CORR-011_ACCEPTANCE: observacion con drift nunca materializa MRP015-040 como PASS', () => {
+  const foundation = contract.physical_dependencies.supabase_pre_e5_foundation;
+  const gate = foundation.ordered_foundation_gates.find((row) => row.foundation_id === 'MRP015-040');
+  const checks = requiredFoundationCheckIds(gate.foundation_id).map((id) => ({
+    id, status: 'PASS', exit_code: 0,
+    stdout_sha256: 'a'.repeat(64), stderr_sha256: 'b'.repeat(64),
+  }));
+  const failed = checks.map((row) => row.id === 'STAGING_HOSTED_RESOURCE_PARITY'
+    ? { ...row, status: 'FAIL', exit_code: 1 } : row);
+  assert.throws(() => buildFoundationEvidenceRef({ gate, checks: failed }), /checks no PASS/u);
+  const ambiguous = failed.map((row) => ({ ...row, status: 'PASS' }));
+  assert.throws(() => buildFoundationEvidenceRef({ gate, checks: ambiguous }), /checks no PASS/u);
+  const evidence = buildFoundationEvidenceRef({ gate, checks });
+  evidence.checks.find((row) => row.id === 'STAGING_HOSTED_RESOURCE_PARITY').exit_code = 1;
+  assert.equal(validateFoundationEvidenceRef(gate, evidence).status, 'FAIL');
+  assert.equal(validateFoundationEvidenceRef(gate, null).status, 'UNKNOWN');
+});

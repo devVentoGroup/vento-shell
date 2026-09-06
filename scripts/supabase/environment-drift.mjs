@@ -1952,11 +1952,57 @@ function driftCounts(drifts) {
   return counts;
 }
 
-function printControllerResult({ mode, result, output = null, strict = false }) {
+// Observation, certification and process success are deliberately separate.
+// A complete observation can correctly reject an environment. It cannot grant
+// deployment permission or replace the strict hosted certification gate.
+export function controllerOutcome({ mode, result, strict = false } = {}) {
+  const classification = result?.certification;
+  const expectedCertification = mode === 'expected'
+    ? 'EXPECTED_BASELINE_BUILT'
+    : mode === 'local'
+      ? 'LOCAL_CERTIFIED'
+      : mode === 'remote' && result?.environment_role === 'staging'
+        ? 'STAGING_CERTIFIED'
+        : mode === 'remote' && result?.environment_role === 'production'
+          ? 'PRODUCTION_CERTIFIED'
+          : null;
+  const drifts = Array.isArray(result?.drifts) ? result.drifts : null;
+  const knownClassifications = new Set([
+    'UNAUTHORIZED_DRIFT', 'INSUFFICIENT_EVIDENCE',
+    'EXPECTED_OVERLAY', 'TEMPORARY_EXCEPTION',
+  ]);
+  const malformed = !expectedCertification || !drifts
+    || (mode === 'remote' && !ALLOWED_REMOTE_SCOPES.has(result?.remote_scope))
+    || drifts.some((entry) => !knownClassifications.has(entry?.classification));
+  const insufficient = drifts?.some((entry) => entry.classification === 'INSUFFICIENT_EVIDENCE');
+  const unauthorized = drifts?.some((entry) => entry.classification === 'UNAUTHORIZED_DRIFT');
+  const derivedCertification = insufficient
+    ? 'INSUFFICIENT_EVIDENCE'
+    : unauthorized ? 'UNAUTHORIZED_DRIFT' : expectedCertification;
+  const coherent = !malformed && classification === derivedCertification;
+  const certified = coherent && classification === expectedCertification;
+  const observationComplete = mode === 'remote' && coherent
+    && classification !== 'INSUFFICIENT_EVIDENCE';
+  const exitCode = !coherent || (strict && !certified) ? 1 : 0;
+  return {
+    execution_status: exitCode === 0 ? 'PASS' : 'FAIL',
+    observation_status: mode === 'remote'
+      ? observationComplete ? 'PASS' : 'FAIL'
+      : 'NOT_APPLICABLE',
+    environment_certified: mode === 'expected'
+      || (mode === 'remote' && result?.remote_scope !== 'full')
+      ? 'NOT_APPLICABLE' : certified ? 'YES' : 'NO',
+    exit_code: exitCode,
+  };
+}
+
+export function printControllerResult({ mode, result, output = null, strict = false }) {
   const counts = driftCounts(result?.drifts ?? []);
-  const blocking = ['UNAUTHORIZED_DRIFT', 'INSUFFICIENT_EVIDENCE'].includes(result?.certification);
+  const outcome = controllerOutcome({ mode, result, strict });
   console.log(RESULT_START);
-  console.log(`ESTADO: ${strict && blocking ? 'FAIL' : 'PASS'}`);
+  console.log(`ESTADO: ${outcome.execution_status}`);
+  console.log(`OBSERVATION_STATUS: ${outcome.observation_status}`);
+  console.log(`ENVIRONMENT_CERTIFIED: ${outcome.environment_certified}`);
   console.log('OPERACION: SUPABASE_ENVIRONMENT_DRIFT');
   console.log(`MODE: ${safeAscii(mode).toUpperCase()}`);
   console.log(`ENVIRONMENT_ROLE: ${safeAscii(result?.environment_role ?? 'EXPECTED').toUpperCase()}`);
@@ -1986,12 +2032,14 @@ function printControllerResult({ mode, result, output = null, strict = false }) 
   console.log('SECRET_VALUES_IN_EVIDENCE: NO');
   console.log('ERROR: NONE');
   console.log(RESULT_END);
-  if (strict && blocking) process.exitCode = 1;
+  if (outcome.exit_code !== 0) process.exitCode = outcome.exit_code;
 }
 
 function printFailure(mode, error) {
   console.log(RESULT_START);
   console.log('ESTADO: FAIL');
+  console.log(`OBSERVATION_STATUS: ${mode === 'remote' ? 'FAIL' : 'NOT_APPLICABLE'}`);
+  console.log(`ENVIRONMENT_CERTIFIED: ${mode === 'expected' ? 'NOT_APPLICABLE' : 'NO'}`);
   console.log('OPERACION: SUPABASE_ENVIRONMENT_DRIFT');
   console.log(`MODE: ${safeAscii(mode || 'UNKNOWN').toUpperCase()}`);
   console.log(`ERROR: ${safeAscii(error?.message ?? String(error)).replace(/\s+/gu, ' ').trim()}`);
