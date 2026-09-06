@@ -79,6 +79,112 @@ test('inventa Edge Functions con digests, verify_jwt y nombres de secretos sin v
   });
 });
 
+test('MRP015-040 source parity: BOM UTF-8 y CRLF no producen source drift', () => {
+  assert.equal(
+    sha256(Buffer.from('\uFEFFexport const value = 1;\r\n', 'utf8')),
+    sha256('export const value = 1;\n'),
+  );
+});
+
+test('MRP015-040 source parity: ignora assets no declarados y npmrc sin configuracion efectiva', () => {
+  withTempRoot((root) => {
+    const directory = path.join(root, 'supabase', 'functions', 'alpha');
+
+    fs.mkdirSync(path.join(directory, 'assets'), { recursive: true });
+    fs.writeFileSync(
+      path.join(root, 'supabase', 'config.toml'),
+      '[functions.alpha]\nverify_jwt = true\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, 'index.ts'),
+      'export const value = 1;\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, 'deno.json'),
+      '{}\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, '.npmrc'),
+      '# Configuration documentation only\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, 'assets', 'logo.base64.txt'),
+      'not part of runtime source\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, 'assets', 'logo.png'),
+      Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+    );
+
+    const [entry] = inventoryEdgeFunctions({ root });
+
+    assert.deepEqual(
+      entry.files.map((file) => file.path),
+      ['deno.json', 'index.ts'],
+    );
+  });
+});
+
+test('MRP015-040 source parity: falla cerrado cuando static_files requiere soporte explicito', () => {
+  withTempRoot((root) => {
+    const directory = path.join(root, 'supabase', 'functions', 'alpha');
+
+    fs.mkdirSync(path.join(directory, 'assets'), { recursive: true });
+    fs.writeFileSync(
+      path.join(root, 'supabase', 'config.toml'),
+      '[functions.alpha]\nstatic_files = ["./functions/alpha/assets/logo.png"]\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, 'index.ts'),
+      'export const value = 1;\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, 'assets', 'logo.png'),
+      Buffer.from([0x89, 0x50, 0x4e, 0x47]),
+    );
+
+    assert.throws(
+      () => inventoryEdgeFunctions({ root }),
+      /EDGE_FUNCTION_STATIC_FILES_PARITY_UNSUPPORTED:alpha/u,
+    );
+  });
+});
+
+test('MRP015-040 source parity: falla cerrado ante npmrc con configuracion efectiva', () => {
+  withTempRoot((root) => {
+    const directory = path.join(root, 'supabase', 'functions', 'alpha');
+
+    fs.mkdirSync(directory, { recursive: true });
+    fs.writeFileSync(
+      path.join(root, 'supabase', 'config.toml'),
+      '[functions.alpha]\nverify_jwt = true\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, 'index.ts'),
+      'export const value = 1;\n',
+      'utf8',
+    );
+    fs.writeFileSync(
+      path.join(directory, '.npmrc'),
+      '@vento:registry=https://registry.example.invalid\n',
+      'utf8',
+    );
+
+    assert.throws(
+      () => inventoryEdgeFunctions({ root }),
+      /EDGE_FUNCTION_NPMRC_PARITY_UNSUPPORTED:alpha/u,
+    );
+  });
+});
+
 test('normaliza cuerpo remoto de Edge Function al mismo modelo de archivos', () => {
   const remote = normalizeRemoteFunctionBody(
     'alpha',
