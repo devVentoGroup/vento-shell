@@ -163,34 +163,59 @@ policies as (
 ),
 table_grants as (
   select coalesce(jsonb_agg(jsonb_build_object(
-    'schema', g.table_schema,
-    'relation', g.table_name,
-    'grantee', g.grantee,
-    'privilege', g.privilege_type,
-    'grantable', g.is_grantable
-  ) order by g.table_schema, g.table_name, g.grantee, g.privilege_type), '[]'::jsonb) as value
-  from information_schema.table_privileges as g
-  where g.table_schema in (select nspname from governed_schemas)
-    and g.grantee in ('anon', 'authenticated', 'service_role')
+    'schema', n.nspname,
+    'relation', c.relname,
+    'grantor', pg_catalog.pg_get_userbyid(a.grantor),
+    'grantee', case
+      when a.grantee = 0 then 'PUBLIC'
+      else pg_catalog.pg_get_userbyid(a.grantee)
+    end,
+    'privilege', a.privilege_type,
+    'grantable', a.is_grantable
+  ) order by
+    n.nspname,
+    c.relname,
+    case when a.grantee = 0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(a.grantee) end,
+    a.privilege_type,
+    pg_catalog.pg_get_userbyid(a.grantor)
+  ), '[]'::jsonb) as value
+  from pg_catalog.pg_class as c
+  join governed_schemas as n on n.oid = c.relnamespace
+  cross join lateral pg_catalog.aclexplode(c.relacl) as a
+  where c.relkind in ('r', 'p', 'v', 'm', 'f')
+    and (
+      case when a.grantee = 0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(a.grantee) end
+    ) in ('anon', 'authenticated', 'service_role')
 ),
 routine_grants as (
   select coalesce(jsonb_agg(jsonb_build_object(
-    'schema', g.routine_schema,
-    'routine', g.routine_name,
-    'grantee', g.grantee,
-    'privilege', g.privilege_type,
-    'grantable', g.is_grantable
-  ) order by g.routine_schema, g.routine_name, g.grantee, g.privilege_type), '[]'::jsonb) as value
-  from information_schema.routine_privileges as g
-  where g.routine_schema in (select nspname from governed_schemas)
-    and g.grantee in ('anon', 'authenticated', 'service_role', 'PUBLIC')
-),
-extensions as (
-  select coalesce(jsonb_agg(jsonb_build_object(
-    'name', e.extname,
-    'version', e.extversion
-  ) order by e.extname), '[]'::jsonb) as value
-  from pg_catalog.pg_extension as e
+    'schema', n.nspname,
+    'routine', p.proname,
+    'identity_args', pg_catalog.pg_get_function_identity_arguments(p.oid),
+    'grantor', pg_catalog.pg_get_userbyid(a.grantor),
+    'grantee', case
+      when a.grantee = 0 then 'PUBLIC'
+      else pg_catalog.pg_get_userbyid(a.grantee)
+    end,
+    'privilege', a.privilege_type,
+    'grantable', a.is_grantable
+  ) order by
+    n.nspname,
+    p.proname,
+    pg_catalog.pg_get_function_identity_arguments(p.oid),
+    case when a.grantee = 0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(a.grantee) end,
+    a.privilege_type,
+    pg_catalog.pg_get_userbyid(a.grantor)
+  ), '[]'::jsonb) as value
+  from pg_catalog.pg_proc as p
+  join governed_schemas as n on n.oid = p.pronamespace
+  cross join lateral pg_catalog.aclexplode(
+    coalesce(p.proacl, pg_catalog.acldefault('f'::"char", p.proowner))
+  ) as a
+  where p.prokind in ('f', 'p')
+    and (
+      case when a.grantee = 0 then 'PUBLIC' else pg_catalog.pg_get_userbyid(a.grantee) end
+    ) in ('anon', 'authenticated', 'service_role', 'PUBLIC')
 ),
 publications as (
   select coalesce(jsonb_agg(jsonb_build_object(
@@ -218,7 +243,6 @@ types as (
   where t.typtype in ('e', 'd')
 )
 select jsonb_build_object(
-  'postgres_version', current_setting('server_version'),
   'governed_schemas', coalesce((select jsonb_agg(nspname order by nspname) from governed_schemas), '[]'::jsonb),
   'relations', (select value from relations),
   'views', (select value from views),
@@ -230,7 +254,6 @@ select jsonb_build_object(
   'policies', (select value from policies),
   'table_grants', (select value from table_grants),
   'routine_grants', (select value from routine_grants),
-  'extensions', (select value from extensions),
   'publications', (select value from publications),
   'types', (select value from types),
   'vital_boundary', jsonb_build_object(
@@ -238,6 +261,13 @@ select jsonb_build_object(
     'included_in_governed_schemas', false
   )
 )::text as fingerprint;
+`;
+
+const EXTENSION_CAPABILITIES_SQL = String.raw`
+select coalesce(jsonb_agg(jsonb_build_object(
+  'name', e.extname
+) order by e.extname), '[]'::jsonb)::text as extension_capabilities
+from pg_catalog.pg_extension as e;
 `;
 
 const STORAGE_BUCKETS_SQL = String.raw`
@@ -826,8 +856,22 @@ function runLocalSql(root, projectId, query) {
   return normalizeSqlValue(result.stdout.trim());
 }
 
-function extensionNames(fingerprint) {
-  return new Set((fingerprint?.extensions ?? []).map((entry) => String(entry?.name ?? '')));
+function extensionNames(capabilities) {
+  return new Set((capabilities ?? []).map((entry) => String(entry?.name ?? '')));
+}
+
+function requiredExtensionCapabilities(expected, localObserved) {
+  const required = new Set();
+  if (Array.isArray(expected?.hosted_resources?.cron_jobs)
+    && expected.hosted_resources.cron_jobs.length > 0) {
+    required.add('pg_cron');
+  }
+  const functions = localObserved?.sql_fingerprint?.functions ?? [];
+  if (functions.some((entry) =>
+    /\bnet\.http_(?:get|post|delete)\s*\(/u.test(String(entry?.definition ?? '')))) {
+    required.add('pg_net');
+  }
+  return [...required].sort((left, right) => left.localeCompare(right, 'en'));
 }
 
 export function observeLocalDatabase({ root = repoRootFromModule(), expected = null } = {}) {
@@ -837,10 +881,11 @@ export function observeLocalDatabase({ root = repoRootFromModule(), expected = n
   if (!projectId) fail('LOCAL_PROJECT_ID_MISSING');
   const harness = runHarness({ mode: 'incremental', root });
   const fingerprint = runLocalSql(root, projectId, FINGERPRINT_SQL);
+  const extensionCapabilities = runLocalSql(root, projectId, EXTENSION_CAPABILITIES_SQL);
   const storageBuckets = runLocalSql(root, projectId, STORAGE_BUCKETS_SQL);
   let cronJobs = [];
   let cronEvidence = 'NOT_APPLICABLE';
-  if (extensionNames(fingerprint).has('pg_cron')) {
+  if (extensionNames(extensionCapabilities).has('pg_cron')) {
     cronJobs = runLocalSql(root, projectId, CRON_JOBS_SQL);
     cronEvidence = 'PASS';
   }
@@ -866,6 +911,7 @@ export function observeLocalDatabase({ root = repoRootFromModule(), expected = n
       pass: true,
     },
     sql_fingerprint: fingerprint,
+    extension_capabilities: extensionCapabilities,
     storage_buckets: storageBuckets,
     cron: {
       evidence: cronEvidence,
@@ -1346,17 +1392,24 @@ export async function observeRemoteEnvironment({
       token, pathname: `/v1/projects/${ref}/secrets`, fetchImpl,
     })));
     const sqlFingerprint = await captureSurface('sql_fingerprint', async () => remoteReadOnlySql(ref, token, FINGERPRINT_SQL, fetchImpl));
+    const extensionCapabilities = await captureSurface(
+      'extension_capabilities',
+      async () => remoteReadOnlySql(ref, token, EXTENSION_CAPABILITIES_SQL, fetchImpl),
+    );
     const storageBuckets = await captureSurface('storage_buckets', async () => remoteReadOnlySql(ref, token, STORAGE_BUCKETS_SQL, fetchImpl));
-    const cron = sqlFingerprint.status === 'PASS' && !extensionNames(sqlFingerprint.value).has('pg_cron')
+    const cron = extensionCapabilities.status === 'PASS'
+      && !extensionNames(extensionCapabilities.value).has('pg_cron')
       ? { name: 'cron_jobs', status: 'NOT_APPLICABLE', value: [] }
-      : await captureSurface('cron_jobs', async () => remoteReadOnlySql(ref, token, CRON_JOBS_SQL, fetchImpl));
+      : extensionCapabilities.status === 'PASS'
+        ? await captureSurface('cron_jobs', async () => remoteReadOnlySql(ref, token, CRON_JOBS_SQL, fetchImpl))
+        : { name: 'cron_jobs', status: 'INSUFFICIENT_EVIDENCE', error: 'EXTENSION_CAPABILITIES_UNAVAILABLE' };
     const internalJobSecretKeys = await captureSurface(
       'internal_job_secret_keys',
       async () => remoteReadOnlySql(ref, token, INTERNAL_JOB_SECRET_KEYS_SQL, fetchImpl),
     );
     surfaces.push(
       functionList, auth, storage, realtime, postgrest, secrets,
-      sqlFingerprint, storageBuckets, cron, internalJobSecretKeys,
+      sqlFingerprint, extensionCapabilities, storageBuckets, cron, internalJobSecretKeys,
     );
   }
 
@@ -1809,20 +1862,38 @@ export function compareRemote({ expected, localObserved = null, remoteObserved, 
   const postgrest = surfaceValueOrInsufficient(drifts, surfaces, 'postgrest', environment);
   const secrets = surfaceValueOrInsufficient(drifts, surfaces, 'secret_names', environment);
   const sqlFingerprint = surfaceValueOrInsufficient(drifts, surfaces, 'sql_fingerprint', environment);
+  const extensionCapabilities = surfaceValueOrInsufficient(
+    drifts, surfaces, 'extension_capabilities', environment,
+  );
   const storageBuckets = surfaceValueOrInsufficient(drifts, surfaces, 'storage_buckets', environment);
   const versionedHostedCron = Array.isArray(expected?.hosted_resources?.cron_jobs)
     ? expected.hosted_resources.cron_jobs
     : null;
   const localCronApplicable = localObserved?.cron?.evidence === 'PASS';
-  const hostedPgCronPresent = Boolean(
-    sqlFingerprint && extensionNames(sqlFingerprint).has('pg_cron')
-  );
+  const hostedExtensions = extensionCapabilities
+    ? extensionNames(extensionCapabilities)
+    : new Set();
+  const hostedPgCronPresent = hostedExtensions.has('pg_cron');
   const hostedCronRequired = Boolean(versionedHostedCron?.length);
   const cronJobs = hostedPgCronPresent
     ? surfaceValueOrInsufficient(drifts, surfaces, 'cron_jobs', environment)
     : null;
 
-  if (hostedCronRequired && !hostedPgCronPresent) {
+  if (extensionCapabilities) {
+    for (const capability of requiredExtensionCapabilities(expected, localObserved)) {
+      if (capability === 'pg_cron' || hostedExtensions.has(capability)) continue;
+      addDrift(drifts, {
+        surface: 'extensions.capability',
+        identity: capability,
+        environment,
+        expected: 'PRESENT',
+        observed: 'ABSENT',
+        reason: 'A candidate SQL capability requires a hosted Postgres extension that is absent.',
+      });
+    }
+  }
+
+  if (extensionCapabilities && hostedCronRequired && !hostedPgCronPresent) {
     addDrift(drifts, {
       surface: 'cron.extension',
       identity: remoteObserved.identity.project_ref,
@@ -2248,6 +2319,8 @@ if (isCli) await main();
 
 export const __test = Object.freeze({
   FINGERPRINT_SQL,
+  EXTENSION_CAPABILITIES_SQL,
+  requiredExtensionCapabilities,
   STORAGE_BUCKETS_SQL,
   CRON_JOBS_SQL,
   MANAGED_SCHEMAS,
