@@ -555,6 +555,46 @@ test('comparacion de Edge Functions detecta presencia, verify_jwt y source drift
   ]);
 });
 
+test('MRP015-040 hosted function policy: SOLO_LOCAL ausente no deriva drift y presencia hosted si bloquea', () => {
+  const expected = [
+    { slug: 'hosted', verify_jwt: true, source_digest: 'aaa', files: [] },
+    { slug: 'local-only', verify_jwt: true, source_digest: 'bbb', files: [] },
+  ];
+  const observedHosted = [{
+    slug: 'hosted',
+    verify_jwt: true,
+    source_digest: 'aaa',
+    files: [{ path: 'index.ts', sha256: 'x', bytes: 1 }],
+  }];
+  const policy = {
+    default_disposition: 'REQUIRED_HOSTED',
+    solo_local: ['local-only'],
+  };
+  const cleanDrifts = [];
+  compareFunctionSets(expected, observedHosted, cleanDrifts, 'staging', policy);
+  assert.deepEqual(cleanDrifts, []);
+
+  const unexpectedDrifts = [];
+  compareFunctionSets(
+    expected,
+    [
+      ...observedHosted,
+      {
+        slug: 'local-only',
+        verify_jwt: true,
+        source_digest: 'bbb',
+        files: [{ path: 'index.ts', sha256: 'y', bytes: 1 }],
+      },
+    ],
+    unexpectedDrifts,
+    'staging',
+    policy,
+  );
+  assert.equal(unexpectedDrifts.length, 1);
+  assert.equal(unexpectedDrifts[0].surface, 'edge_functions');
+  assert.equal(unexpectedDrifts[0].identity, 'local-only');
+});
+
 test('local no certifica un candidate con worktree sucio', () => {
   const result = compareLocal({
     expected: {
@@ -1072,6 +1112,50 @@ function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKey
   }));
 }
 
+test('MRP015-040 hosted contract v2: full STAGING usa config hosted explicita y no site_url local', () => {
+  const cron = [{
+    jobname: 'anima_shift_runtime_processor_every_5m',
+    schedule: '*/5 * * * *',
+    active: true,
+  }];
+  const result = corr011HostedCronFixture(cron, ['shift_runtime_processor_cron'], (fixture) => {
+    fixture.expected.config.contract.data_api.schemas = ['local-only-schema'];
+    fixture.expected.config.contract.auth.site_url = 'http://localhost:3000';
+    fixture.expected.hosted_resources.environment_contracts = {
+      STAGING: {
+        config: {
+          data_api: {
+            schemas: ['public'],
+            extra_search_path: ['public', 'extensions'],
+            max_rows: 1000,
+          },
+          auth: {
+            signup_enabled: true,
+            anonymous_sign_ins_enabled: false,
+            jwt_expiry: 3600,
+            site_url: 'https://staging.example.test',
+          },
+          storage: { file_size_limit_bytes: 52428800 },
+          realtime: { suspended: false },
+        },
+        edge_functions: {
+          default_disposition: 'REQUIRED_HOSTED',
+          solo_local: [],
+        },
+      },
+    };
+    const postgrest = fixture.remoteObserved.surfaces.find((entry) => entry.name === 'postgrest');
+    postgrest.value.db_schema = 'public';
+    postgrest.value.db_extra_search_path = 'extensions,public';
+    const auth = fixture.remoteObserved.surfaces.find((entry) => entry.name === 'auth');
+    auth.value.site_url = 'https://staging.example.test';
+    return fixture;
+  });
+
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
 test('MRP015-040 extension capabilities: exige pg_net solo cuando el SQL canonico usa net.http_*', () => {
   const cron = [{
     jobname: 'anima_shift_runtime_processor_every_5m',
@@ -1207,6 +1291,40 @@ test('CORR-011 hosted resource baseline: versiona los siete cron AS-IS sin coman
 
   assert.equal(baseline.cron_commands_forbidden, true);
   assert.equal(baseline.secret_values_forbidden, true);
+  assert.equal(baseline.schema_version, 2);
+  assert.deepEqual(
+    baseline.edge_environment_requirements.local_only,
+    ['GOOGLE_WALLET_EMPLOYEE_CLASS_ID', 'REVENUECAT_WEBHOOK_SECRET'],
+  );
+  assert.equal(
+    baseline.edge_environment_requirements.required_all.includes('GOOGLE_WALLET_EMPLOYEE_CLASS_ID'),
+    false,
+  );
+  assert.equal(
+    baseline.edge_environment_requirements.required_all.includes('REVENUECAT_WEBHOOK_SECRET'),
+    false,
+  );
+  const staging = baseline.environment_contracts.STAGING;
+  assert.deepEqual(
+    staging.config.data_api.schemas,
+    ['public', 'api', 'graphql_public'],
+  );
+  assert.deepEqual(
+    staging.config.data_api.extra_search_path,
+    ['public', 'extensions'],
+  );
+  assert.equal(staging.config.auth.site_url, 'https://os.ventogroup.co');
+  assert.equal(staging.edge_functions.default_disposition, 'REQUIRED_HOSTED');
+  assert.deepEqual(
+    staging.edge_functions.solo_local,
+    [
+      'club-revenuecat-webhook',
+      'club-settle-booster',
+      'club-sync-earn-events',
+      'employee-apple-pass',
+      'employee-wallet-pass',
+    ],
+  );
 
   const serialized = JSON.stringify(baseline);
   assert.equal(/"command"\s*:|"command_sha256"\s*:/u.test(serialized), false);
@@ -1248,6 +1366,7 @@ test('CORR-011 explicit Edge environment requirements: clasifica exactamente los
   const classified = [
     ...requirements.required_all,
     ...requirements.optional_or_defaulted,
+    ...requirements.local_only,
     ...requirements.required_any_of.flatMap((entry) => entry.names),
   ];
 
@@ -1287,6 +1406,7 @@ test('CORR-011 explicit Edge environment requirements: optional/defaulted ausent
   const referenced = [
     ...requirements.required_all,
     ...requirements.optional_or_defaulted,
+    ...requirements.local_only,
     ...requirements.required_any_of.flatMap((entry) => entry.names),
   ];
 
@@ -1319,6 +1439,7 @@ test('CORR-011 explicit Edge environment requirements: distingue REQUIRED_ALL de
   const referenced = [
     ...requirements.required_all,
     ...requirements.optional_or_defaulted,
+    ...requirements.local_only,
     ...requirements.required_any_of.flatMap((entry) => entry.names),
   ];
 
@@ -1361,6 +1482,7 @@ test('CORR-011 explicit Edge environment requirements: una referencia nueva sin 
   const referenced = [
     ...requirements.required_all,
     ...requirements.optional_or_defaulted,
+    ...requirements.local_only,
     ...requirements.required_any_of.flatMap((entry) => entry.names),
     'NEW_UNCLASSIFIED_EDGE_ENV',
   ];

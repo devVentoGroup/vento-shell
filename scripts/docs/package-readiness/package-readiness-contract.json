@@ -588,6 +588,7 @@
         "secret_values_forbidden": true
       },
       "hosted_resource_baseline": {
+        "schema_version": 2,
         "source": "docs/plan-canonico/modular/bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md",
         "cron_jobs": [
           {
@@ -636,12 +637,10 @@
             "ACCOUNT_DELETION_WORKER_SECRET",
             "ANIMA_OWNER_DELETE_UID",
             "GOOGLE_WALLET_CLASS_ID",
-            "GOOGLE_WALLET_EMPLOYEE_CLASS_ID",
             "GOOGLE_WALLET_ISSUER_ID",
             "GOOGLE_WALLET_SERVICE_ACCOUNT_JSON",
             "INTERNAL_NOTIFY_SECRET",
             "RESEND_API_KEY",
-            "REVENUECAT_WEBHOOK_SECRET",
             "WOMPI_INTEGRITY_SECRET",
             "WOMPI_PUBLIC_KEY"
           ],
@@ -680,7 +679,52 @@
             "WOMPI_ENVIRONMENT",
             "WOMPI_RETURN_APP_SCHEME",
             "WOMPI_RETURN_BASE_URL"
+          ],
+          "local_only": [
+            "GOOGLE_WALLET_EMPLOYEE_CLASS_ID",
+            "REVENUECAT_WEBHOOK_SECRET"
           ]
+        },
+        "environment_contracts": {
+          "STAGING": {
+            "disposition_authority": "MRP015-040",
+            "config": {
+              "data_api": {
+                "schemas": [
+                  "public",
+                  "api",
+                  "graphql_public"
+                ],
+                "extra_search_path": [
+                  "public",
+                  "extensions"
+                ],
+                "max_rows": 1000
+              },
+              "auth": {
+                "signup_enabled": true,
+                "anonymous_sign_ins_enabled": false,
+                "jwt_expiry": 3600,
+                "site_url": "https://os.ventogroup.co"
+              },
+              "storage": {
+                "file_size_limit_bytes": 52428800
+              },
+              "realtime": {
+                "suspended": false
+              }
+            },
+            "edge_functions": {
+              "default_disposition": "REQUIRED_HOSTED",
+              "solo_local": [
+                "club-revenuecat-webhook",
+                "club-settle-booster",
+                "club-sync-earn-events",
+                "employee-apple-pass",
+                "employee-wallet-pass"
+              ]
+            }
+          }
         }
       }
     }
