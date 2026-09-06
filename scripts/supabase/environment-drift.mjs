@@ -29,6 +29,7 @@ const DEFAULT_SUPABASE_SECRET_NAMES = new Set([
   'SUPABASE_SERVICE_ROLE_KEY',
 ]);
 const MANAGED_SCHEMAS = new Set([
+  '_realtime',
   'auth',
   'extensions',
   'graphql',
@@ -36,6 +37,7 @@ const MANAGED_SCHEMAS = new Set([
   'information_schema',
   'net',
   'pg_catalog',
+  'pgbouncer',
   'realtime',
   'storage',
   'supabase_functions',
@@ -51,8 +53,8 @@ with governed_schemas as (
   from pg_catalog.pg_namespace as n
   where n.nspname !~ '^pg_'
     and n.nspname not in (
-      'auth', 'extensions', 'graphql', 'graphql_public', 'information_schema',
-      'net', 'realtime', 'storage', 'supabase_functions', 'supabase_migrations',
+      '_realtime', 'auth', 'extensions', 'graphql', 'graphql_public', 'information_schema',
+      'net', 'pgbouncer', 'realtime', 'storage', 'supabase_functions', 'supabase_migrations',
       'vault', 'cron', 'vital'
     )
 ),

@@ -867,6 +867,45 @@ test('MRP015-040 SQL fingerprint: separa version de PostgreSQL y extensiones adm
   assert.doesNotMatch(capabilities, /extversion/u);
 });
 
+
+test('MRP015-040 SQL fingerprint: excluye _realtime y pgbouncer administrados por Supabase', () => {
+  assert.equal(
+    __test.MANAGED_SCHEMAS.has('_realtime'),
+    true,
+  );
+
+  assert.equal(
+    __test.MANAGED_SCHEMAS.has('pgbouncer'),
+    true,
+  );
+
+  const sql = __test.FINGERPRINT_SQL;
+
+  const start = sql.indexOf(
+    'with governed_schemas as (',
+  );
+
+  const end = sql.indexOf(
+    '),\nrelations as (',
+    start,
+  );
+
+  assert.ok(start >= 0);
+  assert.ok(end > start);
+
+  const governed = sql.slice(start, end);
+
+  assert.match(
+    governed,
+    /'_realtime'/u,
+  );
+
+  assert.match(
+    governed,
+    /'pgbouncer'/u,
+  );
+});
+
 test('captura fingerprints mayores al maxBuffer predeterminado de Node', () => {
   assert.equal(__test.PROCESS_OUTPUT_MAX_BYTES, 32 * 1024 * 1024);
   assert.ok(__test.PROCESS_OUTPUT_MAX_BYTES > 1024 * 1024);
