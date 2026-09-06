@@ -165,6 +165,48 @@ test('CORR-011 multipart Edge Function body: consume server-side unbundle sin in
   );
 });
 
+test('MRP015-040 server-side unbundle: normaliza source/index.ts al path local del entrypoint', () => {
+  const boundary = 'vento-mrp015-040-entrypoint';
+  const source = 'export const recovered = true;\r\n';
+  const multipart = Buffer.from(
+    [
+      `--${boundary}\r\n`,
+      'Content-Disposition: form-data; name="metadata"\r\n',
+      'Content-Type: application/json\r\n',
+      '\r\n',
+      '{"deno2_entrypoint_path":"source/index.ts"}',
+      '\r\n',
+      `--${boundary}\r\n`,
+      'Content-Disposition: form-data; name="file"; filename="index.ts"\r\n',
+      'Supabase-Path: source/index.ts\r\n',
+      'Content-Type: application/typescript\r\n',
+      '\r\n',
+      source,
+      '\r\n',
+      `--${boundary}--\r\n`,
+    ].join(''),
+    'utf8',
+  );
+
+  const payload = parseRemoteFunctionMultipart(
+    'recovered',
+    multipart,
+    `multipart/form-data; boundary=${boundary}`,
+  );
+
+  assert.equal(payload.entrypoint_path, 'source/index.ts');
+
+  const normalized = normalizeRemoteFunctionBody(
+    'recovered',
+    { verify_jwt: true, status: 'ACTIVE', version: 1, ezbr_sha256: 'bundle' },
+    payload,
+  );
+
+  assert.equal(normalized.files.length, 1);
+  assert.equal(normalized.files[0].path, 'index.ts');
+  assert.equal(normalized.files[0].sha256, sha256('export const recovered = true;\n'));
+});
+
 test('CORR-011 multipart Edge Function body: rechaza rutas multipart que escapen del Function root', () => {
   const boundary = 'vento-corr-011-unsafe';
 
