@@ -1334,6 +1334,38 @@ CURRENT_EXECUTABLE_WORK
 Cuando `CURRENT_EXECUTABLE_WORK` sea una fundación o un prerrequisito físico, se resuelve primero esa identidad. El package conserva el turno como consumidor bloqueado y no se inicia, despliega ni cierra por inferencia.
 
 Para Supabase, la secuencia global previa al package es R0 → `MRP015-000` → `MRP015-010` → `MRP015-020` → `MRP015-030` → `MRP015-040`. El candidato `MRP015-050` pertenece al ciclo del package y precede al despliegue remoto.
+
+<!-- CORR-011-HOSTED-PARITY:START -->
+### MRP015-040 — paridad hosted obligatoria
+
+`MRP015-040 / RESOURCE_MANIFEST_PASS` no queda PASS solo porque el repositorio pueda construir el manifiesto EXPECTED.
+
+Debe completar las tres evidencias:
+
+```text
+MIGRATION_MANIFEST
+EXPECTED_RESOURCE_MANIFEST
+STAGING_HOSTED_RESOURCE_PARITY
+```
+
+La tercera ejecuta la observación remota sobre el STAGING canónico:
+
+```powershell
+npm run supabase:drift:remote -- --environment-role staging --project-ref rcrxixmqhrndcervbllp --owner SUPA-TRANS-015 --scope full --strict
+```
+
+El proceso Node que ejecuta el controlador requiere `SUPABASE_ACCESS_TOKEN` disponible en su entorno para consultar el Management API. La autenticación persistida por `supabase login` puede estar almacenada en el credential store nativo del sistema y no equivale a exportar esa variable al proceso.
+
+El token se utiliza únicamente para observación soportada y no se imprime, versiona ni incorpora a evidencia.
+
+El baseline hosted pre-E5 incluye:
+
+- los cron operativos AS-IS mediante nombre, schedule y estado activo;
+- presencia de claves internas requeridas sin sus valores;
+- las demás superficies contractuales ya cubiertas por el controlador full.
+
+Un FAIL de esta evidencia no se sustituye por una reparación manual ad hoc. Primero se identifica la superficie divergente, se resuelve mediante su propietario físico y después se vuelve a registrar `MRP015-040`.
+<!-- CORR-011-HOSTED-PARITY:END -->
 <!-- CURRENT-EXECUTABLE-WORK-CORR-002:END -->
 
 ---

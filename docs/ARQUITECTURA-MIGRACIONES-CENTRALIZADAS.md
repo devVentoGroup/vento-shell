@@ -231,6 +231,34 @@ redeploy de Edge Functions
 
 Toda reparación pertenece a su tarea o paquete propietario y debe volver a producir baseline y comparación después de la corrección.
 
+<!-- CORR-011-HOSTED-PARITY:START -->
+## Paridad hosted pre-E5 — MRP015-040
+
+La fundación pre-E5 de Supabase no puede certificar paridad únicamente construyendo el estado EXPECTED local. `MRP015-040 / RESOURCE_MANIFEST_PASS` exige conjuntamente:
+
+1. `MIGRATION_MANIFEST`;
+2. `EXPECTED_RESOURCE_MANIFEST`;
+3. `STAGING_HOSTED_RESOURCE_PARITY` contra el STAGING identificado por `rcrxixmqhrndcervbllp`, con scope `full` y comportamiento fail-closed.
+
+El contrato hosted pre-E5 se versiona dentro del contrato de package-readiness. Representa el baseline operativo AS-IS que debe existir antes de que los paquetes E5 comiencen a transformarlo.
+
+Para cron se versionan exclusivamente:
+
+- identidad `jobname`;
+- `schedule`;
+- estado `active`.
+
+No se versionan comandos cron, hashes de comandos, headers, tokens ni credenciales.
+
+Para `internal_job_secrets` se versionan exclusivamente las claves que deben estar configuradas. El valor secreto nunca forma parte de EXPECTED, evidencia, diff ni logs.
+
+PRODUCTION continúa siendo OBSERVED y no se convierte por inferencia en plantilla de STAGING. Una disposición futura como `FUSIONAR`, `MOVER` o `RETIRAR` no modifica anticipadamente el baseline pre-E5: esa transformación corresponde al paquete propietario que la materialice.
+
+La observación hosted permanece read-only. Detectar ausencia de cron, secreto, bucket, configuración, Edge Function u otra superficie no autoriza su creación automática. El resultado debe bloquear la entrada a implementación hasta que exista una reparación gobernada y posteriormente se regenere la evidencia de la fundación.
+
+La falta de credencial del Management API, una superficie requerida ilegible o una autoridad EXPECTED ausente producen `INSUFFICIENT_EVIDENCE`; nunca PASS implícito.
+<!-- CORR-011-HOSTED-PARITY:END -->
+
 ## Fronteras de responsabilidad
 
 | Tarea | Responsabilidad |
