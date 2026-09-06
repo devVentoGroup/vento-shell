@@ -257,6 +257,27 @@ PRODUCTION continúa siendo OBSERVED y no se convierte por inferencia en plantil
 La observación hosted permanece read-only. Detectar ausencia de cron, secreto, bucket, configuración, Edge Function u otra superficie no autoriza su creación automática. El resultado debe bloquear la entrada a implementación hasta que exista una reparación gobernada y posteriormente se regenere la evidencia de la fundación.
 
 La falta de credencial del Management API, una superficie requerida ilegible o una autoridad EXPECTED ausente producen `INSUFFICIENT_EVIDENCE`; nunca PASS implícito.
+
+### Aceptación del detector y certificación del ambiente
+
+La aceptación técnica de `DELIV-PKG-015::CORR-011` verifica el detector, sus consumidores y la preservación de los bloqueos. No exige reparar recursos hosted fuera de sus cambios autorizados.
+
+Se distinguen tres resultados independientes:
+
+| Resultado | Significado | No significa |
+| --- | --- | --- |
+| `OBSERVATION_STATUS: PASS` | La comparación dispone de evidencia suficiente para el scope informado, aunque detecte diferencias. | Ambiente certificado o despliegue autorizado. |
+| `ENVIRONMENT_CERTIFIED: YES` | La evaluación del ambiente no conserva diferencias bloqueantes; para remoto requiere scope `full`. | Permiso de despliegue, cutover o promoción. |
+| Pruebas de aceptación del detector en PASS | Casos sintéticos positivos y negativos comprueban el comportamiento esperado y sus códigos de salida. | Certificación de STAGING o ejecución real del paquete. |
+
+`ESTADO` continúa expresando el resultado del comando bajo su modo de ejecución. `CERTIFICATION` conserva su clasificación ambiental original. Una observación completa con `UNAUTHORIZED_DRIFT` mantiene `ENVIRONMENT_CERTIFIED: NO` y termina con código 1 cuando se usa `--strict`. La ausencia de credencial, una superficie ilegible o una salida incoherente no cuentan como una observación completa válida.
+
+Las comprobaciones `environment` e `history` conservan su alcance limitado: el campo `ENVIRONMENT_CERTIFIED` informa `NOT_APPLICABLE`, nunca una certificación remota `full`. Construir EXPECTED tampoco equivale a observar un ambiente.
+
+El resultado negativo esperado se prueba mediante fixtures sintéticos y aserciones explícitas; no mediante aceptar cualquier error, capturar indiscriminadamente exit 1 o suprimir `--strict`. La validación de consistencia `docs:package:readiness:check` puede terminar correctamente y seguir informando `IMPLEMENTATION_READY: NO`.
+
+Esta regularización no cambia el scope, la autoridad EXPECTED, las diferencias detectadas, los controles de autorización, la evidencia requerida de `MRP015-040` ni el orden de ejecución. Una evidencia de prueba del detector no se transforma en `RESOURCE_MANIFEST_PASS`. El cierre de la corrección del detector y la reparación ambiental tienen resultados separados; la preparación física seguirá bloqueada mientras falte la evidencia ambiental requerida.
+
 <!-- CORR-011-HOSTED-PARITY:END -->
 
 ## Fronteras de responsabilidad

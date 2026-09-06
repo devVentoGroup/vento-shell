@@ -1365,6 +1365,34 @@ El baseline hosted pre-E5 incluye:
 - las demás superficies contractuales ya cubiertas por el controlador full.
 
 Un FAIL de esta evidencia no se sustituye por una reparación manual ad hoc. Primero se identifica la superficie divergente, se resuelve mediante su propietario físico y después se vuelve a registrar `MRP015-040`.
+
+### Validar CORR-011 sin confundirla con la reparación de STAGING
+
+La aceptación del detector se comprueba con las pruebas completas y con los casos específicos `CORR-011_ACCEPTANCE`:
+
+```powershell
+node --test scripts/supabase/environment-drift.test.mjs
+node --test --test-name-pattern=CORR-011_ACCEPTANCE scripts/supabase/environment-drift.test.mjs
+node --test scripts/docs/package-readiness-scanner.test.mjs
+```
+
+Estos casos no usan PAT, no contactan Supabase y no modifican recursos remotos. Verifican una comparación sintética compatible, diferencias conocidas, evidencia insuficiente, separación de scopes, ausencia de valores secretos en los escenarios ejercitados y el código de salida real de la salida estructurada.
+
+La validación de aceptación que exigía un PASS hosted de `supabase:drift:remote --scope full --strict` se sustituye explícitamente en el registro abierto de `CORR-011` por la batería `CORR-011_ACCEPTANCE`. El comando original queda preservado en la trazabilidad del registro y permanece como gate de certificación ambiental; no se desactiva ni se convierte un FAIL remoto en PASS.
+
+Para una observación completa que detecta diferencias, el resultado remoto estricto conserva:
+
+```text
+ESTADO: FAIL
+OBSERVATION_STATUS: PASS
+ENVIRONMENT_CERTIFIED: NO
+CERTIFICATION: UNAUTHORIZED_DRIFT
+```
+
+La prueba negativa puede pasar porque comprueba esa respuesta exacta. El ambiente continúa sin certificarse. Un error de credencial o de lectura no sirve como sustituto de esa prueba.
+
+`docs:package:readiness:check -- --package GAP-PKG-001` verifica consistencia del registro, no autoriza una implementación. Siempre se leen separadamente `IMPLEMENTATION_READY` y las dependencias pendientes. No registrar `MRP015-040`, no marcar `VERIFIED` y no ejecutar `docs:correction:finish` como consecuencia automática de estos tests.
+
 <!-- CORR-011-HOSTED-PARITY:END -->
 <!-- CURRENT-EXECUTABLE-WORK-CORR-002:END -->
 
