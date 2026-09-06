@@ -13,9 +13,11 @@ import {
   compareLocal,
   compareRemote,
   extractSqlScalar,
+  fetchRemoteFunctionBody,
   inventoryEdgeFunctions,
   normalizeRemoteFunctionBody,
   observeRemoteEnvironment,
+  parseRemoteFunctionMultipart,
   parseToml,
   sha256,
   stableStringify,
@@ -85,6 +87,105 @@ test('normaliza cuerpo remoto de Edge Function al mismo modelo de archivos', () 
   assert.equal(remote.files[0].path, 'index.ts');
   assert.equal(remote.files[0].sha256, sha256('export const x = 1;\n'));
   assert.match(remote.source_digest, /^[a-f0-9]{64}$/u);
+});
+
+test('CORR-011 multipart Edge Function body: consume server-side unbundle sin interpretar ESZIP como JSON', async () => {
+  const boundary = 'vento-corr-011-boundary';
+
+  const multipart = Buffer.from(
+    [
+      `--${boundary}\r\n`,
+      'Content-Disposition: form-data; name="metadata"\r\n',
+      'Content-Type: application/json\r\n',
+      '\r\n',
+      '{"deno2_entrypoint_path":"index.ts"}',
+      '\r\n',
+      `--${boundary}\r\n`,
+      'Content-Disposition: form-data; name="file"; filename="index.ts"\r\n',
+      'Supabase-Path: alpha/lib/index.ts\r\n',
+      'Content-Type: application/typescript\r\n',
+      '\r\n',
+      'export const value = 1;\r\n\r\n',
+      `--${boundary}--\r\n`,
+    ].join(''),
+    'utf8',
+  );
+
+  let observedAccept = null;
+
+  const payload = await fetchRemoteFunctionBody({
+    token: 'mock-management-token',
+    projectRef: 'staging-ref',
+    slug: 'alpha',
+    fetchImpl: async (_url, options) => {
+      observedAccept = options.headers.Accept;
+
+      return {
+        ok: true,
+        status: 200,
+        headers: {
+          get(name) {
+            return String(name).toLowerCase() === 'content-type'
+              ? `multipart/form-data; boundary=${boundary}`
+              : null;
+          },
+        },
+        async arrayBuffer() {
+          return multipart.buffer.slice(
+            multipart.byteOffset,
+            multipart.byteOffset + multipart.byteLength,
+          );
+        },
+      };
+    },
+  });
+
+  assert.equal(observedAccept, 'multipart/form-data');
+  assert.equal(payload.files.length, 1);
+  assert.equal(payload.files[0].name, 'alpha/lib/index.ts');
+
+  const normalized = normalizeRemoteFunctionBody(
+    'alpha',
+    {
+      verify_jwt: true,
+      status: 'ACTIVE',
+      version: 1,
+      ezbr_sha256: 'remote-bundle',
+    },
+    payload,
+  );
+
+  assert.equal(normalized.files[0].path, 'lib/index.ts');
+  assert.equal(
+    normalized.files[0].sha256,
+    sha256('export const value = 1;\n'),
+  );
+});
+
+test('CORR-011 multipart Edge Function body: rechaza rutas multipart que escapen del Function root', () => {
+  const boundary = 'vento-corr-011-unsafe';
+
+  const multipart = Buffer.from(
+    [
+      `--${boundary}\r\n`,
+      'Content-Disposition: form-data; name="file"; filename="index.ts"\r\n',
+      'Supabase-Path: ../../outside.ts\r\n',
+      '\r\n',
+      'unsafe',
+      '\r\n',
+      `--${boundary}--\r\n`,
+    ].join(''),
+    'utf8',
+  );
+
+  assert.throws(
+    () => parseRemoteFunctionMultipart(
+      'alpha',
+      multipart,
+      `multipart/form-data; boundary=${boundary}`,
+    ),
+    /REMOTE_FUNCTION_FILE_PATH_UNSAFE/u,
+  );
 });
 
 test('Management API queda cerrada a GET y SQL read-only', () => {

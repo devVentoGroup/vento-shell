@@ -771,6 +771,128 @@ async function managementRequest({ token, pathname, method = 'GET', body = null,
   return response.json();
 }
 
+function multipartBoundary(contentType) {
+  const match = /boundary=(?:"([^"]+)"|([^;]+))/iu.exec(String(contentType ?? ''));
+  const boundary = String(match?.[1] ?? match?.[2] ?? '').trim();
+  if (!boundary) fail('REMOTE_FUNCTION_MULTIPART_BOUNDARY_MISSING');
+  return boundary;
+}
+
+function multipartHeaders(raw) {
+  const headers = {};
+  for (const line of String(raw ?? '').split('\r\n')) {
+    const separator = line.indexOf(':');
+    if (separator < 0) continue;
+    const name = line.slice(0, separator).trim().toLowerCase();
+    const value = line.slice(separator + 1).trim();
+    if (name) headers[name] = value;
+  }
+  return headers;
+}
+
+function dispositionParameter(value, parameter) {
+  const expression = new RegExp(`(?:^|;)\\s*${parameter}=\"([^\"]*)\"`, 'iu');
+  return expression.exec(String(value ?? ''))?.[1] ?? null;
+}
+
+function normalizeRemoteFunctionFileName(slug, rawName) {
+  const name = normalizeRepoPath(rawName);
+  const segments = name.split('/');
+  if (
+    !name
+    || name.includes('\u0000')
+    || name.startsWith('/')
+    || /^[A-Za-z]:\//u.test(name)
+    || segments.includes('..')
+  ) {
+    fail('REMOTE_FUNCTION_FILE_PATH_UNSAFE', slug);
+  }
+  return name;
+}
+
+export function parseRemoteFunctionMultipart(slug, payload, contentType) {
+  const body = Buffer.isBuffer(payload) ? payload : Buffer.from(payload);
+  const boundary = multipartBoundary(contentType);
+  const delimiter = Buffer.from(`--${boundary}`, 'utf8');
+  const nextPrefix = Buffer.from(`\r\n--${boundary}`, 'utf8');
+  const headerSeparator = Buffer.from('\r\n\r\n', 'utf8');
+  const files = [];
+
+  let boundaryIndex = body.indexOf(delimiter);
+  if (boundaryIndex < 0) fail('REMOTE_FUNCTION_MULTIPART_OPENING_BOUNDARY_MISSING', slug);
+
+  while (boundaryIndex >= 0) {
+    let cursor = boundaryIndex + delimiter.length;
+
+    if (body[cursor] === 45 && body[cursor + 1] === 45) break;
+
+    if (body[cursor] !== 13 || body[cursor + 1] !== 10) {
+      fail('REMOTE_FUNCTION_MULTIPART_INVALID_BOUNDARY', slug);
+    }
+    cursor += 2;
+
+    const headerEnd = body.indexOf(headerSeparator, cursor);
+    if (headerEnd < 0) fail('REMOTE_FUNCTION_MULTIPART_HEADERS_MISSING', slug);
+
+    const headers = multipartHeaders(body.subarray(cursor, headerEnd).toString('utf8'));
+    const partStart = headerEnd + headerSeparator.length;
+    const nextBoundary = body.indexOf(nextPrefix, partStart);
+
+    if (nextBoundary < 0) fail('REMOTE_FUNCTION_MULTIPART_CLOSING_BOUNDARY_MISSING', slug);
+
+    const disposition = headers['content-disposition'] ?? '';
+    const filename =
+      headers['supabase-path']
+      ?? dispositionParameter(disposition, 'filename');
+
+    if (filename) {
+      files.push({
+        name: normalizeRemoteFunctionFileName(slug, filename),
+        content: Buffer.from(body.subarray(partStart, nextBoundary)),
+      });
+    }
+
+    boundaryIndex = nextBoundary + 2;
+  }
+
+  if (files.length === 0) {
+    fail('REMOTE_FUNCTION_MULTIPART_FILES_MISSING', slug);
+  }
+
+  return { files };
+}
+
+export async function fetchRemoteFunctionBody({
+  token,
+  projectRef,
+  slug,
+  fetchImpl = fetch,
+} = {}) {
+  const pathname = `/v1/projects/${projectRef}/functions/${slug}/body`;
+  assertManagementRequest('GET', pathname);
+  if (!token) fail('SUPABASE_ACCESS_TOKEN_MISSING');
+
+  const response = await fetchImpl(`${MANAGEMENT_BASE_URL}${pathname}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: 'multipart/form-data',
+    },
+  });
+
+  if (!response.ok) {
+    fail('MANAGEMENT_API_HTTP', `${response.status}:${pathname}`);
+  }
+
+  const contentType = String(response.headers?.get?.('content-type') ?? '');
+  if (!contentType.toLowerCase().startsWith('multipart/')) {
+    fail('REMOTE_FUNCTION_MULTIPART_CONTENT_TYPE_INVALID', contentType || 'MISSING');
+  }
+
+  const payload = Buffer.from(await response.arrayBuffer());
+  return parseRemoteFunctionMultipart(slug, payload, contentType);
+}
+
 function normalizeProject(payload) {
   return {
     ref: payload?.ref ?? payload?.id ?? null,
@@ -989,9 +1111,10 @@ export async function observeRemoteEnvironment({
       for (const metadata of [...list].sort((left, right) => String(left?.slug ?? '').localeCompare(String(right?.slug ?? ''), 'en'))) {
         const slug = String(metadata?.slug ?? '').trim();
         if (!slug) fail('REMOTE_FUNCTION_SLUG_MISSING');
-        const body = await managementRequest({
+        const body = await fetchRemoteFunctionBody({
           token,
-          pathname: `/v1/projects/${ref}/functions/${slug}/body`,
+          projectRef: ref,
+          slug,
           fetchImpl,
         });
         normalized.push(normalizeRemoteFunctionBody(slug, metadata, body));
