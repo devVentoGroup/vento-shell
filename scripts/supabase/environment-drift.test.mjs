@@ -12,6 +12,7 @@ import {
   compareFunctionSets,
   compareLocal,
   compareRemote,
+  evaluateEdgeSecretRequirements,
   extractSqlScalar,
   fetchRemoteFunctionBody,
   inventoryEdgeFunctions,
@@ -785,6 +786,11 @@ function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKey
           active: true,
         }],
         internal_job_secret_keys: ['shift_runtime_processor_cron'],
+        edge_environment_requirements: {
+          required_all: [],
+          required_any_of: [],
+          optional_or_defaulted: [],
+        },
       },
     },
     localObserved: {
@@ -942,4 +948,147 @@ test('CORR-011 hosted resource baseline: detecta ausencia de la clave interna co
     JSON.stringify(result).includes('secret_value'),
     false,
   );
+});
+
+test('CORR-011 explicit Edge environment requirements: clasifica exactamente los 28 nombres no administrados del candidate', () => {
+  const readiness = JSON.parse(fs.readFileSync(
+    new URL('../docs/package-readiness/package-readiness-contract.json', import.meta.url),
+    'utf8',
+  ));
+
+  const requirements =
+    readiness.physical_dependencies.supabase_pre_e5_foundation
+      .hosted_resource_baseline.edge_environment_requirements;
+
+  const classified = [
+    ...requirements.required_all,
+    ...requirements.optional_or_defaulted,
+    ...requirements.required_any_of.flatMap((entry) => entry.names),
+  ];
+
+  assert.equal(classified.length, 28);
+  assert.equal(new Set(classified).size, 28);
+
+  assert.deepEqual(
+    requirements.required_any_of.map((entry) => entry.requirement_id),
+    [
+      'ANIMA_SET_PASSWORD_URL',
+      'GOOGLE_MAPS_SERVER_KEY',
+      'WOMPI_WEBHOOK_SECRET',
+    ],
+  );
+
+  assert.equal(
+    requirements.optional_or_defaulted.includes('DOCUMENT_ALERTS_CRON_SECRET'),
+    true,
+  );
+
+  assert.equal(
+    requirements.optional_or_defaulted.includes('SHIFT_RUNTIME_CRON_SECRET'),
+    true,
+  );
+});
+
+test('CORR-011 explicit Edge environment requirements: optional/defaulted ausentes no producen drift y ANY-OF acepta un miembro', () => {
+  const readiness = JSON.parse(fs.readFileSync(
+    new URL('../docs/package-readiness/package-readiness-contract.json', import.meta.url),
+    'utf8',
+  ));
+
+  const requirements =
+    readiness.physical_dependencies.supabase_pre_e5_foundation
+      .hosted_resource_baseline.edge_environment_requirements;
+
+  const referenced = [
+    ...requirements.required_all,
+    ...requirements.optional_or_defaulted,
+    ...requirements.required_any_of.flatMap((entry) => entry.names),
+  ];
+
+  const observed = [
+    ...requirements.required_all,
+    ...requirements.required_any_of.map((entry) => entry.names[0]),
+  ];
+
+  const drifts = evaluateEdgeSecretRequirements({
+    referencedSecretNames: referenced,
+    requirements,
+    observedSecretNames: observed,
+    environment: 'staging',
+    identity: 'staging-ref',
+  });
+
+  assert.deepEqual(drifts, []);
+});
+
+test('CORR-011 explicit Edge environment requirements: distingue REQUIRED_ALL de REQUIRED_ANY_OF', () => {
+  const readiness = JSON.parse(fs.readFileSync(
+    new URL('../docs/package-readiness/package-readiness-contract.json', import.meta.url),
+    'utf8',
+  ));
+
+  const requirements =
+    readiness.physical_dependencies.supabase_pre_e5_foundation
+      .hosted_resource_baseline.edge_environment_requirements;
+
+  const referenced = [
+    ...requirements.required_all,
+    ...requirements.optional_or_defaulted,
+    ...requirements.required_any_of.flatMap((entry) => entry.names),
+  ];
+
+  const observed = [
+    ...requirements.required_all.filter(
+      (name) => name !== 'ACCOUNT_DELETION_WORKER_SECRET',
+    ),
+    ...requirements.required_any_of
+      .filter((entry) => entry.requirement_id !== 'GOOGLE_MAPS_SERVER_KEY')
+      .map((entry) => entry.names[0]),
+  ];
+
+  const drifts = evaluateEdgeSecretRequirements({
+    referencedSecretNames: referenced,
+    requirements,
+    observedSecretNames: observed,
+    environment: 'staging',
+    identity: 'staging-ref',
+  });
+
+  assert.deepEqual(
+    drifts.map((entry) => entry.surface).sort(),
+    [
+      'edge_secrets.required_any_of',
+      'edge_secrets.required_name',
+    ],
+  );
+});
+
+test('CORR-011 explicit Edge environment requirements: una referencia nueva sin clasificar bloquea por evidencia insuficiente', () => {
+  const readiness = JSON.parse(fs.readFileSync(
+    new URL('../docs/package-readiness/package-readiness-contract.json', import.meta.url),
+    'utf8',
+  ));
+
+  const requirements =
+    readiness.physical_dependencies.supabase_pre_e5_foundation
+      .hosted_resource_baseline.edge_environment_requirements;
+
+  const referenced = [
+    ...requirements.required_all,
+    ...requirements.optional_or_defaulted,
+    ...requirements.required_any_of.flatMap((entry) => entry.names),
+    'NEW_UNCLASSIFIED_EDGE_ENV',
+  ];
+
+  const drifts = evaluateEdgeSecretRequirements({
+    referencedSecretNames: referenced,
+    requirements,
+    observedSecretNames: [],
+    environment: 'staging',
+    identity: 'staging-ref',
+  });
+
+  assert.equal(drifts.length, 1);
+  assert.equal(drifts[0].surface, 'edge_secrets.expected_contract');
+  assert.equal(drifts[0].classification, 'INSUFFICIENT_EVIDENCE');
 });

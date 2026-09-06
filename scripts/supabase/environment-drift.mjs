@@ -505,6 +505,83 @@ function supabaseCliVersion(root) {
   return safeAscii(result.stdout || result.stderr).split(/\r?\n/u)[0].trim() || null;
 }
 
+function normalizeEdgeEnvironmentNameList(value, code, minimum = 0) {
+  if (!Array.isArray(value)) fail(code);
+
+  const names = value.map((entry) => String(entry ?? '').trim());
+
+  if (
+    names.length < minimum
+    || names.some((name) => !/^[A-Z][A-Z0-9_]*$/u.test(name))
+    || new Set(names).size !== names.length
+  ) {
+    fail(code);
+  }
+
+  return names.sort((left, right) => left.localeCompare(right, 'en'));
+}
+
+function normalizeEdgeEnvironmentRequirements(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail('EDGE_ENVIRONMENT_REQUIREMENTS_INVALID');
+  }
+
+  const requiredAll = normalizeEdgeEnvironmentNameList(
+    value.required_all,
+    'EDGE_ENVIRONMENT_REQUIRED_ALL_INVALID',
+  );
+
+  const optionalOrDefaulted = normalizeEdgeEnvironmentNameList(
+    value.optional_or_defaulted,
+    'EDGE_ENVIRONMENT_OPTIONAL_INVALID',
+  );
+
+  if (!Array.isArray(value.required_any_of)) {
+    fail('EDGE_ENVIRONMENT_REQUIRED_ANY_OF_INVALID');
+  }
+
+  const requiredAnyOf = value.required_any_of.map((entry) => {
+    const requirementId = String(entry?.requirement_id ?? '').trim();
+
+    if (!/^[A-Z][A-Z0-9_]*$/u.test(requirementId)) {
+      fail('EDGE_ENVIRONMENT_REQUIREMENT_ID_INVALID');
+    }
+
+    return {
+      requirement_id: requirementId,
+      names: normalizeEdgeEnvironmentNameList(
+        entry?.names,
+        'EDGE_ENVIRONMENT_REQUIRED_ANY_OF_NAMES_INVALID',
+        2,
+      ),
+    };
+  }).sort((left, right) =>
+    left.requirement_id.localeCompare(right.requirement_id, 'en'));
+
+  if (
+    new Set(requiredAnyOf.map((entry) => entry.requirement_id)).size
+    !== requiredAnyOf.length
+  ) {
+    fail('EDGE_ENVIRONMENT_REQUIREMENT_ID_DUPLICATED');
+  }
+
+  const classifiedNames = [
+    ...requiredAll,
+    ...optionalOrDefaulted,
+    ...requiredAnyOf.flatMap((entry) => entry.names),
+  ];
+
+  if (new Set(classifiedNames).size !== classifiedNames.length) {
+    fail('EDGE_ENVIRONMENT_NAME_CLASSIFIED_MORE_THAN_ONCE');
+  }
+
+  return {
+    required_all: requiredAll,
+    required_any_of: requiredAnyOf,
+    optional_or_defaulted: optionalOrDefaulted,
+  };
+}
+
 function readHostedResourceBaseline(root) {
   const absolute = path.join(root, ...READINESS_CONTRACT_RELATIVE.split('/'));
   const contract = JSON.parse(fs.readFileSync(absolute, 'utf8'));
@@ -546,9 +623,14 @@ function readHostedResourceBaseline(root) {
     fail('HOSTED_RESOURCE_REDACTION_CONTRACT_INVALID');
   }
 
+  const edgeEnvironmentRequirements = normalizeEdgeEnvironmentRequirements(
+    baseline.edge_environment_requirements,
+  );
+
   return {
     cron_jobs: cronJobs,
     internal_job_secret_keys: internalJobSecretKeys,
+    edge_environment_requirements: edgeEnvironmentRequirements,
   };
 }
 
@@ -1408,6 +1490,89 @@ export function compareLocal({ expected, observed, allowlist = [] } = {}) {
   };
 }
 
+export function evaluateEdgeSecretRequirements({
+  referencedSecretNames = [],
+  requirements = null,
+  observedSecretNames = [],
+  environment = 'staging',
+  identity = 'UNKNOWN',
+} = {}) {
+  const drifts = [];
+  let normalized;
+
+  try {
+    normalized = normalizeEdgeEnvironmentRequirements(requirements);
+  } catch {
+    addDrift(drifts, {
+      surface: 'edge_secrets.expected_contract',
+      identity,
+      environment,
+      expected: 'VERSIONED_EDGE_ENVIRONMENT_REQUIREMENTS',
+      observed: 'INVALID_OR_MISSING',
+      classification: 'INSUFFICIENT_EVIDENCE',
+      reason: 'The versioned Edge environment requirement contract is missing or invalid.',
+    });
+    return drifts;
+  }
+
+  const referenced = [...new Set(
+    referencedSecretNames
+      .map((entry) => String(entry ?? '').trim())
+      .filter(Boolean),
+  )].sort((left, right) => left.localeCompare(right, 'en'));
+
+  const classified = [
+    ...normalized.required_all,
+    ...normalized.optional_or_defaulted,
+    ...normalized.required_any_of.flatMap((entry) => entry.names),
+  ].sort((left, right) => left.localeCompare(right, 'en'));
+
+  if (stableStringify(referenced) !== stableStringify(classified)) {
+    addDrift(drifts, {
+      surface: 'edge_secrets.expected_contract',
+      identity,
+      environment,
+      expected: classified,
+      observed: referenced,
+      classification: 'INSUFFICIENT_EVIDENCE',
+      reason: 'Every non-default Edge environment name referenced by the candidate must be classified exactly once.',
+    });
+    return drifts;
+  }
+
+  const observed = new Set(
+    observedSecretNames.map((entry) => String(entry ?? '').trim()).filter(Boolean),
+  );
+
+  for (const name of normalized.required_all) {
+    if (!observed.has(name)) {
+      addDrift(drifts, {
+        surface: 'edge_secrets.required_name',
+        identity: name,
+        environment,
+        expected: 'PRESENT',
+        observed: 'ABSENT',
+        reason: 'A required Edge environment name is missing remotely.',
+      });
+    }
+  }
+
+  for (const group of normalized.required_any_of) {
+    if (!group.names.some((name) => observed.has(name))) {
+      addDrift(drifts, {
+        surface: 'edge_secrets.required_any_of',
+        identity: group.requirement_id,
+        environment,
+        expected: group.names,
+        observed: 'NONE_PRESENT',
+        reason: 'None of the allowed Edge environment names for this requirement are configured remotely.',
+      });
+    }
+  }
+
+  return drifts;
+}
+
 export function compareRemote({ expected, localObserved = null, remoteObserved, allowlist = [], scope = 'full' } = {}) {
   const environment = remoteObserved?.environment_role ?? 'unknown';
   const remoteScope = String(scope ?? remoteObserved?.remote_scope ?? 'full').trim().toLowerCase();
@@ -1678,20 +1843,13 @@ export function compareRemote({ expected, localObserved = null, remoteObserved, 
   }
 
   if (secrets) {
-    const expectedSecrets = expected.referenced_secret_names;
-    const observedSet = new Set(secrets);
-    for (const name of expectedSecrets) {
-      if (!observedSet.has(name)) {
-        addDrift(drifts, {
-          surface: 'edge_secrets.required_name',
-          identity: name,
-          environment,
-          expected: 'PRESENT',
-          observed: 'ABSENT',
-          reason: 'A secret name referenced by versioned Edge Function code is missing remotely.',
-        });
-      }
-    }
+    drifts.push(...evaluateEdgeSecretRequirements({
+      referencedSecretNames: expected.referenced_secret_names,
+      requirements: expected?.hosted_resources?.edge_environment_requirements,
+      observedSecretNames: secrets,
+      environment,
+      identity: remoteObserved.identity.project_ref,
+    }));
   }
 
   const expectedInternalJobSecretKeys = expected?.hosted_resources?.internal_job_secret_keys;
