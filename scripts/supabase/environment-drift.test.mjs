@@ -847,6 +847,26 @@ test('SQL de fingerprint excluye VITAL y no contiene operaciones de mutacion', (
   assert.doesNotMatch(sql, /\b(insert|update|delete|alter|drop|create|truncate)\b/u);
 });
 
+
+test('MRP015-040 SQL fingerprint: ACL es independiente del rol observador', () => {
+  const sql = __test.FINGERPRINT_SQL;
+  assert.match(sql, /pg_catalog\.aclexplode/u);
+  assert.match(sql, /pg_catalog\.acldefault/u);
+  assert.match(sql, /'grantor'/u);
+  assert.match(sql, /pg_get_function_identity_arguments/u);
+  assert.doesNotMatch(sql, /information_schema\.(?:table|routine)_privileges/u);
+});
+
+test('MRP015-040 SQL fingerprint: separa version de PostgreSQL y extensiones administradas', () => {
+  const sql = __test.FINGERPRINT_SQL;
+  const capabilities = __test.EXTENSION_CAPABILITIES_SQL;
+  assert.doesNotMatch(sql, /current_setting\('server_version'\)/u);
+  assert.doesNotMatch(sql, /pg_catalog\.pg_extension/u);
+  assert.match(capabilities, /pg_catalog\.pg_extension/u);
+  assert.match(capabilities, /extname/u);
+  assert.doesNotMatch(capabilities, /extversion/u);
+});
+
 test('captura fingerprints mayores al maxBuffer predeterminado de Node', () => {
   assert.equal(__test.PROCESS_OUTPUT_MAX_BYTES, 32 * 1024 * 1024);
   assert.ok(__test.PROCESS_OUTPUT_MAX_BYTES > 1024 * 1024);
@@ -894,9 +914,8 @@ test('CORR-011 hosted parity regression: conserva causa exacta cuando falta SUPA
 });
 
 function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKeys = ['shift_runtime_processor_cron'], transform = (fixture) => fixture) {
-  const sqlFingerprint = {
-    extensions: [{ name: 'pg_cron', version: '1.6' }],
-  };
+  const sqlFingerprint = { functions: [] };
+  const extensionCapabilities = [{ name: 'pg_cron' }];
 
   return compareRemote(transform({
     scope: 'full',
@@ -945,6 +964,7 @@ function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKey
     },
     localObserved: {
       sql_fingerprint: sqlFingerprint,
+      extension_capabilities: extensionCapabilities,
       storage_buckets: [],
       cron: {
         evidence: 'NOT_APPLICABLE',
@@ -1004,6 +1024,7 @@ function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKey
         },
         { name: 'secret_names', status: 'PASS', value: [] },
         { name: 'sql_fingerprint', status: 'PASS', value: sqlFingerprint },
+        { name: 'extension_capabilities', status: 'PASS', value: extensionCapabilities },
         { name: 'storage_buckets', status: 'PASS', value: [] },
         { name: 'cron_jobs', status: 'PASS', value: observedCronJobs },
         { name: 'internal_job_secret_keys', status: 'PASS', value: observedInternalJobSecretKeys },
@@ -1011,6 +1032,81 @@ function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKey
     },
   }));
 }
+
+test('MRP015-040 extension capabilities: exige pg_net solo cuando el SQL canonico usa net.http_*', () => {
+  const cron = [{
+    jobname: 'anima_shift_runtime_processor_every_5m',
+    schedule: '*/5 * * * *',
+    active: true,
+  }];
+  const result = corr011HostedCronFixture(cron, ['shift_runtime_processor_cron'], (fixture) => {
+    const fingerprint = {
+      functions: [{ definition: "select net.http_post(url := 'https://example.invalid')" }],
+    };
+    fixture.localObserved.sql_fingerprint = fingerprint;
+    fixture.localObserved.extension_capabilities = [
+      { name: 'pg_cron' },
+      { name: 'pg_net' },
+    ];
+    fixture.remoteObserved.surfaces.find((row) => row.name === 'sql_fingerprint').value = fingerprint;
+    fixture.remoteObserved.surfaces.find((row) => row.name === 'extension_capabilities').value = [
+      { name: 'pg_cron' },
+    ];
+    return fixture;
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(result.drifts.map((entry) => entry.surface), ['extensions.capability']);
+  assert.equal(result.drifts[0].identity, 'pg_net');
+});
+
+test('MRP015-040 extension capabilities: extensiones hosted extra no simulan SQL drift', () => {
+  const cron = [{
+    jobname: 'anima_shift_runtime_processor_every_5m',
+    schedule: '*/5 * * * *',
+    active: true,
+  }];
+  const result = corr011HostedCronFixture(cron, ['shift_runtime_processor_cron'], (fixture) => {
+    fixture.remoteObserved.surfaces.find((row) => row.name === 'extension_capabilities').value = [
+      { name: 'pg_cron' },
+      { name: 'pg_graphql' },
+      { name: 'pg_net' },
+    ];
+    return fixture;
+  });
+
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('MRP015-040 SQL fingerprint: un cambio real de grant sigue bloqueando', () => {
+  const cron = [{
+    jobname: 'anima_shift_runtime_processor_every_5m',
+    schedule: '*/5 * * * *',
+    active: true,
+  }];
+  const result = corr011HostedCronFixture(cron, ['shift_runtime_processor_cron'], (fixture) => {
+    const localFingerprint = {
+      functions: [],
+      table_grants: [{
+        schema: 'public',
+        relation: 'orders',
+        grantor: 'postgres',
+        grantee: 'authenticated',
+        privilege: 'SELECT',
+        grantable: false,
+      }],
+    };
+    const remoteFingerprint = structuredClone(localFingerprint);
+    remoteFingerprint.table_grants[0].privilege = 'UPDATE';
+    fixture.localObserved.sql_fingerprint = localFingerprint;
+    fixture.remoteObserved.surfaces.find((row) => row.name === 'sql_fingerprint').value = remoteFingerprint;
+    return fixture;
+  });
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(result.drifts.map((entry) => entry.surface), ['database.sql_fingerprint']);
+});
 
 test('CORR-011 hosted parity regression: detecta cron hosted ausente aunque local no tenga pg_cron', () => {
   const result = corr011HostedCronFixture([]);
@@ -1424,6 +1520,7 @@ test('CORR-011_ACCEPTANCE: observador full sintetico solo usa GET y SQL read-onl
       const query = JSON.parse(options.body).query;
       let value;
       if (query.includes('as internal_job_secret_keys')) value = [];
+      else if (query.includes('as extension_capabilities')) value = values.get('extension_capabilities');
       else if (query.includes('as storage_buckets')) value = values.get('storage_buckets');
       else if (query.includes('as cron_jobs')) value = [];
       else if (query.includes('as fingerprint')) value = values.get('sql_fingerprint');
@@ -1431,9 +1528,9 @@ test('CORR-011_ACCEPTANCE: observador full sintetico solo usa GET y SQL read-onl
       return response([{ result: JSON.stringify(value) }]);
     },
   });
-  assert.equal(observed.surfaces.length, 12);
+  assert.equal(observed.surfaces.length, 13);
   assert.ok(observed.surfaces.every((row) => row.status === 'PASS'));
-  assert.equal(calls.filter((row) => row.method === 'POST').length, 4);
+  assert.equal(calls.filter((row) => row.method === 'POST').length, 5);
   const result = compareRemote({ ...fixture, remoteObserved: observed });
   assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
   assert.deepEqual(result.drifts.map((row) => row.surface), [
