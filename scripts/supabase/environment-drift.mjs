@@ -284,7 +284,11 @@ function normalizeRepoPath(value) {
 
 function canonicalBytes(value) {
   const input = Buffer.isBuffer(value) ? value : Buffer.from(String(value ?? ''), 'utf8');
-  return Buffer.from(input.toString('utf8').replaceAll('\r\n', '\n'), 'utf8');
+  const normalized = input
+    .toString('utf8')
+    .replace(/^\uFEFF/u, '')
+    .replaceAll('\r\n', '\n');
+  return Buffer.from(normalized, 'utf8');
 }
 
 export function sha256(value) {
@@ -413,6 +417,19 @@ function parseByteSize(value) {
   return Math.round(amount * multipliers[unit]);
 }
 
+const FUNCTION_SOURCE_EXTENSIONS = new Set([
+  '.ts',
+  '.tsx',
+  '.js',
+  '.jsx',
+  '.mjs',
+  '.cjs',
+  '.mts',
+  '.cts',
+  '.json',
+  '.jsonc',
+]);
+
 function listFilesRecursive(directory, prefix = '') {
   const entries = fs.readdirSync(directory, { withFileTypes: true })
     .sort((left, right) => left.name.localeCompare(right.name, 'en'));
@@ -425,6 +442,51 @@ function listFilesRecursive(directory, prefix = '') {
     else if (entry.isFile()) files.push(relative);
   }
   return files;
+}
+
+function npmrcHasEffectiveConfiguration(source) {
+  return canonicalBytes(source)
+    .toString('utf8')
+    .split('\n')
+    .some((line) => {
+      const trimmed = line.trim();
+      return trimmed && !trimmed.startsWith('#') && !trimmed.startsWith(';');
+    });
+}
+
+function functionSourcePaths(directory, configSection, slug) {
+  if (
+    Object.prototype.hasOwnProperty.call(configSection, 'static_files')
+    && (
+      !Array.isArray(configSection.static_files)
+      || configSection.static_files.length > 0
+    )
+  ) {
+    fail('EDGE_FUNCTION_STATIC_FILES_PARITY_UNSUPPORTED', slug);
+  }
+
+  const npmrcPath = path.join(directory, '.npmrc');
+
+  if (
+    fs.existsSync(npmrcPath)
+    && npmrcHasEffectiveConfiguration(fs.readFileSync(npmrcPath))
+  ) {
+    fail('EDGE_FUNCTION_NPMRC_PARITY_UNSUPPORTED', slug);
+  }
+
+  return listFilesRecursive(directory)
+    .filter((relative) => {
+      const normalized = normalizeRepoPath(relative);
+      const basename = path.posix.basename(normalized);
+
+      if (basename === '.npmrc') return false;
+      if (basename === 'deno.lock') return true;
+
+      return FUNCTION_SOURCE_EXTENSIONS.has(
+        path.posix.extname(normalized).toLowerCase(),
+      );
+    })
+    .sort((left, right) => left.localeCompare(right, 'en'));
 }
 
 function referencedSecretNames(source) {
@@ -452,7 +514,8 @@ export function inventoryEdgeFunctions({ root = repoRootFromModule(), configSect
   return entries.map((entry) => {
     const slug = entry.name;
     const directory = path.join(functionsRoot, slug);
-    const files = listFilesRecursive(directory).map((relative) => {
+    const functionConfig = config[`functions.${slug}`] ?? {};
+    const files = functionSourcePaths(directory, functionConfig, slug).map((relative) => {
       const content = canonicalBytes(fs.readFileSync(path.join(directory, ...relative.split('/'))));
       return {
         path: normalizeRepoPath(relative),
@@ -465,7 +528,7 @@ export function inventoryEdgeFunctions({ root = repoRootFromModule(), configSect
       const source = fs.readFileSync(path.join(directory, ...file.path.split('/')), 'utf8');
       for (const name of referencedSecretNames(source)) secrets.add(name);
     }
-    const verifyJwt = config[`functions.${slug}`]?.verify_jwt ?? true;
+    const verifyJwt = functionConfig.verify_jwt ?? true;
     return {
       slug,
       verify_jwt: Boolean(verifyJwt),
