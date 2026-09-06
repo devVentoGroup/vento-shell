@@ -631,6 +631,11 @@ function normalizeEdgeEnvironmentRequirements(value) {
     'EDGE_ENVIRONMENT_OPTIONAL_INVALID',
   );
 
+  const localOnly = normalizeEdgeEnvironmentNameList(
+    value.local_only ?? [],
+    'EDGE_ENVIRONMENT_LOCAL_ONLY_INVALID',
+  );
+
   if (!Array.isArray(value.required_any_of)) {
     fail('EDGE_ENVIRONMENT_REQUIRED_ANY_OF_INVALID');
   }
@@ -663,6 +668,7 @@ function normalizeEdgeEnvironmentRequirements(value) {
   const classifiedNames = [
     ...requiredAll,
     ...optionalOrDefaulted,
+    ...localOnly,
     ...requiredAnyOf.flatMap((entry) => entry.names),
   ];
 
@@ -674,7 +680,115 @@ function normalizeEdgeEnvironmentRequirements(value) {
     required_all: requiredAll,
     required_any_of: requiredAnyOf,
     optional_or_defaulted: optionalOrDefaulted,
+    local_only: localOnly,
   };
+}
+
+function normalizeHostedEnvironmentContracts(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail('HOSTED_ENVIRONMENT_CONTRACTS_INVALID');
+  }
+
+  const normalized = {};
+  for (const [rawRole, rawContract] of Object.entries(value)) {
+    const role = String(rawRole ?? '').trim().toUpperCase();
+    if (!['STAGING', 'PRODUCTION'].includes(role) || normalized[role]) {
+      fail('HOSTED_ENVIRONMENT_ROLE_INVALID', role || 'EMPTY');
+    }
+    if (!rawContract || typeof rawContract !== 'object' || Array.isArray(rawContract)) {
+      fail('HOSTED_ENVIRONMENT_CONTRACT_INVALID', role);
+    }
+
+    const config = rawContract.config;
+    const dataApi = config?.data_api;
+    const auth = config?.auth;
+    const storage = config?.storage;
+    const realtime = config?.realtime;
+    const edgeFunctions = rawContract.edge_functions;
+
+    const normalizeUniqueStrings = (entries, code) => {
+      if (!Array.isArray(entries)) fail(code, role);
+      const values = entries.map((entry) => String(entry ?? '').trim());
+      if (values.some((entry) => !entry) || new Set(values).size !== values.length) fail(code, role);
+      return values;
+    };
+
+    const schemas = normalizeUniqueStrings(
+      dataApi?.schemas,
+      'HOSTED_DATA_API_SCHEMAS_INVALID',
+    );
+    const extraSearchPath = normalizeUniqueStrings(
+      dataApi?.extra_search_path,
+      'HOSTED_DATA_API_SEARCH_PATH_INVALID',
+    );
+    const maxRows = Number(dataApi?.max_rows);
+    if (!Number.isInteger(maxRows) || maxRows <= 0) {
+      fail('HOSTED_DATA_API_MAX_ROWS_INVALID', role);
+    }
+
+    if (
+      typeof auth?.signup_enabled !== 'boolean'
+      || typeof auth?.anonymous_sign_ins_enabled !== 'boolean'
+      || !Number.isInteger(Number(auth?.jwt_expiry))
+      || Number(auth.jwt_expiry) <= 0
+      || !/^https?:\/\//u.test(String(auth?.site_url ?? ''))
+    ) {
+      fail('HOSTED_AUTH_CONTRACT_INVALID', role);
+    }
+
+    const fileSizeLimitBytes = Number(storage?.file_size_limit_bytes);
+    if (!Number.isFinite(fileSizeLimitBytes) || fileSizeLimitBytes <= 0) {
+      fail('HOSTED_STORAGE_CONTRACT_INVALID', role);
+    }
+    if (typeof realtime?.suspended !== 'boolean') {
+      fail('HOSTED_REALTIME_CONTRACT_INVALID', role);
+    }
+
+    if (
+      !edgeFunctions
+      || typeof edgeFunctions !== 'object'
+      || Array.isArray(edgeFunctions)
+      || edgeFunctions.default_disposition !== 'REQUIRED_HOSTED'
+      || !Array.isArray(edgeFunctions.solo_local)
+    ) {
+      fail('HOSTED_EDGE_FUNCTION_CONTRACT_INVALID', role);
+    }
+
+    const soloLocal = edgeFunctions.solo_local
+      .map((entry) => String(entry ?? '').trim())
+      .sort((left, right) => left.localeCompare(right, 'en'));
+    if (
+      soloLocal.some((slug) => !/^[a-z0-9][a-z0-9-]*$/u.test(slug))
+      || new Set(soloLocal).size !== soloLocal.length
+    ) {
+      fail('HOSTED_EDGE_FUNCTION_SOLO_LOCAL_INVALID', role);
+    }
+
+    normalized[role] = {
+      config: {
+        data_api: {
+          schemas,
+          extra_search_path: extraSearchPath,
+          max_rows: maxRows,
+        },
+        auth: {
+          signup_enabled: auth.signup_enabled,
+          anonymous_sign_ins_enabled: auth.anonymous_sign_ins_enabled,
+          jwt_expiry: Number(auth.jwt_expiry),
+          site_url: String(auth.site_url),
+        },
+        storage: { file_size_limit_bytes: fileSizeLimitBytes },
+        realtime: { suspended: realtime.suspended },
+      },
+      edge_functions: {
+        default_disposition: 'REQUIRED_HOSTED',
+        solo_local: soloLocal,
+      },
+    };
+  }
+
+  if (!normalized.STAGING) fail('HOSTED_STAGING_ENVIRONMENT_CONTRACT_MISSING');
+  return normalized;
 }
 
 function readHostedResourceBaseline(root) {
@@ -682,7 +796,12 @@ function readHostedResourceBaseline(root) {
   const contract = JSON.parse(fs.readFileSync(absolute, 'utf8'));
   const baseline = contract?.physical_dependencies?.supabase_pre_e5_foundation?.hosted_resource_baseline;
 
-  if (!baseline || !Array.isArray(baseline.cron_jobs) || !Array.isArray(baseline.internal_job_secret_keys)) {
+  if (
+    !baseline
+    || baseline.schema_version !== 2
+    || !Array.isArray(baseline.cron_jobs)
+    || !Array.isArray(baseline.internal_job_secret_keys)
+  ) {
     fail('HOSTED_RESOURCE_BASELINE_MISSING');
   }
 
@@ -721,11 +840,16 @@ function readHostedResourceBaseline(root) {
   const edgeEnvironmentRequirements = normalizeEdgeEnvironmentRequirements(
     baseline.edge_environment_requirements,
   );
+  const environmentContracts = normalizeHostedEnvironmentContracts(
+    baseline.environment_contracts,
+  );
 
   return {
+    schema_version: 2,
     cron_jobs: cronJobs,
     internal_job_secret_keys: internalJobSecretKeys,
     edge_environment_requirements: edgeEnvironmentRequirements,
+    environment_contracts: environmentContracts,
   };
 }
 
@@ -772,6 +896,28 @@ export function buildExpectedBaseline({ root = repoRootFromModule() } = {}) {
   const candidate = gitCandidate(root);
   const secretNames = [...new Set(edgeFunctions.flatMap((entry) => entry.referenced_secret_names))]
     .sort((left, right) => left.localeCompare(right, 'en'));
+  const stagingContract = hostedResources.environment_contracts.STAGING;
+  const soloLocal = new Set(stagingContract.edge_functions.solo_local);
+  const localFunctionSlugs = new Set(edgeFunctions.map((entry) => entry.slug));
+  for (const slug of soloLocal) {
+    if (!localFunctionSlugs.has(slug)) {
+      fail('HOSTED_EDGE_FUNCTION_SOLO_LOCAL_SOURCE_MISSING', slug);
+    }
+  }
+  const hostedFunctionSecrets = new Set(
+    edgeFunctions
+      .filter((entry) => !soloLocal.has(entry.slug))
+      .flatMap((entry) => entry.referenced_secret_names),
+  );
+  const exclusiveLocalOnlySecrets = secretNames
+    .filter((name) => !hostedFunctionSecrets.has(name))
+    .sort((left, right) => left.localeCompare(right, 'en'));
+  if (
+    stableStringify(exclusiveLocalOnlySecrets)
+    !== stableStringify(hostedResources.edge_environment_requirements.local_only)
+  ) {
+    fail('HOSTED_LOCAL_ONLY_SECRET_CONTRACT_MISMATCH');
+  }
   const core = {
     schema_version: 1,
     authority: 'VENTO_SHELL_VERSIONED_EXPECTED_STATE',
@@ -1516,9 +1662,34 @@ function functionMap(functions) {
   return new Map((functions ?? []).map((entry) => [entry.slug, entry]));
 }
 
-export function compareFunctionSets(expectedFunctions, observedFunctions, drifts, environment) {
+export function compareFunctionSets(
+  expectedFunctions,
+  observedFunctions,
+  drifts,
+  environment,
+  policy = null,
+) {
   const expectedMap = functionMap(expectedFunctions);
   const observedMap = functionMap(observedFunctions);
+  const soloLocal = new Set(
+    (policy?.solo_local ?? []).map((entry) => String(entry ?? '').trim()),
+  );
+
+  for (const slug of [...soloLocal].sort()) {
+    if (observedMap.has(slug)) {
+      addDrift(drifts, {
+        surface: 'edge_functions',
+        identity: slug,
+        environment,
+        expected: 'ABSENT',
+        observed: 'PRESENT',
+        reason: 'Edge Function is explicitly SOLO_LOCAL for this hosted environment.',
+      });
+    }
+    expectedMap.delete(slug);
+    observedMap.delete(slug);
+  }
+
   for (const slug of [...new Set([...expectedMap.keys(), ...observedMap.keys()])].sort()) {
     const expected = expectedMap.get(slug);
     const observed = observedMap.get(slug);
@@ -1529,7 +1700,7 @@ export function compareFunctionSets(expectedFunctions, observedFunctions, drifts
         environment,
         expected: expected ? 'PRESENT' : 'ABSENT',
         observed: observed ? 'PRESENT' : 'ABSENT',
-        reason: 'Edge Function presence differs from the candidate.',
+        reason: 'Edge Function presence differs from the explicit hosted environment contract.',
       });
       continue;
     }
@@ -1706,6 +1877,7 @@ export function evaluateEdgeSecretRequirements({
   const classified = [
     ...normalized.required_all,
     ...normalized.optional_or_defaulted,
+    ...normalized.local_only,
     ...normalized.required_any_of.flatMap((entry) => entry.names),
   ].sort((left, right) => left.localeCompare(right, 'en'));
 
@@ -1796,6 +1968,23 @@ export function compareRemote({ expected, localObserved = null, remoteObserved, 
       reason: 'Remote certification requires a clean immutable candidate.',
     });
   }
+  const versionedEnvironmentContracts = expected?.hosted_resources?.environment_contracts ?? null;
+  const hostedEnvironmentContract = versionedEnvironmentContracts
+    ? versionedEnvironmentContracts[String(environment).toUpperCase()] ?? null
+    : null;
+  if (remoteScope === 'full' && versionedEnvironmentContracts && !hostedEnvironmentContract) {
+    addDrift(drifts, {
+      surface: 'hosted_environment.expected_contract',
+      identity: environment,
+      environment,
+      expected: 'VERSIONED_HOSTED_ENVIRONMENT_CONTRACT',
+      observed: 'MISSING',
+      classification: 'INSUFFICIENT_EVIDENCE',
+      reason: 'Full hosted certification requires an explicit versioned contract for this environment.',
+    });
+    return finalize();
+  }
+
   if (remoteObserved?.identity_status !== 'PASS') {
     for (const issue of remoteObserved?.identity_issues ?? ['ENVIRONMENT_IDENTITY_MISSING']) {
       addDrift(drifts, {
@@ -1856,6 +2045,9 @@ export function compareRemote({ expected, localObserved = null, remoteObserved, 
   }
 
   if (remoteScope === 'history') return finalize();
+
+  const hostedConfig = hostedEnvironmentContract?.config ?? expected.config.contract;
+  const hostedFunctionPolicy = hostedEnvironmentContract?.edge_functions ?? null;
 
   const functions = surfaceValueOrInsufficient(drifts, surfaces, 'edge_functions', environment);
   const auth = surfaceValueOrInsufficient(drifts, surfaces, 'auth', environment);
@@ -1927,24 +2119,40 @@ export function compareRemote({ expected, localObserved = null, remoteObserved, 
     });
   }
 
-  if (functions) compareFunctionSets(expected.edge_functions, functions, drifts, environment);
+  if (functions) {
+    compareFunctionSets(
+      expected.edge_functions,
+      functions,
+      drifts,
+      environment,
+      hostedFunctionPolicy,
+    );
+  }
 
   if (postgrest) {
     compareExact(drifts, {
       surface: 'data_api.schemas',
       identity: remoteObserved.identity.project_ref,
       environment,
-      expected: normalizeCsv(expected.config.contract.data_api.schemas),
+      expected: normalizeCsv(hostedConfig.data_api.schemas),
       observed: normalizeCsv(postgrest.db_schema),
-      reason: 'Hosted Data API schemas differ from config.toml.',
+      reason: 'Hosted Data API schemas differ from the versioned hosted environment contract.',
+    });
+    compareExact(drifts, {
+      surface: 'data_api.extra_search_path',
+      identity: remoteObserved.identity.project_ref,
+      environment,
+      expected: normalizeCsv(hostedConfig.data_api.extra_search_path ?? []),
+      observed: normalizeCsv(postgrest.db_extra_search_path),
+      reason: 'Hosted Data API search_path differs from the versioned hosted environment contract.',
     });
     compareExact(drifts, {
       surface: 'data_api.max_rows',
       identity: remoteObserved.identity.project_ref,
       environment,
-      expected: expected.config.contract.data_api.max_rows,
+      expected: hostedConfig.data_api.max_rows,
       observed: Number(postgrest.max_rows),
-      reason: 'Hosted Data API max_rows differs from config.toml.',
+      reason: 'Hosted Data API max_rows differs from the versioned hosted environment contract.',
     });
   }
 
@@ -1953,9 +2161,9 @@ export function compareRemote({ expected, localObserved = null, remoteObserved, 
       surface: 'storage.file_size_limit',
       identity: remoteObserved.identity.project_ref,
       environment,
-      expected: expected.config.contract.storage.file_size_limit_bytes,
+      expected: hostedConfig.storage.file_size_limit_bytes,
       observed: Number(storage.file_size_limit),
-      reason: 'Hosted Storage file size limit differs from config.toml.',
+      reason: 'Hosted Storage file size limit differs from the versioned hosted environment contract.',
     });
   }
 
@@ -1964,45 +2172,50 @@ export function compareRemote({ expected, localObserved = null, remoteObserved, 
       surface: 'auth.signup_enabled',
       identity: remoteObserved.identity.project_ref,
       environment,
-      expected: expected.config.contract.auth.signup_enabled,
+      expected: hostedConfig.auth.signup_enabled,
       observed: auth.disable_signup === null ? null : !auth.disable_signup,
-      reason: 'Hosted Auth signup policy differs from config.toml.',
+      reason: 'Hosted Auth signup policy differs from the versioned hosted environment contract.',
     });
     compareExact(drifts, {
       surface: 'auth.anonymous_sign_ins_enabled',
       identity: remoteObserved.identity.project_ref,
       environment,
-      expected: expected.config.contract.auth.anonymous_sign_ins_enabled,
+      expected: hostedConfig.auth.anonymous_sign_ins_enabled,
       observed: auth.external_anonymous_users_enabled,
-      reason: 'Hosted anonymous sign-in policy differs from config.toml.',
+      reason: 'Hosted anonymous sign-in policy differs from the versioned hosted environment contract.',
     });
     compareExact(drifts, {
       surface: 'auth.jwt_expiry',
       identity: remoteObserved.identity.project_ref,
       environment,
-      expected: expected.config.contract.auth.jwt_expiry,
+      expected: hostedConfig.auth.jwt_expiry,
       observed: Number(auth.jwt_exp),
-      reason: 'Hosted JWT expiry differs from config.toml.',
+      reason: 'Hosted JWT expiry differs from the versioned hosted environment contract.',
     });
     compareExact(drifts, {
       surface: 'auth.site_url',
       identity: remoteObserved.identity.project_ref,
       environment,
-      expected: expected.config.contract.auth.site_url,
+      expected: hostedConfig.auth.site_url,
       observed: auth.site_url,
-      reason: 'Environment-specific Auth site_url requires an explicit overlay allowance when it differs.',
+      reason: 'Hosted Auth site_url differs from the explicit hosted environment contract.',
     });
   }
 
-  if (realtime && expected.config.contract.realtime.enabled && realtime.suspend === true) {
-    addDrift(drifts, {
-      surface: 'realtime.suspend',
-      identity: remoteObserved.identity.project_ref,
-      environment,
-      expected: false,
-      observed: true,
-      reason: 'Realtime is contractually enabled but the hosted service is suspended.',
-    });
+  if (realtime) {
+    const expectedSuspended = hostedEnvironmentContract
+      ? hostedConfig.realtime.suspended
+      : expected.config.contract.realtime.enabled ? false : null;
+    if (expectedSuspended !== null) {
+      compareExact(drifts, {
+        surface: 'realtime.suspend',
+        identity: remoteObserved.identity.project_ref,
+        environment,
+        expected: expectedSuspended,
+        observed: Boolean(realtime.suspend),
+        reason: 'Hosted Realtime suspension differs from the versioned hosted environment contract.',
+      });
+    }
   }
 
   if (storageBuckets && localObserved?.storage_buckets) {
