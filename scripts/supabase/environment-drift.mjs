@@ -892,6 +892,22 @@ function normalizeRemoteFunctionFileName(slug, rawName) {
   return name;
 }
 
+function parseRemoteFunctionMultipartMetadata(slug, payload) {
+  const source = Buffer.isBuffer(payload) ? payload.toString('utf8') : String(payload ?? '');
+  try {
+    const parsed = JSON.parse(source.trim());
+    const entrypointPath =
+      typeof parsed?.deno2_entrypoint_path === 'string' && parsed.deno2_entrypoint_path.trim()
+        ? parsed.deno2_entrypoint_path.trim()
+        : typeof parsed?.entrypoint_path === 'string' && parsed.entrypoint_path.trim()
+          ? parsed.entrypoint_path.trim()
+          : null;
+    return entrypointPath;
+  } catch {
+    fail('REMOTE_FUNCTION_MULTIPART_METADATA_INVALID', slug);
+  }
+}
+
 export function parseRemoteFunctionMultipart(slug, payload, contentType) {
   const body = Buffer.isBuffer(payload) ? payload : Buffer.from(payload);
   const boundary = multipartBoundary(contentType);
@@ -899,6 +915,7 @@ export function parseRemoteFunctionMultipart(slug, payload, contentType) {
   const nextPrefix = Buffer.from(`\r\n--${boundary}`, 'utf8');
   const headerSeparator = Buffer.from('\r\n\r\n', 'utf8');
   const files = [];
+  let entrypointPath = null;
 
   let boundaryIndex = body.indexOf(delimiter);
   if (boundaryIndex < 0) fail('REMOTE_FUNCTION_MULTIPART_OPENING_BOUNDARY_MISSING', slug);
@@ -923,6 +940,7 @@ export function parseRemoteFunctionMultipart(slug, payload, contentType) {
     if (nextBoundary < 0) fail('REMOTE_FUNCTION_MULTIPART_CLOSING_BOUNDARY_MISSING', slug);
 
     const disposition = headers['content-disposition'] ?? '';
+    const fieldName = dispositionParameter(disposition, 'name');
     const filename =
       headers['supabase-path']
       ?? dispositionParameter(disposition, 'filename');
@@ -932,6 +950,11 @@ export function parseRemoteFunctionMultipart(slug, payload, contentType) {
         name: normalizeRemoteFunctionFileName(slug, filename),
         content: Buffer.from(body.subarray(partStart, nextBoundary)),
       });
+    } else if (fieldName === 'metadata') {
+      entrypointPath = parseRemoteFunctionMultipartMetadata(
+        slug,
+        body.subarray(partStart, nextBoundary),
+      );
     }
 
     boundaryIndex = nextBoundary + 2;
@@ -941,7 +964,7 @@ export function parseRemoteFunctionMultipart(slug, payload, contentType) {
     fail('REMOTE_FUNCTION_MULTIPART_FILES_MISSING', slug);
   }
 
-  return { files };
+  return { files, entrypoint_path: entrypointPath };
 }
 
 export async function fetchRemoteFunctionBody({
@@ -1038,12 +1061,53 @@ function normalizeMigrationHistory(payload) {
   })).sort((left, right) => left.version.localeCompare(right.version, 'en') || left.name.localeCompare(right.name, 'en'));
 }
 
+function normalizeRemoteFunctionFilePath(slug, rawName, entrypointPath) {
+  let name = normalizeRemoteFunctionFileName(slug, rawName);
+  if (!entrypointPath) {
+    if (name.startsWith(`${slug}/`)) name = name.slice(slug.length + 1);
+    return name;
+  }
+
+  let entrypoint = normalizeRepoPath(entrypointPath);
+  if (entrypoint.startsWith('file://')) {
+    try {
+      entrypoint = new URL(entrypoint).pathname;
+    } catch {
+      fail('REMOTE_FUNCTION_ENTRYPOINT_PATH_INVALID', slug);
+    }
+  }
+
+  const entrypointAbsolute = entrypoint.startsWith('/');
+  const partAbsolute = name.startsWith('/');
+  if (entrypointAbsolute !== partAbsolute) {
+    if (name.startsWith(`${slug}/`)) name = name.slice(slug.length + 1);
+    return name;
+  }
+
+  const relativePath = path.posix.relative(entrypoint, name);
+  const entrypointName = path.posix.basename(entrypoint);
+  let destination = path.posix.normalize(
+    relativePath
+      ? path.posix.join(entrypointName, relativePath)
+      : entrypointName,
+  );
+  if (destination.startsWith(`${slug}/`)) {
+    destination = destination.slice(slug.length + 1);
+  }
+
+  return normalizeRemoteFunctionFileName(slug, destination);
+}
+
 function normalizeRemoteFunctionFiles(slug, payload) {
   const files = Array.isArray(payload?.files) ? payload.files : [];
   if (files.length === 0) return null;
+  const entrypointPath = String(payload?.entrypoint_path ?? '').trim() || null;
   return files.map((entry) => {
-    let name = normalizeRepoPath(entry?.name ?? '');
-    if (name.startsWith(`${slug}/`)) name = name.slice(slug.length + 1);
+    const name = normalizeRemoteFunctionFilePath(
+      slug,
+      entry?.name ?? '',
+      entrypointPath,
+    );
     const content = canonicalBytes(entry?.content ?? '');
     return {
       path: name,
