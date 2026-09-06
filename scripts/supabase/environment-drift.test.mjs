@@ -605,3 +605,240 @@ test('package.json expone las cuatro entradas estables de drift', () => {
   const packageJson = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
   assert.equal(validatePackageScripts(packageJson), true);
 });
+
+test('CORR-011 hosted parity regression: conserva causa exacta cuando falta SUPABASE_ACCESS_TOKEN', async () => {
+  let fetchCalled = false;
+
+  const observed = await observeRemoteEnvironment({
+    projectRef: 'staging-ref',
+    environmentRole: 'staging',
+    owner: 'SUPA-TRANS-015',
+    scope: 'full',
+    token: null,
+    fetchImpl: async () => {
+      fetchCalled = true;
+      throw new Error('FETCH_MUST_NOT_RUN');
+    },
+  });
+
+  assert.equal(fetchCalled, false);
+  assert.equal(observed.identity_status, 'INSUFFICIENT_EVIDENCE');
+  assert.deepEqual(observed.identity_issues, ['SUPABASE_ACCESS_TOKEN_MISSING']);
+
+  const result = compareRemote({
+    scope: 'full',
+    expected: {
+      candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
+      expected_digest: 'expected',
+    },
+    localObserved: {},
+    remoteObserved: observed,
+  });
+
+  assert.equal(result.certification, 'INSUFFICIENT_EVIDENCE');
+  assert.equal(result.drifts.length, 1);
+  assert.equal(result.drifts[0].surface, 'environment.identity');
+  assert.equal(result.drifts[0].observed, 'SUPABASE_ACCESS_TOKEN_MISSING');
+});
+
+function corr011HostedCronFixture(observedCronJobs, observedInternalJobSecretKeys = ['shift_runtime_processor_cron']) {
+  const sqlFingerprint = {
+    extensions: [{ name: 'pg_cron', version: '1.6' }],
+  };
+
+  return compareRemote({
+    scope: 'full',
+    expected: {
+      candidate: { clean: true, commit_sha: 'abc', dirty_path_count: 0 },
+      expected_digest: 'expected',
+      migration_manifest: {
+        rows: [{ version: '00000000000000' }],
+      },
+      config: {
+        contract: {
+          postgres_major: 17,
+          data_api: {
+            schemas: ['public'],
+            max_rows: 1000,
+          },
+          storage: {
+            file_size_limit_bytes: 52428800,
+          },
+          auth: {
+            signup_enabled: true,
+            anonymous_sign_ins_enabled: false,
+            jwt_expiry: 3600,
+            site_url: 'http://localhost:3000',
+          },
+          realtime: {
+            enabled: true,
+          },
+        },
+      },
+      edge_functions: [],
+      referenced_secret_names: [],
+      hosted_resources: {
+        cron_jobs: [{
+          jobname: 'anima_shift_runtime_processor_every_5m',
+          schedule: '*/5 * * * *',
+          active: true,
+        }],
+        internal_job_secret_keys: ['shift_runtime_processor_cron'],
+      },
+    },
+    localObserved: {
+      sql_fingerprint: sqlFingerprint,
+      storage_buckets: [],
+      cron: {
+        evidence: 'NOT_APPLICABLE',
+        jobs: [],
+      },
+    },
+    remoteObserved: {
+      environment_role: 'staging',
+      remote_scope: 'full',
+      identity: {
+        project_ref: 'staging-ref',
+      },
+      identity_status: 'PASS',
+      observed_digest: 'observed',
+      surfaces: [
+        {
+          name: 'project',
+          status: 'PASS',
+          value: {
+            ref: 'staging-ref',
+            database: { postgres_engine: '17' },
+          },
+        },
+        {
+          name: 'migrations',
+          status: 'PASS',
+          value: [{ version: '00000000000000', name: 'baseline' }],
+        },
+        { name: 'edge_functions', status: 'PASS', value: [] },
+        {
+          name: 'auth',
+          status: 'PASS',
+          value: {
+            disable_signup: false,
+            external_anonymous_users_enabled: false,
+            jwt_exp: 3600,
+            site_url: 'http://localhost:3000',
+          },
+        },
+        {
+          name: 'storage',
+          status: 'PASS',
+          value: { file_size_limit: 52428800 },
+        },
+        {
+          name: 'realtime',
+          status: 'PASS',
+          value: { suspend: false },
+        },
+        {
+          name: 'postgrest',
+          status: 'PASS',
+          value: {
+            db_schema: 'public',
+            max_rows: 1000,
+          },
+        },
+        { name: 'secret_names', status: 'PASS', value: [] },
+        { name: 'sql_fingerprint', status: 'PASS', value: sqlFingerprint },
+        { name: 'storage_buckets', status: 'PASS', value: [] },
+        { name: 'cron_jobs', status: 'PASS', value: observedCronJobs },
+        { name: 'internal_job_secret_keys', status: 'PASS', value: observedInternalJobSecretKeys },
+      ],
+    },
+  });
+}
+
+test('CORR-011 hosted parity regression: detecta cron hosted ausente aunque local no tenga pg_cron', () => {
+  const result = corr011HostedCronFixture([]);
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['cron.jobs'],
+  );
+});
+
+test('CORR-011 hosted parity regression: certifica cron hosted versionado aunque local no tenga pg_cron', () => {
+  const result = corr011HostedCronFixture([{
+    jobname: 'anima_shift_runtime_processor_every_5m',
+    schedule: '*/5 * * * *',
+    active: true,
+    database: 'postgres',
+    username: 'postgres',
+    command_sha256: 'environment-specific-command-digest',
+  }]);
+
+  assert.equal(result.certification, 'STAGING_CERTIFIED');
+  assert.deepEqual(result.drifts, []);
+});
+
+test('CORR-011 hosted resource baseline: versiona los siete cron AS-IS sin comandos ni valores secretos', () => {
+  const readiness = JSON.parse(fs.readFileSync(
+    new URL('../docs/package-readiness/package-readiness-contract.json', import.meta.url),
+    'utf8',
+  ));
+
+  const baseline =
+    readiness.physical_dependencies.supabase_pre_e5_foundation.hosted_resource_baseline;
+
+  assert.equal(baseline.cron_jobs.length, 7);
+
+  assert.deepEqual(
+    baseline.cron_jobs.map((entry) => entry.jobname).sort(),
+    [
+      'anima_attendance_day_end_close_0005',
+      'anima_shift_runtime_processor_every_5m',
+      'attendance_stale_open_shift_autoclose_daily_bogota',
+      'auto-close-attendance',
+      'document-alerts-daily',
+      'pass_delivery_quotes_cleanup_hourly',
+      'pass_payment_checkout_expiry_reconciliation',
+    ],
+  );
+
+  assert.equal(
+    baseline.cron_jobs.every((entry) => entry.active === true),
+    true,
+  );
+
+  assert.deepEqual(
+    baseline.internal_job_secret_keys,
+    ['shift_runtime_processor_cron'],
+  );
+
+  assert.equal(baseline.cron_commands_forbidden, true);
+  assert.equal(baseline.secret_values_forbidden, true);
+
+  const serialized = JSON.stringify(baseline);
+  assert.equal(/"command"\s*:|"command_sha256"\s*:/u.test(serialized), false);
+  assert.equal(/"secret_value"\s*:/u.test(serialized), false);
+});
+
+test('CORR-011 hosted resource baseline: detecta ausencia de la clave interna configurada sin comparar su valor', () => {
+  const result = corr011HostedCronFixture(
+    [{
+      jobname: 'anima_shift_runtime_processor_every_5m',
+      schedule: '*/5 * * * *',
+      active: true,
+    }],
+    [],
+  );
+
+  assert.equal(result.certification, 'UNAUTHORIZED_DRIFT');
+  assert.deepEqual(
+    result.drifts.map((entry) => entry.surface),
+    ['internal_job_secrets.configured_keys'],
+  );
+
+  assert.equal(
+    JSON.stringify(result).includes('secret_value'),
+    false,
+  );
+});
