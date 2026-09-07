@@ -486,6 +486,31 @@ function npmrcHasEffectiveConfiguration(source) {
     });
 }
 
+function denoJsonHasEffectiveConfiguration(source) {
+  const text = canonicalBytes(source).toString('utf8').trim();
+  if (!text) return false;
+  let parsed;
+  try {
+    parsed = JSON.parse(text);
+  } catch {
+    return true;
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return true;
+  const keys = Object.keys(parsed);
+  if (keys.length === 0) return false;
+  if (
+    keys.length === 1
+    && keys[0] === 'imports'
+    && parsed.imports
+    && typeof parsed.imports === 'object'
+    && !Array.isArray(parsed.imports)
+    && Object.keys(parsed.imports).length === 0
+  ) {
+    return false;
+  }
+  return true;
+}
+
 function functionSourcePaths(directory, configSection, slug) {
   if (
     Object.prototype.hasOwnProperty.call(configSection, 'static_files')
@@ -512,6 +537,10 @@ function functionSourcePaths(directory, configSection, slug) {
       const basename = path.posix.basename(normalized);
 
       if (basename === '.npmrc') return false;
+      if (basename === 'deno.json') {
+        const absolute = path.join(directory, ...normalized.split('/'));
+        if (!denoJsonHasEffectiveConfiguration(fs.readFileSync(absolute))) return false;
+      }
       if (basename === 'deno.lock') return true;
 
       return FUNCTION_SOURCE_EXTENSIONS.has(
@@ -1366,12 +1395,22 @@ function normalizeRemoteFunctionFiles(slug, payload) {
       entrypointPath,
     );
     const content = canonicalBytes(entry?.content ?? '');
+    const basename = path.posix.basename(name);
+    if (basename === '.npmrc') {
+      if (npmrcHasEffectiveConfiguration(content)) {
+        fail('REMOTE_FUNCTION_NPMRC_PARITY_UNSUPPORTED', slug);
+      }
+      return null;
+    }
+    if (basename === 'deno.json' && !denoJsonHasEffectiveConfiguration(content)) {
+      return null;
+    }
     return {
       path: name,
       sha256: crypto.createHash('sha256').update(content).digest('hex'),
       bytes: content.byteLength,
     };
-  }).sort((left, right) => left.path.localeCompare(right.path, 'en'));
+  }).filter(Boolean).sort((left, right) => left.path.localeCompare(right.path, 'en'));
 }
 
 export function normalizeRemoteFunctionBody(slug, metadata, body) {
