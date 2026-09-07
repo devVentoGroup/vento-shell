@@ -8,6 +8,7 @@ import {
   compareRemote,
   observeLocalDatabase,
   observeRemoteEnvironment,
+  parseToml,
   stableStringify,
 } from './environment-drift.mjs';
 import {
@@ -345,7 +346,7 @@ export function buildDataApiPlan(expectedDataApi, observedPostgrest) {
   };
 }
 
-export function buildCronPlan(expectedRows, observedRows) {
+export function buildCronPlan(expectedRows, observedRows, localRows = []) {
   const expected = new Map();
   const observed = new Map();
   for (const row of expectedRows ?? []) {
@@ -364,6 +365,35 @@ export function buildCronPlan(expectedRows, observedRows) {
   }
   const missing = [...expected.keys()].filter((name) => !observed.has(name)).sort();
   const extra = [...observed.keys()].filter((name) => !expected.has(name)).sort();
+  const local = new Map();
+  for (const row of localRows ?? []) {
+    const name = String(row?.jobname ?? '').trim();
+    if (!name || local.has(name)) fail('LOCAL_CRON_DUPLICATE', name || 'EMPTY');
+    local.set(name, row);
+  }
+  const creates = [];
+  const unresolvedMissing = [];
+  for (const name of missing) {
+    const target = expected.get(name);
+    const source = local.get(name);
+    if (!source) {
+      unresolvedMissing.push(name);
+      continue;
+    }
+    if (
+      String(source.schedule ?? '') !== target.schedule
+      || Boolean(source.active) !== target.active
+      || !String(source.command ?? '').trim()
+    ) {
+      fail('LOCAL_CRON_CANDIDATE_MISMATCH', name);
+    }
+    creates.push({
+      jobname: name,
+      schedule: target.schedule,
+      active: target.active,
+      command: String(source.command),
+    });
+  }
   const alters = [];
   for (const [name, target] of expected) {
     const current = observed.get(name);
@@ -380,11 +410,21 @@ export function buildCronPlan(expectedRows, observedRows) {
       });
     }
   }
-  return { missing, extra, alters };
+  return { missing: unresolvedMissing, creates, extra, alters };
 }
 
 function cronMutationSql(plan) {
   const statements = [];
+  for (const row of plan.creates ?? []) {
+    statements.push(
+      `select cron.schedule(${sqlLiteral(row.jobname)}, ${sqlLiteral(row.schedule)}, ${sqlLiteral(row.command)});`,
+    );
+    if (!row.active) {
+      statements.push(
+        `select cron.alter_job(job_id := (select jobid from cron.job where jobname = ${sqlLiteral(row.jobname)}), active := false);`,
+      );
+    }
+  }
   for (const row of plan.alters) {
     statements.push(
       `select cron.alter_job(job_id := ${row.jobid}, schedule := ${sqlLiteral(row.schedule)}, active := ${row.active ? 'true' : 'false'});`,
@@ -750,6 +790,39 @@ function unresolvedDriftIdentities(drifts) {
     .sort();
 }
 
+function localSupabaseContainer(root) {
+  const config = parseToml(fs.readFileSync(path.join(root, 'supabase', 'config.toml'), 'utf8'));
+  const projectId = String(config['']?.project_id ?? '').trim();
+  if (!projectId) fail('LOCAL_PROJECT_ID_MISSING');
+  const result = run('docker', ['ps', '--format', '{{.Names}}'], { cwd: root, allowFailure: true });
+  if (result.status !== 0) fail('LOCAL_DOCKER_UNAVAILABLE');
+  const names = result.stdout.split(/\r?\n/u).map((entry) => entry.trim()).filter(Boolean);
+  const exact = `supabase_db_${projectId}`;
+  if (names.includes(exact)) return exact;
+  const normalized = projectId.replace(/[^A-Za-z0-9_-]/gu, '_');
+  const candidates = names.filter((name) => name.startsWith('supabase_db_') && name.includes(normalized));
+  if (candidates.length !== 1) fail('LOCAL_SUPABASE_DB_CONTAINER_UNRESOLVED', String(candidates.length));
+  return candidates[0];
+}
+
+function readLocalCronRows(root, expectedRows) {
+  const names = (expectedRows ?? []).map((row) => String(row?.jobname ?? '').trim()).filter(Boolean);
+  if (names.length === 0) return [];
+  const container = localSupabaseContainer(root);
+  const nameSql = names.map(sqlLiteral).join(',');
+  const query = `select coalesce(jsonb_agg(jsonb_build_object('jobname', j.jobname, 'schedule', j.schedule, 'active', j.active, 'command', j.command) order by j.jobname), '[]'::jsonb)::text from cron.job as j where j.jobname = any(array[${nameSql}]::text[]);`;
+  const result = run('docker', [
+    'exec', '-i', container,
+    'psql', '-X', '-A', '-t', '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', 'postgres', '-c', query,
+  ], { cwd: root, allowFailure: true });
+  if (result.status !== 0) fail('LOCAL_CRON_QUERY_FAILED', safeAscii(result.stderr));
+  let rows;
+  try { rows = JSON.parse(result.stdout.trim() || '[]'); }
+  catch { fail('LOCAL_CRON_QUERY_INVALID_JSON'); }
+  if (!Array.isArray(rows)) fail('LOCAL_CRON_QUERY_INVALID');
+  return rows;
+}
+
 async function buildPlan({ root, args, token, fetchImpl = fetch } = {}) {
   const bindings = readEnvironmentBindings({ root });
   assertTargetBinding({
@@ -793,7 +866,8 @@ async function buildPlan({ root, args, token, fetchImpl = fetch } = {}) {
   const staging = expected.hosted_resources.environment_contracts.STAGING;
   const acl = buildAclPlan(localObserved.sql_fingerprint, remoteFingerprint);
   const dataApi = buildDataApiPlan(staging.config.data_api, postgrest);
-  const cron = buildCronPlan(expected.hosted_resources.cron_jobs, cronRows);
+  const localCronRows = readLocalCronRows(root, expected.hosted_resources.cron_jobs);
+  const cron = buildCronPlan(expected.hosted_resources.cron_jobs, cronRows, localCronRows);
   const functionPlan = buildFunctionPlan(expected.edge_functions, functions, staging);
   const discovered = await discoverSecretSources({
     root,
@@ -837,6 +911,7 @@ function printPlan(args, plan, after = null, applied = null) {
   }
   console.log(`DATA_API_PATCH: ${plan.dataApi.needs_patch ? 'YES' : 'NO'}`);
   console.log(`CRON_ALTERS: ${plan.cron.alters.length}`);
+  console.log(`CRON_CREATES: ${(plan.cron.creates ?? []).map((row) => row.jobname).join(',') || 'NONE'}`);
   console.log(`CRON_MISSING: ${plan.cron.missing.join(',') || 'NONE'}`);
   console.log(`CRON_EXTRA_TO_UNSCHEDULE: ${plan.cron.extra.join(',') || 'NONE'}`);
   console.log(`EDGE_DEPLOY: ${plan.functions.deploy.join(',') || 'NONE'}`);

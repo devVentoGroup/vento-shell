@@ -125,7 +125,7 @@ test('MRP015-040 source parity: ignora assets no declarados y npmrc sin configur
 
     assert.deepEqual(
       entry.files.map((file) => file.path),
-      ['deno.json', 'index.ts'],
+      ['index.ts'],
     );
   });
 });
@@ -198,6 +198,44 @@ test('normaliza cuerpo remoto de Edge Function al mismo modelo de archivos', () 
   assert.match(remote.source_digest, /^[a-f0-9]{64}$/u);
 });
 
+
+
+test('MRP015-040 source parity: conserva deno.json cuando tiene configuracion efectiva', () => {
+  withTempRoot((root) => {
+    const directory = path.join(root, 'supabase', 'functions', 'alpha');
+    fs.mkdirSync(directory, { recursive: true });
+    fs.writeFileSync(path.join(root, 'supabase', 'config.toml'), '[functions.alpha]\nverify_jwt = true\n', 'utf8');
+    fs.writeFileSync(path.join(directory, 'index.ts'), 'export const value = 1;\n', 'utf8');
+    fs.writeFileSync(path.join(directory, 'deno.json'), '{"imports":{"lib":"jsr:@scope/lib@1"}}\n', 'utf8');
+    const [entry] = inventoryEdgeFunctions({ root });
+    assert.deepEqual(entry.files.map((file) => file.path), ['deno.json', 'index.ts']);
+  });
+});
+
+test('MRP015-040 source parity: normalizacion remota ignora deno.json vacio y npmrc documental', () => {
+  const remote = normalizeRemoteFunctionBody(
+    'alpha',
+    { verify_jwt: true, status: 'ACTIVE', version: 1 },
+    { files: [
+      { name: 'alpha/index.ts', content: 'export const x = 1;\n' },
+      { name: 'alpha/deno.json', content: '{"imports":{}}\n' },
+      { name: 'alpha/.npmrc', content: '# documentation only\n' },
+    ] },
+  );
+  assert.deepEqual(remote.files.map((file) => file.path), ['index.ts']);
+});
+
+test('MRP015-040 source parity: normalizacion remota conserva deno.json efectivo', () => {
+  const remote = normalizeRemoteFunctionBody(
+    'alpha',
+    { verify_jwt: true, status: 'ACTIVE', version: 1 },
+    { files: [
+      { name: 'alpha/index.ts', content: 'export const x = 1;\n' },
+      { name: 'alpha/deno.json', content: '{"imports":{"lib":"jsr:@scope/lib@1"}}\n' },
+    ] },
+  );
+  assert.deepEqual(remote.files.map((file) => file.path), ['deno.json', 'index.ts']);
+});
 test('CORR-011 multipart Edge Function body: consume server-side unbundle sin interpretar ESZIP como JSON', async () => {
   const boundary = 'vento-corr-011-boundary';
 

@@ -132,7 +132,7 @@ test('Data API plan patches all authoritative fields together', () => {
   });
 });
 
-test('Cron plan alters known jobs, flags missing, and marks extras for unschedule', () => {
+test('Cron plan creates missing jobs only from exact local replay commands', () => {
   const plan = buildCronPlan(
     [
       { jobname: 'a', schedule: '5 0 * * *', active: true },
@@ -142,16 +142,32 @@ test('Cron plan alters known jobs, flags missing, and marks extras for unschedul
       { jobid: 11, jobname: 'a', schedule: '0 0 * * *', active: false },
       { jobid: 99, jobname: 'extra', schedule: '* * * * *', active: true },
     ],
+    [
+      { jobname: 'b', schedule: '*/5 * * * *', active: true, command: 'select public.test_runtime();' },
+    ],
   );
-  assert.deepEqual(plan.missing, ['b']);
+  assert.deepEqual(plan.missing, []);
+  assert.deepEqual(plan.creates.map((row) => row.jobname), ['b']);
   assert.deepEqual(plan.extra, ['extra']);
   assert.deepEqual(plan.alters, [
     { jobname: 'a', jobid: 11, schedule: '5 0 * * *', active: true },
   ]);
   const sql = __test.cronMutationSql(plan);
+  assert.match(sql, /cron\.schedule/u);
   assert.match(sql, /cron\.alter_job/u);
   assert.match(sql, /cron\.unschedule\('extra'\)/u);
-  assert.doesNotMatch(sql, /command/u);
+  assert.match(sql, /select public\.test_runtime\(\);/u);
+});
+
+test('Cron plan fails closed when local replay disagrees with the versioned schedule', () => {
+  assert.throws(
+    () => buildCronPlan(
+      [{ jobname: 'b', schedule: '*/5 * * * *', active: true }],
+      [],
+      [{ jobname: 'b', schedule: '0 * * * *', active: true, command: 'select 1;' }],
+    ),
+    /LOCAL_CRON_CANDIDATE_MISMATCH:b/u,
+  );
 });
 
 test('Edge plan deploys hosted drift and deletes SOLO_LOCAL or unexpected hosted functions', () => {
